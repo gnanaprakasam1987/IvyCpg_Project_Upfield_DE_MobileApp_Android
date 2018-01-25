@@ -1232,6 +1232,10 @@ public class ConfigurationMasterHelper {
     public boolean IS_SALES_RETURN_VALIDATE;
     private static final String CODE_SALES_RETURN_SIGN = "SR14";
     public boolean IS_SALES_RETURN_SIGN;
+    private static final String CODE_COMPUTE_DUE_DATE = "DDATE";
+    public boolean COMPUTE_DUE_DATE;
+    private static final String CODE_COMPUTE_DUE_DAYS = "DDAYS";
+    public boolean COMPUTE_DUE_DAYS;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1953,7 +1957,7 @@ public class ConfigurationMasterHelper {
         ConfigurationMasterHelper.GET_GENERALFILTET_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) : 1;
 
         this.SHOW_COMPETITOR_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) : false;
-        if(SHOW_COMPETITOR_FILTER){
+        if (SHOW_COMPETITOR_FILTER) {
             downloadCompetitorFilterLevels();
         }
 
@@ -2726,19 +2730,19 @@ public class ConfigurationMasterHelper {
         return config;
     }
 
-    public void downloadCompetitorFilterLevels(){
-        try{
+    public void downloadCompetitorFilterLevels() {
+        try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='"+CODE_SHOW_COMPETITOR_FILTER+"' and Flag=1 ";
+                    + " where hhtCode='" + CODE_SHOW_COMPETITOR_FILTER + "' and Flag=1 ";
             Cursor c = db.selectSQL(sql);
-            if(c.getCount()>0){
-                while (c.moveToNext()){
-                    COMPETITOR_FILTER_LEVELS=c.getString(0);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    COMPETITOR_FILTER_LEVELS = c.getString(0);
                 }
                 c.close();
             }
@@ -2746,7 +2750,7 @@ public class ConfigurationMasterHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException( e);
+            Commons.printException(e);
         }
 
     }
@@ -5061,6 +5065,41 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
             db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Unable to load the configurations " + e);
+        }
+    }
+
+    public void loadInvoiceMasterDueDateAndDateConfig() {
+
+        try {
+            COMPUTE_DUE_DATE = true;
+            COMPUTE_DUE_DATE = true;
+            String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='SR01'";
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL(sql);
+            String rFieldValue = "";
+            if (c != null && c.getCount() != 0) {
+
+                while (c.moveToNext()) {
+                    rFieldValue = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+            if (rFieldValue != null && rFieldValue.length() > 0 && rFieldValue.contains(",")) {
+                String rFieldSplit[] = rFieldValue.split(",");
+                for (String temp : rFieldSplit) {
+                    if (temp.equals(CODE_COMPUTE_DUE_DAYS))
+                        COMPUTE_DUE_DATE = false;
+                    else if (temp.equals(CODE_COMPUTE_DUE_DATE))
+                        COMPUTE_DUE_DAYS = false;
+                }
+            }
         } catch (Exception e) {
             Commons.printException("Unable to load the configurations " + e);
         }

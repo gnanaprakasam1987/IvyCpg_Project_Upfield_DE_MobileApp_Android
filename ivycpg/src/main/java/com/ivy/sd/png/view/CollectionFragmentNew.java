@@ -492,20 +492,24 @@ public class CollectionFragmentNew extends IvyBaseFragment
                     ConfigurationMasterHelper.outDateFormat));
 //            final int count = DateUtil.getDateCount(holder.invoiceHeaderBO.getInvoiceDate(),
 //                    SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
-            int count = 0;
-            if (bmodel.retailerMasterBO.getCreditDays() != 0) {
-                if (holder.invoiceHeaderBO.getDueDate() != null)
-                    count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
-                            holder.invoiceHeaderBO.getDueDate(), "yyyy/MM/dd");
-            } else {
-                if (holder.invoiceHeaderBO.getInvoiceDate() != null)
-                    count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
-                            holder.invoiceHeaderBO.getInvoiceDate(), "yyyy/MM/dd");
+            if(bmodel.configurationMasterHelper.COMPUTE_DUE_DAYS) {
+                int count = 0;
+                if (bmodel.retailerMasterBO.getCreditDays() != 0) {
+                    if (holder.invoiceHeaderBO.getDueDate() != null)
+                        count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                                holder.invoiceHeaderBO.getDueDate(), "yyyy/MM/dd");
+                } else {
+                    if (holder.invoiceHeaderBO.getInvoiceDate() != null)
+                        count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                                holder.invoiceHeaderBO.getInvoiceDate(), "yyyy/MM/dd");
+                }
+                if (count < 0)
+                    count = 0;
+                String strCount = "(" + (count + 1) + ")";
+                holder.tvAge.setText(strCount);
+            }else{
+                holder.tvAge.setText("(" +holder.invoiceHeaderBO.getDueDays()+ ")");
             }
-            if (count < 0)
-                count = 0;
-            String strCount = "(" + (count + 1) + ")";
-            holder.tvAge.setText(strCount);
 
             String strPayment = bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getBalance()) + "";
             holder.tvPayableAmt.setText(strPayment);

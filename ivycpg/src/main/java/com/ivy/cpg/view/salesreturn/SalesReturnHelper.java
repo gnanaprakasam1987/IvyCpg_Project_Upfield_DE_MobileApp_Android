@@ -62,6 +62,10 @@ public class SalesReturnHelper {
 
     private double totalValue = 0;
 
+    private String SignaturePath;
+    private boolean isSignCaptured;
+    private String SignatureName;
+
     private SalesReturnHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
     }
@@ -111,6 +115,30 @@ public class SalesReturnHelper {
 
     public void setSalesReturnID(String salesReturnID) {
         this.salesReturnID = salesReturnID;
+    }
+
+    public boolean isSignCaptured() {
+        return isSignCaptured;
+    }
+
+    public void setIsSignCaptured(boolean isSignCaptured) {
+        this.isSignCaptured = isSignCaptured;
+    }
+
+    public String getSignatureName() {
+        return SignatureName;
+    }
+
+    public void setSignatureName(String signatureName) {
+        SignatureName = signatureName;
+    }
+
+    public String getSignaturePath() {
+        return SignaturePath;
+    }
+
+    public void setSignaturePath(String signaturePath) {
+        SignaturePath = signaturePath;
     }
 
     public String getCreditNoteId() {
@@ -359,7 +387,7 @@ public class SalesReturnHelper {
             }
 
             // Preapre and save salesreturn header.
-            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID";
+            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,imagename,imgName";
             String values = getSalesReturnID() + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
@@ -372,7 +400,9 @@ public class SalesReturnHelper {
                     + QT(bmodel.mSelectedRetailerLatitude + "") + ","
                     + QT(bmodel.mSelectedRetailerLongitude + "") + ","
                     + bmodel.retailerMasterBO.getDistributorId() + ","
-                    + bmodel.retailerMasterBO.getDistParentId();
+                    + bmodel.retailerMasterBO.getDistParentId() + ","
+                    + QT(getSignaturePath()) + ","
+                    + QT(getSignatureName());
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
             // insert sales replacement and decrease the stock in hand.
@@ -752,7 +782,7 @@ public class SalesReturnHelper {
                     if ("null".equals(lotNo)) {
                         lotNo = "";
                     }
-                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo,c.getString(13));
+                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13));
                     Commons.print("inside sales return data load");
                 }
             }

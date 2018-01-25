@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -63,6 +64,7 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
     private String serverPath = "";
     private Toolbar toolbar;
     TextInputEditText contact_name, contact_no;
+    SalesReturnHelper salesReturnHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -131,9 +133,16 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
                     + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                     .replace("/", "") + "/"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
-        } else {
+        } else if (module.equals("ORDER")) {
             imageName = "SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + ".jpg";
             serverPath = "Invoice/"
+                    + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                    .replace("/", "") + "/"
+                    + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
+        } else if (module.equals("SALES_RETURN")) {
+            salesReturnHelper = SalesReturnHelper.getInstance(this);
+            imageName = "SR_SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + ".jpg";
+            serverPath = "SalesReturn/"
                     + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                     .replace("/", "") + "/"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
@@ -266,6 +275,11 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
 
                     bmodel.getOrderHeaderBO().setSignatureName(imageName);
                     bmodel.getOrderHeaderBO().setSignaturePath(serverPath);
+                }
+                if (module.equals("SALES_RETURN")) {
+                    salesReturnHelper.setIsSignCaptured(true);
+                    salesReturnHelper.setSignatureName(imageName);
+                    salesReturnHelper.setSignaturePath(serverPath);
                 }
 
                 FileOutputStream mFileOutStream = new FileOutputStream(mypath);
@@ -417,7 +431,7 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
             startActivity(intent);
             setResult(RESULT_OK, intent);
             finish();
-        } else if (module.equals("DELIVERY") || module.equals("COL_REF")) {
+        } else if (module.equals("DELIVERY") || module.equals("COL_REF") || module.equals("SALES_RETURN")) {
             finish();
         }
     }
@@ -440,6 +454,9 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
             super.onPostExecute(result);
             // pd.dismiss();
             alertDialog.dismiss();
+            if (module.equals("SALES_RETURN")) {
+                finish();
+            }
         }
 
         @Override

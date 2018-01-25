@@ -1,10 +1,12 @@
 package com.ivy.cpg.view.salesreturn;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +31,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 
@@ -47,6 +50,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
     private SalesReturnHelper salesReturnHelper;
     private Toolbar toolbar;
     private Button mBtnSave;
+    private String PHOTO_PATH = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
         salesReturnHelper = SalesReturnHelper.getInstance(this);
 
-
+        PHOTO_PATH = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName;
         outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
         lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
@@ -464,7 +468,8 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
         menu.findItem(R.id.menu_next).setVisible(false);
 
-
+        if (bmodel.configurationMasterHelper.SHOW_SIGNATURE_SCREEN)
+            menu.findItem(R.id.menu_signature).setVisible(true);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -489,8 +494,65 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         } else if (i == R.id.menu_clear_tran) {
             showCustomDialog();
             return true;
+        }else if (i == R.id.menu_signature) {
+            if (salesReturnHelper.isSignCaptured()) {
+                showDialog(8);
+                return true;
+            }
+            Intent intent = new Intent(SalesReturnSummery.this,
+                    CaptureSignatureActivity.class);
+            intent.putExtra("fromModule", "SALES_RETURN");
+            startActivity(intent);
+            bmodel.configurationMasterHelper.setSignatureTitle("Signature");
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+//            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        String msg = "";
+        String delivery_date_txt = "";
+        switch (id) {
+            case 8:
+                AlertDialog.Builder builder7 = new AlertDialog.Builder(SalesReturnSummery.this)
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(
+                                "Signature Already taken.Do you want to delete and retake?")
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        salesReturnHelper.setIsSignCaptured(false);
+                                        if (salesReturnHelper.getSignatureName() != null)
+                                            bmodel.synchronizationHelper.deleteFiles(
+                                                    PHOTO_PATH, salesReturnHelper.getSignatureName());
+                                        Intent i = new Intent(SalesReturnSummery.this,
+                                                CaptureSignatureActivity.class);
+                                        i.putExtra("fromModule", "SALES_RETURN");
+                                        startActivity(i);
+                                        bmodel.configurationMasterHelper.setSignatureTitle("Signature");
+                                        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+//                                        finish();
+                                    }
+                                })
+                        .setNegativeButton(
+                                getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                    }
+                                });
+                bmodel.applyAlertDialogTheme(builder7);
+                break;
+
+
+            default:
+                break;
+        }
+        return null;
     }
 
     private void showCustomDialog() {
@@ -504,6 +566,10 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
+                                salesReturnHelper.setIsSignCaptured(false);
+                                if (salesReturnHelper.getSignatureName() != null)
+                                    bmodel.synchronizationHelper.deleteFiles(
+                                            PHOTO_PATH, salesReturnHelper.getSignatureName());
                                 salesReturnHelper.clearTransaction(getApplicationContext());
                                 Toast.makeText(SalesReturnSummery.this, getResources().getString(R.string.tran_deleted_successfully), Toast.LENGTH_LONG).show();
                                 BusinessModel.loadActivity(SalesReturnSummery.this,
@@ -594,6 +660,15 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             }
 
             if (result) {
+                //this activity is not finished while going to CaptureSignatureActivity
+                //in CaptureSignatureActivity bmodel context is set
+                //so on returning it has to be reset here again to SalesReturnSummary context
+                bmodel = (BusinessModel) getApplicationContext();
+                bmodel.setContext(SalesReturnSummery.this);
+                //clear sign details once sales return is exited to start fresh on next visit
+                salesReturnHelper.setIsSignCaptured(false);
+                salesReturnHelper.setSignatureName("");
+                salesReturnHelper.setSignaturePath("");
                 if (bmodel.configurationMasterHelper.SHOW_PRINT_CREDIT_NOTE && salesReturnHelper.getTotalValue() > 0) {
                     HashMap<String, String> keyValues = new HashMap<>();
                     keyValues.put("key1", "Tax CreditNote No : " + salesReturnHelper.getCreditNoteId().replaceAll("'", ""));

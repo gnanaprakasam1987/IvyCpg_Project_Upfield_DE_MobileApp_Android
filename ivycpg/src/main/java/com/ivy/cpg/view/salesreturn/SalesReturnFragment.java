@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -755,6 +756,15 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                //clear sign details once sales return is exited to start fresh on next visit
+                if (salesReturnHelper.getSignatureName() != null && !salesReturnHelper.getSignatureName().isEmpty()) {
+                    String PHOTO_PATH = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName;
+                    bmodel.synchronizationHelper.deleteFiles(
+                            PHOTO_PATH, salesReturnHelper.getSignatureName());
+                }
+                salesReturnHelper.setIsSignCaptured(false);
+                salesReturnHelper.setSignatureName("");
+                salesReturnHelper.setSignaturePath("");
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                     mDrawerLayout.closeDrawers();
                 else
