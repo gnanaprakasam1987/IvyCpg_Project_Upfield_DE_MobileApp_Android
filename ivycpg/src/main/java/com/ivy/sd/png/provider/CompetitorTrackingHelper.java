@@ -215,7 +215,7 @@ public class CompetitorTrackingHelper {
             db.createDataBase();
             db.openDataBase();
             String headerColumns = "Tid,Date,RetailerID,CompetitorID,Feedback,ImageName,TimeZone,pid,Remark,CounterId,imgName,distributorid";
-            String detailColumns = "TiD,TrackingListid,pid,RetailerID,FromDate,ToDate,Feedback,ImageName,imgName,qty";
+            String detailColumns = "TiD,TrackingListid,pid,RetailerID,FromDate,ToDate,Feedback,ImageName,imgName,qty,reasonID";
 
             String competitorReturnID = "CT"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -319,7 +319,9 @@ public class CompetitorTrackingHelper {
                                 + ","
                                 + QT(temp.getImageName())
                                 + ","
-                                + temp.getQty();
+                                + temp.getQty()
+                                +","
+                                + temp.getReasonID();
 
                         db.insertSQL(DataMembers.tbl_CompetitorDetails,
                                 detailColumns, values);
@@ -370,7 +372,7 @@ public class CompetitorTrackingHelper {
                     setCompetitorDetails(competitorid, feedback, imagePath,
                             ppid, imgName);
                     // load details
-                    String sql1 = "select trackinglistid,pid,FromDate,ToDate,feedback,imagename,imgName,qty from "
+                    String sql1 = "select trackinglistid,pid,FromDate,ToDate,feedback,imagename,imgName,qty,reasonID from "
                             + DataMembers.tbl_CompetitorDetails
                             + " where tid="
                             + QT(orderID) + "" + " and upload!= 'Y'";
@@ -386,8 +388,9 @@ public class CompetitorTrackingHelper {
                             String mCimagePath = orderDetailCursor.getString(5);
                             String mCimageName = orderDetailCursor.getString(6);
                             int qty=  orderDetailCursor.getInt(7);
+                            int reasonID=orderDetailCursor.getInt(8);
                             setCompetitorMasterDetails(competitorid,
-                                    trackingid, prdid, fromDate, toDate, mCfeedback, mCimagePath, mCimageName,qty);
+                                    trackingid, prdid, fromDate, toDate, mCfeedback, mCimagePath, mCimageName,qty,reasonID);
                         }
                     }
                 }
@@ -401,7 +404,7 @@ public class CompetitorTrackingHelper {
     }
 
     private void setCompetitorMasterDetails(int cid, int trackingid, int kid,
-                                            String fromDate, String toDate, String feedback, String imagePath, String imageName,int qty) {
+                                            String fromDate, String toDate, String feedback, String imagePath, String imageName,int qty,int reasonID) {
         CompetitorBO competitor;
         int siz = competitorMaster.size();
         Commons.print("B" + competitorMaster.size());
@@ -427,6 +430,7 @@ public class CompetitorTrackingHelper {
                         temp.setImagePath(imagePath);
                         temp.setImageName(imageName);
                         temp.setQty(qty);
+                        temp.setReasonID(reasonID);
                     }
 
                     competitorMaster.set(i, competitor);
