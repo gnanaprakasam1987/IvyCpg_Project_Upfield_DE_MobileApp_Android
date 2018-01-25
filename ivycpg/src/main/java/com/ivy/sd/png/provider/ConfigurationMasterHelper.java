@@ -447,9 +447,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_RID_CONCEDER_AS_DSTID = "FUN64";
     public boolean IS_SHOW_RID_CONCEDER_AS_DSTID;
 
-    public static final String CODE_TIME_APPLY = "COMPDATE";//change Code value
+    public static final String CODE_COMPETITOR = "COMP01";//change Code value
+    private boolean LOAD_COMP_CONFIGS;
     public boolean SHOW_TIME_VIEW;
-    public static final String CODE_REASON_SPINNER_APPLY = "RSID";//change Code value
     public boolean SHOW_SPINNER;
     /**
      * RoadActivity config *
@@ -2167,8 +2167,10 @@ public class ConfigurationMasterHelper {
         this.IS_RESTRICT_ORDER_TAKING = hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) != null ? hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) : false;
         this.IS_SHOW_RID_CONCEDER_AS_DSTID = hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) : false;
 
-        this.SHOW_TIME_VIEW = hashMapHHTModuleConfig.get(CODE_TIME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TIME_APPLY) : false;
-        this.SHOW_SPINNER = hashMapHHTModuleConfig.get(CODE_REASON_SPINNER_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_REASON_SPINNER_APPLY) : false;
+        this.LOAD_COMP_CONFIGS = hashMapHHTModuleConfig.get(CODE_COMPETITOR) != null ? hashMapHHTModuleConfig.get(CODE_COMPETITOR) : false;
+        if(LOAD_COMP_CONFIGS){
+           loadCompetitorConfig();
+        }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
 
 
@@ -2749,6 +2751,49 @@ public class ConfigurationMasterHelper {
                     COMPETITOR_FILTER_LEVELS = c.getString(0);
                 }
                 c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+    }
+
+    public void loadCompetitorConfig() {
+        try {
+            SHOW_TIME_VIEW = false;
+            SHOW_SPINNER = false;
+
+            String codeValue = null;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='" + CODE_COMPETITOR + "' and Flag=1";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    switch (temp) {
+                        case "DATE":
+                            SHOW_TIME_VIEW = true;
+                            break;
+                        case "RSN":
+                            SHOW_SPINNER = true;
+                            break;
+                    }
+
+                }
             }
 
             db.closeDB();

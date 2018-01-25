@@ -2071,12 +2071,12 @@ SynchronizationHelper {
                 sb.append("INSERT INTO ProductMaster (PID, PName, sih, pCode, psname, barcode, vat, isfocus, dUomId, ");
                 sb.append("msqQty, dUomQty, mrp, RField1, RField2, RField3, wsih, IsAlloc,  dOuomQty, dOuomid,  CaseBarcode, ");
                 sb.append("OuterBarcode, isReturnable, suggestqty, isMust, maxQty, stdpcs, stdcase, stdouter, issalable, baseprice, ");
-                sb.append("piece_uomid, isBom, TypeID, PLid, ParentId, PtypeId, sequence,weight,HasSerial,tagDescription) ");
+                sb.append("piece_uomid, isBom, TypeID, PLid, ParentId, PtypeId, sequence,weight,HasSerial,tagDescription,HSNId,IsDrug) ");
                 sb.append("SELECT P.PID, P.PName, P.sih, P.pCode, P.psname, (CASE WHEN IFNULL(A.piecebarcode,'') = '' THEN P.barcode ELSE A.piecebarcode END), P.vat, P.isfocus, ");
                 sb.append("IFNULL(A.caseUomId,0), P.msqQty, IFNULL(A.caseqty,0), P.mrp, P.RField1, P.RField2, P.RField3, P.wsih, P.IsAlloc,  ");
                 sb.append("IFNULL(A.boxqty,0), IFNULL(A.boxUomId,0),  IFNULL(A.casebarcode,0), IFNULL(A.boxbarcode,0), P.isReturnable, ");
                 sb.append("P.suggestqty, P.isMust, P.maxQty, P.stdpcs, P.stdcase, P.stdouter, P.issalable,P.baseprice, IFNULL(A.pieceUomId,0), ");
-                sb.append("P.isBom, P.TypeID, P.PLid, P.ParentId,P.PtypeId, P.sequence,P.weight,P.Hasserial,P.tagDescription FROM temp_ProductMaster P");
+                sb.append("P.isBom, P.TypeID, P.PLid, P.ParentId,P.PtypeId, P.sequence,P.weight,P.Hasserial,P.tagDescription,P.HSNId,P.IsDrug FROM temp_ProductMaster P");
                 sb.append(" LEFT JOIN(select * from (");
                 sb.append("SELECT t.PID, t1.uomqty as caseqty,t2.uomqty as pieceqty,t3.uomqty as boxqty,");
                 sb.append("t1.uombarcode as casebarcode,t2.uombarcode as piecebarcode,t3.uombarcode as boxbarcode,");

@@ -111,7 +111,7 @@ import javax.mail.internet.MimeMultipart;
 
 public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener,
         StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface,
-        EmailDialog.onSendButtonClickListnor,OrderConfirmationDialog.OnConfirmationResult {
+        EmailDialog.onSendButtonClickListnor, OrderConfirmationDialog.OnConfirmationResult {
 
     /**
      * views *
@@ -130,7 +130,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     AmountSplitupDialog dialogFragment;
     LinearLayout icAmountSpilitup_lty;
     private OrderConfirmationDialog orderConfirmationDialog;
-    private  OrderConfirmationDialog orderConfirmationDialog;
     private String sendMailAndLoadClass;
     /**
      * Objects *
@@ -641,7 +640,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (bmodel.configurationMasterHelper.SHOW_TAX) {
             // Apply Exclude Item level Tax  in Product
-                bmodel.productHelper.taxHelper.updateProductWiseTax();
+            bmodel.productHelper.taxHelper.updateProductWiseTax();
         }
 
         totalval.setText(bmodel.formatValue(totalOrderValue));
@@ -797,8 +796,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     @Override
     public void setEmailAddress(String value) {
-        Commons.print("EmailId=="+value);
-        new SendMail(this,"Read","Test",value).execute();
+        Commons.print("EmailId==" + value);
+        new SendMail(this, "Read", "Test", value).execute();
 
     }
 
@@ -1536,16 +1535,27 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                     new ShowEmailDialog().execute();
                                                     //isClick = false;
                                                     //return;
+                                                } else {
+                                                    i = new Intent(OrderSummary.this,
+                                                            CommonPrintPreviewActivity.class);
+                                                    i.putExtra("IsFromOrder", true);
+                                                    i.putExtra("IsUpdatePrintCount", true);
+                                                    i.putExtra("isHomeBtnEnable", true);
+                                                    startActivity(i);
+                                                    overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                                                    finish();
                                                 }
+                                            } else {
+                                                i = new Intent(OrderSummary.this,
+                                                        CommonPrintPreviewActivity.class);
+                                                i.putExtra("IsFromOrder", true);
+                                                i.putExtra("IsUpdatePrintCount", true);
+                                                i.putExtra("isHomeBtnEnable", true);
+                                                startActivity(i);
+                                                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                                                finish();
                                             }
-                                            /*i = new Intent(OrderSummary.this,
-                                                    CommonPrintPreviewActivity.class);
-                                            i.putExtra("IsFromOrder", true);
-                                            i.putExtra("IsUpdatePrintCount", true);
-                                            i.putExtra("isHomeBtnEnable", true);
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                            finish();*/
+
                                         } else {
 //                                            finish();
                                             i = new Intent(OrderSummary.this,
@@ -1598,35 +1608,30 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                     OrderSummary.this,
                                                     HomeScreenActivity.class);
                                             startActivity(i);
-                                        } else if (bmodel.mSelectedModule == 3) {
-                                            finish();
-                                            Intent i = new Intent(
-                                                    OrderSummary.this,
-                                                    OrderSplitMasterScreen.class);
-                                            startActivity(i);
-
                                         } else {
                                             SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
                                             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
                                             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
                                             bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
 
-                                                bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.getOrderid(), "/" + DataMembers.IVYDIST_PATH);
-                                            /*Intent i = new Intent(
-                                                    OrderSummary.this,
-                                                    HomeScreenTwo.class);
-                                            Bundle extras = getIntent().getExtras();
-                                            if (extras != null) {
-                                                i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                                                i.putExtra("CurrentActivityCode", mActivityCode);
-                                            }
-                                            startActivity(i);*/
+                                            bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                                                    StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.getOrderid(), "/" + DataMembers.IVYDIST_PATH);
+
                                             sendMailAndLoadClass = "HomeScreenTwoPRINT_FILE_ORDER";
                                             if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
                                                 new ShowEmailDialog().execute();
                                                 //isClick = false;
                                                 //return;
+                                            } else {
+                                                Intent i = new Intent(
+                                                        OrderSummary.this,
+                                                        HomeScreenTwo.class);
+                                                Bundle extras = getIntent().getExtras();
+                                                if (extras != null) {
+                                                    i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                                                    i.putExtra("CurrentActivityCode", mActivityCode);
+                                                }
+                                                startActivity(i);
                                             }
                                         }
                                     }
@@ -2226,7 +2231,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     bmodel.orderTimer.cancel();
                 if (mOrderedProductList.size() > 0) {
 
-                    if ((bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) && !isTaxAvailableForAllOrderedProduct()) {
+                    if ((bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) && !isTaxAvailableForAllOrderedProduct()) {
                         // If GST enabled then, every ordered product should have tax
                         bmodel.showAlert(
                                 getResources()
@@ -2268,10 +2273,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         alertDialog.show();
                         if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
                             getFocusandAndMustSellOrderedProducts();
-                        orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
-                        orderConfirmationDialog.show();
-                        orderConfirmationDialog.setCancelable(false);
-                        return;
 
                         if (bmodel.hasOrder()) {
 
@@ -2297,6 +2298,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         } else {
                             isClick = false;
                         }
+
+                        orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
+                        orderConfirmationDialog.show();
+                        orderConfirmationDialog.setCancelable(false);
+                        return;
                     }
                 } else {
                     isClick = false;
@@ -2313,7 +2319,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             fromorder = false;
 
 
-            if ((bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) && !isTaxAvailableForAllOrderedProduct()) {
+            if ((bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) && !isTaxAvailableForAllOrderedProduct()) {
                 // If GST enabled then, every ordered product should have tax
                 bmodel.showAlert(
                         getResources()
@@ -2435,14 +2441,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 if (bmodel.configurationMasterHelper.IS_INVOICE) {
                                     build = new AlertDialog.Builder(OrderSummary.this);
 
-                                orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
-                                orderConfirmationDialog.show();
-                                orderConfirmationDialog.setCancelable(false);
-                                return;
-
                                     customProgressDialog(build, getResources().getString(R.string.saving_invoice));
                                     alertDialog = build.create();
                                     alertDialog.show();
+
+                                    orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
+                                    orderConfirmationDialog.show();
+                                    orderConfirmationDialog.setCancelable(false);
+                                    return;
                                 } else {
                                     build = new AlertDialog.Builder(OrderSummary.this);
 
@@ -2488,6 +2494,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean isTaxAvailableForAllOrderedProduct() {
         for (ProductMasterBO bo : mOrderedProductList) {
+            if (bmodel.productHelper.taxHelper.getmTaxListByProductId() == null) {
+                return false;
+            }
             if (bmodel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) == null
                     || bmodel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()).size() == 0) {
                 return false;
@@ -2559,7 +2568,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         .updateTimeStampModuleWise(SDUtil
                                                 .now(SDUtil.TIME));
 //                                finish();
-                                Intent i=null;
+                                Intent i = null;
                                 if (bmodel.configurationMasterHelper.SHOW_BIXOLONII) {
                                     Commons.print("SHOW_BIXOLONII>>>>>>>>>>>>>," + "handle");
                                     i = new Intent(OrderSummary.this,
@@ -2619,15 +2628,24 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             new ShowEmailDialog().execute();
                                             //isClick = false;
                                             //return;
+                                        } else {
+                                            i = new Intent(OrderSummary.this,
+                                                    CommonPrintPreviewActivity.class);
+                                            i.putExtra("IsFromOrder", true);
+                                            i.putExtra("IsUpdatePrintCount", true);
+                                            i.putExtra("isHomeBtnEnable", true);
+                                            startActivity(i);
+                                            finish();
                                         }
+                                    } else {
+                                        i = new Intent(OrderSummary.this,
+                                                CommonPrintPreviewActivity.class);
+                                        i.putExtra("IsFromOrder", true);
+                                        i.putExtra("IsUpdatePrintCount", true);
+                                        i.putExtra("isHomeBtnEnable", true);
+                                        startActivity(i);
+                                        finish();
                                     }
-                                    /*i = new Intent(OrderSummary.this,
-                                            CommonPrintPreviewActivity.class);
-                                    i.putExtra("IsFromOrder", true);
-                                    i.putExtra("IsUpdatePrintCount", true);
-                                    i.putExtra("isHomeBtnEnable", true);
-                                    startActivity(i);
-                                    finish();*/
 
                                 } else {
                                     Commons.print("ELSE>>>>>>>>>>>>>," + "handle");
@@ -2698,20 +2716,21 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                                     StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
-                            sendMailAndLoadClass="CommonPrintPreviewActivityPRINT_FILE_INVOICE";
+                            sendMailAndLoadClass = "CommonPrintPreviewActivityPRINT_FILE_INVOICE";
                             if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
                                 new ShowEmailDialog().execute();
                                 //isClick = false;
                                 //return;
+                            } else {
+                                Intent i = new Intent(OrderSummary.this,
+                                        CommonPrintPreviewActivity.class);
+                                i.putExtra("IsFromOrder", true);
+                                i.putExtra("IsUpdatePrintCount", true);
+                                i.putExtra("isHomeBtnEnable", true);
+                                startActivity(i);
+                                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                                finish();
                             }
-                            /*Intent i = new Intent(OrderSummary.this,
-                                    CommonPrintPreviewActivity.class);
-                            i.putExtra("IsFromOrder", true);
-                            i.putExtra("IsUpdatePrintCount", true);
-                            i.putExtra("isHomeBtnEnable", true);
-                            startActivity(i);
-                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                            finish();*/
                         } else {
                             bmodel.showAlert(
                                     getResources()
@@ -3580,17 +3599,17 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
         }
     }
+
     //if IS_ORDER_SUMMERY_EXPORT_AND_EMAIL config
     //enabled ShowEmail dialog will be called
-    private class ShowEmailDialog extends AsyncTask <Void, Void, Boolean> {
+    private class ShowEmailDialog extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... voids) {
 
-            if(mOrderedProductList.size()>0) {
+            if (mOrderedProductList.size() > 0) {
 
                 return true;
-            }
-            else {
+            } else {
                 Toast.makeText(bmodel, "No data to store", Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -3602,7 +3621,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL && aBoolean) {
                 android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
                 EmailDialog dialog = new EmailDialog(
-                        "MENU_STK_ORD",OrderSummary.this,bmodel.getRetailerMasterBO().getEmail());
+                        "MENU_STK_ORD", OrderSummary.this, bmodel.getRetailerMasterBO().getEmail());
                 dialog.setCancelable(false);
                 dialog.show(ft, "MENU_STK_ORD");
             }
@@ -3616,18 +3635,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         Context mContext;
         private String subject;
         private String body;
-        private final String emailId="";//Change this field value
-        private final String password="";//Change this field value
+        private final String emailId = "";//Change this field value
+        private final String password = "";//Change this field value
         private String email;
 
         ProgressDialog progressDialog;
 
-        public SendMail(Context ctx, String subject, String message,String email) {
+        public SendMail(Context ctx, String subject, String message, String email) {
             this.mContext = ctx;
 
             this.subject = subject;
             this.body = message;
-            this.email=email;
+            this.email = email;
 
         }
 
@@ -3657,35 +3676,35 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     new javax.mail.Authenticator() {
                         //Authenticating the password
                         protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(emailId,password);
+                            return new PasswordAuthentication(emailId, password);
                         }
                     });
 
             try {
 
 
-                        javax.mail.Message message = new MimeMessage(session);
-                        message.setFrom(new InternetAddress(emailId));
-                if(!TextUtils.isEmpty(bmodel.getRetailerMasterBO().getEmail()))
-                        message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(bmodel.getRetailerMasterBO().getEmail(),email));
+                javax.mail.Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(emailId));
+                if (!TextUtils.isEmpty(bmodel.getRetailerMasterBO().getEmail()))
+                    message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(bmodel.getRetailerMasterBO().getEmail(), email));
                 else
-                        message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(email));
-                        message.setSubject(subject);
-                        message.setText(body);
-                        //  mm.setContent(message,"text/html; charset=utf-8");
+                    message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(email));
+                message.setSubject(subject);
+                message.setText(body);
+                //  mm.setContent(message,"text/html; charset=utf-8");
 
-                        BodyPart bodyPart = new MimeBodyPart();
-                        bodyPart.setText(body);//Content(message,"text/html");
-                        //Attachment
+                BodyPart bodyPart = new MimeBodyPart();
+                bodyPart.setText(body);//Content(message,"text/html");
+                //Attachment
                 DataSource source = null;
-                if(sendMailAndLoadClass.equalsIgnoreCase("CommonPrintPreviewActivityPRINT_FILE_ORDER")||
+                if (sendMailAndLoadClass.equalsIgnoreCase("CommonPrintPreviewActivityPRINT_FILE_ORDER") ||
                         sendMailAndLoadClass.equalsIgnoreCase("HomeScreenTwoPRINT_FILE_ORDER")) {
-                    source= new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
+                    source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
                             StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.getOrderid() + ".txt");
                     bodyPart.setDataHandler(new DataHandler(source));
                     bodyPart.setFileName("OrderDetails" + ".txt");
                 }
-                if(sendMailAndLoadClass.equalsIgnoreCase("CommonPrintPreviewActivityPRINT_FILE_INVOICE")) {
+                if (sendMailAndLoadClass.equalsIgnoreCase("CommonPrintPreviewActivityPRINT_FILE_INVOICE")) {
                     source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
                             StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".txt");
                     bodyPart.setDataHandler(new DataHandler(source));
@@ -3693,22 +3712,22 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
 
 
-                        MimeMultipart multiPart = new MimeMultipart();
-                        multiPart.addBodyPart(bodyPart);
-                        message.setContent(multiPart);
+                MimeMultipart multiPart = new MimeMultipart();
+                multiPart.addBodyPart(bodyPart);
+                message.setContent(multiPart);
 
-                        Thread.currentThread().setContextClassLoader(getClassLoader());
+                Thread.currentThread().setContextClassLoader(getClassLoader());
 
-                        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-                        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-                        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-                        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-                        mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-                        mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822");
+                MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+                mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+                mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+                mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+                mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+                mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822");
 
-                        //sending mail
-                        Transport.send(message);
-                    //}
+                //sending mail
+                Transport.send(message);
+                //}
                 //}
             } catch (Exception ex) {
                 Commons.printException(ex);
@@ -3734,6 +3753,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             loadClass();
         }
     }
+
     @Override
     public void save(boolean isInvoice) {
         try {
@@ -3806,11 +3826,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
     //this method will be called after SendMail Asytask is completed
-    void loadClass()
-    {
+    void loadClass() {
         Intent i;
-        switch(sendMailAndLoadClass)
-        {
+        switch (sendMailAndLoadClass) {
             case "CommonPrintPreviewActivityPRINT_FILE_INVOICE":
                 i = new Intent(OrderSummary.this,
                         CommonPrintPreviewActivity.class);
