@@ -387,7 +387,7 @@ public class SalesReturnHelper {
             }
 
             // Preapre and save salesreturn header.
-            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,imagename,imgName";
+            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName";
             String values = getSalesReturnID() + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
