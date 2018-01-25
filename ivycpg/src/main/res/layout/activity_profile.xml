@@ -248,7 +248,8 @@
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/start_visit"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                />
 
             <Button
                 android:id="@+id/add_plane"
