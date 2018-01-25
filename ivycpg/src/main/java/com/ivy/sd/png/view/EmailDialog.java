@@ -24,6 +24,8 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 /**
  * Created by santhosh.c on 22-01-2018.
+ * Dialog class Allow to enter Email Id to send Email
+ * to Retailer in OrderSummery screen
  */
 
 @SuppressLint("ValidFragment")
@@ -54,8 +56,10 @@ public class EmailDialog extends DialogFragment implements View.OnClickListener 
         edtEmail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         txtEmail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
+        //If RetyailerEmail Id is not null Emial id will be set to txtEmail View
         if(!TextUtils.isEmpty(retailerEmailId))
             txtEmail.setText(retailerEmailId);
+        //If RetyailerEmail Id is null Emial txtEmail View will be invisible
         else
             txtEmail.setVisibility(View.GONE);
 
@@ -85,6 +89,7 @@ public class EmailDialog extends DialogFragment implements View.OnClickListener 
 
         }
     }
+    //Email Id Validation
     public final static boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
