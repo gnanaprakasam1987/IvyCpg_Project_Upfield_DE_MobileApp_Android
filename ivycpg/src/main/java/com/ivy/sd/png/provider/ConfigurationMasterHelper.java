@@ -1225,7 +1225,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_COMB_STOCK_SHELF_OUTER;
     public boolean SHOW_COMB_STOCK_CB;
 
-    public boolean IS_ORDER_SUMMERY_EXPORT_AND_EMAIL=true;
+    private static final String CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL = "FUN65";
+    public boolean IS_ORDER_SUMMERY_EXPORT_AND_EMAIL;
 
     public int MVPTheme = 0;
     public String fontSize = "";
@@ -2173,6 +2174,7 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_TIME_VIEW = hashMapHHTModuleConfig.get(CODE_TIME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TIME_APPLY) : false;
         this.SHOW_SPINNER = hashMapHHTModuleConfig.get(CODE_REASON_SPINNER_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_REASON_SPINNER_APPLY) : false;
+        this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
 
 
     }
