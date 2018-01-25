@@ -85,8 +85,8 @@ public class TaxHelper implements TaxInterface{
     }
 
     private TaxHelper(Context context) {
-        this.mBusinessModel = (BusinessModel) context;
-        this.mContext = context;
+        this.mBusinessModel = (BusinessModel) context.getApplicationContext();
+        this.mContext = context.getApplicationContext();
     }
 
 

@@ -2416,12 +2416,12 @@ public class BusinessModel extends Application {
         for (int i = 0; i < siz; ++i) {
             ProductMasterBO product = productHelper
                     .getProductMaster().get(i);
-            if(configurationMasterHelper.IS_SHOW_ORDER_REASON){
+            if (configurationMasterHelper.IS_SHOW_ORDER_REASON) {
                 if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
                     if (product.getSoreasonId() == 0)
                         return false;
                 }
-            }else {
+            } else {
                 if (product.getOrderedCaseQty() > 0)
                     if (product.getOrderedCaseQty() < product.getIndicativeOrder_oc())
                         if (product.getSoreasonId() == 0)
@@ -3155,7 +3155,7 @@ public class BusinessModel extends Application {
 
             ProductMasterBO product;
 
-            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount";
+            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode";
             int siz = productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
                 product = productHelper.getProductMaster()
@@ -3445,6 +3445,7 @@ public class BusinessModel extends Application {
             sb.append("," + product.getScannedProduct());
             sb.append("," + schemeDisc + "," + prodDisc);
             sb.append("," + taxAmount);
+            sb.append("," + QT(product.getHsnCode()));
 
             return sb;
         } catch (Exception e) {
@@ -4338,7 +4339,7 @@ public class BusinessModel extends Application {
 
             db.deleteSQL(DataMembers.tbl_scheme_details, "OrderID="
                     + QT(orderId) + " and upload='N'", false);
-            db.deleteSQL(DataMembers.tbl_scheme_free_detail, "OrderID="
+            db.deleteSQL(DataMembers.tbl_SchemeFreeProductDetail, "OrderID="
                     + QT(orderId) + " and upload='N'", false);
             db.deleteSQL(DataMembers.tbl_InvoiceDiscountDetail, "OrderID="
                     + QT(orderId) + " and upload='N'", false);
@@ -6962,7 +6963,7 @@ public class BusinessModel extends Application {
                         if (configurationMasterHelper.IS_SCHEME_ON) {
                             db.deleteSQL(DataMembers.tbl_scheme_details,
                                     "OrderID=" + uid, false);
-                            db.deleteSQL(DataMembers.tbl_scheme_free_detail,
+                            db.deleteSQL(DataMembers.tbl_SchemeFreeProductDetail,
                                     "OrderID=" + uid, false);
                         }
                         db.deleteSQL("OrderDiscountDetail", "OrderID=" + uid,
@@ -7094,7 +7095,7 @@ public class BusinessModel extends Application {
             //get entry level discount value
             double entryLevelDistSum = 0;
             // Order Details Entry
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
             if (configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
                 finalProductList = productHelper.getShortProductMaster();
             else
@@ -7332,7 +7333,7 @@ public class BusinessModel extends Application {
             // start insert scheme details
             try {
 
-                if (configurationMasterHelper.IS_GST||configurationMasterHelper.IS_GST_HSN) {
+                if (configurationMasterHelper.IS_GST || configurationMasterHelper.IS_GST_HSN) {
                     //update tax for scheme free product
                     //tax and price details are taken from ordered product which has highest tax rate.
                     // Also inserting in invoiceTaxDetail
@@ -7386,9 +7387,9 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.TAX_SHOW_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG && !configurationMasterHelper.IS_INVOICE) {
-                    productHelper.taxHelper.downloadBillWiseTaxDetails();
-                    productHelper.taxHelper.applyBillWiseTax(orderHeaderBO.getOrderValue());
-                    productHelper.taxHelper.insertOrderTaxList(uid, db);
+                productHelper.taxHelper.downloadBillWiseTaxDetails();
+                productHelper.taxHelper.applyBillWiseTax(orderHeaderBO.getOrderValue());
+                productHelper.taxHelper.insertOrderTaxList(uid, db);
             }
 
             productHelper.updateBillEntryDiscInOrderHeader(db, uid);
@@ -7602,6 +7603,7 @@ public class BusinessModel extends Application {
         sb.append("," + priceOffvalue + "," + priceOffId);
         sb.append("," + productBo.getWeight());
         sb.append("," + reasondId);
+        sb.append("," + QT(productBo.getHsnCode()));
 
         return sb;
 
@@ -11204,13 +11206,13 @@ public class BusinessModel extends Application {
 		 */
             if (configurationMasterHelper.TAX_SHOW_INVOICE) {
 
-                    productHelper.taxHelper.downloadBillWiseTaxDetails();
+                productHelper.taxHelper.downloadBillWiseTaxDetails();
 
                 ordervalue = Double.parseDouble(SDUtil.format(ordervalue,
                         configurationMasterHelper.VALUE_PRECISION_COUNT,
                         0, configurationMasterHelper.IS_DOT_FOR_GROUP));
 
-               final double totalTaxValue = productHelper.taxHelper.applyBillWiseTax(ordervalue);
+                final double totalTaxValue = productHelper.taxHelper.applyBillWiseTax(ordervalue);
 
                 if (configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
                     ordervalue = ordervalue + totalTaxValue;

@@ -464,7 +464,7 @@ public class SalesReturnHelper {
                                 + QT(bmodel.retailerMasterBO
                                 .getRetailerID()) + ","
                                 + reasonType + "," + QT(bo.getLotNumber()) + "," + product.getPcUomid()
-                                + "," + QT(bo.getStatus());
+                                + "," + QT(bo.getStatus()) + "," + QT(product.getHsnCode());
 
                         db.insertSQL(
                                 DataMembers.tbl_SalesReturnDetails,
@@ -758,7 +758,7 @@ public class SalesReturnHelper {
                     if ("null".equals(lotNo)) {
                         lotNo = "";
                     }
-                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo,c.getString(13));
+                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13));
                     Commons.print("inside sales return data load");
                 }
             }
@@ -1123,7 +1123,7 @@ public class SalesReturnHelper {
 
         if (getTotalValue() > 0) {
             if (IS_APPLY_TAX_IN_SR) {
-                    bmodel.productHelper.taxHelper.downloadBillWiseTaxDetails();
+                bmodel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                 // Method to use Apply Tax
                 final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
 

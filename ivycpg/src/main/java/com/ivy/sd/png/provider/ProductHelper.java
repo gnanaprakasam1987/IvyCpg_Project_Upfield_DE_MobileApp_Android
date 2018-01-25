@@ -1577,6 +1577,8 @@ public class ProductHelper {
                         + ((filter21) ? "A" + loopEnd + ".pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A" + loopEnd + ".tagDescription as tagDescription,"
+                        + "A" + loopEnd + ".HSNId as HSNId,"
+                        + "HSN.HSNCode as HSNCode,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -1606,7 +1608,8 @@ public class ProductHelper {
                         + ".pid=sbd.productid and sbd.channelid="
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid";
+                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid"
+                        + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A" + loopEnd + ".HSNId";
                 if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                     sql = sql + " WHERE A1.PLid = " + bmodel.productHelper.getmSelectedGLobalLevelID()
                             + " AND A1.PID = " + bmodel.productHelper.getmSelectedGlobalProductId()
@@ -1706,6 +1709,8 @@ public class ProductHelper {
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
 
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
+                    product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
+                    product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
@@ -7875,6 +7880,8 @@ public class ProductHelper {
                         + ((filter21) ? "A" + loopEnd + ".pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A" + loopEnd + ".tagDescription,"
+                        + "A" + loopEnd + ".HSNId as HSNId,"
+                        + "HSN.HSNCode as HSNCode,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -7892,7 +7899,8 @@ public class ProductHelper {
                         + " left join SbdDistributionMaster sbd on A" + loopEnd
                         + ".pid=sbd.productid "
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid";
+                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid"
+                        + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A" + loopEnd + ".HSNId";
 
                 sql = sql + " WHERE A1.PLid IN (SELECT ProductFilter"
                         + mChildLevel + " FROM ConfigActivityFilter"
@@ -7983,6 +7991,8 @@ public class ProductHelper {
 
                     product.setPriceoffvalue(c.getDouble(c.getColumnIndex("priceoffvalue")));
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
+                    product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
+                    product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);

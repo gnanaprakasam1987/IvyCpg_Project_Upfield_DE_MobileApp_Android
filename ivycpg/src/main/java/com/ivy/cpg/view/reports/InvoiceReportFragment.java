@@ -150,7 +150,6 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.view00).setVisibility(View.GONE);
-
         }
 
 

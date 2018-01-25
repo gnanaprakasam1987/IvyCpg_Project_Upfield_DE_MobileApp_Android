@@ -85,8 +85,8 @@ public class TaxGstHelper implements TaxInterface {
     }
 
     private TaxGstHelper(Context context) {
-        this.mBusinessModel = (BusinessModel) context;
-        this.mContext = context;
+        this.mBusinessModel = (BusinessModel) context.getApplicationContext();
+        this.mContext = context.getApplicationContext();
     }
 
 
