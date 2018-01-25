@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ReportonorderbookingBO;
+import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -29,11 +29,11 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
      * Called when the activity is first created.
      */
     private Button back;
-    private ArrayList<ReportonorderbookingBO> mylist;
+    private ArrayList<OrderReportBO> mylist;
     private ListView lvwplist;
     private TextView outletname, txttotal, productName, totalLines;
     private BusinessModel bmodel;
-    private ReportonorderbookingBO obj;
+    private OrderReportBO obj;
     private boolean isFromOrderReport;
     private double TotalValue;
     private String TotalLines;
@@ -81,7 +81,7 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
 
             if (extras != null) {
                 if (extras.containsKey("OBJ")) {
-                    obj = (ReportonorderbookingBO) extras
+                    obj = (OrderReportBO) extras
                             .getParcelable("OBJ");
 
                 }
@@ -99,7 +99,7 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
 
             txttotal = (TextView) findViewById(R.id.txttotal);
             outletname.setText(getResources().getString(R.string.order_report)
-                    + obj.getretailerName());
+                    + obj.getRetailerName());
 
             lvwplist = (ListView) findViewById(R.id.lvwplistorddet);
             lvwplist.setCacheColorHint(0);
@@ -127,7 +127,7 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
             if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
                 findViewById(R.id.outercqty).setVisibility(View.GONE);
 
-            String orderID = obj.getorderID();
+            String orderID = obj.getOrderID();
 
             mylist = bmodel.reportHelper.distOrderReportDetail(orderID);
 
@@ -156,7 +156,7 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
         }
 
         // Calculate the total order value.
-        // for (ReportonorderbookingBO ret : mylist) {
+        // for (OrderReportBO ret : mylist) {
         // total = total + ret.getTot();
         // }
 
@@ -187,10 +187,10 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
 
     int pos;
 
-    class MyAdapter extends ArrayAdapter<ReportonorderbookingBO> {
-        ArrayList<ReportonorderbookingBO> items;
+    class MyAdapter extends ArrayAdapter<OrderReportBO> {
+        ArrayList<OrderReportBO> items;
 
-        MyAdapter(ArrayList<ReportonorderbookingBO> items) {
+        MyAdapter(ArrayList<OrderReportBO> items) {
             super(DistOrderreportdetail.this, R.layout.row_orderdetail_report,
                     items);
             this.items = items;
@@ -202,7 +202,7 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
             bmodel = (BusinessModel) getApplicationContext();
 
             bmodel.setContext(DistOrderreportdetail.this);
-            ReportonorderbookingBO orderreport = (ReportonorderbookingBO) items
+            OrderReportBO orderreport = (OrderReportBO) items
                     .get(pos);
             View row = convertView;
             bmodel = (BusinessModel) getApplicationContext();
@@ -242,8 +242,8 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
             }
 
 
-            holder.tvwpsname.setText(orderreport.getProductshortname());
-            holder.productName = orderreport.getProductname();
+            holder.tvwpsname.setText(orderreport.getProductShortName());
+            holder.productName = orderreport.getProductName();
             holder.tvcaseqty.setText(orderreport.getCQty() + "");
             holder.tvwqty.setText(orderreport.getPQty() + "");
             holder.tvwval.setText(bmodel.formatValue((orderreport.getTot()))

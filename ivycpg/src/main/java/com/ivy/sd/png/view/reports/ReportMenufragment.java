@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
-import com.ivy.sd.png.bo.ReportonorderbookingBO;
+import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -59,7 +59,7 @@ public class ReportMenufragment extends IvyBaseFragment {
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
     private Vector<ConfigureBO> menuDB = new Vector<ConfigureBO>();
     private ActionBar actionBar;
-    private ArrayList<ReportonorderbookingBO> mylist;
+    private ArrayList<OrderReportBO> mylist;
     private Vector<InvoiceReportBO> mylist1;
     private Vector<ConfigureBO> mDayList;
 
@@ -158,6 +158,8 @@ public class ReportMenufragment extends IvyBaseFragment {
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT,
                     R.drawable.icon_reports);
+            menuIcons.put(StandardListMasterConstants.MENU_ARCHV_RPT,
+                    R.drawable.icon_reports);
 
             menuIcons.put(StandardListMasterConstants.MENU_PRDVOL_RPT,
                     R.drawable.icon_reports);
@@ -245,6 +247,17 @@ public class ReportMenufragment extends IvyBaseFragment {
                 }
             }
 
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SALES_REPORT)) {
+            if (bmodel.reportHelper.getSalesReturnRetailerList().size() >= 1) {
+                intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+            }
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ARCHV_RPT)) {
+            if (bmodel.isOnline()) {
+                intoreportacti(config);
+            } else
+                Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
         } else {
             intoreportacti(config);
         }
@@ -305,7 +318,6 @@ public class ReportMenufragment extends IvyBaseFragment {
 
             holder.config = configTemp;
 
-            holder.menuBTN.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_bg1));
             holder.menuBTN.setText(configTemp.getMenuName());
             holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 

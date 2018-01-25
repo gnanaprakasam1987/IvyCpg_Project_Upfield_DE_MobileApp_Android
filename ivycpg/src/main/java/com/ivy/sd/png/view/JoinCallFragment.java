@@ -31,6 +31,7 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.JoinDialogInterface;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -163,10 +164,8 @@ public class JoinCallFragment extends IvyBaseFragment {
         public void onBindViewHolder(final JointCallRecyclerAdapter.MyViewHolder holder, int position) {
 
             //Custom font set for Textviews.
-            Typeface roboto_bold = Typeface.createFromAsset(getActivity().getAssets(), "font/Roboto-Bold.ttf");
-            holder.userType.setTypeface(roboto_bold);
-            Typeface roboto_regular = Typeface.createFromAsset(getActivity().getAssets(), "font/Roboto-Regular.ttf");
-            holder.nameTV.setTypeface(roboto_regular);
+            holder.userType.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.nameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             //Set values from UsermasterBo list
             holder.userBO = mjoinCallUserList.get(position);

@@ -2457,7 +2457,7 @@ public class SchemeDetailsMasterHelper {
 
 					productBO = new ProductMasterBO();
 					productBO.setProductID(c.getString(0));
-					productBO.setBatchid(c.getString(1));
+					productBO.setBatchId(c.getString(1));
 
 					productBO.setTotalamount(c.getDouble(3));
 
@@ -2841,7 +2841,7 @@ public class SchemeDetailsMasterHelper {
     public void insertAccumulationDetails(DBUtil db, String orderID) {
 
 
-        String freeDetailColumn = "OrderID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,RetailerId";
+        String freeDetailColumn = "OrderID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,RetailerId,HsnCode";
         if (isFromCounterSale) {
             freeDetailColumn = "uid,SlabId,ProductId,Qty,UomID,UomCount,BatchId,SchemeId,RetailerId,price,taxAmount";
         }
@@ -2873,8 +2873,9 @@ public class SchemeDetailsMasterHelper {
                                 }
                                 sb.append(0 + "," + freeProductBO.getAccProductParentId());
                                 sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                                sb.append("," + bmodel.QT(productBO.getHsnCode()));
 
-                                db.insertSQL(DataMembers.tbl_scheme_free_detail, freeDetailColumn,
+                                db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
                                         sb.toString());
                             }
                         }
@@ -2897,7 +2898,7 @@ public class SchemeDetailsMasterHelper {
      */
     private void insertFreeProductDetails(SchemeBO schemeBO, DBUtil db,
                                           String orderID, String flag) {
-        String freeDetailColumn = "OrderID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,RetailerId,price,taxAmount";
+        String freeDetailColumn = "OrderID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,RetailerId,price,taxAmount,HsnCode";
 
         if (isFromCounterSale) {
             freeDetailColumn = "uid,SlabId,ProductId,Qty,UomID,UomCount,BatchId,SchemeId,RetailerId,price,taxAmount,upload";
@@ -2975,7 +2976,7 @@ public class SchemeDetailsMasterHelper {
 
             if (isFromCounterSale) {
                 sb.append(0 + "," + 0);
-            } else if (bmodel.configurationMasterHelper.IS_GST) {
+            } else if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
 
                 if (freeProductBO.getUomID() == productBO.getCaseUomId()
                         && productBO.getCaseUomId() != 0) {
@@ -2996,11 +2997,13 @@ public class SchemeDetailsMasterHelper {
             else if (isFromCounterSale)
                 sb.append(",'N'");
 
+            sb.append("," + bmodel.QT(productBO.getHsnCode()));
+
             if (isFromCounterSale) {
                 db.insertSQL(DataMembers.tbl_CS_SchemeFreeProductDetail, freeDetailColumn,
                         sb.toString());
             } else {
-                db.insertSQL(DataMembers.tbl_scheme_free_detail, freeDetailColumn,
+                db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
                         sb.toString());
             }
 
@@ -3038,7 +3041,7 @@ public class SchemeDetailsMasterHelper {
                     sb.append("," + schemeBO.getSchemeId());
                     sb.append("," + bmodel.getRetailerMasterBO().getRetailerID());
 
-                    if (bmodel.configurationMasterHelper.IS_GST) {
+                    if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
 
                         sb.append(productBo.getSrp());
                         sb.append("," + bmodel.formatValue(schemeProductBo.getTaxAmount()));
@@ -3046,11 +3049,13 @@ public class SchemeDetailsMasterHelper {
                         sb.append(0 + "," + 0);
                     }
 
+                    sb.append("," + bmodel.QT(productBo.getHsnCode()));
+
                     if (isFromCounterSale) {
                         db.insertSQL(DataMembers.tbl_CS_SchemeFreeProductDetail, freeDetailColumn,
                                 sb.toString());
                     } else {
-                        db.insertSQL(DataMembers.tbl_scheme_free_detail, freeDetailColumn,
+                        db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
                                 sb.toString());
                     }
 
@@ -3535,7 +3540,7 @@ public class SchemeDetailsMasterHelper {
                     sb.append(productBo.getPcUomid() + ",1,"
                             + schemeProductBatchQty.getBatchid());
                     sb.append("," + parentid);
-                    db.insertSQL(DataMembers.tbl_scheme_free_detail,
+                    db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail,
                             freeDetailColumn, sb.toString());
                     db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
                             + schemeProductBatchQty.getQty()
@@ -4839,6 +4844,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Download display scheme
+     *
      * @param mContext Current context
      */
     public void downloadDisplayScheme(Context mContext) {

@@ -23,8 +23,13 @@ public class SalesReturnReasonBO {
     private String lotNumber="";
     private String invoiceno="0";
 
+    private String ProductId;
     private String ProductName;
+    private String ProductCode;
     private String productShortName;
+    private String rowId;
+    private String status;
+    private String retailerId;
 
     public SalesReturnReasonBO() {
         //to avoid compile time error when object with no parameter/s created
@@ -198,6 +203,14 @@ public class SalesReturnReasonBO {
         this.expDate = expDate;
     }
 
+    public String getProductId() {
+        return ProductId;
+    }
+
+    public void setProductId(String productId) {
+        ProductId = productId;
+    }
+
     public String getProductName() {
         return ProductName;
     }
@@ -206,11 +219,43 @@ public class SalesReturnReasonBO {
         ProductName = productName;
     }
 
+    public String getProductCode() {
+        return ProductCode;
+    }
+
+    public void setProductCode(String productCode) {
+        ProductCode = productCode;
+    }
+
     public void setProductShortName(String productShortName) {
         this.productShortName = productShortName;
     }
 
     public String getProductShortName() {
         return productShortName;
+    }
+
+    public String getRowId() {
+        return rowId;
+    }
+
+    public void setRowId(String rowId) {
+        this.rowId = rowId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRetailerId() {
+        return retailerId;
+    }
+
+    public void setRetailerId(String retailerId) {
+        this.retailerId = retailerId;
     }
 }

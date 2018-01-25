@@ -1585,11 +1585,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     startActivity(new Intent(CatalogOrder.this,
                             HomeScreenTwo.class));
                     finish();
-                } else if (bmodel.mSelectedModule == 3) {
-                    startActivity(new Intent(CatalogOrder.this,
-                            OrderSplitMasterScreen.class));
-                    finish();
-                } else {
+                }else {
                     bmodel.outletTimeStampHelper
                             .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
                     startActivity(new Intent(CatalogOrder.this,
@@ -1644,11 +1640,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                                     CatalogOrder.this,
                                                     HomeScreenTwo.class));
                                         } else {
-                                            if (bmodel.mSelectedModule == 3) {
-                                                bmodel.orderSplitHelper
-                                                        .updateEditOrderUploadFlagAsY(bmodel.deleteSpliteOrderID);
-
-                                            }
                                             startActivity(new Intent(
                                                     CatalogOrder.this,
                                                     HomeScreenTwo.class));

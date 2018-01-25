@@ -7,12 +7,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 
 /**
@@ -51,6 +55,20 @@ public class RetailerContractActivity extends IvyBaseActivityNoActionBar {
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_existing_contract)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_renewed_contract)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        //custom font tab text
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildsCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildsCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    ((TextView) tabViewChild).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                }
+            }
+        }
 
         outPutDateFormat = bmodel.configurationMasterHelper.outDateFormat;
         // refreshList();
@@ -94,6 +112,7 @@ public class RetailerContractActivity extends IvyBaseActivityNoActionBar {
         });
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

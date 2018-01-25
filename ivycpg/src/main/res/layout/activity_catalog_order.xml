@@ -151,13 +151,11 @@
                     android:layout_marginBottom="@dimen/recycler_margin"
                     android:layout_marginLeft="@dimen/recycler_margin"
                     android:layout_marginRight="@dimen/recycler_margin"
-                    android:nestedScrollingEnabled="false"
-                    android:clipToPadding="false"
                     android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
                     android:scrollbars="none"
-                    tools:ignore="UnusedAttribute"
-                   >
-                </android.support.v7.widget.RecyclerView>
+                    tools:ignore="UnusedAttribute"></android.support.v7.widget.RecyclerView>
 
                 <LinearLayout
                     android:id="@+id/bottom_layout"

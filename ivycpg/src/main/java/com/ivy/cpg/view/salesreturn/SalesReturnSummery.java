@@ -87,8 +87,8 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
         mBtnSave = (Button) findViewById(R.id.btn_save);
 
-        lineValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        totalValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        lineValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        totalValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         mBtnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -215,7 +215,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                 ((TextView) row.findViewById(R.id.srCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) row.findViewById(R.id.srOutercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                if (!salesReturnHelper.SHOW_SALES_RET_CASE) {
                     ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
                 } else {
                     try {
@@ -229,7 +229,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                         Commons.printException(e);
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                if (!salesReturnHelper.SHOW_SALES_RET_PCS) {
                     ((LinearLayout) row.findViewById(R.id.ll_pc)).setVisibility(View.GONE);
                 } else {
                     try {
@@ -243,7 +243,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                         Commons.printException(e);
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                if (!salesReturnHelper.SHOW_SALES_RET_OUTER_CASE)
                     ((LinearLayout) row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
                 if (!salesReturnHelper.SHOW_STOCK_REPLACE_PCS)
                     ((LinearLayout) row.findViewById(R.id.ll_srpc)).setVisibility(View.GONE);
@@ -563,7 +563,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             }
 
             if (!salesReturnHelper.IS_APPLY_TAX_IN_SR) {
-                bmodel.productHelper.getTaxList().clear();
+                    bmodel.productHelper.taxHelper.getBillTaxList().clear();
             }
 
             bmodel.saveModuleCompletion("MENU_SALES_RET");

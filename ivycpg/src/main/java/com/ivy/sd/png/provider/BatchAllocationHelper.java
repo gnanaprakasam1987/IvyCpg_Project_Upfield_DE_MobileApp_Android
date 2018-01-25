@@ -206,7 +206,7 @@ public class BatchAllocationHelper {
 					/*productBO.setSrp(c.getFloat(10));
                     productBO.setCsrp(c.getFloat(11));
 					productBO.setOsrp(c.getFloat(12));
-					productBO.setBatchid(c.getString(13));
+					productBO.setBatchId(c.getString(13));
 					productBO.setBatchNo(c.getString(14));
 					productBO.setMfgDate(c.getString(15));
 					productBO.setExpDate(c.getString(16));
