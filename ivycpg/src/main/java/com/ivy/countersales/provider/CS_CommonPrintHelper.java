@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * Created by rajkumar.s on 6/23/2017.
  */
 
-public class CS_CommonPrintHelper {
+public class CS_CommonPrintHelper  {
 
 
     private Context context;
@@ -1270,12 +1270,15 @@ public class CS_CommonPrintHelper {
      */
     private String getProductLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
-        bmodel.productHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-        bmodel.productHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
-        ArrayList<TaxBO> groupIdList = bmodel.productHelper.getGroupIdList();
+
+            bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+            bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+
+
+        ArrayList<TaxBO> groupIdList = bmodel.productHelper.taxHelper.getGroupIdList();
         if (groupIdList != null) {
-            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.getGroupDesc2ByGroupId();
-            HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.getProductIdByTaxGroupId();
+            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.taxHelper.getTaxBoByGroupId();
+            HashMap<String, HashSet<String>> productListByGroupId =  bmodel.productHelper.taxHelper.getProductIdByTaxGroupId();
 
             String taxDesc = "";
             String previousTaxDesc = "";
@@ -1360,7 +1363,7 @@ public class CS_CommonPrintHelper {
     private void getBillLevelTaxValue() {
         try {
             mBillLevelTaxValue = 0;
-            final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+            final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
 
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
@@ -1390,7 +1393,7 @@ public class CS_CommonPrintHelper {
     private String printBillLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
         try {
-            final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+            final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;

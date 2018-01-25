@@ -34,6 +34,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.util.DisplayMetrics;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -72,6 +73,7 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
+import com.ivy.cpg.view.reports.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
@@ -140,7 +142,6 @@ import com.ivy.sd.png.provider.NewOutletAttributeHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OrderFullfillmentHelper;
-import com.ivy.sd.png.provider.OrderSplitHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
@@ -159,6 +160,8 @@ import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TargetPlanHelper;
 import com.ivy.sd.png.provider.TaskHelper;
+import com.ivy.sd.png.provider.TaxGstHelper;
+import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.provider.TeamLeaderMasterHelper;
 import com.ivy.sd.png.provider.UserFeedBackHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
@@ -180,7 +183,6 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InvoicePrintZebra;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.NewOutlet;
-import com.ivy.sd.png.view.OrderSplitMasterScreen;
 import com.ivy.sd.png.view.OrderSummary;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
@@ -188,7 +190,6 @@ import com.ivy.sd.png.view.StockAndOrder;
 import com.ivy.sd.png.view.Synchronization;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
-import com.ivy.cpg.view.reports.InvoiceReportDetail;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
@@ -221,7 +222,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -296,9 +300,6 @@ public class BusinessModel extends Application {
     //public PromotionHelper promotionHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
-    // Retail Hepler Class and Independent super
-    public OrderSplitHelper orderSplitHelper = null;
-    //  public PriceTrackingHelper mPriceTrackingHelper;
     public AttendanceHelper mAttendanceHelper;
     public GroomingHelper groomingHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
@@ -457,6 +458,10 @@ public class BusinessModel extends Application {
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
         closecallhelper = CloseCallHelper.getInstance(this);
         printHelper = PrintHelper.getInstance(this);
+        /*// if norml tax
+        taxHelper = TaxHelper.getInstance(this);
+        // else
+        taxHelper=TaxGstHelper.getInstance(this);*/
 
         /** OLD **/
         retailerMasterBO = new RetailerMasterBO();
@@ -470,7 +475,6 @@ public class BusinessModel extends Application {
         newOutletHelper = NewOutletHelper.getInstance(this);
         //promotionHelper = PromotionHelper.getInstance(this);
 
-        orderSplitHelper = OrderSplitHelper.getInstance(this);
         //mPriceTrackingHelper = PriceTrackingHelper.getInstance(this);
         mAttendanceHelper = AttendanceHelper.getInstance(this);
         groomingHelper = GroomingHelper.getInstance(this);
@@ -568,9 +572,6 @@ public class BusinessModel extends Application {
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actPhotocapture)) {
             myIntent = new Intent(ctxx, PhotoCaptureActivity.class);
-            ctxx.startActivityForResult(myIntent, 0);
-        } else if (act.equals("OrderSplitMasterScreen")) {
-            myIntent = new Intent(ctxx, OrderSplitMasterScreen.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals("AcknowledgementActivity")) {
             myIntent = new Intent(ctxx, AcknowledgementActivity.class);
@@ -2382,8 +2383,8 @@ public class BusinessModel extends Application {
         float taxAmount = 0;
         try {
             ProductMasterBO bo = productHelper.getProductMasterBOById(productId);
-            if (productHelper.getmTaxListByProductId().get(productId) != null) {
-                for (TaxBO taxBO : productHelper.getmTaxListByProductId().get(productId)) {
+            if (productHelper.taxHelper.getmTaxListByProductId().get(productId) != null) {
+                for (TaxBO taxBO : productHelper.taxHelper.getmTaxListByProductId().get(productId)) {
                     if (taxBO.getParentType().equals("0")) {
                         taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
                     }
@@ -2415,12 +2416,12 @@ public class BusinessModel extends Application {
         for (int i = 0; i < siz; ++i) {
             ProductMasterBO product = productHelper
                     .getProductMaster().get(i);
-            if(configurationMasterHelper.IS_SHOW_ORDER_REASON){
+            if (configurationMasterHelper.IS_SHOW_ORDER_REASON) {
                 if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
                     if (product.getSoreasonId() == 0)
                         return false;
                 }
-            }else {
+            } else {
                 if (product.getOrderedCaseQty() > 0)
                     if (product.getOrderedCaseQty() < product.getIndicativeOrder_oc())
                         if (product.getSoreasonId() == 0)
@@ -2938,11 +2939,15 @@ public class BusinessModel extends Application {
 		 * getting tax detail from order value
 		 */
         if (configurationMasterHelper.TAX_SHOW_INVOICE) {
-            productHelper.downloadTaxDetails();
+            productHelper.taxHelper.downloadBillWiseTaxDetails();
+
+
             ordervalue = Double.parseDouble(SDUtil.format(ordervalue,
                     configurationMasterHelper.VALUE_PRECISION_COUNT,
                     0, configurationMasterHelper.IS_DOT_FOR_GROUP));
-            final double totalTaxValue = productHelper.applyBillWiseTax(ordervalue);
+
+            final double totalTaxValue = productHelper.taxHelper.applyBillWiseTax(ordervalue);
+
             if (configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
                 ordervalue = ordervalue + totalTaxValue;
 
@@ -3088,12 +3093,10 @@ public class BusinessModel extends Application {
             }
  /* insert tax details in Sqlite */
             if (configurationMasterHelper.TAX_SHOW_INVOICE) {
-                productHelper.updateTaxList(invid, db);
+                productHelper.taxHelper.insertInvoiceTaxList(invid, db);
+
             }
 
-			/* insert Product wise tax details in Sqlite */
-            if (configurationMasterHelper.IS_APPLY_PRODUCT_TAX)
-                productHelper.updateProductTaxList(invid, db);
             /* update free products sih ends */
             // update Invoiceid in InvoiceDiscountDetail table
             if (configurationMasterHelper.SHOW_DISCOUNT || configurationMasterHelper.discountType == 1 || configurationMasterHelper.discountType == 2 || configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
@@ -3104,7 +3107,7 @@ public class BusinessModel extends Application {
 
             // update Invoiceid in InvoiceTaxDetail table
             if (configurationMasterHelper.SHOW_TAX) {
-                productHelper.updateInvoiceIdInProductLevelTax(db, invid,
+                productHelper.taxHelper.updateInvoiceIdInProductLevelTax(db, invid,
                         this.getOrderid());
             }
 
@@ -3152,7 +3155,7 @@ public class BusinessModel extends Application {
 
             ProductMasterBO product;
 
-            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount";
+            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode";
             int siz = productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
                 product = productHelper.getProductMaster()
@@ -3442,6 +3445,7 @@ public class BusinessModel extends Application {
             sb.append("," + product.getScannedProduct());
             sb.append("," + schemeDisc + "," + prodDisc);
             sb.append("," + taxAmount);
+            sb.append("," + QT(product.getHsnCode()));
 
             return sb;
         } catch (Exception e) {
@@ -3475,12 +3479,8 @@ public class BusinessModel extends Application {
 			 * ); sb.append(QT(retailerId) + " and invoiceStatus=0");
 			 */
 
-            String temp = (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG == true) ? "(OH.is_splitted_order = 0 AND OH.is_processed = 0)"
-                    : "(OH.is_splitted_order = 0 OR OH.is_processed = 0)";
-
             sb.append("Select Distinct OH.OrderID from OrderHeader OH INNER JOIN OrderDetail OD on OH.OrderID = OD.OrderID ");
-            sb.append(" where OH.upload='N'AND " + temp
-                    + " and OH.RetailerID =");
+            sb.append(" where OH.upload='N' and OH.RetailerID =");
             sb.append(QT(retailerId) + " and OH.invoiceStatus = 0 and sid=" + getRetailerMasterBO().getDistributorId());
 
             // Add new for check vansales or presales at runtime
@@ -3646,16 +3646,9 @@ public class BusinessModel extends Application {
         String date = "";
         // Order Header
         String sql = null;
-        if (mSelectedModule == 3) {
-            sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
-                    + " where OrderID =" + QT(retailerId); // Its Order Id not
-            // retailer ID for
-            // mSelectedModule =
-            // 3;
-        } else {
-            sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
-                    + " where RetailerID=" + QT(retailerId);
-        }
+
+        sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
+                + " where RetailerID=" + QT(retailerId);
 
         Cursor orderHeaderCursor = db.selectSQL(sql);
         if (orderHeaderCursor != null) {
@@ -3706,8 +3699,7 @@ public class BusinessModel extends Application {
 
             } else { // This is for IS having more that one odrer for same
                 // retailer case handled
-                String temp = (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG == true) ? "(is_splitted_order = 0 AND is_processed = 0)"
-                        : "(is_splitted_order = 0 OR is_processed = 0)";
+
 
                 sb.append("select OD.OrderID,ifnull(po,''),ifnull(remark,''),OrderValue,LinesPerCall,");
                 if (configurationMasterHelper.discountType == 1) {
@@ -3721,7 +3713,7 @@ public class BusinessModel extends Application {
                         + DataMembers.tbl_orderHeader + " OD ");
 
                 sb.append(" left join InvoiceDiscountDetail ID on OD.OrderId=OD.orderid and ID.typeid=0 and ID.pid=0 ");
-                sb.append(" where OD.upload='N' AND " + temp + " and OD.RetailerID="
+                sb.append(" where OD.upload='N' and OD.RetailerID="
                         + QT(retailerId) + " and invoiceStatus=0");
 
             }
@@ -4347,7 +4339,7 @@ public class BusinessModel extends Application {
 
             db.deleteSQL(DataMembers.tbl_scheme_details, "OrderID="
                     + QT(orderId) + " and upload='N'", false);
-            db.deleteSQL(DataMembers.tbl_scheme_free_detail, "OrderID="
+            db.deleteSQL(DataMembers.tbl_SchemeFreeProductDetail, "OrderID="
                     + QT(orderId) + " and upload='N'", false);
             db.deleteSQL(DataMembers.tbl_InvoiceDiscountDetail, "OrderID="
                     + QT(orderId) + " and upload='N'", false);
@@ -4820,10 +4812,6 @@ public class BusinessModel extends Application {
                     frm.setResult(frm.RESULT_OK, intent);
                     frm.finish();
 
-                } else if (idd == DataMembers.NOTIFY_ORDER_DELETED_FOR_ORDERSPLIT) {
-                    OrderSummary frm = (OrderSummary) ctx;
-                    frm.finish();
-                    BusinessModel.loadActivity(ctx, "OrderSplitMasterScreen");
                 } else if (idd == DataMembers.NOTIFY_INVOICE_SAVED) {
                     if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("BixolonIIPrint")) {
@@ -6866,23 +6854,6 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
 
-            if (mSelectedModule == 3) {
-                orderSplitHelper.insertSplittedOrder(getRetailerMasterBO()
-                        .getRetailerID(), deleteSpliteOrderID);
-                Cursor orderDetailCursor = db
-                        .selectSQL("SELECT is_splitted_order FROM OrderHeader WHERE OrderID = "
-                                + QT(this.getOrderid()));
-                if (orderDetailCursor.getCount() > 0) {
-                    orderDetailCursor.moveToNext();
-                    orderHeaderBO.setIsSplitted(orderDetailCursor.getInt(0));
-                }
-                orderDetailCursor.close();
-                db.deleteSQL("OrderHeader", "OrderID=" + this.getOrderid(),
-                        false);
-                db.deleteSQL("OrderDetail", "OrderID=" + this.getOrderid(),
-                        false);
-            }
-
             if (configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
                 db.deleteSQL("TempOrderDetail", "RetailerID=" + QT(getRetailerMasterBO().getRetailerID()),
                         false);
@@ -6957,14 +6928,12 @@ public class BusinessModel extends Application {
                         // same retailer
                         // case handled
                         orderDetailCursor.close();
-                        String temp = (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG == true) ? "(is_splitted_order = 0 AND is_processed = 0)"
-                                : "(is_splitted_order = 0 OR is_processed = 0)";
+
                         sb = null;
                         sb = new StringBuffer();
                         sb.append("select OrderID from OrderHeader where RetailerID=");
                         sb.append(getRetailerMasterBO().getRetailerID());
-                        sb.append(" and upload='N' and " + temp
-                                + " and invoicestatus = 0");
+                        sb.append(" and upload='N' and invoicestatus = 0");
                         if (configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
                             sb.append(" and OrderID=" + QT(selectedOrderId));
                         }
@@ -6994,7 +6963,7 @@ public class BusinessModel extends Application {
                         if (configurationMasterHelper.IS_SCHEME_ON) {
                             db.deleteSQL(DataMembers.tbl_scheme_details,
                                     "OrderID=" + uid, false);
-                            db.deleteSQL(DataMembers.tbl_scheme_free_detail,
+                            db.deleteSQL(DataMembers.tbl_SchemeFreeProductDetail,
                                     "OrderID=" + uid, false);
                         }
                         db.deleteSQL("OrderDiscountDetail", "OrderID=" + uid,
@@ -7023,11 +6992,8 @@ public class BusinessModel extends Application {
             // For Malaysian User is_Process is 1 and IS is_process 0, it will
             // mot
             // affect the already working malaysian users
-            int isProcess = 0;
-            if (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG)
-                isProcess = 0;
-            else
-                isProcess = 1;
+            int isProcess = 1;
+
             SupplierMasterBO supplierBO;
             if (retailerMasterBO.getSupplierBO() != null) {
                 supplierBO = retailerMasterBO.getSupplierBO();
@@ -7113,7 +7079,7 @@ public class BusinessModel extends Application {
                     + "," + QT(printFilePath)
                     + "," + QT(getRField1())
                     + "," + QT(getRField2()) + "," + QT(SDUtil.now(SDUtil.TIME))
-                    + "," + getRemarkType()+ "," + QT(getRField3()) ;
+                    + "," + getRemarkType() + "," + QT(getRField3());
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -7123,21 +7089,13 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.IS_HANGINGORDER) {
                 updateHangingOrder(getRetailerMasterBO());
             }
-
-
-            if (mSelectedModule == 3) {
-                db.executeQ("update OrderHeader set is_splitted_order="
-                        + orderHeaderBO.getIsSplitted() + " where OrderID ="
-                        + this.getOrderid());
-            }
-
             getRetailerMasterBO()
                     .setTotalLines(orderHeaderBO.getLinesPerCall());
 
             //get entry level discount value
             double entryLevelDistSum = 0;
             // Order Details Entry
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
             if (configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
                 finalProductList = productHelper.getShortProductMaster();
             else
@@ -7368,13 +7326,14 @@ public class BusinessModel extends Application {
 */
             // insert itemlevel tax in SQLite
             if (configurationMasterHelper.SHOW_TAX) {
-                productHelper.saveProductLeveltax(uid, db);
+                productHelper.taxHelper.saveProductLeveltax(uid, db);
+
             }
 
             // start insert scheme details
             try {
 
-                if (configurationMasterHelper.IS_GST) {
+                if (configurationMasterHelper.IS_GST || configurationMasterHelper.IS_GST_HSN) {
                     //update tax for scheme free product
                     //tax and price details are taken from ordered product which has highest tax rate.
                     // Also inserting in invoiceTaxDetail
@@ -7428,9 +7387,9 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.TAX_SHOW_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG && !configurationMasterHelper.IS_INVOICE) {
-                productHelper.downloadTaxDetails();
-                productHelper.applyBillWiseTax(orderHeaderBO.getOrderValue());
-                productHelper.updateTaxListInOrderId(uid, db);
+                productHelper.taxHelper.downloadBillWiseTaxDetails();
+                productHelper.taxHelper.applyBillWiseTax(orderHeaderBO.getOrderValue());
+                productHelper.taxHelper.insertOrderTaxList(uid, db);
             }
 
             productHelper.updateBillEntryDiscInOrderHeader(db, uid);
@@ -7477,7 +7436,7 @@ public class BusinessModel extends Application {
 
             // getting product which has more tax
             for (ProductMasterBO prod : mOrderedProductList) {
-                for (TaxBO taxBO : productHelper.getmTaxListByProductId().get(prod.getProductID())) {
+                for (TaxBO taxBO : productHelper.taxHelper.getmTaxListByProductId().get(prod.getProductID())) {
                     if (taxBO.getTaxRate() > largestTax) {
                         largestTax = taxBO.getTaxRate();
                         productIdHasLargetTax = prod.getProductID();
@@ -7520,8 +7479,9 @@ public class BusinessModel extends Application {
 
                         // cloning highest tax list  for scheme free product
                         ArrayList<TaxBO> clonedTaxList = new ArrayList<>();
-                        for (TaxBO bo : productHelper.getmTaxListByProductId().get(productWithMaxTaxRate.getProductID())) {
-                            clonedTaxList.add(productHelper.cloneTaxBo(bo));
+                        for (TaxBO bo : productHelper.taxHelper.getmTaxListByProductId().get(productWithMaxTaxRate.getProductID())) {
+                            clonedTaxList.add(productHelper.taxHelper.cloneTaxBo(bo));
+
                         }
 
                         mFreeProductTaxListByProductId.put(schemeProductBO.getProductId(), clonedTaxList);
@@ -7541,10 +7501,10 @@ public class BusinessModel extends Application {
                             schemeProduct.setOrderedOuterQty(0);
 
                             // excluding tax values
-                            productHelper.calculateTaxOnTax(schemeProduct, taxBO, true);
+                            productHelper.taxHelper.calculateTaxOnTax(schemeProduct, taxBO, true);
 
                             //inserting free product tax details to db
-                            productHelper.insertProductLevelTaxForFreeProduct(orderId, db, schemeProductBO.getProductId(), taxBO);
+                            productHelper.taxHelper.insertProductLevelTaxForFreeProduct(orderId, db, schemeProductBO.getProductId(), taxBO);
 
                             totalTaxAmount += taxBO.getTotalTaxAmount();
                         }
@@ -7643,6 +7603,7 @@ public class BusinessModel extends Application {
         sb.append("," + priceOffvalue + "," + priceOffId);
         sb.append("," + productBo.getWeight());
         sb.append("," + reasondId);
+        sb.append("," + QT(productBo.getHsnCode()));
 
         return sb;
 
@@ -8853,15 +8814,14 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String temp = (configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG == true) ? "(is_splitted_order = 0 AND is_processed = 0)"
-                    : "(is_splitted_order = 0 OR is_processed = 0)";
+
             if (getOrderHeaderNote() != null
                     && getOrderHeaderNote().length() > 0) {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
                         + " SET remark =" + QT(getOrderHeaderNote())
                         + " WHERE " + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 setOrderHeaderNote("");
                 getOrderHeaderBO().setRemark("");
@@ -8871,8 +8831,8 @@ public class BusinessModel extends Application {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
                         + " SET RField1 =" + QT(getRField1())
                         + " WHERE " + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 setRField1("");
                 getOrderHeaderBO().setRField1("");
@@ -8882,8 +8842,8 @@ public class BusinessModel extends Application {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
                         + " SET RField2 =" + QT(getRField2())
                         + " WHERE " + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 setRField2("");
                 getOrderHeaderBO().setRField2("");
@@ -8893,8 +8853,8 @@ public class BusinessModel extends Application {
                 db.updateSQL("UPDATE " + DataMembers.tbl_orderHeader
                         + " SET po =" + QT(orderHeaderBO.getPO()) + " WHERE "
                         + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 orderHeaderBO.setPO("");
             }
@@ -8904,8 +8864,8 @@ public class BusinessModel extends Application {
                         + " SET deliveryDate ="
                         + QT(orderHeaderBO.getDeliveryDate()) + " WHERE "
                         + " OrderID = (SELECT OrderID FROM  "
-                        + DataMembers.tbl_orderHeader + " where " + temp
-                        + " and RetailerID = "
+                        + DataMembers.tbl_orderHeader + " where "
+                        + " RetailerID = "
                         + getRetailerMasterBO().getRetailerID() + ")");
                 orderHeaderBO.setDeliveryDate("");
             }
@@ -11008,13 +10968,14 @@ public class BusinessModel extends Application {
     /**
      * read text from given file and convert to string object
      * and store in object
+     *
      * @param fileName
      */
-    public void readBuilder(String fileName){
-        String path=getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                + "/" + userMasterHelper.getUserMasterBO().getUserid() + DataMembers.PRINTFILE+"/";
-        File file = new File(path+fileName);
-        StringBuilder sb=new StringBuilder();
+    public void readBuilder(String fileName) {
+        String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                + "/" + userMasterHelper.getUserMasterBO().getUserid() + DataMembers.PRINTFILE + "/";
+        File file = new File(path + fileName);
+        StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -11027,7 +10988,7 @@ public class BusinessModel extends Application {
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -11244,11 +11205,15 @@ public class BusinessModel extends Application {
 		 * getting tax detail from order value
 		 */
             if (configurationMasterHelper.TAX_SHOW_INVOICE) {
-                productHelper.downloadTaxDetails();
+
+                productHelper.taxHelper.downloadBillWiseTaxDetails();
+
                 ordervalue = Double.parseDouble(SDUtil.format(ordervalue,
                         configurationMasterHelper.VALUE_PRECISION_COUNT,
                         0, configurationMasterHelper.IS_DOT_FOR_GROUP));
-                final double totalTaxValue = productHelper.applyBillWiseTax(ordervalue);
+
+                final double totalTaxValue = productHelper.taxHelper.applyBillWiseTax(ordervalue);
+
                 if (configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
                     ordervalue = ordervalue + totalTaxValue;
 
@@ -11865,7 +11830,6 @@ public class BusinessModel extends Application {
         return FileProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", f);
 
     }
-
 }
 
 

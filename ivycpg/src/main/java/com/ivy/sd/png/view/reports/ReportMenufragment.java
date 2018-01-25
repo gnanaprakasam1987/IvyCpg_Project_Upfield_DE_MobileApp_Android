@@ -247,21 +247,18 @@ public class ReportMenufragment extends IvyBaseFragment {
                 }
             }
 
-        }else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SALES_REPORT)) {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SALES_REPORT)) {
             if (bmodel.reportHelper.getSalesReturnRetailerList().size() >= 1) {
                 intoreportacti(config);
             } else {
                 Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-        }  else {
-        } else if(config.getConfigCode().equals(StandardListMasterConstants.MENU_ARCHV_RPT))
-        {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ARCHV_RPT)) {
             if (bmodel.isOnline()) {
                 intoreportacti(config);
-            }
-            else
+            } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
-        }else {
+        } else {
             intoreportacti(config);
         }
 

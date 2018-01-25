@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1250"
+    android:versionCode="1260"
     android:versionName="2.125.0.872">
 
 
@@ -532,13 +532,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CaptureSignatureActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.OrderSplitMasterScreen"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.OrderSplitDetailsScreenWithFilters"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <!-- IvyRetail Integration Classes -->
         <activity
