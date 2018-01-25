@@ -41,6 +41,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetetorPOSMBO;
 import com.ivy.sd.png.bo.CompetitorBO;
+import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -64,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 
 public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     BusinessModel bmodel;
@@ -74,6 +77,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     static String outPutDateFormat;
     private String imageName, imagePath;
     private CompetitorBO masterObj = null;
+    private ArrayAdapter<ReasonMaster> spinnerAdapter;
     // Disable Motorola ET1 Scanner Plugin
     private final String ACTION_SCANNERINPUTPLUGIN = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
     private final String EXTRA_PARAMETER = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
@@ -105,7 +109,6 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 getSupportActionBar().setElevation(0);
             }
         }
-
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         bmodel = (BusinessModel) getApplicationContext();
@@ -133,7 +136,11 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
 
     }
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadReasons();
+    }
     private void initializeView() {
         et_feedback = (EditText) findViewById(R.id.edt_feedback);
         lvwplist = (ListView) findViewById(R.id.list);
@@ -304,6 +311,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
         public MyAdapter(ArrayList<CompetetorPOSMBO> items) {
             super(SubCompetitorTrackingActivity.this, R.layout.row_sub_comp, items);
             this.items = items;
+
         }
 
         public CompetetorPOSMBO getItem(int position) {
@@ -344,9 +352,19 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         .findViewById(R.id.edt_competitor_feedback);
                 holder.edtQty = (EditText) convertView
                         .findViewById(R.id.et_qty);
+                holder.spnReason=(Spinner)convertView
+                        .findViewById(R.id.spn_reason);
 
                 if (!bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR) {
                     ((LinearLayout) convertView.findViewById(R.id.ll_photoView)).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_TIME_VIEW) {
+                    ((Button)convertView.findViewById(R.id.btn_fromdate)).setVisibility(View.GONE);
+                    ((Button)convertView.findViewById(R.id.btn_todate)).setVisibility(View.GONE);
+                }
+
+                if (!bmodel.configurationMasterHelper.SHOW_SPINNER) {
+                    ((Spinner)convertView.findViewById(R.id.spn_reason)).setVisibility(View.GONE);
                 }
 
                 holder.checkBox
@@ -362,6 +380,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                                     holder.edtComFeedback.setEnabled(false);
                                     holder.btnFromDate.setEnabled(false);
                                     holder.btnToDate.setEnabled(false);
+                                    holder.spnReason.setEnabled(false);
                                 } else {
                                     if ((holder.mCompTrackBO.getImageName() != null)
                                             && (!"".equals(holder.mCompTrackBO.getImageName()))
@@ -376,12 +395,14 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                                     holder.edtComFeedback.setEnabled(true);
                                     holder.btnFromDate.setEnabled(true);
                                     holder.btnToDate.setEnabled(true);
+                                    holder.spnReason.setEnabled(true);
                                 }
                                 holder.mCompTrackBO.setExecuted(isChecked);
 
                             }
 
                         });
+
                 holder.btnFromDate.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -476,6 +497,9 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     }
                 });
 
+
+
+
                 convertView.setTag(holder);
 
             } else {
@@ -507,11 +531,13 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
                 holder.mCompTrackBO.setToDate(holder.btnToDate.getText()
                         .toString());
+                //holder.mCompTrackBO.setReasonID(resonId);
                 holder.btnPhoto.setEnabled(false);
                 holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
                 holder.edtComFeedback.setEnabled(false);
                 holder.btnFromDate.setEnabled(false);
                 holder.btnToDate.setEnabled(false);
+                holder.spnReason.setEnabled(false);
             } else {
                 holder.btnFromDate
                         .setText((holder.mCompTrackBO.getFromDate() == null) ? (DateUtil
@@ -530,6 +556,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 holder.edtComFeedback.setEnabled(true);
                 holder.btnFromDate.setEnabled(true);
                 holder.btnToDate.setEnabled(true);
+                holder.spnReason.setEnabled(true);
             }
 
             if ((holder.mCompTrackBO.getImageName() != null)
@@ -553,6 +580,38 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             } else {
                 convertView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
             }
+            holder.spnReason.setAdapter(spinnerAdapter);
+            holder.spnReason
+                    .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> parent,
+                                                   View view, int position, long id) {
+
+                            ReasonMaster reString = (ReasonMaster) holder.spnReason
+                                    .getSelectedItem();
+
+                            if (reString.getReasonID().equals("-1")) {
+                                holder.mCompTrackBO.setReasonID(0);
+                            } else {
+                                holder.mCompTrackBO.setReasonID(SDUtil
+                                        .convertToInt(reString.getReasonID()));
+
+                            }
+
+                        }
+
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+            if (holder.mCompTrackBO!=null&&holder.mCompTrackBO.getReasonID()!=0) {
+                holder.spnReason.setSelection(getReasonIndex("1"));
+            } else {
+                holder.spnReason.setSelection(getReasonIndex(holder.mCompTrackBO.getReasonID()
+                        + ""));
+            }
+            holder.spnReason.setSelected(true);
+
             return convertView;
         }
     }
@@ -565,6 +624,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
         ImageView btnPhoto;
         EditText edtComFeedback;
         EditText edtQty;
+        Spinner spnReason;
     }
 
     private void setPictureToImageView(String imageName, final ImageView imageView) {
@@ -936,4 +996,54 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
         }
     }*/
+    /**
+     * Initialize Adapter and add reason
+     */
+    private void loadReasons() {
+        spinnerAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_bluetext_layout);
+        spinnerAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
+        ReasonMaster reason = new ReasonMaster();
+        reason.setReasonID("1");
+        reason.setReasonDesc(getResources().getString(R.string.other_reason));
+        reason.setReasonCategory("COMP_RSN");
+
+        for (ReasonMaster temp : bmodel.reasonHelper.getReasonList()) {
+            if ("COMP_RSN".equalsIgnoreCase(temp.getReasonCategory())
+                    || "NONE".equalsIgnoreCase(temp.getReasonCategory()))
+                spinnerAdapter.add(temp);
+        }
+
+        if (!(spinnerAdapter.getCount() > 0)) {
+            ReasonMaster reasonMasterBo = new ReasonMaster();
+            reasonMasterBo.setReasonDesc(getResources().getString(R.string.select_reason));
+            reasonMasterBo.setReasonID("-1");
+            spinnerAdapter.add(reasonMasterBo);
+        }
+        spinnerAdapter.add(reason);
+    }
+    /**
+     * Get the selected reason id, iterate and get position and set in the
+     * spinner item
+     *
+     * @param reasonId Reason Id
+     * @return Index of reason Id
+     */
+    private int getReasonIndex(String reasonId) {
+        if (spinnerAdapter.getCount() == 0)
+            return 0;
+        int len = spinnerAdapter.getCount();
+        if (len == 0)
+            return 0;
+        for (int i = 0; i < len; ++i) {
+            ReasonMaster reasonBO = spinnerAdapter.getItem(i);
+            if (reasonBO != null) {
+                if (reasonBO.getReasonID().equals(reasonId))
+                    return i;
+            }
+        }
+        return -1;
+    }
 }
