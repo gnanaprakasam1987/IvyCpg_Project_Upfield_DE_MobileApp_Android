@@ -121,8 +121,6 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             TextView text_totalValue = (TextView) findViewById(R.id.txttotal);
             TextView text_totalLines = (TextView) findViewById(R.id.txttotalqty);
             TextView label_totalLines = (TextView) findViewById(R.id.TextView52);
-            TextView label_totalValue = (TextView) findViewById(R.id.label_totalValue);
-            label_totalValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             ListView listView = (ListView) findViewById(R.id.lvwplistorddet);
             listView.setCacheColorHint(0);
@@ -559,36 +557,13 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
     public void printData() {
         try {
-            ArrayList<TaxTempBO> mTax;
 
             ZFPLib zfp = mChatService.zfplib;
             zfp.openFiscalBon(1, "0000", false, false, false);
             boolean isGoldenStore = false;
-            mTax = businessModel.productHelper.getTaxSumProdList();
             for (ProductMasterBO productBO : mProducts) {
 
                 double vatAmount = 0.0;
-                int taxSize = productBO.getTaxes().size();
-                for (TaxTempBO taxBO : mTax) {
-                    for (int ii = 0; ii < taxSize; ii++) {
-
-                        if (taxBO.getTaxType().equals(
-                                productBO.getTaxes().get(ii).getTaxType())) {
-
-                            vatAmount = vatAmount
-                                    + (productBO.getOrderedPcsQty() * ((productBO.getSrp() * productBO
-                                    .getTaxes().get(ii).getTaxRate()) / 100))
-                                    + (productBO.getOrderedCaseQty() * ((productBO
-                                    .getCsrp() * productBO.getTaxes().get(ii)
-                                    .getTaxRate()) / 100))
-                                    + (productBO.getOrderedOuterQty() * ((productBO
-                                    .getOsrp() * productBO.getTaxes().get(ii)
-                                    .getTaxRate()) / 100));
-                            break;
-                        }
-                    }
-
-                }
 
 
                 if ((productBO.getOrderedPcsQty() > 0

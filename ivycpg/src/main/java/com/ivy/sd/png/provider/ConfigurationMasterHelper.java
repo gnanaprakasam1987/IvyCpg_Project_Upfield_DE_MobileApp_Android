@@ -239,7 +239,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DEVICE_STATUS = "FUN05";
     private static final String CODE_STKPRO_SPL_FILTER = "STKPRO12";
     private static final String CODE_TOTAL_LINES = "ORDB32";
-    private static final String CODE_ORDER_PROCESS_DIALOG = "FUN06";
     // Added in V40
     private static final String CODE_SO_SPLIT = "SOSPLIT";
     private static final String CODE_SO_COPY = "SOCOPY";
@@ -320,7 +319,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DROPSIZE = "DROPSIZE";
     private static final String CODE_STOCK_COMPETITOR = "STOCK_COMPETITOR";
 
-    private static final String CODE_APPLY_PRODUCT_TAX = "TAXINPROD";
     private static final String CODE_SIH_SPLIT = "SIHSPLIT";
     private static final String CODE_HIDE_TARGET_PLAN = "TARGET_PLAN";
     private static final String CODE_SHOW_REJECT_BTN = "STK_REJECT";
@@ -449,6 +447,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_RID_CONCEDER_AS_DSTID = "FUN64";
     public boolean IS_SHOW_RID_CONCEDER_AS_DSTID;
 
+    public static final String CODE_COMPETITOR = "COMP01";//change Code value
+    private boolean LOAD_COMP_CONFIGS;
+    public boolean SHOW_TIME_VIEW;
+    public boolean SHOW_SPINNER;
     /**
      * RoadActivity config *
      */
@@ -758,7 +760,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STKPRO_SPL_FILTER;
     public boolean SHOW_TOTAL_LINES;
     public boolean SHOW_TOTAL_QTY_IN_ORDER_REPORT;
-    public boolean SHOW_ORDER_PROCESS_DIALOG;
     public boolean SHOW_DOWNLOAD_ALERT;
     public boolean SHOW_SIH_IN_PNAME;
     public boolean SHOW_CURRENT_STDQTY;
@@ -793,7 +794,6 @@ public class ConfigurationMasterHelper {
     public String LOAD_REMARKS_FIELD_STRING = "";
     public boolean IS_LOAD_STOCK_COMPETITOR = false;
 
-    public boolean IS_APPLY_PRODUCT_TAX;
     public boolean SHOW_SIH_SPLIT;
     public boolean IS_SHOW_TARGET_PLAN;
     public boolean IS_SHOW_REJECT_BTN;
@@ -1175,6 +1175,7 @@ public class ConfigurationMasterHelper {
 
     public static final String CODE_TAX_MODEL = "TAX_MODEL";
     public boolean IS_GST;
+    public boolean IS_GST_HSN;
 
     public String CODE_ORDER_REPORT_EXPORT_METHOD = "ORDRPT01";
     public boolean IS_EXPORT_ORDER_REPORT;
@@ -1220,6 +1221,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_COMB_STOCK_SP;
     public boolean SHOW_COMB_STOCK_SHELF_OUTER;
     public boolean SHOW_COMB_STOCK_CB;
+
+    private static final String CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL = "FUN65";
+    public boolean IS_ORDER_SUMMERY_EXPORT_AND_EMAIL;
 
     public int MVPTheme = 0;
     public String fontSize = "";
@@ -1738,7 +1742,6 @@ public class ConfigurationMasterHelper {
             if (hashMapHHTModuleOrder.get(CODE_TOTAL_LINES) == 1)
                 SHOW_TOTAL_QTY_IN_ORDER_REPORT = true;
         }
-        this.SHOW_ORDER_PROCESS_DIALOG = hashMapHHTModuleConfig.get(CODE_ORDER_PROCESS_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_PROCESS_DIALOG) : false;
         this.SHOW_MULTIPAYMENT = hashMapHHTModuleConfig.get(CODE_SHOW_MULTIPAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MULTIPAYMENT) : false;
         this.SHOW_DOWNLOAD_ALERT = hashMapHHTModuleConfig.get(CODE_DOWNLOAD_ALERT) != null ? hashMapHHTModuleConfig.get(CODE_DOWNLOAD_ALERT) : false;
         this.SHOW_SIH_IN_PNAME = hashMapHHTModuleConfig.get(CODE_SHOW_SIH_IN_FNAME) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SIH_IN_FNAME) : false;
@@ -1777,7 +1780,6 @@ public class ConfigurationMasterHelper {
         this.IS_ADD_NEW_BATCH = hashMapHHTModuleConfig.get(CODE_ADD_NEW_BATCH) != null ? hashMapHHTModuleConfig.get(CODE_ADD_NEW_BATCH) : false;
         this.SHOW_PRINT_BUTTON = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT) : false;
         this.SHOW_BUTTON_PRINT01 = hashMapHHTModuleConfig.get(CODE_SHOW_PRINTRPT01) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINTRPT01) : false;
-        this.IS_APPLY_PRODUCT_TAX = hashMapHHTModuleConfig.get(CODE_APPLY_PRODUCT_TAX) != null ? hashMapHHTModuleConfig.get(CODE_APPLY_PRODUCT_TAX) : false;
         this.SHOW_SIH_SPLIT = hashMapHHTModuleConfig.get(CODE_SIH_SPLIT) != null ? hashMapHHTModuleConfig.get(CODE_SIH_SPLIT) : false;
         this.SHOW_GOLD_STORE_DISCOUNT = hashMapHHTModuleConfig.get(CODE_APPLY_GOLD_STORE_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_APPLY_GOLD_STORE_DISCOUNT) : false;
         this.IS_SHOW_TARGET_PLAN = hashMapHHTModuleConfig.get(CODE_HIDE_TARGET_PLAN) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_TARGET_PLAN) : false;
@@ -2169,6 +2171,12 @@ public class ConfigurationMasterHelper {
         this.IS_RESTRICT_ORDER_TAKING = hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) != null ? hashMapHHTModuleConfig.get(CODE_RESTRICT_ORDER_TAKING) : false;
         this.IS_SHOW_RID_CONCEDER_AS_DSTID = hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) : false;
 
+        this.LOAD_COMP_CONFIGS = hashMapHHTModuleConfig.get(CODE_COMPETITOR) != null ? hashMapHHTModuleConfig.get(CODE_COMPETITOR) : false;
+        if(LOAD_COMP_CONFIGS){
+           loadCompetitorConfig();
+        }
+        this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
+
 
     }
 
@@ -2224,7 +2232,9 @@ public class ConfigurationMasterHelper {
                     String RField = c.getString(0);
                     if (RField.equals("GST_IN")) {
                         IS_GST = true;
-
+                    }
+                    if (RField.equals("GST_HSN")) {
+                        IS_GST_HSN = true;
                     }
 
                 }
@@ -2745,6 +2755,49 @@ public class ConfigurationMasterHelper {
                     COMPETITOR_FILTER_LEVELS = c.getString(0);
                 }
                 c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+    }
+
+    public void loadCompetitorConfig() {
+        try {
+            SHOW_TIME_VIEW = false;
+            SHOW_SPINNER = false;
+
+            String codeValue = null;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='" + CODE_COMPETITOR + "' and Flag=1";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    switch (temp) {
+                        case "DATE":
+                            SHOW_TIME_VIEW = true;
+                            break;
+                        case "RSN":
+                            SHOW_SPINNER = true;
+                            break;
+                    }
+
+                }
             }
 
             db.closeDB();

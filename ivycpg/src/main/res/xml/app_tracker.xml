@@ -29,7 +29,6 @@
     <screenName name="com.ivy.sd.png.view.KellogsDashBoardActivity">Kellogs DashBoard</screenName>
     <screenName name="com.ivy.cpg.view.van.VanStockAdjustActivity">Van Stock Adjustment
     </screenName>
-    <screenName name="com.ivy.sd.png.view.OrderSplitMasterScreen">Order Split</screenName>
     <screenName name="com.ivy.sd.png.view.JoinCallActivity">Join Call</screenName>
     <screenName name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity">Digital Content
     </screenName>

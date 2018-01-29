@@ -3,6 +3,7 @@ package com.ivy.cpg.view.salesreturn;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.util.SparseArray;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -12,12 +13,17 @@ import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -488,7 +494,7 @@ public class SalesReturnHelper {
                                 + QT(bmodel.retailerMasterBO
                                 .getRetailerID()) + ","
                                 + reasonType + "," + QT(bo.getLotNumber()) + "," + product.getPcUomid()
-                                + "," + QT(bo.getStatus());
+                                + "," + QT(bo.getStatus()) + "," + QT(product.getHsnCode());
 
                         db.insertSQL(
                                 DataMembers.tbl_SalesReturnDetails,
@@ -1147,9 +1153,9 @@ public class SalesReturnHelper {
 
         if (getTotalValue() > 0) {
             if (IS_APPLY_TAX_IN_SR) {
-                bmodel.productHelper.downloadTaxDetails();
+                bmodel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                 // Method to use Apply Tax
-                final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+                final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
 
                 StringBuffer sb;
                 double totalTaxRate = 0;
@@ -1171,7 +1177,7 @@ public class SalesReturnHelper {
                     totalTaxValue = totalTaxValue + taxValue;
                     sb = new StringBuffer();
                     sb.append(uid + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",");
-                    sb.append(taxBO.getTaxRate() + "," + taxBO.getTaxType() + "," + taxBO.getTaxTypeId() + "," + taxValue + "," + 0);
+                    sb.append(taxBO.getTaxRate() + "," + taxBO.getTaxType() + "," + taxBO.getApplyLevelId() + "," + taxValue + "," + 0);
 
                     db.insertSQL(DataMembers.tbl_SalesReturn_tax_Details, columns, sb.toString());
                 }
@@ -1315,5 +1321,4 @@ public class SalesReturnHelper {
         return orderList;
 
     }
-
 }

@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports;
+package com.ivy.sd.png.view.reports;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.reports.InvoiceReportDetail;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -150,6 +151,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.view00).setVisibility(View.GONE);
+
         }
 
 
@@ -253,6 +255,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
     /**
      * Alert dialog for delete
+     *
      * @return return dialog instance
      */
     protected Dialog deleteAlertDialog() {
@@ -448,7 +451,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     businessModel.setOrderid(inv.getOrderID());
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
-                      businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(),mRetailerId);
+                    businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
                     if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
                         businessModel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
                     else businessModel.productHelper.downloadProducts("MENU_STK_ORD");
@@ -471,10 +474,8 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
                     }
                     if (businessModel.configurationMasterHelper.SHOW_TAX_MASTER) {
-
-                            businessModel.productHelper.taxHelper.downloadProductTaxDetails();
-                            businessModel.productHelper.taxHelper.updateProductWiseTax();
-
+                        businessModel.productHelper.taxHelper.downloadProductTaxDetails();
+                        businessModel.productHelper.taxHelper.updateProductWiseTax();
                     }
 
                     businessModel.productHelper.updateBillWiseDiscountInObj(mInvoiceId);

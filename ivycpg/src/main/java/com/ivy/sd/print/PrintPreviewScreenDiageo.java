@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +43,7 @@ import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -56,6 +58,10 @@ import com.zebra.sdk.printer.ZebraPrinterFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -270,7 +276,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
             else
                 mEmptyProducts = bmodel.productHelper.getBomReturnProducts();
 
-            mTax = bmodel.productHelper.getTaxList();
+            mTax = bmodel.productHelper.taxHelper.getBillTaxList();
 
             // saleablevalue = bmodel.salesReturnHelper.saleablevalue;
             updateproducts();
