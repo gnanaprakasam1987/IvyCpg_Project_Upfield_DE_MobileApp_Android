@@ -1579,6 +1579,7 @@ public class ProductHelper {
                         + "A" + loopEnd + ".tagDescription as tagDescription,"
                         + "A" + loopEnd + ".HSNId as HSNId,"
                         + "HSN.HSNCode as HSNCode,"
+                        + "A" + loopEnd + ".IsDrug as IsDrug,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -1711,6 +1712,7 @@ public class ProductHelper {
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
+                    product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
@@ -7882,6 +7884,7 @@ public class ProductHelper {
                         + "A" + loopEnd + ".tagDescription,"
                         + "A" + loopEnd + ".HSNId as HSNId,"
                         + "HSN.HSNCode as HSNCode,"
+                        + "A" + loopEnd + ".IsDrug as IsDrug,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -7993,6 +7996,7 @@ public class ProductHelper {
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
+                    product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
