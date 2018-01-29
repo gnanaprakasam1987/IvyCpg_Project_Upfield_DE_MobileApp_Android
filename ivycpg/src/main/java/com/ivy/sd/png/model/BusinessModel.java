@@ -934,6 +934,7 @@ public class BusinessModel extends Application {
 
     public void downloadInvoice(String retailerId, String docStatus) {
         try {
+            configurationMasterHelper.loadInvoiceMasterDueDateAndDateConfig();
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -943,7 +944,7 @@ public class BusinessModel extends Application {
             sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
             sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
-            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo");
+            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo,inv.DueDays,inv.DueDate");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
             sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
             sb.append(" WHERE inv.Retailerid = ");
@@ -980,20 +981,26 @@ public class BusinessModel extends Application {
 
                     invocieHeaderBO.setRemainingDiscountAmt(remaingAmount);
 
-                    if (retailerMasterBO.getCreditDays() != 0) {
+                    if (configurationMasterHelper.COMPUTE_DUE_DATE) {
 
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-                        Date date = format.parse(invocieHeaderBO.getInvoiceDate());
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(date);
-                        calendar.add(Calendar.DAY_OF_YEAR, retailerMasterBO.getCreditDays());
-                        Date dueDate = format.parse(format.format(calendar.getTime()));
+                        if (retailerMasterBO.getCreditDays() != 0) {
 
-                        invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
-                                dueDate, configurationMasterHelper.outDateFormat));
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+                            Date date = format.parse(invocieHeaderBO.getInvoiceDate());
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            calendar.add(Calendar.DAY_OF_YEAR, retailerMasterBO.getCreditDays());
+                            Date dueDate = format.parse(format.format(calendar.getTime()));
 
+                            invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                                    dueDate, configurationMasterHelper.outDateFormat));
+
+                        }
+                    } else {
+                        invocieHeaderBO.setDueDate(c.getString(11));
                     }
-
+                    if (!configurationMasterHelper.COMPUTE_DUE_DAYS)
+                        invocieHeaderBO.setDueDays(c.getString(10));
                     invoiceHeader.add(invocieHeaderBO);
                 }
                 c.close();
@@ -7715,6 +7722,8 @@ public class BusinessModel extends Application {
                     folderName = "Delivery" + path;
                 } else if (imageName.startsWith("PF")) {
                     folderName = "PrintFile" + path;
+                } else if (imageName.startsWith("SR_SGN_")) {
+                    folderName = "SalesReturn" + "/" + path;
                 } else {
                     folderName = userMasterHelper.getUserMasterBO()
                             .getDistributorid()
@@ -7910,6 +7919,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "Profile" + path;
             } else if (imageName.startsWith("USER_")) {
                 mBucketName = mBucketDetails + "/" + "User" + path;
+            } else if (imageName.startsWith("SR_SGN_")) {
+                mBucketName = mBucketDetails + "/" + "SalesReturn" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -11601,6 +11612,7 @@ public class BusinessModel extends Application {
 
     public void downloadInvoice() {
         try {
+            configurationMasterHelper.loadInvoiceMasterDueDateAndDateConfig();
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -11610,7 +11622,7 @@ public class BusinessModel extends Application {
             sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
             sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
-            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),RM.RetailerName as RetailerName,IFNULL(RM.creditPeriod,'') as creditPeriod");
+            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),RM.RetailerName as RetailerName,IFNULL(RM.creditPeriod,'') as creditPeriod,DueDays,DueDate");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
             sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
             sb.append(" INNER JOIN RetailerMaster RM ON inv.Retailerid = RM.RetailerID");
@@ -11643,21 +11655,27 @@ public class BusinessModel extends Application {
                     }
 
                     invocieHeaderBO.setRemainingDiscountAmt(remaingAmount);
-                    int crediiDays = c.getInt(c.getColumnIndex("creditPeriod"));
+                    if (configurationMasterHelper.COMPUTE_DUE_DATE) {
+                        int crediiDays = c.getInt(c.getColumnIndex("creditPeriod"));
 
-                    if (crediiDays != 0) {
+                        if (crediiDays != 0) {
 
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-                        Date date = format.parse(invocieHeaderBO.getInvoiceDate());
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(date);
-                        calendar.add(Calendar.DAY_OF_YEAR, crediiDays);
-                        Date dueDate = format.parse(format.format(calendar.getTime()));
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+                            Date date = format.parse(invocieHeaderBO.getInvoiceDate());
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            calendar.add(Calendar.DAY_OF_YEAR, crediiDays);
+                            Date dueDate = format.parse(format.format(calendar.getTime()));
 
-                        invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
-                                dueDate, configurationMasterHelper.outDateFormat));
+                            invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                                    dueDate, configurationMasterHelper.outDateFormat));
 
+                        }
+                    } else {
+                        invocieHeaderBO.setDueDate(c.getString(c.getColumnIndex("DueDate")));
                     }
+                    if (!configurationMasterHelper.COMPUTE_DUE_DAYS)
+                        invocieHeaderBO.setDueDays(c.getString(c.getColumnIndex("DueDays")));
                     if (invocieHeaderBO.getBalance() > 0)
                         invoiceHeader.add(invocieHeaderBO);
                 }
