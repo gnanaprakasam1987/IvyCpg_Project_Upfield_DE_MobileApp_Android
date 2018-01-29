@@ -113,133 +113,103 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface,
         EmailDialog.onSendButtonClickListnor, OrderConfirmationDialog.OnConfirmationResult {
 
-    /**
-     * views *
-     */
+    private Toolbar toolbar;
     private Button btnsave;
     private Button btnsaveAndGoInvoice;
     private TextView lpc;
     private TextView totalval;
     private TextView totalQtyTV;
     private Button delievery_date;
-    private DiscountDialog initiativedialog;
     private ExpandableListView mExpListView;
+    private ImageView icAmountSpilitup;
+    private LinearLayout icAmountSpilitup_lty;
+
+    private DiscountDialog initiativedialog;
     private AlertDialog.Builder build;
     private AlertDialog alertDialog;
-    private ImageView icAmountSpilitup;
-    AmountSplitupDialog dialogFragment;
-    LinearLayout icAmountSpilitup_lty;
+    private AmountSplitupDialog dialogFragment;
     private OrderConfirmationDialog orderConfirmationDialog;
-    private String sendMailAndLoadClass;
-    /**
-     * Objects *
-     */
-    private boolean fromorder = false, isExpanded = false;
+    private ReturnProductDialog returnProductDialog;
+    private CollectionBeforeInvoiceDialog collectionBeforeInvoiceDialog;
+    private StorewiseDiscountDialogFragment mStoreWiseDiscountDialogFragment;
+
     private BusinessModel bmodel;
+    private CollectionBO collectionbo;
+
     private LinkedList<ProductMasterBO> mOrderedProductList;
     private Vector<ProductMasterBO> shortListOrder;
 
+    private String sendMailAndLoadClass;
+    private boolean fromorder = false;
     private boolean hidealert = false;
     private double enteredDiscAmtOrPercent = 0;
-
     private String nextDate;
     private double totalOrderValue, cmyDiscount, distDiscount;
     private boolean isClick = false;
     private boolean isDiscountDialog;
+    private double productEntryLevelDis = 0.0;
+    private double totalSchemeDiscValue;
+    private int mSelectedPrintCount = 0;
+    private int focusProductCount = 0;
+    private int totalFocusProductCount = 0;
     private static final int DATE_DIALOG_ID = 0;
-
     private static final String discountresult = "0";
     private boolean isClicked;
-    private ReturnProductDialog returnProductDialog;
     private String screenCode = "MENU_STK_ORD";
-    private CollectionBO collectionbo;
-    private CollectionBeforeInvoiceDialog collectionBeforeInvoiceDialog;
-
     private static final String TAG = "OrderSummary";
     private static final boolean D = true;
-    // Message types sent from the BluetoothChatService Handler
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+    private static final int REQUEST_CONNECT_DEVICE = 1;
+    private static final int REQUEST_ENABLE_BT = 2;
     public static final int MESSAGE_STATE_CHANGE = 1;
     private static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
-    // Key names received from the BluetoothChatService Handler
-    public static final String DEVICE_NAME = "device_name";
-    public static final String TOAST = "toast";
+    private String PHOTO_PATH = "";
+    private static final String ZEBRA_3INCH = "3";
+    public static String mActivityCode;
 
-    private static final int REQUEST_CONNECT_DEVICE = 1;
-    private static final int REQUEST_ENABLE_BT = 2;
-
-    private double vatAmount = 0.0;
-
-    // messages
     private SharedPreferences msettings;
-
     private BluetoothAdapter mBluetoothAdapter = null;
     private BtService mChatService = null;
-
-    private String PHOTO_PATH = "";
-
-    private static final String ZEBRA_3INCH = "3";
     private Connection zebraPrinterConnection;
     private ZebraPrinter printer;
     private AlertDialog.Builder builder10;
-    private double productEntryLevelDis = 0.0;
-
-    private int mSelectedPrintCount = 0;
     private BroadcastReceiver mReceiver;
 
-    private int focusProductCount = 0;
-    private int totalFocusProductCount = 0;
-    private StorewiseDiscountDialogFragment mStoreWiseDiscountDialogFragment;
-
-    private Toolbar toolbar;
-
-    private double totalSchemeDiscValue;
-
-    public static String mActivityCode;
-
-    public boolean isDiscountDialog() {
-        return isDiscountDialog;
-    }
-
-    public void setDiscountDialog(boolean discountDialog) {
-        isDiscountDialog = discountDialog;
-    }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.ordersummary);
+
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
         PHOTO_PATH = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName;
 
-        /** Get the application context **/
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+        /** Close the screen if userid becomes 0 **/
+        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+            Toast.makeText(this,
+                    getResources().getString(R.string.sessionout_loginagain),
+                    Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+
         Bundle extras = getIntent().getExtras();
-        setDiscountDialog(false);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         if (savedInstanceState == null) {
             if (extras != null && extras.getString("ScreenCode") != null) {
                 screenCode = extras.getString("ScreenCode");
             }
         }
-        /** Close the screen if userid becomes 0 **/
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.sessionout_loginagain),
-                    Toast.LENGTH_SHORT).show();
-            finish();
-        }
-        /** Close the screen if userid becomes 0 **/
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.sessionout_loginagain),
-                    Toast.LENGTH_SHORT).show();
-            finish();
-        }
+
+        setDiscountDialog(false);
+
 
         if (bmodel.mSelectedModule == 1 || bmodel.mSelectedModule == 2) {
             bmodel.configurationMasterHelper
@@ -256,18 +226,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         bmodel.saveModuleCompletion("MENU_CLOSING");
 
 
-        /** Initilize the toolbar and set title to it **/
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(screentitle);
-            // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            // Used to remove the app logo actionbar icon and set title as home
-            // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        // Used to hide the app logo icon from actionbar
 
         // Initialize and show focus product alert
         if (bmodel.configurationMasterHelper.SHOW_ORDER_FOCUS_COUNT) {
@@ -3854,4 +3820,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         }
     }
+
+
+    public boolean isDiscountDialog() {
+        return isDiscountDialog;
+    }
+
+    public void setDiscountDialog(boolean discountDialog) {
+        isDiscountDialog = discountDialog;
+    }
+
+
 }
