@@ -416,7 +416,7 @@ public class SalesReturnHelper {
                 saveReplacementDetails(db, getSalesReturnID());
             }
 
-            columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status";
+            columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode";
 
             int siz = bmodel.productHelper.getSalesReturnProducts().size();
             int totalQty;
