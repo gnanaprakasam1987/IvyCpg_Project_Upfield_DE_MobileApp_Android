@@ -79,7 +79,6 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.OrderSplitHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -136,7 +135,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_REALLOCATION = "MENU_REALLOCATION";
     private static final String MENU_EMPTY_RECONCILIATION = "MENU_EMPTY_RECONCILIATION";
     private static final String MENU_ORDER_FULLFILLMENT = "MENU_FULLFILMENT";
-    private static final String MENU_ORDER_SPLIT = "MENU_ORDER_SPLIT";
     private static final String MENU_ROAD_ACTIVITY = "MENU_ROAD_ACTIVITY";
     private static final String MENU_COUNTER = "MENU_COUNTER";
     private static final String MENU_MVP = "MENU_MVP";
@@ -242,7 +240,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_DASH_DAY, R.drawable.ic_vector_dashboard);
         menuIcons.put(MENU_SKUWISESTGT, R.drawable.ic_vector_dashboard);
         menuIcons.put(MENU_JOINT_CALL, R.drawable.ic_vector_jointcall);
-        menuIcons.put(MENU_ORDER_SPLIT, R.drawable.icon_order_split);
         menuIcons.put(MENU_EMPTY_RECONCILIATION, R.drawable.ic_empty_reconcilation_icon);
         menuIcons.put(MENU_ATTENDANCE, R.drawable.ic_vector_out_of_trade);
         menuIcons.put(MENU_REALLOCATION, R.drawable.ic_reallocation_icon);
@@ -969,35 +966,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 vanUnloadStockAdjustmentSubroutine(menuItem.getMenuName());
             }
-        } else if (menuItem.getConfigCode().equals(MENU_ORDER_SPLIT)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.next_day_coverage),
-                        Toast.LENGTH_SHORT).show();
-
-            } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.mark_attendance),
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.leaveToday),
-                            Toast.LENGTH_SHORT).show();
-            } else {
-                // Creating order split helper
-                bmodel.orderSplitHelper = OrderSplitHelper.clearInstance();
-                bmodel.orderSplitHelper = OrderSplitHelper.getInstance(bmodel);
-                bmodel.orderSplitHelper.setLast_split_master_index(0);
-
-                checkForOrderSplitRecordAndGotoOrderSplit(menuItem
-                        .getMenuName());
-            }
-
-        } else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
+        }  else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
             if (isLeave_today) {
                 if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
                     Toast.makeText(getActivity(),
@@ -2245,23 +2214,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         (new DownloadStockAdjustment()).execute();
     }
 
-    public void checkForOrderSplitRecordAndGotoOrderSplit(String menuName) {
-        bmodel.orderSplitHelper = OrderSplitHelper.clearInstance();
-        bmodel.orderSplitHelper = OrderSplitHelper.getInstance(bmodel);
-        bmodel.orderSplitHelper.setLast_split_master_index(0);
-
-        if (bmodel.orderSplitHelper.isThereAnyOrderToSplit()) {
-            bmodel.setOrderSplitScreenTitle(menuName);
-
-            Intent i = new Intent(getActivity(), OrderSplitMasterScreen.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(i);
-            getActivity().finish();
-        } else {
-            Toast.makeText(getActivity(), R.string.toast_nodata_available,
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     public void switchMapView() {

@@ -4184,6 +4184,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = flag;
             bmodel.configurationMasterHelper.SHOW_TAX = flag;
             bmodel.configurationMasterHelper.IS_GST = flag;
+            bmodel.configurationMasterHelper.IS_GST_HSN = flag;
             bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = flag;
             bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = flag;
 //            bmodel.configurationMasterHelper.SHOW_DISCOUNT = flag;

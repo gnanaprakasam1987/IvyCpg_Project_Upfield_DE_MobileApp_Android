@@ -278,7 +278,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tempRField2 = (String) (savedInstanceState
                     .getSerializable(TEMP_RFIELD2) == null ? ""
                     : savedInstanceState.getSerializable(TEMP_RFIELD2));
-            isFromHomeScreen =savedInstanceState.getBoolean(FROM_HOME_SCREEN, false);
+            isFromHomeScreen = savedInstanceState.getBoolean(FROM_HOME_SCREEN, false);
         }
 
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
@@ -340,9 +340,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
 
-        if (bmodel.mSelectedModule == 3)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        else
+
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -534,6 +532,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
     }
+
     private void updateGuidedSellingView(boolean isCreateView, boolean isPrevious) {
         mBtnGuidedSelling_next.setVisibility(View.VISIBLE);
         mBtnNext.setVisibility(View.GONE);
@@ -669,6 +668,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
         return prevSequance;
     }
+
     private void setCurrentFlag(GuidedSellingBO bo) {
         for (GuidedSellingBO guidedSellingBO : bmodel.getmGuidedSelling()) {
             if (bo.getSequance() == guidedSellingBO.getSequance()) {
@@ -678,6 +678,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
         }
     }
+
     private void updateGuidedSellingStatus(GuidedSellingBO bo) {
         if (bo.getSubActivity().equals(mStockCode)) {
             if (isCurrentLogicForStockDone(bo.getFilterCode(), bo.getApplyLevel())) {
@@ -694,6 +695,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             bo.setDone(true);
         }
     }
+
     private boolean isCurrentLogicForStockDone(String filterCode, String applyLevel) {
         if (filterCode.equals("ALL")) {
             if (applyLevel.equals("ALL")) {
@@ -769,6 +771,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
         }
     }
+
     private boolean isCurrentLogicForOrderDone(String filterCode, String applyLevel) {
         if (filterCode.equals("ALL")) {
             if (applyLevel.equals("ALL")) {
@@ -840,7 +843,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             savedInstanceState.putSerializable(TEMP_RFIELD1, tempRField1);
             savedInstanceState.putSerializable(TEMP_RFIELD2, tempRField2);
             savedInstanceState.putSerializable(SCREEN_CODE, screenCode);
-            savedInstanceState.putSerializable(FROM_HOME_SCREEN,isFromHomeScreen);
+            savedInstanceState.putSerializable(FROM_HOME_SCREEN, isFromHomeScreen);
         }
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -1392,22 +1395,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 } catch (Exception e) {
                     Commons.printException(e + "");
                 }
-            }
-
-            //hideColumnsForOrderSplit
-            if (bmodel.mSelectedModule == 3) {
-                findViewById(R.id.shelfPcsCB).setVisibility(View.GONE);
-                findViewById(R.id.warehouseCaseTitle).setVisibility(View.GONE);
-                findViewById(R.id.warehouseOuterTitle).setVisibility(View.GONE);
-                findViewById(R.id.warehousePcsTitle).setVisibility(View.GONE);
-                findViewById(R.id.shelfCaseTitle).setVisibility(View.GONE);
-                findViewById(R.id.shelfOuterTitle).setVisibility(View.GONE);
-                findViewById(R.id.shelfPcsTitle).setVisibility(View.GONE);
-                findViewById(R.id.soTitle).setVisibility(View.GONE);
-                findViewById(R.id.outercaseTitle).setVisibility(View.GONE);
-                findViewById(R.id.wsihTitle).setVisibility(View.GONE);
-                findViewById(R.id.icoTitle).setVisibility(View.GONE);
-                findViewById(R.id.soCaseTitle).setVisibility(View.GONE);
             }
 
             if (bmodel.configurationMasterHelper.SHOW_CUSTOM_KEYBOARD_NEW) {
@@ -1999,19 +1986,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     } catch (Exception e) {
                         Commons.printException(e + "");
                     }
-                }
-
-                //hideColumnsForOrderSplit
-                if (bmodel.mSelectedModule == 3) {
-                    holder.ppq.setVisibility(View.GONE);
-                    holder.ssrp.setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.llAvail)).setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.llShelfCase)).setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.llShelfOuter)).setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.llShelfPc)).setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.llSo)).setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.llSoc)).setVisibility(View.GONE);
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS)
@@ -4090,17 +4064,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 showDialog(0);
             } else {
                 bmodel.productHelper.clearOrderTable();
-                if (bmodel.mSelectedModule == 3) {
-                    startActivity(new Intent(StockAndOrder.this,
-                            OrderSplitMasterScreen.class));
-                    finish();
-                } else {
-                    bmodel.outletTimeStampHelper
-                            .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
-                    startActivity(new Intent(StockAndOrder.this,
-                            HomeScreenTwo.class));
-                    finish();
-                }
+
+                bmodel.outletTimeStampHelper
+                        .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                startActivity(new Intent(StockAndOrder.this,
+                        HomeScreenTwo.class));
+                finish();
+
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
         } catch (Exception e) {
@@ -4127,10 +4097,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             bmodel.productHelper
                                     .clearBomReturnProductsTable();
 
-                        if (bmodel.mSelectedModule == 3) {
-                            bmodel.orderSplitHelper
-                                    .updateEditOrderUploadFlagAsY(bmodel.deleteSpliteOrderID);
-                        }
                         startActivity(new Intent(
                                 StockAndOrder.this,
                                 HomeScreenTwo.class));
@@ -6589,6 +6555,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     String barcode = "";
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {//android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation"
 
@@ -6619,6 +6586,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             AsyncTask<String, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
+
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
@@ -6627,14 +6595,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 //              pname = CRISTAL MED TUK 4LU PST MV
 //                barcode = 3086121601033
                 barcode = barcode.replace("\n", "");
-                if(barcode!=null)
-                for (final ProductMasterBO p : mSchedule.items) {
-                    if (p.getBarCode().equals(barcode)) {
-                        //Calls this methode to add Product piece
-                        barcodeScannerorder(p);
-                        return Boolean.TRUE;
+                if (barcode != null)
+                    for (final ProductMasterBO p : mSchedule.items) {
+                        if (p.getBarCode().equals(barcode)) {
+                            //Calls this methode to add Product piece
+                            barcodeScannerorder(p);
+                            return Boolean.TRUE;
+                        }
                     }
-                }
                 return Boolean.FALSE;
             } catch (Exception e) {
                 Commons.printException(e);

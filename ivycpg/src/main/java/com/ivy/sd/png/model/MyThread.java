@@ -331,11 +331,6 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.DELETE_ORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-            if (bmodel.mSelectedModule == 3) {
-                bmodel.orderSplitHelper.insertSplittedOrder(bmodel
-                                .getRetailerMasterBO().getRetailerID(),
-                        bmodel.deleteSpliteOrderID);
-            }
             bmodel.deleteOrder(bmodel.getRetailerMasterBO().getRetailerID());
 
             // Calculate and set Distribution percent

@@ -68,7 +68,6 @@ import com.ivy.sd.png.model.DownloaderThread;
 import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.OrderSplitHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -818,7 +817,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.NOTIFY_UPLOADED:
                     if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES)
-                            && (bmodel.synchronizationHelper.countImageFiles() > 0||bmodel.synchronizationHelper.countTextFiles()>0)) {
+                            && (bmodel.synchronizationHelper.countImageFiles() > 0 || bmodel.synchronizationHelper.countTextFiles() > 0)) {
                         String s1 = tvwstatus.getText()
                                 + DataMembers.CR1
                                 + getResources().getString(
@@ -965,9 +964,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                                         if (bmodel.synchronizationHelper.checkDataForSync() || bmodel.synchronizationHelper.checkSIHTable()
                                                 || bmodel.synchronizationHelper.checkStockTable()) {
 
-                                            if (bmodel.configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG)
-                                                showDialogForOrderProcessing();
-                                            else if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT) {
+                                            if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT) {
                                                 new LoadRetailerIsVisited().execute();
                                             } else {
                                                 IsImagechecked();
@@ -1130,24 +1127,22 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             case 0:
                 if (resultCode == Activity.RESULT_OK) {
 
-                    if (bmodel.configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG)
-                        showDialogForOrderProcessing();
-                    else {
-                        if (bmodel.synchronizationHelper.checkStockTable())
-                            startSync(UPLOAD_STOCK_IN_HAND);
-                        else if (bmodel.synchronizationHelper.checkStockTable())
-                            startSync(UPLOAD_STOCK_APPLY);
-                        else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-                            startSync(UPLOAD_CS_SIH);
-                        else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                            startSync(UPLOAD_CS_STOCK_APPLY);
-                        else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                            startSync(UPLOAD_CS_REJECTED_VARIANCE);
-                        else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                            startSync(UPLOAD_LOYALTY_POINTS);
-                        else
-                            startSync(UPLOAD_ALL);
-                    }
+
+                    if (bmodel.synchronizationHelper.checkStockTable())
+                        startSync(UPLOAD_STOCK_IN_HAND);
+                    else if (bmodel.synchronizationHelper.checkStockTable())
+                        startSync(UPLOAD_STOCK_APPLY);
+                    else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
+                        startSync(UPLOAD_CS_SIH);
+                    else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
+                        startSync(UPLOAD_CS_STOCK_APPLY);
+                    else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
+                        startSync(UPLOAD_CS_REJECTED_VARIANCE);
+                    else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
+                        startSync(UPLOAD_LOYALTY_POINTS);
+                    else
+                        startSync(UPLOAD_ALL);
+
                 }
 
             case 1:
@@ -1247,16 +1242,14 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                                     || (withPhotosCheckBox.isChecked() && bmodel.synchronizationHelper
                                     .countImageFiles() > 0)) {
                                 isClicked = true;
-                                if (bmodel.configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG)
-                                    showDialogForOrderProcessing();
-                                else {
-                                    if (bmodel.synchronizationHelper.checkSIHTable())
-                                        startSync(3);
-                                    else if (bmodel.synchronizationHelper.checkStockTable())
-                                        startSync(4);
-                                    else
-                                        startSync(0);
-                                }
+
+                                if (bmodel.synchronizationHelper.checkSIHTable())
+                                    startSync(3);
+                                else if (bmodel.synchronizationHelper.checkStockTable())
+                                    startSync(4);
+                                else
+                                    startSync(0);
+
 
                             } else {
                                 bmodel.showAlert(
@@ -1729,26 +1722,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             new MyThread(getActivity(), DataMembers.CS_REJECTED_VARIANCE_UPLOAD).start();
     }
 
-    DialogForOrderProcessing dialogForOrderProcessing = null;
-
-    public void showDialogForOrderProcessing() {
-        bmodel.orderSplitHelper = OrderSplitHelper.clearInstance();
-        bmodel.orderSplitHelper = OrderSplitHelper.getInstance(bmodel);
-        bmodel.orderSplitHelper.loadOrderSplitMasterBOListFromDBForSync();
-
-        this.dialogForOrderProcessing = new DialogForOrderProcessing(getActivity());
-        settOnclickListenerForDialogForOrderProcessing();
-
-        this.dialogForOrderProcessing.show();
-    }
-
-    public void dismissDialogForOrderProcessing() {
-        if ((this.dialogForOrderProcessing != null)
-                && (this.dialogForOrderProcessing.isShowing())) {
-            this.dialogForOrderProcessing.dismiss();
-        }
-    }
-
     public void settOnclickListenerForDialogForOrderProcessing() {
         class ButtonOnClickListener implements View.OnClickListener {
 
@@ -1759,36 +1732,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT
                         && !dayCloseCheckBox.isChecked()) {
                     new LoadRetailerIsVisited().execute();
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PROCESS_DIALOG) { // Removed
-                    // &&
-                    // !dayCloseCheckBox.isChecked()
-                    if (isOnline()) { // since
-                        // dayCloseCheckBox.isChecked()
-                        // same
-                        // functionality
-                        bmodel.orderSplitHelper.updateOrderProcessing();
-                        dismissDialogForOrderProcessing();
-                        if (bmodel.synchronizationHelper.checkSIHTable())
-                            startSync(UPLOAD_STOCK_IN_HAND);
-                        else if (bmodel.synchronizationHelper.checkStockTable())
-                            startSync(UPLOAD_STOCK_APPLY);
-                        else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-                            startSync(UPLOAD_CS_SIH);
-                        else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                            startSync(UPLOAD_CS_STOCK_APPLY);
-                        else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                            startSync(UPLOAD_CS_REJECTED_VARIANCE);
-                        else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                            startSync(UPLOAD_LOYALTY_POINTS);
-                        else
-                            startSync(UPLOAD_ALL);
-                    } else {
-                        dismissDialogForOrderProcessing();
-                        bmodel.showAlert(
-                                getResources()
-                                        .getString(R.string.no_network_connection), 0);
-                        isClicked = false;
-                    }
                 } else {
                     if (bmodel.synchronizationHelper.checkSIHTable())
                         startSync(UPLOAD_STOCK_IN_HAND);
@@ -1808,9 +1751,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             }
 
         }
-
-        dialogForOrderProcessing
-                .setButtonClickListener(new ButtonOnClickListener());
     }
 
     public void showAlertForDownload() {

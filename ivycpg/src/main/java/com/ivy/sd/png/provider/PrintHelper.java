@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
@@ -36,8 +35,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
-
-import javax.mail.Folder;
 
 public class PrintHelper {
     private final Context mContext;
@@ -770,14 +767,15 @@ public class PrintHelper {
                         }
                     }
                 }
+                bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+                bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
 
-                bmodel.productHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-                bmodel.productHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
-                ArrayList<TaxBO> groupIdList = bmodel.productHelper.getGroupIdList();
+
+                ArrayList<TaxBO> groupIdList = bmodel.productHelper.taxHelper.getGroupIdList();
 
                 if (groupIdList != null) {
                     for (TaxBO taxBO : groupIdList) {
-                        LinkedHashSet<TaxBO> percentagerList = bmodel.productHelper.getGroupDesc2ByGroupId().get(taxBO.getGroupId());
+                        LinkedHashSet<TaxBO> percentagerList = bmodel.productHelper.taxHelper.getTaxBoByGroupId().get(taxBO.getGroupId());
                         if (percentagerList != null) {
                             totaltaxCount = totaltaxCount + (percentagerList.size());
                         }
@@ -1122,8 +1120,8 @@ public class PrintHelper {
                     //print tax
                     x = x + 100;
 
-                    HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.getProductIdByTaxGroupId();
-                    SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.getGroupDesc2ByGroupId();
+                    HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.taxHelper.getProductIdByTaxGroupId();
+                    SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.taxHelper.getTaxBoByGroupId();
 
                     if (groupIdList != null) {
                         String taxDesc;
@@ -1533,7 +1531,10 @@ public class PrintHelper {
 
                     sb.append("T 7 0 470 " + (x) + " ");
 
-                    final double taxAmount = bmodel.productHelper.getTotalBillTaxAmount(fromorder);
+                    double taxAmount;
+
+                        taxAmount = bmodel.productHelper.taxHelper.getTotalBillTaxAmount(fromorder);
+
                     sb.append(bmodel.formatValue(taxAmount) + " \r\n");
 
                     x = x + 30;
@@ -2842,7 +2843,7 @@ public class PrintHelper {
      * When save invoice print file created and stored in mobile
      * this method will be deleted print file while downloading
      */
-    public void deletePrintFileAfterDownload(String path){
+    public void deletePrintFileAfterDownload(String path) {
         try {
             File folder = new File(path);
 
@@ -2853,7 +2854,7 @@ public class PrintHelper {
 
             }
             folder.delete();
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
     }

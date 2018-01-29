@@ -1,0 +1,44 @@
+package com.ivy.sd.png.model;
+
+import android.util.SparseArray;
+
+import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.TaxBO;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+
+/**
+ * Created by mansoor on 18/1/18.
+ */
+
+public interface TaxInterface {
+
+    void downloadProductTaxDetails();
+    void downloadBillWiseTaxDetails();
+    void insertInvoiceTaxList(String invoiceid, DBUtil db);
+    void insertOrderTaxList(String orderId, DBUtil db);
+    void loadTaxDetailsForPrint(String invoiceid);
+    void loadTaxProductDetailsForPrint(String invoiceid);
+    void updateProductWiseTax();
+    void saveProductLeveltax(String orderId, DBUtil db);
+    void updateInvoiceIdInProductLevelTax(DBUtil db, String invid, String orderId);
+    double applyBillWiseTax(double totalOrderValue);
+    TaxBO cloneTaxBo(TaxBO taxBO);
+    void calculateTaxOnTax(ProductMasterBO productMasterBO, TaxBO taxBO, boolean isFreeProduct);
+    void insertProductLevelTaxForFreeProduct(String orderId, DBUtil db,String productId, TaxBO taxBO);
+    HashMap<String, ArrayList<TaxBO>> getmTaxListByProductId();
+    ArrayList<TaxBO> getGroupIdList();
+    SparseArray<LinkedHashSet<TaxBO>> getTaxBoByGroupId();
+    LinkedHashMap<String, HashSet<String>> getProductIdByTaxGroupId();
+    double getTotalBillTaxAmount(boolean isOrder);
+    LinkedHashMap<String, HashSet<String>> loadTaxFreeProductDetails(String invoiceid);
+    HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct();
+    ArrayList<TaxBO> getBillTaxList();
+    LinkedHashMap<Integer, HashSet<Double>> getTaxPercentagerListByGroupId();
+
+}

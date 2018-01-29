@@ -49,6 +49,7 @@
             android:maxLength="10"
             android:text="11-05-2017" />
 
+
         <LinearLayout
             android:id="@+id/ll_photoView"
             android:layout_width="0dp"
@@ -94,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginRight="@dimen/right_margin"
-            android:layout_weight="1.5">
+            android:layout_weight="1">
 
             <EditText
                 android:id="@+id/edt_competitor_feedback"
@@ -140,6 +141,28 @@
                 android:imeOptions="actionDone"
                 android:text="@string/zero" />
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_spin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:layout_marginTop="@dimen/dimen_10dp"
+            android:orientation="vertical">
+
+
+            <Spinner
+                android:id="@+id/spn_reason"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_5dp"
+                android:background="@android:color/transparent"
+                android:overlapAnchor="false"
+                android:padding="@dimen/target_top_margin">
+
+            </Spinner>
+        </LinearLayout>
+
 
     </LinearLayout>
 

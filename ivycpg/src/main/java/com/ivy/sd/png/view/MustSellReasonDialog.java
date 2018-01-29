@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
@@ -22,6 +23,7 @@ public class MustSellReasonDialog extends Dialog {
 	BusinessModel bmodel;
 	Spinner reason_spnr;
 	ArrayAdapter<ReasonMaster> dataAdapter;
+	Context context;
 
 	protected MustSellReasonDialog(Context context, boolean cancelable,
 			OnCancelListener cancelListener, final BusinessModel bmodel) {
@@ -29,18 +31,19 @@ public class MustSellReasonDialog extends Dialog {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.must_sell_dialog);
 		this.bmodel = bmodel;
-		this.bmodel.setContext(getOwnerActivity());
+		this.bmodel.setContext((Activity) bmodel.getContext());
+		this.context = context;
 		if (bmodel.configurationMasterHelper.IS_MUST_SELL_REASON) {
 			((TextView) findViewById(R.id.must_sell_message_tv))
 					.setText(R.string.reason_must_sell);
 			reason_spnr = (Spinner) findViewById(R.id.reason_spnr);
 			reason_spnr.setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.btn_ok)).setText(getOwnerActivity()
+			((Button) findViewById(R.id.btn_ok)).setText(context
 					.getResources().getString(R.string.cancel));
 			((Button) findViewById(R.id.btn_continue))
 					.setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.btn_continue)).setText(getOwnerActivity().getResources().getString(R.string.ok));
-			dataAdapter = new ArrayAdapter<ReasonMaster>(getOwnerActivity(),
+			((Button) findViewById(R.id.btn_continue)).setText(context.getResources().getString(R.string.ok));
+			dataAdapter = new ArrayAdapter<ReasonMaster>(context,
 					android.R.layout.simple_spinner_item);
             dataAdapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_reason)));
             loadMustSellReason();
@@ -94,7 +97,7 @@ public class MustSellReasonDialog extends Dialog {
 	public void loadMustSellReason() {
 		try {
 			ReasonMaster reason;
-			DBUtil db = new DBUtil(getOwnerActivity(), DataMembers.DB_NAME,
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
 					DataMembers.DB_PATH);
 			db.openDataBase();
 			Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.MUSTSELL_REASON_TYPE));

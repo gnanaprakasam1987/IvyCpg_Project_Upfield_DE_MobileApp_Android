@@ -300,9 +300,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         }
 
 
-        if (bmodel.mSelectedModule == 3)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        else
+
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
