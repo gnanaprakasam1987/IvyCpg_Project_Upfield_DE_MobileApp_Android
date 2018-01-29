@@ -154,8 +154,8 @@
 
             <Button
                 android:id="@+id/btn_save"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_centerInParent="true"
+                style="?attr/roundedCustomButtonSmall"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="@string/save"
                 android:textAllCaps="false" />

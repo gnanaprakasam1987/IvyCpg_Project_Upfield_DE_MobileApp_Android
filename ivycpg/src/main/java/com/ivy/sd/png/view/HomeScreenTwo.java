@@ -302,7 +302,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
             }
         });
-        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         retailerCodeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         callAnalysisBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
@@ -521,54 +521,54 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         menuIcons.put(MENU_COMBINED_STOCK, R.drawable.activity_icon_stock_check);
         menuIcons.put(MENU_ORDER, R.drawable.activity_icon_order_taking);
         menuIcons.put(MENU_STK_ORD, R.drawable.activity_icon_order_taking);
-        menuIcons.put(MENU_NEAREXPIRY, R.drawable.icon_order);
-        menuIcons.put(MENU_PLANOGRAM, R.drawable.icon_order);
-        menuIcons.put(MENU_SKUWISERTGT, R.drawable.icon_order);
-        menuIcons.put(MENU_COLLECTION, R.drawable.icon_collection);
-        menuIcons.put(MENU_COLLECTION_REF, R.drawable.icon_collection);
-        menuIcons.put(MENU_WITS, R.drawable.icon_sbd);
-        menuIcons.put(MENU_DGT, R.drawable.icon_photo);
-        menuIcons.put(MENU_CLOSING, R.drawable.icon_order);
-        menuIcons.put(MENU_REV, R.drawable.icon_visit);
-        menuIcons.put(MENU_INVOICE, R.drawable.icon_invoice);
-        menuIcons.put(MENU_CALL_ANLYS, R.drawable.icon_call);
-        menuIcons.put(MENU_ECALL, R.drawable.icon_call);
-        menuIcons.put(MENU_RECORD, R.drawable.icon_reports);
-        menuIcons.put(MENU_LCALL, R.drawable.icon_call);
-        menuIcons.put(MENU_SALES_RET, R.drawable.icon_sales_return);
+        menuIcons.put(MENU_NEAREXPIRY, R.drawable.activity_icon_stock_check);
+        menuIcons.put(MENU_PLANOGRAM, R.drawable.activity_icon_stock_check);
+        menuIcons.put(MENU_SKUWISERTGT, R.drawable.activity_icon_stock_check);
+        menuIcons.put(MENU_COLLECTION, R.drawable.activity_icon_stock_check);
+        menuIcons.put(MENU_COLLECTION_REF, R.drawable.activity_icon_stock_check);
+        menuIcons.put(MENU_WITS, R.drawable.activity_icon_presentation);
+        menuIcons.put(MENU_DGT, R.drawable.activity_icon_presentation);
+        menuIcons.put(MENU_CLOSING, R.drawable.activity_icon_order_taking);
+        menuIcons.put(MENU_REV, R.drawable.activity_icon_presentation);
+        menuIcons.put(MENU_INVOICE, R.drawable.activity_icon_presentation);
+        menuIcons.put(MENU_CALL_ANLYS, R.drawable.activity_icon_survey);
+        menuIcons.put(MENU_ECALL, R.drawable.activity_icon_presentation);
+        menuIcons.put(MENU_RECORD, R.drawable.activity_icon_survey);
+        menuIcons.put(MENU_LCALL, R.drawable.activity_icon_survey);
+        menuIcons.put(MENU_SALES_RET, R.drawable.activity_icon_stock_check);
         menuIcons.put(MENU_PHOTO, R.drawable.icon_photo);
-        menuIcons.put(MENU_TASK, R.drawable.icon_new_retailer);
+        menuIcons.put(MENU_TASK, R.drawable.activity_icon_survey);
         menuIcons.put(MENU_SURVEY, R.drawable.activity_icon_survey);
         menuIcons.put(MENU_SURVEY_QDVP3, R.drawable.activity_icon_survey);
         menuIcons.put(MENU_SURVEY01, R.drawable.activity_icon_survey);
         menuIcons.put(MENU_QUALITY, R.drawable.activity_icon_survey);
         menuIcons.put(MENU_PERSUATION, R.drawable.activity_icon_survey);
-        menuIcons.put(MENU_ASSET, R.drawable.icon_survey);
-        menuIcons.put(MENU_POSM, R.drawable.icon_survey);
-        menuIcons.put(MENU_STORECHECK, R.drawable.icon_stock_check);
+        menuIcons.put(MENU_ASSET, R.drawable.activity_icon_presentation);
+        menuIcons.put(MENU_POSM, R.drawable.activity_icon_presentation);
+        menuIcons.put(MENU_STORECHECK, R.drawable.activity_icon_order_taking);
         menuIcons.put(MENU_PRESENTATION, R.drawable.activity_icon_presentation);
         menuIcons.put(MENU_PROMO,
-                R.drawable.icon_promo_track);
+                R.drawable.activity_icon_order_taking);
         menuIcons.put(StandardListMasterConstants.MENU_COLLECTION_VIEW,
-                R.drawable.icon_visit);
+                R.drawable.activity_icon_order_taking);
         menuIcons.put(StandardListMasterConstants.MENU_STOCK_REPLACEMENT,
-                R.drawable.icon_sales_return);
-        menuIcons.put(MENU_PRICE, R.drawable.icon_pricecheck);
-        menuIcons.put(MENU_PRICE_COMP, R.drawable.icon_pricecheck);
-        menuIcons.put(MENU_EMPTY_RETURN, R.drawable.icon_pricecheck);
-        menuIcons.put(MENU_SOS, R.drawable.icon_sos);
-        menuIcons.put(MENU_SOD, R.drawable.icon_sod);
-        menuIcons.put(MENU_SOD_ASSET, R.drawable.icon_sod);
+                R.drawable.activity_icon_survey);
+        menuIcons.put(MENU_PRICE, R.drawable.activity_icon_survey);
+        menuIcons.put(MENU_PRICE_COMP, R.drawable.activity_icon_survey);
+        menuIcons.put(MENU_EMPTY_RETURN, R.drawable.activity_icon_order_taking);
+        menuIcons.put(MENU_SOS, R.drawable.activity_icon_order_taking);
+        menuIcons.put(MENU_SOD, R.drawable.activity_icon_order_taking);
+        menuIcons.put(MENU_SOD_ASSET, R.drawable.activity_icon_survey);
         menuIcons
-                .put(MENU_SOSKU, R.drawable.icon_sosku);
+                .put(MENU_SOSKU, R.drawable.activity_icon_order_taking);
         menuIcons.put(MENU_COMPETITOR,
-                R.drawable.icon_competitor);
+                R.drawable.activity_icon_order_taking);
         menuIcons.put(MENU_CLOSE_CALL,
-                R.drawable.icon_competitor);
-        menuIcons.put(MENU_CLOSE_KLGS, R.drawable.icon_survey);
-        menuIcons.put(MENU_DELIVERY, R.drawable.icon_survey);
-        menuIcons.put(MENU_CONTRACT_VIEW, R.drawable.icon_call);
-        menuIcons.put(MENU_LOYALTY_POINTS, R.drawable.icon_collection);
+                R.drawable.activity_icon_order_taking);
+        menuIcons.put(MENU_CLOSE_KLGS, R.drawable.activity_icon_order_taking);
+        menuIcons.put(MENU_DELIVERY, R.drawable.activity_icon_order_taking);
+        menuIcons.put(MENU_CONTRACT_VIEW, R.drawable.activity_icon_survey);
+        menuIcons.put(MENU_LOYALTY_POINTS, R.drawable.activity_icon_order_taking);
 
         menuIcons.put(MENU_CATALOG_ORDER, R.drawable.activity_icon_order_taking);
         menuIcons.put(MENU_KELLGS_DASH, R.drawable.icon_dash);

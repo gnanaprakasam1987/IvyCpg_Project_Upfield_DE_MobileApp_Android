@@ -100,7 +100,7 @@
 
     <!--profile screem-->
     <dimen name="profile_collopsing_layout_height">350dp</dimen>
-    <dimen name="profile_header_frame_layout_height">180dp</dimen>
+    <dimen name="profile_header_frame_layout_height">100dp</dimen>
 
 
 </resources>

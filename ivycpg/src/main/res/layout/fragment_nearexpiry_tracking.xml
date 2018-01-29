@@ -122,13 +122,13 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/footer_padding">
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:gravity="center"
                 android:orientation="vertical">
 
                 <View
@@ -138,11 +138,12 @@
 
                 <Button
                     android:id="@+id/btn_save"
-                    style="?attr/roundedCustomButtonNormal"
+                    style="?attr/roundedCustomButtonSmall"
                     android:layout_marginBottom="@dimen/activity_margin1"
                     android:layout_marginTop="@dimen/activity_margin1"
                     android:text="@string/save"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:layout_gravity="end"/>
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
