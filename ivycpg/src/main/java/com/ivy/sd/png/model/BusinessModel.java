@@ -7347,6 +7347,7 @@ public class BusinessModel extends Application {
 
             } catch (Exception e1) {
                 Commons.printException(e1);
+
             }
 
             // end insert scheme details
