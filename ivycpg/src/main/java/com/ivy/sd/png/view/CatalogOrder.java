@@ -47,6 +47,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.carousel.CarouselLayoutManager;
 import com.ivy.carousel.CarouselZoomPostLayoutListener;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -494,7 +495,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         updateBrandText(BRAND, -1);
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            bmodel.productHelper.updateMinimumRangeAsBillwiseDisc();
+            DiscountHelper.getInstance(this).updateMinimumRangeAsBillwiseDisc();
         }
 
         mSelectedIdByLevelId = (HashMap<Integer, Integer>) getIntent().getSerializableExtra("FiveFilter");

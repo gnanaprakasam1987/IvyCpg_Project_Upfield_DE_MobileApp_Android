@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,7 +31,6 @@ import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.TaxTempBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -746,7 +744,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     ////
                 } else if (businessModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                     double entryLevelDiscountValue = 0;
-                    if (businessModel.configurationMasterHelper.SHOW_DISCOUNT_DIALOG) {
+                    if (businessModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
                         entryLevelDiscountValue = businessModel.printHelper.getEntryLevelDiscountValue(mProductsForAdapter);
                     }
 

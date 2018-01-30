@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -12,6 +13,7 @@ public class OrderAndInvoiceHelper {
 
 	private Context context;
 	private BusinessModel bmodel;
+	private DiscountHelper discountHelper;
 
 	private static OrderAndInvoiceHelper instance = null;
 	public double mGolderStoreDiscountAmount = 0;
@@ -19,6 +21,7 @@ public class OrderAndInvoiceHelper {
 	protected OrderAndInvoiceHelper(Context context) {
 		this.context = context;
 		this.bmodel = (BusinessModel) context;
+		discountHelper=DiscountHelper.getInstance(context);
 	}
 
 	public static OrderAndInvoiceHelper getInstance(Context context) {
@@ -57,7 +60,7 @@ public class OrderAndInvoiceHelper {
 			if (orderHeaderCursor != null) {
 				if (orderHeaderCursor.moveToNext()) {
 					discValue = orderHeaderCursor.getDouble(0);
-					bmodel.productHelper.getBillWiseDiscountList().get(0).setAppliedDiscount(discValue);
+					discountHelper.getBillWiseDiscountList().get(0).setAppliedDiscount(discValue);
 
 				}
 			}

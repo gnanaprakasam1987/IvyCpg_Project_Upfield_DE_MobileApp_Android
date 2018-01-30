@@ -45,6 +45,7 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
@@ -1682,7 +1683,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             bmodel.setEdit(true);
                         }
 
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE) {
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
                             bmodel.productHelper.getmProductidOrderByEntry().clear();
                             bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                         }
@@ -1914,7 +1915,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         }
 
 
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE) {
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
                             bmodel.productHelper.getmProductidOrderByEntry().clear();
                             bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                         }
@@ -3669,12 +3670,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             /** Settign color **/
             bmodel.configurationMasterHelper.downloadFilterList();
             bmodel.productHelper.updateProductColor();
+
+            DiscountHelper discountHelper=DiscountHelper.getInstance(this);
             if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-                bmodel.productHelper.downloadBillwiseDiscount();
-                bmodel.productHelper.updateRangeWiseBillDiscountFromDB();
+
+                discountHelper.downloadBillwiseDiscount();
+                discountHelper.updateRangeWiseBillDiscountFromDB();
             }
-            // apply bill wise payterm discount
-            bmodel.productHelper.downloadBillwisePaytermDiscount();
+            // apply bill wise pay term discount
+            discountHelper.downloadBillwisePaytermDiscount();
 
             bmodel.productHelper.downloadInStoreLocations();
 

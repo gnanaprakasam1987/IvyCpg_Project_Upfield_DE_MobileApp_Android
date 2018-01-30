@@ -66,6 +66,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity;
@@ -454,7 +455,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mTotalScreenWidth = dm.widthPixels;
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            bmodel.productHelper.updateMinimumRangeAsBillwiseDisc();
+            DiscountHelper.getInstance(this).updateMinimumRangeAsBillwiseDisc();
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
@@ -2510,7 +2511,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.total.setText(strFormatValue);
                             holder.productObj.setTotalamount(tot);
                         }
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                             updateData(holder.productObj);
 
                         updateOrderedCount();
@@ -2690,7 +2691,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.total.setText(strTotal);
                             holder.productObj.setTotalamount(tot);
                         }
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                             updateData(holder.productObj);
 
                         updateOrderedCount();
@@ -2871,7 +2872,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.total.setText(strFormatValue);
                             holder.productObj.setTotalamount(tot);
                         }
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                             updateData(holder.productObj);
 
                         updateOrderedCount();
@@ -5006,7 +5007,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             startActivity(new Intent(this, SurveyActivityNew.class));
             return true;
         } else if (i == R.id.menu_next) {
-            if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+            if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 bmodel.productHelper.setmProductidOrderByEntry(mProductList);
 
             if (bmodel.getOrderHeaderBO() == null)
@@ -6534,7 +6535,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .getOsrp());
             product.setTotalamount(tot);
         }
-        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
             updateData(product);
 
         updateOrderedCount();

@@ -34,7 +34,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.util.DisplayMetrics;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -70,6 +69,8 @@ import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.login.LoginScreen;
+import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
@@ -160,8 +161,6 @@ import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TargetPlanHelper;
 import com.ivy.sd.png.provider.TaskHelper;
-import com.ivy.sd.png.provider.TaxGstHelper;
-import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.provider.TeamLeaderMasterHelper;
 import com.ivy.sd.png.provider.UserFeedBackHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
@@ -222,10 +221,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -3826,7 +3822,7 @@ public class BusinessModel extends Application {
 					 */
                     productId = orderDetailCursor.getString(0);
 
-                    if (configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE) {
+                    if (configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
 
                         if (productHelper.getmProductidOrderByEntry() == null) {
                             LinkedList<String> list = new LinkedList<>();
@@ -7096,8 +7092,8 @@ public class BusinessModel extends Application {
             double entryLevelDistSum = 0;
             // Order Details Entry
             columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
-            if (configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
-                finalProductList = productHelper.getShortProductMaster();
+            if (configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
+                finalProductList = OrderHelper.getInstance(getContext()).getSortedOrderedProducts();
             else
                 finalProductList = productHelper.getProductMaster();
 
@@ -7360,12 +7356,12 @@ public class BusinessModel extends Application {
                 productHelper.saveItemLevelDiscount(this.getOrderid(), db);
             }
 
-            productHelper.insertBillWisePaytermDisc(db, this.getOrderid());
+            DiscountHelper.getInstance(getContext()).insertBillWisePaytermDisc(db, this.getOrderid());
             // insert billwise discount
             if (configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
-                productHelper.saveBillWiseDiscountRangewise(this.getOrderid(), db);
+                DiscountHelper.getInstance(getContext()).saveBillWiseDiscountRangewise(this.getOrderid(), db);
             } else if (configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
-                productHelper.insertBillWiseDisc(db, this.getOrderid());
+                DiscountHelper.getInstance(getContext()).insertBillWiseDisc(db, this.getOrderid());
             } else if (configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
                 if (getOrderHeaderBO().getDiscountValue() > 0) {
                     if (configurationMasterHelper.discountType == 1 || configurationMasterHelper.discountType == 2)

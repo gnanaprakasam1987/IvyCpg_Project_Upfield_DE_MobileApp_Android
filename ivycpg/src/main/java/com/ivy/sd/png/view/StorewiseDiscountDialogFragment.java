@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StoreWsieDiscountBO;
@@ -42,6 +43,7 @@ public class StorewiseDiscountDialogFragment extends DialogFragment {
     private StoreWsieDiscountBO mStorewiseDiscountBO;
     public InputMethodManager inputManager;
     private double mTotalOrderValue,mEnteredDiscAmtOrPercent;
+    DiscountHelper discountHelper;
 
 
     @Override
@@ -53,6 +55,7 @@ public class StorewiseDiscountDialogFragment extends DialogFragment {
         mDialogResult = (OnMyDialogResult) getActivity();
         mTotalOrderValue = getArguments().getDouble("totalValue", 0);
         mEnteredDiscAmtOrPercent = getArguments().getDouble("enteredDiscAmtOrPercent", 0);
+        discountHelper=DiscountHelper.getInstance(getActivity());
 
 
     }
@@ -89,7 +92,7 @@ public class StorewiseDiscountDialogFragment extends DialogFragment {
         inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
-            mDiscountList = bmodel.productHelper.getBillWiseDiscountList();
+            mDiscountList = discountHelper.getBillWiseDiscountList();
             findDiscout();
             if (mStorewiseDiscountBO == null) {
                 getDialog().dismiss();

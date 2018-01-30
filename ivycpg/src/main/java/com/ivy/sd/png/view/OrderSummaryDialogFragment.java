@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -45,6 +46,8 @@ public class OrderSummaryDialogFragment extends DialogFragment {
 
     private HashMap<String, Double> mDiscountValueByTypewithproductbachtid;
 
+    private DiscountHelper discountHelper;
+
 
     @Nullable
     @Override
@@ -59,6 +62,8 @@ public class OrderSummaryDialogFragment extends DialogFragment {
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         getDialog().setTitle("OrderSummary Dialog");
         // Do something else
+        discountHelper = DiscountHelper.getInstance(getActivity());
+
         return rootView;
 
     }
@@ -181,7 +186,7 @@ public class OrderSummaryDialogFragment extends DialogFragment {
 
 
     private void updateDiscoutByTypeId(String prodcutWithBatchid) {
-        HashMap<Integer, Double> discountValueByDiscountId = bmodel.productHelper.getDiscountMapByProductwidthBatchid().get(prodcutWithBatchid);
+        HashMap<Integer, Double> discountValueByDiscountId = discountHelper.getDiscountMapByProductwidthBatchid().get(prodcutWithBatchid);
 
         if (mTypeIdList != null && discountValueByDiscountId != null) {
             if (mDiscountIdListByTypeId != null) {
@@ -392,7 +397,7 @@ public class OrderSummaryDialogFragment extends DialogFragment {
             String batchWithpid = holder.batchProductBO.getProductID() + batchId;
 
             // Apply level discount
-            HashMap<Integer, Double> discountValueByDiscountId = bmodel.productHelper.getDiscountMapByProductwidthBatchid().get(batchWithpid);
+            HashMap<Integer, Double> discountValueByDiscountId = discountHelper.getDiscountMapByProductwidthBatchid().get(batchWithpid);
             if (discountValueByDiscountId != null) {
                 if (mTypeIdList != null) {
                     int count = 0;

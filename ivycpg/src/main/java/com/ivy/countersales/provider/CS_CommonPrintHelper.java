@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.sd.png.bo.BomRetunBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -563,7 +564,7 @@ public class CS_CommonPrintHelper  {
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_APPLY)) {
             value = getProductLevelApplyDiscount(precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_ENTRY)) {
-            value = alignWithLabelForSingleLine(label, formatValueInPrint(bmodel.productHelper.updateProductDiscountUsingEntry(mOrderedProductList), precisionCount));
+            value = alignWithLabelForSingleLine(label, formatValueInPrint((DiscountHelper.getInstance(context).calculateEntryLevelDiscount(mOrderedProductList)), precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_TAX_PRODUCT)) {
             value = getProductLevelTax(precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_BILL_ENTRY)) {

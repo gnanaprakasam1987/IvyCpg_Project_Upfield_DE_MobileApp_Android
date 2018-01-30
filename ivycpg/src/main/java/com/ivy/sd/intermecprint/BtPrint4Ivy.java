@@ -475,7 +475,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                             .getSrp());
 
                     /** Calculate discounted line wise order value **/
-                    if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_DIALOG) {
+                    if (bmodel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
 
                         double line_discount_sum = productBO.getD1()
                                 + productBO.getD2() + productBO.getD3();

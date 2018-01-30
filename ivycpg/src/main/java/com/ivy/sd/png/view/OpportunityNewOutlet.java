@@ -57,6 +57,7 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -397,7 +398,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         mTotalScreenWidth = dm.widthPixels;
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            bmodel.productHelper.updateMinimumRangeAsBillwiseDisc();
+            DiscountHelper.getInstance(this).updateMinimumRangeAsBillwiseDisc();
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
@@ -1830,7 +1831,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
             startActivity(new Intent(this, SurveyActivityNew.class));
             return true;
         } else if (i == R.id.menu_next) {
-            if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+            if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 bmodel.productHelper.setmProductidOrderByEntry(mProductList);
 
             if (bmodel.getOrderHeaderBO() == null)

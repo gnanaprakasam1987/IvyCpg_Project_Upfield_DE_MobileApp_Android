@@ -17,6 +17,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StoreWsieDiscountBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -41,13 +42,14 @@ public class StoreWiseDiscountDialog extends Dialog implements OnClickListener {
     private double value,discount;
     private int dtype;
     private DecimalFormat df;
+    DiscountHelper discountHelper;
 
     public StoreWiseDiscountDialog(Context context,
                                    OnMyDialogResult onmydailogresult, double value, int dtype) {
         super(context);
         this.context = context;
         initAct = (OrderSummary) context;
-
+        discountHelper=DiscountHelper.getInstance(context);
         mDialogResult = onmydailogresult;
         this.value = value;
         this.dtype = dtype;
@@ -63,8 +65,8 @@ public class StoreWiseDiscountDialog extends Dialog implements OnClickListener {
         ok.setOnClickListener(this);
         cancel = (Button) findViewById(R.id.btn_cancel);
         cancel.setOnClickListener(this);
-        bmodel.productHelper.downloadBillwiseDiscount();
-        discountlist = bmodel.productHelper.getBillWiseDiscountList();
+        discountHelper.downloadBillwiseDiscount();
+        discountlist = discountHelper.getBillWiseDiscountList();
 
         Commons.print("list size" + discountlist.size());
         // UpdateDialog();

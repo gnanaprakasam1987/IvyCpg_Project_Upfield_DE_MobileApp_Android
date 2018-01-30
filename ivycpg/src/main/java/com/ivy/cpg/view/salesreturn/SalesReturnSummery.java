@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -559,7 +560,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
             if (!salesReturnHelper.IS_APPLY_DISCOUNT_IN_SR) {
                 bmodel.invoiceDisount = "0";
-                bmodel.productHelper.getBillWiseDiscountList().clear();
+                DiscountHelper.getInstance(SalesReturnSummery.this).getBillWiseDiscountList().clear();
             }
 
             if (!salesReturnHelper.IS_APPLY_TAX_IN_SR) {
