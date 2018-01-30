@@ -264,6 +264,9 @@
     <string name="note_label">Note</string>
     <string name="this_is_exceptional_order">This is an exceptional order.</string>
     <string name="confirm">Confirm</string>
-    <!-- Order confirmation dialog -->
-
+    <!-- Show Rfield1 dialog -->
+    <string name="Please_enter_multipal">Enter pieceQyt</string>
+    <string name="edit_piece">EditPieceDialog</string>
+    <string name="Please_enter_multipal_of">Please enter multipal of rfield value</string>
+    <string name="piece">Piece</string>
 </resources>

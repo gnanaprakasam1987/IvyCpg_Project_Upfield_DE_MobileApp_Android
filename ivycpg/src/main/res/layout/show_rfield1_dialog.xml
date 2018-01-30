@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/dimen_5dp">
+    <LinearLayout
+        android:id="@+id/LL_titleBar"
+        style="?textTitleStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/titlebar"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:padding="8dp"
+            android:text="@string/edit_piece"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_small"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/closeButton"
+            android:layout_width="@dimen/info_icon"
+            android:layout_height="@dimen/info_icon"
+            android:layout_gravity="right|center"
+            android:layout_margin="@dimen/list_margin"
+            android:background="@drawable/icon_close"
+            android:backgroundTint="@color/white"
+            android:gravity="right"
+            android:text="" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="@dimen/list_margin"
+        android:layout_marginRight="@dimen/list_margin"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:cacheColorHint="@null"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="2dp"
+        android:fitsSystemWindows="true"
+        android:layout_below="@+id/LL_titleBar"
+        android:layout_above="@+id/keypad"/>
+    <include
+        android:id="@+id/keypad"
+        layout="@layout/keypad"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_5dp"
+        android:layout_above="@+id/ll_close"/>
+    <LinearLayout
+        android:id="@+id/ll_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/save_btn"
+            style="?attr/roundedCustomButtonSmall"
+            android:text="@string/save"
+            android:layout_gravity="center_horizontal"
+            android:textAllCaps="false"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

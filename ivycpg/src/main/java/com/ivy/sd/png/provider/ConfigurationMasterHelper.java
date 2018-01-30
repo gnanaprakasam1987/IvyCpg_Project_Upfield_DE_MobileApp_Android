@@ -453,6 +453,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_TIME_VIEW;
     public static final String CODE_REASON_SPINNER_APPLY = "RSID";//change Code value
     public boolean SHOW_SPINNER;
+
+    private static final String CODE_RFIELD1_ENABLED = "FUN64";//change config code
+    public boolean IS_RFIELD1_ENABLED;
     /**
      * RoadActivity config *
      */
@@ -2175,8 +2178,8 @@ public class ConfigurationMasterHelper {
         this.SHOW_TIME_VIEW = hashMapHHTModuleConfig.get(CODE_TIME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TIME_APPLY) : false;
         this.SHOW_SPINNER = hashMapHHTModuleConfig.get(CODE_REASON_SPINNER_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_REASON_SPINNER_APPLY) : false;
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
-
-
+        this.IS_RFIELD1_ENABLED= hashMapHHTModuleConfig.get(CODE_RFIELD1_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_RFIELD1_ENABLED) : false;
+        
     }
 
     public void loadOrderReportConfiguration() {
