@@ -83,6 +83,7 @@ public class ProductMasterBO {
 
     // To maintain original SRP value given in master, in case of updating @srp with some other values(SRP without tax).
     private float originalSrp;
+    private int isDrug;
 
     public double getDistiributorSchemeDiscount() {
         return distiributorSchemeDiscount;
@@ -504,6 +505,8 @@ public class ProductMasterBO {
         this.csFreePiece = productBO.getCsFreePiece();
         this.csTotal = productBO.getCsTotal();
         this.isSchemeDiscount = productBO.isSchemeDiscount();
+        this.hsnId = productBO.getHsnId();
+        this.hsnCode = productBO.getHsnCode();
     }
 
     // ******* Location ********
@@ -1794,4 +1797,30 @@ public class ProductMasterBO {
     }
 
     private int compParentId;
+
+    private int hsnId;
+    private String hsnCode;
+
+    public int getHsnId() {
+        return hsnId;
+    }
+
+    public void setHsnId(int hsnId) {
+        this.hsnId = hsnId;
+    }
+
+    public String getHsnCode() {
+        return hsnCode;
+    }
+
+    public void setHsnCode(String hsnCode) {
+        this.hsnCode = hsnCode;
+    }
+
+    public void setIsDrug(int isDrug) {
+        this.isDrug = isDrug;
+    }
+    public int getIsDrug() {
+        return isDrug;
+    }
 }

@@ -12,15 +12,14 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/footer"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_height="@dimen/footer_height"
         android:background="@color/screen_bg_color"
-        android:gravity="center"
         android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+       >
 
         <View
             android:layout_width="match_parent"
@@ -29,13 +28,15 @@
 
         <Button
             android:id="@+id/done"
-            style="?attr/roundedCustomButtonNormal"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/target_top_margin"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_marginRight="@dimen/footer_padding"
             android:onClick="CallAnalysisClick"
             android:text="@string/done"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

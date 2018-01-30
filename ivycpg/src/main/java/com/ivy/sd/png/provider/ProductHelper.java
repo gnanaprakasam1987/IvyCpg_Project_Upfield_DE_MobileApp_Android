@@ -2,9 +2,11 @@ package com.ivy.sd.png.provider;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
@@ -31,10 +33,10 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWsieDiscountBO;
-import com.ivy.sd.png.bo.TaxBO;
-import com.ivy.sd.png.bo.TaxTempBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -46,9 +48,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -83,9 +82,7 @@ public class ProductHelper {
     private Vector<ProductMasterBO> mSalesReturnProducts = null;
     private Map<String, ProductMasterBO> mSalesReturnProductById;
     private ArrayList<Integer> mIndicativeList;
-    private ArrayList<TaxBO> mTaxList = new ArrayList<TaxBO>();
-    private ArrayList<TaxBO> mTaxProdList = new ArrayList<TaxBO>();
-    private ArrayList<TaxTempBO> mTaxSumProdList = new ArrayList<TaxTempBO>();
+
     public String mHomeScreenThreeActivityName = "";
     private Vector<StandardListBO> inStoreLocation = new Vector<>();
     private Vector<LevelBO> globalCategory = new Vector<LevelBO>();
@@ -118,25 +115,11 @@ public class ProductHelper {
     // Bill wise  payterm discount details list and hashmap
     private ArrayList<StoreWsieDiscountBO> mBillWisePayternDiscountList;
 
-
-    // Item level tax details list and hashmap initialization
-
-    private ArrayList<String> mProductTaxList;
-
-
-    private HashMap<String, ArrayList<TaxBO>> mTaxListByProductId;
-
-    public HashMap<String, ArrayList<TaxBO>> getmTaxListByProductId() {
-        return mTaxListByProductId;
-    }
-
-
-    private ArrayList<TaxBO> mGroupIdList;
-    private LinkedHashMap<String, HashSet<String>> mProductIdByTaxGroupId;
-    private LinkedHashMap<Integer, HashSet<Double>> mTaxPercentagerListByGroupId;
-    private SparseArray<LinkedHashSet<TaxBO>> mTaxBOByGroupId;
     private SparseArray<ArrayList<SerialNoBO>> mSerialNoListByProductid;
     private SparseArray<LoadManagementBO> mLoadManagementBOByProductId;
+
+    private HashMap<Integer, Vector<CompetitorFilterLevelBO>> mCompetitorFilterlevelBo;
+    private Vector<CompetitorFilterLevelBO> mCompetitorSequenceValues;
 
 
     public int getmSelectedLocationIndex() {
@@ -204,6 +187,9 @@ public class ProductHelper {
     }
 
     private HashMap<Integer, Integer> mProductidOrderByEntryMap = new HashMap<>();
+
+    public TaxInterface taxHelper;
+
 
     private ProductHelper(Context context) {
         this.mContext = context;
@@ -760,6 +746,167 @@ public class ProductHelper {
             } else {
                 mfilterlevelBo.put(mProductLevelId, pfilterlevel);
             }
+            c.close();
+            db.close();
+        }
+    }
+
+    public void downloadCompetitorFiveFilterLevels() {
+
+
+        List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
+
+        if (mLevels.size() > 0) {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String contentLevelId = mLevels.get(mLevels.size() - 1);
+
+
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append(" SELECT PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
+                    + " where "
+                    + " PL.LevelID =" + mLevels.get(0));
+            if (mLevels.size() > 2) {
+                stringBuffer.append(" OR PL.LevelID =" + mLevels.get(1));
+            }
+            if (mLevels.size() > 3) {
+                stringBuffer.append(" OR PL.LevelID =" + mLevels.get(2));
+            }
+            if (mLevels.size() > 4) {
+                stringBuffer.append(" OR PL.LevelID =" + mLevels.get(3));
+            }
+            if (mLevels.size() > 5) {
+                stringBuffer.append(" OR PL.LevelID =" + mLevels.get(4));
+            }
+            Cursor listCursor = db.selectSQL(stringBuffer.toString());
+
+            CompetitorFilterLevelBO mLevelBO;
+            mCompetitorSequenceValues = new Vector<>();
+            while (listCursor.moveToNext()) {
+
+                mLevelBO = new CompetitorFilterLevelBO();
+                mLevelBO.setProductId(listCursor.getInt(0));
+                mLevelBO.setLevelName(listCursor.getString(1));
+                mLevelBO.setSequence(listCursor.getInt(2));
+
+                mCompetitorSequenceValues.add(mLevelBO);
+            }
+
+            listCursor.close();
+
+            int mContentLevel = 0;
+            int loopEnd = 0;
+
+            if (!contentLevelId.equals("0")) {
+                Cursor seqCur = db
+                        .selectSQL("SELECT IFNULL(PL.Sequence,0) "
+                                + "FROM ProductLevel PL "
+                                + "WHERE  PL.levelid=" + contentLevelId);
+                if (seqCur.moveToNext()) {
+                    mContentLevel = seqCur.getInt(0);
+                }
+                seqCur.close();
+            }
+
+            mCompetitorFilterlevelBo = new HashMap<>();
+
+            try {
+
+                if (mCompetitorSequenceValues.size() > 0) {
+
+                    loopEnd = mContentLevel - mCompetitorSequenceValues.get(0).getSequence()
+                            + 1;
+                    loadCompetitorParentFilter(loopEnd, mCompetitorSequenceValues.get(0).getProductId());
+
+                    for (int i = 1; i < mCompetitorSequenceValues.size(); i++) {
+                        loopEnd = mContentLevel
+                                - mCompetitorSequenceValues.get(i - 1).getSequence() + 1;
+
+                        loadCompetitorChildFilter(loopEnd,
+                                mCompetitorSequenceValues.get(i).getSequence(),
+                                mCompetitorSequenceValues.get(i - 1).getSequence(),
+                                mCompetitorSequenceValues.get(i).getProductId(),
+                                mCompetitorSequenceValues.get(i - 1).getProductId());
+                    }
+                }
+
+            } catch (Exception e) {
+                Commons.print(e.getMessage());
+            }
+        }
+    }
+
+    private void loadCompetitorParentFilter(int loopEnd, int mProductLevelId) {
+        //Select CPM.CPID,CPM.CPName,PL.LevelName from CompetitorProductMaster CPM Left join ProductLevel PL on PL.LevelId = CPM.Plid
+
+        Vector<CompetitorFilterLevelBO> mFilterLevel;
+
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+
+        db.openDataBase();
+
+        String query = "SELECT DISTINCT CPM1.CPID,CPM1.CPName FROM CompetitorProductMaster CPM1";
+
+        for (int i = 2; i <= loopEnd; i++)
+            query = query + " INNER JOIN CompetitorProductMaster CPM" + i + " ON CPM" + i
+                    + ".CPTid = CPM" + (i - 1) + ".CPID";
+
+        query = query
+                + " WHERE CPM1.PLid = " + mProductLevelId + " Order By CPM1.RowId";
+
+        Cursor c = db.selectSQL(query);
+
+        if (c != null) {
+
+            mFilterLevel = new Vector<>();
+            while (c.moveToNext()) {
+                CompetitorFilterLevelBO mLevelBO = new CompetitorFilterLevelBO();
+                mLevelBO.setProductId(c.getInt(0));
+                mLevelBO.setLevelName(c.getString(1));
+                mFilterLevel.add(mLevelBO);
+            }
+            mCompetitorFilterlevelBo.put(mProductLevelId, mFilterLevel);
+            c.close();
+        }
+
+    }
+
+    private void loadCompetitorChildFilter(int loopEnd, int mChildLevel,
+                                           int mParentLevel, int mLevelId, int mParentLevelId) {
+
+        int filterGap = mChildLevel - mParentLevel + 1;
+
+        String query = "SELECT DISTINCT CPM1.CPID, CPM" + filterGap + ".CPID,  CPM"
+                + filterGap + ".CPName FROM CompetitorProductMaster CPM1 ";
+
+        for (int i = 2; i <= loopEnd; i++)
+            query = query + " INNER JOIN CompetitorProductMaster CPM" + i + " ON CPM" + i
+                    + ".CPTid = CPM" + (i - 1) + ".CPID";
+
+        query = query + " WHERE CPM1.PLid = " + mParentLevelId
+                + " Order By CPM" + filterGap + ".RowId,CPM1.RowId";
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+
+        db.openDataBase();
+
+        Cursor c = db.selectSQL(query);
+        Vector<CompetitorFilterLevelBO> mFilterLevel;
+        if (c != null) {
+            mFilterLevel = new Vector<>();
+            while (c.moveToNext()) {
+                CompetitorFilterLevelBO mLevelBO = new CompetitorFilterLevelBO();
+                mLevelBO.setParentId(c.getInt(0));
+                mLevelBO.setProductId(c.getInt(1));
+                mLevelBO.setLevelName(c.getString(2));
+                mFilterLevel.add(mLevelBO);
+            }
+            mCompetitorFilterlevelBo.put(mLevelId, mFilterLevel);
             c.close();
             db.close();
         }
@@ -1430,6 +1577,9 @@ public class ProductHelper {
                         + ((filter21) ? "A" + loopEnd + ".pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A" + loopEnd + ".tagDescription as tagDescription,"
+                        + "A" + loopEnd + ".HSNId as HSNId,"
+                        + "HSN.HSNCode as HSNCode,"
+                        + "A" + loopEnd + ".IsDrug as IsDrug,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -1459,7 +1609,8 @@ public class ProductHelper {
                         + ".pid=sbd.productid and sbd.channelid="
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid";
+                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid"
+                        + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A" + loopEnd + ".HSNId";
                 if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                     sql = sql + " WHERE A1.PLid = " + bmodel.productHelper.getmSelectedGLobalLevelID()
                             + " AND A1.PID = " + bmodel.productHelper.getmSelectedGlobalProductId()
@@ -1559,6 +1710,9 @@ public class ProductHelper {
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
 
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
+                    product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
+                    product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
+                    product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
@@ -1571,7 +1725,7 @@ public class ProductHelper {
             db.closeDB();
 
             if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                downloadExcludeProductTaxDetails();
+                taxHelper.downloadProductTaxDetails();
             }
 
             if (mChildLevel > 0)
@@ -2221,8 +2375,10 @@ public class ProductHelper {
 
             db.closeDB();
 
-            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER)
-                downloadExcludeProductTaxDetails();
+            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
+                taxHelper.downloadProductTaxDetails();
+
+            }
 
 
         } catch (Exception e) {
@@ -3831,152 +3987,6 @@ public class ProductHelper {
         return totalAmount;
     }
 
-
-    public void downloadTaxDetails() {
-        mTaxList = new ArrayList<TaxBO>();
-        TaxBO taxBO;
-        DBUtil db = null;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("select TM.TaxType,TM.TaxRate,TM.Sequence,SLM.ListName,TM.ParentType,TM.applylevelid from  TaxMaster TM ");
-            sb.append("inner JOIN ProductTaxMaster PTM on  PTM.groupid = TM.groupid ");
-            sb.append("INNER JOIN StandardListMaster SLM ON SLM.Listid = TM.TaxType ");
-            sb.append("inner JOIN (select listid from standardlistmaster where  listcode='BILL' and ListType='TAX_APPLY_TYPE') SD ON TM.applylevelid =SD.listid ");
-            sb.append("where PTM.TaxTypeId = "
-                    + bmodel.getRetailerMasterBO().getTaxTypeId());
-            sb.append(" AND PTM.PID = 0");
-
-
-            // String query = " Select TM.TaxType,TM.TaxRate,TM.Sequence,SLM.ListName,TM.ParentType From TaxMaster TM INNER JOIN StandardListMaster SLM on SLM.Listid = TM.TaxType Where ApplyLevelId in (Select ListId from StandardListMaster  Where  ListCode='BILL')";
-            // String query =
-            // "select TaxType,TaxRate,Sequence,TaxDesc,ParentType from taxmaster  where applylevelid in (select listid from standardlistmaster where  listcode='INVOICE')";
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    taxBO = new TaxBO();
-                    taxBO.setTaxType(c.getString(0));
-                    taxBO.setTaxRate(c.getDouble(1));
-                    taxBO.setSequence(c.getString(2));
-                    taxBO.setTaxDesc(c.getString(3));
-                    taxBO.setParentType(c.getString(4));
-                    taxBO.setTaxTypeId(c.getInt(5));
-
-                    mTaxList.add(taxBO);
-                }
-
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    /**
-     * @param invoiceid
-     * @author rajesh.k Method to use insert tax details in SQLite
-     */
-    public void updateTaxList(String invoiceid, DBUtil db) {
-
-        if (mTaxList != null) {
-            String columns = "RetailerId,invoiceid,taxRate,taxType,taxValue";
-            StringBuffer sb;
-            for (TaxBO taxBO : mTaxList) {
-                sb = new StringBuffer();
-                sb.append(bmodel.QT(bmodel.getRetailerMasterBO()
-                        .getRetailerID()) + ",");
-                sb.append(bmodel.QT(invoiceid) + "," + taxBO.getTaxRate() + ",");
-                sb.append(bmodel.QT(taxBO.getTaxType()) + ","
-                        + SDUtil.format(taxBO.getTotalTaxAmount(), 2, bmodel.configurationMasterHelper.VALUE_COMMA_COUNT));
-                db.insertSQL("InvoiceTaxDetails", columns, sb.toString());
-
-            }
-        }
-
-    }
-
-    /**
-     * @param orderId
-     * @param db
-     * @author rajesh.k Method to use insert tax details in SQLite
-     */
-    public void updateTaxListInOrderId(String orderId, DBUtil db) {
-
-        db.deleteSQL("OrderTaxDetails", "OrderID=" + orderId,
-                false);
-        if (mTaxList != null) {
-            String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid";
-            StringBuffer sb;
-            for (TaxBO taxBO : mTaxList) {
-                sb = new StringBuffer();
-                sb.append(bmodel.QT(bmodel.getRetailerMasterBO()
-                        .getRetailerID()) + ",");
-                sb.append(orderId + "," + taxBO.getTaxRate() + ",");
-                sb.append(bmodel.QT(taxBO.getTaxType()) + ","
-                        + SDUtil.roundIt(taxBO.getTotalTaxAmount(), 2) + "," + "0");
-                db.insertSQL("OrderTaxDetails", columns, sb.toString());
-
-            }
-        }
-
-    }
-
-
-    /**
-     * @param invoiceid
-     * @author Felix Method to use insert product tax details in SQLite
-     */
-    public void updateProductTaxList(String invoiceid, DBUtil db) {
-
-        if (mTaxProdList != null) {//
-            String columns = "RetailerId,invoiceid,pid,taxRate,taxType,taxValue";
-            StringBuffer sb;
-            for (TaxBO taxBO : mTaxProdList) {
-                for (ProductMasterBO sku : productMaster) {
-                    int taxSize = sku.getTaxes().size();
-                    for (int i = 0; i < taxSize; i++) {
-                        if (sku.getProductID().equals(taxBO.getPid() + "")
-                                && sku.getTaxes().get(i).getTaxType()
-                                .equals(taxBO.getTaxType())) {
-                            if (sku.getOrderedCaseQty() > 0
-                                    || sku.getOrderedPcsQty() > 0
-                                    || sku.getOrderedOuterQty() > 0) {
-
-                                double taxValue = (sku.getOrderedPcsQty() * ((sku
-                                        .getSrp() * sku.getTaxes().get(i)
-                                        .getTaxRate()) / 100))
-                                        + (sku.getOrderedCaseQty() * ((sku
-                                        .getCsrp() * sku.getTaxes()
-                                        .get(i).getTaxRate()) / 100))
-                                        + (sku.getOrderedOuterQty() * ((sku
-                                        .getOsrp() * sku.getTaxes()
-                                        .get(i).getTaxRate()) / 100));
-
-                                sb = new StringBuffer();
-                                sb.append(bmodel.QT(bmodel
-                                        .getRetailerMasterBO().getRetailerID())
-                                        + ",");
-                                sb.append(bmodel.QT(invoiceid) + ","
-                                        + sku.getProductID() + ","
-                                        + sku.getTaxes().get(i).getTaxRate()
-                                        + ",");
-                                sb.append((taxBO.getTaxTypeId()) + ","
-                                        + taxValue);
-                                db.insertSQL("InvoiceTaxDetails", columns,
-                                        sb.toString());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
     ArrayList<Integer> mOrderType = new ArrayList<Integer>();
 
     public ArrayList<Integer> getmOrderType() {
@@ -4357,21 +4367,6 @@ public class ProductHelper {
             Commons.printException("Download Category", e);
         }
 
-    }
-
-
-    public ArrayList<TaxBO> getTaxList() {
-        if (mTaxList != null) {
-            return mTaxList;
-        }
-        return new ArrayList<TaxBO>();
-    }
-
-    public ArrayList<TaxTempBO> getTaxSumProdList() {
-        if (mTaxSumProdList != null) {
-            return mTaxSumProdList;
-        }
-        return new ArrayList<TaxTempBO>();
     }
 
     public ArrayList<BomRetunBo> getBomReturnProducts() {
@@ -5258,690 +5253,8 @@ public class ProductHelper {
 
             }
         }
-
     }
 
-    /**
-     * @author rajesh.k Method to use download product wise tax details
-     */
-
-    public void downloadExcludeProductTaxDetails() {
-
-        mProductTaxList = new ArrayList<String>();
-        mTaxListByProductId = new HashMap<String, ArrayList<TaxBO>>();
-        DBUtil db = null;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = null;
-            int seqToSwap = 0;
-            int locationId = 0;
-            //Location not needed if GST applied
-            if (!bmodel.configurationMasterHelper.IS_GST && bmodel.configurationMasterHelper.IS_LOCATION_WISE_TAX_APPLIED) {
-                c = db.selectSQL("SELECT (SELECT Sequence FROM LocationLevel WHERE id = (SELECT LocLevelId FROM LocationMaster WHERE LocId = (SELECT locationid FROM RetailerMaster WHERE RetailerID = '" + bmodel.getRetailerMasterBO().getRetailerID() + "'))) - (SELECT Sequence FROM LocationLevel WHERE id = (SELECT Id FROM LocationLevel WHERE Code = '" + bmodel.configurationMasterHelper.STRING_LOCATION_WISE_TAX_APPLIED + "'))");
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        seqToSwap = c.getInt(0) + 1;
-                    }
-                }
-                c.close();
-
-                String query = "SELECT LOC_MAS" + seqToSwap + ".LocId FROM LocationMaster LOC_MAS1";
-                for (int i = 2; i <= seqToSwap; i++)
-                    query += " INNER JOIN LocationMaster LOC_MAS" + i + " ON LOC_MAS"
-                            + (i - 1) + ".LocParentId = LOC_MAS" + i + ".LocId";
-                query += " WHERE LOC_MAS1.LocId  = '" + bmodel.getRetailerMasterBO().getLocationId() + "'";
-                c = db.selectSQL(query);
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        locationId = c.getInt(0);
-                    }
-                }
-                c.close();
-
-            }
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("select distinct A.pid,TM.TaxDesc,TM.taxrate,SLM.ListName,TM.TaxType,TM.minvalue,TM.maxValue,TM.applyRange,TM.groupid,ifnull(TM.parentType,0) from  productmaster A ");
-            sb.append("inner JOIN ProductTaxMaster PTM on  PTM.pid = A.pid ");
-            sb.append("inner JOIN TaxMaster TM on  PTM.groupid = TM.groupid ");
-            sb.append("INNER JOIN StandardListMaster SLM ON SLM.Listid = TM.TaxType ");
-            sb.append("inner JOIN (select listid from standardlistmaster where  listcode='ITEM' and ListType='TAX_APPLY_TYPE') SD ON TM.applylevelid =SD.listid ");
-
-
-            sb.append("where PTM.TaxTypeId = "
-                    + bmodel.getRetailerMasterBO().getTaxTypeId());
-            if (bmodel.configurationMasterHelper.IS_GST) {
-                sb.append(" AND PTM.isSameZone = " + bmodel.getRetailerMasterBO().isSameZone());
-            } else if (bmodel.configurationMasterHelper.IS_LOCATION_WISE_TAX_APPLIED) {
-                sb.append(" AND PTM.locationid = " + locationId);
-            }
-            sb.append("  order by A.pid");
-            c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                TaxBO taxBo;
-                ArrayList<TaxBO> taxList = new ArrayList<TaxBO>();
-
-                String productid = "";
-
-                while (c.moveToNext()) {
-                    taxBo = new TaxBO();
-                    taxBo.setPid(c.getInt(0));
-
-                    taxBo.setTaxRate(c.getDouble(2));
-                    taxBo.setTaxDesc(c.getString(3));
-                    taxBo.setTaxType(c.getString(4));
-                    taxBo.setMinValue(c.getDouble(5));
-                    taxBo.setMaxValue(c.getDouble(6));
-                    taxBo.setApplyRange(c.getInt(7));
-                    taxBo.setGroupId(c.getInt(8));
-                    taxBo.setParentType(c.getString(9));
-                    if (!productid.equals(taxBo.getPid() + "")) {
-                        if (!productid.equals("")) {
-
-                            mTaxListByProductId.put(productid, taxList);
-                            taxList = new ArrayList<TaxBO>();
-                            taxList.add(taxBo);
-                            productid = taxBo.getPid() + "";
-                            mProductTaxList.add(productid);
-
-                        } else {
-
-                            taxList.add(taxBo);
-
-                            productid = taxBo.getPid() + "";
-                            mProductTaxList.add(productid);
-
-                        }
-                    } else {
-                        taxList.add(taxBo);
-
-                    }
-
-                }
-                if (taxList.size() > 0) {
-                    mTaxListByProductId.put(productid, taxList);
-                }
-
-            }
-            sb = null;
-            c.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    /**
-     * Method to use load tax information for print zebra 3inch in titan project
-     *
-     * @param invoiceid
-     */
-    public void loadTaxDetailsForPrint(String invoiceid) {
-
-        DBUtil db = null;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from invoicetaxdetails IT");
-            sb.append(" inner join taxmaster TM on IT.groupid=TM.Groupid and IT.TaxType=TM.taxtype ");
-            sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
-            sb.append(" where invoiceid=" + bmodel.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                int groupid = 0;
-                mGroupIdList = new ArrayList<>();
-
-                mTaxPercentagerListByGroupId = new LinkedHashMap<>();
-                mTaxBOByGroupId = new SparseArray<>();
-                HashSet<Double> taxPercentagelist = new HashSet<>();
-                LinkedHashSet<TaxBO> taxList = new LinkedHashSet<>();
-                TaxBO taxBO;
-                while (c.moveToNext()) {
-
-                    taxBO = new TaxBO();
-                    taxBO.setGroupId(c.getInt(0));
-
-                    taxBO.setTaxDesc2(c.getString(2));
-                    taxBO.setTaxRate(c.getDouble(1));
-                    taxBO.setParentType(c.getString(3));
-
-                    if (groupid != c.getInt(0)) {
-                        if (groupid != 0) {
-
-                            mTaxPercentagerListByGroupId.put(groupid, taxPercentagelist);
-
-                            taxPercentagelist = new HashSet<Double>();
-                            taxPercentagelist.add(c.getDouble(2));
-
-                            mTaxBOByGroupId.put(groupid, taxList);
-                            taxList = new LinkedHashSet<TaxBO>();
-                            taxList.add(taxBO);
-
-                            groupid = c.getInt(0);
-
-                            mGroupIdList.add(taxBO);
-
-
-                        } else {
-
-
-                            taxPercentagelist.add(c.getDouble(2));
-                            taxList.add(taxBO);
-
-                            groupid = c.getInt(0);
-                            mGroupIdList.add(taxBO);
-
-                        }
-                    } else {
-
-                        taxPercentagelist.add(c.getDouble(2));
-                        taxList.add(taxBO);
-
-                    }
-
-
-                }
-
-                if (taxPercentagelist.size() > 0) {
-                    mTaxPercentagerListByGroupId.put(groupid, taxPercentagelist);
-                }
-                if (taxList.size() > 0) {
-                    mTaxBOByGroupId.put(groupid, taxList);
-                }
-
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-    }
-
-    public void loadTaxProductDetailsForPrint(String invoiceid) {
-
-        DBUtil db = null;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from invoicetaxdetails IT");
-            sb.append(" left join taxmaster TM on IT.groupid=TM.Groupid");
-            sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
-            sb.append(" where invoiceid=" + bmodel.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                String groupid = "";
-
-                mProductIdByTaxGroupId = new LinkedHashMap<String, HashSet<String>>();
-                HashSet<String> producttaxlist = new HashSet<String>();
-
-
-                while (c.moveToNext()) {
-                    String productid = c.getString(1);
-
-                    if (!groupid.equals(c.getInt(0) + "" + c.getDouble(2))) {
-                        if (!groupid.equals("")) {
-                            mProductIdByTaxGroupId.put(groupid, producttaxlist);
-                            producttaxlist = new HashSet<String>();
-                            producttaxlist.add(productid);
-
-
-                            groupid = c.getInt(0) + "" + c.getDouble(2);
-
-
-                        } else {
-
-                            producttaxlist.add(productid);
-
-                            groupid = c.getInt(0) + "" + c.getDouble(2);
-
-
-                        }
-                    } else {
-                        producttaxlist.add(productid);
-
-
-                    }
-
-
-                }
-                if (producttaxlist.size() > 0) {
-                    mProductIdByTaxGroupId.put(groupid, producttaxlist);
-                }
-
-
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-    }
-
-    public LinkedHashMap<String, HashSet<String>> loadTaxFreeProductDetails(String invoiceid) {
-
-        LinkedHashMap<String, HashSet<String>> mFreeProductIdByTaxGroupId = new LinkedHashMap<>();
-        DBUtil db = null;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from invoicetaxdetails IT");
-            sb.append(" left join taxmaster TM on IT.groupid=TM.Groupid");
-            sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
-            sb.append(" where invoiceid=" + bmodel.QT(invoiceid) + "and IT.isFreeProduct=1 order by IT.taxType,IT.taxRate");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                String groupid = "";
-
-                HashSet<String> producttaxlist = new HashSet<String>();
-
-
-                while (c.moveToNext()) {
-                    String productid = c.getString(1);
-
-                    if (!groupid.equals(c.getInt(0) + "" + c.getDouble(2))) {
-                        if (!groupid.equals("")) {
-                            mFreeProductIdByTaxGroupId.put(groupid, producttaxlist);
-                            producttaxlist = new HashSet<String>();
-                            producttaxlist.add(productid);
-
-
-                            groupid = c.getInt(0) + "" + c.getDouble(2);
-
-
-                        } else {
-
-                            producttaxlist.add(productid);
-
-                            groupid = c.getInt(0) + "" + c.getDouble(2);
-
-
-                        }
-                    } else {
-                        producttaxlist.add(productid);
-
-
-                    }
-
-
-                }
-                if (producttaxlist.size() > 0) {
-                    mFreeProductIdByTaxGroupId.put(groupid, producttaxlist);
-                }
-
-
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        return mFreeProductIdByTaxGroupId;
-    }
-
-    public ArrayList<TaxBO> getGroupIdList() {
-        if (mGroupIdList != null) {
-            return mGroupIdList;
-        }
-        return new ArrayList<TaxBO>();
-    }
-
-    public LinkedHashMap<String, HashSet<String>> getProductIdByTaxGroupId() {
-        return mProductIdByTaxGroupId;
-    }
-
-    public LinkedHashMap<Integer, HashSet<Double>> getTaxPercentagerListByGroupId() {
-        return mTaxPercentagerListByGroupId;
-    }
-
-    public SparseArray<LinkedHashSet<TaxBO>> getGroupDesc2ByGroupId() {
-        return mTaxBOByGroupId;
-    }
-
-
-    /**
-     * @author rajesh.k Method to use update productwise tax value only object
-     * level not DB level
-     */
-    public void updateProductWiseTax() {
-        if (mProductTaxList != null) {
-            mTaxBoBatchProduct = new HashMap<>();
-            for (String productId : mProductTaxList) {
-                ProductMasterBO productBo = getProductMasterBOById(productId);
-
-                if (productBo != null) {
-                    if (productBo.getOrderedPcsQty() > 0
-                            || productBo.getOrderedCaseQty() > 0
-                            || productBo.getOrderedOuterQty() > 0) {
-                        ArrayList<TaxBO> taxList = mTaxListByProductId
-                                .get(productId);
-                        if (taxList != null) {
-                            int totalQty = productBo.getOrderedPcsQty()
-                                    + productBo.getOrderedCaseQty()
-                                    * productBo.getCaseSize()
-                                    + productBo.getOrderedOuterQty()
-                                    * productBo.getOutersize();
-                            double totalValue = productBo
-                                    .getDiscount_order_value();
-                            double remainingValue = totalValue / totalQty;
-                            double taxRate = 0;
-                            taxBOArrayList = new ArrayList<>();
-                            for (TaxBO taxBO : taxList) {
-                                if (bmodel.configurationMasterHelper.SHOW_MRP_LEVEL_TAX) {
-                                    if (taxBO.getApplyRange() == 1) {
-
-                                        if (taxBO.getMinValue() <= remainingValue
-                                                && taxBO.getMaxValue() >= remainingValue) {
-
-                                            if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
-                                                taxRate += taxBO.getTaxRate();
-                                            }
-
-                                            if (bmodel.configurationMasterHelper.IS_GST)
-                                                calculateTaxOnTax(productBo, taxBO, false);
-
-                                        }
-
-                                    } else {
-                                        if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
-                                            taxRate += taxBO.getTaxRate();
-                                        }
-
-                                        if (bmodel.configurationMasterHelper.IS_GST)
-                                            calculateTaxOnTax(productBo, taxBO, false);
-                                    }
-                                } else {
-                                    if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
-                                        taxRate += taxBO.getTaxRate();
-                                    }
-
-                                    if (bmodel.configurationMasterHelper.IS_GST)
-                                        calculateTaxOnTax(productBo, taxBO, false);
-                                }
-                            }
-                            //  calculateTotalTaxForProduct(productBo);
-                            calculateProductExcludeTax(productBo, taxRate);
-
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-
-    private HashMap<String, TaxBO> mTaxBoByBatchProduct = null;
-    private HashMap<String, ArrayList<TaxBO>> mTaxBoBatchProduct = null;//used for batch wise product's
-    ArrayList<TaxBO> taxBOArrayList = null;
-
-    public HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct() {
-        return mTaxBoBatchProduct;
-    }
-
-    // Excluding tax value from product total value and setting it in taxlist(mTaxListByProductId) against to product id
-    public void calculateTaxOnTax(ProductMasterBO productMasterBO, TaxBO taxBO, boolean isFreeProduct) {
-
-        double productPriceWithoutTax = 0.0;
-        double taxAmount = 0.0;
-
-        if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
-            //Allowing only parent tax type
-
-            if (productMasterBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                // If batch available
-
-                ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper
-                        .getBatchlistByProductID().get(productMasterBO.getProductID());
-                if (batchList != null) {
-                    mTaxBoByBatchProduct = new HashMap<>();
-                    TaxBO batchTaxBO = null;
-                    for (ProductMasterBO batchProductBO : batchList) {
-                        if (batchProductBO.getOrderedPcsQty() > 0
-                                || batchProductBO.getOrderedCaseQty() > 0
-                                || batchProductBO.getOrderedOuterQty() > 0) {
-                            // calculating tax value batchwise
-
-                            batchTaxBO = cloneTaxBo(taxBO);
-
-                            productPriceWithoutTax = batchProductBO.getDiscount_order_value() / (1 + (batchTaxBO.getTaxRate() / 100));
-                            taxAmount = productPriceWithoutTax * batchTaxBO.getTaxRate() / 100;
-
-                            batchTaxBO.setTotalTaxAmount(taxAmount);
-                            batchTaxBO.setTaxableAmount(productPriceWithoutTax);
-                            if (mTaxBoBatchProduct.get(batchProductBO.getProductID()) == null)
-                                taxBOArrayList.add(batchTaxBO);
-
-                            if (mTaxBoBatchProduct == null)
-                                mTaxBoBatchProduct.put(batchProductBO.getProductID(), taxBOArrayList);
-                            else if (mTaxBoBatchProduct.get(batchProductBO.getProductID()) != null)
-                                mTaxBoBatchProduct.get(batchProductBO.getProductID()).add(batchTaxBO);
-                            else
-                                mTaxBoBatchProduct.put(batchProductBO.getProductID(), taxBOArrayList);
-
-                            mTaxBoByBatchProduct.put(batchProductBO.getProductID() + batchProductBO.getBatchid(), batchTaxBO);
-
-
-                        }
-                    }
-
-                    HashMap<String, TaxBO> tempList = new HashMap<>();
-                    if (batchTaxBO != null)
-                        tempList.put(taxBO.getTaxType(), batchTaxBO);
-                    excludeChildTaxIfAvailable(productMasterBO, tempList, isFreeProduct);
-
-                }
-            } else {
-                // calculating tax value
-
-                productPriceWithoutTax = productMasterBO.getDiscount_order_value() / (1 + (taxBO.getTaxRate() / 100));
-                taxAmount = productPriceWithoutTax * taxBO.getTaxRate() / 100;
-
-                //setting tax and taxable amount against to each tax object
-                taxBO.setTotalTaxAmount(taxAmount);
-                taxBO.setTaxableAmount(productPriceWithoutTax);
-
-                // calculating tax amount for child taxes..
-                HashMap<String, TaxBO> tempList = new HashMap<>();
-                tempList.put(taxBO.getTaxType(), taxBO);
-                excludeChildTaxIfAvailable(productMasterBO, tempList, isFreeProduct);
-            }
-        }
-
-    }
-
-
-    // excluding child tax value if available for parent(mParentTaxBoByTaxType) tax
-    // recursive call used to calculate tax value for every(child of child..) child.
-    private void excludeChildTaxIfAvailable(ProductMasterBO productMasterBO, HashMap<String, TaxBO> mParentTaxBoByTaxType, boolean isFreeProduct) {
-
-
-        try {
-
-            double completeParentTaxAmount = 0.0;
-            double childTaxAmount = 0.0;
-            HashMap<String, TaxBO> mTempParentTaxBoByTaxType = new HashMap<>();
-
-            for (String parentTaxType : mParentTaxBoByTaxType.keySet()) {
-
-                for (TaxBO childTaxBO : (!isFreeProduct ? mTaxListByProductId.get(productMasterBO.getProductID()) : bmodel.getmFreeProductTaxListByProductId().get(productMasterBO.getProductID()))) {
-                    if (childTaxBO.getParentType().equals(mParentTaxBoByTaxType.get(parentTaxType).getTaxType())) {
-                        // child tax available
-
-                        if (productMasterBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                            ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper
-                                    .getBatchlistByProductID().get(productMasterBO.getProductID());
-                            if (batchList != null) {
-                                // batch available
-                                for (ProductMasterBO batchProductBO : batchList) {
-                                    if (batchProductBO.getOrderedPcsQty() > 0
-                                            || batchProductBO.getOrderedCaseQty() > 0
-                                            || batchProductBO.getOrderedOuterQty() > 0) {
-
-                                        TaxBO batchChildTaxBO = cloneTaxBo(childTaxBO);
-
-                                        completeParentTaxAmount = mTaxBoByBatchProduct.get(batchProductBO.getProductID() + batchProductBO.getBatchid()).getTotalTaxAmount() / (1 + (batchChildTaxBO.getTaxRate() / 100));
-                                        childTaxAmount = completeParentTaxAmount * batchChildTaxBO.getTaxRate() / 100;
-
-                                        batchChildTaxBO.setTotalTaxAmount(childTaxAmount);
-                                        batchChildTaxBO.setTaxableAmount(mTaxBoByBatchProduct.get(batchProductBO.getProductID() + batchProductBO.getBatchid()).getTotalTaxAmount());
-
-                                        mTaxBoByBatchProduct.put(batchProductBO.getProductID() + batchProductBO.getBatchid(), batchChildTaxBO);
-
-                                        mTempParentTaxBoByTaxType.put(childTaxBO.getTaxType(), childTaxBO);
-
-                                    }
-                                }
-                            }
-                        } else {
-
-                            // calculating tax values for child tax..
-                            completeParentTaxAmount = mParentTaxBoByTaxType.get(parentTaxType).getTotalTaxAmount() / (1 + (childTaxBO.getTaxRate() / 100));
-                            childTaxAmount = completeParentTaxAmount * childTaxBO.getTaxRate() / 100;
-
-                            childTaxBO.setTotalTaxAmount(childTaxAmount);
-                            childTaxBO.setTaxableAmount(mParentTaxBoByTaxType.get(parentTaxType).getTotalTaxAmount());
-
-                            mTempParentTaxBoByTaxType.put(childTaxBO.getTaxType(), childTaxBO);
-                        }
-
-
-                    }
-
-                }
-
-
-            }
-
-            // Recursive call until current taxBo has child
-            if (mTempParentTaxBoByTaxType.size() > 0) {
-                excludeChildTaxIfAvailable(productMasterBO, mTempParentTaxBoByTaxType, isFreeProduct);
-            }
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-
-    }
-
-    private void calculateTotalTaxForProduct(ProductMasterBO productMasterBO) {
-        // calculating total tax applied for a product
-
-        double totalTaxAmount = 0;
-
-        for (TaxBO taxBO : mTaxListByProductId
-                .get(productMasterBO.getProductID())) {
-            if (taxBO.getParentType().equals("0")) {// child tax amount no need to add
-
-                totalTaxAmount += taxBO.getTotalTaxAmount();
-            }
-        }
-
-        productMasterBO.setTaxApplyvalue(totalTaxAmount);
-        productMasterBO.setTaxValue(productMasterBO.getDiscount_order_value() - totalTaxAmount);
-    }
-
-
-    public TaxBO cloneTaxBo(TaxBO taxBO) {
-
-        return new TaxBO(taxBO.getTaxType(), taxBO.getTaxRate(), taxBO.getSequence(), taxBO.getTaxDesc(), taxBO.getParentType(), taxBO.getTotalTaxAmount()
-                , taxBO.getPid(), taxBO.getTaxTypeId(), taxBO.getMinValue(), taxBO.getMaxValue(), taxBO.getApplyRange(), taxBO.getGroupId(), taxBO.getTaxDesc2());
-    }
-
-    private void calculateProductExcludeTax(ProductMasterBO productBO,
-                                            double taxRate) {
-        double taxValue = 0.0;
-        double totalAppliedTaxValue = 0.0;
-        //batch wise tax update
-        if (productBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-            ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper
-                    .getBatchlistByProductID().get(productBO.getProductID());
-            if (batchList != null) {
-                for (ProductMasterBO batchProductBO : batchList) {
-                    if (batchProductBO.getOrderedPcsQty() > 0
-                            || batchProductBO.getOrderedCaseQty() > 0
-                            || batchProductBO.getOrderedOuterQty() > 0) {
-                        double batchTaxValue = batchProductBO.getDiscount_order_value() / (1 + (taxRate / 100));
-                        double appliedTaxValue = batchTaxValue * taxRate / 100;
-                        taxValue = taxValue + batchTaxValue;
-                        totalAppliedTaxValue = totalAppliedTaxValue + appliedTaxValue;
-                        batchProductBO.setTaxValue(batchTaxValue);
-                        batchProductBO.setTaxApplyvalue(appliedTaxValue);
-                    }
-                }
-                productBO.setTaxValue(taxValue);
-                productBO.setTaxApplyvalue(totalAppliedTaxValue);
-            }
-
-        } else {
-            taxValue = productBO.getDiscount_order_value() / (1 + (taxRate / 100));
-            totalAppliedTaxValue = taxValue * taxRate / 100;
-            productBO.setTaxApplyvalue(totalAppliedTaxValue);
-            productBO.setTaxValue(taxValue);
-        }
-
-    }
-
-    /**
-     * Metod to save product level tax
-     *
-     * @param orderId
-     */
-    public void saveProductLeveltax(String orderId, DBUtil db) {
-
-        if (mProductTaxList != null) {
-            for (String productId : mProductTaxList) {
-                ProductMasterBO productBo = getProductMasterBOById(productId);
-                if (productBo != null) {
-                    if (productBo.getOrderedPcsQty() > 0
-                            || productBo.getOrderedCaseQty() > 0
-                            || productBo.getOrderedOuterQty() > 0) {
-                        ArrayList<TaxBO> taxList = mTaxListByProductId
-                                .get(productId);
-                        if (taxList != null) {
-                            int totalQty = productBo.getOrderedPcsQty()
-                                    + productBo.getOrderedCaseQty()
-                                    * productBo.getCaseSize()
-                                    + productBo.getOrderedOuterQty()
-                                    * productBo.getOutersize();
-                            double totalValue = productBo
-                                    .getDiscount_order_value();
-                            double remainingValue = totalValue / totalQty;
-                            for (TaxBO taxBO : taxList) {
-                                if (bmodel.configurationMasterHelper.SHOW_MRP_LEVEL_TAX) {
-                                    if (taxBO.getApplyRange() == 1) {
-                                        if (taxBO.getMinValue() <= remainingValue
-                                                && taxBO.getMaxValue() >= remainingValue) {
-                                            insertProductLevelTax(orderId, db,
-                                                    productBo, taxBO);
-                                        }
-
-                                    } else if (taxBO.getApplyRange() == 0) {
-                                        insertProductLevelTax(orderId, db,
-                                                productBo, taxBO);
-                                    }
-                                } else {
-                                    insertProductLevelTax(orderId, db,
-                                            productBo, taxBO);
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-
-            }
-        }
-
-    }
 
     public void updateInvoiceIdInItemLevelDiscount(DBUtil db, String invid,
                                                    String orderId) {
@@ -5949,57 +5262,6 @@ public class ProductHelper {
         String query = "update InvoiceDiscountDetail set InvoiceId=" + bmodel.QT(invid)
                 + " where OrderId=" + orderId;
         db.updateSQL(query);
-
-    }
-
-    public void updateInvoiceIdInProductLevelTax(DBUtil db, String invid,
-                                                 String orderId) {
-        String query = "update InvoiceTaxDetails set InvoiceId=" + bmodel.QT(invid)
-                + " where OrderId=" + orderId;
-        db.updateSQL(query);
-
-    }
-
-    /**
-     * Method to use insert tax details as productwise
-     *
-     * @param orderId
-     * @param db
-     * @param productBO
-     * @param taxBO
-     */
-    private void insertProductLevelTax(String orderId, DBUtil db,
-                                       ProductMasterBO productBO, TaxBO taxBO) {
-        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct";
-        StringBuffer values = new StringBuffer();
-
-        double taxvalue = productBO.getTaxValue() * taxBO.getTaxRate() / 100;
-        values.append(orderId + "," + productBO.getProductID() + ","
-                + taxBO.getTaxRate() + ",");
-        values.append(taxBO.getTaxType() + "," + taxvalue
-                + "," + bmodel.getRetailerMasterBO().getRetailerID());
-        values.append("," + taxBO.getGroupId() + ",0");
-        db.insertSQL("InvoiceTaxDetails", columns, values.toString());
-        db.insertSQL("OrderTaxDetails", columns, values.toString());
-        values = null;
-
-
-    }
-
-    public void insertProductLevelTaxForFreeProduct(String orderId, DBUtil db,
-                                                    String productId, TaxBO taxBO) {
-        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct";
-        StringBuffer values = new StringBuffer();
-
-        values.append(orderId + "," + productId + ","
-                + taxBO.getTaxRate() + ",");
-        values.append(taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
-                + "," + bmodel.getRetailerMasterBO().getRetailerID());
-        values.append("," + taxBO.getGroupId() + ",1");
-        db.insertSQL("InvoiceTaxDetails", columns, values.toString());
-        db.insertSQL("OrderTaxDetails", columns, values.toString());
-        values = null;
-
 
     }
 
@@ -6744,18 +6006,23 @@ public class ProductHelper {
             int mFiltrtLevel = 0;
             int mContentLevel = 0;
 
-            Cursor filterCur = db
-                    .selectSQL("SELECT Distinct IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0) FROM ProductLevel CF " +
-                            "LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  " + bmodel.configurationMasterHelper.COMPETITOR_FILTER_TYPE +
-                            " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = (Select LevelId from ProductLevel " +
-                            "where Sequence = (Select max(Sequence) from ProductLevel))");
 
-            if (filterCur != null) {
-                if (filterCur.moveToNext()) {
-                    mFiltrtLevel = filterCur.getInt(0);
-                    mContentLevel = filterCur.getInt(1);
+            if (mCompetitorSequenceValues != null && mCompetitorSequenceValues.size() > 0) {
+                mFiltrtLevel = mCompetitorSequenceValues.get(mCompetitorSequenceValues.size() - 1).getSequence();
+            }
+
+            List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
+
+            if (mLevels.size() > 0) {
+                Cursor filterCur = db
+                        .selectSQL("SELECT Distinct IFNULL(Sequence,0) FROM ProductLevel" +
+                                " where levelId = " + mLevels.get(mLevels.size() - 1));
+                if (filterCur != null) {
+                    if (filterCur.moveToNext()) {
+                        mContentLevel = filterCur.getInt(0);
+                    }
+                    filterCur.close();
                 }
-                filterCur.close();
             }
 
             int loopEnd = mContentLevel - mFiltrtLevel + 1;
@@ -7021,59 +6288,6 @@ public class ProductHelper {
         return mAttributeTypes;
     }
 
-    /**
-     * Method to apply bill wise  tax either include or exclude
-     *
-     * @param totalOrderValue
-     */
-    public double applyBillWiseTax(double totalOrderValue) {
-        double totalExclusiveOrderAmount = Double.parseDouble(SDUtil.format(totalOrderValue,
-                bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
-        double totalTaxValue = 0.0;
-        if (!bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
-            double totalTaxRate = 0;
-            for (TaxBO taxBO : mTaxList) {
-                totalTaxRate = totalTaxRate + taxBO.getTaxRate();
-            }
-
-            totalExclusiveOrderAmount = totalOrderValue / (1 + (totalTaxRate / 100));
-        }
-
-
-        for (TaxBO taxBO : mTaxList) {
-            double taxValue = totalExclusiveOrderAmount * (taxBO.getTaxRate() / 100);
-            totalTaxValue = totalTaxValue + taxValue;
-            taxBO.setTotalTaxAmount(taxValue);
-        }
-        return totalTaxValue;
-    }
-
-    public double getTotalBillTaxAmount(boolean isOrder) {
-        double taxValue = 0;
-        DBUtil db = null;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            if (isOrder) {
-                sb.append("select sum(taxValue) from OrderTaxDetails ");
-                sb.append("where orderid=" + bmodel.getOrderid());
-            } else {
-                sb.append("select sum(taxValue) from InvoiceTaxDetails ");
-                sb.append("where invoiceid=" + bmodel.QT(bmodel.invoiceNumber));
-            }
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.moveToFirst()) {
-                taxValue = c.getDouble(0);
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return taxValue;
-    }
 
     protected double getTotalBillwiseDiscount() {
         double discountValue = 0;
@@ -8668,6 +7882,9 @@ public class ProductHelper {
                         + ((filter21) ? "A" + loopEnd + ".pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A" + loopEnd + ".tagDescription,"
+                        + "A" + loopEnd + ".HSNId as HSNId,"
+                        + "HSN.HSNCode as HSNCode,"
+                        + "A" + loopEnd + ".IsDrug as IsDrug,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -8685,7 +7902,8 @@ public class ProductHelper {
                         + " left join SbdDistributionMaster sbd on A" + loopEnd
                         + ".pid=sbd.productid "
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid";
+                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid"
+                        + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A" + loopEnd + ".HSNId";
 
                 sql = sql + " WHERE A1.PLid IN (SELECT ProductFilter"
                         + mChildLevel + " FROM ConfigActivityFilter"
@@ -8776,6 +7994,9 @@ public class ProductHelper {
 
                     product.setPriceoffvalue(c.getDouble(c.getColumnIndex("priceoffvalue")));
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
+                    product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
+                    product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
+                    product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
@@ -8788,7 +8009,7 @@ public class ProductHelper {
             db.closeDB();
 
             if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
-                downloadExcludeProductTaxDetails();
+                taxHelper.downloadProductTaxDetails();
             }
 
             if (mChildLevel > 0)
@@ -9087,7 +8308,7 @@ public class ProductHelper {
                 competitorFilterList = new ArrayList<CompetitorFilterLevelBO>();
                 while (c.moveToNext()) {
                     competitorBO = new CompetitorFilterLevelBO();
-                    competitorBO.setProductId(c.getString(0));
+                    competitorBO.setProductId(c.getInt(0));
                     competitorBO.setProductName(c.getString(1));
                     competitorBO.setLevelName(c.getString(2));
                     competitorFilterList.add(competitorBO);
@@ -9099,6 +8320,55 @@ public class ProductHelper {
             Commons.print(e.getMessage());
         }
     }
+
+
+    public ArrayList<ConfigureBO> downloadOrderSummaryDialogFields(Context context) {
+        ArrayList<ConfigureBO> list = new ArrayList<>();
+        try {
+
+            SharedPreferences sharedPrefs = PreferenceManager
+                    .getDefaultSharedPreferences(context);
+            String language = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor cur = db
+                    .selectSQL("select HHTCode,MName,RField1  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                            + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
+                            + " and lang=" + bmodel.QT(language));
+
+            if (cur != null && cur.getCount() > 0) {
+                ConfigureBO configureBO;
+                while (cur.moveToNext()) {
+                    configureBO = new ConfigureBO();
+                    configureBO.setConfigCode(cur.getString(0));
+                    configureBO.setMenuName(cur.getString(1));
+                    configureBO.setMandatory(cur.getInt(2));
+                    list.add(configureBO);
+                }
+                cur.close();
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
+    public HashMap<Integer, Vector<CompetitorFilterLevelBO>> getCompetitorFiveLevelFilters() {
+
+        return mCompetitorFilterlevelBo;
+
+    }
+
+    public Vector<CompetitorFilterLevelBO> getCompetitorSequenceValues() {
+        return mCompetitorSequenceValues;
+
+    }
+
 }
 
 

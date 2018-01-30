@@ -662,11 +662,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 holder.menuIcon.setImageResource(menuIcons
                         .get(MENU_STOCK_PROPOSAL));
 
-            if (position % 2 == 0)
-                convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
-            else
-                convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.grey_odd));
-
             return convertView;
         }
 

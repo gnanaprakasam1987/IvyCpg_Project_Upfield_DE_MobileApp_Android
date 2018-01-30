@@ -36,13 +36,12 @@
                     android:id="@+id/ll_spl_filter"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/special_filter_height"
-
                     android:orientation="horizontal" />
                 <!--android:gravity="center_vertical"-->
                 <LinearLayout
                     android:id="@+id/ll_tab_selection"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tab_indicator_height"
+                    android:layout_height="@dimen/tab_selection_identifier_height"
                     android:orientation="horizontal">
                     <!--android:layout_height="@dimen/tab_selection_identifier_height"-->
                 </LinearLayout>

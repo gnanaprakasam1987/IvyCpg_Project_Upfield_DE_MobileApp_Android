@@ -24,5 +24,11 @@
         android:orderInCategory="102"
         android:title="@string/save"
         ivydist:showAsAction="always"/>
-
+    <item
+        android:id="@+id/menu_signature"
+        android:icon="@drawable/ic_action_signature"
+        android:orderInCategory="103"
+        android:title="Next"
+        android:visible="false"
+        ivydist:showAsAction="always" />
 </menu>

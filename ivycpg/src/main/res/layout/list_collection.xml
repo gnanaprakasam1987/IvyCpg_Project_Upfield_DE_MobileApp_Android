@@ -73,23 +73,25 @@
                         android:textColor="#212121"
                         android:textSize="@dimen/font_micro_small" />
 
-
-                    <TextView
-                        android:id="@+id/tv_invoicedate_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_16dp"
-                        android:layout_below="@+id/tv_invoice_date"
-                        android:gravity="left|center_vertical"
-                        android:text="@string/invoice_date"
-                        android:textColor="#616161"
-                        android:textSize="@dimen/text_sz_small" />
                 </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_invoicedate_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimens_16dp"
+                    android:layout_below="@+id/rl_invoice_date"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/invoice_date"
+                    android:textColor="#616161"
+                    android:textSize="@dimen/text_sz_small" />
 
                 <TextView
                     android:id="@+id/tv_osamt"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_22dp"
-                    android:layout_below="@+id/rl_invoice_date"
+                    android:layout_below="@+id/tv_invoicedate_title"
                     android:gravity="left|center_vertical"
                     android:text="asdlfjasdf"
                     android:textColor="#212121"

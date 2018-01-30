@@ -90,6 +90,7 @@ public class CommonPrintHelper {
 
     private static String TAG_PRODUCT_CODE = "prod_code";
     private static String TAG_PRODUCT_NAME = "prod_name";
+    private static String TAG_HSN_CODE = "hsn_code";
 
     private static String TAG_PRODUCT_PRICE_CASE = "prod_price_case";
     private static String TAG_PRODUCT_PRICE_OUTER = "prod_price_outer";
@@ -742,7 +743,7 @@ public class CommonPrintHelper {
                             + (prod.getOrderedCaseQty() * prod.getCsrp())
                             + (prod.getOrderedPcsQty() * prod.getSrp());
                     mProductValue = formatValueInPrint(lineValue, attr.getmAttributePrecision());
-                    mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue);
+                    mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue.replace(",", ""));
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
                     mProductValue = formatValueInPrint(prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value(), attr.getmAttributePrecision());
                     mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + (prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value());
@@ -760,6 +761,8 @@ public class CommonPrintHelper {
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                     mProductValue = prod.getDescription() + "";
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
+                    mProductValue = prod.getProductCode();
                 }
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -907,6 +910,8 @@ public class CommonPrintHelper {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + (batchProductBO.getOrderedPcsQty() + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize())) + "";
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                                 mProductValue = prod.getDescription() + "";
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
+                                mProductValue = prod.getProductCode();
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -1035,6 +1040,8 @@ public class CommonPrintHelper {
                                 mProductValue = formatValueInPrint((schemeProductBO.getLineValue() - schemeProductBO.getTaxAmount()), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
+                                mProductValue = prod.getProductCode();
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -1313,18 +1320,19 @@ public class CommonPrintHelper {
     private String getProductLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
 
-        // load tax details
-        bmodel.productHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-        // load tax product details
-        bmodel.productHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
 
-        ArrayList<TaxBO> groupIdList = bmodel.productHelper.getGroupIdList();
+        // load tax details
+        bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+        // load tax product details
+        bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+
+        ArrayList<TaxBO> groupIdList = bmodel.productHelper.taxHelper.getGroupIdList();
 
         if (groupIdList != null) {
 
-            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.getGroupDesc2ByGroupId();
-            HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.getProductIdByTaxGroupId();
-            HashMap<String, HashSet<String>> freeProductListByGroupId = bmodel.productHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
+            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.taxHelper.getTaxBoByGroupId();
+            HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.taxHelper.getProductIdByTaxGroupId();
+            HashMap<String, HashSet<String>> freeProductListByGroupId = bmodel.productHelper.taxHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
 
             String taxDesc = "";
             String previousTaxDesc = "";
@@ -1380,13 +1388,13 @@ public class CommonPrintHelper {
                                     } else {
 
                                         //To print child tax..
-                                        if (bmodel.configurationMasterHelper.IS_GST) {
+                                        if (bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) {
 
                                             //batch wise product's calculation
                                             if (prodcutBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                                                if (bmodel.productHelper.getmTaxBoBatchProduct().get(productid) != null) {
+                                                if (bmodel.productHelper.taxHelper.getmTaxBoBatchProduct().get(productid) != null) {
 
-                                                    for (TaxBO productTaxBo : bmodel.productHelper.getmTaxBoBatchProduct().get(productid)) {
+                                                    for (TaxBO productTaxBo : bmodel.productHelper.taxHelper.getmTaxBoBatchProduct().get(productid)) {
 
                                                         if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
 
@@ -1397,9 +1405,9 @@ public class CommonPrintHelper {
                                                 }
                                             } else {
                                                 //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
-                                                if (bmodel.productHelper.getmTaxListByProductId().get(productid) != null) {
+                                                if (bmodel.productHelper.taxHelper.getmTaxBoBatchProduct().get(productid) != null) {
 
-                                                    for (TaxBO productTaxBo : bmodel.productHelper.getmTaxListByProductId().get(productid)) {
+                                                    for (TaxBO productTaxBo : bmodel.productHelper.taxHelper.getmTaxBoBatchProduct().get(productid)) {
 
                                                         if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
 
@@ -1417,7 +1425,7 @@ public class CommonPrintHelper {
                             }
 
 
-                            if (bmodel.configurationMasterHelper.IS_GST) {
+                            if (bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) {
                                 //Tax can be applied to Free products, so below set of code is used..
                                 if (taxFreeProductList != null) {
                                     for (String productid : taxFreeProductList) {// free products
@@ -1497,7 +1505,7 @@ public class CommonPrintHelper {
     private void getBillLevelTaxValue() {
         try {
             mBillLevelTaxValue = 0;
-            final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+            final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
 
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
@@ -1527,7 +1535,7 @@ public class CommonPrintHelper {
     private String printBillLevelTax(int precision) {
         StringBuffer sb = new StringBuffer();
         try {
-            final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+            final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
@@ -1923,12 +1931,13 @@ public class CommonPrintHelper {
     /**
      * read text from given file and convert to string object
      * and store in object
+     *
      * @param fileName
      */
-    public void readBuilder(String fileName){
-        String path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"+ DataMembers.PRINT_FILE_PATH+"/";
-        File file = new File(path+fileName);
-        StringBuilder sb=new StringBuilder();
+    public void readBuilder(String fileName) {
+        String path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.PRINT_FILE_PATH + "/";
+        File file = new File(path + fileName);
+        StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -1941,7 +1950,7 @@ public class CommonPrintHelper {
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

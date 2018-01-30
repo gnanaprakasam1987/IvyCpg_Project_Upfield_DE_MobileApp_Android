@@ -51,12 +51,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/profile_header_frame_layout_height"
                     android:layout_gravity="bottom"
-                    android:gravity="center_vertical"
-                    app:layout_collapseMode="parallax"
-                    app:layout_collapseParallaxMultiplier="0.3"
                     android:background="@drawable/profile_map_bg"
+                    android:baselineAligned="false"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:baselineAligned="false">
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.3">
 
                     <LinearLayout
                         android:id="@+id/img_layout"
@@ -82,33 +82,34 @@
                         android:id="@+id/main.linearlayout.title"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:paddingLeft="@dimen/profile_header_txt_layout_marginleft"
                         android:layout_marginLeft="@dimen/profile_header_txt_layout_marginleft"
                         android:layout_marginStart="@dimen/profile_header_txt_layout_marginleft"
+                        android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/profile_header_txt_layout_marginleft">
 
                         <TextView
                             android:id="@+id/retailer_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:lineSpacingExtra="@dimen/profile_header_store_text_line_spcing"
-                            tools:text="Apollo Healthcare"
                             android:textColor="@android:color/white"
-                            android:textSize="@dimen/highlight_small" />
+                            android:textSize="@dimen/highlight_small"
+                            android:text="Apollo Healthcare"
+                            android:lineSpacingExtra="@dimen/profile_header_store_text_line_spcing"
+                            />
 
                         <TextView
                             android:id="@+id/retailer_code"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/profile_margin_top_minus"
-                            android:gravity="center_vertical"
-                            android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
-                            tools:text="Ghatkopar (w)"
                             android:textColor="@android:color/white"
-                            android:textSize="@dimen/font_medium" />
+                            android:textSize="@dimen/font_small"
+                            android:layout_marginTop="@dimen/profile_margin_top_minus"
+                            tools:text="Ghatkopar (w)"
+                            android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
+                            />
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -134,10 +135,10 @@
                             android:layout_marginLeft="@dimen/dimens_10dp"
                             android:layout_marginRight="@dimen/dimens_10dp"
                             android:clickable="true"
+                            android:contentDescription="@null"
                             android:focusable="true"
                             android:src="@drawable/ic_directions"
-                            android:tint="@color/WHITE"
-                            android:contentDescription="@null" />
+                            android:tint="@color/WHITE" />
 
                         <ImageView
                             android:id="@+id/profile_edit_click"
@@ -145,22 +146,19 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|end"
                             android:layout_margin="@dimen/dimens_22dp"
-                            android:layout_marginRight="@dimen/dimens_10dp"
                             android:layout_marginEnd="@dimen/dimens_10dp"
+                            android:layout_marginRight="@dimen/dimens_10dp"
+                            android:contentDescription="@null"
                             android:src="@drawable/ic_edit"
                             android:tint="@color/white"
                             app:borderWidth="0dp"
                             app:fabSize="mini"
                             app:layout_anchor="@id/appbar"
                             app:layout_anchorGravity="bottom|end"
-                            tools:ignore="MissingPrefix"
-                            android:contentDescription="@null"
-                            />
+                            tools:ignore="MissingPrefix" />
 
                     </LinearLayout>
                 </LinearLayout>
-
-
 
 
             </android.support.design.widget.CollapsingToolbarLayout>
@@ -170,20 +168,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
-                style="@style/Base.Widget.Design.TabLayout"
+                style="@style/NormalTabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                app:tabIndicatorColor="?attr/colorAccent"
                 app:tabIndicatorHeight="4dp"
                 app:tabMaxWidth="1500dp"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="?attr/colorAccent"
-                app:tabTextColor="@color/tab_unselcted_text_color" />
+                app:tabTextColor="@color/tab_unselcted_text_color"
+                android:layout_margin="@dimen/dimen_1dp"
+                app:tabBackground="@drawable/tab_unselected_indicator"
+
+                />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
@@ -208,49 +209,59 @@
         <LinearLayout
             android:id="@+id/bottom_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.5"
-            android:gravity="bottom|center"
-            android:padding="@dimen/dimen_5dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/profile_deviate"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/target_top_margin"
                 android:layout_marginLeft="@dimen/profile_history_20dp"
                 android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
-                android:text="@string/add_plane" />
+                android:text="@string/add_plane"
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/cancel_visit"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/target_top_margin"
                 android:layout_marginLeft="@dimen/profile_history_20dp"
                 android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
-                android:visibility="gone"
-                android:text="@string/non_visit" />
+                android:text="@string/non_visit"
+                android:textAllCaps="false"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/start_visit"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/target_top_margin"
                 android:layout_marginLeft="@dimen/profile_history_20dp"
                 android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
-                android:text="@string/start_visit" />
+                android:text="@string/start_visit"
+                android:textAllCaps="false"
+                />
 
             <Button
                 android:id="@+id/add_plane"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/profile_history_20dp"
+                android:layout_marginBottom="@dimen/target_top_margin"
                 android:layout_marginLeft="@dimen/profile_history_20dp"
                 android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/add_plane"
+                android:textAllCaps="false"
                 android:visibility="gone" />
 
         </LinearLayout>

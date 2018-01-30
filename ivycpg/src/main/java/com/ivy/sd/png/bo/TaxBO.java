@@ -7,9 +7,8 @@ public class TaxBO {
 	private String taxDesc;
 	private String parentType;
 	private double totalTaxAmount;
-
 	private double taxableAmount;
-	private int pid,taxTypeId;
+	private int pid, applyLevelId;
 	private double minValue;
 	private double maxValue;
 	private int applyRange;
@@ -18,7 +17,7 @@ public class TaxBO {
 	public TaxBO() {
 	}
 
-	public TaxBO(String taxType, double taxRate, String sequence, String taxDesc, String parentType, double totalTaxAmount, int pid, int taxTypeId, double minValue, double maxValue, int applyRange, int groupId, String taxDesc2) {
+	public TaxBO(String taxType, double taxRate, String sequence, String taxDesc, String parentType, double totalTaxAmount, int pid, int applyLevelId, double minValue, double maxValue, int applyRange, int groupId, String taxDesc2) {
 		this.taxType = taxType;
 		this.taxRate = taxRate;
 		this.sequence = sequence;
@@ -26,7 +25,7 @@ public class TaxBO {
 		this.parentType = parentType;
 		this.totalTaxAmount = totalTaxAmount;
 		this.pid = pid;
-		this.taxTypeId = taxTypeId;
+		this.applyLevelId = applyLevelId;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.applyRange = applyRange;
@@ -109,12 +108,12 @@ public class TaxBO {
 	}
 
 
-	public int getTaxTypeId() {
-		return taxTypeId;
+	public int getApplyLevelId() {
+		return applyLevelId;
 	}
 
-	public void setTaxTypeId(int taxTypeId) {
-		this.taxTypeId = taxTypeId;
+	public void setApplyLevelId(int applyLevelId) {
+		this.applyLevelId = applyLevelId;
 	}
 
 	public double getMaxValue() {

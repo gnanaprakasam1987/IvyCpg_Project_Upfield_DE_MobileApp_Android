@@ -57,7 +57,7 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.MyViewHold
 
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         public void bind(final String item, final OnItemClickListener listener) {
-            text.setTypeface(Typeface.createFromAsset(context.getAssets(), "font/Roboto-Bold.ttf"));
+            text.setTypeface(Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf"));
             text.setText(item);
             if (mSelectedBrandName != null) {
                 if (mSelectedBrandName.equalsIgnoreCase(item)) {

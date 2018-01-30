@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1250"
+    android:versionCode="1260"
     android:versionName="2.125.0.872">
 
 
@@ -367,7 +367,7 @@
             android:name="com.ivy.sd.png.view.SKUWiseTargetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.reports.Orderreportdetail"
+            android:name="com.ivy.cpg.view.reports.OrderReportDetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity"
@@ -478,7 +478,7 @@
             android:name="com.ivy.sd.png.view.RetailerKPISKUActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.reports.InvoiceReportDetail"
+            android:name="com.ivy.cpg.view.reports.InvoiceReportDetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.van.VanLoadStockView_activity"
@@ -532,13 +532,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CaptureSignatureActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.OrderSplitMasterScreen"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.OrderSplitDetailsScreenWithFilters"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <!-- IvyRetail Integration Classes -->
         <activity
@@ -816,6 +809,9 @@
             android:name="com.ivy.sd.png.view.DisplaySchemeTrackingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.reports.SalesReturnValidationReport"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
