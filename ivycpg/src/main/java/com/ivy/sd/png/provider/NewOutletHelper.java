@@ -1292,7 +1292,7 @@ public class NewOutletHelper {
 
     /**
      * Download configuration fields for new retailer
-     *
+     * <p>
      * return
      */
     public void loadNewOutletConfiguration(int channelid) {
@@ -1965,7 +1965,7 @@ public class NewOutletHelper {
                         + "," + QT(SDUtil.now(SDUtil.TIME));
                 db.insertSQL("OrderHeaderRequest", column, value);
 
-                column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight,uomcount";
+                column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight,uomcount,HsnCode";
                 for (ProductMasterBO productMasterBO : getOrderedProductList()) {
                     if (productMasterBO.getOrderedPcsQty() > 0) {
                         value = uid
@@ -1975,7 +1975,8 @@ public class NewOutletHelper {
                                 + "," + productMasterBO.getSrp()
                                 + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()
                                 + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getWeight()
-                                + ",1";
+                                + ",1"
+                                + "," + QT(productMasterBO.getHsnCode());
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
                     if (productMasterBO.getOrderedCaseQty() > 0) {
@@ -1986,7 +1987,8 @@ public class NewOutletHelper {
                                 + "," + productMasterBO.getCsrp()
                                 + "," + productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()
                                 + "," + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize()) * productMasterBO.getWeight()
-                                + "," + productMasterBO.getCaseSize();
+                                + "," + productMasterBO.getCaseSize()
+                                + "," + QT(productMasterBO.getHsnCode());
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
                     if (productMasterBO.getOrderedOuterQty() > 0) {
@@ -1997,7 +1999,8 @@ public class NewOutletHelper {
                                 + "," + productMasterBO.getOsrp()
                                 + "," + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp()
                                 + "," + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize()) * productMasterBO.getWeight()
-                                + "," + productMasterBO.getOutersize();
+                                + "," + productMasterBO.getOutersize()
+                                + "," + QT(productMasterBO.getHsnCode());
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
                 }
@@ -2127,7 +2130,7 @@ public class NewOutletHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            if(db!=null)
+            if (db != null)
                 db.closeDB();
             Commons.printException("" + e);
             return new ArrayList<>();
@@ -2159,7 +2162,7 @@ public class NewOutletHelper {
             c.close();
             db.closeDB();
         } catch (Exception e) {
-            if(db!=null)
+            if (db != null)
                 db.closeDB();
             Commons.printException("" + e);
             return new ArrayList<>();
@@ -2176,7 +2179,7 @@ public class NewOutletHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sb ="select distinct Address1,Address2,Address3,ContactNumber,City,latitude,longitude,email,FaxNo,pincode,State,AddressTypeID from RetailerAddress";
+            String sb = "select distinct Address1,Address2,Address3,ContactNumber,City,latitude,longitude,email,FaxNo,pincode,State,AddressTypeID from RetailerAddress";
          /*   sb.append("LEFT JOIN StandardListMaster SM ON RA.AddressTypeID=SM.listid");
             sb.append("where listtype='ADDRESS_TYPE'");*/
 
@@ -2204,7 +2207,7 @@ public class NewOutletHelper {
             c.close();
             db.closeDB();
         } catch (Exception e) {
-            if(db!=null)
+            if (db != null)
                 db.closeDB();
             Commons.printException("" + e);
             return new HashMap<>();

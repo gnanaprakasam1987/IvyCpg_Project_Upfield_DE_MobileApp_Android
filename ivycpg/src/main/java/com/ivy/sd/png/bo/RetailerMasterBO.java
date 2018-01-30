@@ -32,9 +32,9 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public int accountid;
     int distributorId;
     int distParentId;
-    private String RetailerID = "0", movRetailerId="0";
-    private String RetailerCode,movRetailerCode;
-    private String RetailerName,movRetailerName;
+    private String RetailerID = "0", movRetailerId = "0";
+    private String RetailerCode, movRetailerCode;
+    private String RetailerName, movRetailerName;
     private String Addressid = "0";
     private String Cp1id = "0";
     private String Cp2id = "0";
@@ -43,7 +43,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String address3;
 
     // Sales per category
-    private String salseProductName,salesInvoiceId,salesInvoiceValue,salesProdParentId,salesLovId,salesLpc,salesQty,salesProductSName;
+    private String salseProductName, salesInvoiceId, salesInvoiceValue, salesProdParentId, salesLovId, salesLpc, salesQty, salesProductSName;
 
     public String getMovRetailerId() {
         return movRetailerId;
@@ -109,7 +109,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String mslTaget = "0";
     private String salesValue = "0";
     private double credit_balance;// RField1
-    private int creditDays=-1;
+    private int creditDays = -1;
     private String rfield2;
     private int surveyHistoryScore;
     private String locName;
@@ -185,12 +185,15 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private boolean hasNoVisitReason;
     private String dob;
     private boolean isNearBy;
-    private String RField1,profile_creditLimit;
+    private String RField1, profile_creditLimit;
     private boolean isOrderWithoutInvoice;
     private int salesTypeId = 0;
     private String profileImagePath;
 
-      private String GSTNumber = "-";
+    private String GSTNumber = "-";
+
+    private String DLNo;
+    private String DLNoExpDate;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -220,7 +223,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     private double currentFitScore;
-
 
 
     public int getPrioriryProductId() {
@@ -826,6 +828,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public void setProductive(String productive) {
         isProductive = productive;
     }
+
     public String isInvoiceDone() {
         return isInvoiceDone;
     }
@@ -1371,7 +1374,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
 
-
     public String getRField1() {
         return RField1;
     }
@@ -1429,7 +1431,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.profileImagePath = profileImagePath;
     }
 
-    public int  isSameZone() {
+    public int isSameZone() {
         return isSameZone;
     }
 
@@ -1511,5 +1513,21 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setSalesProductSName(String salesProductSName) {
         this.salesProductSName = salesProductSName;
+    }
+
+    public void setDLNo(String DLNo) {
+        this.DLNo = DLNo;
+    }
+
+    public String getDLNo() {
+        return DLNo;
+    }
+
+    public void setDLNoExpDate(String DLNoExpDate) {
+        this.DLNoExpDate = DLNoExpDate;
+    }
+
+    public String getDLNoExpDate() {
+        return DLNoExpDate;
     }
 }

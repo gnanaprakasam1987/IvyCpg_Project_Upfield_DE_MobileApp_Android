@@ -19,11 +19,14 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SupplierMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 
 /**
@@ -39,9 +42,9 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
     private Context context;
 
     private TextView textView_shipment_label, textView_payment_label, textView_channel_label, textView_delivery_label, textView_delivery;
-    private TextView textView_supplier_label, textView_note, textView_note_label, textView_order_value, textView_order_value_label;
+    private TextView textView_supplier_label, textView_note, textView_note_label, textView_order_value, textView_order_value_label,label_drug_note, text_drug_note;;
     private Spinner spinner_shipment, spinner_payment, spinner_dist_channel;
-    private LinearLayout layout_shipment, layout_payment, layout_channel, layout_delivery_date, layout_supplier, layout_note, layout_order_value;
+    private LinearLayout layout_shipment, layout_payment, layout_channel, layout_delivery_date, layout_supplier, layout_note, layout_order_value,layout_drug_note;
     private AutoCompleteTextView autoCompleteTextView_suppliers;
 
     private boolean isMandatory_shipment, isMandatory_payterm, isMandatory_channel;
@@ -55,6 +58,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
     private static final String SUPPLIER_SELECTION = "SUPPLIER_SELECTION";
     private static final String NOTE = "NOTE";
     private static final String ORDER_VALUE = "ORDER_VALUE";
+    private static final String ORDER_DRUG = "ORDER_DRUG";
 
 
     public OrderConfirmationDialog(Context context, boolean isInvoice, LinkedList<ProductMasterBO> mOrderedProductList, double orderValue) {
@@ -241,12 +245,59 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_order_value_label.setText(configureBO.getMenuName());
 
 
+                }else if (configureBO.getConfigCode().equals(ORDER_DRUG) && isDLDateExpired()) {
+                    if (isDrugOrder(mOrderedProductList)) {
+                        layout_drug_note.setVisibility(View.VISIBLE);
+                        try {
+                            if (businessModel.labelsMasterHelper.applyLabels(text_drug_note.getTag()) != null)
+                                text_drug_note
+                                        .setText(businessModel.labelsMasterHelper
+                                                .applyLabels(text_drug_note
+                                                        .getTag()));
+                        } catch (Exception e) {
+                            Commons.printException(e + "");
+                            text_drug_note.setText("Drug product exists");
+                        }
+
+                        text_drug_note.setTextColor(context.getResources().getColor(R.color.RED));
+                        label_drug_note.setText(configureBO.getMenuName());
+                    }else{
+                        layout_drug_note.setVisibility(View.GONE);
+                    }
+
+
                 }
             }
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    private boolean isDrugOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
+        for (ProductMasterBO bo : mOrderedProductList) {
+            if (bo.getIsDrug()==1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isDLDateExpired() {
+
+        String expiryDate = DateUtil.convertFromServerDateToRequestedFormat(
+                businessModel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd");
+        try {
+            if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(expiryDate))//this for checking today date since before method not woking for today date
+                if (DateUtil.convertStringToDateObject(
+                        businessModel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd").before(new Date())) {
+                    return true;
+                }
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        }
+        return false;
     }
 
     private void initializeViews() {
@@ -282,9 +333,14 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
 
         TextView text_label = (TextView) findViewById(R.id.text_label);
 
+        layout_drug_note = (LinearLayout) findViewById(R.id.layout_drug_note);
+        label_drug_note = (TextView) findViewById(R.id.label_drug_note);
+        text_drug_note = (TextView) findViewById(R.id.text_drug_note);
+
         textView_delivery.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         textView_note.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         textView_order_value.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        text_drug_note.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         textView_shipment_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         textView_payment_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -294,6 +350,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
         textView_delivery_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         textView_note_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         textView_order_value_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        label_drug_note.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
     }
 

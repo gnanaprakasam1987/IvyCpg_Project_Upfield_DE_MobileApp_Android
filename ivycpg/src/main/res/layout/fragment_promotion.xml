@@ -138,13 +138,14 @@
 
                 <Button
                     android:id="@+id/btn_save"
-                    style="?attr/roundedCustomButtonNormal"
+                    style="?attr/roundedCustomButtonSmall"
                     android:layout_marginBottom="@dimen/activity_margin1"
                     android:layout_marginTop="@dimen/activity_margin1"
+                    android:layout_marginRight="@dimen/activity_margin1"
                     android:text="@string/save"
                     android:textAllCaps="false"
                     android:layout_below="@+id/keypad_view"
-                    android:layout_centerHorizontal="true" />
+                    android:layout_alignParentRight="true" />
         </RelativeLayout>
     </RelativeLayout>
 

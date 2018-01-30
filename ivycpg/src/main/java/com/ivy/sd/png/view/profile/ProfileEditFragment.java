@@ -907,7 +907,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                             commonsparams);
                 }
                 /* else if (configCode.equals("PROFILE37")) {
-//                    final String taxName = bmodel.newOutletHelper.getListName(retailerObj.getTaxTypeId(), "TAX_TYPE");
+//                    final String taxName = bmodel.newOutletHelper.getListName(retailerObj.getApplyLevelId(), "TAX_TYPE");
 //
 //                    totalView.addView(
 //                            getTextView(mNumber, mName, taxName),

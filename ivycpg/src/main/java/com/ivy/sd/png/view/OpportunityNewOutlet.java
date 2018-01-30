@@ -249,11 +249,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         }
 
 
-        if (bmodel.mSelectedModule == 3)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        else
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         // ActionBarDrawerToggle ties together the the proper interactions
@@ -336,35 +332,35 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
         try {
 
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
-                    getMandatoryFilters();
-                    String defaultfilter = getDefaultFilter();
-                    if (!"".equals(defaultfilter)) {
-                        mSelectedFilterMap.put("General", defaultfilter);
-                        if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                            loadSpecialFilterView();
-                            updateGeneralText(defaultfilter);
-                            selectTab(defaultfilter);
-                        } else {
-                            updateGeneralText(defaultfilter);
-                        }
-
-
+            if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
+                getMandatoryFilters();
+                String defaultfilter = getDefaultFilter();
+                if (!"".equals(defaultfilter)) {
+                    mSelectedFilterMap.put("General", defaultfilter);
+                    if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                        loadSpecialFilterView();
+                        updateGeneralText(defaultfilter);
+                        selectTab(defaultfilter);
                     } else {
-                        mSelectedFilterMap.put("General", GENERAL);
-                        if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                            loadSpecialFilterView();
-                            updateGeneralText(GENERAL);
-                            selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
-                        } else {
-                            updateGeneralText(GENERAL);
-                        }
+                        updateGeneralText(defaultfilter);
                     }
+
 
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updateGeneralText(GENERAL);
+                    if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                        loadSpecialFilterView();
+                        updateGeneralText(GENERAL);
+                        selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
+                    } else {
+                        updateGeneralText(GENERAL);
+                    }
                 }
+
+            } else {
+                mSelectedFilterMap.put("General", GENERAL);
+                updateGeneralText(GENERAL);
+            }
 
 
         } catch (Exception e) {

@@ -382,7 +382,7 @@
 
     <!--  ButtonRoundCorner-->
     <dimen name="btn_round_corner_height">35dp</dimen>
-    <dimen name="btn_round_corner_width">65dp</dimen>
+    <dimen name="btn_round_corner_width">75dp</dimen>
 
     <dimen name="btn_round_corner_padding">8dp</dimen>
 

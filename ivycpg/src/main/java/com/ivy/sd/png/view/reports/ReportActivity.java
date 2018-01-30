@@ -34,6 +34,8 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.TaxGstHelper;
+import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.ContractReportFragment;
@@ -229,8 +231,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mInventoryReport = new InventoryReportFragment();
         mSellerMapviewReport = new SellerMapViewReportFragment();
         mSellerPerformReport = new SellerPerformanceReportFragment();
-        mOutletPerformanceReportFragmnet=new OutletPerformanceReportFragmnet();
-        webViewArchivalReportFragment=new WebViewArchivalReportFragment();
+        mOutletPerformanceReportFragmnet = new OutletPerformanceReportFragmnet();
+        webViewArchivalReportFragment = new WebViewArchivalReportFragment();
 
 
         salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
@@ -242,6 +244,11 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         Bundle bun = getIntent().getExtras();
         ConfigureBO config = (ConfigureBO) bun.getSerializable("config");
         switchFragments(config);
+
+        if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN)
+            bmodel.productHelper.taxHelper = TaxGstHelper.getInstance(this);
+        else
+            bmodel.productHelper.taxHelper = TaxHelper.getInstance(this);
     }
 
     private void setLanguage() {
@@ -654,11 +661,10 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(config.getMenuName());
             transaction.commit();
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
             bmodel.reportHelper.downloadUsers();
-            if(bmodel.reportHelper.getLstUsers().size()>0) {
+            if (bmodel.reportHelper.getLstUsers().size() > 0) {
                 transaction.replace(R.id.fragment_content, mSellerMapviewReport, StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
                 getSupportActionBar().setDisplayShowTitleEnabled(false);
                 setScreenTitle(config.getMenuName());
@@ -666,8 +672,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                 transaction.addToBackStack(null);
                 overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                 transaction.commit();
-            }
-            else{
+            } else {
                 Toast.makeText(this, getResources().getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
             }
         } else if (config.getConfigCode().equals(
@@ -681,8 +686,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
 
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_RETPERFO_RPT)) {
             bmodel.reportHelper.downloadUsers();
             if (bmodel.reportHelper.getLstUsers().size() > 0) {
@@ -696,7 +700,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             } else {
                 Toast.makeText(this, getResources().getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
             }
-        }else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SALES_REPORT)) {
             transaction.replace(R.id.fragment_content, salesReturnReport);
             transaction.addToBackStack(null);
@@ -704,8 +708,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             setScreenTitle(config.getMenuName());
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_ARCHV_RPT)) {
             transaction.replace(R.id.fragment_content, webViewArchivalReportFragment);
             transaction.addToBackStack(null);
@@ -848,10 +851,10 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         OutletPerformanceReportFragmnet outlet_perf_fragmnet = (OutletPerformanceReportFragmnet) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_RETPERFO_RPT);
 
-        if(fragment!=null)
-            fragment.updateUserSelection(mSelectedUsers,isAllUser);
-        else if(outlet_perf_fragmnet!=null)
-            outlet_perf_fragmnet.updateUserSelection(mSelectedUsers,isAllUser);
+        if (fragment != null)
+            fragment.updateUserSelection(mSelectedUsers, isAllUser);
+        else if (outlet_perf_fragmnet != null)
+            outlet_perf_fragmnet.updateUserSelection(mSelectedUsers, isAllUser);
     }
 
     @Override
@@ -862,9 +865,9 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         OutletPerformanceReportFragmnet outlet_perf_fragmnet = (OutletPerformanceReportFragmnet) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_RETPERFO_RPT);
 
-        if(fragment!=null)
+        if (fragment != null)
             fragment.updateClose();
-        else if(outlet_perf_fragmnet!=null)
+        else if (outlet_perf_fragmnet != null)
             outlet_perf_fragmnet.updateClose();
     }
 }

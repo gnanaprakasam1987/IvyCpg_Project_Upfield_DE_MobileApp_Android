@@ -70,10 +70,11 @@
                         android:layout_marginLeft="@dimen/profile_header_img_marginleft"
                         android:background="@drawable/circle_blockbg"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        >
 
                         <ImageView
-                            android:layout_width="@dimen/profile_header_img_width"
+                            android:layout_width="29dp"
                             android:layout_height="@dimen/profile_header_img_height"
                             android:layout_gravity="center"
                             android:background="@drawable/store" />
@@ -86,30 +87,27 @@
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/profile_header_txt_layout_marginleft"
                         android:gravity="center_vertical"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        >
 
                         <TextView
                             android:id="@+id/retailer_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:lineSpacingExtra="@dimen/profile_header_store_text_line_spcing"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="Apollo Healthcare"
                             android:textColor="@android:color/white"
-                            android:textSize="@dimen/highlight_small" />
+                            android:textSize="@dimen/highlight_small"
+                            android:gravity="bottom"/>
 
                         <TextView
                             android:id="@+id/retailer_code"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:layout_marginTop="-3dp"
-                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
                             android:text="Ghatkopar (w)"
                             android:textColor="@android:color/white"
-                            android:textSize="@dimen/font_medium" />
+                            android:textSize="@dimen/font_small"
+                            android:layout_marginTop="@dimen/profile_margin_top_minus"/>
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>
@@ -200,29 +198,30 @@
     </android.support.v4.widget.NestedScrollView>
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/footer_height"
         android:layout_gravity="bottom"
         android:background="@color/screen_bg_color"
-        android:gravity="center"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/activity_divider_height"
-            android:background="@color/divider_view_color" />
+            android:background="@color/divider_view_color"
+            android:layout_alignParentTop="true"/>
 
         <Button
             android:id="@+id/btn_call_analysis"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_gravity="right"
-            android:layout_margin="@dimen/target_top_margin"
             android:onClick="CallAnalysisClick"
             android:tag="call_analysis"
             android:text="Call Analysis"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/footer_padding"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

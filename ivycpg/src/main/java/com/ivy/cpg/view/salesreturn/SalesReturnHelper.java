@@ -3,6 +3,7 @@ package com.ivy.cpg.view.salesreturn;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.util.SparseArray;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -12,12 +13,17 @@ import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -61,6 +67,10 @@ public class SalesReturnHelper {
     public boolean IS_PRD_CNT_DIFF_SR;
 
     private double totalValue = 0;
+
+    private String SignaturePath;
+    private boolean isSignCaptured;
+    private String SignatureName;
 
     private SalesReturnHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
@@ -111,6 +121,30 @@ public class SalesReturnHelper {
 
     public void setSalesReturnID(String salesReturnID) {
         this.salesReturnID = salesReturnID;
+    }
+
+    public boolean isSignCaptured() {
+        return isSignCaptured;
+    }
+
+    public void setIsSignCaptured(boolean isSignCaptured) {
+        this.isSignCaptured = isSignCaptured;
+    }
+
+    public String getSignatureName() {
+        return SignatureName;
+    }
+
+    public void setSignatureName(String signatureName) {
+        SignatureName = signatureName;
+    }
+
+    public String getSignaturePath() {
+        return SignaturePath;
+    }
+
+    public void setSignaturePath(String signaturePath) {
+        SignaturePath = signaturePath;
     }
 
     public String getCreditNoteId() {
@@ -359,7 +393,7 @@ public class SalesReturnHelper {
             }
 
             // Preapre and save salesreturn header.
-            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID";
+            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName";
             String values = getSalesReturnID() + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
@@ -372,7 +406,9 @@ public class SalesReturnHelper {
                     + QT(bmodel.mSelectedRetailerLatitude + "") + ","
                     + QT(bmodel.mSelectedRetailerLongitude + "") + ","
                     + bmodel.retailerMasterBO.getDistributorId() + ","
-                    + bmodel.retailerMasterBO.getDistParentId();
+                    + bmodel.retailerMasterBO.getDistParentId() + ","
+                    + QT(getSignaturePath()) + ","
+                    + QT(getSignatureName());
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
             // insert sales replacement and decrease the stock in hand.
@@ -380,7 +416,7 @@ public class SalesReturnHelper {
                 saveReplacementDetails(db, getSalesReturnID());
             }
 
-            columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status";
+            columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode";
 
             int siz = bmodel.productHelper.getSalesReturnProducts().size();
             int totalQty;
@@ -458,7 +494,7 @@ public class SalesReturnHelper {
                                 + QT(bmodel.retailerMasterBO
                                 .getRetailerID()) + ","
                                 + reasonType + "," + QT(bo.getLotNumber()) + "," + product.getPcUomid()
-                                + "," + QT(bo.getStatus());
+                                + "," + QT(bo.getStatus()) + "," + QT(product.getHsnCode());
 
                         db.insertSQL(
                                 DataMembers.tbl_SalesReturnDetails,
@@ -752,7 +788,7 @@ public class SalesReturnHelper {
                     if ("null".equals(lotNo)) {
                         lotNo = "";
                     }
-                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo,c.getString(13));
+                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13));
                     Commons.print("inside sales return data load");
                 }
             }
@@ -1117,9 +1153,9 @@ public class SalesReturnHelper {
 
         if (getTotalValue() > 0) {
             if (IS_APPLY_TAX_IN_SR) {
-                bmodel.productHelper.downloadTaxDetails();
+                bmodel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                 // Method to use Apply Tax
-                final ArrayList<TaxBO> taxList = bmodel.productHelper.getTaxList();
+                final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
 
                 StringBuffer sb;
                 double totalTaxRate = 0;
@@ -1141,7 +1177,7 @@ public class SalesReturnHelper {
                     totalTaxValue = totalTaxValue + taxValue;
                     sb = new StringBuffer();
                     sb.append(uid + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",");
-                    sb.append(taxBO.getTaxRate() + "," + taxBO.getTaxType() + "," + taxBO.getTaxTypeId() + "," + taxValue + "," + 0);
+                    sb.append(taxBO.getTaxRate() + "," + taxBO.getTaxType() + "," + taxBO.getApplyLevelId() + "," + taxValue + "," + 0);
 
                     db.insertSQL(DataMembers.tbl_SalesReturn_tax_Details, columns, sb.toString());
                 }
@@ -1285,5 +1321,4 @@ public class SalesReturnHelper {
         return orderList;
 
     }
-
 }
