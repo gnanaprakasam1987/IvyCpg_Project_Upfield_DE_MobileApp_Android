@@ -3931,7 +3931,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.hasOrder()) {
                 //if this config IS_RFIELD1_ENABLED enabled below code will work
                 //and
-                //if(bmodel.configurationMasterHelper.IS_RFIELD1_ENABLED) {
+                if(bmodel.configurationMasterHelper.IS_RFIELD1_ENABLED) {
                     int size = bmodel.productHelper
                             .getProductMaster().size();
                     int count = 0;
@@ -3952,7 +3952,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         count = 0;
                         return;
                     }
-                //}
+                }
                 if (bmodel.getOrderHeaderBO() == null)
                     bmodel.setOrderHeaderBO(new OrderHeader());
 
