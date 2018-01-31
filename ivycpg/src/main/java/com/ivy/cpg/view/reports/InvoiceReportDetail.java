@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -329,7 +330,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
         } else if (i == R.id.menu_print) {
             businessModel.invoiceNumber = mInvoiceId;
-            businessModel.getPrintCount();
+            OrderHelper.getInstance(this).getPrintCount(getApplicationContext());
 
             Intent intent = new Intent();
 
@@ -726,7 +727,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
     public void printInvoice(String printername) {
         int count = 0;
         try {
-            businessModel.getPrintCount();
+            OrderHelper.getInstance(this).getPrintCount(getApplicationContext());
             businessModel.printHelper.setPrintCnt(businessModel.getPrint_count());
             if (printername.equals(ZEBRA_3INCH)) {
 
@@ -736,8 +737,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                         count = count + 1;
                         zebraPrinterConnection.write(businessModel.printHelper.printDatafor3inchprinterForUnipal(mProductsForAdapter, false, 1));
                         businessModel.updatePrintCount(1);
-                        businessModel.getPrintCount();
-                        businessModel.printHelper.setPrintCnt(businessModel.print_count);
+                        businessModel.printHelper.setPrintCnt(OrderHelper.getInstance(this).getPrintCount(getApplicationContext()));
 
                     }
 

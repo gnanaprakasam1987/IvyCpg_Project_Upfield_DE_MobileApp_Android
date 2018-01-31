@@ -9777,28 +9777,6 @@ public class BusinessModel extends Application {
 
     public int print_count = 0;
 
-    public void getPrintCount() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db.selectSQL("select print_count from InvoiceMaster where invoiceNo='" + this.invoiceNumber + "'");
-            if (c != null) {
-                if (c.moveToNext()) {
-
-                    Commons.print("print_count," + c.getInt(0) + "");
-                    print_count = c.getInt(0);
-                    c.close();
-                    db.closeDB();
-                }
-            }
-            c.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
     public int getPrint_count() {
         return print_count;

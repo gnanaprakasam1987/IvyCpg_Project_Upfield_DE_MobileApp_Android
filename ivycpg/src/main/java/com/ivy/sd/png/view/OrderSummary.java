@@ -49,7 +49,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CollectionBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -123,6 +122,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     public static String mActivityCode;
 
     private static final int DIALOG_NEGATIVE_INVOICE_CHECK = 6;
+    private static final int DIALOG_DELETE_ORDER = 1;
+    private static final int DIALOG_ORDER_SAVED_WITH_PRINT_OPTION = 2;
+    private static final int DIALOG_ORDER_SAVED = 3;
 
     private Toolbar toolbar;
     private Button btnsave;
@@ -586,7 +588,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         // Scheme calculations
         if (!bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                 || bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-            calculateSchemeDiscounts();
+            totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList);
+           totalOrderValue -=totalSchemeDiscValue;
         }
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
@@ -773,7 +776,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         String msg = "";
         String delivery_date_txt = "";
         switch (id) {
-            case DATE_DIALOG_ID:
+            case DATE_DIALOG_ID: {
                 Calendar c = Calendar.getInstance();
                 c.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE == 0 ? 1 : bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE));
                 int cyear = c.get(Calendar.YEAR);
@@ -796,8 +799,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }*/
                 d.setPermanentTitle(getResources().getString(R.string.choose_date));
                 return d;
+            }
 
-            case 1:
+            case DIALOG_DELETE_ORDER: {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
@@ -808,17 +813,19 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
+
                                         build = new AlertDialog.Builder(OrderSummary.this);
+                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
+                                        alertDialog = build.create();
+                                        alertDialog.show();
+
                                         bmodel.getOrderHeaderBO().setIsSignCaptured(false);
                                         if (bmodel.getOrderHeaderBO().getSignatureName() != null)
                                             bmodel.synchronizationHelper.deleteFiles(
                                                     PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
 
-                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
-                                        alertDialog = build.create();
-                                        alertDialog.show();
                                         // clear scheme free products
-                                        clearSchemeFreeProduct();
+                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
 
                                         new MyThread(OrderSummary.this,
                                                 DataMembers.DELETE_ORDER).start();
@@ -838,37 +845,40 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        build = new AlertDialog.Builder(OrderSummary.this);
 
+                                        build = new AlertDialog.Builder(OrderSummary.this);
                                         customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
+
                                         // clear scheme free products
                                         bmodel.getOrderHeaderBO().setIsSignCaptured(false);
                                         if (bmodel.getOrderHeaderBO().getSignatureName() != null)
                                             bmodel.synchronizationHelper.deleteFiles(
                                                     PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
-                                        clearSchemeFreeProduct();
+                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+
                                         new deleteStockAndOrder().execute();
+
                                         new MyThread(OrderSummary.this,
                                                 DataMembers.DELETE_ORDER).start();
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder);
                 break;
+            }
 
-            case 2:
+            case DIALOG_ORDER_SAVED_WITH_PRINT_OPTION: {
+
                 delivery_date_txt = delievery_date.getText().toString();
-                if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) { // if
-                    // seller
-                    // dialog
-                    // enable
+                if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                     if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
                         delivery_date_txt = "";
                     }
                 } else if (bmodel.configurationMasterHelper.IS_INVOICE || !bmodel.configurationMasterHelper.SHOW_DELIVERY_DATE) {
                     delivery_date_txt = "";
                 }
+
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
@@ -880,12 +890,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
+
                                         bmodel.outletTimeStampHelper
                                                 .updateTimeStampModuleWise(SDUtil
                                                         .now(SDUtil.TIME));
+
                                         // clear scheme free products
-                                        clearSchemeFreeProduct();
-                                        finish();
+                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
 
                                         Intent i = new Intent(OrderSummary.this,
                                                 HomeScreenTwo.class);
@@ -894,7 +905,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                                             i.putExtra("CurrentActivityCode", mActivityCode);
                                         }
-                                        startActivity(i);
+                                        startActivity(i);   finish();
                                     }
                                 })
                         .setPositiveButton(
@@ -905,181 +916,44 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         bmodel.outletTimeStampHelper
                                                 .updateTimeStampModuleWise(SDUtil
                                                         .now(SDUtil.TIME));
-                                        Intent i;
-                                        if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
-                                            new Thread(new Runnable() {
-                                                public void run() {
-                                                    Looper.prepare();
-                                                    doConnection(ZEBRA_3INCH);
-                                                    Looper.loop();
-                                                    Looper myLooper = Looper.myLooper();
-                                                    if (myLooper != null)
-                                                        myLooper.quit();
-                                                }
-                                            }).start();
-
-                                            builder10 = new AlertDialog.Builder(OrderSummary.this);
-
-                                            customProgressDialog(builder10, "Printing....");
-                                            alertDialog = builder10.create();
-                                            alertDialog.show();
-                                        } else if (bmodel.configurationMasterHelper.SHOW_BIXOLONII) {
-//                                            finish();
-                                            i = new Intent(OrderSummary.this,
-                                                    BixolonIIPrint.class);
-                                            i.putExtra("IsFromOrder", true);
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                            finish();
-                                        } else if (bmodel.configurationMasterHelper.SHOW_BIXOLONI) {
-//                                            finish();
-                                            i = new Intent(OrderSummary.this,
-                                                    BixolonIPrint.class);
-                                            i.putExtra("IsFromOrder", true);
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                            finish();
-                                        } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA) {
-//                                            finish();
-                                            i = new Intent(OrderSummary.this,
-                                                    InvoicePrintZebraNew.class);
-                                            i.putExtra("IsFromOrder", true);
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                            finish();
-                                        } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_ATS) {
-//                                            finish();
-                                            i = new Intent(OrderSummary.this,
-                                                    PrintPreviewScreen.class);
-                                            i.putExtra("IsFromOrder", true);
-                                            i.putExtra("storediscount",
-                                                    discountresult);
-
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                            finish();
-                                        } else if (bmodel.configurationMasterHelper.SHOW_INTERMEC_ATS) {
-//                                            finish();
-                                            i = new Intent(OrderSummary.this,
-                                                    BtPrint4Ivy.class);
-                                            i.putExtra("IsFromOrder", true);
-                                            i.putExtra("storediscount",
-                                                    discountresult);
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                            finish();
-                                        } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
-//                                            finish();
-                                            i = new Intent(OrderSummary.this,
-                                                    PrintPreviewScreenDiageo.class);
-                                            i.putExtra("IsFromOrder", true);
-                                            i.putExtra("storediscount",
-                                                    discountresult);
-
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                            finish();
-                                        } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_GHANA) {
-                                            i = new Intent(OrderSummary.this,
-                                                    GhanaPrintPreviewActivity.class);
-                                            i.putExtra("IsFromOrder", true);
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                        } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE || bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
-                                            if ("1".equalsIgnoreCase(bmodel.retailerMasterBO.getRField4()))
-                                                bmodel.productHelper.updateDistributorDetails();
-
-                                            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
-
-                                            final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
-                                            Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-
-                                            bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
-
-                                            if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
-                                                bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
-                                                sendMailAndLoadClass = "CommonPrintPreviewActivityPRINT_FILE_ORDER";
-
-                                                if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
-                                                    new ShowEmailDialog().execute();
-                                                    //isClick = false;
-                                                    //return;
-                                                } else {
-                                                    i = new Intent(OrderSummary.this,
-                                                            CommonPrintPreviewActivity.class);
-                                                    i.putExtra("IsFromOrder", true);
-                                                    i.putExtra("IsUpdatePrintCount", true);
-                                                    i.putExtra("isHomeBtnEnable", true);
-                                                    startActivity(i);
-                                                    overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                                    finish();
-                                                }
-                                            } else {
-                                                i = new Intent(OrderSummary.this,
-                                                        CommonPrintPreviewActivity.class);
-                                                i.putExtra("IsFromOrder", true);
-                                                i.putExtra("IsUpdatePrintCount", true);
-                                                i.putExtra("isHomeBtnEnable", true);
-                                                startActivity(i);
-                                                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                                finish();
-                                            }
-
-                                        } else {
-//                                            finish();
-                                            i = new Intent(OrderSummary.this,
-                                                    BixolonIIPrint.class);
-                                            i.putExtra("IsFromOrder", true);
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                            finish();
-                                        }
+                                        printOrder();
                                     }
                                 });
+
                 if (!delivery_date_txt.equals("")) {
                     builder1.setMessage(getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt);
                 }
+
+
                 bmodel.applyAlertDialogTheme(builder1);
                 break;
+            }
 
-            case 3:
+            case DIALOG_ORDER_SAVED: {
+
                 delivery_date_txt = delievery_date.getText().toString();
-                if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) { // if
-                    // seller
-                    // dialog
-                    // enable
+                if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                     if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
                         delivery_date_txt = "";
                     }
                 } else if (bmodel.configurationMasterHelper.IS_INVOICE || !bmodel.configurationMasterHelper.SHOW_DELIVERY_DATE) {
                     delivery_date_txt = "";
                 }
+
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(
-                                getResources().getString(
-                                        R.string.order_saved_locally_order_id_is)
-                                        + bmodel.getOrderid())
+                        .setTitle(getResources().getString(R.string.order_saved_locally_order_id_is) + bmodel.getOrderid())
+
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        if (bmodel.mSelectedModule != 3) {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
                                             bmodel.outletTimeStampHelper
                                                     .updateTimeStampModuleWise(SDUtil
                                                             .now(SDUtil.TIME));
-                                        }
                                         bmodel.productHelper.clearOrderTable();
-                                        //finish();
-                                        if (bmodel.mSelectedModule == 1) {
-                                            Intent i = new Intent(
-                                                    OrderSummary.this,
-                                                    HomeScreenActivity.class);
-                                            startActivity(i);
-                                        } else {
+
                                             SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
                                             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
                                             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
@@ -1104,14 +978,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 }
                                                 startActivity(i);
                                             }
-                                        }
+
                                     }
                                 });
+
                 if (!delivery_date_txt.equals("")) {
                     builder2.setMessage(getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt);
                 }
+
                 bmodel.applyAlertDialogTheme(builder2);
+
                 break;
+            }
 
             case 4:
                 AlertDialog.Builder builder3 = new AlertDialog.Builder(OrderSummary.this)
@@ -1390,6 +1268,136 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         return null;
     }
 
+    private void printOrder(){
+
+        Intent i;
+        if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+            new Thread(new Runnable() {
+                public void run() {
+                    Looper.prepare();
+                    doConnection(ZEBRA_3INCH);
+                    Looper.loop();
+                    Looper myLooper = Looper.myLooper();
+                    if (myLooper != null)
+                        myLooper.quit();
+                }
+            }).start();
+
+            builder10 = new AlertDialog.Builder(OrderSummary.this);
+
+            customProgressDialog(builder10, "Printing....");
+            alertDialog = builder10.create();
+            alertDialog.show();
+        } else if (bmodel.configurationMasterHelper.SHOW_BIXOLONII) {
+            i = new Intent(OrderSummary.this,
+                    BixolonIIPrint.class);
+            i.putExtra("IsFromOrder", true);
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            finish();
+        } else if (bmodel.configurationMasterHelper.SHOW_BIXOLONI) {
+            i = new Intent(OrderSummary.this,
+                    BixolonIPrint.class);
+            i.putExtra("IsFromOrder", true);
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            finish();
+        } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA) {
+            i = new Intent(OrderSummary.this,
+                    InvoicePrintZebraNew.class);
+            i.putExtra("IsFromOrder", true);
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            finish();
+        } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_ATS) {
+            i = new Intent(OrderSummary.this,
+                    PrintPreviewScreen.class);
+            i.putExtra("IsFromOrder", true);
+            i.putExtra("storediscount",
+                    discountresult);
+
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            finish();
+        } else if (bmodel.configurationMasterHelper.SHOW_INTERMEC_ATS) {
+            i = new Intent(OrderSummary.this,
+                    BtPrint4Ivy.class);
+            i.putExtra("IsFromOrder", true);
+            i.putExtra("storediscount",
+                    discountresult);
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            finish();
+        } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
+            i = new Intent(OrderSummary.this,
+                    PrintPreviewScreenDiageo.class);
+            i.putExtra("IsFromOrder", true);
+            i.putExtra("storediscount",
+                    discountresult);
+
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            finish();
+        } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_GHANA) {
+            i = new Intent(OrderSummary.this,
+                    GhanaPrintPreviewActivity.class);
+            i.putExtra("IsFromOrder", true);
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
+                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE || bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+
+            if ("1".equalsIgnoreCase(bmodel.retailerMasterBO.getRField4()))
+                bmodel.productHelper.updateDistributorDetails();
+
+            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
+
+            final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
+            Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
+
+            bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
+
+            if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
+                bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                        StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
+                sendMailAndLoadClass = "CommonPrintPreviewActivityPRINT_FILE_ORDER";
+
+                if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
+                    new ShowEmailDialog().execute();
+                    //isClick = false;
+                    //return;
+                } else {
+                    i = new Intent(OrderSummary.this,
+                            CommonPrintPreviewActivity.class);
+                    i.putExtra("IsFromOrder", true);
+                    i.putExtra("IsUpdatePrintCount", true);
+                    i.putExtra("isHomeBtnEnable", true);
+                    startActivity(i);
+                    overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                    finish();
+                }
+            } else {
+                i = new Intent(OrderSummary.this,
+                        CommonPrintPreviewActivity.class);
+                i.putExtra("IsFromOrder", true);
+                i.putExtra("IsUpdatePrintCount", true);
+                i.putExtra("isHomeBtnEnable", true);
+                startActivity(i);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            }
+
+        } else {
+            i = new Intent(OrderSummary.this,
+                    BixolonIIPrint.class);
+            i.putExtra("IsFromOrder", true);
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            finish();
+        }
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -1466,23 +1474,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
             return true;
         } else if (i1 == R.id.menu_print) {
+
             hidealert = true;
             if (bmodel.isEdit()) {
+
                 if (!mOrderedProductList.isEmpty()) {
-                    bmodel.getOrderHeaderBO().setOrderValue(
-                            getDiscountAppliedValue(enteredDiscAmtOrPercent));
-                    bmodel.getOrderHeaderBO().setLinesPerCall(
-                            SDUtil.convertToInt((String) lpc.getText()));
-                    bmodel.getOrderHeaderBO().setDiscount(
-                            enteredDiscAmtOrPercent);
-                    bmodel.getOrderHeaderBO()
-                            .setDeliveryDate(
-                                    DateUtil.convertToServerDateFormat(
+
+                    bmodel.getOrderHeaderBO().setOrderValue(getDiscountAppliedValue(enteredDiscAmtOrPercent));
+                    bmodel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) lpc.getText()));
+                    bmodel.getOrderHeaderBO().setDiscount(enteredDiscAmtOrPercent);
+                    bmodel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(
                                             delievery_date.getText().toString(),
                                             ConfigurationMasterHelper.outDateFormat));
 
                     build = new AlertDialog.Builder(OrderSummary.this);
-
                     customProgressDialog(build, getResources().getString(R.string.saving_new_order));
                     alertDialog = build.create();
                     alertDialog.show();
@@ -1493,7 +1498,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     } else {
                         isClick = false;
                     }
+
                 } else {
+
                     isClick = false;
                     Toast.makeText(
                             this,
@@ -1610,7 +1617,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Toast.makeText(OrderSummary.this, "No Scanned products ", Toast.LENGTH_SHORT).show();
             }
         } else if (i1 == R.id.menu_edit) {
-            clearSchemeFreeProduct();
+            discountHelper.clearSchemeFreeProduct(mOrderedProductList);
             if (bmodel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT)
                 bmodel.productHelper.clearDiscountQuantity();
             if (bmodel.remarksHelper.getRemarksBO().getModuleCode() == null
@@ -1653,7 +1660,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             finish();
         } else if (i1 == R.id.menu_delete) {
             if (bmodel.configurationMasterHelper.isStockAvailable())
-                showDialog(1);
+                showDialog(DIALOG_DELETE_ORDER);
             else
                 showDialog(5);
         }
@@ -2070,243 +2077,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
 
-    /**
-     * Calculating scheme discounts for applied(Scheme selected in scheme apply screen) scheme.
-     * If Free products available then it will be added in any one of the buy product.
-     */
-    private void calculateSchemeDiscounts() {
-
-        ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
-                .getAppliedSchemeList();
-        totalSchemeDiscValue = 0;
-        if (appliedSchemeList != null) {
-
-
-            //update scheme ordered product count for Amount type scheme
-
-            for (SchemeBO schemBO : appliedSchemeList) {
-                if (schemBO != null) {
-                    if (schemBO.isAmountTypeSelected()) {
-                        schemBO.setOrderedProductCount(0);
-                        if (schemBO.getBuyingProducts() != null) {
-                            ArrayList<String> productidList1 = new ArrayList<>();
-                            for (SchemeProductBO bo : schemBO.getBuyingProducts()) {
-                                ProductMasterBO productBO = bmodel.productHelper
-                                        .getProductMasterBOById(bo
-                                                .getProductId());
-
-                                if (productBO != null) {
-                                    if (!productidList1.contains(productBO.getProductID())) {
-                                        productidList1.add(productBO.getProductID());
-
-                                        if (productBO.getOrderedPcsQty() > 0
-                                                || productBO.getOrderedCaseQty() > 0
-                                                || productBO.getOrderedOuterQty() > 0) {
-
-                                            schemBO.setOrderedProductCount(schemBO.getOrderedProductCount() + 1);
-
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-
-            }
-
-            /**-------------------- End of the loop condition----------------------**/
-
-
-            for (SchemeBO schemeBO : appliedSchemeList) {
-                if (schemeBO != null) {
-                    if (schemeBO.isAmountTypeSelected()) {
-                        totalOrderValue = totalOrderValue
-                                - schemeBO.getSelectedAmount();
-                        totalSchemeDiscValue += schemeBO.getSelectedAmount();
-                    }
-
-                    List<SchemeProductBO> schemeproductList = schemeBO
-                            .getBuyingProducts();
-                    int i = 0;
-                    boolean isBuyProductAvailable = false;
-                    if (schemeproductList != null) {
-                        ArrayList<String> productidList = new ArrayList<>();
-                        for (SchemeProductBO schemeProductBo : schemeproductList) {
-                            ProductMasterBO productBO = bmodel.productHelper
-                                    .getProductMasterBOById(schemeProductBo
-                                            .getProductId());
-                            if (productBO != null) {
-                                if (!productidList.contains(productBO.getProductID())) {
-                                    productidList.add(productBO.getProductID());
-                                    i = i++;
-                                    if (productBO != null) {
-                                        if (productBO.getOrderedPcsQty() > 0
-                                                || productBO.getOrderedCaseQty() > 0
-                                                || productBO.getOrderedOuterQty() > 0) {
-                                            isBuyProductAvailable = true;
-                                            if (schemeBO.isAmountTypeSelected()) {
-                                                schemeProductBo.setDiscountValue(schemeBO.getSelectedAmount());
-                                                if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
-                                                        && bmodel.configurationMasterHelper.IS_SIH_VALIDATION
-                                                        && bmodel.configurationMasterHelper.IS_INVOICE) {
-                                                    if (productBO
-                                                            .getBatchwiseProductCount() > 0) {
-                                                        ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(productBO.getProductID());
-                                                        if (batchList != null && !batchList.isEmpty()) {
-                                                            for (ProductMasterBO batchProduct : batchList) {
-                                                                int totalQty = batchProduct.getOrderedPcsQty() + (batchProduct.getOrderedCaseQty() * productBO.getCaseSize())
-                                                                        + (batchProduct.getOrderedOuterQty() * productBO.getOutersize());
-                                                                if (totalQty > 0) {
-
-                                                                    double discProd = schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount();
-                                                                    batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + (discProd / productBO.getOrderedBatchCount()));
-                                                                }
-                                                            }
-                                                        }
-                                                    } else {
-                                                        productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + (schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount()));
-                                                    }
-                                                } else {
-                                                    productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + (schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount()));
-                                                }
-                                            } else if (schemeBO.isPriceTypeSeleted()) {
-                                                double totalpriceDiscount;
-
-                                                if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
-                                                        && bmodel.configurationMasterHelper.IS_SIH_VALIDATION
-                                                        && bmodel.configurationMasterHelper.IS_INVOICE) {
-                                                    if (productBO
-                                                            .getBatchwiseProductCount() > 0) {
-                                                        totalpriceDiscount = bmodel.schemeDetailsMasterHelper
-                                                                .updateSchemeProducts(
-                                                                        productBO,
-                                                                        schemeBO.getSelectedPrice(),
-                                                                        "SCH_PR", true);
-                                                    } else {
-                                                        totalpriceDiscount = bmodel.schemeDetailsMasterHelper
-                                                                .updateSchemeProducts(
-                                                                        productBO,
-                                                                        schemeBO.getSelectedPrice(),
-                                                                        "SCH_PR", false);
-                                                    }
-
-                                                } else {
-                                                    totalpriceDiscount = bmodel.schemeDetailsMasterHelper
-                                                            .updateSchemeProducts(
-                                                                    productBO,
-                                                                    schemeBO.getSelectedPrice(),
-                                                                    "SCH_PR", false);
-                                                }
-
-                                                if (productBO.getDiscount_order_value() > 0) {
-                                                    productBO
-                                                            .setDiscount_order_value(productBO
-                                                                    .getDiscount_order_value()
-                                                                    - totalpriceDiscount);
-
-                                                }
-                                                if (productBO.getSchemeAppliedValue() > 0) {
-                                                    productBO.setSchemeAppliedValue(productBO.getSchemeAppliedValue() - totalpriceDiscount);
-                                                }
-
-                                                schemeProductBo.setDiscountValue(totalpriceDiscount);
-
-                                                totalOrderValue = totalOrderValue
-                                                        - totalpriceDiscount;
-
-                                                totalSchemeDiscValue += totalpriceDiscount;
-
-                                            } else if (schemeBO
-                                                    .isDiscountPrecentSelected()) {
-                                                double totalPercentageDiscount;
-                                                if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
-                                                        && bmodel.configurationMasterHelper.IS_SIH_VALIDATION
-                                                        && bmodel.configurationMasterHelper.IS_INVOICE) {
-                                                    if (productBO
-                                                            .getBatchwiseProductCount() > 0) {
-                                                        totalPercentageDiscount = bmodel.schemeDetailsMasterHelper
-                                                                .updateSchemeProducts(
-                                                                        productBO,
-                                                                        schemeBO.getSelectedPrecent(),
-                                                                        "SCH_PER", true);
-                                                    } else {
-                                                        totalPercentageDiscount = bmodel.schemeDetailsMasterHelper
-                                                                .updateSchemeProducts(
-                                                                        productBO,
-                                                                        schemeBO.getSelectedPrecent(),
-                                                                        "SCH_PER",
-                                                                        false);
-                                                    }
-                                                } else {
-                                                    totalPercentageDiscount = bmodel.schemeDetailsMasterHelper
-                                                            .updateSchemeProducts(
-                                                                    productBO,
-                                                                    schemeBO.getSelectedPrecent(),
-                                                                    "SCH_PER", false);
-                                                }
-
-                                                if (productBO.getDiscount_order_value() > 0) {
-                                                    productBO
-                                                            .setDiscount_order_value(productBO
-                                                                    .getDiscount_order_value()
-                                                                    - totalPercentageDiscount);
-                                                }
-
-                                                if (productBO.getSchemeAppliedValue() > 0) {
-                                                    productBO.setSchemeAppliedValue(productBO.getSchemeAppliedValue() - totalPercentageDiscount);
-                                                }
-                                                schemeProductBo.setDiscountValue(totalPercentageDiscount);
-                                                totalOrderValue = totalOrderValue
-                                                        - totalPercentageDiscount;
-                                                totalSchemeDiscValue += totalPercentageDiscount;
-                                            } else if (schemeBO
-                                                    .isQuantityTypeSelected()) {
-                                                orderHelper.updateSchemeFreeproduct(schemeBO,productBO);
-                                                break;
-                                            }
-                                        } else {
-                                            if (schemeBO.isQuantityTypeSelected()) {
-                                                // if  Accumulation scheme's buy product not avaliable, free product set in First order product object
-                                                if (i == schemeproductList.size() && !isBuyProductAvailable) {
-                                                    ProductMasterBO firstProductBO = mOrderedProductList.get(0);
-                                                    orderHelper.updateSchemeFreeproduct(schemeBO,firstProductBO);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-        }
-    }
 
 
 
-    /**
-     * @author rajesh.k method to use clear free product object from Ordered
-     * productmasterBO
-     */
-    private void clearSchemeFreeProduct() {
-        for (ProductMasterBO productB0 : mOrderedProductList) {
-            if (productB0.getSchemeProducts() != null) {
-                productB0.getSchemeProducts().clear();
-            }
-            productB0.setCompanyTypeDiscount(0);
-            productB0.setDistributorTypeDiscount(0);
 
-        }
-
-    }
 
     private void Checkbluetoothenable() {
         try {
@@ -2491,8 +2265,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         zebraPrinterConnection.write(bmodel.printHelper.printDatafor3inchprinterForUnipal(mOrderedProductList, fromorder, 1));
                         if (!fromorder) {
                             bmodel.updatePrintCount(1);
-                            bmodel.getPrintCount();
-                            bmodel.printHelper.setPrintCnt(bmodel.print_count);
+                            bmodel.printHelper.setPrintCnt(orderHelper.getPrintCount(this));
                         }
                     }
                 } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
@@ -2500,8 +2273,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         zebraPrinterConnection.write(bmodel.printHelper.printDataforTitan3inchOrderprinter(mOrderedProductList, 0));
                         if (!fromorder) {
                             bmodel.updatePrintCount(1);
-                            bmodel.getPrintCount();
-                            bmodel.printHelper.setPrintCnt(bmodel.print_count);
+                            bmodel.printHelper.setPrintCnt(orderHelper.getPrintCount(this));
                         }
                     }
                 } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_GHANA || bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
@@ -3364,101 +3136,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     else if (bmodel.configurationMasterHelper.SHOW_PRINT_ORDER
                             && (!hidealert))
 
-                        showDialog(2);
+                        showDialog(DIALOG_ORDER_SAVED_WITH_PRINT_OPTION);
                     else {
                         if (hidealert) {
                             bmodel.outletTimeStampHelper
                                     .updateTimeStampModuleWise(SDUtil
                                             .now(SDUtil.TIME));
-                            Intent i = null;
-                            if (bmodel.configurationMasterHelper.SHOW_BIXOLONII) {
-                                Commons.print("SHOW_BIXOLONII>>>>>>>>>>>>>," + "handle");
-                                i = new Intent(OrderSummary.this,
-                                        BixolonIIPrint.class);
-                                i.putExtra("IsFromOrder", true);
-                            } else if (bmodel.configurationMasterHelper.SHOW_BIXOLONI) {
-                                Commons.print("SHOW_BIXOLONI>>>>>>>>>>>>>," +
-                                        "handle");
-                                i = new Intent(OrderSummary.this,
-                                        BixolonIPrint.class);
-                                i.putExtra("IsFromOrder", true);
-                            } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA) {
-                                Commons.print("SHOW_ZEBRA>>>>>>>>>>>>>," + "handle");
-                                i = new Intent(OrderSummary.this,
-                                        InvoicePrintZebraNew.class);
-                            } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_ATS) {
-                                Commons.print("SHOW_ZEBRA_ATS>>>>>>>>>>>>>," +
-                                        "handle");
-                                i = new Intent(OrderSummary.this,
-                                        PrintPreviewScreen.class);
-                                i.putExtra("storediscount", discountresult);
+                           printOrder();
 
-                            } else if (bmodel.configurationMasterHelper.SHOW_INTERMEC_ATS) {
-                                Commons.print("SHOW_INTERMEC_ATS>>>>>>>>>>>>>," +
-                                        "handle");
-                                i = new Intent(OrderSummary.this,
-                                        BtPrint4Ivy.class);
-                                i.putExtra("storediscount", discountresult);
-                            } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
-                                Commons.print("SHOW_ZEBRA_DIAGEO>>>>>>>>>>>>>," +
-                                        "handle");
-                                i = new Intent(OrderSummary.this,
-                                        PrintPreviewScreenDiageo.class);
-                                i.putExtra("storediscount", discountresult);
-
-                            } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_GHANA) {
-                                i = new Intent(OrderSummary.this,
-                                        GhanaPrintPreviewActivity.class);
-                                i.putExtra("IsFromOrder", true);
-                                startActivity(i);
-                            } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                                    || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE || bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
-                                if ("1".equalsIgnoreCase(bmodel.retailerMasterBO.getRField4()))
-                                    bmodel.productHelper.updateDistributorDetails();
-
-                                SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
-                                final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
-                                Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-                                bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
-
-                                if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
-                                    bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                            StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
-
-                                    sendMailAndLoadClass = "CommonPrintPreviewActivityPRINT_FILE_ORDER";
-                                    if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
-                                        new ShowEmailDialog().execute();
-                                        //isClick = false;
-                                        //return;
-                                    } else {
-                                        i = new Intent(OrderSummary.this,
-                                                CommonPrintPreviewActivity.class);
-                                        i.putExtra("IsFromOrder", true);
-                                        i.putExtra("IsUpdatePrintCount", true);
-                                        i.putExtra("isHomeBtnEnable", true);
-                                        startActivity(i);
-                                        finish();
-                                    }
-                                } else {
-                                    i = new Intent(OrderSummary.this,
-                                            CommonPrintPreviewActivity.class);
-                                    i.putExtra("IsFromOrder", true);
-                                    i.putExtra("IsUpdatePrintCount", true);
-                                    i.putExtra("isHomeBtnEnable", true);
-                                    startActivity(i);
-                                    finish();
-                                }
-
-                            } else {
-                                Commons.print("ELSE>>>>>>>>>>>>>," + "handle");
-                                i = new Intent(OrderSummary.this,
-                                        BixolonIIPrint.class);
-                                i.putExtra("IsFromOrder", true);
-
-                            }
-                            startActivity(i);
-                            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                            finish();
 
                         } else
                             showDialog(3);
@@ -3486,7 +3171,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             if (msg.what == DataMembers.NOTIFY_INVOICE_SAVED) {
                 try {
-                    bmodel.getPrintCount();
+                    orderHelper.getPrintCount(OrderSummary.this);
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getApplicationContext();
 

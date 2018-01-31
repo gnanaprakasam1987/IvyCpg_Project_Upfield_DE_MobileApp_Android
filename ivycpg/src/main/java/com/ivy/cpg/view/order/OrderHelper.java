@@ -1,12 +1,15 @@
 package com.ivy.cpg.view.order;
 
 import android.content.Context;
+import android.database.Cursor;
 
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -244,4 +247,39 @@ public class OrderHelper {
 
         return false;
     }
+
+
+
+    //////////////////////////// Print ////////
+    int print_count;
+    public int getPrint_count() {
+        return print_count;
+    }
+    public int getPrintCount(Context mContext) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select print_count from InvoiceMaster where invoiceNo='" + businessModel.invoiceNumber + "'");
+            if (c != null) {
+                if (c.moveToNext()) {
+
+                    Commons.print("print_count," + c.getInt(0) + "");
+                    print_count = c.getInt(0);
+                    c.close();
+                    db.closeDB();
+                }
+            }
+            c.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return print_count;
+    }
+
+
+
+
 }

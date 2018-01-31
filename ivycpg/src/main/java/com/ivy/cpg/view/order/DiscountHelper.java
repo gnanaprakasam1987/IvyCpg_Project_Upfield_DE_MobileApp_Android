@@ -5,6 +5,8 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StoreWsieDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -13,6 +15,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
@@ -25,6 +28,7 @@ public class DiscountHelper {
     private static DiscountHelper instance = null;
     private Context mContext;
     private BusinessModel businessModel;
+    private OrderHelper orderHelper;
 
     private HashMap<String, HashMap<Integer, Double>> mDiscountmapByProductwithBathid = new HashMap<String, HashMap<Integer, Double>>();
     private ArrayList<StoreWsieDiscountBO> mBillWiseDiscountList;
@@ -34,6 +38,7 @@ public class DiscountHelper {
     private DiscountHelper(Context context) {
         this.mContext = context;
         this.businessModel = (BusinessModel) context;
+        orderHelper=OrderHelper.getInstance(context);
     }
 
 
@@ -788,5 +793,240 @@ public class DiscountHelper {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////  Scheme Discount  ///////////////////////
+
+    /**
+     * Calculating scheme discounts for applied(Scheme selected in scheme apply screen) scheme.
+     * If Free products available then it will be added in any one of the buy product.
+     */
+    public double calculateSchemeDiscounts(LinkedList<ProductMasterBO> mOrderedList) {
+
+        double totalSchemeDiscountValue=0;
+
+        ArrayList<SchemeBO> appliedSchemeList = businessModel.schemeDetailsMasterHelper
+                .getAppliedSchemeList();
+        if (appliedSchemeList != null) {
+
+
+            //update scheme ordered product count for Amount type scheme
+
+            for (SchemeBO schemBO : appliedSchemeList) {
+                if (schemBO != null) {
+                    if (schemBO.isAmountTypeSelected()) {
+                        schemBO.setOrderedProductCount(0);
+                        if (schemBO.getBuyingProducts() != null) {
+                            ArrayList<String> productidList1 = new ArrayList<>();
+                            for (SchemeProductBO bo : schemBO.getBuyingProducts()) {
+                                ProductMasterBO productBO = businessModel.productHelper
+                                        .getProductMasterBOById(bo
+                                                .getProductId());
+
+                                if (productBO != null) {
+                                    if (!productidList1.contains(productBO.getProductID())) {
+                                        productidList1.add(productBO.getProductID());
+
+                                        if (productBO.getOrderedPcsQty() > 0
+                                                || productBO.getOrderedCaseQty() > 0
+                                                || productBO.getOrderedOuterQty() > 0) {
+
+                                            schemBO.setOrderedProductCount(schemBO.getOrderedProductCount() + 1);
+
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+            /**-------------------- End of the loop condition----------------------**/
+
+
+            for (SchemeBO schemeBO : appliedSchemeList) {
+                if (schemeBO != null) {
+                    if (schemeBO.isAmountTypeSelected()) {
+                        totalSchemeDiscountValue = schemeBO.getSelectedAmount();
+                    }
+
+                    List<SchemeProductBO> schemeproductList = schemeBO
+                            .getBuyingProducts();
+                    int i = 0;
+                    boolean isBuyProductAvailable = false;
+                    if (schemeproductList != null) {
+                        ArrayList<String> productidList = new ArrayList<>();
+                        for (SchemeProductBO schemeProductBo : schemeproductList) {
+                            ProductMasterBO productBO = businessModel.productHelper
+                                    .getProductMasterBOById(schemeProductBo
+                                            .getProductId());
+                            if (productBO != null) {
+                                if (!productidList.contains(productBO.getProductID())) {
+                                    productidList.add(productBO.getProductID());
+                                    i = i++;
+                                    if (productBO != null) {
+                                        if (productBO.getOrderedPcsQty() > 0
+                                                || productBO.getOrderedCaseQty() > 0
+                                                || productBO.getOrderedOuterQty() > 0) {
+                                            isBuyProductAvailable = true;
+                                            if (schemeBO.isAmountTypeSelected()) {
+                                                schemeProductBo.setDiscountValue(schemeBO.getSelectedAmount());
+                                                if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                                                        && businessModel.configurationMasterHelper.IS_SIH_VALIDATION
+                                                        && businessModel.configurationMasterHelper.IS_INVOICE) {
+                                                    if (productBO
+                                                            .getBatchwiseProductCount() > 0) {
+                                                        ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper.getBatchlistByProductID().get(productBO.getProductID());
+                                                        if (batchList != null && !batchList.isEmpty()) {
+                                                            for (ProductMasterBO batchProduct : batchList) {
+                                                                int totalQty = batchProduct.getOrderedPcsQty() + (batchProduct.getOrderedCaseQty() * productBO.getCaseSize())
+                                                                        + (batchProduct.getOrderedOuterQty() * productBO.getOutersize());
+                                                                if (totalQty > 0) {
+
+                                                                    double discProd = schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount();
+                                                                    batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + (discProd / productBO.getOrderedBatchCount()));
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + (schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount()));
+                                                    }
+                                                } else {
+                                                    productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + (schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount()));
+                                                }
+                                            } else if (schemeBO.isPriceTypeSeleted()) {
+                                                double totalpriceDiscount;
+
+                                                if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                                                        && businessModel.configurationMasterHelper.IS_SIH_VALIDATION
+                                                        && businessModel.configurationMasterHelper.IS_INVOICE) {
+                                                    if (productBO
+                                                            .getBatchwiseProductCount() > 0) {
+                                                        totalpriceDiscount = businessModel.schemeDetailsMasterHelper
+                                                                .updateSchemeProducts(
+                                                                        productBO,
+                                                                        schemeBO.getSelectedPrice(),
+                                                                        "SCH_PR", true);
+                                                    } else {
+                                                        totalpriceDiscount = businessModel.schemeDetailsMasterHelper
+                                                                .updateSchemeProducts(
+                                                                        productBO,
+                                                                        schemeBO.getSelectedPrice(),
+                                                                        "SCH_PR", false);
+                                                    }
+
+                                                } else {
+                                                    totalpriceDiscount = businessModel.schemeDetailsMasterHelper
+                                                            .updateSchemeProducts(
+                                                                    productBO,
+                                                                    schemeBO.getSelectedPrice(),
+                                                                    "SCH_PR", false);
+                                                }
+
+                                                if (productBO.getDiscount_order_value() > 0) {
+                                                    productBO
+                                                            .setDiscount_order_value(productBO
+                                                                    .getDiscount_order_value()
+                                                                    - totalpriceDiscount);
+
+                                                }
+                                                if (productBO.getSchemeAppliedValue() > 0) {
+                                                    productBO.setSchemeAppliedValue(productBO.getSchemeAppliedValue() - totalpriceDiscount);
+                                                }
+
+                                                schemeProductBo.setDiscountValue(totalpriceDiscount);
+
+                                                totalSchemeDiscountValue= totalpriceDiscount;
+
+
+                                            } else if (schemeBO
+                                                    .isDiscountPrecentSelected()) {
+                                                double totalPercentageDiscount;
+                                                if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                                                        && businessModel.configurationMasterHelper.IS_SIH_VALIDATION
+                                                        && businessModel.configurationMasterHelper.IS_INVOICE) {
+                                                    if (productBO
+                                                            .getBatchwiseProductCount() > 0) {
+                                                        totalPercentageDiscount = businessModel.schemeDetailsMasterHelper
+                                                                .updateSchemeProducts(
+                                                                        productBO,
+                                                                        schemeBO.getSelectedPrecent(),
+                                                                        "SCH_PER", true);
+                                                    } else {
+                                                        totalPercentageDiscount = businessModel.schemeDetailsMasterHelper
+                                                                .updateSchemeProducts(
+                                                                        productBO,
+                                                                        schemeBO.getSelectedPrecent(),
+                                                                        "SCH_PER",
+                                                                        false);
+                                                    }
+                                                } else {
+                                                    totalPercentageDiscount = businessModel.schemeDetailsMasterHelper
+                                                            .updateSchemeProducts(
+                                                                    productBO,
+                                                                    schemeBO.getSelectedPrecent(),
+                                                                    "SCH_PER", false);
+                                                }
+
+                                                if (productBO.getDiscount_order_value() > 0) {
+                                                    productBO
+                                                            .setDiscount_order_value(productBO
+                                                                    .getDiscount_order_value()
+                                                                    - totalPercentageDiscount);
+                                                }
+
+                                                if (productBO.getSchemeAppliedValue() > 0) {
+                                                    productBO.setSchemeAppliedValue(productBO.getSchemeAppliedValue() - totalPercentageDiscount);
+                                                }
+                                                schemeProductBo.setDiscountValue(totalPercentageDiscount);
+                                                totalSchemeDiscountValue=totalPercentageDiscount;
+                                            } else if (schemeBO
+                                                    .isQuantityTypeSelected()) {
+                                                orderHelper.updateSchemeFreeproduct(schemeBO,productBO);
+                                                break;
+                                            }
+                                        } else {
+                                            if (schemeBO.isQuantityTypeSelected()) {
+                                                // if  Accumulation scheme's buy product not avaliable, free product set in First order product object
+                                                if (i == schemeproductList.size() && !isBuyProductAvailable) {
+                                                    ProductMasterBO firstProductBO = mOrderedList.get(0);
+                                                    orderHelper.updateSchemeFreeproduct(schemeBO,firstProductBO);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        return totalSchemeDiscountValue;
+    }
+
+    /**
+     * @author rajesh.k method to use clear free product object from Ordered
+     * productmasterBO
+     */
+    public void clearSchemeFreeProduct(LinkedList<ProductMasterBO> mOrderedProductList) {
+        for (ProductMasterBO productB0 : mOrderedProductList) {
+            if (productB0.getSchemeProducts() != null) {
+                productB0.getSchemeProducts().clear();
+            }
+            productB0.setCompanyTypeDiscount(0);
+            productB0.setDistributorTypeDiscount(0);
+
+        }
+
+    }
 
 }
