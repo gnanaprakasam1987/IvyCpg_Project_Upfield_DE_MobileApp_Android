@@ -1734,8 +1734,6 @@ SynchronizationHelper {
 
                             }
                         }
-
-
                     }
 
                 } catch (Exception e) {

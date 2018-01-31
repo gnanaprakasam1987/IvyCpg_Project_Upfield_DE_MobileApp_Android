@@ -2439,7 +2439,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                 bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
 
-                                orderConfirmationDialog=new OrderConfirmationDialog(this,true,mOrderedProductList,totalOrderValue);
+                                orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
                                 orderConfirmationDialog.show();
                                 orderConfirmationDialog.setCancelable(false);
                                 return;
@@ -3626,8 +3626,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             super.onPostExecute(aBoolean);
             if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL && aBoolean) {
                 android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
-                EmailDialog dialog = new EmailDialog(
-                        "MENU_STK_ORD", OrderSummary.this, bmodel.getRetailerMasterBO().getEmail());
+                EmailDialog dialog = new EmailDialog(OrderSummary.this, bmodel.getRetailerMasterBO().getEmail());
                 dialog.setCancelable(false);
                 dialog.show(ft, "MENU_STK_ORD");
             }

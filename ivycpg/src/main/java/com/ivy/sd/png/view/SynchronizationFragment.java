@@ -17,6 +17,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -69,6 +70,7 @@ import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -87,7 +89,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-public class SynchronizationFragment extends IvyBaseFragment implements View.OnClickListener {
+public class SynchronizationFragment extends IvyBaseFragment implements View.OnClickListener, SwitchUserDialog.onSwitchUser {
 
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
@@ -123,6 +125,10 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
     private View view;
     private DisplayMetrics displaymetrics;
     private Button sync, download, backDateSelection;
+    private boolean isSwitchUser = false;
+
+    //switchUser UserName and password
+    private String userName, password;
 
     @Override
     public void onAttach(Context context) {
@@ -462,6 +468,8 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             }
         });
 
+        isSwitchUser = false;
+
     }
 
     private void syncStatus(int btn_count) {
@@ -603,6 +611,10 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         if (!bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
             menu.findItem(R.id.menu_catalog_img).setVisible(false);
 
+        if (bmodel.synchronizationHelper.isDayClosed() && !bmodel.synchronizationHelper.checkDataForSync())
+            menu.findItem(R.id.menu_switch_user).setVisible(true);
+        else
+            menu.findItem(R.id.menu_switch_user).setVisible(false);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -632,6 +644,13 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         } else if (i == android.R.id.home) {
             startActivity(new Intent(getActivity(), HomeScreenActivity.class));
             getActivity().finish();
+
+        } else if (i == R.id.menu_switch_user) {
+            android.support.v4.app.FragmentManager ft = getActivity().getSupportFragmentManager();
+            SwitchUserDialog dialog = new SwitchUserDialog();
+            dialog.setTargetFragment(this, 0);
+            dialog.setCancelable(false);
+            dialog.show(ft, "MENU_SYNC");
 
         }
         return true;
@@ -696,7 +715,14 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC:
                     dismissCurrentProgressDialog();
-                    bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
+                    if (isSwitchUser) {
+                        getActivity().finish();
+                        BusinessModel.loadActivity(getActivity(),
+                                DataMembers.actHomeScreen);
+                    } else {
+                        bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
+                    }
+
                     isClicked = false;
                     break;
 
@@ -1009,6 +1035,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             }
 
         } else if (v.getId() == R.id.download) {
+            isSwitchUser = false;
             if (bmodel.isOnline()) {
                 if (bmodel.synchronizationHelper.checkDataForSync()) {
 
@@ -1537,7 +1564,13 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC:
                     dismissCurrentProgressDialog();
-                    bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
+                    if (isSwitchUser) {
+                        getActivity().finish();
+                        BusinessModel.loadActivity(getActivity(),
+                                DataMembers.actHomeScreen);
+                    } else {
+                        bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
+                    }
                     isClicked = false;
                     break;
 
@@ -2360,7 +2393,13 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                                 .getUserid(), transferUtility);
                 downloaderThread.start();
             } else {
-                bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
+                if (isSwitchUser) {
+                    getActivity().finish();
+                    BusinessModel.loadActivity(getActivity(),
+                            DataMembers.actHomeScreen);
+                } else {
+                    bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
+                }
                 isClicked = false;
                 // getActivity().finish();
             }
@@ -2428,6 +2467,159 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         messagetv.setText(message);
         builder.setView(layout);
         builder.setCancelable(false);
+    }
+
+
+    @Override
+    public void setUserNamePwd(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
+        isSwitchUser = true;
+
+        if (bmodel.isOnline()) {
+            builder = new AlertDialog.Builder(getActivity());
+
+            customProgressDialog(builder, getResources().getString(R.string.auth_and_downloading_masters));
+            alertDialog = builder.create();
+            alertDialog.show();
+
+            if (!DataMembers.SERVER_URL.equals("")) {
+                callAuthentication(false);
+            } else {
+                bmodel.showAlert(getActivity().getResources().getString(R.string.download_url_empty), 0);
+                if (alertDialog != null)
+                    alertDialog.dismiss();
+            }
+        } else {
+            bmodel.showAlert(getActivity().getResources().getString(R.string.please_connect_to_internet), 0);
+        }
+
+
+    }
+
+    public void callAuthentication(boolean isDeviceChanged) {
+        new Authentication(isDeviceChanged).execute();
+    }
+
+    class Authentication extends AsyncTask<String, String, String> {
+        JSONObject jsonObject;
+        final boolean changeDeviceId;
+
+        Authentication(boolean changeDeviceId) {
+            this.changeDeviceId = changeDeviceId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            try {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("LoginId", userName);
+                jsonObj.put("Password", password);
+                jsonObj.put(SynchronizationHelper.VERSION_CODE,
+                        bmodel.getApplicationVersionNumber());
+
+                jsonObj.put("Model", Build.MODEL);
+                jsonObj.put("Platform", "Android");
+                jsonObj.put("OSVersion", android.os.Build.VERSION.RELEASE);
+                jsonObj.put("FirmWare", "");
+                jsonObj.put("DeviceId",
+                        bmodel.activationHelper.getIMEINumber());
+                jsonObj.put("RegistrationId", bmodel.regid);
+                jsonObj.put("DeviceUniqueId", bmodel.activationHelper.getDeviceId());
+                if (DataMembers.ACTIVATION_KEY != null && !DataMembers.ACTIVATION_KEY.isEmpty())
+                    jsonObj.put("ActivationKey", DataMembers.ACTIVATION_KEY);
+                jsonObj.put(SynchronizationHelper.MOBILE_DATE_TIME,
+                        Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+                jsonObj.put(SynchronizationHelper.MOBILE_UTC_DATE_TIME,
+                        Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+                if (!DataMembers.backDate.isEmpty())
+                    jsonObj.put(SynchronizationHelper.REQUEST_MOBILE_DATE_TIME,
+                            SDUtil.now(SDUtil.DATE_TIME_NEW));
+                this.jsonObject = jsonObj;
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String LoginResponse = bmodel.synchronizationHelper.userAuthenticate(jsonObject, changeDeviceId);
+            try {
+                JSONObject jsonObject = new JSONObject(LoginResponse);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        String errorCode = jsonObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            bmodel.synchronizationHelper
+                                    .parseJSONAndInsert(jsonObject, false);
+                            bmodel.userMasterHelper.downloadUserDetails();
+                            bmodel.userMasterHelper.downloadDistributionDetails();
+                        }
+                        return errorCode;
+                    }
+                }
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+            return "E01";
+        }
+
+        @Override
+        protected void onPostExecute(String output) {
+            super.onPostExecute(output);
+            if (alertDialog != null)
+                alertDialog.dismiss();
+            if (output.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                bmodel.userNameTemp = userName;
+                bmodel.passwordTemp = password;
+                new CheckNewVersionTask()
+                        .execute(new Integer[]{0});
+            } else {
+                if (output.equals("E27")) {
+                    showDialog();
+                } else {
+                    /*if (output.equals("E25")) {
+                        loginView.showForgotPassword();
+                    }*/
+
+                    String ErrorMessage = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(output);
+
+                    if (ErrorMessage != null) {
+                        bmodel.showAlert(ErrorMessage, 0);
+                    } else {
+                        bmodel.showAlert("Connection Exception", 0);
+                    }
+                }
+
+
+            }
+
+        }
+    }
+
+    public void showDialog() {
+        new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                getResources().getString(R.string.deviceId_change_msg_title),
+                getResources().getString(R.string.deviceId_change_msg),
+                false, getResources().getString(R.string.yes),
+                getResources().getString(R.string.no),
+                new CommonDialog.positiveOnClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+
+                        callAuthentication(true);
+
+                    }
+                }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+
+            }
+        }).show();
     }
 
 }
