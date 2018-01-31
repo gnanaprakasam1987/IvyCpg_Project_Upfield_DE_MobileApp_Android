@@ -721,7 +721,7 @@ public class DiscountHelper {
 
     }
 
-    public double updateBillwisePaytermDiscount(double totalOrderValue) {
+    public double calculateBillWisePayTermDiscount(double totalOrderValue) {
 
 
         double totalValue = totalOrderValue;

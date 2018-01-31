@@ -5550,23 +5550,7 @@ public class ProductHelper {
 
     }
 
-    public boolean isAllScanned() {
 
-        for (ProductMasterBO productBO : productMaster) {
-            int totalQty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize())
-                    + (productBO.getOrderedOuterQty() * productBO.getOutersize());
-            if (totalQty > 0 && productBO.getScannedProduct() == 1) {
-                if (totalQty != productBO.getTotalScannedQty()) {
-                    return false;
-                }
-            }
-
-
-        }
-        return true;
-
-
-    }
 
     public ArrayList<Integer> getTypeIdList() {
         if (mTypeIdList != null) {

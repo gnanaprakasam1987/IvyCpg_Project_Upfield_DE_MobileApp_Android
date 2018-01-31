@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SerialNoBO;
@@ -544,7 +545,7 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
 
             mSerialNoListByPid.put(mProductID, mSerialNoList);
             bmodel.productHelper.setmSerialNoListByProductid(mSerialNoListByPid);
-            if (!bmodel.productHelper.isAllScanned()) {
+            if (!OrderHelper.getInstance(this).isAllScanned()) {
                 Toast.makeText(this, getResources().getString(R.string.mismatch_scanned_products), Toast.LENGTH_SHORT).show();
                 return true;
             } else if (bmodel.productHelper.isDuplicateSerialNo()) {

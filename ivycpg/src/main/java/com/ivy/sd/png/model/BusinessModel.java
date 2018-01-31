@@ -2404,29 +2404,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    public boolean isReasonProvided() {
-        // To check wether reason provided for un satisfied inidicative order
-        int siz = productHelper.getProductMaster().size();
-        if (siz == 0)
-            return false;
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = productHelper
-                    .getProductMaster().get(i);
-            if (configurationMasterHelper.IS_SHOW_ORDER_REASON) {
-                if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
-                    if (product.getSoreasonId() == 0)
-                        return false;
-                }
-            } else {
-                if (product.getOrderedCaseQty() > 0)
-                    if (product.getOrderedCaseQty() < product.getIndicativeOrder_oc())
-                        if (product.getSoreasonId() == 0)
-                            return false;
-            }
-        }
-        return true;
-    }
-
     public ArrayList<InvoiceHeaderBO> getInvoiceHeaderBO() {
         return invoiceHeader;
     }
@@ -10706,63 +10683,6 @@ public class BusinessModel extends Application {
     }
 
 
-    //Method to check wether stock is available to deliver
-    public boolean isStockAvailableToDeliver(List<ProductMasterBO> orderList) {
-        try {
-
-            HashMap<String, Integer> mDeliverQtyByProductId = new HashMap<>();
-
-            for (ProductMasterBO product : orderList) {
-
-
-                if (product.getOrderedPcsQty() > 0
-                        || product.getOrderedCaseQty() > 0 || product
-                        .getOrderedOuterQty() > 0) {
-
-                    int totalQty = (product.getOrderedOuterQty() * product
-                            .getOutersize())
-                            + (product.getOrderedCaseQty() * product
-                            .getCaseSize())
-                            + (product.getOrderedPcsQty());
-                    mDeliverQtyByProductId.put(product.getProductID(), totalQty);
-
-
-                }
-            }
-
-            if (configurationMasterHelper.IS_SCHEME_ON) {
-                for (SchemeBO schemeBO : schemeDetailsMasterHelper.getAppliedSchemeList()) {
-                    if (schemeBO.getFreeProducts() != null) {
-                        for (SchemeProductBO freeProductBO : schemeBO.getFreeProducts()) {
-                            if (freeProductBO.getQuantitySelected() > 0) {
-
-                                if (mDeliverQtyByProductId.get(freeProductBO.getProductId()) != null) {
-                                    int qty = mDeliverQtyByProductId.get(freeProductBO.getProductId());
-                                    mDeliverQtyByProductId.put(freeProductBO.getProductId(), (qty + freeProductBO.getQuantitySelected()));
-                                } else {
-                                    mDeliverQtyByProductId.put(freeProductBO.getProductId(), freeProductBO.getQuantitySelected());
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-            }
-
-            for (String productId : mDeliverQtyByProductId.keySet()) {
-                ProductMasterBO product = productHelper.getProductMasterBOById(productId);
-                if (product != null) {
-                    if (mDeliverQtyByProductId.get(productId) > product.getSIH())
-                        return false;
-                }
-            }
-        } catch (Exception ex) {
-            Commons.printException(ex);
-            return false;
-        }
-        return true;
-    }
 
 //    public Bitmap getCircularBitmapFrom(Bitmap source) {
 //        if (source == null || source.isRecycled()) {
