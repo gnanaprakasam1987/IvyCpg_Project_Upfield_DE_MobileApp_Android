@@ -4876,7 +4876,7 @@ public class BusinessModel extends Application {
                             Intent intent = new Intent(ctx,
                                     PrintPreviewScreenDiageo.class);
                             intent.putExtra("IsFromOrder", false);
-                            intent.putExtra("print_count", getPrint_count());
+                            intent.putExtra("print_count", OrderHelper.getInstance(getContext()).getPrint_count());
                             frm.startActivity(intent);
                             frm.finish();
                         } else if (configurationMasterHelper.SHOW_ZEBRA_GHANA) {
@@ -9772,14 +9772,6 @@ public class BusinessModel extends Application {
 
     public String getChatPassword() {
         return ChatPassword;
-    }
-
-
-    public int print_count = 0;
-
-
-    public int getPrint_count() {
-        return print_count;
     }
 
 

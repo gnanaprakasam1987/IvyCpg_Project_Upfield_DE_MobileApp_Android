@@ -125,6 +125,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int DIALOG_DELETE_ORDER = 1;
     private static final int DIALOG_ORDER_SAVED_WITH_PRINT_OPTION = 2;
     private static final int DIALOG_ORDER_SAVED = 3;
+    private static final int DIALOG_NUMBER_OF_PRINTS =10;
 
     private Toolbar toolbar;
     private Button btnsave;
@@ -868,6 +869,70 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 break;
             }
 
+
+
+            case DIALOG_ORDER_SAVED: {
+
+                delivery_date_txt = delievery_date.getText().toString();
+                if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                        delivery_date_txt = "";
+                    }
+                } else if (bmodel.configurationMasterHelper.IS_INVOICE || !bmodel.configurationMasterHelper.SHOW_DELIVERY_DATE) {
+                    delivery_date_txt = "";
+                }
+
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(OrderSummary.this)
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(getResources().getString(R.string.order_saved_locally_order_id_is) + bmodel.getOrderid())
+
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                            bmodel.outletTimeStampHelper
+                                                    .updateTimeStampModuleWise(SDUtil
+                                                            .now(SDUtil.TIME));
+                                        bmodel.productHelper.clearOrderTable();
+
+                                            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
+                                            final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
+                                            Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
+                                            bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
+
+                                            bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                                                    StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.getOrderid(), "/" + DataMembers.IVYDIST_PATH);
+
+                                            sendMailAndLoadClass = "HomeScreenTwoPRINT_FILE_ORDER";
+                                            if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
+                                                new ShowEmailDialog().execute();
+                                                //isClick = false;
+                                                //return;
+                                            } else {
+                                                Intent i = new Intent(
+                                                        OrderSummary.this,
+                                                        HomeScreenTwo.class);
+                                                Bundle extras = getIntent().getExtras();
+                                                if (extras != null) {
+                                                    i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                                                    i.putExtra("CurrentActivityCode", mActivityCode);
+                                                }
+                                                startActivity(i);
+                                            }
+
+                                    }
+                                });
+
+                if (!delivery_date_txt.equals("")) {
+                    builder2.setMessage(getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt);
+                }
+
+                bmodel.applyAlertDialogTheme(builder2);
+
+                break;
+            }
+
             case DIALOG_ORDER_SAVED_WITH_PRINT_OPTION: {
 
                 delivery_date_txt = delievery_date.getText().toString();
@@ -929,64 +994,53 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 break;
             }
 
-            case DIALOG_ORDER_SAVED: {
-
-                delivery_date_txt = delievery_date.getText().toString();
-                if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                    if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                        delivery_date_txt = "";
-                    }
-                } else if (bmodel.configurationMasterHelper.IS_INVOICE || !bmodel.configurationMasterHelper.SHOW_DELIVERY_DATE) {
-                    delivery_date_txt = "";
-                }
-
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(OrderSummary.this)
+            case 11: {
+                AlertDialog.Builder builder12 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.order_saved_locally_order_id_is) + bmodel.getOrderid())
-
-                        .setPositiveButton(getResources().getString(R.string.ok),
+                        .setTitle(
+                                getResources().getString(
+                                        R.string.order_created_dou_wnt_print))
+                        .setPositiveButton("Ok",
                                 new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
 
-                                            bmodel.outletTimeStampHelper
-                                                    .updateTimeStampModuleWise(SDUtil
-                                                            .now(SDUtil.TIME));
-                                        bmodel.productHelper.clearOrderTable();
-
-                                            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
-                                            final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
-                                            Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-                                            bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
-
-                                            bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                    StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.getOrderid(), "/" + DataMembers.IVYDIST_PATH);
-
-                                            sendMailAndLoadClass = "HomeScreenTwoPRINT_FILE_ORDER";
-                                            if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
-                                                new ShowEmailDialog().execute();
-                                                //isClick = false;
-                                                //return;
-                                            } else {
-                                                Intent i = new Intent(
-                                                        OrderSummary.this,
-                                                        HomeScreenTwo.class);
-                                                Bundle extras = getIntent().getExtras();
-                                                if (extras != null) {
-                                                    i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                                                    i.putExtra("CurrentActivityCode", mActivityCode);
+                                        isClick = true;
+                                        if (bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN || bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+                                            showDialog(DIALOG_NUMBER_OF_PRINTS);
+                                        } else {
+                                            new Thread(new Runnable() {
+                                                public void run() {
+                                                    Looper.prepare();
+                                                    doConnection(ZEBRA_3INCH);
+                                                    Looper.loop();
+                                                    Looper myLooper = Looper.myLooper();
+                                                    if (myLooper != null)
+                                                        myLooper.quit();
                                                 }
-                                                startActivity(i);
-                                            }
+                                            }).start();
 
+                                            builder10 = new AlertDialog.Builder(OrderSummary.this);
+
+                                            customProgressDialog(builder10, "Printing....");
+                                            alertDialog = builder10.create();
+                                            alertDialog.show();
+                                        }
+                                    }
+                                })
+
+                        .setNegativeButton(
+                                getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
+                                        startActivity(i);
+                                        finish();
                                     }
                                 });
-
-                if (!delivery_date_txt.equals("")) {
-                    builder2.setMessage(getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt);
-                }
-
-                bmodel.applyAlertDialogTheme(builder2);
+                bmodel.applyAlertDialogTheme(builder12);
 
                 break;
             }
@@ -1146,7 +1200,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                         int whichButton) {
                                         isClick = true;
                                         if (bmodel.configurationMasterHelper.printCount > 0) {
-                                            showDialog(10);
+                                            showDialog(DIALOG_NUMBER_OF_PRINTS);
                                         } else {
 
                                             new Thread(new Runnable() {
@@ -1183,7 +1237,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 bmodel.applyAlertDialogTheme(builder9);
                 break;
 
-            case 10:
+            case DIALOG_NUMBER_OF_PRINTS:
                 AlertDialog.Builder builder11 = new AlertDialog.Builder(OrderSummary.this)
                         .setTitle("Print Count")
                         .setSingleChoiceItems(bmodel.printHelper.getPrintCountArray(), 0, null)
@@ -1214,54 +1268,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 bmodel.applyAlertDialogTheme(builder11);
                 break;
 
-            case 11:
-                AlertDialog.Builder builder12 = new AlertDialog.Builder(OrderSummary.this)
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(
-                                getResources().getString(
-                                        R.string.order_created_dou_wnt_print))
-                        .setPositiveButton("Ok",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
 
-                                        isClick = true;
-                                        if (bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN || bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
-                                            showDialog(10);
-                                        } else {
-                                            new Thread(new Runnable() {
-                                                public void run() {
-                                                    Looper.prepare();
-                                                    doConnection(ZEBRA_3INCH);
-                                                    Looper.loop();
-                                                    Looper myLooper = Looper.myLooper();
-                                                    if (myLooper != null)
-                                                        myLooper.quit();
-                                                }
-                                            }).start();
-
-                                            builder10 = new AlertDialog.Builder(OrderSummary.this);
-
-                                            customProgressDialog(builder10, "Printing....");
-                                            alertDialog = builder10.create();
-                                            alertDialog.show();
-                                        }
-                                    }
-                                })
-
-                        .setNegativeButton(
-                                getResources().getString(R.string.cancel),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
-                                        startActivity(i);
-                                        finish();
-                                    }
-                                });
-                bmodel.applyAlertDialogTheme(builder12);
-                break;
             default:
                 break;
         }
@@ -2259,7 +2266,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         try {
             if (printername.equals(ZEBRA_3INCH)) {
                 if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
-                    bmodel.print_count = 0;
                     bmodel.printHelper.setPrintCnt(0);
                     for (int i = 0; i < mSelectedPrintCount + 1; i++) {
                         zebraPrinterConnection.write(bmodel.printHelper.printDatafor3inchprinterForUnipal(mOrderedProductList, fromorder, 1));
@@ -3146,7 +3152,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
                         } else
-                            showDialog(3);
+                            showDialog(DIALOG_ORDER_SAVED);
                     }
 
                 } catch (Exception e) {

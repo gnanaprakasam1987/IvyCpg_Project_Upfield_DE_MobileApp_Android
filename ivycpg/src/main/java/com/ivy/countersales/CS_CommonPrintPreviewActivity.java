@@ -30,6 +30,7 @@ import com.aem.api.AEMScrybeDevice;
 import com.aem.api.IAemScrybe;
 import com.bixolon.android.library.BxlService;
 import com.bixolon.printer.BixolonPrinter;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
@@ -93,6 +94,7 @@ public class CS_CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private int widthImage, heightImage;
     private String PRINT_STATE = "";
     private Toolbar toolbar;
+    private OrderHelper orderHelper;
 
 
     @Override
@@ -104,6 +106,7 @@ public class CS_CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        orderHelper=OrderHelper.getInstance(this);
 
         mPrinterStatusTV = (TextView) findViewById(R.id.printer_status);
         mPrintCountSpinner = (Spinner) findViewById(R.id.print_count);
@@ -181,7 +184,7 @@ public class CS_CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private void onScreenPreparation() {
         try {
 
-            mPrintCount = bmodel.getPrint_count();
+            mPrintCount = orderHelper.getPrint_count();
 
             mSpinnerAdapter = new ArrayAdapter<CharSequence>(this,
                     android.R.layout.simple_spinner_item);

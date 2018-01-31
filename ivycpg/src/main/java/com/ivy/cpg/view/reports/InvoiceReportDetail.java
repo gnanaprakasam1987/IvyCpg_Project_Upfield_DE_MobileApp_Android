@@ -93,6 +93,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
     private Connection zebraPrinterConnection;
     private AlertDialog.Builder build;
     private AlertDialog alertDialog;
+    private OrderHelper orderHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +103,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
+        orderHelper=OrderHelper.getInstance(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -728,7 +730,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         int count = 0;
         try {
             OrderHelper.getInstance(this).getPrintCount(getApplicationContext());
-            businessModel.printHelper.setPrintCnt(businessModel.getPrint_count());
+            businessModel.printHelper.setPrintCnt(orderHelper.getPrint_count());
             if (printername.equals(ZEBRA_3INCH)) {
 
                 if (businessModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
@@ -780,7 +782,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         } catch (Exception e) {
             Commons.printException(e);
         } finally {
-            businessModel.updatePrintCount(businessModel.getPrint_count() + count);
+            businessModel.updatePrintCount(orderHelper.getPrint_count() + count);
             disconnect();
         }
     }

@@ -45,6 +45,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -116,6 +117,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private String PRINT_STATE = "";
     private Toolbar toolbar;
     Bitmap screen;
+    private OrderHelper orderHelper;
 
     private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -129,6 +131,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        orderHelper=OrderHelper.getInstance(this);
 
         mPrinterStatusTV = (TextView) findViewById(R.id.printer_status);
         mPrintCountSpinner = (Spinner) findViewById(R.id.print_count);
@@ -393,7 +396,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private void onScreenPreparation() {
         try {
 
-            mPrintCount = bmodel.getPrint_count();
+            mPrintCount = orderHelper.getPrint_count();
 
             mSpinnerAdapter = new ArrayAdapter<CharSequence>(this,
                     android.R.layout.simple_spinner_item);
