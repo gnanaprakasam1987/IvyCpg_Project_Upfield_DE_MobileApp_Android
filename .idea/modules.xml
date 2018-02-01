@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IvyCPGGit.iml" filepath="$PROJECT_DIR$/IvyCPGGit.iml" />
       <module fileurl="file://$PROJECT_DIR$/IvyCPG_Trunk.iml" filepath="$PROJECT_DIR$/IvyCPG_Trunk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IvyCpg_Product_MobileApp_Android.iml" filepath="$PROJECT_DIR$/IvyCpg_Product_MobileApp_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/ivycpg/ivycpg.iml" filepath="$PROJECT_DIR$/ivycpg/ivycpg.iml" />
       <module fileurl="file://$PROJECT_DIR$/ivylibrary/ivylibrary.iml" filepath="$PROJECT_DIR$/ivylibrary/ivylibrary.iml" />
     </modules>
