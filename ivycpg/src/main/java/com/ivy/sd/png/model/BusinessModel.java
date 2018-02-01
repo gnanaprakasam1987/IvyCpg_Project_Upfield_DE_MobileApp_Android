@@ -241,7 +241,6 @@ public class BusinessModel extends Application {
     //public static boolean dashHomeStatic;
     public final int CAMERA_REQUEST_CODE = 1;
     public TimerCount timer;
-    public String invoiceDisount;
     private String remarkType = "0";
     //public boolean filtershowall = false;
     public String userNameTemp, passwordTemp;

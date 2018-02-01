@@ -531,7 +531,7 @@ public class InvoicePrintZebraNew extends Zebra {
                 bmodel.setOrderHeaderBO(ord);
 
                 if (bmodel.hasOrder()) {
-                    bmodel.invoiceDisount = "0";
+                    OrderHelper.getInstance(this).invoiceDisount = "0";
                     if (bmodel.configurationMasterHelper.IS_INVOICE) {
                         /*pd = ProgressDialog.show(
                                 InvoicePrintZebraNew.this,

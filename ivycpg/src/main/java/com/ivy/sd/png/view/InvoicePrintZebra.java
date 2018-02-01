@@ -86,6 +86,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
     private ZebraPrinterConnection zebraPrinterConnection;
     private TextView statusField;
     private ZebraPrinter printer;
+    private OrderHelper orderHelper;
 
     // philippines
 
@@ -97,6 +98,8 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         setContentView(R.layout.invoice_print_preview);
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        orderHelper=OrderHelper.getInstance(this);
+        
         mStatusTV = (TextView) findViewById(R.id.status_tv);
         statusField = (TextView) findViewById(R.id.status_bar);
         mDateTimeTV = (TextView) findViewById(R.id.date_time_tv);
@@ -176,7 +179,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
         // updateConnectionState();
 
-        mDiscoutnValueTV.setText(bmodel.invoiceDisount + "%");
+        mDiscoutnValueTV.setText(orderHelper.invoiceDisount + "%");
         mProducts = bmodel.productHelper.getProductMaster();
 
         if (null == mProducts) {
@@ -361,7 +364,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         }
 
         double discount = (mTotalValue / 100)
-                * SDUtil.convertToFloat(bmodel.invoiceDisount);
+                * SDUtil.convertToFloat(orderHelper.invoiceDisount);
 
         mTotalValue = Math.round(mTotalValue);
 
@@ -387,7 +390,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
         sb.delete(0, sb.length());
         f.format("%-15s %15d%%\n", "Discount",
-                (int) SDUtil.convertToFloat(bmodel.invoiceDisount));
+                (int) SDUtil.convertToFloat(orderHelper.invoiceDisount));
         mPrintDiscount = sb.toString();
 
         sb.delete(0, sb.length());

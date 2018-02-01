@@ -1770,7 +1770,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         .loadFreeProductBatchList();
                             }
 
-                            bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
+                            orderHelper.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
 
                             if (bmodel.configurationMasterHelper.IS_INVOICE) {
                                 build = new AlertDialog.Builder(OrderSummary.this);
@@ -2379,7 +2379,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
 
 
-                    bmodel.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
+                    orderHelper.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
 
                     new MyThread(OrderSummary.this,
                             DataMembers.SAVEORDERANDSTOCK).start();

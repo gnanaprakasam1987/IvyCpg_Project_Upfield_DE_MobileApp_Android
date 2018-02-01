@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -6006,7 +6007,7 @@ public class ProductHelper {
 
 
     public void updateSchemeAndDiscAndTaxValue(DBUtil db, String invoiceid) {
-        bmodel.invoiceDisount = 0 + "";
+        OrderHelper.getInstance(mContext).invoiceDisount = 0 + "";
 
         double totDiscVaue = 0;
         double totSchemeAmountValue = 0;
@@ -6044,7 +6045,7 @@ public class ProductHelper {
             while (c.moveToNext()) {
                 double billWiseDisc = c.getDouble(0);
                 totDiscVaue = totDiscVaue + billWiseDisc;
-                bmodel.invoiceDisount = billWiseDisc + "";
+                OrderHelper.getInstance(mContext).invoiceDisount = billWiseDisc + "";
             }
         }
         sb = new StringBuffer();
@@ -6054,12 +6055,12 @@ public class ProductHelper {
         db.updateSQL(sb.toString());
 
         c.close();
-        bmodel.invoiceDisount = totDiscVaue + "";
+        OrderHelper.getInstance(mContext).invoiceDisount = totDiscVaue + "";
 
     }
 
     public void updateBillWiseDiscountInObj(String invoiceid) {
-        bmodel.invoiceDisount = 0 + "";
+        OrderHelper.getInstance(mContext).invoiceDisount = 0 + "";
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -6071,7 +6072,7 @@ public class ProductHelper {
             while (c.moveToNext()) {
                 double billWiseDisc = c.getDouble(0);
 
-                bmodel.invoiceDisount = billWiseDisc + "";
+                OrderHelper.getInstance(mContext).invoiceDisount = billWiseDisc + "";
             }
         }
         c.close();

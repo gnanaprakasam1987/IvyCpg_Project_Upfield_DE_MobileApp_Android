@@ -180,8 +180,8 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
             // Used to hide the app logo icon from actionbar
             // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
-            storediscount = bmodel.invoiceDisount;
-            Commons.print("discount" + bmodel.invoiceDisount + " "
+            storediscount = orderHelper.invoiceDisount;
+            Commons.print("discount" + orderHelper.invoiceDisount + " "
                     + bmodel.configurationMasterHelper.discountType);
         } catch (Exception e1) {
             Commons.printException("" + e1);

@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -192,7 +193,7 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
 
         tv_bill_amount.setText(bmodel.formatValue(totalValue) + "");
 
-        bmodel.invoiceDisount = String.valueOf(mSchemeDiscountedAmountOnBill);
+        OrderHelper.getInstance(this).invoiceDisount = String.valueOf(mSchemeDiscountedAmountOnBill);
     }
 
     private void updateSchemeDetails() {

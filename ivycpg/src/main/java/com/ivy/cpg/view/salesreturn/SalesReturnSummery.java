@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -559,7 +560,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Void... params) {
 
             if (!salesReturnHelper.IS_APPLY_DISCOUNT_IN_SR) {
-                bmodel.invoiceDisount = "0";
+                OrderHelper.getInstance(SalesReturnSummery.this).invoiceDisount = "0";
                 DiscountHelper.getInstance(SalesReturnSummery.this).getBillWiseDiscountList().clear();
             }
 

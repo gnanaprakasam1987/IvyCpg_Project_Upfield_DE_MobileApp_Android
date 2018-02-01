@@ -1491,7 +1491,7 @@ public class CommonPrintHelper {
      */
     private void getBillLevelDiscount() {
 
-        double discount = SDUtil.convertToDouble(bmodel.invoiceDisount);
+        double discount = SDUtil.convertToDouble(orderHelper.invoiceDisount);
         double discountValue = 0;
 
         if (bmodel.configurationMasterHelper.discountType == 1) {
