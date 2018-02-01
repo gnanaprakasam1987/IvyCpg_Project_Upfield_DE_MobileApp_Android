@@ -323,7 +323,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         });
 
         userNameTv.setText(bmodel.userMasterHelper.getUserMasterBO().getUserName());
-
         userNameTv.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         designation.setText(bmodel.userMasterHelper.getUserMasterBO().getUserType());
         designation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
