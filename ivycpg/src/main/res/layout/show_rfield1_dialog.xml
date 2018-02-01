@@ -48,14 +48,8 @@
         android:dividerHeight="2dp"
         android:fitsSystemWindows="true"
         android:layout_below="@+id/LL_titleBar"
-        android:layout_above="@+id/keypad"/>
-    <include
-        android:id="@+id/keypad"
-        layout="@layout/keypad"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_5dp"
         android:layout_above="@+id/ll_close"/>
+
     <LinearLayout
         android:id="@+id/ll_close"
         android:layout_width="match_parent"

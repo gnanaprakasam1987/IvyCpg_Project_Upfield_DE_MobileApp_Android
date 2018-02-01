@@ -454,6 +454,8 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_RFIELD1_ENABLED = "FUN64";//change config code
     public boolean IS_RFIELD1_ENABLED;
+    private static final String CODE_SHOW_SAO_MIX_PRODUCT = "TARGET_PLAN";//change code
+    public boolean IS_SHOW_SAO_MIX_PRODUCT_ENABLED;
     /**
      * RoadActivity config *
      */
@@ -2127,6 +2129,7 @@ public class ConfigurationMasterHelper {
         this.IS_TEMP_ORDER_SAVE = hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) : false;
         this.tempOrderInterval = hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) : 10;
         this.tempOrderInterval = this.tempOrderInterval >= 10 ? this.tempOrderInterval : 10;
+        this.IS_SHOW_SAO_MIX_PRODUCT_ENABLED = hashMapHHTModuleConfig.get(CODE_SHOW_SAO_MIX_PRODUCT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SAO_MIX_PRODUCT) : false;
 
         this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 

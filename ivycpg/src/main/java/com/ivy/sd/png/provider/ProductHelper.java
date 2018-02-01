@@ -8368,6 +8368,31 @@ public class ProductHelper {
         return mCompetitorSequenceValues;
 
     }
+    //If SAO Config enabled this method will be called
+    //this method will take ProductId and compair with BomMaster and passes Product name
+    public ArrayList<String> getSkuMixtureConfigEnabled(String productId)
+    {
+        ArrayList<String> mBpids = new ArrayList<>();
+        ArrayList<String> productShortName=new ArrayList<>();
+        for(BomMasterBO id:bmodel.productHelper.getBomMaster()) {
+
+            if(id.getPid().equalsIgnoreCase(productId)) {
+
+                mBpids.add(id.getBomBO().get(0).getbPid());
+            }
+        }
+        if(mBpids.size()>0) {
+            for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
+
+                for (int i = 0; i < mBpids.size(); i++)
+                    if (mBpids.get(i).equalsIgnoreCase(bo.getProductID()))
+                        productShortName.add(bo.getProductShortName());
+
+            }
+            return productShortName;
+        }
+        return null;
+    }
 
 }
 

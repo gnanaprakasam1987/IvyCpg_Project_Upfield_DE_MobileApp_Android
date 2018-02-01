@@ -68,7 +68,7 @@
             android:text="@string/piece" />
 
         <EditText
-            android:id="@+id/piece_qty"
+            android:id="@+id/rField1_qty"
             style="@style/EditText_ListItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

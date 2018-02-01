@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,12 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -48,6 +52,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
         this.productObj = bmodel.productHelper.getProductObj();
         this.flag = bmodel.productHelper.getFlag();
         this.pdname = bmodel.productHelper.getPdname();
+
     }
 
     @Override
@@ -63,6 +68,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
 
         productRecycView = (RecyclerView) rootView.findViewById(R.id.product_details_recycview);
         productConfigs = bmodel.configurationMasterHelper.getProductDetails();
+        rootView.findViewById(R.id.ll_sao_view).setVisibility(View.GONE);
         if (productConfigs != null) {
             loadProdDetails();
         }
@@ -77,7 +83,36 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             productTitleTV.setText(pdname);
             productTitleTV.setWidth(outMetrics.widthPixels);
         }
+        //bmodel.configurationMasterHelper.IS_SHOW_SAO_MIX_PRODUCT_ENABLED &&
+        //IS_SHOW_SAO_MIX_PRODUCT_ENABLED this config is enabled show soaMixture Product name
+        if(bmodel.productHelper.getSkuMixtureConfigEnabled(productObj.getProductID())!=null) {
+            ArrayList<String> value = bmodel.productHelper.getSkuMixtureConfigEnabled(productObj.getProductID());
+            rootView.findViewById(R.id.ll_sao_view).setVisibility(View.VISIBLE);
+            TextView soaMixtureTitle = (TextView) rootView.findViewById(R.id.sku_mixture_title);
+            soaMixtureTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            soaMixtureTitle.setWidth(outMetrics.widthPixels);
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(rootView.findViewById(
+                        R.id.sku_mixture_title).getTag()) != null)
+                    ((TextView) rootView.findViewById(R.id.sku_mixture_title))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(rootView.findViewById(
+                                            R.id.sku_mixture_title)
+                                            .getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
+            LinearLayout soaMixtureProductName = (LinearLayout) rootView.findViewById(R.id.ll_sao_mixture_product_name);
+            for(int i=0;i<value.size();i++) {
+                    TextView tv = new TextView(getActivity());
+                    tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    tv.setWidth(outMetrics.widthPixels);
+                    tv.setText(value.get(i));
+                    tv.setId(i);
+                    soaMixtureProductName.addView(tv);
+            }
+        }
         return rootView;
     }
 

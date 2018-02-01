@@ -74,6 +74,7 @@ import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
+import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -4293,9 +4294,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
             updateValue();
         }
-        if (mShowRfied1ValueDialog != null && mShowRfied1ValueDialog.isVisible()) {
-            mShowRfied1ValueDialog.numberPressed(vw);
-        }
+
     }
 
     private void loadSBDAchievementLocal() {
@@ -6678,7 +6677,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             super.onPostExecute(aBoolean);
 
                 android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
-                mShowRfied1ValueDialog = new ShowRfied1ValueDialog(StockAndOrder.this,"Sample Fragment",StockAndOrder.this);
+                mShowRfied1ValueDialog = new ShowRfied1ValueDialog();
                 mShowRfied1ValueDialog.setCancelable(false);
                 mShowRfied1ValueDialog.show(ft, "Sample Fragment");
         }
