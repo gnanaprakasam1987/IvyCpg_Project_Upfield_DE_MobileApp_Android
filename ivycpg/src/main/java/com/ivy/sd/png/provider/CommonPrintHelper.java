@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.bo.BomRetunBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -45,6 +46,7 @@ public class CommonPrintHelper {
     private Context context;
     private BusinessModel bmodel;
     private static CommonPrintHelper instance = null;
+    private OrderHelper orderHelper;
 
     private XmlPullParserFactory xmlFactoryObject;
     private XmlPullParser xmlParser;
@@ -166,6 +168,7 @@ public class CommonPrintHelper {
     private CommonPrintHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
+        orderHelper=OrderHelper.getInstance(context);
     }
 
     public static CommonPrintHelper getInstance(Context context) {
@@ -603,7 +606,7 @@ public class CommonPrintHelper {
             if (mKeyValues != null)
                 value = label + mKeyValues.get(TAG_KEY2);
         } else if (tag.equalsIgnoreCase(TAG_ORDER_NUMBER)) {
-            value = label + bmodel.getOrderid().replaceAll("\'", "");
+            value = label + orderHelper.getOrderid().replaceAll("\'", "");
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_ROUTE)) {
             value = label + bmodel.beatMasterHealper.getBeatMasterBOByID(bmodel.getRetailerMasterBO().getBeatID());
         } else if (tag.equalsIgnoreCase(TAG_NET_SCHEME_DISCOUNT)) {

@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -43,6 +44,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
     Button btnSave;
     Toolbar toolbar;
     boolean isPartialOrder = false;
+    private OrderHelper orderHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        orderHelper=OrderHelper.getInstance(this);
+
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
         Bundle extras = getIntent().getExtras();
@@ -117,10 +121,10 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
                 if (!isPartialOrder) {
                     // bmodel.saveDeliveryOrderInvoice();
-                    bmodel.saveOrder();
-                    bmodel.saveNewInvoice();
+                    orderHelper.saveOrder(DeliveryOrderSummary.this);
+                    orderHelper.saveNewInvoice(DeliveryOrderSummary.this);
                 }
-                bmodel.insertDeliveryOrderRecord(isPartialOrder);
+                orderHelper.insertDeliveryOrderRecord(DeliveryOrderSummary.this,isPartialOrder);
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_DELIVERY_ORDER);
 
 

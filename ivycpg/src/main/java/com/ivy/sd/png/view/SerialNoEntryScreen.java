@@ -201,7 +201,7 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
         mScannedQtyTV = (TextView) findViewById(R.id.tv_total_scanned);
         mProductNameTV = (TextView) findViewById(R.id.tv_product_name);
         mSerialNoLV = (ListView) findViewById(R.id.lv_serialno_enty);
-        mSerialNoListByPid = bmodel.productHelper.getSerialNoListByProductid();
+        mSerialNoListByPid = OrderHelper.getInstance(SerialNoEntryScreen.this).getSerialNoListByProductid();
 
 
     }
@@ -283,7 +283,7 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
             serialNoBO.setScannedQty(0);
             mSerialNoList.add(serialNoBO);
         }
-        bmodel.productHelper.setmSerialNoListByProductid(mSerialNoListByPid);
+        OrderHelper.getInstance(SerialNoEntryScreen.this).setmSerialNoListByProductid(mSerialNoListByPid);
 
 
         mAdapter = new MyAdapter();
@@ -544,11 +544,11 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
         } else if (i == R.id.menu_next) {
 
             mSerialNoListByPid.put(mProductID, mSerialNoList);
-            bmodel.productHelper.setmSerialNoListByProductid(mSerialNoListByPid);
+            OrderHelper.getInstance(SerialNoEntryScreen.this).setmSerialNoListByProductid(mSerialNoListByPid);
             if (!OrderHelper.getInstance(this).isAllScanned()) {
                 Toast.makeText(this, getResources().getString(R.string.mismatch_scanned_products), Toast.LENGTH_SHORT).show();
                 return true;
-            } else if (bmodel.productHelper.isDuplicateSerialNo()) {
+            } else if (OrderHelper.getInstance(SerialNoEntryScreen.this).isDuplicateSerialNo()) {
                 Toast.makeText(this, getResources().getString(R.string.duplicate_serialno), Toast.LENGTH_SHORT).show();
                 return true;
             } else {
@@ -615,7 +615,7 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
         @Override
         protected String doInBackground(String... params) {
 
-            bmodel.productHelper.saveSerialNoTemp();
+            OrderHelper.getInstance(SerialNoEntryScreen.this).saveSerialNoTemp();
             return "";
         }
 

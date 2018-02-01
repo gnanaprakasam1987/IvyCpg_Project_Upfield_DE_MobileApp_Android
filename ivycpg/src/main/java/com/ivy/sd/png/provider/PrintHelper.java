@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Environment;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomRetunBo;
@@ -40,6 +41,7 @@ public class PrintHelper {
     private final Context mContext;
     private final BusinessModel bmodel;
     private static PrintHelper instance = null;
+    OrderHelper orderHelper;
 
     private double mEmpTotalValue;
     private double mCaseTotalValue;
@@ -60,6 +62,7 @@ public class PrintHelper {
     private PrintHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
+        orderHelper=OrderHelper.getInstance(context);
     }
 
     public static PrintHelper getInstance(Context context) {
@@ -83,7 +86,7 @@ public class PrintHelper {
                 sb.append("T 5 0 200 " + (5 + totalLength));
                 sb.append(" Order Receipt " + "\r\n");
                 sb.append("T 5 0 10 " + (55 + totalLength));
-                sb.append(" Order No :" + bmodel.getOrderid().replaceAll("\'", "") + "\r\n");
+                sb.append(" Order No :" + orderHelper.getOrderid().replaceAll("\'", "") + "\r\n");
                 sb.append("T 5 0 350 " + (55 + totalLength));
                 sb.append("Date:" + SDUtil.now(SDUtil.DATE_GLOBAL) + "\r\n");
                 sb.append("T 5 0 10 " + (120 + totalLength));
@@ -1349,8 +1352,8 @@ public class PrintHelper {
                         sb.append("Order No:\r\n");
                         sb.append("T 7 0 190 " + hght + " ");
 
-                        if (bmodel.getOrderid() != null) {
-                            sb.append(bmodel.getOrderid() + "\r\n");
+                        if (orderHelper.getOrderid() != null) {
+                            sb.append(orderHelper.getOrderid() + "\r\n");
                         } else {
                             sb.append("\r\n");
                         }

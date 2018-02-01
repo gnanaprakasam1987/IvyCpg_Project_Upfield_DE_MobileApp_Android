@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -50,6 +51,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
     private double mTotalAmount;
     private String mInvoiceId = "";
     private boolean isClicked;
+    private OrderHelper orderHelper;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
         businessModel = (BusinessModel) getActivity().getApplicationContext();
         businessModel.setContext(getActivity());
+        orderHelper=OrderHelper.getInstance(getContext());
 
         if (businessModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -445,7 +448,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA) {
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
-                    businessModel.setOrderid(inv.getOrderID());
+                    orderHelper.setOrderid(inv.getOrderID());
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
                       businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(),mRetailerId);
@@ -458,7 +461,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
                     businessModel.setInvoiceNumber(inv.getInvoiceNumber());
-                    businessModel.loadInvoiceProducts(inv.getInvoiceNumber());
+                    orderHelper.loadInvoiceProducts(inv.getInvoiceNumber());
 
                     mInvoiceId = inv.getInvoiceNumber();
                     businessModel.schemeDetailsMasterHelper.loadSchemeReportDetails(inv.getInvoiceNumber(), true);
@@ -480,7 +483,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     businessModel.productHelper.updateBillWiseDiscountInObj(mInvoiceId);
 
 
-                    businessModel.setOrderid(inv.getOrderID());
+                    orderHelper.setOrderid(inv.getOrderID());
                 }
 
 

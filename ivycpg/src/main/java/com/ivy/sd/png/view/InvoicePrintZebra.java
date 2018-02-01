@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bixolon.android.library.BxlService;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.Logs;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -413,12 +414,13 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         @Override
         public void handleMessage(Message msg) {
 
+            OrderHelper orderHelper=OrderHelper.getInstance(InvoicePrintZebra.this);
             if (msg.what == 9) {
                 pd.dismiss();
                 bmodel = (BusinessModel) getApplicationContext();
                 bmodel.showAlert(
                         "Order Saved Locally. Order ID is "
-                                + bmodel.getOrderid(),
+                                + orderHelper.getOrderid(),
                         DataMembers.NOTIFY_UPLOAD_ERROR);
             }
             if (msg.what == 10) {
@@ -426,13 +428,13 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
                 if (isDayClosed) {
                     bmodel = (BusinessModel) getApplicationContext();
                     bmodel.showAlert("Order Saved Locally. Order ID is "
-                                    + bmodel.getOrderid(),
+                                    + orderHelper.getOrderid(),
                             DataMembers.NOTIFY_UPLOAD_ERROR);
                 } else {
                     bmodel = (BusinessModel) getApplicationContext();
                     bmodel.showAlert(
                             "You are not Closed the Previous day.Order Saved Locally. Order ID is "
-                                    + bmodel.getOrderid(), 98);
+                                    + orderHelper.getOrderid(), 98);
                 }
 
             }
@@ -441,14 +443,14 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
                 bmodel = (BusinessModel) getApplicationContext();
                 bmodel.showAlert(
                         "Order Saved Locally. Order ID is "
-                                + bmodel.getOrderid(),
+                                + orderHelper.getOrderid(),
                         DataMembers.NOTIFY_UPLOAD_ERROR);
             }
             if (msg.what == 5) {
                 pd.dismiss();
                 bmodel = (BusinessModel) getApplicationContext();
                 bmodel.showAlert(
-                        "Order Submitted. Order ID is " + bmodel.getOrderid(),
+                        "Order Submitted. Order ID is " + orderHelper.getOrderid(),
                         DataMembers.NOTIFY_UPLOADED);
             }
         }

@@ -6,6 +6,7 @@ import android.os.Handler;
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.LoginScreen;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.util.Commons;
@@ -47,6 +48,7 @@ public class MyThread extends Thread {
     public void run() {
         BusinessModel bmodel = (BusinessModel) ctx.getApplicationContext();
         bmodel.setContext(ctx);
+        OrderHelper orderHelper=OrderHelper.getInstance(ctx);
         //FragmentManager fm = ((FragmentActivity)ctx).getSupportFragmentManager();
         //HomeScreenFragment fragment = (HomeScreenFragment)fm.findFragmentById(R.id.synchronization_fragment);
 
@@ -331,7 +333,7 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.DELETE_ORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-            bmodel.deleteOrder(bmodel.getRetailerMasterBO().getRetailerID());
+            orderHelper.deleteOrder(ctx,bmodel.getRetailerMasterBO().getRetailerID());
 
             // Calculate and set Distribution percent
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {

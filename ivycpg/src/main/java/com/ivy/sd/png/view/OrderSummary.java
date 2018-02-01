@@ -111,7 +111,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     public static final String TOAST = "toast";
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_TOAST = 5;
-    private static final int DATE_DIALOG_ID = 0;
+    private static final int DIALOG_DELIVERY_DATE_PICKER = 0;
     private static final String discountresult = "0";
     private static final String TAG = "OrderSummary";
     private static final boolean D = true;
@@ -126,6 +126,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int DIALOG_ORDER_SAVED_WITH_PRINT_OPTION = 2;
     private static final int DIALOG_ORDER_SAVED = 3;
     private static final int DIALOG_NUMBER_OF_PRINTS =10;
+    private static final int DIALOG_INVOICE_SAVED =9;
 
     private Toolbar toolbar;
     private Button btnsave;
@@ -155,9 +156,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private String sendMailAndLoadClass;
     private boolean fromorder = false;
-    private boolean hidealert = false;
+    private boolean isPrintMenuClicked = false;
     private double enteredDiscAmtOrPercent = 0;
-    private String nextDate;
 
     private double totalOrderValue, cmyDiscount, distDiscount;
     private boolean isClick = false;
@@ -385,7 +385,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        hidealert = false;
+        isPrintMenuClicked = false;
         isClicked = false;
 
         /** session out if userid becomes 0 **/
@@ -470,10 +470,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         ConfigurationMasterHelper.outDateFormat));
             } else {
                 Calendar origDay = Calendar.getInstance();
-                origDay.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE == 0 ? 1 : bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE));
-                nextDate = DateUtil.convertDateObjectToRequestedFormat(origDay.getTime(),
-                        ConfigurationMasterHelper.outDateFormat);
-                delievery_date.setText(nextDate);
+                origDay.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
+
+                delievery_date.setText(DateUtil.convertDateObjectToRequestedFormat(origDay.getTime(),ConfigurationMasterHelper.outDateFormat));
 
             }
         } catch (Exception e) {
@@ -774,32 +773,31 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        String msg = "";
         String delivery_date_txt = "";
         switch (id) {
-            case DATE_DIALOG_ID: {
-                Calendar c = Calendar.getInstance();
-                c.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE == 0 ? 1 : bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE));
-                int cyear = c.get(Calendar.YEAR);
-                int cmonth = c.get(Calendar.MONTH);
-                int cday = c.get(Calendar.DAY_OF_MONTH);
+            case DIALOG_DELIVERY_DATE_PICKER: {
 
-                nextDate = DateUtil.convertDateObjectToRequestedFormat(c.getTime(),
-                        ConfigurationMasterHelper.outDateFormat);
-                MyDatePickerDialog d = new MyDatePickerDialog(this,
-                        mDateSetListener, cyear, cmonth, cday);
-                int maxDeliverydate = bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE;
-                d.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-                if (bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE_ALLOWED > 0) {
+                Calendar c = Calendar.getInstance();
+                c.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
+
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+
+                MyDatePickerDialog dialog = new MyDatePickerDialog(this,
+                        mDeliverDatePickerListener, year, month, day);
+                dialog.setPermanentTitle(getResources().getString(R.string.choose_date));
+                dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
+                if (bmodel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
                     Calendar maxCalendar = Calendar.getInstance();
-                    maxCalendar.add(Calendar.DAY_OF_YEAR, bmodel.configurationMasterHelper.LOAD_MAX_DELIVERY_DATE_ALLOWED);
-                    d.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
+                    maxCalendar.add(Calendar.DAY_OF_YEAR, bmodel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
+                    dialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
                 }
-               /* if (maxDeliverydate > 0) {
-                    d.getDatePicker().setMaxDate(DateUtil.addDaystoDate(new Date(), maxDeliverydate).getTime());
-                }*/
-                d.setPermanentTitle(getResources().getString(R.string.choose_date));
-                return d;
+
+
+
+                return dialog;
             }
 
             case DIALOG_DELETE_ORDER: {
@@ -885,7 +883,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.order_saved_locally_order_id_is) + bmodel.getOrderid())
+                        .setTitle(getResources().getString(R.string.order_saved_locally_order_id_is) + orderHelper.getOrderid())
 
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
@@ -902,7 +900,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             bmodel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
 
                                             bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                                                    StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.getOrderid(), "/" + DataMembers.IVYDIST_PATH);
+                                                    StandardListMasterConstants.PRINT_FILE_ORDER + orderHelper.getOrderid(), "/" + DataMembers.IVYDIST_PATH);
 
                                             sendMailAndLoadClass = "HomeScreenTwoPRINT_FILE_ORDER";
                                             if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
@@ -950,7 +948,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         .setTitle(
                                 getResources().getString(
                                         R.string.order_saved_locally_order_id_is)
-                                        + bmodel.getOrderid())
+                                        + orderHelper.getOrderid())
                         .setNegativeButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
@@ -981,7 +979,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         bmodel.outletTimeStampHelper
                                                 .updateTimeStampModuleWise(SDUtil
                                                         .now(SDUtil.TIME));
-                                        printOrder();
+                                        if (bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN || bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+                                            showDialog(DIALOG_NUMBER_OF_PRINTS);
+                                        }
+                                        else {
+                                            printOrder();
+                                        }
                                     }
                                 });
 
@@ -994,38 +997,23 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 break;
             }
 
-            case 11: {
-                AlertDialog.Builder builder12 = new AlertDialog.Builder(OrderSummary.this)
+            case DIALOG_INVOICE_SAVED:
+                AlertDialog.Builder builder9 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
                         .setTitle(
                                 getResources().getString(
-                                        R.string.order_created_dou_wnt_print))
+                                        R.string.invoice_created_dou_wnt_print))
                         .setPositiveButton("Ok",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-
                                         isClick = true;
-                                        if (bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN || bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+
+                                        if (bmodel.configurationMasterHelper.printCount > 0) {
                                             showDialog(DIALOG_NUMBER_OF_PRINTS);
                                         } else {
-                                            new Thread(new Runnable() {
-                                                public void run() {
-                                                    Looper.prepare();
-                                                    doConnection(ZEBRA_3INCH);
-                                                    Looper.loop();
-                                                    Looper myLooper = Looper.myLooper();
-                                                    if (myLooper != null)
-                                                        myLooper.quit();
-                                                }
-                                            }).start();
-
-                                            builder10 = new AlertDialog.Builder(OrderSummary.this);
-
-                                            customProgressDialog(builder10, "Printing....");
-                                            alertDialog = builder10.create();
-                                            alertDialog.show();
+                                           printOrder();
                                         }
                                     }
                                 })
@@ -1035,15 +1023,45 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
+
+                                        bmodel.productHelper.clearOrderTableChecked();
                                         Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
                                         startActivity(i);
                                         finish();
                                     }
                                 });
-                bmodel.applyAlertDialogTheme(builder12);
+                bmodel.applyAlertDialogTheme(builder9);
+                break;
+
+            case DIALOG_NUMBER_OF_PRINTS: {
+
+                AlertDialog.Builder builder11 = new AlertDialog.Builder(OrderSummary.this)
+                        .setTitle("Print Count")
+                        .setSingleChoiceItems(bmodel.printHelper.getPrintCountArray(), 0, null)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
+                                mSelectedPrintCount = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                new Thread(new Runnable() {
+                                    public void run() {
+                                        printOrder();
+                                    }
+                                }).start();
+
+                                builder10 = new AlertDialog.Builder(OrderSummary.this);
+
+                                customProgressDialog(builder10, "Printing....");
+                                alertDialog = builder10.create();
+                                alertDialog.show();
+                            }
+                        });
+                bmodel.applyAlertDialogTheme(builder11);
 
                 break;
+
             }
+
 
             case 4:
                 AlertDialog.Builder builder3 = new AlertDialog.Builder(OrderSummary.this)
@@ -1187,86 +1205,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 bmodel.applyAlertDialogTheme(builder7);
                 break;
 
-            case 9:
-                AlertDialog.Builder builder9 = new AlertDialog.Builder(OrderSummary.this)
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(
-                                getResources().getString(
-                                        R.string.invoice_created_dou_wnt_print))
-                        .setPositiveButton("Ok",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        isClick = true;
-                                        if (bmodel.configurationMasterHelper.printCount > 0) {
-                                            showDialog(DIALOG_NUMBER_OF_PRINTS);
-                                        } else {
-
-                                            new Thread(new Runnable() {
-                                                public void run() {
-                                                    Looper.prepare();
-                                                    doConnection(ZEBRA_3INCH);
-                                                    Looper.loop();
-                                                    Looper myLooper = Looper.myLooper();
-                                                    if (myLooper != null)
-                                                        myLooper.quit();
-                                                }
-                                            }).start();
-
-                                            builder10 = new AlertDialog.Builder(OrderSummary.this);
-
-                                            customProgressDialog(builder10, "Printing....");
-                                            alertDialog = builder10.create();
-                                            alertDialog.show();
-                                        }
-                                    }
-                                })
-
-                        .setNegativeButton(
-                                getResources().getString(R.string.cancel),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        bmodel.productHelper.clearOrderTableChecked();
-                                        Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
-                                        startActivity(i);
-                                        finish();
-                                    }
-                                });
-                bmodel.applyAlertDialogTheme(builder9);
-                break;
-
-            case DIALOG_NUMBER_OF_PRINTS:
-                AlertDialog.Builder builder11 = new AlertDialog.Builder(OrderSummary.this)
-                        .setTitle("Print Count")
-                        .setSingleChoiceItems(bmodel.printHelper.getPrintCountArray(), 0, null)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dialog.dismiss();
-                                mSelectedPrintCount = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                                new Thread(new Runnable() {
-                                    public void run() {
-                                        Looper.prepare();
-                                        doConnection(ZEBRA_3INCH);
-                                        Looper.loop();
-                                        Looper myLooper = Looper.myLooper();
-                                        if (myLooper != null)
-                                            myLooper.quit();
-                                    }
-                                }).start();
-
-                                builder10 = new AlertDialog.Builder(OrderSummary.this);
-
-                                customProgressDialog(builder10, "Printing....");
-                                alertDialog = builder10.create();
-                                alertDialog.show();
-                                // Do something useful withe the position of the selected radio button
-                            }
-                        });
-                bmodel.applyAlertDialogTheme(builder11);
-                break;
 
 
             default:
@@ -1278,7 +1216,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private void printOrder(){
 
         Intent i;
-        if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+        if (bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN||bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
             new Thread(new Runnable() {
                 public void run() {
                     Looper.prepare();
@@ -1480,44 +1418,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Commons.printException("" + e);
             }
             return true;
-        } else if (i1 == R.id.menu_print) {
-
-            hidealert = true;
-            if (bmodel.isEdit()) {
-
-                if (!mOrderedProductList.isEmpty()) {
-
-                    bmodel.getOrderHeaderBO().setOrderValue(getDiscountAppliedValue(enteredDiscAmtOrPercent));
-                    bmodel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) lpc.getText()));
-                    bmodel.getOrderHeaderBO().setDiscount(enteredDiscAmtOrPercent);
-                    bmodel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(
-                                            delievery_date.getText().toString(),
-                                            ConfigurationMasterHelper.outDateFormat));
-
-                    build = new AlertDialog.Builder(OrderSummary.this);
-                    customProgressDialog(build, getResources().getString(R.string.saving_new_order));
-                    alertDialog = build.create();
-                    alertDialog.show();
-
-                    if (bmodel.hasOrder()) {
-                        new MyThread(OrderSummary.this,
-                                DataMembers.SAVEORDERANDSTOCK).start();
-                    } else {
-                        isClick = false;
-                    }
-
-                } else {
-
-                    isClick = false;
-                    Toast.makeText(
-                            this,
-                            getResources().getString(
-                                    R.string.no_products_exists),
-                            Toast.LENGTH_SHORT);
-                }
-            } else
-                showDialog(4);
-        } else if (i1 == R.id.menu_store_wise_discount) {
+        }  else if (i1 == R.id.menu_store_wise_discount) {
             FragmentManager fm = getSupportFragmentManager();
             mStoreWiseDiscountDialogFragment = new StorewiseDiscountDialogFragment();
             Bundle bundle = new Bundle();
@@ -1681,7 +1582,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         bmodel.setContext(this);
 
         if (vw == delievery_date)
-            showDialog(DATE_DIALOG_ID);
+            showDialog(DIALOG_DELIVERY_DATE_PICKER);
         else if (vw == btnsave) {
             saveOrder();
         } else if (vw == btnsaveAndGoInvoice) {
@@ -2007,11 +1908,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!bmodel.configurationMasterHelper.SHOW_PRINT_ORDER
-                || (bmodel.configurationMasterHelper.SHOW_ZEBRA_GHANA || bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO || bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN || bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || !bmodel.isEdit())) {
-            menu.findItem(R.id.menu_print).setVisible(false);
-        } else
-            menu.findItem(R.id.menu_print).setVisible(true);
+
 
         if (bmodel.configurationMasterHelper.SHOW_CALC)
             menu.findItem(R.id.menu_calculator).setVisible(true);
@@ -3066,7 +2963,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         @Override
         protected Boolean doInBackground(Integer... params) {
-            Commons.print(TAG + ", Asynchrous STATE :" + mChatService.getState());
             if (mChatService.getState() != BtService.STATE_CONNECTED) {
                 return false;
             } else {
@@ -3092,7 +2988,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
 
-    private final DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+    private final DatePickerDialog.OnDateSetListener mDeliverDatePickerListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
             Calendar selectedDate = new GregorianCalendar(year, monthOfYear,
@@ -3101,15 +2997,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     selectedDate.getTime(),
                     ConfigurationMasterHelper.outDateFormat));
 
-            Calendar currentcal = Calendar.getInstance();
-            currentcal.add(Calendar.DAY_OF_YEAR, -1);
-            if (currentcal.after(selectedDate)) {
+            Calendar currentCalendar = Calendar.getInstance();
+            currentCalendar.add(Calendar.DAY_OF_YEAR, -1);
+
+            if (currentCalendar.after(selectedDate)) {
+
                 Toast.makeText(
                         getApplicationContext(),
                         getResources().getString(
                                 R.string.Please_select_next_day),
                         Toast.LENGTH_SHORT).show();
-                delievery_date.setText(nextDate);
+
+                Calendar defaultCalendar = Calendar.getInstance();
+                defaultCalendar.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
+                delievery_date.setText(DateUtil.convertDateObjectToRequestedFormat(defaultCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
             }
         }
     };
@@ -3127,40 +3028,27 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Toast.makeText(OrderSummary.this, "DataBase Restore failed.",
                         Toast.LENGTH_SHORT).show();
             }
-
-            if (msg.what == DataMembers.NOTIFY_ORDER_SAVED) {
+            else if (msg.what == DataMembers.NOTIFY_ORDER_SAVED) {
                 try {
+
                     alertDialog.dismiss();
 
-                    if (bmodel.configurationMasterHelper.SHOW_PRINT_ORDER
-                            && (bmodel.configurationMasterHelper.SHOW_ZEBRA_GHANA
-                            || bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO
-                            || bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN
-                            || bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL))
-                        showDialog(11);
-
-                    else if (bmodel.configurationMasterHelper.SHOW_PRINT_ORDER
-                            && (!hidealert))
-
-                        showDialog(DIALOG_ORDER_SAVED_WITH_PRINT_OPTION);
-                    else {
-                        if (hidealert) {
-                            bmodel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(SDUtil
-                                            .now(SDUtil.TIME));
-                           printOrder();
-
-
-                        } else
+                        if((bmodel.configurationMasterHelper.SHOW_ZEBRA_GHANA
+                                || bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO
+                                || bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN
+                                || bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL)){
+                            showDialog(DIALOG_ORDER_SAVED_WITH_PRINT_OPTION);
+                        }
+                        else {
                             showDialog(DIALOG_ORDER_SAVED);
-                    }
+                        }
+
 
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
             }
-
-            if (msg.what == DataMembers.NOTIFY_ORDER_DELETED) {
+            else if (msg.what == DataMembers.NOTIFY_ORDER_DELETED) {
                 try {
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getApplicationContext();
@@ -3168,23 +3056,22 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.order_deleted_sucessfully)
-                                    + bmodel.getOrderid(),
+                                    + orderHelper.getOrderid(),
                             DataMembers.NOTIFY_ORDER_SAVED);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
             }
-
-            if (msg.what == DataMembers.NOTIFY_INVOICE_SAVED) {
+            else if (msg.what == DataMembers.NOTIFY_INVOICE_SAVED) {
                 try {
+
                     orderHelper.getPrintCount(OrderSummary.this);
                     alertDialog.dismiss();
-                    bmodel = (BusinessModel) getApplicationContext();
+
 
                     if (bmodel.configurationMasterHelper.IS_INVOICE) {
                         if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
-
-                            showDialog(9);
+                            showDialog(DIALOG_INVOICE_SAVED);
                         } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
 
                             Intent i = new Intent(OrderSummary.this,
@@ -3194,8 +3081,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             startActivity(i);
                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                             finish();
+
                         } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE || bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+                                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA
+                                || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE
+                                || bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+
                             if ("1".equalsIgnoreCase(bmodel.getRetailerMasterBO().getRField4())) {
                                 bmodel.productHelper.updateDistributorDetails();
                             }
@@ -3209,11 +3100,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                                     StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
+
                             sendMailAndLoadClass = "CommonPrintPreviewActivityPRINT_FILE_INVOICE";
                             if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
                                 new ShowEmailDialog().execute();
-                                //isClick = false;
-                                //return;
                             } else {
                                 Intent i = new Intent(OrderSummary.this,
                                         CommonPrintPreviewActivity.class);
@@ -3238,27 +3128,29 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 R.string.order_saved_and_print_preview_created_successfully),
                                 DataMembers.NOTIFY_INVOICE_SAVED);
                     }
+
                 } catch (Exception e) {
-                    Commons.printException("EXCEPTION<><><><>," + "" + e);
+                    Commons.printException(e);
                 }
             }
-            if (msg.what == BtService.STATE_CONNECTED) {
+            else if (msg.what == BtService.STATE_CONNECTED) {
                 Toast.makeText(getApplicationContext(), "Connected",
                         Toast.LENGTH_SHORT).show();
                 new Checkandprint().execute();
 
             }
-            if (msg.what == BtService.STATE_CONNECTING) {
+            else if (msg.what == BtService.STATE_CONNECTING) {
                 Toast.makeText(getApplicationContext(), "Connecting",
                         Toast.LENGTH_SHORT).show();
             }
-            if (msg.what == BtService.STATE_LISTEN)
+            else if (msg.what == BtService.STATE_LISTEN) {
                 if (msg.what == BtService.STATE_NONE) {
                     Toast.makeText(getApplicationContext(), "None",
                             Toast.LENGTH_SHORT).show();
 
                 }
-            if (msg.what == MESSAGE_DEVICE_NAME) {
+            }
+            else if (msg.what == MESSAGE_DEVICE_NAME) {
                 String mConnectedDeviceName;
                 mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                 Toast.makeText(getApplicationContext(),
@@ -3266,7 +3158,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         Toast.LENGTH_SHORT).show();
 
             }
-            if (msg.what == MESSAGE_TOAST) {
+            else if (msg.what == MESSAGE_TOAST) {
                 Toast.makeText(getApplicationContext(),
                         msg.getData().getString(TOAST), Toast.LENGTH_SHORT)
                         .show();
@@ -3388,7 +3280,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (sendMailAndLoadClass.equalsIgnoreCase("CommonPrintPreviewActivityPRINT_FILE_ORDER") ||
                         sendMailAndLoadClass.equalsIgnoreCase("HomeScreenTwoPRINT_FILE_ORDER")) {
                     source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
-                            StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.getOrderid() + ".txt");
+                            StandardListMasterConstants.PRINT_FILE_ORDER + orderHelper.getOrderid() + ".txt");
                     bodyPart.setDataHandler(new DataHandler(source));
                     bodyPart.setFileName("OrderDetails" + ".txt");
                 }

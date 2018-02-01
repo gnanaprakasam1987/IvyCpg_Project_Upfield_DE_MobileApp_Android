@@ -580,7 +580,6 @@ public class ConfigurationMasterHelper {
     public boolean HAS_STOCK_IN_DIST_POST;
     public boolean SHOW_INITIATIVE_MERCHANDISING;
     // Added in 35 version
-    public boolean SHOW_PRINT_ORDER;
     public boolean SHOW_CALC;
     public boolean IS_SCHEME_ON;
     public boolean IS_SCHEME_EDITABLE;
@@ -786,8 +785,8 @@ public class ConfigurationMasterHelper {
 
     public int LOAD_STOCK_COMPETITOR = 0;
 
-    public int LOAD_MAX_DELIVERY_DATE = 0;
-    public int LOAD_MAX_DELIVERY_DATE_ALLOWED = 0;
+    public int DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+    public int MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     private static final String CODE_LOCATION_TIMER_PERIOD = "LOCTIMER";
     public int LOCATION_TIMER_PERIOD = 20;
 
@@ -1682,7 +1681,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_DISCOUNT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) : false;
         this.HAS_STOCK_IN_DIST_POST = hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) : false;
         this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
-        this.SHOW_PRINT_ORDER = hashMapHHTModuleConfig.get(CODE_ORDER_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_PRINT) : false;
         this.SHOW_CALC = hashMapHHTModuleConfig.get(CODE_CALCULATOR) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATOR) : false;
         this.IS_SCHEME_EDITABLE = hashMapHHTModuleConfig.get(CODE_SCHEME_EDITABLE) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_EDITABLE) : false;
         this.IS_MUST_SELL = hashMapHHTModuleConfig.get(CODE_MUST_SELL) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL) : false;
@@ -3172,8 +3170,8 @@ public class ConfigurationMasterHelper {
 
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
-            LOAD_MAX_DELIVERY_DATE = 0;
-            LOAD_MAX_DELIVERY_DATE_ALLOWED = 0;
+            DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+            MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
             LOAD_REMARKS_FIELD_STRING = "";
             SHOW_INCLUDE_BILL_TAX = false;
 
@@ -3549,9 +3547,9 @@ public class ConfigurationMasterHelper {
             if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
                 if (codeSplit[0] != null && !codeSplit[0].equals(""))
-                    LOAD_MAX_DELIVERY_DATE = Integer.parseInt(codeSplit[0]);
+                    DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = Integer.parseInt(codeSplit[0]);
                 if (codeSplit[1] != null && !codeSplit[1].equals(""))
-                    LOAD_MAX_DELIVERY_DATE_ALLOWED = Integer.parseInt(codeSplit[1]);
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = Integer.parseInt(codeSplit[1]);
             }
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster

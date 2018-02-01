@@ -67,6 +67,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity;
@@ -227,6 +228,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private Vector<ProductMasterBO> productList = new Vector<>();
 
     boolean isFromHomeScreen = false;
+    private OrderHelper orderHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -237,6 +239,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        orderHelper=OrderHelper.getInstance(this);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
@@ -4151,7 +4154,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             try {
 
                 if (bmodel.isOrderTaken() && bmodel.isEdit())
-                    bmodel.deleteOrder(bmodel.getRetailerMasterBO().getRetailerID());
+                    orderHelper.deleteOrder(getApplicationContext(),bmodel.getRetailerMasterBO().getRetailerID());
 
                 if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                     // save price check

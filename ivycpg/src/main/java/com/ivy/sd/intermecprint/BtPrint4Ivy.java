@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.intermec.arabic.CUnicode;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -128,12 +129,14 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
     private Map<String, Double> lineWiseDiscount;
     SalesReturnHelper salesReturnHelper;
     private Toolbar toolbar;
+    private OrderHelper orderHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // show
         super.onCreate(savedInstanceState);
         setContentView(R.layout.btprint_main);
+        orderHelper=OrderHelper.getInstance(this);
 
         mRemoteDevice = (EditText) findViewById(R.id.remote_device);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -229,7 +232,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                 findViewById(R.id.outerprice).setVisibility(View.GONE);
                 findViewById(R.id.outerpricearabic).setVisibility(View.GONE);
             }
-            storediscount = bmodel.invoiceDisount;
+            storediscount = orderHelper.invoiceDisount;
         } catch (Exception e1) {
             Commons.printException("" + e1);
         }

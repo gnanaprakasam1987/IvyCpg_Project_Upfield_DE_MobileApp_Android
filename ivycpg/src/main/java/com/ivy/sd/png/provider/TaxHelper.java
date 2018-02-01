@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.TaxBO;
@@ -746,7 +747,7 @@ public class TaxHelper implements TaxInterface{
             StringBuffer sb = new StringBuffer();
             if (isOrder) {
                 sb.append("select sum(taxValue) from OrderTaxDetails ");
-                sb.append("where orderid=" + mBusinessModel.getOrderid());
+                sb.append("where orderid=" + OrderHelper.getInstance(mContext).getOrderid());
             } else {
                 sb.append("select sum(taxValue) from InvoiceTaxDetails ");
                 sb.append("where invoiceid=" + mBusinessModel.QT(mBusinessModel.invoiceNumber));

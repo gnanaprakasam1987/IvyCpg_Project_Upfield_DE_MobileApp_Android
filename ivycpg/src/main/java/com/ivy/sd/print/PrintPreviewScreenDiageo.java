@@ -32,6 +32,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
@@ -119,6 +120,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
     TextView tv_scheme_discount;
 
     private int printDoneCount = 0;
+    private OrderHelper orderHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +129,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
         try {
             bmodel = (BusinessModel) getApplicationContext();
             bmodel.setContext(this);
+            orderHelper=OrderHelper.getInstance(this);
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
 
@@ -1027,7 +1030,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + bmodel.getOrderid(),
+                                        + orderHelper.getOrderid(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception

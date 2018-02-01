@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.reports.InvoiceReportDetail;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceReportBO;
@@ -50,6 +51,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
     private int mRetailerId = 0;
     private double mTotalAmount;
     private String mInvoiceId = "";
+    private OrderHelper orderHelper;
     private boolean isClicked;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,6 +65,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
         businessModel = (BusinessModel) getActivity().getApplicationContext();
         businessModel.setContext(getActivity());
+        orderHelper=OrderHelper.getInstance(getActivity());
 
         if (businessModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -448,7 +451,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA) {
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
-                    businessModel.setOrderid(inv.getOrderID());
+                    orderHelper.setOrderid(inv.getOrderID());
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
                     businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
@@ -481,7 +484,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     businessModel.productHelper.updateBillWiseDiscountInObj(mInvoiceId);
 
 
-                    businessModel.setOrderid(inv.getOrderID());
+                    orderHelper.setOrderid(inv.getOrderID());
                 }
 
 

@@ -113,7 +113,7 @@ public class ProductHelper {
 
 
 
-    private SparseArray<ArrayList<SerialNoBO>> mSerialNoListByProductid;
+
     private SparseArray<LoadManagementBO> mLoadManagementBOByProductId;
 
     private HashMap<Integer, Vector<CompetitorFilterLevelBO>> mCompetitorFilterlevelBo;
@@ -5500,55 +5500,7 @@ public class ProductHelper {
     }
 
 
-    public void loadSerialNo() {
-        DBUtil db = null;
-        try {
-            mSerialNoListByProductid = new SparseArray<ArrayList<SerialNoBO>>();
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select productid,fromNo,toNo,scannedQty from temp_serialno ");
-            sb.append("where retailerid =" + bmodel.getRetailerMasterBO().getRetailerID());
-            sb.append(" order by productid");
-            Cursor c = db.selectSQL(sb.toString());
-            int produtid = 0;
-            if (c.getCount() > 0) {
-                ArrayList<SerialNoBO> serialNoList = new ArrayList<SerialNoBO>();
-                SerialNoBO serialNoBO;
-                while (c.moveToNext()) {
-                    serialNoBO = new SerialNoBO();
-                    serialNoBO.setFromNo(c.getString(1));
-                    serialNoBO.setToNo(c.getString(2));
-                    serialNoBO.setScannedQty(c.getInt(3));
-                    if (produtid != c.getInt(0)) {
-                        if (produtid != 0) {
-                            mSerialNoListByProductid.put(produtid, serialNoList);
-                            serialNoList = new ArrayList<SerialNoBO>();
-                            serialNoList.add(serialNoBO);
-                            produtid = c.getInt(0);
-                        } else {
-                            serialNoList = new ArrayList<SerialNoBO>();
-                            serialNoList.add(serialNoBO);
-                            produtid = c.getInt(0);
-                        }
-                    } else {
-                        serialNoList.add(serialNoBO);
-                    }
 
-
-                }
-                if (serialNoList.size() > 0) {
-                    mSerialNoListByProductid.put(produtid, serialNoList);
-                }
-            }
-            c.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-
-    }
 
 
 
@@ -5780,146 +5732,12 @@ public class ProductHelper {
 
     }
 
-    public SparseArray<ArrayList<SerialNoBO>> getSerialNoListByProductid() {
-        return mSerialNoListByProductid;
-    }
-
-    public void setmSerialNoListByProductid(SparseArray<ArrayList<SerialNoBO>> serialNoListByProductid) {
-        this.mSerialNoListByProductid = serialNoListByProductid;
-    }
 
 
-    public void saveSerialNoTemp() {
-        DBUtil db = null;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            db.deleteSQL("temp_serialno", "retailerid=" + bmodel.getRetailerMasterBO().getRetailerID(), false);
 
 
-            String columns = "productid,fromNo,toNo,Retailerid,scannedQty";
-            StringBuffer sb;
-            if (mSerialNoListByProductid != null) {
-                for (int i = 0; i < mSerialNoListByProductid.size(); i++) {
-                    int key = mSerialNoListByProductid.keyAt(i);
-                    ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductid.valueAt(i);
-                    if (serialNoList != null) {
-                        for (SerialNoBO serialNoBO : serialNoList) {
-
-                            sb = new StringBuffer();
-                            sb.append(key + "," + bmodel.QT(serialNoBO.getFromNo()));
-                            sb.append("," + bmodel.QT(serialNoBO.getToNo()));
-                            sb.append("," + bmodel.getRetailerMasterBO().getRetailerID());
-                            sb.append("," + serialNoBO.getScannedQty());
-                            db.insertSQL("temp_serialno", columns, sb.toString());
-                        }
-                    }
 
 
-                }
-            }
-
-            db.closeDB();
-
-
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-
-    }
-
-    public void saveSerialNo(DBUtil db) {
-        String columns = "orderid,invoiceid,pid,serialNumber,uomid,Retailerid";
-        StringBuffer sb;
-        if (mSerialNoListByProductid != null) {
-            for (ProductMasterBO productBO : productMaster) {
-                if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
-
-                    ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductid.get(Integer.parseInt(productBO.getProductID()));
-                    if (serialNoList != null) {
-                        for (SerialNoBO serialNoBo : serialNoList) {
-                            if (serialNoBo.getScannedQty() > 0) {
-                                for (int i = 0; i < serialNoBo.getScannedQty(); i++) {
-                                    try {
-                                        BigInteger serialNo = new BigInteger(serialNoBo.getFromNo());
-                                        BigInteger one = new BigInteger(i + "");
-                                        BigInteger sumValue = serialNo.add(one);
-                                        sb = new StringBuffer();
-                                        sb.append(bmodel.getOrderid() + "," + bmodel.QT(bmodel.getInvoiceNumber()) + ",");
-                                        sb.append(productBO.getProductID() + "," + bmodel.QT(sumValue + "") + "," + productBO.getPcUomid());
-                                        sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                                        db.insertSQL("InvoiceSerialNumbers", columns, sb.toString());
-                                    } catch (NumberFormatException e) {
-                                        sb = new StringBuffer();
-                                        sb.append(bmodel.getOrderid() + "," + bmodel.QT(bmodel.getInvoiceNumber()) + ",");
-                                        sb.append(productBO.getProductID() + "," + bmodel.QT(serialNoBo.getFromNo() + "") + "," + productBO.getPcUomid());
-                                        sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                                        db.insertSQL("InvoiceSerialNumbers", columns, sb.toString());
-                                    }
-
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-        }
-
-        db.deleteSQL("temp_serialno", "retailerid=" + bmodel.getRetailerMasterBO().getRetailerID(), false);
-        mSerialNoListByProductid = null;
-
-
-    }
-
-    /**
-     * Method to find duplicate serialnumber entered
-     *
-     * @return
-     */
-    public boolean isDuplicateSerialNo() {
-        ArrayList<Integer> serialNo;
-        if (mSerialNoListByProductid != null) {
-
-
-            for (ProductMasterBO productBO : productMaster) {
-                if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
-                    if (productBO.getScannedProduct() == 1) {
-                        serialNo = new ArrayList<Integer>();
-
-                        ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductid.get(Integer.parseInt(productBO.getProductID()));
-                        if (serialNoList != null) {
-                            for (SerialNoBO serialNoBO : serialNoList) {
-
-                                for (int i = 0; i < serialNoBO.getScannedQty(); i++) {
-                                    try {
-
-                                        int number = Integer.parseInt(serialNoBO.getFromNo()) + i;
-
-                                        if (!serialNo.contains(number)) {
-                                            serialNo.add(number);
-                                        } else {
-                                            return true;
-                                        }
-                                    } catch (NumberFormatException e) {
-                                        Commons.print(e.getMessage());
-                                    }
-                                }
-
-
-                            }
-
-
-                        }
-                    }
-
-                }
-            }
-        }
-
-
-        return false;
-    }
 
 
     public ArrayList<AttributeBO> getmAttributesList() {

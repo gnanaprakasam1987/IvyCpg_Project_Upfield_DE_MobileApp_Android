@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -519,7 +520,7 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + bmodel.getOrderid(),
+                                        + OrderHelper.getInstance(EODStockReportPreviewScreen.this).getOrderid(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         Commons.printException(e + "");
