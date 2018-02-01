@@ -2544,7 +2544,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
         @Override
         protected String doInBackground(String... params) {
-            String LoginResponse = bmodel.synchronizationHelper.userAuthenticate(jsonObject, changeDeviceId);
+            String LoginResponse = bmodel.synchronizationHelper.userInitialAuthenticate(jsonObject, changeDeviceId);
             try {
                 JSONObject jsonObject = new JSONObject(LoginResponse);
                 Iterator itr = jsonObject.keys();

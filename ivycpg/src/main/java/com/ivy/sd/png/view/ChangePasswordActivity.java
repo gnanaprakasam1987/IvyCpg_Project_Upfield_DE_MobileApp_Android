@@ -44,7 +44,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
     private boolean isExpired = false;
     private String mPasswordCreatedDated = "";
     private String Cpassword, Npassword;
-    private boolean fromReset = false;
+    private boolean ifReset = false;
     private boolean isFromSettingScreen = false;
 
     private TextView btnClose, title_tv;
@@ -62,7 +62,8 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
         if (in.getExtras() != null) {
             isExpired = in.getExtras().getBoolean("isExpired");
             isFromSettingScreen = in.getExtras().getBoolean("isFromSetting");
-            fromReset = in.getExtras().getBoolean("resetpassword", false);
+            //if change password called from sync flow if the password is reset password required
+            ifReset = in.getExtras().getBoolean("resetpassword", false);
         }
         edtCurrPswd = (EditText) findViewById(R.id.edtCurrentPswd);
         edtNewPswd = (EditText) findViewById(R.id.edtNewPassword);
@@ -96,7 +97,8 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                         finish();
                     }
                 } else {
-                    finishReset();
+                    if (ifReset)
+                        deleteUserMaster();
                     finish();
                 }
             }
@@ -287,7 +289,8 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                                 R.string.communication_error_please_try_again),
                         0);
             } else if (result == 1) {
-                finishReset();
+                if (ifReset)
+                    deleteUserMaster();
                 bmodel.passwordTemp = edtNewPswd.getText().toString();
                 bmodel.userMasterHelper.changePassword(bmodel.userMasterHelper
                         .getUserMasterBO().getUserid(), bmodel.passwordTemp);
@@ -359,18 +362,18 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
         // super.onBackPressed();
     }
 
-    private void finishReset() {
-        if (fromReset) {
-            try {
-                DBUtil db = new DBUtil(ChangePasswordActivity.this, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
-                db.createDataBase();
-                db.openDataBase();
-                db.deleteSQL(DataMembers.tbl_userMaster, null, true);
-                db.closeDB();
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
+    private void deleteUserMaster() {
+
+        try {
+            DBUtil db = new DBUtil(ChangePasswordActivity.this, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_userMaster, null, true);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
         }
+
     }
 }

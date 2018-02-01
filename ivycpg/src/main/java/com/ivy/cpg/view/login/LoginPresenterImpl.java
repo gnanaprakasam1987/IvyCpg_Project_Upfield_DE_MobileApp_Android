@@ -53,7 +53,6 @@ import static com.ivy.sd.png.model.ApplicationConfigs.LANGUAGE;
 
 /**
  * Created by dharmapriya.k on 4/12/17.
- *
  */
 
 public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
@@ -144,6 +143,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             loginView.reload();
         }
     }
+
     /**
      * Saves the last sync date and time in shared preferences
      */
@@ -319,14 +319,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             if (ApplicationConfigs.checkUTCTime && businessModel.isOnline()) {
                 new DownloadUTCTime().execute();
             } else {
-                loginView.showProgressDialog(context.getResources().getString(R.string.loading_data));
-
-                //handle password lock in offline based on reached maximum_attempt_count compare with mPasswordLockCountPref count
-                int count = mPasswordLockCountPref.getInt("passwordlock", 0);
-                if (count + 1 == loginHelper.MAXIMUM_ATTEMPT_COUNT)
-                    loginView.sendUserNotExistToHandler();
-                else
-                    loginView.threadActions();
+                proceedToLocalLogin();
             }
         } else {
             if (businessModel.isOnline()) {
@@ -334,7 +327,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
                 if (!DataMembers.SERVER_URL.equals("")) {
                     mIterateCount = businessModel.synchronizationHelper.getmRetailerWiseIterateCount();
-                    callAuthentication(false);
+                    callInitialAuthentication(false);
                 } else {
                     loginView.showAlert(context.getResources().getString(R.string.download_url_empty), false);
                     loginView.dismissAlertDialog();
@@ -345,9 +338,21 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
+    private void proceedToLocalLogin() {
+        loginView.showProgressDialog(context.getResources().getString(R.string.loading_data));
+
+        //handle password lock in offline based on reached maximum_attempt_count compare with mPasswordLockCountPref count
+        int count = mPasswordLockCountPref.getInt("passwordlock", 0);
+        if (count + 1 == loginHelper.MAXIMUM_ATTEMPT_COUNT)
+            loginView.sendUserNotExistToHandler();
+        else
+            loginView.threadActions();
+    }
+
+
     @Override
-    public void callAuthentication(boolean isDeviceChanged) {
-        new Authentication(isDeviceChanged).execute();
+    public void callInitialAuthentication(boolean isDeviceChanged) {
+        new InitialAuthentication(isDeviceChanged).execute();
     }
 
 
@@ -380,8 +385,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 loginView.dismissAlertDialog();
                 loginView.showAlert(context.getResources().getString(R.string.error_e24), true); // error_24 invalid date time
             } else {
-                loginView.setAlertDialogMessage(context.getResources().getString(R.string.loading_data));
-                loginView.threadActions();
+                proceedToLocalLogin();
             }
         }
     }
@@ -389,12 +393,12 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     /**
      * class is used to Authenticate application ang get token for Authorization
      */
-    class Authentication extends AsyncTask<String, String, String> {
+    class InitialAuthentication extends AsyncTask<String, String, String> {
         JSONObject jsonObject;
-        final boolean changeDeviceId;
+        final boolean isDeviceChanged;
 
-        Authentication(boolean changeDeviceId) {
-            this.changeDeviceId = changeDeviceId;
+        InitialAuthentication(boolean isDeviceChanged) {
+            this.isDeviceChanged = isDeviceChanged;
         }
 
         @Override
@@ -432,7 +436,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected String doInBackground(String... params) {
-            String LoginResponse = businessModel.synchronizationHelper.userAuthenticate(jsonObject, changeDeviceId);
+            String LoginResponse = businessModel.synchronizationHelper.userInitialAuthenticate(jsonObject, isDeviceChanged);
             try {
                 JSONObject jsonObject = new JSONObject(LoginResponse);
                 Iterator itr = jsonObject.keys();
@@ -463,9 +467,11 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 new CheckNewVersionTask().execute();
             } else {
                 if (output.equals("E27")) {
-                    loginView.showDialog();
+                    loginView.showDeviceLockedDialog();
                 } else {
+
                     if (output.equals("E25")) {
+                        // User Account Locked
                         loginView.showForgotPassword();
                     }
 
@@ -517,7 +523,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                         loginView.resetPassword();
                     } else {
                         businessModel.synchronizationHelper.deleteUrlDownloadMaster();
-                        new UrlDownloadData().execute();
+                        new UrlMasterDownload().execute();
                     }
 
                 } else {
@@ -541,7 +547,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
      * UrlDownload Data class is download master mapping url from server
      * and insert into sqLite file
      */
-    class UrlDownloadData extends AsyncTask<String, String, String> {
+    class UrlMasterDownload extends AsyncTask<String, String, String> {
         JSONObject jsonObject = null;
 
         @Override
@@ -566,12 +572,14 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                                     .parseJSONAndInsert(jsonObject, true);
                             businessModel.synchronizationHelper.loadMasterUrlFromDB(true);
                         }
+                        businessModel.synchronizationHelper.deleteTables(false);
                         return errorCode;
                     }
                 }
             } catch (JSONException jsonException) {
                 Commons.print(jsonException.getMessage());
             }
+            businessModel.synchronizationHelper.deleteTables(false);
             return "E01";
         }
 
@@ -580,43 +588,6 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             super.onPostExecute(errorCode);
             if (errorCode
                     .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                deleteTables(true);
-            } else {
-                deleteTables(false);
-                String errorMessage = businessModel.synchronizationHelper
-                        .getErrormessageByErrorCode().get(errorCode);
-                if (errorMessage != null) {
-                    loginView.showAlert(errorMessage, false);
-                }
-                loginView.dismissAlertDialog();
-            }
-        }
-    }
-
-    @Override
-    public void deleteTables(boolean isDownloaded) {
-        new DeleteTables(isDownloaded).execute();
-    }
-
-    private class DeleteTables extends
-            AsyncTask<Integer, Integer, Integer> {
-
-        final boolean isDownloaded;
-
-
-        DeleteTables(boolean isDownloaded) {
-            this.isDownloaded = isDownloaded;
-        }
-
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            businessModel.synchronizationHelper.deleteTables(false);
-            return 0;
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            if (isDownloaded) {
                 if (businessModel.synchronizationHelper
                         .getUrlList().size() > 0) {
                     businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
@@ -624,6 +595,13 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                     loginView.showAlert(context.getResources().getString(R.string.no_data_download), false);
                     loginView.dismissAlertDialog();
                 }
+            } else {
+                String errorMessage = businessModel.synchronizationHelper
+                        .getErrormessageByErrorCode().get(errorCode);
+                if (errorMessage != null) {
+                    loginView.showAlert(errorMessage, false);
+                }
+                loginView.dismissAlertDialog();
             }
         }
     }
