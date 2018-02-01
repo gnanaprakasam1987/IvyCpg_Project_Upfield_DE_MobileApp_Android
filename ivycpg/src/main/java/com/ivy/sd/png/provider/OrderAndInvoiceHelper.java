@@ -77,34 +77,7 @@ public class OrderAndInvoiceHelper {
 
 
 
-	/**
-	 * Date the closingstock header and details table.
-	 */
-	public void deleteStockAndOrder() {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
 
-			String id;
-			Cursor closingStockCursor = db
-					.selectSQL("select StockID from ClosingStockHeader where RetailerID="
-							+ bmodel.getRetailerMasterBO().getRetailerID() + "");
-			if (closingStockCursor.getCount() > 0) {
-				closingStockCursor.moveToNext();
-				id = bmodel.QT(closingStockCursor.getString(0));
-				db.deleteSQL("ClosingStockHeader", "StockID=" + id
-						+ " and upload='N'", false);
-				db.deleteSQL("ClosingStockDetail", "StockID=" + id
-						+ " and upload='N'", false);
-			}
-			closingStockCursor.close();
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
 	
 	public void updateGoldenStoreDetails(int isGoldenStore)
 	{

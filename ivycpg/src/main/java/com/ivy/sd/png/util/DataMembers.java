@@ -126,6 +126,7 @@ public class DataMembers {
     public static final int SAVEORDERANDSTOCK = 1001;
     public static final int SAVEORDERPARTIALLY = 1000;
     public static final int DELETE_ORDER = 1002;
+    public static final int DELETE_STOCK_AND_ORDER = 1003;
     public static final int SAVENEWOUTLET = 123;
     public static final int NOTIFY_UPLOAD_CLOSINGSTOCK = 1007;
     public static final int SAVEINVOICE = 1008;

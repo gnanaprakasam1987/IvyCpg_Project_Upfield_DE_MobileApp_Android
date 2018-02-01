@@ -122,11 +122,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     public static String mActivityCode;
 
     private static final int DIALOG_NEGATIVE_INVOICE_CHECK = 6;
-    private static final int DIALOG_DELETE_ORDER = 1;
+    private static final int DIALOG_DELETE_STOCK_AND_ORDER = 1;
+    private static final int DIALOG_DELETE_ONLY_ORDER = 5;
     private static final int DIALOG_ORDER_SAVED_WITH_PRINT_OPTION = 2;
     private static final int DIALOG_ORDER_SAVED = 3;
     private static final int DIALOG_NUMBER_OF_PRINTS =10;
     private static final int DIALOG_INVOICE_SAVED =9;
+    private static final int DIALOG_SIGNATURE_AVAILABLE =8;
+
 
     private Toolbar toolbar;
     private Button btnsave;
@@ -171,6 +174,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private String screenCode = "MENU_STK_ORD";
     private String PHOTO_PATH = "";
     private SharedPreferences msettings;
+
     private BluetoothAdapter mBluetoothAdapter = null;
     private BtService mChatService = null;
     private Connection zebraPrinterConnection;
@@ -565,7 +569,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
             mSortedList = new Vector<>();
-            updateOrderListByEntry();
+            mOrderedProductList=orderHelper.updateOrderListByEntry();
             mSortedList.addAll(mOrderedProductList);
         }
 
@@ -775,99 +779,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     protected Dialog onCreateDialog(int id) {
         String delivery_date_txt = "";
         switch (id) {
-            case DIALOG_DELIVERY_DATE_PICKER: {
-
-                Calendar c = Calendar.getInstance();
-                c.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
-
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
-
-                MyDatePickerDialog dialog = new MyDatePickerDialog(this,
-                        mDeliverDatePickerListener, year, month, day);
-                dialog.setPermanentTitle(getResources().getString(R.string.choose_date));
-                dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-
-                if (bmodel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
-                    Calendar maxCalendar = Calendar.getInstance();
-                    maxCalendar.add(Calendar.DAY_OF_YEAR, bmodel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
-                    dialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
-                }
-
-
-
-                return dialog;
-            }
-
-            case DIALOG_DELETE_ORDER: {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(OrderSummary.this)
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(
-                                getResources().getString(
-                                        R.string.do_you_want_delete_order))
-                        .setPositiveButton(getResources().getString(R.string.yes),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-
-                                        build = new AlertDialog.Builder(OrderSummary.this);
-                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
-                                        alertDialog = build.create();
-                                        alertDialog.show();
-
-                                        bmodel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        if (bmodel.getOrderHeaderBO().getSignatureName() != null)
-                                            bmodel.synchronizationHelper.deleteFiles(
-                                                    PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
-
-                                        // clear scheme free products
-                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
-
-                                        new MyThread(OrderSummary.this,
-                                                DataMembers.DELETE_ORDER).start();
-                                    }
-                                })
-                        .setNeutralButton(
-                                getResources().getString(R.string.cancel),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        isClick = false;
-                                    }
-                                })
-                        .setNegativeButton(
-                                getResources().getString(
-                                        R.string.delete_stock_and_order),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-
-                                        build = new AlertDialog.Builder(OrderSummary.this);
-                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
-                                        alertDialog = build.create();
-                                        alertDialog.show();
-
-                                        // clear scheme free products
-                                        bmodel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        if (bmodel.getOrderHeaderBO().getSignatureName() != null)
-                                            bmodel.synchronizationHelper.deleteFiles(
-                                                    PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
-                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
-
-                                        new deleteStockAndOrder().execute();
-
-                                        new MyThread(OrderSummary.this,
-                                                DataMembers.DELETE_ORDER).start();
-                                    }
-                                });
-                bmodel.applyAlertDialogTheme(builder);
-                break;
-            }
-
-
 
             case DIALOG_ORDER_SAVED: {
 
@@ -905,8 +816,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             sendMailAndLoadClass = "HomeScreenTwoPRINT_FILE_ORDER";
                                             if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
                                                 new ShowEmailDialog().execute();
-                                                //isClick = false;
-                                                //return;
+
                                             } else {
                                                 Intent i = new Intent(
                                                         OrderSummary.this,
@@ -997,90 +907,73 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 break;
             }
 
-            case DIALOG_INVOICE_SAVED:
-                AlertDialog.Builder builder9 = new AlertDialog.Builder(OrderSummary.this)
+            case DIALOG_DELETE_STOCK_AND_ORDER: {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
                         .setTitle(
                                 getResources().getString(
-                                        R.string.invoice_created_dou_wnt_print))
-                        .setPositiveButton("Ok",
+                                        R.string.do_you_want_delete_order))
+                        .setPositiveButton(getResources().getString(R.string.yes),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        isClick = true;
 
-                                        if (bmodel.configurationMasterHelper.printCount > 0) {
-                                            showDialog(DIALOG_NUMBER_OF_PRINTS);
-                                        } else {
-                                           printOrder();
-                                        }
+                                        build = new AlertDialog.Builder(OrderSummary.this);
+                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
+                                        alertDialog = build.create();
+                                        alertDialog.show();
+
+                                        bmodel.getOrderHeaderBO().setIsSignCaptured(false);
+                                        if (bmodel.getOrderHeaderBO().getSignatureName() != null)
+                                            bmodel.synchronizationHelper.deleteFiles(
+                                                    PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
+
+                                        // clear scheme free products
+                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+
+                                        new MyThread(OrderSummary.this,
+                                                DataMembers.DELETE_ORDER).start();
                                     }
                                 })
-
-                        .setNegativeButton(
+                        .setNeutralButton(
                                 getResources().getString(R.string.cancel),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-
-                                        bmodel.productHelper.clearOrderTableChecked();
-                                        Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
-                                        startActivity(i);
-                                        finish();
+                                        isClick = false;
                                     }
-                                });
-                bmodel.applyAlertDialogTheme(builder9);
-                break;
-
-            case DIALOG_NUMBER_OF_PRINTS: {
-
-                AlertDialog.Builder builder11 = new AlertDialog.Builder(OrderSummary.this)
-                        .setTitle("Print Count")
-                        .setSingleChoiceItems(bmodel.printHelper.getPrintCountArray(), 0, null)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dialog.dismiss();
-                                mSelectedPrintCount = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                                new Thread(new Runnable() {
-                                    public void run() {
-                                        printOrder();
-                                    }
-                                }).start();
-
-                                builder10 = new AlertDialog.Builder(OrderSummary.this);
-
-                                customProgressDialog(builder10, "Printing....");
-                                alertDialog = builder10.create();
-                                alertDialog.show();
-                            }
-                        });
-                bmodel.applyAlertDialogTheme(builder11);
-
-                break;
-
-            }
-
-
-            case 4:
-                AlertDialog.Builder builder3 = new AlertDialog.Builder(OrderSummary.this)
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(
+                                })
+                        .setNegativeButton(
                                 getResources().getString(
-                                        R.string.please_save_first_before_printing))
-                        .setPositiveButton(getResources().getString(R.string.ok),
+                                        R.string.delete_stock_and_order),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
 
+                                        build = new AlertDialog.Builder(OrderSummary.this);
+                                        customProgressDialog(build, getResources().getString(R.string.deleting_order));
+                                        alertDialog = build.create();
+                                        alertDialog.show();
+
+                                        // clear scheme free products
+                                        bmodel.getOrderHeaderBO().setIsSignCaptured(false);
+                                        if (bmodel.getOrderHeaderBO().getSignatureName() != null)
+                                            bmodel.synchronizationHelper.deleteFiles(
+                                                    PHOTO_PATH, bmodel.getOrderHeaderBO().getSignatureName());
+                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+
+                                        new MyThread(OrderSummary.this,
+                                                DataMembers.DELETE_STOCK_AND_ORDER).start();
                                     }
                                 });
-                bmodel.applyAlertDialogTheme(builder3);
+                bmodel.applyAlertDialogTheme(builder);
                 break;
+            }
 
-            case 5:
+
+            case DIALOG_DELETE_ONLY_ORDER: {
                 AlertDialog.Builder builder4 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
@@ -1116,8 +1009,76 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 });
                 bmodel.applyAlertDialogTheme(builder4);
                 break;
+            }
 
-            case DIALOG_NEGATIVE_INVOICE_CHECK:
+
+            case DIALOG_INVOICE_SAVED: {
+                AlertDialog.Builder builder9 = new AlertDialog.Builder(OrderSummary.this)
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(
+                                getResources().getString(
+                                        R.string.invoice_created_dou_wnt_print))
+                        .setPositiveButton("Ok",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        isClick = true;
+
+                                        if (bmodel.configurationMasterHelper.printCount > 0) {
+                                            showDialog(DIALOG_NUMBER_OF_PRINTS);
+                                        } else {
+                                            printOrder();
+                                        }
+                                    }
+                                })
+
+                        .setNegativeButton(
+                                getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+
+                                        bmodel.productHelper.clearOrderTableChecked();
+                                        Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
+                                        startActivity(i);
+                                        finish();
+                                    }
+                                });
+                bmodel.applyAlertDialogTheme(builder9);
+                break;
+            }
+
+            case DIALOG_NUMBER_OF_PRINTS: {
+
+                AlertDialog.Builder builder11 = new AlertDialog.Builder(OrderSummary.this)
+                        .setTitle("Print Count")
+                        .setSingleChoiceItems(bmodel.printHelper.getPrintCountArray(), 0, null)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
+                                mSelectedPrintCount = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                new Thread(new Runnable() {
+                                    public void run() {
+                                        printOrder();
+                                    }
+                                }).start();
+
+                                builder10 = new AlertDialog.Builder(OrderSummary.this);
+
+                                customProgressDialog(builder10, "Printing....");
+                                alertDialog = builder10.create();
+                                alertDialog.show();
+                            }
+                        });
+                bmodel.applyAlertDialogTheme(builder11);
+
+                break;
+
+            }
+
+            case DIALOG_NEGATIVE_INVOICE_CHECK: {
                 AlertDialog.Builder builder5 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
@@ -1131,48 +1092,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 });
                 bmodel.applyAlertDialogTheme(builder5);
                 break;
+            }
 
-            case 7:
-                AlertDialog.Builder builder6 = new AlertDialog.Builder(OrderSummary.this)
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(
-                                getResources().getString(
-                                        R.string.invoice_created_dou_wnt_print))
-                        .setPositiveButton("Ok",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        if (mBluetoothAdapter == null) {
-                                            Toast.makeText(getApplicationContext(),
-                                                    "Bluetooth not enabled ",
-                                                    Toast.LENGTH_LONG).show();
-                                            // !!!!!
-                                            finish();
-                                            return;
-                                        }
-
-                                        Checkbluetoothenable();
-                                    }
-                                })
-
-                        .setNegativeButton(
-                                getResources().getString(R.string.cancel),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        bmodel.productHelper.clearOrderTableChecked();
-                                        Intent i = new Intent(
-                                                OrderSummary.this,
-                                                HomeScreenTwo.class);
-                                        startActivity(i);
-                                        finish();
-                                    }
-                                });
-                bmodel.applyAlertDialogTheme(builder6);
-                break;
-
-            case 8:
+            case DIALOG_SIGNATURE_AVAILABLE: {
                 AlertDialog.Builder builder7 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
@@ -1204,6 +1126,32 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 });
                 bmodel.applyAlertDialogTheme(builder7);
                 break;
+            }
+
+            case DIALOG_DELIVERY_DATE_PICKER: {
+
+                Calendar c = Calendar.getInstance();
+                c.add(Calendar.DAY_OF_YEAR, (bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bmodel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
+
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+
+                MyDatePickerDialog dialog = new MyDatePickerDialog(this,
+                        mDeliverDatePickerListener, year, month, day);
+                dialog.setPermanentTitle(getResources().getString(R.string.choose_date));
+                dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
+                if (bmodel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
+                    Calendar maxCalendar = Calendar.getInstance();
+                    maxCalendar.add(Calendar.DAY_OF_YEAR, bmodel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
+                    dialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
+                }
+
+
+
+                return dialog;
+            }
 
 
 
@@ -1378,6 +1326,38 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+
+        if (bmodel.configurationMasterHelper.SHOW_CALC)
+            menu.findItem(R.id.menu_calculator).setVisible(true);
+        else
+            menu.findItem(R.id.menu_calculator).setVisible(false);
+        if ((bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0)
+                || bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT)
+            menu.findItem(R.id.menu_store_wise_discount).setVisible(true);
+        else
+            menu.findItem(R.id.menu_store_wise_discount).setVisible(false);
+        if (bmodel.configurationMasterHelper.SHOW_ORDER_SUMMARY_DETAIL_DIALOG) {
+            menu.findItem(R.id.menu_summary_dialog).setVisible(true);
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_SERIAL_NO_SCREEN)
+            menu.findItem(R.id.menu_serialno).setVisible(true);
+        else
+            menu.findItem(R.id.menu_serialno).setVisible(false);
+
+        if (bmodel.mSelectedModule == 1)
+            menu.findItem(R.id.menu_delete).setVisible(false);
+        else if (!bmodel.isEdit())
+            menu.findItem(R.id.menu_delete).setVisible(false);
+        else {
+            menu.findItem(R.id.menu_delete).setVisible(true);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i1 = item.getItemId();
         if (i1 == R.id.menu_review) {
@@ -1495,7 +1475,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             return true;
         } else if (i1 == R.id.menu_signature) {
             if (bmodel.getOrderHeaderBO().isSignCaptured()) {
-                showDialog(8);
+                showDialog(DIALOG_SIGNATURE_AVAILABLE);
                 return true;
             }
             Intent i = new Intent(OrderSummary.this,
@@ -1568,9 +1548,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             finish();
         } else if (i1 == R.id.menu_delete) {
             if (bmodel.configurationMasterHelper.isStockAvailable())
-                showDialog(DIALOG_DELETE_ORDER);
+                showDialog(DIALOG_DELETE_STOCK_AND_ORDER);
             else
-                showDialog(5);
+                showDialog(DIALOG_DELETE_ONLY_ORDER);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1791,7 +1771,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 alertDialog.show();
                             }
                             if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
-                                getFocusandAndMustSellOrderedProducts();
+                                orderHelper.getFocusandAndMustSellOrderedProducts(mOrderedProductList);
 
 
                             //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
@@ -1823,9 +1803,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
         }
     }
-
-
-
 
 
     public Handler getHandler() {
@@ -1906,38 +1883,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
 
-
-        if (bmodel.configurationMasterHelper.SHOW_CALC)
-            menu.findItem(R.id.menu_calculator).setVisible(true);
-        else
-            menu.findItem(R.id.menu_calculator).setVisible(false);
-        if ((bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0)
-                || bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT)
-            menu.findItem(R.id.menu_store_wise_discount).setVisible(true);
-        else
-            menu.findItem(R.id.menu_store_wise_discount).setVisible(false);
-        if (bmodel.configurationMasterHelper.SHOW_ORDER_SUMMARY_DETAIL_DIALOG) {
-            menu.findItem(R.id.menu_summary_dialog).setVisible(true);
-        }
-
-        if (bmodel.configurationMasterHelper.SHOW_SERIAL_NO_SCREEN)
-            menu.findItem(R.id.menu_serialno).setVisible(true);
-        else
-            menu.findItem(R.id.menu_serialno).setVisible(false);
-
-        if (bmodel.mSelectedModule == 1)
-            menu.findItem(R.id.menu_delete).setVisible(false);
-        else if (!bmodel.isEdit())
-            menu.findItem(R.id.menu_delete).setVisible(false);
-        else {
-            menu.findItem(R.id.menu_delete).setVisible(true);
-        }
-
-        return super.onPrepareOptionsMenu(menu);
-    }
 
 
     private double getDiscountAppliedValue(double discnt) {
@@ -1979,55 +1925,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         return discount;
     }
 
-
-
-
-
-
-
-
-    private void Checkbluetoothenable() {
-        try {
-            if (!mBluetoothAdapter.isEnabled()) // If BT is not on, request that
-            // it
-            // be enabled. setup will then
-            // be
-            // called during
-            // onActivityResult
-            {
-                Toast.makeText(this, " Bluetooth Not Enabled",
-                        Toast.LENGTH_SHORT).show();
-                bmodel.productHelper.clearOrderTableChecked();
-                Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
-                startActivity(i);
-                finish();
-
-            } else { // Otherwise, setup the chat session
-                if (mChatService == null) {
-                    mChatService = new BtService(getApplicationContext(),
-                            handler);
-                    String address = msettings.getString("MAC", "");
-                    BluetoothDevice device = mBluetoothAdapter
-                            .getRemoteDevice(address);
-                    mChatService.connect(device);
-                    checkBTConn();
-                }
-            }
-        } catch (Exception e) {
-            checkmacadd();
-            // TODO Auto-generated catch block
-            Commons.printException("" + e);
-        }
-    }
-
-    private void checkmacadd() {
-        Toast.makeText(this, "Please check mac address ", Toast.LENGTH_SHORT)
-                .show();
-        bmodel.productHelper.clearOrderTableChecked();
-        Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
-        startActivity(i);
-        finish();
-    }
 
     private void Printdata() {
         try {
@@ -2076,9 +1973,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     } else {
                         taxgrp = '0';
                     }
-                    System.out.println("taxdisc=" + Math.round(taxdisc)
-                            + "taxgrp=" + taxgrp + " percent=" + -discount
-                            + "sku.getIsscheme()=" + sku.getIsscheme());
 
                     zfp.sellFree(sku.getProductShortName(), taxgrp,
                             sku.getSrp(), pieceCount, -discount);
@@ -2098,10 +1992,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
-    private void checkBTConn() {
-        if (mChatService.getState() != BtService.STATE_CONNECTED)
-            Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
-    }
 
     private void doConnection(String printername) {
         try {
@@ -2239,48 +2129,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         return false;
     }
 
-    private void getFocusandAndMustSellOrderedProducts() {
-        int focusBrandProducts = 0;
-        int focusBrandProducts1 = 0;
-        int focusBrandProducts2 = 0;
-        int focusBrandProducts3 = 0;
-        int focusBrandProducts4 = 0;
-        int mustSellProducts = 0;
-        double mustSellProdValues = 0;
-        double focusBrandProdValues = 0;
 
-        for (ProductMasterBO bo : mOrderedProductList) {
-            if (bo.getIsFocusBrand() == 1 || bo.getIsFocusBrand2() == 1 || bo.getIsFocusBrand3() == 1 || bo.getIsFocusBrand4() == 1) {
-                focusBrandProdValues += bo.getDiscount_order_value();
-            }
-            if (bo.getIsFocusBrand() == 1) {
-                focusBrandProducts1 = 1;
-            }
-            if (bo.getIsFocusBrand2() == 1) {
-                focusBrandProducts2 = 1;
-            }
-            if (bo.getIsFocusBrand3() == 1) {
-                focusBrandProducts3 = 1;
-            }
-            if (bo.getIsFocusBrand4() == 1) {
-                focusBrandProducts4 = 1;
-            }
-
-
-            if (bo.getIsMustSell() == 1) {
-                mustSellProdValues += bo.getDiscount_order_value();
-                mustSellProducts += 1;
-            }
-        }
-        focusBrandProducts = focusBrandProducts1 + focusBrandProducts2 + focusBrandProducts3 + focusBrandProducts4;
-
-        if (bmodel.getOrderHeaderBO() != null) {
-            bmodel.getOrderHeaderBO().setOrderedFocusBrands(focusBrandProducts);
-            bmodel.getOrderHeaderBO().setOrderedMustSellCount(mustSellProducts);
-            bmodel.getOrderHeaderBO().setTotalMustSellValue(mustSellProdValues);
-            bmodel.getOrderHeaderBO().setTotalFocusProdValues(focusBrandProdValues);
-        }
-    }
 
     private void showFocusProductAlert() {
         int focusProductCount = 0;
@@ -2314,23 +2163,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
 
-
-    private void updateOrderListByEntry() {
-
-        LinkedList<String> productIdList = bmodel.productHelper.getmProductidOrderByEntry();
-        if (productIdList != null) {
-            mOrderedProductList = new LinkedList<>();
-            for (String productid : productIdList) {
-                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(productid);
-                if (productBO != null) {
-                    if (productBO.getOrderedCaseQty() > 0 || productBO.getOrderedPcsQty() > 0 || productBO.getOrderedOuterQty() > 0) {
-                        mOrderedProductList.add(productBO);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public void save(boolean isInvoice) {
         try {
@@ -2353,7 +2185,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     alertDialog.show();
                 }
                 if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
-                    getFocusandAndMustSellOrderedProducts();
+                    orderHelper.getFocusandAndMustSellOrderedProducts(mOrderedProductList);
 
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
                 orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList);
@@ -2367,7 +2199,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 alertDialog = build.create();
                 alertDialog.show();
                 if (bmodel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || bmodel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
-                    getFocusandAndMustSellOrderedProducts();
+                    orderHelper.getFocusandAndMustSellOrderedProducts(mOrderedProductList);
 
                 if (orderHelper.hasOrder(mOrderedProductList)) {
 
@@ -2448,13 +2280,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         @Override
         public Object getChild(int arg0, int arg1) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public long getChildId(int groupPosition, int childPosition) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
@@ -2689,7 +2519,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         @Override
         public Object getGroup(int groupPosition) {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -2703,7 +2532,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         @Override
         public long getGroupId(int groupPosition) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
@@ -2912,13 +2740,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         @Override
         public boolean hasStableIds() {
-            // TODO Auto-generated method stub
             return false;
         }
 
         @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {
-            // TODO Auto-generated method stub
             return false;
         }
 
@@ -2939,13 +2765,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         private TextView tvwtot;
     }
 
-    private class deleteStockAndOrder extends AsyncTask<Integer, Integer, Boolean> {
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            bmodel.orderAndInvoiceHelper.deleteStockAndOrder();
-            return null;
-        }
-    }
+
 
     private class Checkandprint extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;
@@ -3024,11 +2844,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             isClick = false;
 
-            if (msg.what == DataMembers.NOTIFY_DATABASE_NOT_SAVED) {
-                Toast.makeText(OrderSummary.this, "DataBase Restore failed.",
-                        Toast.LENGTH_SHORT).show();
-            }
-            else if (msg.what == DataMembers.NOTIFY_ORDER_SAVED) {
+
+            if (msg.what == DataMembers.NOTIFY_ORDER_SAVED) {
                 try {
 
                     alertDialog.dismiss();
@@ -3166,6 +2983,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
                 startActivity(i);
                 finish();
+            }
+            else if (msg.what == DataMembers.NOTIFY_DATABASE_NOT_SAVED) {
+                Toast.makeText(OrderSummary.this, "DataBase Restore failed.",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     };

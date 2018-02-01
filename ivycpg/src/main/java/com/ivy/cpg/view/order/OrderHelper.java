@@ -1027,6 +1027,97 @@ public class OrderHelper {
         return isEdit;
     }
 
+    /**
+     * Date the closingstock header and details table.
+     */
+    public void deleteStockAndOrder(Context mContext) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String id;
+            Cursor closingStockCursor = db
+                    .selectSQL("select StockID from ClosingStockHeader where RetailerID="
+                            + businessModel.getRetailerMasterBO().getRetailerID() + "");
+            if (closingStockCursor.getCount() > 0) {
+                closingStockCursor.moveToNext();
+                id = businessModel.QT(closingStockCursor.getString(0));
+                db.deleteSQL("ClosingStockHeader", "StockID=" + id
+                        + " and upload='N'", false);
+                db.deleteSQL("ClosingStockDetail", "StockID=" + id
+                        + " and upload='N'", false);
+            }
+            closingStockCursor.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public void getFocusandAndMustSellOrderedProducts(LinkedList<ProductMasterBO> mOrderedProductList) {
+        int focusBrandProducts = 0;
+        int focusBrandProducts1 = 0;
+        int focusBrandProducts2 = 0;
+        int focusBrandProducts3 = 0;
+        int focusBrandProducts4 = 0;
+        int mustSellProducts = 0;
+        double mustSellProdValues = 0;
+        double focusBrandProdValues = 0;
+
+        for (ProductMasterBO bo : mOrderedProductList) {
+            if (bo.getIsFocusBrand() == 1 || bo.getIsFocusBrand2() == 1 || bo.getIsFocusBrand3() == 1 || bo.getIsFocusBrand4() == 1) {
+                focusBrandProdValues += bo.getDiscount_order_value();
+            }
+            if (bo.getIsFocusBrand() == 1) {
+                focusBrandProducts1 = 1;
+            }
+            if (bo.getIsFocusBrand2() == 1) {
+                focusBrandProducts2 = 1;
+            }
+            if (bo.getIsFocusBrand3() == 1) {
+                focusBrandProducts3 = 1;
+            }
+            if (bo.getIsFocusBrand4() == 1) {
+                focusBrandProducts4 = 1;
+            }
+
+
+            if (bo.getIsMustSell() == 1) {
+                mustSellProdValues += bo.getDiscount_order_value();
+                mustSellProducts += 1;
+            }
+        }
+        focusBrandProducts = focusBrandProducts1 + focusBrandProducts2 + focusBrandProducts3 + focusBrandProducts4;
+
+        if (businessModel.getOrderHeaderBO() != null) {
+            businessModel.getOrderHeaderBO().setOrderedFocusBrands(focusBrandProducts);
+            businessModel.getOrderHeaderBO().setOrderedMustSellCount(mustSellProducts);
+            businessModel.getOrderHeaderBO().setTotalMustSellValue(mustSellProdValues);
+            businessModel.getOrderHeaderBO().setTotalFocusProdValues(focusBrandProdValues);
+        }
+    }
+
+
+
+    public LinkedList<ProductMasterBO> updateOrderListByEntry() {
+        LinkedList<ProductMasterBO> mOrderedProductList = new LinkedList<>();
+        LinkedList<String> productIdList = businessModel.productHelper.getmProductidOrderByEntry();
+        if (productIdList != null) {
+
+            for (String productid : productIdList) {
+                ProductMasterBO productBO = businessModel.productHelper.getProductMasterBOById(productid);
+                if (productBO != null) {
+                    if (productBO.getOrderedCaseQty() > 0 || productBO.getOrderedPcsQty() > 0 || productBO.getOrderedOuterQty() > 0) {
+                        mOrderedProductList.add(productBO);
+                    }
+                }
+            }
+        }
+
+        return mOrderedProductList;
+    }
 
     /**
      * Delete order Placed for the retailerId. Delete will only possible for
