@@ -752,7 +752,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
     }
 
     @Override
-    public void showDialog() {
+    public void showDeviceLockedDialog() {
         new CommonDialog(getApplicationContext(), LoginScreen.this,
                 getResources().getString(R.string.deviceId_change_msg_title),
                 getResources().getString(R.string.deviceId_change_msg),
@@ -762,7 +762,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                     @Override
                     public void onPositiveButtonClick() {
 
-                        loginPresenter.callAuthentication(true);
+                        loginPresenter.callInitialAuthentication(true);
 
                     }
                 }, new CommonDialog.negativeOnClickListener() {
@@ -785,7 +785,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                 .getString(SynchronizationHelper.ERROR_CODE);
         String errorDownloadMessage = businessModel.synchronizationHelper
                 .getErrormessageByErrorCode().get(errorDownloadCode);
-        loginPresenter.deleteTables(false);
+        businessModel.synchronizationHelper.deleteTables(false);
 
         dismissAlertDialog();
 

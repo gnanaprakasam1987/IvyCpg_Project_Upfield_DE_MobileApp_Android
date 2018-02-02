@@ -4808,11 +4808,6 @@ public class BusinessModel extends Application {
                     BusinessModel.loadActivity(ctx,
                             DataMembers.actHomeScreenTwo);
                 } else if (idd == DataMembers.NOTIFY_CLOSE_HOME) {
-                    if (ctx instanceof Synchronization) {
-//                        Synchronization frm = (Synchronization) ctx;
-//                        frm.finish();
-                        //  BusinessModel.loadActivity(ctx, DataMembers.actHomeScreen);
-                    }
                     HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) ctx).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
                     currentFragment.refreshList(false);
                 } else if (idd == DataMembers.NOTIFY_SALES_RETURN_SAVED) {

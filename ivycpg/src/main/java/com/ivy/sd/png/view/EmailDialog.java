@@ -36,7 +36,7 @@ public class EmailDialog extends DialogFragment implements View.OnClickListener 
     private onSendButtonClickListnor listner;
     private String retailerEmailId;
     @SuppressLint("ValidFragment")
-    public EmailDialog(String moduleName,onSendButtonClickListnor listner,String retailerEmailId) {
+    public EmailDialog(onSendButtonClickListnor listner,String retailerEmailId) {
         super();
         this.listner=listner;
         this.retailerEmailId=retailerEmailId;

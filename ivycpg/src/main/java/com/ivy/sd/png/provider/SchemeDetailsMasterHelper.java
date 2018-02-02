@@ -4039,8 +4039,6 @@ public class SchemeDetailsMasterHelper {
                         if (c.getColumnCount() > 1 && i != c.getColumnCount())
                             str = str + ",";
                     }
-                    if (str.endsWith(","))
-                        str = str.substring(0, str.length() - 1);
                 }
             }
 
@@ -4048,10 +4046,10 @@ public class SchemeDetailsMasterHelper {
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
-            //str string is ends with ','
-            if (str.endsWith(","))
-                str = str.substring(0, str.length() - 1);
         }
+        //to remove last character if it  ','
+        if (str.endsWith(","))
+            str = str.substring(0, str.length() - 1);
         return str;
     }
 
