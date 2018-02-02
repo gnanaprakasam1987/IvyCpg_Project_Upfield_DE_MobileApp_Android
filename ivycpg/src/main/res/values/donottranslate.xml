@@ -267,7 +267,7 @@
     <!-- Show Rfield1 dialog -->
     <string name="Please_enter_multipal">Enter pieceQyt</string>
     <string name="edit_piece">EditPieceDialog</string>
-    <string name="Please_enter_multipal_of">Please enter multipal of rfield value</string>
+    <string name="Please_enter_multiple_of">Please enter multiple of rfield value</string>
     <string name="piece">Piece</string>
     <string name="multiple_of">Multiple of</string>
 </resources>

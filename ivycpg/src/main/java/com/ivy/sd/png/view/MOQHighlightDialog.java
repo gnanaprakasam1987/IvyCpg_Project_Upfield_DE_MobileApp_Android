@@ -136,7 +136,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                 dismiss();
             }
             else
-                Toast.makeText(bmodel,""+getString(R.string.Please_enter_multipal_of),Toast.LENGTH_SHORT).show();
+                Toast.makeText(bmodel,""+getString(R.string.Please_enter_multiple_of),Toast.LENGTH_SHORT).show();
         }
         if(i==R.id.closeButton)
             dismiss();
@@ -252,6 +252,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         public int getCount() {
             return items.size();
         }
+
     }
 
     public class ViewHolder
