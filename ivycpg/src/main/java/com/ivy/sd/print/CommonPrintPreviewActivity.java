@@ -200,7 +200,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         Bundle extras = getIntent().getExtras();
                         if (extras != null) {
                             i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                            i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                            i.putExtra("CurrentActivityCode", OrderSummary.mCurrentActivityCode);
                         }
                     } else {
                         i = new Intent(CommonPrintPreviewActivity.this, HomeScreenActivity.class);
@@ -740,7 +740,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         Bundle extras = getIntent().getExtras();
                         if (extras != null) {
                             i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                            i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                            i.putExtra("CurrentActivityCode", OrderSummary.mCurrentActivityCode);
                         }
                     } else {
                         i = new Intent(CommonPrintPreviewActivity.this, HomeScreenActivity.class);

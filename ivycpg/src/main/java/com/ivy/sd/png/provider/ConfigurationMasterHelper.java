@@ -4102,18 +4102,6 @@ public class ConfigurationMasterHelper {
         this.signatureTitle = signatureTitle;
     }
 
-    public boolean isStockAvailable() {
-        Vector<ConfigureBO> config = getActivityMenu();
-        for (int i = 0; i < config.size(); i++) {
-            ConfigureBO con = config.get(i);
-            if (con.getConfigCode().equals("MENU_STOCK")
-                    || con.getConfigCode().equals("MENU_STK_ORD"))
-                if (con.getHasLink() == 1 && con.isFlag() == 1)
-                    return true;
-        }
-
-        return false;
-    }
 
     /**
      * Get the Date format from HHTModuleMaster

@@ -151,7 +151,7 @@ public class CS_CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                     Bundle extras = getIntent().getExtras();
                     if (extras != null) {
                         i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                        i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                        i.putExtra("CurrentActivityCode", OrderSummary.mCurrentActivityCode);
                     }
                     startActivity(i);
                 } else {
@@ -472,7 +472,7 @@ public class CS_CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                     Bundle extras = getIntent().getExtras();
                     if (extras != null) {
                         i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                        i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                        i.putExtra("CurrentActivityCode", OrderSummary.mCurrentActivityCode);
                     }
                     startActivity(i);
                 } else {

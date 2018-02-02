@@ -1741,7 +1741,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         bmodel.productHelper.downloadInStoreLocations();
 
-                        OrderSummary.mActivityCode = menu.getConfigCode();
+                        OrderSummary.mCurrentActivityCode = menu.getConfigCode();
 
                         //load currency data
                         if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
@@ -2071,7 +2071,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
 
-                    OrderSummary.mActivityCode = menu.getConfigCode();
+                    OrderSummary.mCurrentActivityCode = menu.getConfigCode();
 
                     Intent i = new Intent(HomeScreenTwo.this,
                             OrderSummary.class);
@@ -3717,7 +3717,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         // Reset the Configuration if Directly goes from
         // HomeScreenTwo
         bmodel.mSelectedModule = -1;
-        OrderSummary.mActivityCode = configCode;
+        OrderSummary.mCurrentActivityCode = configCode;
         bmodel.mSelectedActivityName = menuName;
     }
 

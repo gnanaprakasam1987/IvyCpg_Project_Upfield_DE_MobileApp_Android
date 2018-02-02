@@ -6657,19 +6657,7 @@ public class ProductHelper {
         this.pdname = pdname;
     }
 
-    public void clearDiscountQuantity() {
-        ProductMasterBO product;
-        int siz = productMaster.size();
-        for (int i = 0; i < siz; ++i) {
-            product = productMaster.get(i);
 
-            product.setD1(0);
-            product.setD2(0);
-            product.setD3(0);
-            product.setDA(0);
-            product.setApplyValue(0);
-        }
-    }
 
     public LinkedList<String> getmProductidOrderByEntry() {
         return mProductidOrderByEntry;

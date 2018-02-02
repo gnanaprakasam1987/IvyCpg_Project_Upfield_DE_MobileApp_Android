@@ -9,6 +9,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.lib.Logs;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -2550,5 +2551,31 @@ public class OrderHelper {
                 Commons.printException(ex);
             }
         }
+
+
+
+    public boolean isOrderedSerialNoProducts(LinkedList<ProductMasterBO> mOrderedProductList) {
+        for (ProductMasterBO productBO : mOrderedProductList) {
+            if (productBO.getScannedProduct() == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isStockCheckMenuEnabled() {
+        Vector<ConfigureBO> config = businessModel.configurationMasterHelper.getActivityMenu();
+        for (int i = 0; i < config.size(); i++) {
+            ConfigureBO con = config.get(i);
+            if (con.getConfigCode().equals("MENU_STOCK")
+                    || con.getConfigCode().equals("MENU_STK_ORD"))
+                if (con.getHasLink() == 1 && con.isFlag() == 1)
+                    return true;
+        }
+
+        return false;
+    }
+
+
 
 }

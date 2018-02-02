@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InitiativeHeaderBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -48,6 +49,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
     private Double result=0.0;
     private double totalOrderValue;
     OnDismissListener disListner;
+    DiscountHelper discountHelper;
 
     public DiscountDialog(final Context context, InitiativeHeaderBO initHeaderBO,
                           OnDismissListener discountDismissListener) {
@@ -58,6 +60,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         initAct = (OrderSummary) context;
+        discountHelper=DiscountHelper.getInstance(context);
 
         RelativeLayout ll = (RelativeLayout) LayoutInflater.from(context)
                 .inflate(R.layout.dialog_discount, null);
@@ -263,7 +266,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 this.initAct.onResume();
             }
             else
-                bmodel.productHelper.clearDiscountQuantity();
+                discountHelper.clearDiscountQuantity();
                 //this.initAct.onResume();
         }
         if (b == saveButton) {

@@ -1029,4 +1029,18 @@ public class DiscountHelper {
 
     }
 
+    public void clearDiscountQuantity() {
+        ProductMasterBO product;
+        int siz = businessModel.productHelper.getProductMaster().size();
+        for (int i = 0; i < siz; ++i) {
+            product = businessModel.productHelper.getProductMaster().get(i);
+
+            product.setD1(0);
+            product.setD2(0);
+            product.setD3(0);
+            product.setDA(0);
+            product.setApplyValue(0);
+        }
+    }
+
 }
