@@ -58,6 +58,7 @@ import android.widget.ViewFlipper;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -1170,7 +1171,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                                     .clearOrderTableAndUpdateSIH();
                         }
                         clearData();
-                        bmodel.productHelper.setmSerialNoListByProductid(null);
+                        OrderHelper.getInstance(OpportunityNewOutlet.this).setmSerialNoListByProductid(null);
 
                         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
                             bmodel.productHelper

@@ -191,6 +191,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
+
+        bmodel = (BusinessModel) getApplicationContext();
+        bmodel.setContext(this);
+        discountHelper = DiscountHelper.getInstance(this);
+
         /** Close the screen if userid becomes 0 **/
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
@@ -232,9 +237,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         bmodel.saveModuleCompletion("MENU_CLOSING");
 
 
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
-        discountHelper = DiscountHelper.getInstance(this);
 
 
         PHOTO_PATH = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName;
@@ -665,7 +667,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         //updating footer labels
         totalval.setText(bmodel.formatValue(totalOrderValue));
-        lpc.setText(mOrderedProductList.size());
+        lpc.setText(String.valueOf(mOrderedProductList.size()));
         totalQtyTV.setText(String.valueOf(totalQuantityOrdered));
 
     }
@@ -1557,15 +1559,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     public void onClick(View viewClicked) {
 
-        Button vw = (Button) viewClicked;
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        if (vw == delievery_date)
+        if (viewClicked == delievery_date)
             showDialog(DIALOG_DELIVERY_DATE_PICKER);
-        else if (vw == btnsave) {
+        else if (viewClicked == btnsave) {
             saveOrder();
-        } else if (vw == btnsaveAndGoInvoice) {
+        } else if (viewClicked == btnsaveAndGoInvoice) {
 
             saveInvoice();
         }

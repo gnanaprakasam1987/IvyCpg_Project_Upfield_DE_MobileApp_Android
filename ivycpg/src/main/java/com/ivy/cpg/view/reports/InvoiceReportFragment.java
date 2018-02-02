@@ -461,7 +461,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
                     businessModel.setInvoiceNumber(inv.getInvoiceNumber());
-                    orderHelper.loadInvoiceProducts(inv.getInvoiceNumber());
+                    orderHelper.loadInvoiceProducts(getActivity(),inv.getInvoiceNumber());
 
                     mInvoiceId = inv.getInvoiceNumber();
                     businessModel.schemeDetailsMasterHelper.loadSchemeReportDetails(inv.getInvoiceNumber(), true);
