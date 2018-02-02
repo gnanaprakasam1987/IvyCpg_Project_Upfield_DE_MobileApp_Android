@@ -28,11 +28,24 @@ public class QuestionBO {
     private final ArrayList<Integer> selectedAnswerIDs = new ArrayList<>();
     private final ArrayList<String> imageNames = new ArrayList<>();
     private final ArrayList<String> selectedAnswer = new ArrayList<>();
+
+    private String fromValue;
+    private String toValue;
+    private int precision;
     //private String selectedAnswer = "";
 
     private String image1Path, image2Path;
     private boolean image1Captured, image2Captured;
     private String tempImagePath;
+    private String questionNo;
+
+    public String getQuestionNo() {
+        return questionNo;
+    }
+
+    public void setQuestionNo(String questionNo) {
+        this.questionNo = questionNo;
+    }
 
     public String getImage1Path() {
         return image1Path;
@@ -278,4 +291,27 @@ public class QuestionBO {
 
     private double maxScore;
 
+    public String getFromValue() {
+        return fromValue;
+    }
+
+    public void setFromValue(String fromValue) {
+        this.fromValue = fromValue;
+    }
+
+    public String getToValue() {
+        return toValue;
+    }
+
+    public void setToValue(String toValue) {
+        this.toValue = toValue;
+    }
+
+    public int getPrecision() {
+        return precision;
+    }
+
+    public void setPrecision(int precision) {
+        this.precision = precision;
+    }
 }

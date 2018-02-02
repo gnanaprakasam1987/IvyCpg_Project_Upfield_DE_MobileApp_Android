@@ -16,7 +16,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -56,7 +55,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.model.ScreenReceiver;
-import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -85,9 +83,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -99,11 +94,9 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
 import javax.mail.BodyPart;
-import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -2227,8 +2220,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             fromorder = true;
             if (!isClick) {
                 isClick = true;
-                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE && screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
-                    bmodel.orderTimer.cancel();
+                /*if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE && screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
+                    bmodel.orderTimer.cancel();*/
                 if (mOrderedProductList.size() > 0) {
 
                     if ((bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) && !isTaxAvailableForAllOrderedProduct()) {
@@ -2332,8 +2325,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             if (!isClick) {
                 isClick = true;
-                if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
-                    bmodel.orderTimer.cancel();
+                /*if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
+                    bmodel.orderTimer.cancel();*/
                 if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION && !bmodel.isStockAvailableToDeliver(mOrderedProductList)) {
                     Toast.makeText(
                             this,

@@ -117,6 +117,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             isFocusBrand2, isSIH, isOOS, isNMustSell, isStock, isDiscount, isNearExpiryTag, isFocusBrand3, isFocusBrand4, isSMP;
     //private TypedArray typearr;
     private BusinessModel bmodel;
+    private Timer orderTimer;
     private RecyclerView pdt_recycler_view;
     private String tempPo, tempRemark, tempRField1, tempRField2;
     private MustSellReasonDialog dialog;
@@ -520,8 +521,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         //for  parital order save based on interval
         if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
             long timeInterval = bmodel.configurationMasterHelper.tempOrderInterval * 1000;
-            bmodel.orderTimer = new Timer();
-            bmodel.orderTimer.scheduleAtFixedRate(new TimerTask() {
+            orderTimer = new Timer();
+            orderTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     bmodel.insertTempOrder();
@@ -1574,7 +1575,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             } else {
 
                 if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
-                    bmodel.orderTimer.cancel();
+                    orderTimer.cancel();
 
                 bmodel.productHelper.clearOrderTable();
                 if (bmodel.mSelectedModule == 1) {
@@ -1585,7 +1586,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     startActivity(new Intent(CatalogOrder.this,
                             HomeScreenTwo.class));
                     finish();
-                }else {
+                } else {
                     bmodel.outletTimeStampHelper
                             .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
                     startActivity(new Intent(CatalogOrder.this,
@@ -1621,7 +1622,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                         }
 
                                         if (bmodel.configurationMasterHelper.IS_TEMP_ORDER_SAVE)
-                                            bmodel.orderTimer.cancel();
+                                            orderTimer.cancel();
 
                                         bmodel.productHelper.clearOrderTable();
 
