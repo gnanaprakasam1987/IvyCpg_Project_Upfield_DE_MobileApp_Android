@@ -1,7 +1,6 @@
 package com.ivy.sd.png.view;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -67,7 +66,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
             getDialog().setCancelable(false);
             this.setCancelable(false);
 
-            View view = inflater.inflate(R.layout.show_rfield1_dialog, container, false);
+            View view = inflater.inflate(R.layout.show_moq_highlight_dialog, container, false);
             getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
@@ -149,7 +148,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         private final Vector<ProductMasterBO> items;
         public MyAdaper(Vector<ProductMasterBO> items) {
             super(bmodel,
-                    R.layout.ordered_piece_rfield_value, items);
+                    R.layout.ordered_piece_value, items);
             this.items = items;
         }
 
@@ -167,7 +166,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
                 //Configuration based row rendering
                 row = inflater.inflate(
-                        R.layout.ordered_piece_rfield_value, parent,
+                        R.layout.ordered_piece_value, parent,
                         false);
                 holder = new ViewHolder();
                 holder.productBo=product;
