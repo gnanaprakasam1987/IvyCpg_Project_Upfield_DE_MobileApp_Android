@@ -1925,12 +1925,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         }
 
                         bmodel.productHelper.downloadIndicativeOrderList();//moved here to check size of indicative order
-                        bmodel.selectedOrderId = "";
+                        orderHelper.selectedOrderId = "";
                         if (bmodel.productHelper.getIndicativeList() != null
                                 && bmodel.productHelper.getIndicativeList().size() < 1
                                 && bmodel.configurationMasterHelper.IS_MULTI_STOCKORDER) {
                             if (bmodel.isEdit()) {
-                                bmodel.selectedOrderId = "";//cleared to avoid reuse of id
+                                orderHelper.selectedOrderId = "";//cleared to avoid reuse of id
                                 final String menuConfigCode = menu.getConfigCode();
                                 final String menuName = menu.getMenuName();
                                 OrderTransactionListDialog obj = new OrderTransactionListDialog(getApplicationContext(), HomeScreenTwo.this, new OrderTransactionListDialog.newOrderOnClickListener() {
@@ -1945,7 +1945,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 }, new OrderTransactionListDialog.oldOrderOnClickListener() {
                                     @Override
                                     public void onOldOrderButtonClick(String id) {
-                                        bmodel.selectedOrderId = id;
+                                        OrderHelper.getInstance(HomeScreenTwo.this).selectedOrderId = id;
                                         //the methods that were called during normal stock and order loading in edit mode are called here
                                         //selectedOrderId is passed to loadOrderedProducts method  to load ordered products for that id
                                         //loadSerialNo,enableSchemeModule included as these were called in edit mode

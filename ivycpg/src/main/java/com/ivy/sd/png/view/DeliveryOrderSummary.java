@@ -186,7 +186,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             return true;
         } else if (i == R.id.menu_review) {
             OrderRemarkDialog ordRemarkDialog = new OrderRemarkDialog(
-                    DeliveryOrderSummary.this, null, true);
+                    DeliveryOrderSummary.this, true);
             ordRemarkDialog.show();
             return true;
         }

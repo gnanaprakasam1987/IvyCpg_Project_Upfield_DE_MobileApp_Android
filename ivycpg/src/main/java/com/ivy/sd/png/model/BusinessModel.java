@@ -408,7 +408,6 @@ public class BusinessModel extends Application {
     public ProductMasterBO selectedPdt;
     private ArrayList<NewOutletAttributeBO> attributeList;
     public String latlongImageFileName;
-    public String selectedOrderId = "";
     ArrayList<String> orderIdList = new ArrayList<>();
     public Timer orderTimer;
     // used for ProductiveCall
@@ -2263,35 +2262,6 @@ public class BusinessModel extends Application {
                 return true;
         }
         return false;
-    }
-
-    /**
-     *
-     */
-    public void excludeTaxFromSRP() {
-        try {
-            for (ProductMasterBO productMasterBO : productHelper.getProductMaster()) {
-
-                productMasterBO.setOriginalSrp(productMasterBO.getSrp());
-
-                if (productMasterBO.getOrderedCaseQty() > 0
-                        || productMasterBO.getOrderedPcsQty() > 0
-                        || productMasterBO.getOrderedOuterQty() > 0) {
-                    if (productMasterBO.getSrp() > 0) {
-
-                        float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmount(productMasterBO.getProductID()), 2).floatValue();
-
-                        if (srpWithoutTax > 0)
-                            productMasterBO.setSrp(srpWithoutTax);
-                        else productMasterBO.setSrp(0);
-
-                    }
-                }
-
-            }
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
     }
 
 

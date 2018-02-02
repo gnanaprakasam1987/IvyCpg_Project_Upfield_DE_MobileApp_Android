@@ -43,6 +43,7 @@ public class OrderHelper {
     public String selectedOrderId = "";
     private String orderid;
     public String invoiceDisount;
+    int print_count;
 
     private Vector<ProductMasterBO> mSortedOrderedProducts;
     private SparseArray<ArrayList<SerialNoBO>> mSerialNoListByProductid;
@@ -78,20 +79,7 @@ public class OrderHelper {
         this.mSortedOrderedProducts = mSortedList;
     }
 
-    public boolean hasOrder(LinkedList<ProductMasterBO> orderedList) {
 
-        int siz = orderedList.size();
-        if (siz == 0)
-            return false;
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = orderedList.get(i);
-            if (product.getOrderedCaseQty() > 0
-                    || product.getOrderedPcsQty() > 0
-                    || product.getOrderedOuterQty() > 0)
-                return true;
-        }
-        return false;
-    }
 
 
     //Method to check wether stock is available to deliver
@@ -278,8 +266,8 @@ public class OrderHelper {
 
 
 
-    //////////////////////////// Print ////////
-    int print_count;
+   ////////////////////// Print ///////////
+
     public int getPrint_count() {
         return print_count;
     }
@@ -310,14 +298,29 @@ public class OrderHelper {
 
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////Order//////////////////////////////////////////////////////////////
+
+
+    public boolean hasOrder(LinkedList<ProductMasterBO> orderedList) {
+
+        int siz = orderedList.size();
+        if (siz == 0)
+            return false;
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO product = orderedList.get(i);
+            if (product.getOrderedCaseQty() > 0
+                    || product.getOrderedPcsQty() > 0
+                    || product.getOrderedOuterQty() > 0)
+                return true;
+        }
+        return false;
+    }
 
     /**
      * This method will save the Order into Database.
      */
     public void saveOrder(Context mContext) {
         try {
-            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
@@ -555,7 +558,7 @@ public class OrderHelper {
             Vector<ProductMasterBO> finalProductList = new Vector<>();
             columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
-                finalProductList = OrderHelper.getInstance(mContext).getSortedOrderedProducts();
+                finalProductList = getSortedOrderedProducts();
             else
                 finalProductList = businessModel.productHelper.getProductMaster();
 
@@ -831,7 +834,7 @@ public class OrderHelper {
             try {
                 if (!businessModel.configurationMasterHelper.IS_INVOICE)
                     businessModel.getRetailerMasterBO().setVisit_Actual(
-                            (float) getAcheived(mContext,businessModel.retailerMasterBO
+                            (float) getRetailerOrderValue(mContext,businessModel.retailerMasterBO
                                     .getRetailerID()));
             } catch (Exception e) {
                 Commons.printException(e);
@@ -941,7 +944,7 @@ public class OrderHelper {
     }
 
 
-    private double getAcheived(Context mContext,String retailerid) {
+    private double getRetailerOrderValue(Context mContext, String retailerid) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
         double f = 0;
@@ -950,16 +953,10 @@ public class OrderHelper {
             if (businessModel.configurationMasterHelper.IS_INVOICE)
                 c = db.selectSQL("SELECT sum(invNetAmount) FROM InvoiceMaster where retailerid="
                         + retailerid);
-                // c =
-                // db.selectSQL("select  sum(i.invNetAmount) from InvoiceMaster i inner join retailermaster r on "
-                // + " i.retailerid=r.retailerid   where r.istoday=1");
 
             else
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader where retailerid="
-                        + retailerid);
-            // c =
-            // db.selectSQL("select  sum(o.OrderValue) from OrderHeader o inner join retailermaster r on "
-            // + " o.retailerid=r.retailerid   where r.istoday=1");
+                c = db.selectSQL("select sum (OrderValue) from OrderHeader where retailerid="                        + retailerid);
+
 
             if (c != null) {
                 if (c.moveToNext()) {
@@ -974,6 +971,7 @@ public class OrderHelper {
         db.closeDB();
         return f;
     }
+
     /**
      * Check weather order is placed for the particular retailer and its't sync
      * yet or not.
@@ -1027,6 +1025,7 @@ public class OrderHelper {
         }
         return isEdit;
     }
+
 
     /**
      * Date the closingstock header and details table.
@@ -2003,7 +2002,7 @@ public class OrderHelper {
 
             try {
                 businessModel.getRetailerMasterBO().setVisit_Actual(
-                        (float) getAcheived(mContext,businessModel.retailerMasterBO.getRetailerID()));
+                        (float) getRetailerOrderValue(mContext,businessModel.retailerMasterBO.getRetailerID()));
             } catch (Exception e) {
 
                 Commons.printException(e);
