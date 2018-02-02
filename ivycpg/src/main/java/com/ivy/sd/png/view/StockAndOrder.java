@@ -74,7 +74,6 @@ import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
-import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -98,7 +97,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener, ShowRfied1ValueDialog.savePcsValue {
+        BrandDialogInterface, OnEditorActionListener, MOQHighlightDialog.savePcsValue {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -117,7 +116,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String brandbutton;
     private String generalbutton;
     LinearLayout ll_spl_filter, ll_tab_selection;
-    private ShowRfied1ValueDialog mShowRfied1ValueDialog;
+    private MOQHighlightDialog mMOQHighlightDialog;
     private DrawerLayout mDrawerLayout;
     private ViewFlipper viewFlipper;
 
@@ -3932,7 +3931,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.hasOrder()) {
                 //if this config IS_RFIELD1_ENABLED enabled below code will work
                 //and
-                if(bmodel.configurationMasterHelper.IS_RFIELD1_ENABLED) {
+                if(bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
                     int size = bmodel.productHelper
                             .getProductMaster().size();
                     int count = 0;
@@ -3949,7 +3948,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     }
                     if (count > 0) {
-                        new isRfield1Enabled().execute();
+                        new MOQConfigEnabled().execute();
                         count = 0;
                         return;
                     }
@@ -6665,7 +6664,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     }
     //if Rfield1 enabled show this dialog
-    private class isRfield1Enabled extends AsyncTask <Void, Void, Boolean>
+    private class MOQConfigEnabled extends AsyncTask <Void, Void, Boolean>
     {
 
         @Override
@@ -6677,9 +6676,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             super.onPostExecute(aBoolean);
 
                 android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
-                mShowRfied1ValueDialog = new ShowRfied1ValueDialog();
-                mShowRfied1ValueDialog.setCancelable(false);
-                mShowRfied1ValueDialog.show(ft, "Sample Fragment");
+                mMOQHighlightDialog = new MOQHighlightDialog();
+                mMOQHighlightDialog.setCancelable(false);
+                mMOQHighlightDialog.show(ft, "Sample Fragment");
         }
     }
 

@@ -452,8 +452,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_TIME_VIEW;
     public boolean SHOW_SPINNER;
 
-    private static final String CODE_RFIELD1_ENABLED = "FUN64";//change config code
-    public boolean IS_RFIELD1_ENABLED;
+    private static final String CODE_MOQ_ENABLED = "FUN64";//change config code
+    public boolean IS_MOQ_ENABLED;
     private static final String CODE_SHOW_SAO_MIX_PRODUCT = "TARGET_PLAN";//change code
     public boolean IS_SHOW_SAO_MIX_PRODUCT_ENABLED;
     /**
@@ -2182,7 +2182,7 @@ public class ConfigurationMasterHelper {
            loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
-        this.IS_RFIELD1_ENABLED= hashMapHHTModuleConfig.get(CODE_RFIELD1_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_RFIELD1_ENABLED) : false;
+        this.IS_MOQ_ENABLED= hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
         
     }
 

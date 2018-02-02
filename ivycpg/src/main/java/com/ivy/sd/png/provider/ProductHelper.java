@@ -8370,7 +8370,7 @@ public class ProductHelper {
     }
     //If SAO Config enabled this method will be called
     //this method will take ProductId and compair with BomMaster and passes Product name
-    public ArrayList<String> getSkuMixtureConfigEnabled(String productId)
+    public ArrayList<String> getSkuMixtureProductName(String productId)
     {
         ArrayList<String> mBpids = new ArrayList<>();
         ArrayList<String> productShortName=new ArrayList<>();

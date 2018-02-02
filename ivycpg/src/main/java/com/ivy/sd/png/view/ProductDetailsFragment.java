@@ -85,8 +85,8 @@ public class ProductDetailsFragment extends IvyBaseFragment {
         }
         //bmodel.configurationMasterHelper.IS_SHOW_SAO_MIX_PRODUCT_ENABLED &&
         //IS_SHOW_SAO_MIX_PRODUCT_ENABLED this config is enabled show soaMixture Product name
-        if(bmodel.productHelper.getSkuMixtureConfigEnabled(productObj.getProductID())!=null) {
-            ArrayList<String> value = bmodel.productHelper.getSkuMixtureConfigEnabled(productObj.getProductID());
+        if(bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID())!=null) {
+            ArrayList<String> value = bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID());
             rootView.findViewById(R.id.ll_sao_view).setVisibility(View.VISIBLE);
             TextView soaMixtureTitle = (TextView) rootView.findViewById(R.id.sku_mixture_title);
             soaMixtureTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -103,14 +103,14 @@ public class ProductDetailsFragment extends IvyBaseFragment {
                 Commons.printException(e);
             }
 
-            LinearLayout soaMixtureProductName = (LinearLayout) rootView.findViewById(R.id.ll_sao_mixture_product_name);
+            LinearLayout skuMixtureProductName = (LinearLayout) rootView.findViewById(R.id.ll_sku_mixture_product_name);
             for(int i=0;i<value.size();i++) {
                     TextView tv = new TextView(getActivity());
                     tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     tv.setWidth(outMetrics.widthPixels);
                     tv.setText(value.get(i));
                     tv.setId(i);
-                    soaMixtureProductName.addView(tv);
+                    skuMixtureProductName.addView(tv);
             }
         }
         return rootView;

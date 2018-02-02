@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,7 +39,7 @@ import java.util.Vector;
  */
 
 @SuppressLint("ValidFragment")
-public class ShowRfied1ValueDialog extends DialogFragment implements View.OnClickListener {
+public class MOQHighlightDialog extends DialogFragment implements View.OnClickListener {
     private BusinessModel bmodel;
     private Vector<ProductMasterBO> productMstBo;
     private Vector<ProductMasterBO> productBoRfield;
