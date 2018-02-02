@@ -3992,7 +3992,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
-            bmodel.excludeTaxFromSRP();
+            bmodel.productHelper.taxHelper.removeTaxFromPrice();
         }
 
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {

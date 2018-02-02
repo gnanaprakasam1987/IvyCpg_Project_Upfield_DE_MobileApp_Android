@@ -8,18 +8,20 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.TaxBO;
-import com.ivy.sd.png.bo.TaxTempBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import org.w3c.dom.ProcessingInstruction;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 /**
  * Created by mansoor on 17/1/18.
@@ -761,5 +763,72 @@ public class TaxHelper implements TaxInterface{
             Commons.printException(e);
         }
         return taxValue;
+    }
+
+
+    @Override
+    public void removeTaxFromPrice() {
+        try {
+            for (ProductMasterBO productMasterBO : mBusinessModel.productHelper.getProductMaster()) {
+
+                productMasterBO.setOriginalSrp(productMasterBO.getSrp());
+
+                if (productMasterBO.getOrderedCaseQty() > 0
+                        || productMasterBO.getOrderedPcsQty() > 0
+                        || productMasterBO.getOrderedOuterQty() > 0) {
+                    if (productMasterBO.getSrp() > 0) {
+
+                        float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmountInPrice(productMasterBO.getProductID()), 2).floatValue();
+
+                        if (srpWithoutTax > 0)
+                            productMasterBO.setSrp(srpWithoutTax);
+                        else productMasterBO.setSrp(0);
+
+                    }
+                }
+
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+    }
+
+
+    private float getTaxAmountInPrice(String productId) {
+        float taxAmount = 0;
+        try {
+            ProductMasterBO bo = mBusinessModel.productHelper.getProductMasterBOById(productId);
+            if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(productId) != null) {
+                for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(productId)) {
+                    if (taxBO.getParentType().equals("0")) {
+                        taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        return taxAmount;
+    }
+
+    @Override
+    public void applyRemovedTax(LinkedList<ProductMasterBO> mOrderedProductList) {
+
+        for (ProductMasterBO bo : mOrderedProductList) {
+            float finalAmount = 0;
+
+            if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId() != null) {
+                if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
+                    for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
+                        if (taxBO.getParentType().equals("0")) {
+                            finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                        }
+                    }
+                }
+            }
+
+            bo.setDiscount_order_value((bo.getDiscount_order_value() + finalAmount));
+        }
+
     }
 }

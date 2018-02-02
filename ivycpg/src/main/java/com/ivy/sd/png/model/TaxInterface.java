@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 /**
  * Created by mansoor on 18/1/18.
@@ -40,5 +41,11 @@ public interface TaxInterface {
     HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct();
     ArrayList<TaxBO> getBillTaxList();
     LinkedHashMap<Integer, HashSet<Double>> getTaxPercentagerListByGroupId();
+
+
+    //Project specific: Tax should be removed for scheme calculation.
+    void removeTaxFromPrice();
+    //Project specific: Removed tax is applied back to it after scheme calculation finished.
+    void applyRemovedTax(LinkedList<ProductMasterBO> mOrderedProductList);
 
 }

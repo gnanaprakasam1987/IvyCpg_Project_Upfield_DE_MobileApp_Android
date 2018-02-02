@@ -2294,22 +2294,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    private float getTaxAmount(String productId) {
-        float taxAmount = 0;
-        try {
-            ProductMasterBO bo = productHelper.getProductMasterBOById(productId);
-            if (productHelper.taxHelper.getmTaxListByProductId().get(productId) != null) {
-                for (TaxBO taxBO : productHelper.taxHelper.getmTaxListByProductId().get(productId)) {
-                    if (taxBO.getParentType().equals("0")) {
-                        taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-        return taxAmount;
-    }
 
     public void resetSRPvalues() {
         try {

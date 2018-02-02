@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 /**
  * Created by mansoor on 19/1/18.
@@ -890,4 +891,14 @@ public class TaxGstHelper implements TaxInterface {
         return taxValue;
     }
 
+
+    @Override
+    public void removeTaxFromPrice() {
+
+    }
+
+    @Override
+    public void applyRemovedTax(LinkedList<ProductMasterBO> mOrderedProductList) {
+
+    }
 }
