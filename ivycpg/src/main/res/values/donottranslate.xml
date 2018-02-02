@@ -269,5 +269,5 @@
     <string name="edit_piece">EditPieceDialog</string>
     <string name="Please_enter_multipal_of">Please enter multipal of rfield value</string>
     <string name="piece">Piece</string>
-    <string name="multipal_of">Multipal of</string>
+    <string name="multiple_of">Multiple of</string>
 </resources>
