@@ -11,7 +11,7 @@ import android.util.SparseArray;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -55,8 +55,8 @@ public class PrintHelper {
     private String mNhilName = "";
 
     private Bitmap m_bmp;
-    private final ArrayList<BomRetunBo> mEmptyLiaProductsForAdapter = new ArrayList<>();
-    private final ArrayList<BomRetunBo> mEmptyRetProductsForAdapter = new ArrayList<>();
+    private final ArrayList<BomReturnBO> mEmptyLiaProductsForAdapter = new ArrayList<>();
+    private final ArrayList<BomReturnBO> mEmptyRetProductsForAdapter = new ArrayList<>();
     private ArrayList<ProductMasterBO> mProductsForAdapter = new ArrayList<>();
 
     private PrintHelper(Context context) {
@@ -86,7 +86,7 @@ public class PrintHelper {
                 sb.append("T 5 0 200 " + (5 + totalLength));
                 sb.append(" Order Receipt " + "\r\n");
                 sb.append("T 5 0 10 " + (55 + totalLength));
-                sb.append(" Order No :" + orderHelper.getOrderid().replaceAll("\'", "") + "\r\n");
+                sb.append(" Order No :" + orderHelper.getOrderId().replaceAll("\'", "") + "\r\n");
                 sb.append("T 5 0 350 " + (55 + totalLength));
                 sb.append("Date:" + SDUtil.now(SDUtil.DATE_GLOBAL) + "\r\n");
                 sb.append("T 5 0 10 " + (120 + totalLength));
@@ -1352,8 +1352,8 @@ public class PrintHelper {
                         sb.append("Order No:\r\n");
                         sb.append("T 7 0 190 " + hght + " ");
 
-                        if (orderHelper.getOrderid() != null) {
-                            sb.append(orderHelper.getOrderid() + "\r\n");
+                        if (orderHelper.getOrderId() != null) {
+                            sb.append(orderHelper.getOrderId() + "\r\n");
                         } else {
                             sb.append("\r\n");
                         }
@@ -1647,7 +1647,7 @@ public class PrintHelper {
      * set values in product list
      **/
     private void updateEmptiesproducts() {
-        ArrayList<BomRetunBo> mEmptyProducts;
+        ArrayList<BomReturnBO> mEmptyProducts;
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
             mEmptyProducts = bmodel.productHelper
                     .getBomReturnTypeProducts();
@@ -1657,8 +1657,8 @@ public class PrintHelper {
         try {
             double mLiableTot = 0, mRetTot = 0;
             if (mEmptyProducts != null) {
-                Collections.sort(mEmptyProducts, BomRetunBo.SKUWiseAscending);
-                for (BomRetunBo productBO : mEmptyProducts) {
+                Collections.sort(mEmptyProducts, BomReturnBO.SKUWiseAscending);
+                for (BomReturnBO productBO : mEmptyProducts) {
                     if ((productBO.getLiableQty() > 0)) {
                         mEmptyLiaProductsForAdapter.add(productBO);
 
@@ -1670,7 +1670,7 @@ public class PrintHelper {
             }
 
             if (mEmptyProducts != null) {
-                for (BomRetunBo productBO2 : mEmptyProducts) {
+                for (BomReturnBO productBO2 : mEmptyProducts) {
                     if ((productBO2.getReturnQty() > 0)) {
                         mEmptyRetProductsForAdapter.add(productBO2);
                         mRetTot = mRetTot
@@ -2054,7 +2054,7 @@ public class PrintHelper {
                         + x
                         + " --------------------------------------------------\r\n";
 
-                for (BomRetunBo productBO : mEmptyLiaProductsForAdapter) {
+                for (BomReturnBO productBO : mEmptyLiaProductsForAdapter) {
                     if ((productBO.getLiableQty() > 0)) {
                         x += 20;
                         String productname;

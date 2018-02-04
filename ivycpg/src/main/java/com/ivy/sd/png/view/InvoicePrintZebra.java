@@ -179,7 +179,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
         // updateConnectionState();
 
-        mDiscoutnValueTV.setText(orderHelper.invoiceDisount + "%");
+        mDiscoutnValueTV.setText(orderHelper.invoiceDiscount + "%");
         mProducts = bmodel.productHelper.getProductMaster();
 
         if (null == mProducts) {
@@ -364,7 +364,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         }
 
         double discount = (mTotalValue / 100)
-                * SDUtil.convertToFloat(orderHelper.invoiceDisount);
+                * SDUtil.convertToFloat(orderHelper.invoiceDiscount);
 
         mTotalValue = Math.round(mTotalValue);
 
@@ -390,7 +390,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
         sb.delete(0, sb.length());
         f.format("%-15s %15d%%\n", "Discount",
-                (int) SDUtil.convertToFloat(orderHelper.invoiceDisount));
+                (int) SDUtil.convertToFloat(orderHelper.invoiceDiscount));
         mPrintDiscount = sb.toString();
 
         sb.delete(0, sb.length());
@@ -423,7 +423,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
                 bmodel = (BusinessModel) getApplicationContext();
                 bmodel.showAlert(
                         "Order Saved Locally. Order ID is "
-                                + orderHelper.getOrderid(),
+                                + orderHelper.getOrderId(),
                         DataMembers.NOTIFY_UPLOAD_ERROR);
             }
             if (msg.what == 10) {
@@ -431,13 +431,13 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
                 if (isDayClosed) {
                     bmodel = (BusinessModel) getApplicationContext();
                     bmodel.showAlert("Order Saved Locally. Order ID is "
-                                    + orderHelper.getOrderid(),
+                                    + orderHelper.getOrderId(),
                             DataMembers.NOTIFY_UPLOAD_ERROR);
                 } else {
                     bmodel = (BusinessModel) getApplicationContext();
                     bmodel.showAlert(
                             "You are not Closed the Previous day.Order Saved Locally. Order ID is "
-                                    + orderHelper.getOrderid(), 98);
+                                    + orderHelper.getOrderId(), 98);
                 }
 
             }
@@ -446,14 +446,14 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
                 bmodel = (BusinessModel) getApplicationContext();
                 bmodel.showAlert(
                         "Order Saved Locally. Order ID is "
-                                + orderHelper.getOrderid(),
+                                + orderHelper.getOrderId(),
                         DataMembers.NOTIFY_UPLOAD_ERROR);
             }
             if (msg.what == 5) {
                 pd.dismiss();
                 bmodel = (BusinessModel) getApplicationContext();
                 bmodel.showAlert(
-                        "Order Submitted. Order ID is " + orderHelper.getOrderid(),
+                        "Order Submitted. Order ID is " + orderHelper.getOrderId(),
                         DataMembers.NOTIFY_UPLOADED);
             }
         }

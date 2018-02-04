@@ -520,7 +520,7 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + OrderHelper.getInstance(EODStockReportPreviewScreen.this).getOrderid(),
+                                        + OrderHelper.getInstance(EODStockReportPreviewScreen.this).getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         Commons.printException(e + "");

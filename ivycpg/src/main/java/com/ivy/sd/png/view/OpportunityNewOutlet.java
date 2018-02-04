@@ -1171,7 +1171,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                                     .clearOrderTableAndUpdateSIH();
                         }
                         clearData();
-                        OrderHelper.getInstance(OpportunityNewOutlet.this).setmSerialNoListByProductid(null);
+                        OrderHelper.getInstance(OpportunityNewOutlet.this).setSerialNoListByProductId(null);
 
                         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
                             bmodel.productHelper

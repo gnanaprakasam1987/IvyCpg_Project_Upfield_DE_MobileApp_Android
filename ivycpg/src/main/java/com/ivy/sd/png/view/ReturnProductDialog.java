@@ -25,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -40,7 +40,7 @@ public class ReturnProductDialog extends Dialog {
     // Declare Context
     private Context context;
     // List to add values and Show in ListView
-    private ArrayList<BomRetunBo> mylist;
+    private ArrayList<BomReturnBO> mylist;
     // Vairalbes
     private String append = "";
     // Views
@@ -121,7 +121,7 @@ public class ReturnProductDialog extends Dialog {
      */
     private void showListValues() {
         try {
-            ArrayList<BomRetunBo> totalSize = bmodel.productHelper
+            ArrayList<BomReturnBO> totalSize = bmodel.productHelper
                     .getBomReturnProducts();
             // If Total Size is null,Show alert in the Screen
             if (totalSize == null) {
@@ -135,7 +135,7 @@ public class ReturnProductDialog extends Dialog {
             mylist = new ArrayList<>();
             // Add the products into list
             for (int i = 0; i < size; ++i) {
-                BomRetunBo productBo = totalSize.get(i);
+                BomReturnBO productBo = totalSize.get(i);
                 if (bmodel.configurationMasterHelper.CHECK_LIABLE_PRODUCTS) {
                     if (productBo.getLiableQty() > 0)
                         mylist.add(productBo);
@@ -152,7 +152,7 @@ public class ReturnProductDialog extends Dialog {
 
     private void showGroupWiseListValues() {
         try {
-            ArrayList<BomRetunBo> totalSize = bmodel.productHelper
+            ArrayList<BomReturnBO> totalSize = bmodel.productHelper
                     .getBomReturnTypeProducts();
 
             // If Total Size is null,Show alert in the Screen
@@ -166,7 +166,7 @@ public class ReturnProductDialog extends Dialog {
             mylist = new ArrayList<>();
             // Add the products into list
             for (int i = 0; i < size; ++i) {
-                BomRetunBo productBo = totalSize.get(i);
+                BomReturnBO productBo = totalSize.get(i);
                 if (bmodel.configurationMasterHelper.CHECK_LIABLE_PRODUCTS) {
                     if (productBo.getLiableQty() > 0)
                         mylist.add(productBo);
@@ -181,17 +181,17 @@ public class ReturnProductDialog extends Dialog {
         }
     }
 
-    private class ProductAdapter extends ArrayAdapter<BomRetunBo> {
-        private ArrayList<BomRetunBo> items;
+    private class ProductAdapter extends ArrayAdapter<BomReturnBO> {
+        private ArrayList<BomReturnBO> items;
         private Context context;
 
-        public ProductAdapter(Context context, ArrayList<BomRetunBo> mylist) {
+        public ProductAdapter(Context context, ArrayList<BomReturnBO> mylist) {
             super(context, R.layout.dialog_returnproduct_row, mylist);
             this.items = mylist;
             this.context = context;
         }
 
-        public BomRetunBo getItem(int position) {
+        public BomReturnBO getItem(int position) {
             return items.get(position);
         }
 
@@ -322,7 +322,7 @@ public class ReturnProductDialog extends Dialog {
     }
 
     class ViewHolder {
-        BomRetunBo mSKUBO;
+        BomReturnBO mSKUBO;
         TextView tvBarcode, tvSKUName, tvLiableQty;
         EditText etReturnQty;
 

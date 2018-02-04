@@ -193,7 +193,7 @@ public class CS_sale_summary extends IvyBaseActivityNoActionBar implements View.
 
         tv_bill_amount.setText(bmodel.formatValue(totalValue) + "");
 
-        OrderHelper.getInstance(this).invoiceDisount = String.valueOf(mSchemeDiscountedAmountOnBill);
+        OrderHelper.getInstance(this).invoiceDiscount = String.valueOf(mSchemeDiscountedAmountOnBill);
     }
 
     private void updateSchemeDetails() {

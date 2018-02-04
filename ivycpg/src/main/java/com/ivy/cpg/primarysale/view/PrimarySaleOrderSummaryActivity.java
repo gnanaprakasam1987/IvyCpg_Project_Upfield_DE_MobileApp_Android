@@ -424,7 +424,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                         .setTitle(
                                 getResources().getString(
                                         R.string.order_saved_locally_order_id_is)
-                                        + OrderHelper.getInstance(PrimarySaleOrderSummaryActivity.this).getOrderid())
+                                        + OrderHelper.getInstance(PrimarySaleOrderSummaryActivity.this).getOrderId())
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,

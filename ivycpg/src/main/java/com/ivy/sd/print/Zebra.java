@@ -181,7 +181,7 @@ public class Zebra extends IvyBaseActivityNoActionBar {
                         getBaseContext().getResources().getDisplayMetrics());
             }
 
-            mDiscoutnValueTV.setText(OrderHelper.getInstance(this).invoiceDisount + "%");
+            mDiscoutnValueTV.setText(OrderHelper.getInstance(this).invoiceDiscount + "%");
 
             if (null == mProducts) {
                 bmodel.showAlert(

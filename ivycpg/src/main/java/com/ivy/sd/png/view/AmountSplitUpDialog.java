@@ -16,7 +16,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
-public class AmountSplitupDialog extends DialogFragment {
+public class AmountSplitUpDialog extends DialogFragment {
 
     private BusinessModel bmodel;
     View view;

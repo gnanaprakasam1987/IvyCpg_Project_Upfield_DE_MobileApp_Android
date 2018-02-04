@@ -8,7 +8,7 @@ import android.database.SQLException;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
@@ -256,7 +256,7 @@ public class LoadManagementHelper {
             }
 
             if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
-                ArrayList<BomRetunBo> returnProducts;
+                ArrayList<BomReturnBO> returnProducts;
                 String returncolumns = "Uid,Date,Pid,LiableQty,pcsqty,Price, dUomId,TypeID,LineValue,SubDepotId,RefId";
 
                 returnProducts = bmodel.productHelper.getBomReturnProducts();
@@ -264,7 +264,7 @@ public class LoadManagementHelper {
                 String tranId = bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-                for (BomRetunBo bomReturnBo : returnProducts) {
+                for (BomReturnBO bomReturnBo : returnProducts) {
 
                     if (bomReturnBo.getLiableQty() > 0
                             || bomReturnBo.getReturnQty() > 0) {
@@ -411,7 +411,7 @@ public class LoadManagementHelper {
      */
     public void setReturnQty() {
 
-        for (BomRetunBo bom : bmodel.productHelper.getBomReturnProducts()) {
+        for (BomReturnBO bom : bmodel.productHelper.getBomReturnProducts()) {
             bom.setLiableQty(0);
         }
 
@@ -432,7 +432,7 @@ public class LoadManagementHelper {
                                     * sku.getOuterQty());
                         }
 
-                        for (BomRetunBo returnBo : bmodel.productHelper
+                        for (BomReturnBO returnBo : bmodel.productHelper
                                 .getBomReturnProducts()) {
                             if (bomBo.getbPid().equals(returnBo.getPid())) {
                                 returnBo.setLiableQty(returnBo.getLiableQty()
@@ -490,7 +490,7 @@ public class LoadManagementHelper {
             c = db.selectSQL("SELECT Pid,(SUM(QTY)) FROM EmptyReconciliationDetail GROUP BY Pid");
             if (c != null) {
                 while (c.moveToNext()) {
-                    for (BomRetunBo bom : bmodel.productHelper
+                    for (BomReturnBO bom : bmodel.productHelper
                             .getBomReturnProducts()) {
                         if (c.getString(0).equals(bom.getPid())) {
                             bom.setTotalReturnQty(c.getInt(1));
@@ -515,7 +515,7 @@ public class LoadManagementHelper {
 
     public void clearBomReturnProductsTable() {
         try {
-            for (BomRetunBo temp : bmodel.productHelper.getBomReturnProducts()) {
+            for (BomReturnBO temp : bmodel.productHelper.getBomReturnProducts()) {
                 temp.setLiableQty(0);
                 temp.setReturnQty(0);
             }

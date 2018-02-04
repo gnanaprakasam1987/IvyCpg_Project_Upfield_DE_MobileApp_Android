@@ -101,7 +101,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener,
-        StorewiseDiscountDialogFragment.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface,
+        StoreWiseDiscountDialog.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface,
         EmailDialog.onSendButtonClickListnor, OrderConfirmationDialog.OnConfirmationResult {
 
     public static final String DEVICE_NAME = "device_name";
@@ -121,7 +121,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int DIALOG_DELETE_ONLY_ORDER = 5;
     private static final int DIALOG_ORDER_SAVED_WITH_PRINT_OPTION = 2;
     private static final int DIALOG_ORDER_SAVED = 3;
-    private static final int DIALOG_NUMBER_OF_PRINTS =10;
+    private static final int DIALOG_NUMBER_OF_PRINTS_ORDER =10;
+    private static final int DIALOG_NUMBER_OF_PRINTS_INVOICE =11;
     private static final int DIALOG_INVOICE_SAVED =9;
     private static final int DIALOG_SIGNATURE_AVAILABLE =8;
 
@@ -138,11 +139,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private DiscountDialog discountDialog;
     private AlertDialog.Builder build;
     private AlertDialog alertDialog;
-    private AmountSplitupDialog amountSplitupDialog;
+    private AmountSplitUpDialog amountSplitUpDialog;
     private OrderConfirmationDialog orderConfirmationDialog;
     private ReturnProductDialog returnProductDialog;
     private CollectionBeforeInvoiceDialog collectionBeforeInvoiceDialog;
-    private StorewiseDiscountDialogFragment mStoreWiseDiscountDialogFragment;
+    private StoreWiseDiscountDialog mStoreWiseDiscountDialogFragment;
     private BusinessModel BModel;
     private CollectionBO collectionbo;
     private DiscountHelper discountHelper;
@@ -489,7 +490,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }  else if (i1 == R.id.menu_store_wise_discount) {
 
             FragmentManager fm = getSupportFragmentManager();
-            mStoreWiseDiscountDialogFragment = new StorewiseDiscountDialogFragment();
+            mStoreWiseDiscountDialogFragment = new StoreWiseDiscountDialog();
             Bundle bundle = new Bundle();
             bundle.putDouble("totalValue", totalOrderValue);
             bundle.putDouble("enteredDiscAmtOrPercent", enteredDiscAmtOrPercent);
@@ -572,7 +573,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             final PackageManager pm = getPackageManager();
             List<PackageInfo> packs = pm.getInstalledPackages(0);
             for (PackageInfo pack : packs) {
-                if ("calcul".contains(pack.packageName.toLowerCase().toString())) {
+                if ("calcul".contains(pack.packageName.toLowerCase())) {
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("appName", pack.applicationInfo.loadLabel(pm));
                     map.put("packageName", pack.packageName);
@@ -838,7 +839,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (BModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
             mSortedList = new Vector<>();
-            mOrderedProductList=orderHelper.updateOrderListByEntry();
+            mOrderedProductList=orderHelper.organizeProductsByUserEntry();
             mSortedList.addAll(mOrderedProductList);
         }
 
@@ -949,13 +950,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
        double cmyDiscount = cmy_disc + BModel.getRetailerMasterBO().getBillWiseCompanyDiscount();
        double distDiscount = dist_disc + BModel.getRetailerMasterBO().getBillWiseDistributorDiscount();
 
-        if (amountSplitupDialog == null) {
-            amountSplitupDialog = new AmountSplitupDialog();
-            amountSplitupDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        if (amountSplitUpDialog == null) {
+            amountSplitUpDialog = new AmountSplitUpDialog();
+            amountSplitUpDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
 
-                    amountSplitupDialog = null;
+                    amountSplitUpDialog = null;
                 }
             });
             Bundle args = new Bundle();
@@ -963,8 +964,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             args.putDouble("cmy_disc", cmyDiscount);
             args.putDouble("dist_disc", distDiscount);
             args.putDouble("scheme_disc", totalSchemeDiscValue);
-            amountSplitupDialog.setArguments(args);
-            amountSplitupDialog.show(getSupportFragmentManager(), "AmtSplitupDialog");
+            amountSplitUpDialog.setArguments(args);
+            amountSplitUpDialog.show(getSupportFragmentManager(), "AmtSplitupDialog");
         }
 
     }
@@ -1018,7 +1019,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        String delivery_date_txt = "";
+        String delivery_date_txt;
         switch (id) {
 
             case DIALOG_ORDER_SAVED: {
@@ -1035,7 +1036,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.order_saved_locally_order_id_is) + orderHelper.getOrderid())
+                        .setTitle(getResources().getString(R.string.order_saved_locally_order_id_is) + orderHelper.getOrderId())
                         .setMessage((delivery_date_txt.equals("")?"":getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt))
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
@@ -1085,7 +1086,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         .setTitle(
                                 getResources().getString(
                                         R.string.order_saved_locally_order_id_is)
-                                        + orderHelper.getOrderid())
+                                        + orderHelper.getOrderId())
                         .setMessage(delivery_date_txt.equals("")?"":getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt)
                         .setNegativeButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
@@ -1111,7 +1112,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         if (BModel.configurationMasterHelper.SHOW_ZEBRA_TITAN
                                                 || BModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
 
-                                            showDialog(DIALOG_NUMBER_OF_PRINTS);
+                                            showDialog(DIALOG_NUMBER_OF_PRINTS_ORDER);
                                         }
                                         else {
                                             printOrder();
@@ -1243,7 +1244,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         isClick = true;
 
                                         if (BModel.configurationMasterHelper.printCount > 0) {
-                                            showDialog(DIALOG_NUMBER_OF_PRINTS);
+                                            showDialog(DIALOG_NUMBER_OF_PRINTS_INVOICE);
                                         } else {
                                             printInvoice();
                                         }
@@ -1266,7 +1267,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 break;
             }
 
-            case DIALOG_NUMBER_OF_PRINTS: {
+            case DIALOG_NUMBER_OF_PRINTS_ORDER: {
 
                 AlertDialog.Builder builder11 = new AlertDialog.Builder(OrderSummary.this)
                         .setTitle("Print Count")
@@ -1574,7 +1575,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         .loadFreeProductBatchList();
                             }
 
-                            orderHelper.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
+                            orderHelper.invoiceDiscount = Double.toString(enteredDiscAmtOrPercent);
 
                             if (BModel.configurationMasterHelper.IS_INVOICE) {
                                 build = new AlertDialog.Builder(OrderSummary.this);
@@ -1595,7 +1596,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 alertDialog.show();
                             }
                             if (BModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || BModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
-                                orderHelper.getFocusandAndMustSellOrderedProducts(mOrderedProductList);
+                                orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
 
                             //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
@@ -1795,7 +1796,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     alertDialog.show();
                 }
                 if (BModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || BModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
-                    orderHelper.getFocusandAndMustSellOrderedProducts(mOrderedProductList);
+                    orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
                 orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList);
@@ -1809,7 +1810,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 alertDialog = build.create();
                 alertDialog.show();
                 if (BModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || BModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
-                    orderHelper.getFocusandAndMustSellOrderedProducts(mOrderedProductList);
+                    orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
                 if (orderHelper.hasOrder(mOrderedProductList)) {
 
@@ -1821,7 +1822,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
 
 
-                    orderHelper.invoiceDisount = Double.toString(enteredDiscAmtOrPercent);
+                    orderHelper.invoiceDiscount = Double.toString(enteredDiscAmtOrPercent);
 
                     new MyThread(OrderSummary.this,
                             DataMembers.SAVEORDERANDSTOCK).start();
@@ -2403,7 +2404,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             else if (msg.what == DataMembers.NOTIFY_INVOICE_SAVED) {
                 try {
 
-                    orderHelper.getPrintCount(OrderSummary.this);
+                    orderHelper.getPrintedCountForCurrentInvoice(OrderSummary.this);
                     alertDialog.dismiss();
 
 
@@ -2434,7 +2435,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     BModel.showAlert(
                             getResources().getString(
                                     R.string.order_deleted_sucessfully)
-                                    + orderHelper.getOrderid(),
+                                    + orderHelper.getOrderId(),
                             DataMembers.NOTIFY_ORDER_SAVED);
                 } catch (Exception e) {
                     Commons.printException("" + e);
@@ -2498,8 +2499,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         Intent i;
         if (BModel.configurationMasterHelper.SHOW_ZEBRA_TITAN
                 || BModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL
-                || BModel.configurationMasterHelper.SHOW_ZEBRA_GHANA
-                || BModel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
+                ) {
             new Thread(new Runnable() {
                 public void run() {
                     Looper.prepare();
@@ -2758,7 +2758,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         zebraPrinterConnection.write(BModel.printHelper.printDatafor3inchprinterForUnipal(mOrderedProductList, isFromOrder, 1));
                         if (!isFromOrder) {
                             BModel.updatePrintCount(1);
-                            BModel.printHelper.setPrintCnt(orderHelper.getPrintCount(this));
+                            BModel.printHelper.setPrintCnt(orderHelper.getPrintedCountForCurrentInvoice(this));
                         }
                     }
                 } else if (BModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
@@ -2766,7 +2766,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         zebraPrinterConnection.write(BModel.printHelper.printDataforTitan3inchOrderprinter(mOrderedProductList, 0));
                         if (!isFromOrder) {
                             BModel.updatePrintCount(1);
-                            BModel.printHelper.setPrintCnt(orderHelper.getPrintCount(this));
+                            BModel.printHelper.setPrintCnt(orderHelper.getPrintedCountForCurrentInvoice(this));
                         }
                     }
                 } else if (BModel.configurationMasterHelper.SHOW_ZEBRA_GHANA
@@ -2915,7 +2915,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             Properties props = System.getProperties();// new Properties();
 
-            //Configuring properties for gmail
+            //Configuring properties for GMAIL
             props.put("mail.smtp.host", "smtp.gmail.com");
             props.put("mail.smtp.socketFactory.port", "587");
             props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
@@ -2952,7 +2952,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (sendMailAndLoadClass.equalsIgnoreCase("CommonPrintPreviewActivityPRINT_FILE_ORDER") ||
                         sendMailAndLoadClass.equalsIgnoreCase("HomeScreenTwoPRINT_FILE_ORDER")) {
                     source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
-                            StandardListMasterConstants.PRINT_FILE_ORDER + orderHelper.getOrderid() + ".txt");
+                            StandardListMasterConstants.PRINT_FILE_ORDER + orderHelper.getOrderId() + ".txt");
                     bodyPart.setDataHandler(new DataHandler(source));
                     bodyPart.setFileName("OrderDetails" + ".txt");
                 }

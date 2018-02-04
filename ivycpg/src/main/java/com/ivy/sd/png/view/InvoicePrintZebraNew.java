@@ -411,7 +411,7 @@ public class InvoicePrintZebraNew extends Zebra {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + OrderHelper.getInstance(InvoicePrintZebraNew.this).getOrderid(),
+                                        + OrderHelper.getInstance(InvoicePrintZebraNew.this).getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -531,7 +531,7 @@ public class InvoicePrintZebraNew extends Zebra {
                 bmodel.setOrderHeaderBO(ord);
 
                 if (bmodel.hasOrder()) {
-                    OrderHelper.getInstance(this).invoiceDisount = "0";
+                    OrderHelper.getInstance(this).invoiceDiscount = "0";
                     if (bmodel.configurationMasterHelper.IS_INVOICE) {
                         /*pd = ProgressDialog.show(
                                 InvoicePrintZebraNew.this,

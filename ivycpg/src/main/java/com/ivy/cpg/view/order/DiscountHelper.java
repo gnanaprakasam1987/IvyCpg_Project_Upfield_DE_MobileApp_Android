@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by rajkumar on 29/1/18.
@@ -988,7 +987,7 @@ public class DiscountHelper {
                                                 totalSchemeDiscountValue=totalPercentageDiscount;
                                             } else if (schemeBO
                                                     .isQuantityTypeSelected()) {
-                                                orderHelper.updateSchemeFreeproduct(schemeBO,productBO);
+                                                orderHelper.updateSchemeFreeProduct(schemeBO,productBO);
                                                 break;
                                             }
                                         } else {
@@ -996,7 +995,7 @@ public class DiscountHelper {
                                                 // if  Accumulation scheme's buy product not avaliable, free product set in First order product object
                                                 if (i == schemeproductList.size() && !isBuyProductAvailable) {
                                                     ProductMasterBO firstProductBO = mOrderedList.get(0);
-                                                    orderHelper.updateSchemeFreeproduct(schemeBO,firstProductBO);
+                                                    orderHelper.updateSchemeFreeProduct(schemeBO,firstProductBO);
                                                 }
                                             }
                                         }

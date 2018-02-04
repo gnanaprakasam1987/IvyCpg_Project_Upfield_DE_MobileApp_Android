@@ -240,7 +240,7 @@ public class DistributorMasterHelper {
 
             // ClosingStock Detail entry
             columns = "UId,PId,BatchId,Upload,UomId,UomCount,Qty,Price,LineValue";
-            OrderHelper.getInstance(context).setOrderid(id);
+            OrderHelper.getInstance(context).setOrderId(id);
             int siz = bmodel.productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
                 product = bmodel.productHelper.getProductMaster().elementAt(i);

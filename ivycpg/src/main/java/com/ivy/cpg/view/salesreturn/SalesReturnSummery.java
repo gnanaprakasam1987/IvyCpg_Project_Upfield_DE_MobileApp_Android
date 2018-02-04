@@ -560,7 +560,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Void... params) {
 
             if (!salesReturnHelper.IS_APPLY_DISCOUNT_IN_SR) {
-                OrderHelper.getInstance(SalesReturnSummery.this).invoiceDisount = "0";
+                OrderHelper.getInstance(SalesReturnSummery.this).invoiceDiscount = "0";
                 DiscountHelper.getInstance(SalesReturnSummery.this).getBillWiseDiscountList().clear();
             }
 

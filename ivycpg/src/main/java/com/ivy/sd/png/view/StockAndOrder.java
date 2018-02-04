@@ -4095,7 +4095,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     .clearOrderTableAndUpdateSIH();
                         }
                         bmodel.productHelper.clearOrderTable();
-                        orderHelper.setmSerialNoListByProductid(null);
+                        orderHelper.setSerialNoListByProductId(null);
 
                         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
                             bmodel.productHelper

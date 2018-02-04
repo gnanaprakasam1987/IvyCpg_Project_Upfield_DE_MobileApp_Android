@@ -18,7 +18,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -31,7 +31,6 @@ import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
-import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWsieDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -42,7 +41,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -3270,9 +3268,9 @@ public class ProductHelper {
     }
 
 
-    private ArrayList<BomRetunBo> bomReturnProducts;
+    private ArrayList<BomReturnBO> bomReturnProducts;
     private ArrayList<BomMasterBO> bomMaster;
-    private ArrayList<BomRetunBo> bomReturnTypeProducts;
+    private ArrayList<BomReturnBO> bomReturnTypeProducts;
 
     /**
      * Download the isReturnable products and its Quantity from ProductMaster
@@ -3301,9 +3299,9 @@ public class ProductHelper {
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
-                bomReturnProducts = new ArrayList<BomRetunBo>();
+                bomReturnProducts = new ArrayList<BomReturnBO>();
                 while (c.moveToNext()) {
-                    BomRetunBo bomMasterBO = new BomRetunBo();
+                    BomReturnBO bomMasterBO = new BomReturnBO();
                     bomMasterBO.setPid(c.getString(0));
                     bomMasterBO.setParentID(c.getInt(1));
                     bomMasterBO.setProductName(c.getString(2));
@@ -3408,12 +3406,12 @@ public class ProductHelper {
      */
     public void setReturnQty() {
 
-        for (BomRetunBo bom : getBomReturnProducts()) {
+        for (BomReturnBO bom : getBomReturnProducts()) {
             bom.setLiableQty(0);
             bom.setReturnQty(0);
         }
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
-            for (BomRetunBo bom : getBomReturnTypeProducts()) {
+            for (BomReturnBO bom : getBomReturnTypeProducts()) {
                 bom.setLiableQty(0);
                 // bom.setReturnQty(0);
             }
@@ -3442,7 +3440,7 @@ public class ProductHelper {
                                     + sku.getCrownOrderedCaseQty() + sku
                                     .getFreeCaseQty()));
 
-                        for (BomRetunBo returnBo : getBomReturnProducts()) {
+                        for (BomReturnBO returnBo : getBomReturnProducts()) {
                             if (bomBo.getbPid().equals(returnBo.getPid())) {
                                 returnBo.setLiableQty(returnBo.getLiableQty()
                                         + bomBo.getTotalQty());
@@ -3466,7 +3464,7 @@ public class ProductHelper {
         try {
             double balance = 0;
 
-            for (BomRetunBo bomReturnBo : getBomReturnProducts()) {
+            for (BomReturnBO bomReturnBo : getBomReturnProducts()) {
                 balance = balance
                         + ((bomReturnBo.getLiableQty() - bomReturnBo
                         .getReturnQty()) * bomReturnBo.getpSrp());
@@ -3487,7 +3485,7 @@ public class ProductHelper {
         try {
             double balance = 0;
 
-            for (BomRetunBo bomReturnBo : getBomReturnTypeProducts()) {
+            for (BomReturnBO bomReturnBo : getBomReturnTypeProducts()) {
                 balance = balance
                         + ((bomReturnBo.getLiableQty() - bomReturnBo
                         .getReturnQty()) * bomReturnBo.getpSrp());
@@ -3527,7 +3525,7 @@ public class ProductHelper {
             }
             cursor.close();
 
-            ArrayList<BomRetunBo> returnProducts = null;
+            ArrayList<BomReturnBO> returnProducts = null;
             String returncolumns = "OrderID,Pid,LiableQty,ReturnQty,Qty,Price, UomID,TypeID,LineValue,RetailerID";
             if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
                 returnProducts = bmodel.productHelper
@@ -3537,7 +3535,7 @@ public class ProductHelper {
 
             }
             String pid;
-            for (BomRetunBo bomReturnBo : returnProducts) {
+            for (BomReturnBO bomReturnBo : returnProducts) {
 
                 if (bomReturnBo.getLiableQty() > 0
                         || bomReturnBo.getReturnQty() > 0) {
@@ -3798,9 +3796,9 @@ public class ProductHelper {
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
-                bomReturnTypeProducts = new ArrayList<BomRetunBo>();
+                bomReturnTypeProducts = new ArrayList<BomReturnBO>();
                 while (c.moveToNext()) {
-                    BomRetunBo bomMasterBO = new BomRetunBo();
+                    BomReturnBO bomMasterBO = new BomReturnBO();
                     bomMasterBO.setPid(c.getString(0));
                     bomMasterBO.setProductName(c.getString(1));
                     bomMasterBO.setProductShortName(c.getString(2));
@@ -3829,11 +3827,11 @@ public class ProductHelper {
         try {
             int total;
 
-            for (BomRetunBo groupWiseProducts : bmodel.productHelper
+            for (BomReturnBO groupWiseProducts : bmodel.productHelper
                     .getBomReturnTypeProducts()) {
                 total = 0;
 
-                for (BomRetunBo bomReturnProducts : bmodel.productHelper
+                for (BomReturnBO bomReturnProducts : bmodel.productHelper
                         .getBomReturnProducts()) {
 
                     if (groupWiseProducts.getPid().equals(
@@ -3901,12 +3899,12 @@ public class ProductHelper {
 
     public void clearBomReturnProductsTable() {
         try {
-            for (BomRetunBo temp : getBomReturnProducts()) {
+            for (BomReturnBO temp : getBomReturnProducts()) {
                 temp.setLiableQty(0);
                 temp.setReturnQty(0);
             }
             if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
-                for (BomRetunBo temp : getBomReturnTypeProducts()) {
+                for (BomReturnBO temp : getBomReturnTypeProducts()) {
                     temp.setLiableQty(0);
                     temp.setReturnQty(0);
                 }
@@ -4044,7 +4042,7 @@ public class ProductHelper {
      */
     public void saveReturnDetails(String uid, int flag, DBUtil db) {
 
-        ArrayList<BomRetunBo> returnProducts = null;
+        ArrayList<BomReturnBO> returnProducts = null;
         String tableName = "";
         String returncolumns = "";
         if (flag == 1) {
@@ -4063,7 +4061,7 @@ public class ProductHelper {
 
         }
         String pid;
-        for (BomRetunBo bomReturnBo : returnProducts) {
+        for (BomReturnBO bomReturnBo : returnProducts) {
             StringBuffer sb = new StringBuffer();
             if (bomReturnBo.getLiableQty() > 0
                     || bomReturnBo.getReturnQty() > 0) {
@@ -4221,7 +4219,7 @@ public class ProductHelper {
 
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    for (BomRetunBo bomReturnBo : getBomReturnTypeProducts()) {
+                    for (BomReturnBO bomReturnBo : getBomReturnTypeProducts()) {
                         if (bomReturnBo.getLiableQty() > 0
                                 || bomReturnBo.getReturnQty() > 0) {
                             String pid = cursor.getString(0);
@@ -4238,7 +4236,7 @@ public class ProductHelper {
                 }
                 cursor.close();
             } else {
-                for (BomRetunBo bomReturnBo : getBomReturnTypeProducts()) {
+                for (BomReturnBO bomReturnBo : getBomReturnTypeProducts()) {
 
                     values = bomReturnBo.getTypeId() + ","
                             + bomReturnBo.getReturnQty();
@@ -4268,7 +4266,7 @@ public class ProductHelper {
 
             if (cur != null) {
                 while (cur.moveToNext()) {
-                    for (BomRetunBo product : getBomReturnProducts()) {
+                    for (BomReturnBO product : getBomReturnProducts()) {
 
                         if (product.getPid().equals(cur.getString(0))) {
                             product.setTypeId(cur.getString(1));
@@ -4366,7 +4364,7 @@ public class ProductHelper {
 
     }
 
-    public ArrayList<BomRetunBo> getBomReturnProducts() {
+    public ArrayList<BomReturnBO> getBomReturnProducts() {
         return bomReturnProducts;
     }
 
@@ -4374,7 +4372,7 @@ public class ProductHelper {
         return bomMaster;
     }
 
-    public ArrayList<BomRetunBo> getBomReturnTypeProducts() {
+    public ArrayList<BomReturnBO> getBomReturnTypeProducts() {
         return bomReturnTypeProducts;
     }
 
@@ -6007,7 +6005,7 @@ public class ProductHelper {
 
 
     public void updateSchemeAndDiscAndTaxValue(DBUtil db, String invoiceid) {
-        OrderHelper.getInstance(mContext).invoiceDisount = 0 + "";
+        OrderHelper.getInstance(mContext).invoiceDiscount = 0 + "";
 
         double totDiscVaue = 0;
         double totSchemeAmountValue = 0;
@@ -6045,7 +6043,7 @@ public class ProductHelper {
             while (c.moveToNext()) {
                 double billWiseDisc = c.getDouble(0);
                 totDiscVaue = totDiscVaue + billWiseDisc;
-                OrderHelper.getInstance(mContext).invoiceDisount = billWiseDisc + "";
+                OrderHelper.getInstance(mContext).invoiceDiscount = billWiseDisc + "";
             }
         }
         sb = new StringBuffer();
@@ -6055,12 +6053,12 @@ public class ProductHelper {
         db.updateSQL(sb.toString());
 
         c.close();
-        OrderHelper.getInstance(mContext).invoiceDisount = totDiscVaue + "";
+        OrderHelper.getInstance(mContext).invoiceDiscount = totDiscVaue + "";
 
     }
 
     public void updateBillWiseDiscountInObj(String invoiceid) {
-        OrderHelper.getInstance(mContext).invoiceDisount = 0 + "";
+        OrderHelper.getInstance(mContext).invoiceDiscount = 0 + "";
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -6072,7 +6070,7 @@ public class ProductHelper {
             while (c.moveToNext()) {
                 double billWiseDisc = c.getDouble(0);
 
-                OrderHelper.getInstance(mContext).invoiceDisount = billWiseDisc + "";
+                OrderHelper.getInstance(mContext).invoiceDiscount = billWiseDisc + "";
             }
         }
         c.close();

@@ -232,7 +232,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                 findViewById(R.id.outerprice).setVisibility(View.GONE);
                 findViewById(R.id.outerpricearabic).setVisibility(View.GONE);
             }
-            storediscount = orderHelper.invoiceDisount;
+            storediscount = orderHelper.invoiceDiscount;
         } catch (Exception e1) {
             Commons.printException("" + e1);
         }

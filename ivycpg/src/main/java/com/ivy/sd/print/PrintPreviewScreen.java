@@ -180,8 +180,8 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
             // Used to hide the app logo icon from actionbar
             // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
-            storediscount = orderHelper.invoiceDisount;
-            Commons.print("discount" + orderHelper.invoiceDisount + " "
+            storediscount = orderHelper.invoiceDiscount;
+            Commons.print("discount" + orderHelper.invoiceDiscount + " "
                     + bmodel.configurationMasterHelper.discountType);
         } catch (Exception e1) {
             Commons.printException("" + e1);
@@ -954,7 +954,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + orderHelper.getOrderid(),
+                                        + orderHelper.getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception

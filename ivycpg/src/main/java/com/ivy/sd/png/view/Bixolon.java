@@ -222,7 +222,7 @@ public class Bixolon extends IvyBaseActivityNoActionBar {
             if (bmodel.configurationMasterHelper.discountType == 0)
                 discount = 0;
             else
-                discount = SDUtil.convertToDouble(orderHelper.invoiceDisount);
+                discount = SDUtil.convertToDouble(orderHelper.invoiceDiscount);
             mDiscoutnValueTV
                     .setText(bmodel.formatValue(discount)
                             + " "
@@ -270,7 +270,7 @@ public class Bixolon extends IvyBaseActivityNoActionBar {
             mOutletName = bmodel.getRetailerMasterBO().getRetailerName();
             mRetailerAddress = bmodel.getRetailerMasterBO().getAddress1();
 
-            mOrderId = OrderHelper.getInstance(this).getOrderid();
+            mOrderId = OrderHelper.getInstance(this).getOrderId();
             mInvoiceNumber = getInvoiceNumber(mOrderId);
             Commons.print("orderid" + mOrderId + " invoicenum" + mInvoiceNumber);
             mSellerName.setText(bmodel.userMasterHelper.getUserMasterBO()

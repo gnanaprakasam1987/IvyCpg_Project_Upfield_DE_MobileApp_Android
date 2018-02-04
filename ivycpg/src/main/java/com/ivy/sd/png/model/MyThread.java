@@ -505,7 +505,7 @@ public class MyThread extends Thread {
                 //bmodel.updateStockinHandMaster();
 
 
-                orderHelper.saveNewInvoice(ctx);
+                orderHelper.saveInvoice(ctx);
             }
 
             bmodel.setRField1("");

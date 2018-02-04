@@ -1580,7 +1580,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                     .clearOrderTableAndUpdateSIH();
                         }
                         bmodel.productHelper.clearOrderTable();
-                        OrderHelper.getInstance(OrderNewOutlet.this).setmSerialNoListByProductid(null);
+                        OrderHelper.getInstance(OrderNewOutlet.this).setSerialNoListByProductId(null);
 
                         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
                             bmodel.productHelper

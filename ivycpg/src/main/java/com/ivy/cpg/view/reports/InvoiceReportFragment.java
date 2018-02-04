@@ -448,7 +448,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA) {
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
-                    orderHelper.setOrderid(inv.getOrderID());
+                    orderHelper.setOrderId(inv.getOrderID());
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
                       businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(),mRetailerId);
@@ -483,7 +483,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     businessModel.productHelper.updateBillWiseDiscountInObj(mInvoiceId);
 
 
-                    orderHelper.setOrderid(inv.getOrderID());
+                    orderHelper.setOrderId(inv.getOrderID());
                 }
 
 

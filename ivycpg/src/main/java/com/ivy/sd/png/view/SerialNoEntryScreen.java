@@ -201,7 +201,7 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
         mScannedQtyTV = (TextView) findViewById(R.id.tv_total_scanned);
         mProductNameTV = (TextView) findViewById(R.id.tv_product_name);
         mSerialNoLV = (ListView) findViewById(R.id.lv_serialno_enty);
-        mSerialNoListByPid = OrderHelper.getInstance(SerialNoEntryScreen.this).getSerialNoListByProductid();
+        mSerialNoListByPid = OrderHelper.getInstance(SerialNoEntryScreen.this).getSerialNoListByProductId();
 
 
     }
@@ -283,7 +283,7 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
             serialNoBO.setScannedQty(0);
             mSerialNoList.add(serialNoBO);
         }
-        OrderHelper.getInstance(SerialNoEntryScreen.this).setmSerialNoListByProductid(mSerialNoListByPid);
+        OrderHelper.getInstance(SerialNoEntryScreen.this).setSerialNoListByProductId(mSerialNoListByPid);
 
 
         mAdapter = new MyAdapter();
@@ -544,7 +544,7 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
         } else if (i == R.id.menu_next) {
 
             mSerialNoListByPid.put(mProductID, mSerialNoList);
-            OrderHelper.getInstance(SerialNoEntryScreen.this).setmSerialNoListByProductid(mSerialNoListByPid);
+            OrderHelper.getInstance(SerialNoEntryScreen.this).setSerialNoListByProductId(mSerialNoListByPid);
             if (!OrderHelper.getInstance(this).isAllScanned()) {
                 Toast.makeText(this, getResources().getString(R.string.mismatch_scanned_products), Toast.LENGTH_SHORT).show();
                 return true;
@@ -615,7 +615,7 @@ public class SerialNoEntryScreen extends IvyBaseActivityNoActionBar implements S
         @Override
         protected String doInBackground(String... params) {
 
-            OrderHelper.getInstance(SerialNoEntryScreen.this).saveSerialNoTemp();
+            OrderHelper.getInstance(SerialNoEntryScreen.this).saveSerialNoTemp(SerialNoEntryScreen.this);
             return "";
         }
 

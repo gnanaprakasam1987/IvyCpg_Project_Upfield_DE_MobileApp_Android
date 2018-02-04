@@ -199,7 +199,7 @@ public class BixolonIPrint extends Bixolon {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + OrderHelper.getInstance(BixolonIPrint.this).getOrderid(),
+                                        + OrderHelper.getInstance(BixolonIPrint.this).getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception

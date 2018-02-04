@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +35,7 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -44,7 +43,6 @@ import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -59,10 +57,6 @@ import com.zebra.sdk.printer.ZebraPrinterFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -78,9 +72,9 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
     private Vector<ProductMasterBO> mProducts = new Vector<ProductMasterBO>();
     private ArrayList<ProductMasterBO> mProductsForAdapter = new ArrayList<ProductMasterBO>();
-    private ArrayList<BomRetunBo> mEmptyProducts = new ArrayList<BomRetunBo>();
-    private ArrayList<BomRetunBo> mEmptyLiaProductsForAdapter = new ArrayList<BomRetunBo>();
-    private ArrayList<BomRetunBo> mEmptyRetProductsForAdapter = new ArrayList<BomRetunBo>();
+    private ArrayList<BomReturnBO> mEmptyProducts = new ArrayList<BomReturnBO>();
+    private ArrayList<BomReturnBO> mEmptyLiaProductsForAdapter = new ArrayList<BomReturnBO>();
+    private ArrayList<BomReturnBO> mEmptyRetProductsForAdapter = new ArrayList<BomReturnBO>();
     private ArrayList<TaxBO> mTax = new ArrayList<TaxBO>();
     private ImageView imagevw;
     private boolean IsFromOrder, IsFromReport, IsOriginal;
@@ -198,8 +192,8 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
             // Used to hide the app logo icon from actionbar
             // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
-            storediscount = orderHelper.invoiceDisount;
-            Commons.print("discount" + orderHelper.invoiceDisount + " "
+            storediscount = orderHelper.invoiceDiscount;
+            Commons.print("discount" + orderHelper.invoiceDiscount + " "
                     + bmodel.configurationMasterHelper.discountType);
         } catch (Exception e1) {
             Commons.printException("" + e1);
@@ -722,8 +716,8 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
             mEmpProductContainerLL.removeAllViews();
             LayoutInflater inflater = getLayoutInflater();
             if (mEmptyProducts != null) {
-                Collections.sort(mEmptyProducts, BomRetunBo.SKUWiseAscending);
-                for (BomRetunBo productBO : mEmptyProducts) {
+                Collections.sort(mEmptyProducts, BomReturnBO.SKUWiseAscending);
+                for (BomReturnBO productBO : mEmptyProducts) {
                     if ((productBO.getLiableQty() > 0)) {
                         mEmptyLiaProductsForAdapter.add(productBO);
                         totalEmp = (productBO.getLiableQty() * productBO
@@ -759,7 +753,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                 }
             }
 
-            for (BomRetunBo productBO2 : mEmptyProducts) {
+            for (BomReturnBO productBO2 : mEmptyProducts) {
                 if ((productBO2.getReturnQty() > 0)) {
                     mEmptyRetProductsForAdapter.add(productBO2);
                     totalEmp = (productBO2.getReturnQty() * productBO2
@@ -1030,7 +1024,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + orderHelper.getOrderid(),
+                                        + orderHelper.getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -1478,7 +1472,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                         + " --------------------------------------------------\r\n";
 
                 x += 40;
-                for (BomRetunBo productBO : mEmptyLiaProductsForAdapter) {
+                for (BomReturnBO productBO : mEmptyLiaProductsForAdapter) {
                     if ((productBO.getLiableQty() > 0)) {
                         x += 20;
 						/*
@@ -1526,7 +1520,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                     }
 
                 }
-                for (BomRetunBo productBO2 : mEmptyRetProductsForAdapter) {
+                for (BomReturnBO productBO2 : mEmptyRetProductsForAdapter) {
                     if ((productBO2.getReturnQty() > 0)) {
                         x += 20;
 						/*
@@ -1909,7 +1903,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                         + " --------------------------------------------------\r\n";
 
                 x += 40;
-                for (BomRetunBo productBO : mEmptyLiaProductsForAdapter) {
+                for (BomReturnBO productBO : mEmptyLiaProductsForAdapter) {
                     if ((productBO.getLiableQty() > 0)) {
                         x += 20;
                         Printitem += "T 5 0 20 " + x + " "
@@ -1938,7 +1932,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                     }
 
                 }
-                for (BomRetunBo productBO2 : mEmptyRetProductsForAdapter) {
+                for (BomReturnBO productBO2 : mEmptyRetProductsForAdapter) {
                     if ((productBO2.getReturnQty() > 0)) {
                         x += 20;
                         Printitem += "T 5 0 20 " + x + " "

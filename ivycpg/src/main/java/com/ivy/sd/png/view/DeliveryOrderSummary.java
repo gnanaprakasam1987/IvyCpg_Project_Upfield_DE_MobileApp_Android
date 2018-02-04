@@ -122,7 +122,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                 if (!isPartialOrder) {
                     // bmodel.saveDeliveryOrderInvoice();
                     orderHelper.saveOrder(DeliveryOrderSummary.this);
-                    orderHelper.saveNewInvoice(DeliveryOrderSummary.this);
+                    orderHelper.saveInvoice(DeliveryOrderSummary.this);
                 }
                 orderHelper.insertDeliveryOrderRecord(DeliveryOrderSummary.this,isPartialOrder);
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_DELIVERY_ORDER);
@@ -489,7 +489,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                             } else if (schemeBO
                                                     .isQuantityTypeSelected()) {
                                                 // no need to show free products here..
-                                              /*  updateSchemeFreeproduct(schemeBO,
+                                              /*  updateSchemeFreeProduct(schemeBO,
                                                         productBO);*/
                                                 break;
                                             }
@@ -499,7 +499,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                 // if  Accumulation scheme's buy product not avaliable, free product set in First order product object
                                                 if (i == schemeproductList.size() && !isBuyProductAvailable) {
                                                     ProductMasterBO firstProductBO = mOrderedProductList.get(0);
-                                                    updateSchemeFreeproduct(schemeBO,
+                                                    updateSchemeFreeProduct(schemeBO,
                                                             firstProductBO);
                                                 }
                                             }*/

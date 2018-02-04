@@ -29,7 +29,7 @@ import android.widget.TextView;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -75,10 +75,10 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private LinearLayout mTaxLayout, mProductContainerLL,
             mEmpProductContainerLL;
     private Vector<ProductMasterBO> mProducts = new Vector<ProductMasterBO>();
-    private ArrayList<BomRetunBo> mEmptyProducts = new ArrayList<BomRetunBo>();
+    private ArrayList<BomReturnBO> mEmptyProducts = new ArrayList<BomReturnBO>();
     private ArrayList<ProductMasterBO> mProductsForAdapter = new ArrayList<ProductMasterBO>();
-    private ArrayList<BomRetunBo> mEmptyLiaProductsForAdapter = new ArrayList<BomRetunBo>();
-    private ArrayList<BomRetunBo> mEmptyRetProductsForAdapter = new ArrayList<BomRetunBo>();
+    private ArrayList<BomReturnBO> mEmptyLiaProductsForAdapter = new ArrayList<BomReturnBO>();
+    private ArrayList<BomReturnBO> mEmptyRetProductsForAdapter = new ArrayList<BomReturnBO>();
 
     private double vatPercentage = 0, nhlPercentage = 0;
     private double mCaseTotalValue = 0, mPcTotalValue = 0, mEmpTotalValue = 0,
@@ -513,8 +513,8 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
             mEmpProductContainerLL.removeAllViews();
             LayoutInflater inflater = getLayoutInflater();
             if (mEmptyProducts != null) {
-                //Collections.sort(mEmptyProducts, BomRetunBo.SKUWiseAscending);
-                for (BomRetunBo productBO : mEmptyProducts) {
+                //Collections.sort(mEmptyProducts, BomReturnBO.SKUWiseAscending);
+                for (BomReturnBO productBO : mEmptyProducts) {
                     if ((productBO.getLiableQty() > 0)) {
                         mEmptyLiaProductsForAdapter.add(productBO);
                         totalEmp = (productBO.getLiableQty() * productBO
@@ -548,7 +548,7 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                 }
             }
 
-            for (BomRetunBo productBO2 : mEmptyProducts) {
+            for (BomReturnBO productBO2 : mEmptyProducts) {
                 if ((productBO2.getReturnQty() > 0)) {
                     mEmptyRetProductsForAdapter.add(productBO2);
                     totalEmp = (productBO2.getReturnQty() * productBO2
@@ -614,7 +614,7 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + OrderHelper.getInstance(GhanaPrintPreviewActivity.this).getOrderid(),
+                                        + OrderHelper.getInstance(GhanaPrintPreviewActivity.this).getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         Commons.printException(e);
@@ -1189,7 +1189,7 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
                 }
                 x += 30;
-                for (BomRetunBo productBO : mEmptyLiaProductsForAdapter) {
+                for (BomReturnBO productBO : mEmptyLiaProductsForAdapter) {
 
                     if ((productBO.getLiableQty() > 0)) {
                         x += 20;
@@ -1244,7 +1244,7 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                     }
 
                 }
-                for (BomRetunBo productBO2 : mEmptyRetProductsForAdapter) {
+                for (BomReturnBO productBO2 : mEmptyRetProductsForAdapter) {
                     if ((productBO2.getReturnQty() > 0)) {
                         x += 20;
 

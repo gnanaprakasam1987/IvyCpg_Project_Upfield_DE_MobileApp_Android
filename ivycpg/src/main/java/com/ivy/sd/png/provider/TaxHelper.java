@@ -14,8 +14,6 @@ import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
-import org.w3c.dom.ProcessingInstruction;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -749,7 +747,7 @@ public class TaxHelper implements TaxInterface{
             StringBuffer sb = new StringBuffer();
             if (isOrder) {
                 sb.append("select sum(taxValue) from OrderTaxDetails ");
-                sb.append("where orderid=" + OrderHelper.getInstance(mContext).getOrderid());
+                sb.append("where orderid=" + OrderHelper.getInstance(mContext).getOrderId());
             } else {
                 sb.append("select sum(taxValue) from InvoiceTaxDetails ");
                 sb.append("where invoiceid=" + mBusinessModel.QT(mBusinessModel.invoiceNumber));

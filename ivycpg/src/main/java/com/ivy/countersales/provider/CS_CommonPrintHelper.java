@@ -6,7 +6,7 @@ import android.util.SparseArray;
 
 import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -591,7 +591,7 @@ public class CS_CommonPrintHelper  {
             if (mKeyValues != null)
                 value = label + mKeyValues.get(TAG_KEY2);
         } else if (tag.equalsIgnoreCase(TAG_ORDER_NUMBER)) {
-            value = label + orderHelper.getOrderid().replaceAll("\'", "");
+            value = label + orderHelper.getOrderId().replaceAll("\'", "");
         }
 
         return value;
@@ -1359,7 +1359,7 @@ public class CS_CommonPrintHelper  {
      */
     private void getBillLevelDiscount() {
 
-        double discount = SDUtil.convertToDouble(orderHelper.invoiceDisount);
+        double discount = SDUtil.convertToDouble(orderHelper.invoiceDiscount);
 
         mBillLevelDiscountValue = discount;
     }
@@ -1448,7 +1448,7 @@ public class CS_CommonPrintHelper  {
 
     private void getEmptyReturnValue() {
 
-        ArrayList<BomRetunBo> mEmptyProducts;
+        ArrayList<BomReturnBO> mEmptyProducts;
         double totalEmp = 0;
 
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
@@ -1458,8 +1458,8 @@ public class CS_CommonPrintHelper  {
             mEmptyProducts = bmodel.productHelper.getBomReturnProducts();
 
         if (mEmptyProducts != null && mEmptyProducts.size() > 0) {
-            Collections.sort(mEmptyProducts, BomRetunBo.SKUWiseAscending);
-            for (BomRetunBo productBO : mEmptyProducts) {
+            Collections.sort(mEmptyProducts, BomReturnBO.SKUWiseAscending);
+            for (BomReturnBO productBO : mEmptyProducts) {
                 totalEmp = (productBO.getLiableQty() * productBO.getpSrp()) - (productBO.getReturnQty() * productBO.getpSrp());
                 mEmptyTotalValue = mEmptyTotalValue + totalEmp;
             }
@@ -1476,7 +1476,7 @@ public class CS_CommonPrintHelper  {
 
         sb.append("\n");
 
-        ArrayList<BomRetunBo> mEmptyProducts;
+        ArrayList<BomReturnBO> mEmptyProducts;
         //double totalEmp = 0 , mLiableTot = 0, mReturnTot = 0;
 
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
@@ -1490,11 +1490,11 @@ public class CS_CommonPrintHelper  {
 
             //sb.append("\n");
 
-            Collections.sort(mEmptyProducts, BomRetunBo.SKUWiseAscending);
+            Collections.sort(mEmptyProducts, BomReturnBO.SKUWiseAscending);
             String mProductValue = "";
 
             //Liable
-            for (BomRetunBo prod : mEmptyProducts) {
+            for (BomReturnBO prod : mEmptyProducts) {
                 if ((prod.getLiableQty() > 0)) {
                     for (CS_CommonPrintHelper.AttributeListBO attr : mAttrList) {
                         mProductValue = "";
@@ -1527,7 +1527,7 @@ public class CS_CommonPrintHelper  {
                 }
             }
 
-            for (BomRetunBo prod : mEmptyProducts) {
+            for (BomReturnBO prod : mEmptyProducts) {
                 if ((prod.getReturnQty() > 0)) {
                     for (CS_CommonPrintHelper.AttributeListBO attr : mAttrList) {
                         mProductValue = "";

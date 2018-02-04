@@ -875,7 +875,7 @@ public class TaxGstHelper implements TaxInterface {
             StringBuffer sb = new StringBuffer();
             if (isOrder) {
                 sb.append("select sum(taxValue) from OrderTaxDetails ");
-                sb.append("where orderid=" + OrderHelper.getInstance(mContext).getOrderid());
+                sb.append("where orderid=" + OrderHelper.getInstance(mContext).getOrderId());
             } else {
                 sb.append("select sum(taxValue) from InvoiceTaxDetails ");
                 sb.append("where invoiceid=" + mBusinessModel.QT(mBusinessModel.invoiceNumber));

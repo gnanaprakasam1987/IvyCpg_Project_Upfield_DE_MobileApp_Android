@@ -1694,7 +1694,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (bmodel.isEdit()) {
                             orderHelper.loadOrderedProducts(this,bmodel.getRetailerMasterBO()
                                     .getRetailerID(), null);
-                            orderHelper.loadSerialNo();
+                            orderHelper.loadSerialNo(this);
                             enableSchemeModule();
                         }
                         if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
@@ -1951,7 +1951,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                         //loadSerialNo,enableSchemeModule included as these were called in edit mode
                                         OrderHelper.getInstance(HomeScreenTwo.this).loadOrderedProducts(HomeScreenTwo.this,bmodel.getRetailerMasterBO()
                                                 .getRetailerID(), id);
-                                        OrderHelper.getInstance(HomeScreenTwo.this).loadSerialNo();
+                                        OrderHelper.getInstance(HomeScreenTwo.this).loadSerialNo(HomeScreenTwo.this);
                                         enableSchemeModule();
                                         loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
                                         loadOrderSummaryScreen(menuConfigCode);
@@ -1969,7 +1969,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             if (bmodel.isEdit()) {//doubt
                                 orderHelper.loadOrderedProducts(this,bmodel.getRetailerMasterBO()
                                         .getRetailerID(), null);
-                                orderHelper.loadSerialNo();
+                                orderHelper.loadSerialNo(this);
                                 enableSchemeModule();
                             } else {
                                 bmodel.setOrderHeaderBO(null);
@@ -2036,7 +2036,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     if (bmodel.isEdit()) {
                         orderHelper.loadOrderedProducts(this,bmodel.getRetailerMasterBO()
                                 .getRetailerID(), null);
-                        orderHelper.loadSerialNo();
+                        orderHelper.loadSerialNo(this);
                         enableSchemeModule();
                     }
                     bmodel.productHelper.downloadProductFilter("MENU_STK_ORD");
@@ -2316,7 +2316,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.setEdit(true);
                         orderHelper.loadOrderedProducts(this,bmodel.getRetailerMasterBO()
                                 .getRetailerID(), null);
-                        orderHelper.loadSerialNo();
+                        orderHelper.loadSerialNo(this);
                         enableSchemeModule();
                     }
 

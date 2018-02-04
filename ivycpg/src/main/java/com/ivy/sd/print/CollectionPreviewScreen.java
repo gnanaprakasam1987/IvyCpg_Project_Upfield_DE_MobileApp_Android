@@ -539,7 +539,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + OrderHelper.getInstance(CollectionPreviewScreen.this).getOrderid(),
+                                        + OrderHelper.getInstance(CollectionPreviewScreen.this).getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception
