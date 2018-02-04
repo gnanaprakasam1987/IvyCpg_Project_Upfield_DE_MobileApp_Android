@@ -569,13 +569,13 @@ public class OrderHelper {
                 businessModel.productHelper.saveItemLevelDiscount(this.getOrderId(), db);
             }
 
-            DiscountHelper.getInstance(mContext).insertBillWisePaytermDisc(db, this.getOrderId());
+            DiscountHelper.getInstance(mContext).insertBillWisePayTermDisc(db, this.getOrderId());
 
             // insert bill wise discount
             if (businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && businessModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
-                DiscountHelper.getInstance(mContext).saveBillWiseDiscountRangewise(this.getOrderId(), db);
+                DiscountHelper.getInstance(mContext).saveBillWiseDiscountRangeWise(this.getOrderId(), db);
             } else if (businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && businessModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
-                DiscountHelper.getInstance(mContext).insertBillWiseDisc(db, this.getOrderId());
+                DiscountHelper.getInstance(mContext).insertBillWiseDiscount(db, this.getOrderId());
             } else if (businessModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
                 if (businessModel.getOrderHeaderBO().getDiscountValue() > 0) {
                     if (businessModel.configurationMasterHelper.discountType == 1 || businessModel.configurationMasterHelper.discountType == 2)

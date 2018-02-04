@@ -101,7 +101,7 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.bo.TempSchemeBO;
@@ -356,7 +356,7 @@ public class BusinessModel extends Application {
     private String assetRemark = "";
     private String note = "";
     private String orderSplitScreenTitle = null;
-    private StoreWsieDiscountBO discountlist;
+    private StoreWiseDiscountBO discountlist;
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID = new HashMap<String, ArrayList<UserMasterBO>>();
     private ArrayList<String> mRetailerIDList;
     private boolean isDoubleEdit_temp;
@@ -624,11 +624,11 @@ public class BusinessModel extends Application {
         return slist;
     }
 
-    public StoreWsieDiscountBO getDiscountlist() {
+    public StoreWiseDiscountBO getDiscountlist() {
         return discountlist;
     }
 
-    public void setDiscountlist(StoreWsieDiscountBO discountlist) {
+    public void setDiscountlist(StoreWiseDiscountBO discountlist) {
         this.discountlist = discountlist;
     }
 
@@ -7607,7 +7607,7 @@ public class BusinessModel extends Application {
 
 
     public void loadDiscountDetails() {
-        StoreWsieDiscountBO sbo = null;
+        StoreWiseDiscountBO sbo = null;
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
 
         db.createDataBase();
@@ -7619,7 +7619,7 @@ public class BusinessModel extends Application {
                         + " and ApplyLevelid in (select ListId from StandardListMaster where ListCode='BILL')");
         if (c != null) {
             while (c.moveToNext()) {
-                sbo = new StoreWsieDiscountBO();
+                sbo = new StoreWiseDiscountBO();
                 sbo.setProductId(c.getInt(0));
                 sbo.setType(c.getInt(1));
                 if (c.getInt(2) != 0)

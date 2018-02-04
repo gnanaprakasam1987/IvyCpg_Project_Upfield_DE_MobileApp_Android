@@ -32,7 +32,7 @@ import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -101,7 +101,7 @@ public class ProductHelper {
     private HashMap<Integer, Vector<LevelBO>> mRetailerModuleFilterObjectBySequence;
     private Vector<LevelBO> mrRetailerModuleSequence;
 
-    private HashMap<Integer, ArrayList<StoreWsieDiscountBO>> mProductIdListByDiscoutId;
+    private HashMap<Integer, ArrayList<StoreWiseDiscountBO>> mProductIdListByDiscoutId;
     private ArrayList<Integer> mDiscountIdList;
 
 
@@ -4981,7 +4981,7 @@ public class ProductHelper {
 
     public void downloadProductDiscountDetails() {
 
-        mProductIdListByDiscoutId = new HashMap<Integer, ArrayList<StoreWsieDiscountBO>>();
+        mProductIdListByDiscoutId = new HashMap<Integer, ArrayList<StoreWiseDiscountBO>>();
 
         mDiscountIdList = new ArrayList<Integer>();
         DBUtil db = null;
@@ -5007,14 +5007,14 @@ public class ProductHelper {
             sb.append("where ListCode='ITEM' and ListType='DISCOUNT_APPLY_TYPE') ");
             sb.append("and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE')");
             sb.append(" order by dm.DiscountId,dm.isCompanyGiven desc");
-            ArrayList<StoreWsieDiscountBO> productdiscountList = new ArrayList<StoreWsieDiscountBO>();
-            StoreWsieDiscountBO storeWiseDiscountBO;
+            ArrayList<StoreWiseDiscountBO> productdiscountList = new ArrayList<StoreWiseDiscountBO>();
+            StoreWiseDiscountBO storeWiseDiscountBO;
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
                 if (c.getCount() > 0) {
                     int discountid = 0;
                     while (c.moveToNext()) {
-                        storeWiseDiscountBO = new StoreWsieDiscountBO();
+                        storeWiseDiscountBO = new StoreWiseDiscountBO();
                         storeWiseDiscountBO.setDiscount(c.getDouble(0));
                         storeWiseDiscountBO.setIsPercentage(c.getInt(1));
                         storeWiseDiscountBO.setType(c.getInt(2));
@@ -5029,7 +5029,7 @@ public class ProductHelper {
                             if (discountid != 0) {
                                 mProductIdListByDiscoutId.put(discountid,
                                         productdiscountList);
-                                productdiscountList = new ArrayList<StoreWsieDiscountBO>();
+                                productdiscountList = new ArrayList<StoreWiseDiscountBO>();
                                 productdiscountList.add(storeWiseDiscountBO);
                                 discountid = storeWiseDiscountBO
                                         .getDiscountId();
@@ -5070,7 +5070,7 @@ public class ProductHelper {
         return new ArrayList<Integer>();
     }
 
-    public HashMap<Integer, ArrayList<StoreWsieDiscountBO>> getProductDiscountListByDiscountID() {
+    public HashMap<Integer, ArrayList<StoreWiseDiscountBO>> getProductDiscountListByDiscountID() {
         return mProductIdListByDiscoutId;
     }
 
@@ -5085,10 +5085,10 @@ public class ProductHelper {
         if (mDiscountIdList != null) {
             StringBuffer sb = null;
             for (Integer discountid : mDiscountIdList) {
-                ArrayList<StoreWsieDiscountBO> storewiseDiscountList = mProductIdListByDiscoutId
+                ArrayList<StoreWiseDiscountBO> storewiseDiscountList = mProductIdListByDiscoutId
                         .get(discountid);
                 if (storewiseDiscountList != null) {
-                    for (StoreWsieDiscountBO storewiseDiscountBo : storewiseDiscountList) {
+                    for (StoreWiseDiscountBO storewiseDiscountBo : storewiseDiscountList) {
                         ProductMasterBO productBo = bmodel.productHelper
                                 .getProductMasterBOById(storewiseDiscountBo
                                         .getProductId() + "");

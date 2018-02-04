@@ -1,6 +1,6 @@
 package com.ivy.sd.png.bo;
 
-public class StoreWsieDiscountBO {
+public class StoreWiseDiscountBO {
 
 	private int retailerid;
 	private double appliedDiscount;

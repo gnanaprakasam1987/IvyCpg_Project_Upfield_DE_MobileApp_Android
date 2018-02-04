@@ -495,7 +495,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         updateBrandText(BRAND, -1);
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            DiscountHelper.getInstance(this).updateMinimumRangeAsBillwiseDisc();
+            DiscountHelper.getInstance(this).setMinimumRangeAsBillWiseDiscount();
         }
 
         mSelectedIdByLevelId = (HashMap<Integer, Integer>) getIntent().getSerializableExtra("FiveFilter");

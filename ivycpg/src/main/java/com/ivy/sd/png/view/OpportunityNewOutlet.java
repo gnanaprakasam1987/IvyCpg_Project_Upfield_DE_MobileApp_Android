@@ -399,7 +399,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         mTotalScreenWidth = dm.widthPixels;
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            DiscountHelper.getInstance(this).updateMinimumRangeAsBillwiseDisc();
+            DiscountHelper.getInstance(this).setMinimumRangeAsBillWiseDiscount();
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.END);

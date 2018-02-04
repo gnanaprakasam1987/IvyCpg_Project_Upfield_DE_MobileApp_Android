@@ -874,7 +874,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         //  Apply product entry level discount
         if (BModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
-            entryLevelDiscount = discountHelper.calculateEntryLevelDiscount(mOrderedProductList);
+            entryLevelDiscount = discountHelper.calculateUserEntryLevelDiscount(mOrderedProductList);
             totalOrderValue = totalOrderValue - entryLevelDiscount;
         }
 
@@ -900,12 +900,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
             //find the  range of discount by using total value
-            final double billWiseRangeDiscount = discountHelper.updateBillwiseRangeDiscount(totalOrderValue);
+            final double billWiseRangeDiscount = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
             totalOrderValue = totalOrderValue - billWiseRangeDiscount;
 
         } else if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
             // Automatically apply bill wise discount
-            final double billWiseDiscount = discountHelper.updateBillwiseDiscount(totalOrderValue);
+            final double billWiseDiscount = discountHelper.calculateBillWiseDiscount(totalOrderValue);
             if (BModel.getOrderHeaderBO() != null) {
                 BModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
             }
@@ -975,7 +975,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     public void onDiscountDismiss(String result, int result1, int result2, int result3) {
         if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
 
-            final double totalValue = discountHelper.updateBillwiseRangeDiscount(totalOrderValue);
+            final double totalValue = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
             text_totalOrderValue.setText(BModel.formatValue(totalValue));
 
         } else if (BModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {

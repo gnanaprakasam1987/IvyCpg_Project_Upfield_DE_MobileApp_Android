@@ -10,7 +10,7 @@ import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
@@ -567,7 +567,7 @@ public class CS_CommonPrintHelper  {
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_APPLY)) {
             value = getProductLevelApplyDiscount(precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_ENTRY)) {
-            value = alignWithLabelForSingleLine(label, formatValueInPrint((DiscountHelper.getInstance(context).calculateEntryLevelDiscount(mOrderedProductList)), precisionCount));
+            value = alignWithLabelForSingleLine(label, formatValueInPrint((DiscountHelper.getInstance(context).calculateUserEntryLevelDiscount(mOrderedProductList)), precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_TAX_PRODUCT)) {
             value = getProductLevelTax(precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_BILL_ENTRY)) {
@@ -1181,11 +1181,11 @@ public class CS_CommonPrintHelper  {
                     String discountDescription = "";
                     double totalDiscountValue = 0;
                     for (int discountid : discountIdList) {
-                        ArrayList<StoreWsieDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
+                        ArrayList<StoreWiseDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
                         if (discountList != null) {
-                            for (StoreWsieDiscountBO storeWsieDiscountBO : discountList) {
-                                discountDescription = storeWsieDiscountBO.getDescription();
-                                ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWsieDiscountBO.getProductId() + "");
+                            for (StoreWiseDiscountBO storeWiseDiscountBO : discountList) {
+                                discountDescription = storeWiseDiscountBO.getDescription();
+                                ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWiseDiscountBO.getProductId() + "");
                                 if (productMasterBO != null) {
                                     int totalProductQty = 0;
                                     totalProductQty = productMasterBO.getOrderedPcsQty()
@@ -1213,12 +1213,12 @@ public class CS_CommonPrintHelper  {
                                                                 * batchProductBO.getOsrp();
                                                     }
 
-                                                    if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                        batchDiscountValue = totalValue * storeWsieDiscountBO.getDiscount() / 100;
+                                                    if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                        batchDiscountValue = totalValue * storeWiseDiscountBO.getDiscount() / 100;
 
 
-                                                    } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                        batchDiscountValue = totalBatchQty * storeWsieDiscountBO.getDiscount();
+                                                    } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                        batchDiscountValue = totalBatchQty * storeWiseDiscountBO.getDiscount();
                                                     }
 
                                                     totalDiscountValue = totalDiscountValue + batchDiscountValue;
@@ -1236,10 +1236,10 @@ public class CS_CommonPrintHelper  {
                                                         + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp();
                                             }
 
-                                            if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                productDiscount = totalValue * storeWsieDiscountBO.getDiscount() / 100;
-                                            } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                productDiscount = totalProductQty * storeWsieDiscountBO.getDiscount();
+                                            if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                productDiscount = totalValue * storeWiseDiscountBO.getDiscount() / 100;
+                                            } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                productDiscount = totalProductQty * storeWiseDiscountBO.getDiscount();
                                             }
 
                                             totalDiscountValue = totalDiscountValue + productDiscount;

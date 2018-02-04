@@ -186,7 +186,7 @@ public class OrderSummaryDialogFragment extends DialogFragment {
 
 
     private void updateDiscoutByTypeId(String prodcutWithBatchid) {
-        HashMap<Integer, Double> discountValueByDiscountId = discountHelper.getDiscountMapByProductwidthBatchid().get(prodcutWithBatchid);
+        HashMap<Integer, Double> discountValueByDiscountId = discountHelper.getDiscountListByProductId().get(prodcutWithBatchid);
 
         if (mTypeIdList != null && discountValueByDiscountId != null) {
             if (mDiscountIdListByTypeId != null) {
@@ -397,7 +397,7 @@ public class OrderSummaryDialogFragment extends DialogFragment {
             String batchWithpid = holder.batchProductBO.getProductID() + batchId;
 
             // Apply level discount
-            HashMap<Integer, Double> discountValueByDiscountId = discountHelper.getDiscountMapByProductwidthBatchid().get(batchWithpid);
+            HashMap<Integer, Double> discountValueByDiscountId = discountHelper.getDiscountListByProductId().get(batchWithpid);
             if (discountValueByDiscountId != null) {
                 if (mTypeIdList != null) {
                     int count = 0;

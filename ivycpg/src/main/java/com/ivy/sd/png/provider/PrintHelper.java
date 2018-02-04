@@ -15,7 +15,7 @@ import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
@@ -1032,11 +1032,11 @@ public class PrintHelper {
                                 String discountDescription = "";
                                 double totalDiscountValue = 0;
                                 for (int discountid : discountIdList) {
-                                    ArrayList<StoreWsieDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
+                                    ArrayList<StoreWiseDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
                                     if (discountList != null) {
-                                        for (StoreWsieDiscountBO storeWsieDiscountBO : discountList) {
-                                            discountDescription = storeWsieDiscountBO.getDescription();
-                                            ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWsieDiscountBO.getProductId() + "");
+                                        for (StoreWiseDiscountBO storeWiseDiscountBO : discountList) {
+                                            discountDescription = storeWiseDiscountBO.getDescription();
+                                            ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWiseDiscountBO.getProductId() + "");
                                             if (productMasterBO != null) {
                                                 int totalProductQty;
                                                 totalProductQty = productMasterBO.getOrderedPcsQty()
@@ -1063,10 +1063,10 @@ public class PrintHelper {
                                                                             + batchProductBO.getOrderedOuterQty()
                                                                             * batchProductBO.getOsrp();
                                                                 }
-                                                                if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                                    batchDiscountValue = totalValue * storeWsieDiscountBO.getDiscount() / 100;
-                                                                } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                                    batchDiscountValue = totalBatchQty * storeWsieDiscountBO.getDiscount();
+                                                                if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                                    batchDiscountValue = totalValue * storeWiseDiscountBO.getDiscount() / 100;
+                                                                } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                                    batchDiscountValue = totalBatchQty * storeWiseDiscountBO.getDiscount();
                                                                 }
                                                                 totalDiscountValue = totalDiscountValue + batchDiscountValue;
                                                             }
@@ -1083,12 +1083,12 @@ public class PrintHelper {
                                                                     + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp();
                                                         }
 
-                                                        if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                            productDiscount = totalValue * storeWsieDiscountBO.getDiscount() / 100;
+                                                        if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                            productDiscount = totalValue * storeWiseDiscountBO.getDiscount() / 100;
 
 
-                                                        } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                            productDiscount = totalProductQty * storeWsieDiscountBO.getDiscount();
+                                                        } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                            productDiscount = totalProductQty * storeWiseDiscountBO.getDiscount();
                                                         }
 
                                                         totalDiscountValue = totalDiscountValue + productDiscount;

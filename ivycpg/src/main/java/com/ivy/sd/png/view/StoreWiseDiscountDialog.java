@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -34,13 +34,13 @@ import java.util.ArrayList;
  */
 public class StoreWiseDiscountDialog extends DialogFragment {
     private BusinessModel bmodel;
-    private ArrayList<StoreWsieDiscountBO> mDiscountList;
+    private ArrayList<StoreWiseDiscountBO> mDiscountList;
 
     private Button mDoneBTN;
     private OnMyDialogResult mDialogResult;
     private TextView mMinRangeTV, mMaxRangeTV, mTitleTv;
     private EditText mDiscountET, QUANTITY;
-    private StoreWsieDiscountBO mStorewiseDiscountBO;
+    private StoreWiseDiscountBO mStorewiseDiscountBO;
     public InputMethodManager inputManager;
     private double mTotalOrderValue,mEnteredDiscAmtOrPercent;
     DiscountHelper discountHelper;
@@ -267,9 +267,9 @@ public class StoreWiseDiscountDialog extends DialogFragment {
 
     private void findDiscout() {
         if (mDiscountList != null) {
-            for (StoreWsieDiscountBO storeWsieDiscountBO : mDiscountList) {
-                if (mTotalOrderValue >= storeWsieDiscountBO.getMinAmount() && mTotalOrderValue <= storeWsieDiscountBO.getMaxAmount()) {
-                    mStorewiseDiscountBO = storeWsieDiscountBO;
+            for (StoreWiseDiscountBO storeWiseDiscountBO : mDiscountList) {
+                if (mTotalOrderValue >= storeWiseDiscountBO.getMinAmount() && mTotalOrderValue <= storeWiseDiscountBO.getMaxAmount()) {
+                    mStorewiseDiscountBO = storeWiseDiscountBO;
                     mStorewiseDiscountBO.setApplied(true);
                     break;
                 }
