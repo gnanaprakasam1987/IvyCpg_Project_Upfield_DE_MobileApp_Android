@@ -28,7 +28,7 @@ import android.os.Message;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.OrderSummary;
+import com.ivy.cpg.view.order.OrderSummary;
 import com.tremol.zfplibj.FPLogger;
 import com.tremol.zfplibj.ZFPLib;
 
