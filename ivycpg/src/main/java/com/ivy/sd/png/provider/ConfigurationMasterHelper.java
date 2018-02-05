@@ -18,6 +18,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.CatalogOrder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -452,10 +453,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_TIME_VIEW;
     public boolean SHOW_SPINNER;
 
-    private static final String CODE_MOQ_ENABLED = "FUN64";//change config code
+    private static final String CODE_MOQ_ENABLED = "FUN66";//change config code
     public boolean IS_MOQ_ENABLED;
-    private static final String CODE_SHOW_SAO_MIX_PRODUCT = "TARGET_PLAN";//change code
-    public boolean IS_SHOW_SAO_MIX_PRODUCT_ENABLED;
+
     /**
      * RoadActivity config *
      */
@@ -1333,7 +1333,8 @@ public class ConfigurationMasterHelper {
 
         } catch (Exception e) {
             Commons.printException("" + e);
-            db.closeDB();
+            if (db != null)
+                db.closeDB();
         }
     }
 
@@ -2129,7 +2130,6 @@ public class ConfigurationMasterHelper {
         this.IS_TEMP_ORDER_SAVE = hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) : false;
         this.tempOrderInterval = hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) : 10;
         this.tempOrderInterval = this.tempOrderInterval >= 10 ? this.tempOrderInterval : 10;
-        this.IS_SHOW_SAO_MIX_PRODUCT_ENABLED = hashMapHHTModuleConfig.get(CODE_SHOW_SAO_MIX_PRODUCT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SAO_MIX_PRODUCT) : false;
 
         this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 
@@ -5162,5 +5162,49 @@ public class ConfigurationMasterHelper {
         } catch (Exception e) {
             Commons.printException("Unable to load the configurations " + e);
         }
+    }
+
+
+
+    /**
+     * This method will return spl filter code set as default.
+     *
+     * @return
+     */
+    public String getDefaultFilter() {
+        String defaultfilter = CatalogOrder.GENERAL;
+        try {
+            Vector<ConfigureBO> genfilter = bmodel.configurationMasterHelper
+                    .getGenFilter();
+            for (int i = 0; i < genfilter.size(); i++) {
+                if (genfilter.get(i).getHasLink() == 1) {
+                    if (!bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                        defaultfilter = genfilter.get(i).getConfigCode();
+                        break;
+                    } else {
+                        if (bmodel.getRetailerMasterBO().getIsVansales() == 1) {
+                            if (genfilter.get(i).getConfigCode().equals("Filt13")) {
+                                defaultfilter = genfilter.get(i).getConfigCode();
+                                break;
+                            } else if (!genfilter.get(i).getConfigCode().equals("Filt08")) {
+                                defaultfilter = genfilter.get(i).getConfigCode();
+                                break;
+                            }
+                        } else {
+                            if (genfilter.get(i).getConfigCode().equals("Filt08")) {
+                                defaultfilter = genfilter.get(i).getConfigCode();
+                                break;
+                            } else if (!genfilter.get(i).getConfigCode().equals("Filt13")) {
+                                defaultfilter = genfilter.get(i).getConfigCode();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        return defaultfilter;
     }
 }

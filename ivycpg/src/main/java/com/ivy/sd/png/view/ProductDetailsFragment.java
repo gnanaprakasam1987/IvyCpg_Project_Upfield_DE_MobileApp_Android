@@ -83,36 +83,8 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             productTitleTV.setText(pdname);
             productTitleTV.setWidth(outMetrics.widthPixels);
         }
-        //bmodel.configurationMasterHelper.IS_SHOW_SAO_MIX_PRODUCT_ENABLED &&
-        //IS_SHOW_SAO_MIX_PRODUCT_ENABLED this config is enabled show soaMixture Product name
-        if(bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID())!=null) {
-            ArrayList<String> value = bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID());
-            rootView.findViewById(R.id.ll_sao_view).setVisibility(View.VISIBLE);
-            TextView soaMixtureTitle = (TextView) rootView.findViewById(R.id.sku_mixture_title);
-            soaMixtureTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            soaMixtureTitle.setWidth(outMetrics.widthPixels);
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(rootView.findViewById(
-                        R.id.sku_mixture_title).getTag()) != null)
-                    ((TextView) rootView.findViewById(R.id.sku_mixture_title))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(rootView.findViewById(
-                                            R.id.sku_mixture_title)
-                                            .getTag()));
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
 
-            LinearLayout skuMixtureProductName = (LinearLayout) rootView.findViewById(R.id.ll_sku_mixture_product_name);
-            for(int i=0;i<value.size();i++) {
-                    TextView tv = new TextView(getActivity());
-                    tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    tv.setWidth(outMetrics.widthPixels);
-                    tv.setText(value.get(i));
-                    tv.setId(i);
-                    skuMixtureProductName.addView(tv);
-            }
-        }
+
         return rootView;
     }
 
@@ -185,6 +157,8 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             holder.configureBO = productConfigs.get(position);
             holder.menuTV.setText(holder.configureBO.getMenuName());
             holder.valueTV.setText(setValue(holder.configureBO, productObj));
+            if(holder.configureBO.getConfigCode().equalsIgnoreCase("PRODET14"))
+                showSkuMixtureView();
 
             if (position % 4 < 4) {
                 if (position % 4 == 0) {
@@ -283,4 +257,35 @@ public class ProductDetailsFragment extends IvyBaseFragment {
         return value;
     }
 
+    //IF configBo has value PRODE14 this config is enabled show SkuMixture Product name
+    private  void showSkuMixtureView()
+    {
+        if(bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID())!=null) {
+            ArrayList<String> value = bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID());
+            rootView.findViewById(R.id.ll_sao_view).setVisibility(View.VISIBLE);
+            TextView soaMixtureTitle = (TextView) rootView.findViewById(R.id.sku_mixture_title);
+            soaMixtureTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(rootView.findViewById(
+                        R.id.sku_mixture_title).getTag()) != null)
+                    ((TextView) rootView.findViewById(R.id.sku_mixture_title))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(rootView.findViewById(
+                                            R.id.sku_mixture_title)
+                                            .getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            LinearLayout skuMixtureProductName = (LinearLayout) rootView.findViewById(R.id.ll_sku_mixture_product_name);
+            for(int i=0;i<value.size();i++) {
+                TextView tv = new TextView(getActivity());
+                tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tv.setText(value.get(i));
+                tv.setId(i);
+                skuMixtureProductName.addView(tv);
+            }
+        }
+    }
 }

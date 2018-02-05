@@ -255,6 +255,8 @@ public class ProductHelper {
     }
 
     public Vector<ProductMasterBO> getProductMaster() {
+        if (productMaster == null)
+            return new Vector<ProductMasterBO>();
         return productMaster;
     }
 
@@ -8374,11 +8376,13 @@ public class ProductHelper {
     {
         ArrayList<String> mBpids = new ArrayList<>();
         ArrayList<String> productShortName=new ArrayList<>();
-        for(BomMasterBO id:bmodel.productHelper.getBomMaster()) {
+        if(bmodel.productHelper.getBomMaster()!=null) {
+            for (BomMasterBO id : bmodel.productHelper.getBomMaster()) {
 
-            if(id.getPid().equalsIgnoreCase(productId)) {
+                if (id.getPid().equalsIgnoreCase(productId)) {
 
-                mBpids.add(id.getBomBO().get(0).getbPid());
+                    mBpids.add(id.getBomBO().get(0).getbPid());
+                }
             }
         }
         if(mBpids.size()>0) {
