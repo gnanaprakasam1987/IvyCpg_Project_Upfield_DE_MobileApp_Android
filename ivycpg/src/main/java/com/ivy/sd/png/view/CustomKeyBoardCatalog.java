@@ -260,8 +260,12 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             if (total_tv == null) {
                 //mSelectedView.setText(value);
                 calculateSONew();
-                pdtBO.getLocations()
-                        .get(0).setShelfPiece(Integer.parseInt(value));
+                if (value.equals("-1"))
+                    pdtBO.getLocations()
+                            .get(0).setShelfPiece(-1);
+                else
+                    pdtBO.getLocations()
+                            .get(0).setShelfPiece(Integer.parseInt(value));
                 if (value.equals("-1")) {
                     orderBtn.setText("STOCK");
                 } else {

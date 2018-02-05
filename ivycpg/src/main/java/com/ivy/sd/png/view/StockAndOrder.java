@@ -31,6 +31,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -96,7 +97,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener {
+        BrandDialogInterface, OnEditorActionListener, MOQHighlightDialog.savePcsValue {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -115,7 +116,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String brandbutton;
     private String generalbutton;
     LinearLayout ll_spl_filter, ll_tab_selection;
-
+    private MOQHighlightDialog mMOQHighlightDialog;
     private DrawerLayout mDrawerLayout;
     private ViewFlipper viewFlipper;
 
@@ -1497,6 +1498,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         switchProfile();
+    }
+
+    @Override
+    public void saveChanges() {
+        nextBtnSubTask();
     }
 
     private class MyAdapter extends ArrayAdapter<ProductMasterBO> {
@@ -3923,8 +3929,30 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 bmodel.isDeadGoldenAchieved();
             }
             if (bmodel.hasOrder()) {
+                //if this config IS_RFIELD1_ENABLED enabled below code will work
+                //and
+                if(bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
+                    int size = bmodel.productHelper
+                            .getProductMaster().size();
+                    int count = 0;
+                    for (int i = 0; i < size; ++i) {
+                        ProductMasterBO product = bmodel.productHelper
+                                .getProductMaster().get(i);
 
+                        if (product.getOrderedPcsQty() > 0 && !TextUtils.isEmpty(product.getRField1())) {
+                            //converting string Rfield1 value to integra
+                            int res = SDUtil.convertToInt(product.getRField1());
+                            if (product.getOrderedPcsQty() % res != 0)
+                                count++;
 
+                        }
+                    }
+                    if (count > 0) {
+                        new MOQConfigEnabled().execute();
+                        count = 0;
+                        return;
+                    }
+                }
                 if (bmodel.getOrderHeaderBO() == null)
                     bmodel.setOrderHeaderBO(new OrderHeader());
 
@@ -4265,6 +4293,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
             updateValue();
         }
+
     }
 
     private void loadSBDAchievementLocal() {
@@ -6633,6 +6662,24 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     protected void onRestart() {
         super.onRestart();
 
+    }
+    //if Rfield1 enabled show this dialog
+    private class MOQConfigEnabled extends AsyncTask <Void, Void, Boolean>
+    {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+
+                android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
+                mMOQHighlightDialog = new MOQHighlightDialog();
+                mMOQHighlightDialog.setCancelable(false);
+                mMOQHighlightDialog.show(ft, "Sample Fragment");
+        }
     }
 
 }

@@ -257,7 +257,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                             deleteImages(summaries);
                         }
 
-                        bmodel.synchronizationHelper.updateImageDetails(summaries);
+                        bmodel.synchronizationHelper.setImageDetials(summaries);
                         return "Success";
                     }
 

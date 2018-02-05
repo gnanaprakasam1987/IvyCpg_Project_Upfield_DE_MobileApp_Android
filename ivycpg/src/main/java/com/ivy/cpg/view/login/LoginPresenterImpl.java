@@ -969,7 +969,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
                     if (files != null && files.size() > 0) {
                         businessModel.synchronizationHelper.setCatalogImageDownloadFinishTime(files.size() + "");
-                        businessModel.synchronizationHelper.insertImageDetails(files);
+                        businessModel.synchronizationHelper.setImageDetials(files);
                     }
                 }
                 return "";
