@@ -182,7 +182,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                 holder.rField1Txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
                 holder.productNameTxt.setText(""+product.getProductShortName());
-                holder.orderQTYinpiece.setText( getString(R.string.multipal_of)+" "+product.getRField1());
+                holder.orderQTYinpiece.setText( getString(R.string.multiple_of)+" "+product.getRField1());
                 holder.rField1Txt.setText(""+product.getOrderedPcsQty());
 
                 holder.rField1Txt.setOnTouchListener(new View.OnTouchListener() {
