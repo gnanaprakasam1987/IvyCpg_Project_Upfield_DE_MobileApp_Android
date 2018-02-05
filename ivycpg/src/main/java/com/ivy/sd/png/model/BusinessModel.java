@@ -415,7 +415,7 @@ public class BusinessModel extends Application {
     public String latlongImageFileName;
     public String selectedOrderId = "";
     ArrayList<String> orderIdList = new ArrayList<>();
-    public Timer orderTimer;
+
     // used for ProductiveCall
     public boolean PRD_FOR_ORDER = false;
     public boolean PRD_FOR_SKT = false;
