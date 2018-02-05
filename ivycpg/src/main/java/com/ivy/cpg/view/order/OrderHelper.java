@@ -63,7 +63,6 @@ public class OrderHelper {
     }
 
 
-
     public String getOrderId() {
         return orderId;
     }
@@ -90,7 +89,8 @@ public class OrderHelper {
 
 
     /**
-     *  To check is order available
+     * To check is order available
+     *
      * @param orderedList Product list
      * @return Availability
      */
@@ -111,6 +111,7 @@ public class OrderHelper {
 
     /**
      * Save order
+     *
      * @param mContext current context
      */
     public void saveOrder(Context mContext) {
@@ -159,14 +160,14 @@ public class OrderHelper {
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
             String uid = businessModel.QT(id);
 
-            if (!hasAlreadyOrdered(mContext,businessModel.getRetailerMasterBO().getRetailerID()) && businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
+            if (!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID()) && businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
                 businessModel.insertSeqNumber("ORD");
                 uid = businessModel.QT(businessModel.downloadSequenceNo("ORD"));
             }
 
 
             // Deleting existing order
-            if ( hasAlreadyOrdered(mContext,businessModel.getRetailerMasterBO().getRetailerID())) {
+            if (hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())) {
 
                 StringBuffer sb = new StringBuffer();
                 sb.append("select OrderID from OrderHeader where RetailerID=");
@@ -333,14 +334,14 @@ public class OrderHelper {
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(mContext,businessModel.getRetailerMasterBO());
+                updateHangingOrder(mContext, businessModel.getRetailerMasterBO());
             }
             businessModel.getRetailerMasterBO()
                     .setTotalLines(businessModel.getOrderHeaderBO().getLinesPerCall());
 
 
             // Save order details
-            Vector<ProductMasterBO> finalProductList ;
+            Vector<ProductMasterBO> finalProductList;
             columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
@@ -563,7 +564,6 @@ public class OrderHelper {
             }
 
 
-
             // insert item level discount in SQLite
             if (businessModel.configurationMasterHelper.SHOW_DISCOUNT) {
                 businessModel.productHelper.saveItemLevelDiscount(this.getOrderId(), db);
@@ -614,7 +614,7 @@ public class OrderHelper {
             try {
                 if (!businessModel.configurationMasterHelper.IS_INVOICE)
                     businessModel.getRetailerMasterBO().setVisit_Actual(
-                            (float) getRetailerOrderValue(mContext,businessModel.retailerMasterBO
+                            (float) getRetailerOrderValue(mContext, businessModel.retailerMasterBO
                                     .getRetailerID()));
             } catch (Exception e) {
                 Commons.printException(e);
@@ -635,28 +635,29 @@ public class OrderHelper {
 
 
     /**
-     *  prepare order detail value to insert
-     * @param productBo current product object
+     * prepare order detail value to insert
+     *
+     * @param productBo      current product object
      * @param batchProductBO batch product object
-     * @param orderId order id
-     * @param isBatchWise is Batch Wise
+     * @param orderId        order id
+     * @param isBatchWise    is Batch Wise
      * @return return order detail table values
      */
     private StringBuffer getOrderDetails(ProductMasterBO productBo,
                                          ProductMasterBO batchProductBO, String orderId, boolean isBatchWise) {
 
         int pieceCount;
-        float srp ;
+        float srp;
         double csrp;
-        double osrp ;
+        double osrp;
         int orderPieceQty;
         int orderCaseQty;
         int orderOuterQty;
-        String batchid ;
-        double priceOffValue ;
-        int priceOffId ;
-        int reasonId ;
-        double line_total_price ;
+        String batchid;
+        double priceOffValue;
+        int priceOffId;
+        int reasonId;
+        double line_total_price;
 
         if (isBatchWise) {
             pieceCount = batchProductBO.getOrderedPcsQty()
@@ -736,7 +737,7 @@ public class OrderHelper {
      * @param retailerId Retailer Id
      * @return order availability
      */
-    public boolean hasAlreadyOrdered(Context mContext,String retailerId) {
+    public boolean hasAlreadyOrdered(Context mContext, String retailerId) {
         boolean isEdit;
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -816,7 +817,7 @@ public class OrderHelper {
      *
      * @param retailerId current retailer Id
      */
-    public void deleteOrder(Context context,String retailerId) {
+    public void deleteOrder(Context context, String retailerId) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -867,7 +868,7 @@ public class OrderHelper {
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(context,businessModel.getRetailerMasterBO());
+                updateHangingOrder(context, businessModel.getRetailerMasterBO());
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -875,12 +876,11 @@ public class OrderHelper {
     }
 
 
-
     /**
      * Load the Order Details and Order Header data into product master to Edit
      * Order.
      */
-    public void loadOrderedProducts(Context mContext,String retailerId, String orderId) {
+    public void loadOrderedProducts(Context mContext, String retailerId, String orderId) {
         businessModel.productHelper.clearOrderTableForInitiative();
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -889,7 +889,7 @@ public class OrderHelper {
             db.openDataBase();
             OrderHeader ordHeadBO = new OrderHeader();
             businessModel.setOrderHeaderBO(ordHeadBO);
-            String orderID="";
+            String orderID = "";
             StringBuilder sb = new StringBuilder();
 
 
@@ -1003,7 +1003,7 @@ public class OrderHelper {
 
             Cursor orderDetailCursor = db.selectSQL(sql1);
             if (orderDetailCursor != null) {
-                String productId ;
+                String productId;
                 while (orderDetailCursor.moveToNext()) {
 
                     int caseQty = orderDetailCursor.getInt(1);
@@ -1085,7 +1085,7 @@ public class OrderHelper {
                                 }
                             }
                         } else {
-                            for (BomReturnBO bomReturnBo :businessModel. productHelper
+                            for (BomReturnBO bomReturnBo : businessModel.productHelper
                                     .getBomReturnProducts()) {
                                 if (bomReturnBo.getPid().equals(pid)) {
                                     bomReturnBo.setLiableQty(liableQty);
@@ -1165,7 +1165,6 @@ public class OrderHelper {
      * Update product Quantity for particular product Id.
      *
      * @param productId Current Product Id
-     *
      */
     private void setProductDetails(String productId, int caseQty, int pieceQty,
                                    int outerQty, float srp, double pricePerPiece, Cursor OrderDetails,
@@ -1227,8 +1226,6 @@ public class OrderHelper {
     }
 
 
-
-
     /**
      * This method will save the Invoice into InvoiceMaster table as well as the
      * Invoice details into Invoice Details Table.
@@ -1242,7 +1239,7 @@ public class OrderHelper {
 
         int isCreditNoteCreated = SalesReturnHelper.getInstance(mContext).isCreditNoteCreated(mContext);
 
-        double orderValue ;
+        double orderValue;
         if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                 && isCreditNoteCreated != 1) {
             if (salesReturnHelper.isValueReturned(mContext)) {
@@ -1291,7 +1288,7 @@ public class OrderHelper {
             // If this Configuration on, Invoice ID generation differently
             // according to rule
             if (businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
-                String seqNo ;
+                String seqNo;
                 businessModel.insertSeqNumber("INV");
                 seqNo = businessModel.downloadSequenceNo("INV");
                 invoiceId = seqNo;
@@ -1333,7 +1330,7 @@ public class OrderHelper {
             sb.append(businessModel.getRetailerMasterBO().getBeatID() + ",");
             sb.append(businessModel.getOrderHeaderBO().getDiscount() + ",");
             sb.append(businessModel.formatValueBasedOnConfig(orderValue) + ",");
-            double discountedAmount ;
+            double discountedAmount;
             if (businessModel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                 if (discountPercentage > 0) {
 
@@ -1396,7 +1393,7 @@ public class OrderHelper {
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(mContext,businessModel.getRetailerMasterBO());
+                updateHangingOrder(mContext, businessModel.getRetailerMasterBO());
             }
 
             /* update free products sih starts */
@@ -1427,7 +1424,7 @@ public class OrderHelper {
                         this.getOrderId());
             }
 
-           // update invoice createed in SalesReturnHeader **/
+            // update invoice createed in SalesReturnHeader **/
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCreditNoteCreated != 1) {
                 db.executeQ("update SalesReturnHeader set invoicecreated=1 where RetailerID="
@@ -1449,7 +1446,7 @@ public class OrderHelper {
                         + creditBalance + " where retailerid="
                         + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()));
                 businessModel.getRetailerMasterBO().setCredit_balance(creditBalance);
-                businessModel.getRetailerMasterBO().setRField1("" +  creditBalance);
+                businessModel.getRetailerMasterBO().setRField1("" + creditBalance);
 
             }
 
@@ -1530,7 +1527,7 @@ public class OrderHelper {
             }
 
 
-             // Insert Product Details to Empty Reconciliation tables if Type  wise Group products disabled
+            // Insert Product Details to Empty Reconciliation tables if Type  wise Group products disabled
 
             if (!businessModel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
                 businessModel.mEmptyReconciliationhelper.saveSKUWiseTransaction();
@@ -1554,7 +1551,7 @@ public class OrderHelper {
 
             try {
                 businessModel.getRetailerMasterBO().setVisit_Actual(
-                        (float) getRetailerOrderValue(mContext,businessModel.retailerMasterBO.getRetailerID()));
+                        (float) getRetailerOrderValue(mContext, businessModel.retailerMasterBO.getRetailerID()));
             } catch (Exception e) {
 
                 Commons.printException(e);
@@ -1569,10 +1566,11 @@ public class OrderHelper {
 
     /**
      * Prepare invoice detail records to insert
-     * @param productBO current product object
+     *
+     * @param productBO   current product object
      * @param batchWiseBO current batch product
-     * @param invoiceId invoice id
-     * @param db database object
+     * @param invoiceId   invoice id
+     * @param db          database object
      * @param isBatchWise is batch wise or not
      * @return return values
      */
@@ -1582,24 +1580,24 @@ public class OrderHelper {
         ProductMasterBO product = productBO;
         ProductMasterBO batchWiseProductBO;
         StringBuffer sb = new StringBuffer();
-        int schemeOrderType ;
+        int schemeOrderType;
 
-        int orderedPcsQty ;
-        int orderedCaseQty ;
-        int orderedOuterQty ;
+        int orderedPcsQty;
+        int orderedCaseQty;
+        int orderedOuterQty;
 
         String batchId;
         double priceOffValue;
         int priceOffId;
 
-        int totalqty ;
-        float srp ;
-        double csrp ;
-        double osrp ;
-        double prodDisc ;
-        double schemeDisc ;
+        int totalqty;
+        float srp;
+        double csrp;
+        double osrp;
+        double prodDisc;
+        double schemeDisc;
         double taxAmount;
-        double line_total_price ;
+        double line_total_price;
 
         try {
             if (isBatchWise) {
@@ -1708,8 +1706,9 @@ public class OrderHelper {
 
 
     /**
-     *  get total ordered value for given retailer
-     * @param mContext current context
+     * get total ordered value for given retailer
+     *
+     * @param mContext   current context
      * @param retailerId retailer id
      * @return total order value
      */
@@ -1718,13 +1717,13 @@ public class OrderHelper {
         db.openDataBase();
         double f = 0;
         try {
-            Cursor c ;
+            Cursor c;
             if (businessModel.configurationMasterHelper.IS_INVOICE)
                 c = db.selectSQL("SELECT sum(invNetAmount) FROM InvoiceMaster where retailerid="
                         + retailerId);
 
             else
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader where retailerid="                        + retailerId);
+                c = db.selectSQL("select sum (OrderValue) from OrderHeader where retailerid=" + retailerId);
 
 
             if (c != null) {
@@ -1743,11 +1742,12 @@ public class OrderHelper {
 
 
     /**
-     *  get total ordered focus and must sell products count
+     * get total ordered focus and must sell products count
+     *
      * @param mOrderedProductList product list ordered
      */
     public void getFocusAndMustSellOrderedProducts(LinkedList<ProductMasterBO> mOrderedProductList) {
-        int focusBrandProducts ;
+        int focusBrandProducts;
         int focusBrandProducts1 = 0;
         int focusBrandProducts2 = 0;
         int focusBrandProducts3 = 0;
@@ -1792,6 +1792,7 @@ public class OrderHelper {
 
     /**
      * Organizing products by user ordered OR entered flow
+     *
      * @return Ordered product list
      */
     public LinkedList<ProductMasterBO> organizeProductsByUserEntry() {
@@ -1815,10 +1816,11 @@ public class OrderHelper {
 
     /**
      * get retailer hanging(order without invoice) order availability status
+     *
      * @param mContext current context
-     * @param retObj retailer object
+     * @param retObj   retailer object
      */
-    public void updateHangingOrder(Context mContext,RetailerMasterBO retObj) {
+    public void updateHangingOrder(Context mContext, RetailerMasterBO retObj) {
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -1861,18 +1863,19 @@ public class OrderHelper {
         } catch (Exception e) {
             Commons.printException(e);
         } finally {
-            if(db!=null)
-            db.closeDB();
+            if (db != null)
+                db.closeDB();
         }
     }
 
 
     /**
      * Load invoiced products
-     * @param context current context
+     *
+     * @param context       current context
      * @param invoiceNumber invoice number
      */
-    public void loadInvoiceProducts(Context context,String invoiceNumber) {
+    public void loadInvoiceProducts(Context context, String invoiceNumber) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -1896,7 +1899,7 @@ public class OrderHelper {
                 + businessModel.QT(invoiceNumber) + " group by productid";
         invoiceDetailCursor = db.selectSQL(sql1);
         if (invoiceDetailCursor != null) {
-            String productId ;
+            String productId;
             while (invoiceDetailCursor.moveToNext()) {
                 int pieceQty = invoiceDetailCursor.getInt(1);
                 int caseQty = invoiceDetailCursor.getInt(2);
@@ -1921,10 +1924,11 @@ public class OrderHelper {
 
     /**
      * Load serial number
+     *
      * @param mContext
      */
     public void loadSerialNo(Context mContext) {
-        DBUtil db ;
+        DBUtil db;
         try {
             mSerialNoListByProductId = new SparseArray<>();
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -1975,6 +1979,7 @@ public class OrderHelper {
 
     /**
      * Save serial number
+     *
      * @param db database object
      */
     private void saveSerialNo(DBUtil db) {
@@ -2023,6 +2028,7 @@ public class OrderHelper {
 
     /**
      * Is all ordered product is scanned
+     *
      * @return Is all scanned or not
      */
     public boolean isAllScanned() {
@@ -2046,6 +2052,7 @@ public class OrderHelper {
 
     /**
      * Is any product is scanned
+     *
      * @param mOrderedProductList ordered product list
      * @return Is scanned
      */
@@ -2060,6 +2067,7 @@ public class OrderHelper {
 
     /**
      * Method to find duplicate serialnumber entered     *
+     *
      * @return Is serial number duplicated
      */
     public boolean isDuplicateSerialNo() {
@@ -2108,10 +2116,11 @@ public class OrderHelper {
 
     /**
      * Save serial number to temp table
+     *
      * @param mContext current context
      */
     public void saveSerialNoTemp(Context mContext) {
-        DBUtil db ;
+        DBUtil db;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -2152,207 +2161,208 @@ public class OrderHelper {
 
     /**
      * Save delivery order details and update SIH
-     * @param mContext current context
+     *
+     * @param mContext  current context
      * @param isPartial Is partial delivery
      */
-      public void insertDeliveryOrderRecord(Context mContext,boolean isPartial) {
+    public void insertDeliveryOrderRecord(Context mContext, boolean isPartial) {
 
-            try {
+        try {
 
-                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
-                db.createDataBase();
-                db.openDataBase();
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
 
-                String columns = "orderid,productid,qty,uomid,uomcount,price,taxprice,linevalue,upload";
+            String columns = "orderid,productid,qty,uomid,uomcount,price,taxprice,linevalue,upload";
 
-                int siz = businessModel.productHelper.getProductMaster().size();
-                ProductMasterBO product;
-                String values;
+            int siz = businessModel.productHelper.getProductMaster().size();
+            ProductMasterBO product;
+            String values;
 
-                for (int i = 0; i < siz; ++i) {
-                    product = businessModel.productHelper.getProductMaster()
-                            .elementAt(i);
-                    if (isPartial) {
+            for (int i = 0; i < siz; ++i) {
+                product = businessModel.productHelper.getProductMaster()
+                        .elementAt(i);
+                if (isPartial) {
 
-                        if (product.getDeliveredCaseQty() > 0
-                                || product.getDeliveredPcsQty() > 0
-                                || product.getDeliveredOuterQty() > 0) {
+                    if (product.getDeliveredCaseQty() > 0
+                            || product.getDeliveredPcsQty() > 0
+                            || product.getDeliveredOuterQty() > 0) {
 
-                            if (product.getDeliveredCaseQty() > 0) {
-                                values = businessModel.QT(getOrderId()) + "," + product.getProductID();
-                                values += "," + product.getDeliveredCaseQty() + "," + product.getCaseUomId() + "," + product.getCaseSize()
-                                        + "," + product.getCsrp() + "," + product.getCsrp() + "," + (product.getCsrp() * product.getDeliveredCaseQty()) + "," + businessModel.QT("N");
+                        if (product.getDeliveredCaseQty() > 0) {
+                            values = businessModel.QT(getOrderId()) + "," + product.getProductID();
+                            values += "," + product.getDeliveredCaseQty() + "," + product.getCaseUomId() + "," + product.getCaseSize()
+                                    + "," + product.getCsrp() + "," + product.getCsrp() + "," + (product.getCsrp() * product.getDeliveredCaseQty()) + "," + businessModel.QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+                        if (product.getDeliveredPcsQty() > 0) {
+                            values = businessModel.QT(getOrderId()) + "," + product.getProductID();
+                            values += "," + product.getDeliveredPcsQty() + "," + product.getPcUomid() + ",1"
+                                    + "," + product.getSrp() + "," + product.getSrp() + "," + (product.getSrp() * product.getDeliveredPcsQty()) + "," + businessModel.QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+                        if (product.getDeliveredOuterQty() > 0) {
+                            values = businessModel.QT(getOrderId()) + "," + product.getProductID();
+                            values += "," + product.getDeliveredOuterQty() + "," + product.getOuUomid() + "," + product.getOutersize()
+                                    + "," + product.getOsrp() + "," + product.getOsrp() + "," + (product.getOsrp() * product.getDeliveredOuterQty()) + "," + businessModel.QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+
+
+                        //update SIH
+                        int totalqty = (product.getDeliveredPcsQty())
+                                + (product.getCaseSize() * product
+                                .getDeliveredCaseQty())
+                                + (product.getDeliveredOuterQty() * product
+                                .getOutersize());
+
+                        int s = product.getSIH() > totalqty ? product.getSIH()
+                                - totalqty : 0;
+
+                        db.executeQ("update productmaster set sih=(case when  ifnull(sih,0)>"
+                                + totalqty
+                                + " then ifnull(sih,0)-"
+                                + totalqty
+                                + " else 0 end) where pid="
+                                + product.getProductID());
+
+                        //
+                        db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
+                                + totalqty
+                                + " then ifnull(qty,0)-"
+                                + totalqty
+                                + " else 0 end) where pid="
+                                + product.getProductID());
+
+
+                        //updating object
+                        product.setSIH(s);
+
+
+                    }
+                } else {
+
+                    if (product.getOrderedCaseQty() > 0
+                            || product.getOrderedPcsQty() > 0
+                            || product.getOrderedOuterQty() > 0) {
+
+                        if (product.getOrderedCaseQty() > 0) {
+                            values = getOrderId() + "," + product.getProductID();
+                            values += "," + product.getOrderedCaseQty() + "," + product.getCaseUomId() + "," + product.getCaseSize()
+                                    + "," + product.getCsrp() + "," + product.getCsrp() + "," + (product.getCsrp() * product.getOrderedCaseQty()) + "," + businessModel.QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+                        if (product.getOrderedPcsQty() > 0) {
+                            values = getOrderId() + "," + product.getProductID();
+                            values += "," + product.getOrderedPcsQty() + "," + product.getPcUomid() + ",1"
+                                    + "," + product.getSrp() + "," + product.getSrp() + "," + (product.getSrp() * product.getOrderedPcsQty()) + "," + businessModel.QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+                        if (product.getOrderedOuterQty() > 0) {
+                            values = getOrderId() + "," + product.getProductID();
+                            values += "," + product.getOrderedOuterQty() + "," + product.getOuUomid() + "," + product.getOutersize()
+                                    + "," + product.getOsrp() + "," + product.getOsrp() + "," + (product.getOsrp() * product.getOrderedOuterQty()) + "," + businessModel.QT("N");
+                            db.insertSQL("OrderDeliveryDetail",
+                                    columns, values);
+                        }
+
+                        //SIH will be update while saving invoice..
+
+                    }
+
+                }
+            }
+
+
+            if (!isPartial) {
+                // inserting free products
+                for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
+
+                    if (schemeBO.isQuantityTypeSelected()) {
+
+                        for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
+
+                            ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+
+
+                            if (schemeProductBO.getUomID() == productMasterBO.getPcUomid()) {
+                                values = getOrderId() + "," + schemeProductBO.getProductId();
+                                values += "," + schemeProductBO.getQuantitySelected() + "," + productMasterBO.getPcUomid() + ",1"
+                                        + "," + productMasterBO.getSrp() + "," + productMasterBO.getSrp() + "," + (productMasterBO.getSrp() * schemeProductBO.getQuantitySelected()) + "," + businessModel.QT("N");
                                 db.insertSQL("OrderDeliveryDetail",
                                         columns, values);
                             }
-                            if (product.getDeliveredPcsQty() > 0) {
-                                values = businessModel.QT(getOrderId()) + "," + product.getProductID();
-                                values += "," + product.getDeliveredPcsQty() + "," + product.getPcUomid() + ",1"
-                                        + "," + product.getSrp() + "," + product.getSrp() + "," + (product.getSrp() * product.getDeliveredPcsQty()) + "," + businessModel.QT("N");
+                            if (schemeProductBO.getUomID() == productMasterBO.getCaseUomId()) {
+                                values = getOrderId() + "," + schemeProductBO.getProductId();
+                                values += "," + schemeProductBO.getQuantitySelected() + "," + productMasterBO.getCaseUomId() + "," + productMasterBO.getCaseSize()
+                                        + "," + productMasterBO.getCsrp() + "," + productMasterBO.getCsrp() + "," + (productMasterBO.getCsrp() * schemeProductBO.getQuantitySelected()) + "," + businessModel.QT("N");
                                 db.insertSQL("OrderDeliveryDetail",
                                         columns, values);
                             }
-                            if (product.getDeliveredOuterQty() > 0) {
-                                values = businessModel.QT(getOrderId()) + "," + product.getProductID();
-                                values += "," + product.getDeliveredOuterQty() + "," + product.getOuUomid() + "," + product.getOutersize()
-                                        + "," + product.getOsrp() + "," + product.getOsrp() + "," + (product.getOsrp() * product.getDeliveredOuterQty()) + "," + businessModel.QT("N");
+                            if (schemeProductBO.getUomID() == productMasterBO.getOuUomid()) {
+                                values = getOrderId() + "," + schemeProductBO.getProductId();
+                                values += "," + schemeProductBO.getQuantitySelected() + "," + productMasterBO.getOuUomid() + "," + productMasterBO.getOutersize()
+                                        + "," + productMasterBO.getOsrp() + "," + productMasterBO.getOsrp() + "," + (productMasterBO.getOsrp() * schemeProductBO.getQuantitySelected()) + "," + businessModel.QT("N");
                                 db.insertSQL("OrderDeliveryDetail",
                                         columns, values);
                             }
 
 
-                            //update SIH
-                            int totalqty = (product.getDeliveredPcsQty())
-                                    + (product.getCaseSize() * product
-                                    .getDeliveredCaseQty())
-                                    + (product.getDeliveredOuterQty() * product
-                                    .getOutersize());
+                            //Update the SIH
 
-                            int s = product.getSIH() > totalqty ? product.getSIH()
-                                    - totalqty : 0;
+                            int totalQty = 0;
+                            if (schemeProductBO.getUomID() == productMasterBO.getPcUomid()) {
+                                totalQty = schemeProductBO.getQuantitySelected();
+                            } else if (schemeProductBO.getUomID() == productMasterBO.getCaseUomId()) {
+                                totalQty = (schemeProductBO.getQuantitySelected() * productMasterBO.getCaseSize());
+                            } else if (schemeProductBO.getUomID() == productMasterBO.getOuUomid()) {
+                                totalQty = (schemeProductBO.getQuantitySelected() * productMasterBO.getOutersize());
+                            }
+
+                            int s = productMasterBO.getSIH() > totalQty ? productMasterBO.getSIH()
+                                    - totalQty : 0;
 
                             db.executeQ("update productmaster set sih=(case when  ifnull(sih,0)>"
-                                    + totalqty
+                                    + totalQty
                                     + " then ifnull(sih,0)-"
-                                    + totalqty
+                                    + totalQty
                                     + " else 0 end) where pid="
-                                    + product.getProductID());
+                                    + productMasterBO.getProductID());
 
                             //
                             db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
-                                    + totalqty
+                                    + totalQty
                                     + " then ifnull(qty,0)-"
-                                    + totalqty
+                                    + totalQty
                                     + " else 0 end) where pid="
-                                    + product.getProductID());
+                                    + productMasterBO.getProductID());
 
 
                             //updating object
-                            product.setSIH(s);
+                            productMasterBO.setSIH(s);
 
-
-                        }
-                    } else {
-
-                        if (product.getOrderedCaseQty() > 0
-                                || product.getOrderedPcsQty() > 0
-                                || product.getOrderedOuterQty() > 0) {
-
-                            if (product.getOrderedCaseQty() > 0) {
-                                values = getOrderId() + "," + product.getProductID();
-                                values += "," + product.getOrderedCaseQty() + "," + product.getCaseUomId() + "," + product.getCaseSize()
-                                        + "," + product.getCsrp() + "," + product.getCsrp() + "," + (product.getCsrp() * product.getOrderedCaseQty()) + "," + businessModel.QT("N");
-                                db.insertSQL("OrderDeliveryDetail",
-                                        columns, values);
-                            }
-                            if (product.getOrderedPcsQty() > 0) {
-                                values = getOrderId() + "," + product.getProductID();
-                                values += "," + product.getOrderedPcsQty() + "," + product.getPcUomid() + ",1"
-                                        + "," + product.getSrp() + "," + product.getSrp() + "," + (product.getSrp() * product.getOrderedPcsQty()) + "," + businessModel.QT("N");
-                                db.insertSQL("OrderDeliveryDetail",
-                                        columns, values);
-                            }
-                            if (product.getOrderedOuterQty() > 0) {
-                                values = getOrderId() + "," + product.getProductID();
-                                values += "," + product.getOrderedOuterQty() + "," + product.getOuUomid() + "," + product.getOutersize()
-                                        + "," + product.getOsrp() + "," + product.getOsrp() + "," + (product.getOsrp() * product.getOrderedOuterQty()) + "," + businessModel.QT("N");
-                                db.insertSQL("OrderDeliveryDetail",
-                                        columns, values);
-                            }
-
-                            //SIH will be update while saving invoice..
-
-                        }
-
-                    }
-                }
-
-
-                if (!isPartial) {
-                    // inserting free products
-                    for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
-
-                        if (schemeBO.isQuantityTypeSelected()) {
-
-                            for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
-
-                                ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
-
-
-                                if (schemeProductBO.getUomID() == productMasterBO.getPcUomid()) {
-                                    values = getOrderId() + "," + schemeProductBO.getProductId();
-                                    values += "," + schemeProductBO.getQuantitySelected() + "," + productMasterBO.getPcUomid() + ",1"
-                                            + "," + productMasterBO.getSrp() + "," + productMasterBO.getSrp() + "," + (productMasterBO.getSrp() * schemeProductBO.getQuantitySelected()) + "," + businessModel.QT("N");
-                                    db.insertSQL("OrderDeliveryDetail",
-                                            columns, values);
-                                }
-                                if (schemeProductBO.getUomID() == productMasterBO.getCaseUomId()) {
-                                    values = getOrderId() + "," + schemeProductBO.getProductId();
-                                    values += "," + schemeProductBO.getQuantitySelected() + "," + productMasterBO.getCaseUomId() + "," + productMasterBO.getCaseSize()
-                                            + "," + productMasterBO.getCsrp() + "," + productMasterBO.getCsrp() + "," + (productMasterBO.getCsrp() * schemeProductBO.getQuantitySelected()) + "," + businessModel.QT("N");
-                                    db.insertSQL("OrderDeliveryDetail",
-                                            columns, values);
-                                }
-                                if (schemeProductBO.getUomID() == productMasterBO.getOuUomid()) {
-                                    values = getOrderId() + "," + schemeProductBO.getProductId();
-                                    values += "," + schemeProductBO.getQuantitySelected() + "," + productMasterBO.getOuUomid() + "," + productMasterBO.getOutersize()
-                                            + "," + productMasterBO.getOsrp() + "," + productMasterBO.getOsrp() + "," + (productMasterBO.getOsrp() * schemeProductBO.getQuantitySelected()) + "," + businessModel.QT("N");
-                                    db.insertSQL("OrderDeliveryDetail",
-                                            columns, values);
-                                }
-
-
-                                //Update the SIH
-
-                                int totalQty = 0;
-                                if (schemeProductBO.getUomID() == productMasterBO.getPcUomid()) {
-                                    totalQty = schemeProductBO.getQuantitySelected();
-                                } else if (schemeProductBO.getUomID() == productMasterBO.getCaseUomId()) {
-                                    totalQty = (schemeProductBO.getQuantitySelected() * productMasterBO.getCaseSize());
-                                } else if (schemeProductBO.getUomID() == productMasterBO.getOuUomid()) {
-                                    totalQty = (schemeProductBO.getQuantitySelected() * productMasterBO.getOutersize());
-                                }
-
-                                int s = productMasterBO.getSIH() > totalQty ? productMasterBO.getSIH()
-                                        - totalQty : 0;
-
-                                db.executeQ("update productmaster set sih=(case when  ifnull(sih,0)>"
-                                        + totalQty
-                                        + " then ifnull(sih,0)-"
-                                        + totalQty
-                                        + " else 0 end) where pid="
-                                        + productMasterBO.getProductID());
-
-                                //
-                                db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
-                                        + totalQty
-                                        + " then ifnull(qty,0)-"
-                                        + totalQty
-                                        + " else 0 end) where pid="
-                                        + productMasterBO.getProductID());
-
-
-                                //updating object
-                                productMasterBO.setSIH(s);
-
-                            }
                         }
                     }
                 }
-
-
-                db.closeDB();
-            } catch (Exception ex) {
-
-                Commons.printException(ex);
             }
-        }
 
+
+            db.closeDB();
+        } catch (Exception ex) {
+
+            Commons.printException(ex);
+        }
+    }
 
 
     /**
      * To check whether reason provided for un satisfied indicative order
+     *
      * @param orderedList ordered product list
      * @return reason availability
      */
@@ -2361,7 +2371,7 @@ public class OrderHelper {
         if (siz == 0)
             return false;
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product =orderedList.get(i);
+            ProductMasterBO product = orderedList.get(i);
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
                 if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
                     if (product.getSoreasonId() == 0)
@@ -2381,6 +2391,7 @@ public class OrderHelper {
     /**
      * Method used to add Off invoice scheme  free product in Last ordered  product (scheme product object).So that
      * we can show in Print
+     *
      * @param mOrderedProductList ordered product list
      */
     public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList) {
@@ -2400,7 +2411,8 @@ public class OrderHelper {
 
     /**
      * Method to add free product list into any one of scheme buy product     *
-     * @param schemeBO Current Scheme
+     *
+     * @param schemeBO  Current Scheme
      * @param productBO current product
      */
     public void updateSchemeFreeProduct(SchemeBO schemeBO,
@@ -2427,6 +2439,7 @@ public class OrderHelper {
 
     /**
      * To check is tax available for all product
+     *
      * @param mOrderedProductList Ordered product list
      * @return tax availability
      */
@@ -2446,6 +2459,7 @@ public class OrderHelper {
 
     /**
      * To check is tax available for any product
+     *
      * @param mOrderedProductList Ordered product list
      * @return tax availability
      */
@@ -2471,6 +2485,7 @@ public class OrderHelper {
 
     /**
      * Method to check whether stock is available to deliver
+     *
      * @param orderList Orderd list
      * @return stock avilability
      */
@@ -2532,9 +2547,9 @@ public class OrderHelper {
     }
 
 
-
     /**
      * Numer of print taken for current invoice
+     *
      * @param mContext current context
      * @return number of print taken
      */
@@ -2565,6 +2580,7 @@ public class OrderHelper {
 
     /**
      * Is stock menu enabled
+     *
      * @return stock check availability
      */
     public boolean isStockCheckMenuEnabled() {
@@ -2579,7 +2595,6 @@ public class OrderHelper {
 
         return false;
     }
-
 
 
 }

@@ -115,7 +115,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
         try {
             bmodel = (BusinessModel) getApplicationContext();
             bmodel.setContext(this);
-            orderHelper=OrderHelper.getInstance(this);
+            orderHelper = OrderHelper.getInstance(this);
 
             salesReturnHelper = SalesReturnHelper.getInstance(this);
             Bundle extras = getIntent().getExtras();

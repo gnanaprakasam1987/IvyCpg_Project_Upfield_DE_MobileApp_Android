@@ -98,7 +98,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         setContentView(R.layout.invoice_print_preview);
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        orderHelper=OrderHelper.getInstance(this);
+        orderHelper = OrderHelper.getInstance(this);
         
         mStatusTV = (TextView) findViewById(R.id.status_tv);
         statusField = (TextView) findViewById(R.id.status_bar);
@@ -417,7 +417,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         @Override
         public void handleMessage(Message msg) {
 
-            OrderHelper orderHelper=OrderHelper.getInstance(InvoicePrintZebra.this);
+            OrderHelper orderHelper = OrderHelper.getInstance(InvoicePrintZebra.this);
             if (msg.what == 9) {
                 pd.dismiss();
                 bmodel = (BusinessModel) getApplicationContext();

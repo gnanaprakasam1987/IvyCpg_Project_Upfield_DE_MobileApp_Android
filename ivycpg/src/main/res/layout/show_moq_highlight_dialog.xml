@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/dimen_5dp">
+
     <LinearLayout
         android:id="@+id/LL_titleBar"
         style="?textTitleStyle"
@@ -48,7 +49,7 @@
         android:dividerHeight="2dp"
         android:fitsSystemWindows="true"
         android:layout_below="@+id/LL_titleBar"
-        android:layout_above="@+id/ll_close"/>
+        android:layout_above="@+id/ll_close" />
 
     <LinearLayout
         android:id="@+id/ll_close"
@@ -57,13 +58,13 @@
         android:orientation="vertical"
 
         android:layout_alignParentBottom="true">
+
         <Button
             android:id="@+id/save_btn"
             style="?attr/roundedCustomButtonSmall"
             android:text="@string/save"
             android:layout_gravity="center_horizontal"
-            android:textAllCaps="false"
-            />
+            android:textAllCaps="false" />
     </LinearLayout>
 
 

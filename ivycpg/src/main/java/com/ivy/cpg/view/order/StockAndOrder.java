@@ -254,7 +254,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        orderHelper=OrderHelper.getInstance(this);
+        orderHelper = OrderHelper.getInstance(this);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
@@ -3949,7 +3949,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.hasOrder()) {
                 //if this config IS_RFIELD1_ENABLED enabled below code will work
                 //and
-                if(bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
+                if (bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
                     int size = bmodel.productHelper
                             .getProductMaster().size();
                     int count = 0;
@@ -4196,7 +4196,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             try {
 
                 if (bmodel.isOrderTaken() && bmodel.isEdit())
-                    orderHelper.deleteOrder(getApplicationContext(),bmodel.getRetailerMasterBO().getRetailerID());
+                    orderHelper.deleteOrder(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());
 
                 if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                     // save price check
@@ -6681,22 +6681,23 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         super.onRestart();
 
     }
+
     //if Rfield1 enabled show this dialog
-    private class MOQConfigEnabled extends AsyncTask <Void, Void, Boolean>
-    {
+    private class MOQConfigEnabled extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             return null;
         }
+
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
 
-                android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
-                mMOQHighlightDialog = new MOQHighlightDialog();
-                mMOQHighlightDialog.setCancelable(false);
-                mMOQHighlightDialog.show(ft, "Sample Fragment");
+            android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
+            mMOQHighlightDialog = new MOQHighlightDialog();
+            mMOQHighlightDialog.setCancelable(false);
+            mMOQHighlightDialog.show(ft, "Sample Fragment");
         }
     }
 

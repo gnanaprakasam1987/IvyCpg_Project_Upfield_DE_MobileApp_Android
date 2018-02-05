@@ -7,6 +7,7 @@ import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.util.Commons;
@@ -17,7 +18,6 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.print.GhanaPrintPreviewActivity;
@@ -48,7 +48,7 @@ public class MyThread extends Thread {
     public void run() {
         BusinessModel bmodel = (BusinessModel) ctx.getApplicationContext();
         bmodel.setContext(ctx);
-        OrderHelper orderHelper=OrderHelper.getInstance(ctx);
+        OrderHelper orderHelper = OrderHelper.getInstance(ctx);
         //FragmentManager fm = ((FragmentActivity)ctx).getSupportFragmentManager();
         //HomeScreenFragment fragment = (HomeScreenFragment)fm.findFragmentById(R.id.synchronization_fragment);
 
@@ -333,7 +333,7 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.DELETE_ORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-            orderHelper.deleteOrder(ctx,bmodel.getRetailerMasterBO().getRetailerID());
+            orderHelper.deleteOrder(ctx, bmodel.getRetailerMasterBO().getRetailerID());
 
             // Calculate and set Distribution percent
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
@@ -390,7 +390,7 @@ public class MyThread extends Thread {
 
             orderHelper.deleteStockAndOrder(ctx);
 
-            orderHelper.deleteOrder(ctx,bmodel.getRetailerMasterBO().getRetailerID());
+            orderHelper.deleteOrder(ctx, bmodel.getRetailerMasterBO().getRetailerID());
 
             // Calculate and set Distribution percent
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
@@ -441,7 +441,7 @@ public class MyThread extends Thread {
             }
 
             frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_DELETED);
-        }else if (opt == DataMembers.DIST_DELETE_ORDER) {
+        } else if (opt == DataMembers.DIST_DELETE_ORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
             bmodel.deleteDistributorOrder(bmodel.distributorMasterHelper.getDistributor().getDId());

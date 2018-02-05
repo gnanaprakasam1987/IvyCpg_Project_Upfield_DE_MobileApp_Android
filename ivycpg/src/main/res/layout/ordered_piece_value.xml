@@ -76,10 +76,9 @@
             android:gravity="left|center"
             android:text="@string/zero"
             android:inputType="number"
-            android:maxLength="5"  />
+            android:maxLength="5" />
 
     </LinearLayout>
-
 
 
 </LinearLayout>

@@ -111,7 +111,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
         try {
             bmodel = (BusinessModel) getApplicationContext();
             bmodel.setContext(this);
-            orderHelper=OrderHelper.getInstance(this);
+            orderHelper = OrderHelper.getInstance(this);
 
             mInvoiceno = bmodel.invoiceNumber;
             Bundle extras = getIntent().getExtras();

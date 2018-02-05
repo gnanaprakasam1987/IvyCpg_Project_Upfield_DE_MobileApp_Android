@@ -55,7 +55,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
         mDialogResult = (OnMyDialogResult) getActivity();
         mTotalOrderValue = getArguments().getDouble("totalValue", 0);
         mEnteredDiscAmtOrPercent = getArguments().getDouble("enteredDiscAmtOrPercent", 0);
-        discountHelper=DiscountHelper.getInstance(getActivity());
+        discountHelper = DiscountHelper.getInstance(getActivity());
 
 
     }

@@ -134,6 +134,7 @@ public class SurveyHelperNew {
 
     /**
      * Get valid survey id and groupid by comparing retailer attributes
+     *
      * @param db
      */
     private ArrayList<String> getValidGroupIdByAttributeCriteriaMapping(DBUtil db) {

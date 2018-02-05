@@ -449,17 +449,17 @@ public class EmptyReconciliationHelper {
 	public void updateEmptyReconilationTable() {
 		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
 		try {
-			ArrayList<BomReturnBO> returnProducts = bmodel.productHelper
-					.getBomReturnProducts();
-			db.openDataBase();
+            ArrayList<BomReturnBO> returnProducts = bmodel.productHelper
+                    .getBomReturnProducts();
+            db.openDataBase();
 			Cursor cursor;
 			cursor = db
 					.selectSQL("SELECT Pid,Qty FROM EmptyReconciliationDetail ORDER BY Pid");
 			if (cursor.getCount() > 0) {
 				while (cursor.moveToNext()) {
-					for (BomReturnBO bomReturnBo : returnProducts) {
-						if (bomReturnBo.getReturnQty() > 0) {
-							if (bomReturnBo.getPid()
+                    for (BomReturnBO bomReturnBo : returnProducts) {
+                        if (bomReturnBo.getReturnQty() > 0) {
+                            if (bomReturnBo.getPid()
 									.equals(cursor.getString(0))) {
 
 								//update unloading SIH

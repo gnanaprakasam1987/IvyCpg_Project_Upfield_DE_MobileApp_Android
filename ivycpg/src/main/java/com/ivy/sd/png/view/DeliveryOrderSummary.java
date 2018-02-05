@@ -54,7 +54,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        orderHelper=OrderHelper.getInstance(this);
+        orderHelper = OrderHelper.getInstance(this);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
@@ -124,7 +124,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     orderHelper.saveOrder(DeliveryOrderSummary.this);
                     orderHelper.saveInvoice(DeliveryOrderSummary.this);
                 }
-                orderHelper.insertDeliveryOrderRecord(DeliveryOrderSummary.this,isPartialOrder);
+                orderHelper.insertDeliveryOrderRecord(DeliveryOrderSummary.this, isPartialOrder);
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_DELIVERY_ORDER);
 
 

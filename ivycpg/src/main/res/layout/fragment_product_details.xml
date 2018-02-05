@@ -2,6 +2,7 @@
     android:id="@+id/TabHost01"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,13 +39,14 @@
                 android:layout_height="match_parent"
                 android:padding="@dimen/dimens_2dp"
                 android:scrollbars="vertical" />
+
             <LinearLayout
                 android:id="@+id/ll_sao_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dimen_5dp"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/sku_mixture_title"
                     android:layout_width="match_parent"
@@ -57,6 +59,7 @@
                     android:text="SKU Mixture product name"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
+
                 <LinearLayout
                     android:id="@+id/ll_sku_mixture_product_name"
                     android:layout_width="match_parent"
@@ -66,8 +69,7 @@
                     android:gravity="center|left"
                     android:paddingLeft="@dimen/dimens_4dp"
                     android:orientation="vertical"
-                    android:textColor="@android:color/black"
-                    />
+                    android:textColor="@android:color/black" />
             </LinearLayout>
 
 

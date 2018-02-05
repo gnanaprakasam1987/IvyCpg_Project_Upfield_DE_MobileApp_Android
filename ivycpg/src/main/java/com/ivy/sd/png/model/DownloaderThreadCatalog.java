@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.os.StatFs;
 
 import com.amazonaws.SDKGlobalConfiguration;
@@ -29,7 +27,6 @@ import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Downloads a file in a thread. Will send messages to the HomeSceen activity to

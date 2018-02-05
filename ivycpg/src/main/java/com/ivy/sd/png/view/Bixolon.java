@@ -103,7 +103,7 @@ public class Bixolon extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        orderHelper=OrderHelper.getInstance(this);
+        orderHelper = OrderHelper.getInstance(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 

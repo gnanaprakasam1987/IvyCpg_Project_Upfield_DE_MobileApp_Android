@@ -70,6 +70,8 @@ import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.OrderSummary;
+import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
@@ -176,10 +178,8 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InvoicePrintZebra;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.NewOutlet;
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
-import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.sd.png.view.Synchronization;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
@@ -220,7 +220,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.Timer;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
@@ -1653,7 +1652,7 @@ public class BusinessModel extends Application {
                     retailer.setIsCollectionView("N");
 
                     if (configurationMasterHelper.IS_HANGINGORDER) {
-                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(),retailer);
+                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer);
                     }
                     updateIndicativeOrderedRetailer(retailer);
 

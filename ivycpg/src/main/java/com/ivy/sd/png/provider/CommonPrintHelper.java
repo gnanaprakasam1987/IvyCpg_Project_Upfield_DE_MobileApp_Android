@@ -168,7 +168,7 @@ public class CommonPrintHelper {
     private CommonPrintHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
-        orderHelper=OrderHelper.getInstance(context);
+        orderHelper = OrderHelper.getInstance(context);
     }
 
     public static CommonPrintHelper getInstance(Context context) {

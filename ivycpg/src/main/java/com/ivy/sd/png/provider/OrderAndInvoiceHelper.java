@@ -13,7 +13,7 @@ public class OrderAndInvoiceHelper {
 
 	private Context context;
 	private BusinessModel bmodel;
-	private DiscountHelper discountHelper;
+    private DiscountHelper discountHelper;
 
 	private static OrderAndInvoiceHelper instance = null;
 	public double mGolderStoreDiscountAmount = 0;
@@ -21,8 +21,8 @@ public class OrderAndInvoiceHelper {
 	protected OrderAndInvoiceHelper(Context context) {
 		this.context = context;
 		this.bmodel = (BusinessModel) context;
-		discountHelper=DiscountHelper.getInstance(context);
-	}
+        discountHelper = DiscountHelper.getInstance(context);
+    }
 
 	public static OrderAndInvoiceHelper getInstance(Context context) {
 		if (instance == null) {
@@ -60,7 +60,7 @@ public class OrderAndInvoiceHelper {
 			if (orderHeaderCursor != null) {
 				if (orderHeaderCursor.moveToNext()) {
 					discValue = orderHeaderCursor.getDouble(0);
-					discountHelper.getBillWiseDiscountList().get(0).setAppliedDiscount(discValue);
+                    discountHelper.getBillWiseDiscountList().get(0).setAppliedDiscount(discValue);
 
 				}
 			}

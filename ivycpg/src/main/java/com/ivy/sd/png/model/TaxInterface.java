@@ -45,6 +45,7 @@ public interface TaxInterface {
 
     //Project specific: Tax should be removed for scheme calculation.
     void removeTaxFromPrice();
+
     //Project specific: Removed tax is applied back to it after scheme calculation finished.
     void applyRemovedTax(LinkedList<ProductMasterBO> mOrderedProductList);
 

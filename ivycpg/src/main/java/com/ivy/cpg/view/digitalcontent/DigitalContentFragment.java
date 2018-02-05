@@ -31,6 +31,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.countersales.CSHomeScreenFragment;
+import com.ivy.cpg.view.order.OrderSummary;
+import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -50,9 +52,7 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.view.SchemeApply;
-import com.ivy.cpg.view.order.StockAndOrder;
 
 import java.util.ArrayList;
 import java.util.Collections;

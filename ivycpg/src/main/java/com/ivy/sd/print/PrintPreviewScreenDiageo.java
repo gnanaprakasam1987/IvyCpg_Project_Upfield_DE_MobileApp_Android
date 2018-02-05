@@ -123,7 +123,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
         try {
             bmodel = (BusinessModel) getApplicationContext();
             bmodel.setContext(this);
-            orderHelper=OrderHelper.getInstance(this);
+            orderHelper = OrderHelper.getInstance(this);
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
 

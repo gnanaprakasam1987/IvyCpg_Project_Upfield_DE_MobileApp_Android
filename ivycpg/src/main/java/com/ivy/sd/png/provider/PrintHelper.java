@@ -62,7 +62,7 @@ public class PrintHelper {
     private PrintHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
-        orderHelper=OrderHelper.getInstance(context);
+        orderHelper = OrderHelper.getInstance(context);
     }
 
     public static PrintHelper getInstance(Context context) {

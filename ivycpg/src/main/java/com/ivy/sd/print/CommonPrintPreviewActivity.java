@@ -46,6 +46,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -57,7 +58,6 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.cpg.view.order.OrderSummary;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -131,7 +131,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        orderHelper=OrderHelper.getInstance(this);
+        orderHelper = OrderHelper.getInstance(this);
 
         mPrinterStatusTV = (TextView) findViewById(R.id.printer_status);
         mPrintCountSpinner = (Spinner) findViewById(R.id.print_count);

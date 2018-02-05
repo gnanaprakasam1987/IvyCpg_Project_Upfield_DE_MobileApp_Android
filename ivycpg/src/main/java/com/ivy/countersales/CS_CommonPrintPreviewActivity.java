@@ -31,6 +31,7 @@ import com.aem.api.IAemScrybe;
 import com.bixolon.android.library.BxlService;
 import com.bixolon.printer.BixolonPrinter;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
@@ -39,7 +40,6 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.print.DemoSleeper;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
@@ -106,7 +106,7 @@ public class CS_CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        orderHelper=OrderHelper.getInstance(this);
+        orderHelper = OrderHelper.getInstance(this);
 
         mPrinterStatusTV = (TextView) findViewById(R.id.printer_status);
         mPrintCountSpinner = (Spinner) findViewById(R.id.print_count);

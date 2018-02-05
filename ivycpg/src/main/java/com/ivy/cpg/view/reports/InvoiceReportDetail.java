@@ -103,7 +103,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
-        orderHelper=OrderHelper.getInstance(this);
+        orderHelper = OrderHelper.getInstance(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

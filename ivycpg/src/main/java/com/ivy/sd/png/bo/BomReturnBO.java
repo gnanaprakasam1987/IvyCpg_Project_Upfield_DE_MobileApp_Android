@@ -115,12 +115,12 @@ public class BomReturnBO {
 		this.totalReturnQty = totalReturnQty;
 	}
 
-	public static final Comparator<BomReturnBO> SKUWiseAscending = new Comparator<BomReturnBO>() {
+    public static final Comparator<BomReturnBO> SKUWiseAscending = new Comparator<BomReturnBO>() {
 
 		@Override
-		public int compare(BomReturnBO PM1, BomReturnBO PM2) {
-			return PM1.getProductName().compareTo(PM2.getProductName());
-		}
+        public int compare(BomReturnBO PM1, BomReturnBO PM2) {
+            return PM1.getProductName().compareTo(PM2.getProductName());
+        }
 	};
 
 }

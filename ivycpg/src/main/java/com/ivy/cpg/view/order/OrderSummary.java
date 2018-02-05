@@ -135,10 +135,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int DIALOG_DELETE_ONLY_ORDER = 5;
     private static final int DIALOG_ORDER_SAVED_WITH_PRINT_OPTION = 2;
     private static final int DIALOG_ORDER_SAVED = 3;
-    private static final int DIALOG_NUMBER_OF_PRINTS_ORDER =10;
-    private static final int DIALOG_NUMBER_OF_PRINTS_INVOICE =11;
-    private static final int DIALOG_INVOICE_SAVED =9;
-    private static final int DIALOG_SIGNATURE_AVAILABLE =8;
+    private static final int DIALOG_NUMBER_OF_PRINTS_ORDER = 10;
+    private static final int DIALOG_NUMBER_OF_PRINTS_INVOICE = 11;
+    private static final int DIALOG_INVOICE_SAVED = 9;
+    private static final int DIALOG_SIGNATURE_AVAILABLE = 8;
 
 
     private Button button_order;
@@ -167,7 +167,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Vector<ProductMasterBO> mSortedList;
 
     private String sendMailAndLoadClass;
-    private boolean isFromOrder ;
+    private boolean isFromOrder;
     private double enteredDiscAmtOrPercent = 0;
 
     private double totalOrderValue;
@@ -203,7 +203,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         BModel = (BusinessModel) getApplicationContext();
         BModel.setContext(this);
         discountHelper = DiscountHelper.getInstance(this);
-        orderHelper=OrderHelper.getInstance(this);
+        orderHelper = OrderHelper.getInstance(this);
 
         // Close the screen if user id becomes 0 **/
         if (BModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
@@ -236,7 +236,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            if(getSupportActionBar()!=null) {
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowTitleEnabled(false);
                 setScreenTitle(screenTitle);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -244,8 +244,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
         }
         BModel.saveModuleCompletion("MENU_CLOSING");
-
-
 
 
         PHOTO_PATH = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName;
@@ -269,8 +267,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         mReceiver = new ScreenReceiver();
         registerReceiver(mReceiver, filter);
-
-
 
 
         if (BModel.getOrderHeaderBO() == null) {
@@ -501,7 +497,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         } else if (i1 == R.id.menu_calculator) {
             callCalculatorApplication();
             return true;
-        }  else if (i1 == R.id.menu_store_wise_discount) {
+        } else if (i1 == R.id.menu_store_wise_discount) {
 
             FragmentManager fm = getSupportFragmentManager();
             mStoreWiseDiscountDialogFragment = new StoreWiseDiscountDialog();
@@ -581,7 +577,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
 
-    private void callCalculatorApplication(){
+    private void callCalculatorApplication() {
         try {
             ArrayList<HashMap<String, Object>> items = new ArrayList<>();
             final PackageManager pm = getPackageManager();
@@ -609,7 +605,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
-    private void CollectionBeforeInvoiceCall(){
+    private void CollectionBeforeInvoiceCall() {
         BModel.downloadBankDetails();
         BModel.downloadBranchDetails();
         BModel.collectionHelper.loadPaymentModes();
@@ -618,9 +614,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         double creditBalance;
 
         if (BModel.getRetailerMasterBO().getCreditLimit() != 0) {
-            creditBalance = BModel.getRetailerMasterBO().getCreditLimit()- BModel.collectionHelper.calculatePendingOSTAmount();
-        }
-        else
+            creditBalance = BModel.getRetailerMasterBO().getCreditLimit() - BModel.collectionHelper.calculatePendingOSTAmount();
+        } else
             creditBalance = 0;
 
         if (totalOrderValue < creditBalance)
@@ -652,7 +647,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
-    private void editOrder(){
+    private void editOrder() {
         discountHelper.clearSchemeFreeProduct(mOrderedProductList);
 
         if (BModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT)
@@ -760,7 +755,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Calendar origDay = Calendar.getInstance();
                 origDay.add(Calendar.DAY_OF_YEAR, (BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
-                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(origDay.getTime(),ConfigurationMasterHelper.outDateFormat));
+                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(origDay.getTime(), ConfigurationMasterHelper.outDateFormat));
 
             }
         } catch (Exception e) {
@@ -850,13 +845,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
 
 
-
         if (BModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
             mSortedList = new Vector<>();
-            mOrderedProductList=orderHelper.organizeProductsByUserEntry();
+            mOrderedProductList = orderHelper.organizeProductsByUserEntry();
             mSortedList.addAll(mOrderedProductList);
         }
-
 
 
         if (BModel.getOrderHeaderBO() != null)
@@ -877,7 +870,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if (!BModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                 || BModel.configurationMasterHelper.IS_SIH_VALIDATION) {
             totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList);
-           totalOrderValue -=totalSchemeDiscValue;
+            totalOrderValue -= totalSchemeDiscValue;
         }
 
         if (BModel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
@@ -902,8 +895,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if (BModel.configurationMasterHelper.SHOW_TAX) {
             BModel.productHelper.taxHelper.updateProductWiseTax();
         }
-
-
 
 
         listView.setAdapter(new ProductExpandableAdapter());
@@ -954,15 +945,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     }
 
-    private void callAmountSplitUpScreen(){
+    private void callAmountSplitUpScreen() {
 
         double cmy_disc = 0, dist_disc = 0;
         for (ProductMasterBO productMasterBO : mOrderedProductList) {
             cmy_disc = cmy_disc + productMasterBO.getCompanyTypeDiscount();
             dist_disc = dist_disc + productMasterBO.getDistributorTypeDiscount();
         }
-       double cmyDiscount = cmy_disc + BModel.getRetailerMasterBO().getBillWiseCompanyDiscount();
-       double distDiscount = dist_disc + BModel.getRetailerMasterBO().getBillWiseDistributorDiscount();
+        double cmyDiscount = cmy_disc + BModel.getRetailerMasterBO().getBillWiseCompanyDiscount();
+        double distDiscount = dist_disc + BModel.getRetailerMasterBO().getBillWiseDistributorDiscount();
 
         if (amountSplitUpDialog == null) {
             amountSplitUpDialog = new AmountSplitUpDialog();
@@ -1030,7 +1021,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
 
-
     @Override
     protected Dialog onCreateDialog(int id) {
         String delivery_date_txt;
@@ -1051,31 +1041,30 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         .setIcon(null)
                         .setCancelable(false)
                         .setTitle(getResources().getString(R.string.order_saved_locally_order_id_is) + orderHelper.getOrderId())
-                        .setMessage((delivery_date_txt.equals("")?"":getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt))
+                        .setMessage((delivery_date_txt.equals("") ? "" : getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt))
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
 
-                                            sendMailAndLoadClass = "HomeScreenTwoPRINT_FILE_ORDER";
-                                            if (BModel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
-                                                prepareEmailData();
+                                        sendMailAndLoadClass = "HomeScreenTwoPRINT_FILE_ORDER";
+                                        if (BModel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
+                                            prepareEmailData();
 
-                                            } else {
-                                                Intent i = new Intent(
-                                                        OrderSummary.this,
-                                                        HomeScreenTwo.class);
-                                                Bundle extras = getIntent().getExtras();
-                                                if (extras != null) {
-                                                    i.putExtra("IsMoveNextActivity", BModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                                                    i.putExtra("CurrentActivityCode", mCurrentActivityCode);
-                                                }
-                                                startActivity(i);
+                                        } else {
+                                            Intent i = new Intent(
+                                                    OrderSummary.this,
+                                                    HomeScreenTwo.class);
+                                            Bundle extras = getIntent().getExtras();
+                                            if (extras != null) {
+                                                i.putExtra("IsMoveNextActivity", BModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                                                i.putExtra("CurrentActivityCode", mCurrentActivityCode);
                                             }
+                                            startActivity(i);
+                                        }
 
                                     }
                                 });
-
 
 
                 BModel.applyAlertDialogTheme(builder2);
@@ -1101,7 +1090,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 getResources().getString(
                                         R.string.order_saved_locally_order_id_is)
                                         + orderHelper.getOrderId())
-                        .setMessage(delivery_date_txt.equals("")?"":getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt)
+                        .setMessage(delivery_date_txt.equals("") ? "" : getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt)
                         .setNegativeButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
@@ -1114,7 +1103,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             i.putExtra("IsMoveNextActivity", BModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                                             i.putExtra("CurrentActivityCode", mCurrentActivityCode);
                                         }
-                                        startActivity(i);   finish();
+                                        startActivity(i);
+                                        finish();
                                     }
                                 })
                         .setPositiveButton(
@@ -1127,8 +1117,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 || BModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
 
                                             showDialog(DIALOG_NUMBER_OF_PRINTS_ORDER);
-                                        }
-                                        else {
+                                        } else {
                                             printOrder();
                                         }
                                     }
@@ -1381,10 +1370,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
 
 
-
                 return dialog;
             }
-
 
 
             default:
@@ -1392,8 +1379,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
         return null;
     }
-
-
 
 
     public void onClick(View viewClicked) {
@@ -1408,14 +1393,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         } else if (viewClicked == button_invoice) {
 
             saveInvoice();
-        }
-        else if(viewClicked== imageView_amountSplitUp){
+        } else if (viewClicked == imageView_amountSplitUp) {
             callAmountSplitUpScreen();
         }
 
     }
 
-    private void saveOrder(){
+    private void saveOrder() {
 
         IndicativeOrderReasonDialog indicativeReasonDialog;
         isFromOrder = true;
@@ -1474,7 +1458,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
-    private void saveInvoice(){
+    private void saveInvoice() {
 
         isFromOrder = false;
         IndicativeOrderReasonDialog indicativeReasonDialog;
@@ -1533,7 +1517,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 double pendingAmount;
                 double collectedAmount = 0;
 
-                pendingAmount = BModel.getRetailerMasterBO().getCreditLimit()- BModel.collectionHelper.calculatePendingOSTAmount();
+                pendingAmount = BModel.getRetailerMasterBO().getCreditLimit() - BModel.collectionHelper.calculatePendingOSTAmount();
 
                 if (collectionbo.getCashamt() > 0
                         || collectionbo.getChequeamt() > 0 || collectionbo.getCreditamt() > 0) {
@@ -1563,7 +1547,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             BModel.getOrderHeaderBO().setDiscountId(0);
             BModel.getOrderHeaderBO().setIsCompanyGiven(0);
             BModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
-            BModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),ConfigurationMasterHelper.outDateFormat));
+            BModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(), ConfigurationMasterHelper.outDateFormat));
 
             if (!mOrderedProductList.isEmpty()) {
 
@@ -1670,7 +1654,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
 
-    private double applyDiscountMaxValidation(double discount){
+    private double applyDiscountMaxValidation(double discount) {
         try {
             if (BModel.configurationMasterHelper.discountType == 1) {
                 if (discount > 100)
@@ -1749,8 +1733,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Commons.printException("" + e);
         }
     }
-
-
 
 
     private void showFocusProductAlert() {
@@ -1910,7 +1892,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!"MENU_ORDER".equals(screenCode) && BModel.configurationMasterHelper.SHOW_STOCK_IN_SUMMARY) {
 
                     if (BModel.configurationMasterHelper.SHOW_STOCK_SC) {
-                        ( row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
+                        (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         holder.shelfCaseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         try {
@@ -1945,7 +1927,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
 
                     if (BModel.configurationMasterHelper.SHOW_STOCK_SP) {
-                        ( row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
+                        (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         holder.shelfPieceQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         try {
@@ -1981,7 +1963,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
                 if (!BModel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    ( row.findViewById(R.id.llPiece)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llPiece)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     holder.pcsQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1997,7 +1979,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                 }
                 if (!BModel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    ( row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     holder.outerQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2029,7 +2011,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                 }
                 if (!BModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
-                    ( row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     holder.tw_srp.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2059,7 +2041,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             holder.shelfCaseQty.setText(String.valueOf(holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfCase()));
             holder.shelfOuterQty.setText(String.valueOf(holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfOuter()));
-            holder.shelfPieceQty.setText(String.valueOf(holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfPiece() ));
+            holder.shelfPieceQty.setText(String.valueOf(holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfPiece()));
 
             if (holder.productBO != null) {
                 if (holder.productBO.getCaseUomId() == productBO.getUomID()
@@ -2068,19 +2050,19 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     holder.caseQty
                             .setText(String.valueOf(productBO.getQuantitySelected()));
-                    holder.pcsQty.setText(String.valueOf(0 ));
-                    holder.outerQty.setText(String.valueOf(0 ));
+                    holder.pcsQty.setText(String.valueOf(0));
+                    holder.outerQty.setText(String.valueOf(0));
                 } else if (holder.productBO.getOuUomid() == productBO
                         .getUomID() && holder.productBO.getOuUomid() != 0) {
                     // outer wise free quantity update
                     holder.outerQty.setText(String.valueOf(productBO.getQuantitySelected()));
-                    holder.pcsQty.setText(String.valueOf(0 ));
-                    holder.caseQty.setText(String.valueOf(0 ));
+                    holder.pcsQty.setText(String.valueOf(0));
+                    holder.caseQty.setText(String.valueOf(0));
 
                 } else {
                     holder.pcsQty.setText(String.valueOf(productBO.getQuantitySelected()));
-                    holder.caseQty.setText(String.valueOf(0 ));
-                    holder.outerQty.setText(String.valueOf(0 ));
+                    holder.caseQty.setText(String.valueOf(0));
+                    holder.outerQty.setText(String.valueOf(0));
                 }
             }
 
@@ -2156,7 +2138,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
                     if (BModel.configurationMasterHelper.SHOW_STOCK_SC) {
-                        ( row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
+                        (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         holder.shelfCaseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         try {
@@ -2173,7 +2155,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     }
                     if (BModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                        ( row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
+                        (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         holder.shelfOuterQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         try {
@@ -2191,7 +2173,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
 
                     if (BModel.configurationMasterHelper.SHOW_STOCK_SP) {
-                        ( row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
+                        (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         holder.shelfPieceQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         try {
@@ -2228,7 +2210,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
                 if (!BModel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    ( row.findViewById(R.id.llPiece)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llPiece)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.pcsQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2244,7 +2226,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                 }
                 if (!BModel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    ( row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.outerQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2260,7 +2242,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                 }
                 if (!BModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
-                    ( row.findViewById(R.id.llShelfWeight)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llShelfWeight)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.weighttitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.caseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2276,7 +2258,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                 }
                 if (!BModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
-                    ( row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.tw_srp.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2308,14 +2290,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             holder.tw_srp.setText(BModel.formatValue(holder.productBO.getSrp()));
             holder.outerQty.setText(String.valueOf(holder.productBO.getOrderedOuterQty()));
 
-            holder.shelfCaseQty.setText(String.valueOf(((holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfCase() == -1) ? 0 : holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfCase())) );
-            holder.shelfOuterQty.setText(String.valueOf(((holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfOuter() == -1) ? 0 : holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfOuter())) );
+            holder.shelfCaseQty.setText(String.valueOf(((holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfCase() == -1) ? 0 : holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfCase())));
+            holder.shelfOuterQty.setText(String.valueOf(((holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfOuter() == -1) ? 0 : holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfOuter())));
             holder.shelfPieceQty.setText(String.valueOf(((holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfPiece() == -1) ? 0 : holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfPiece())));
 
             holder.text_total.setText(String.valueOf(BModel.formatValue(holder.productBO
                     .getDiscount_order_value())));
             int weight = holder.productBO.getOrderedPcsQty() + (holder.productBO.getOrderedCaseQty() * holder.productBO.getCaseSize()) + (holder.productBO.getOrderedOuterQty() * holder.productBO.getOutersize());
-            holder.weight.setText(String.valueOf(weight * holder.productBO.getWeight() ));
+            holder.weight.setText(String.valueOf(weight * holder.productBO.getWeight()));
 
             return row;
         }
@@ -2347,10 +2329,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
 
-
-
-
-
     private final DatePickerDialog.OnDateSetListener mDeliverDatePickerListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
@@ -2379,7 +2357,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     };
 
 
-
     @SuppressLint("HandlerLeak")
     private final Handler handler = new Handler() {
         @Override
@@ -2396,23 +2373,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     BModel.productHelper.clearOrderTable();
                     discountHelper.clearSchemeFreeProduct(mOrderedProductList);
 
-                    if((BModel.configurationMasterHelper.SHOW_ZEBRA_GHANA
-                                || BModel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO
-                                || BModel.configurationMasterHelper.SHOW_ZEBRA_TITAN
-                                || BModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL)){
-                            showDialog(DIALOG_ORDER_SAVED_WITH_PRINT_OPTION);
-                        }
-                        else {
-                            showDialog(DIALOG_ORDER_SAVED);
-                        }
+                    if ((BModel.configurationMasterHelper.SHOW_ZEBRA_GHANA
+                            || BModel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO
+                            || BModel.configurationMasterHelper.SHOW_ZEBRA_TITAN
+                            || BModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL)) {
+                        showDialog(DIALOG_ORDER_SAVED_WITH_PRINT_OPTION);
+                    } else {
+                        showDialog(DIALOG_ORDER_SAVED);
+                    }
 
 
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-            }
-
-            else if (msg.what == DataMembers.NOTIFY_INVOICE_SAVED) {
+            } else if (msg.what == DataMembers.NOTIFY_INVOICE_SAVED) {
                 try {
 
                     orderHelper.getPrintedCountForCurrentInvoice(OrderSummary.this);
@@ -2422,8 +2396,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     if (BModel.configurationMasterHelper.IS_INVOICE) {
                         if (BModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
                             showDialog(DIALOG_INVOICE_SAVED);
-                        }
-                        else {
+                        } else {
                             printInvoice();
                         }
                     } else {
@@ -2437,8 +2410,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
-            else if (msg.what == DataMembers.NOTIFY_ORDER_DELETED) {
+            } else if (msg.what == DataMembers.NOTIFY_ORDER_DELETED) {
                 try {
                     alertDialog.dismiss();
                     BModel = (BusinessModel) getApplicationContext();
@@ -2451,33 +2423,28 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-            }
-            else if (msg.what == BtService.STATE_CONNECTED) {
+            } else if (msg.what == BtService.STATE_CONNECTED) {
                 Toast.makeText(getApplicationContext(), "Connected",
                         Toast.LENGTH_SHORT).show();
                 new checkAndPrint().execute();
 
-            }
-            else if (msg.what == BtService.STATE_CONNECTING) {
+            } else if (msg.what == BtService.STATE_CONNECTING) {
                 Toast.makeText(getApplicationContext(), "Connecting",
                         Toast.LENGTH_SHORT).show();
-            }
-            else if (msg.what == BtService.STATE_LISTEN) {
+            } else if (msg.what == BtService.STATE_LISTEN) {
                 if (msg.what == BtService.STATE_NONE) {
                     Toast.makeText(getApplicationContext(), "None",
                             Toast.LENGTH_SHORT).show();
 
                 }
-            }
-            else if (msg.what == MESSAGE_DEVICE_NAME) {
+            } else if (msg.what == MESSAGE_DEVICE_NAME) {
                 String mConnectedDeviceName;
                 mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                 Toast.makeText(getApplicationContext(),
                         "Device Name " + mConnectedDeviceName,
                         Toast.LENGTH_SHORT).show();
 
-            }
-            else if (msg.what == MESSAGE_TOAST) {
+            } else if (msg.what == MESSAGE_TOAST) {
                 Toast.makeText(getApplicationContext(),
                         msg.getData().getString(TOAST), Toast.LENGTH_SHORT)
                         .show();
@@ -2485,14 +2452,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
                 startActivity(i);
                 finish();
-            }
-            else if (msg.what == DataMembers.NOTIFY_DATABASE_NOT_SAVED) {
+            } else if (msg.what == DataMembers.NOTIFY_DATABASE_NOT_SAVED) {
                 Toast.makeText(OrderSummary.this, "DataBase Restore failed.",
                         Toast.LENGTH_SHORT).show();
             }
         }
     };
-
 
 
     private final android.content.DialogInterface.OnDismissListener discountDismissListener = new android.content.DialogInterface.OnDismissListener() {
@@ -2504,8 +2469,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     };
 
 
-
-    private void printOrder(){
+    private void printOrder() {
 
         Intent i;
         if (BModel.configurationMasterHelper.SHOW_ZEBRA_TITAN
@@ -2629,7 +2593,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     }
 
-    private void printInvoice(){
+    private void printInvoice() {
 
         if (BModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
             new Thread(new Runnable() {
@@ -2872,7 +2836,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
 
-    private void prepareEmailData(){
+    private void prepareEmailData() {
 
         if (mOrderedProductList.size() > 0) {
 
@@ -2958,7 +2922,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 BodyPart bodyPart = new MimeBodyPart();
                 bodyPart.setText(body);
                 //Attachment
-                DataSource source ;
+                DataSource source;
                 if (sendMailAndLoadClass.equalsIgnoreCase("CommonPrintPreviewActivityPRINT_FILE_ORDER") ||
                         sendMailAndLoadClass.equalsIgnoreCase("HomeScreenTwoPRINT_FILE_ORDER")) {
                     source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
@@ -3047,8 +3011,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
 
-
-
     public void numberPressed(View vw) {
         if (returnProductDialog != null && returnProductDialog.isShowing()) {
             returnProductDialog.numberPressed(vw);
@@ -3095,6 +3057,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
         unbindDrawables(findViewById(R.id.root));
     }
+
     /**
      * this would clear all the resources used of the layout.
      *

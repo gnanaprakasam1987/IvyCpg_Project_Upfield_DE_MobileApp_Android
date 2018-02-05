@@ -46,7 +46,8 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     private ListView lvwplist;
     private MyAdaper mSchedule;
     private savePcsValue listner;
-    private Button save,closeButton;
+    private Button save, closeButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,22 +57,23 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         listner = (savePcsValue) getActivity();
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-            if (getDialog() != null) {
-                getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-            }
+        if (getDialog() != null) {
+            getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
 
-            getDialog().setCancelable(false);
-            this.setCancelable(false);
+        getDialog().setCancelable(false);
+        this.setCancelable(false);
 
-            View view = inflater.inflate(R.layout.show_moq_highlight_dialog, container, false);
-            getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        View view = inflater.inflate(R.layout.show_moq_highlight_dialog, container, false);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
-            return view;
-            }
+        return view;
+    }
 
     @Override
     public void onStart() {
@@ -80,35 +82,35 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
         lvwplist = (ListView) getView().findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
-        productBoRfield=new Vector<>();
-        productBoRfieldChanges=new Vector<>();
-        productMstBo=bmodel.productHelper.getProductMaster();
+        productBoRfield = new Vector<>();
+        productBoRfieldChanges = new Vector<>();
+        productMstBo = bmodel.productHelper.getProductMaster();
 
-        int count=productMstBo.size();
-        for(int i=0;i<count;i++)
-        {
+        int count = productMstBo.size();
+        for (int i = 0; i < count; i++) {
             ProductMasterBO product = productMstBo.elementAt(i);
-            if (product.getOrderedPcsQty() > 0 ) {
+            if (product.getOrderedPcsQty() > 0) {
 
-                if(!TextUtils.isEmpty(product.getRField1())) {
-                    int res= SDUtil.convertToInt(product.getRField1());
+                if (!TextUtils.isEmpty(product.getRField1())) {
+                    int res = SDUtil.convertToInt(product.getRField1());
                     if (product.getOrderedPcsQty() % res != 0)
                         productBoRfield.add(product);
                 }
-                Commons.print("product.getProductName()"+product.getProductShortName());
+                Commons.print("product.getProductName()" + product.getProductShortName());
             }
 
         }
         //edtEmail.setWidth(outMetrics.widthPixels);
-        mSchedule=new MyAdaper(productBoRfield);
+        mSchedule = new MyAdaper(productBoRfield);
         lvwplist.setAdapter(mSchedule);
         save = (Button) getView().findViewById(R.id.save_btn);
-        closeButton= (Button) getView().findViewById(R.id.closeButton);
+        closeButton = (Button) getView().findViewById(R.id.closeButton);
         closeButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         closeButton.setOnClickListener(this);
         save.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         save.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -128,24 +130,23 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
                 }
             }
-            if(count==0) {
-                for(ProductMasterBO value:productBoRfieldChanges)
+            if (count == 0) {
+                for (ProductMasterBO value : productBoRfieldChanges)
                     updateData(value);
 
                 listner.saveChanges();
                 dismiss();
-            }
-            else
-                Toast.makeText(bmodel,""+getString(R.string.Please_enter_multiple_of),Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(bmodel, "" + getString(R.string.Please_enter_multiple_of), Toast.LENGTH_SHORT).show();
         }
-        if(i==R.id.closeButton)
+        if (i == R.id.closeButton)
             dismiss();
 
     }
 
-    private class MyAdaper extends ArrayAdapter<ProductMasterBO>
-    {
+    private class MyAdaper extends ArrayAdapter<ProductMasterBO> {
         private final Vector<ProductMasterBO> items;
+
         public MyAdaper(Vector<ProductMasterBO> items) {
             super(bmodel,
                     R.layout.ordered_piece_value, items);
@@ -169,7 +170,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                         R.layout.ordered_piece_value, parent,
                         false);
                 holder = new ViewHolder();
-                holder.productBo=product;
+                holder.productBo = product;
                 holder.productNameTxt = (TextView) row
                         .findViewById(R.id.orderPRODNAME);
                 holder.orderQTYinpiece = (TextView) row
@@ -181,9 +182,9 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                 holder.productNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 holder.rField1Txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
-                holder.productNameTxt.setText(""+product.getProductShortName());
-                holder.orderQTYinpiece.setText( getString(R.string.multiple_of)+" "+product.getRField1());
-                holder.rField1Txt.setText(""+product.getOrderedPcsQty());
+                holder.productNameTxt.setText("" + product.getProductShortName());
+                holder.orderQTYinpiece.setText(getString(R.string.multiple_of) + " " + product.getRField1());
+                holder.rField1Txt.setText("" + product.getOrderedPcsQty());
 
                 holder.rField1Txt.setOnTouchListener(new View.OnTouchListener() {
                     @Override
@@ -209,12 +210,12 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
-                        int res= SDUtil.convertToInt(product.getRField1());
+                        int res = SDUtil.convertToInt(product.getRField1());
                         String qty = s.toString();
-                        Commons.print("qty"+qty+"res"+res);
+                        Commons.print("qty" + qty + "res" + res);
 
-                        if (!"".equals(qty)&&SDUtil.convertToInt(qty)%res==0) {
-                            Commons.print("Value"+SDUtil.convertToInt(qty)%res);
+                        if (!"".equals(qty) && SDUtil.convertToInt(qty) % res == 0) {
+                            Commons.print("Value" + SDUtil.convertToInt(qty) % res);
                             holder.productBo.setOrderedPcsQty(SDUtil
                                     .convertToInt(qty));
                             double tot = (holder.productBo.getOrderedCaseQty() * holder.productBo
@@ -223,18 +224,17 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                                     .getSrp())
                                     + (holder.productBo.getOrderedOuterQty() * holder.productBo
                                     .getOsrp());
-                            Commons.print("tot"+tot);
+                            Commons.print("tot" + tot);
                             holder.productBo.setTotalamount(tot);
                         }
-                        if (SDUtil.convertToInt(qty)%res==0) {
+                        if (SDUtil.convertToInt(qty) % res == 0) {
                             productBoRfieldChanges.add(holder.productBo);
                         }
                     }
                 });
 
                 row.setTag(holder);
-            }
-            else
+            } else
                 holder = (ViewHolder) row.getTag();
 
             return row;
@@ -255,10 +255,9 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
     }
 
-    public class ViewHolder
-    {
+    public class ViewHolder {
         ProductMasterBO productBo;
-        TextView productNameTxt,orderQTYinpiece;
+        TextView productNameTxt, orderQTYinpiece;
         EditText rField1Txt;
     }
 
@@ -288,8 +287,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
     }
 
-   public interface savePcsValue
-    {
+    public interface savePcsValue {
         void saveChanges();
 
     }

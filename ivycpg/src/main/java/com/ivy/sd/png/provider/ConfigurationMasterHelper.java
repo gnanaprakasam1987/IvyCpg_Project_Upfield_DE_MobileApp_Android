@@ -2180,7 +2180,7 @@ public class ConfigurationMasterHelper {
            loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
-        this.IS_MOQ_ENABLED= hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
+        this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
         
     }
 
@@ -5149,7 +5149,6 @@ public class ConfigurationMasterHelper {
             Commons.printException("Unable to load the configurations " + e);
         }
     }
-
 
 
     /**

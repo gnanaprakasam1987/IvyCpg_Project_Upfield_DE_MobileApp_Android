@@ -110,9 +110,6 @@ public class ProductHelper {
     private HashMap<Integer, String> mDescriptionByTypeId;
 
 
-
-
-
     private SparseArray<LoadManagementBO> mLoadManagementBOByProductId;
 
     private HashMap<Integer, Vector<CompetitorFilterLevelBO>> mCompetitorFilterlevelBo;
@@ -7429,13 +7426,13 @@ public class ProductHelper {
         return mCompetitorSequenceValues;
 
     }
+
     //If SAO Config enabled this method will be called
     //this method will take ProductId and compair with BomMaster and passes Product name
-    public ArrayList<String> getSkuMixtureProductName(String productId)
-    {
+    public ArrayList<String> getSkuMixtureProductName(String productId) {
         ArrayList<String> mBpids = new ArrayList<>();
-        ArrayList<String> productShortName=new ArrayList<>();
-        if(bmodel.productHelper.getBomMaster()!=null) {
+        ArrayList<String> productShortName = new ArrayList<>();
+        if (bmodel.productHelper.getBomMaster() != null) {
             for (BomMasterBO id : bmodel.productHelper.getBomMaster()) {
 
                 if (id.getPid().equalsIgnoreCase(productId)) {
@@ -7444,7 +7441,7 @@ public class ProductHelper {
                 }
             }
         }
-        if(mBpids.size()>0) {
+        if (mBpids.size() > 0) {
             for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
 
                 for (int i = 0; i < mBpids.size(); i++)

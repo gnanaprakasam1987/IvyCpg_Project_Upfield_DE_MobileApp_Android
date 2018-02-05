@@ -136,7 +136,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
         // show
         super.onCreate(savedInstanceState);
         setContentView(R.layout.btprint_main);
-        orderHelper=OrderHelper.getInstance(this);
+        orderHelper = OrderHelper.getInstance(this);
 
         mRemoteDevice = (EditText) findViewById(R.id.remote_device);
         toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -23,8 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.order.DiscountHelper;
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InitiativeHeaderBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -61,7 +59,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         initAct = (OrderSummary) context;
-        discountHelper=DiscountHelper.getInstance(context);
+        discountHelper = DiscountHelper.getInstance(context);
 
         RelativeLayout ll = (RelativeLayout) LayoutInflater.from(context)
                 .inflate(R.layout.dialog_discount, null);
