@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -66,9 +66,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
-import com.ivy.cpg.view.order.DiscountHelper;
-import com.ivy.cpg.view.order.OrderHelper;
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity;
@@ -89,6 +86,21 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.BatchAllocation;
+import com.ivy.sd.png.view.CrownReturnActivity;
+import com.ivy.sd.png.view.CustomKeyBoard;
+import com.ivy.sd.png.view.FilterFagmentMultiSelection;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.InitiativeActivity;
+import com.ivy.sd.png.view.MustSellReasonDialog;
+import com.ivy.sd.png.view.OrderDiscount;
+import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
+import com.ivy.sd.png.view.ReasonPhotoDialog;
+import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.sd.png.view.SchemeApply;
+import com.ivy.sd.png.view.SchemeDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;

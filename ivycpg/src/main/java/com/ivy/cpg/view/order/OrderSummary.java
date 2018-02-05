@@ -76,7 +76,6 @@ import com.ivy.sd.png.view.OrderRemarkDialog;
 import com.ivy.sd.png.view.OrderSummaryDialogFragment;
 import com.ivy.sd.png.view.ReturnProductDialog;
 import com.ivy.sd.png.view.SerialNoEntryScreen;
-import com.ivy.sd.png.view.StockAndOrder;
 import com.ivy.sd.png.view.StoreWiseDiscountDialog;
 import com.ivy.sd.print.BtService;
 import com.ivy.sd.print.CommonPrintPreviewActivity;

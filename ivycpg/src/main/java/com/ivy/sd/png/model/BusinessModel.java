@@ -179,7 +179,7 @@ import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
-import com.ivy.sd.png.view.StockAndOrder;
+import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.sd.png.view.Synchronization;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
