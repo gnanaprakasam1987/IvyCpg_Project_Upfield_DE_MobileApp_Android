@@ -40,7 +40,7 @@ public class SurveyHelperNew {
     public int mSelectedSurvey = -1;
     public int mSelectedSuperVisiorID;
 
-    ArrayList<String> mGroupIDList = new ArrayList<>();
+
 
     public String remarkDone = "N";
 
@@ -130,9 +130,14 @@ public class SurveyHelperNew {
     }
 
 
-    public void downloadValidSurveyGroups(DBUtil db) {
+    /**
+     * Get valid survey id and groupid by comparing retailer attributes
+     * @param db
+     */
+    private ArrayList<String> getValidGroupIdByAttributeCriteriaMapping(DBUtil db) {
 
         StringBuilder sb = new StringBuilder();
+        ArrayList<String> groupIDList = new ArrayList<>();
 
         ArrayList<String> retailerAttributes = bmodel.getAttributeParentListForCurrentRetailer();
 
@@ -150,8 +155,8 @@ public class SurveyHelperNew {
                     if (lastSurveyId != c.getInt(0) || lastGroupId != c.getInt(1)) {
 
                         if (isGroupSatisfied) {
-                            if (!mGroupIDList.contains(c.getString(1) + c.getString(0))) {
-                                mGroupIDList.add(c.getString(1) + c.getString(0));
+                            if (!groupIDList.contains(c.getString(1) + c.getString(0))) {
+                                groupIDList.add(c.getString(1) + c.getString(0));
                             }
                         }
 
@@ -170,13 +175,14 @@ public class SurveyHelperNew {
 
             }
             if (isGroupSatisfied) {
-                if (!mGroupIDList.contains(lastGroupId + "" + lastSurveyId)) {
-                    mGroupIDList.add(lastGroupId + "" + lastSurveyId);
+                if (!groupIDList.contains(lastGroupId + "" + lastSurveyId)) {
+                    groupIDList.add(lastGroupId + "" + lastSurveyId);
                 }
             }
 
         }
         c.close();
+        return groupIDList;
     }
 
     private boolean isSurveyApplicable(int surveyid, int groupId, int parentId) {
@@ -211,75 +217,97 @@ public class SurveyHelperNew {
         return false;
     }
 
-    private ArrayList<Integer> mValidSurveyIds;
 
-    private String getValidSurveyIds() {
+    /**
+     * This method will check criteria mapping to return surveyids.
+     * Criteria types like Location, Channel , Account, Retailer Attribute, Priority Product and Retailer will be considered.
+     *
+     * @return surveyids as comma separated string.
+     */
+    private String getMappedSurveyIds() {
 
         DBUtil db = null;
-        String mSurveyIds = "";
+        String surveyIds = "";
         try {
 
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            downloadValidSurveyGroups(db);
+            // Attribute Groupid will be validated seprately after validating other citeria type.
+            ArrayList<String> mGroupIDList = getValidGroupIdByAttributeCriteriaMapping(db);
 
             StringBuilder sb = new StringBuilder();
             String locIdScheme = "";
             String channelId = "";
+
+            /* Get location id and its parent id */
             if (!"".equals(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme()) &&
                     bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() != null) {
                 locIdScheme = "," + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme();
             }
 
+            /* Get channel id and its parent id */
             if (!"".equals(getChannelidForSurvey()) &&
                     getChannelidForSurvey() != null) {
                 channelId = "," + getChannelidForSurvey();
             }
 
-            sb.append("SELECT Distinct Survey.SurveyId,Survey.GroupId,IfNull(LocationId,0) AS LocationId,IfNull(ChannelId,0) AS ChannelId," +
+            sb.append("SELECT Distinct Survey.SurveyId,Survey.GroupId," +
+                    "IfNull(LocationId,0) AS LocationId," +
+                    "IfNull(ChannelId,0) AS ChannelId," +
                     "Case  IFNULL(AttributeID ,-1) when -1  then '0' else '1' END as flag" +
-                    ",IfNull(PriorityBiD,0) AS PriorityBiD,IfNull(RetailerID,0) AS RetailerID, IfNull(AccountID,0) AS AccountID" +
+                    ",IfNull(PriorityBiD,0) AS PriorityBiD," +
+                    "IfNull(RetailerID,0) AS RetailerID, " +
+                    "IfNull(AccountID,0) AS AccountID" +
                     " FROM (SELECT  DISTINCT SurveyId,GroupId FROM SurveyCriteriaMapping) AS Survey" +
+
                     " LEFT JOIN  (SELECT DISTINCT SurveyId,GroupId,CriteriaId LocationId  FROM SurveyCriteriaMapping" +
                     " INNER JOIN StandardListMaster on ListId=CriteriaType" +
                     " WHERE ListCode='LOCATION' and listtype='SURVEY_CRITERIA_TYPE')  LS" +
                     " ON Survey.SurveyId=Ls.SurveyId and Survey.GroupId=LS.GroupId" +
+
                     " LEFT JOIN (SELECT SurveyId,GroupId,CriteriaId ChannelId FROM SurveyCriteriaMapping" +
                     " INNER JOIN StandardListMaster on ListId=CriteriaType" +
                     " WHERE ListCode in ('CHANNEL','SUBCHANNEL') and listtype='SURVEY_CRITERIA_TYPE') CS" +
                     " ON  Survey.SurveyId=CS.SurveyId and Survey.GroupId=CS.GroupId" +
-                    " LEFT JOIN (" +
-                    " SELECT SurveyId,GroupId,CriteriaId AttributeID FROM SurveyCriteriaMapping" +
+
+                    " LEFT JOIN (SELECT SurveyId,GroupId,CriteriaId AttributeID FROM SurveyCriteriaMapping" +
                     " INNER JOIN StandardListMaster on ListId=CriteriaType" +
                     " WHERE ListCode='RTR_ATTRIBUTES' and listtype='SURVEY_CRITERIA_TYPE')" +
                     " AT ON  Survey.SurveyId=AT.SurveyId and Survey.GroupId=AT.GroupId" +
+
                     " LEFT JOIN (SELECT SurveyId,GroupId,CriteriaId PriorityBiD FROM SurveyCriteriaMapping" +
                     " INNER JOIN StandardListMaster on ListId=CriteriaType" +
                     " WHERE ListCode='PRIORITY_PRD' and listtype='SURVEY_CRITERIA_TYPE')" +
                     " PR ON  Survey.SurveyId=PR.SurveyId and Survey.GroupId=PR.GroupId" +
+
                     " LEFT JOIN (SELECT SurveyId,GroupId,CriteriaId RetailerID FROM SurveyCriteriaMapping" +
                     " INNER JOIN StandardListMaster on ListId=CriteriaType" +
                     " WHERE ListCode='RETAILER')" +
                     " RTR ON  Survey.SurveyId=RTR.SurveyId and Survey.GroupId=RTR.GroupId" +
+
                     " LEFT JOIN (SELECT SurveyId,GroupId,CriteriaId AccountID FROM SurveyCriteriaMapping" +
                     " INNER JOIN StandardListMaster on ListId=CriteriaType" +
                     " WHERE ListCode='ACCOUNT')" +
                     " ACC ON  Survey.SurveyId=ACC.SurveyId and Survey.GroupId=ACC.GroupId" +
+
                     " where ifNull(locationid,0) in(0" + locIdScheme + "," + bmodel.getRetailerMasterBO().getLocationId() + ")" +
-                    " And ifnull(channelid,0) in (0" + channelId + "," + bmodel.getRetailerMasterBO().getSubchannelid() + ") And ifnull(PriorityBiD,0) in (0," + bmodel.getRetailerMasterBO().getPrioriryProductId() + ") "
-                    + "And ifnull(RetailerID,0) in (0," + bmodel.getRetailerMasterBO().getRetailerID() + ")"
-                    + "And ifnull(AccountID,0) in (0," + bmodel.getRetailerMasterBO().getAccountid() + ")");
+                    " And ifnull(channelid,0) in (0" + channelId + "," + bmodel.getRetailerMasterBO().getSubchannelid() + ")" +
+                    " And ifnull(PriorityBiD,0) in (0," + bmodel.getRetailerMasterBO().getPrioriryProductId() + ")" +
+                    " And ifnull(RetailerID,0) in (0," + bmodel.getRetailerMasterBO().getRetailerID() + ")" +
+                    " And ifnull(AccountID,0) in (0," + bmodel.getRetailerMasterBO().getAccountid() + ")");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
+
+                    // If attribute id is 0 or attribute id !=0 and match with critera then add
                     if (c.getInt(4) == 0 || (c.getInt(4) == 1 && mGroupIDList.contains(c.getInt(1) + "" + c.getInt(0)))) {
 
-                        if (mSurveyIds.equals("")) {
-                            mSurveyIds = c.getString(0);
+                        if (surveyIds.equals("")) {
+                            surveyIds = c.getString(0);
                         } else {
-                            mSurveyIds += "," + c.getString(0);
+                            surveyIds += "," + c.getString(0);
                         }
                     }
 
@@ -289,13 +317,17 @@ public class SurveyHelperNew {
             db.closeDB();
 
         } catch (Exception ex) {
-
             Commons.printException(ex);
         }
-        return mSurveyIds;
+        return surveyIds;
     }
 
 
+    /**
+     * Download survey and its questions along with option and score matching criteria.
+     *
+     * @param moduleCode
+     */
     public void downloadQuestionDetails(String moduleCode) {
         try {
 
@@ -343,7 +375,7 @@ public class SurveyHelperNew {
             sb.append(" AND SM.menuCode=");
             sb.append(QT(moduleCode));
             if (!fromHomeScreen) {
-                sb.append(" AND SM.surveyId in(" + getValidSurveyIds() + ")");
+                sb.append(" AND SM.surveyId in(" + getMappedSurveyIds() + ")");
 
             } else {
                 if (moduleCode.equalsIgnoreCase("MENU_NEW_RET") && bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER)
