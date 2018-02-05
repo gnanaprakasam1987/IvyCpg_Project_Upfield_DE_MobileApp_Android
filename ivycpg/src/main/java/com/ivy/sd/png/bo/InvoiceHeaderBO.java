@@ -42,7 +42,15 @@ public class InvoiceHeaderBO {
         this.dueDate = dueDate;
     }
 
-    private String dueDate;
+    public String getDueDays() {
+        return dueDays;
+    }
+
+    public void setDueDays(String dueDays) {
+        this.dueDays = dueDays;
+    }
+
+    private String dueDate,dueDays;
 
     public double getAppliedDiscountAmount() {
         return appliedDiscountAmount;

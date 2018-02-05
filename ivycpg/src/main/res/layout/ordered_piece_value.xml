@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/orderScreenListRow"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/list_item_height_double_line"
+    android:weightSum="5"
+    android:gravity="center_vertical">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/list_margin"
+        android:layout_weight="3"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/orderPRODNAME"
+            style="?attr/customListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left|center"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:text="@string/product_name" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/orderPRODNAME"
+            android:gravity="center|left">
+
+            <TextView
+                android:id="@+id/orderQTYinpiece"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/zero" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llSrpEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+
+        android:layout_marginLeft="@dimen/dimen_10dp"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/srpeditTitle"
+            style="?attr/customListItemPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left|center"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:tag="srp"
+            android:text="@string/piece" />
+
+        <EditText
+            android:id="@+id/rField1_qty"
+            style="@style/EditText_ListItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left|center"
+            android:text="@string/zero"
+            android:inputType="number"
+            android:maxLength="5"  />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -265,6 +265,34 @@
             android:gravity="center"
             android:textSize="@dimen/list_primary" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_drug_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/label_drug_note"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:gravity="start"
+            android:text="@string/note_label"
+            android:textSize="@dimen/list_primary" />
+
+        <TextView
+            android:id="@+id/text_drug_note"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:gravity="center"
+            android:tag="drug_alert"
+            android:textSize="@dimen/list_primary" />
+    </LinearLayout>
 
 
     <View

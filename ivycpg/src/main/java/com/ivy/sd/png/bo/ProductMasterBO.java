@@ -83,6 +83,7 @@ public class ProductMasterBO {
 
     // To maintain original SRP value given in master, in case of updating @srp with some other values(SRP without tax).
     private float originalSrp;
+    private int isDrug;
 
     public double getDistiributorSchemeDiscount() {
         return distiributorSchemeDiscount;
@@ -1814,5 +1815,12 @@ public class ProductMasterBO {
 
     public void setHsnCode(String hsnCode) {
         this.hsnCode = hsnCode;
+    }
+
+    public void setIsDrug(int isDrug) {
+        this.isDrug = isDrug;
+    }
+    public int getIsDrug() {
+        return isDrug;
     }
 }

@@ -252,6 +252,8 @@ public class ProductHelper {
     }
 
     public Vector<ProductMasterBO> getProductMaster() {
+        if (productMaster == null)
+            return new Vector<ProductMasterBO>();
         return productMaster;
     }
 
@@ -1576,6 +1578,7 @@ public class ProductHelper {
                         + "A" + loopEnd + ".tagDescription as tagDescription,"
                         + "A" + loopEnd + ".HSNId as HSNId,"
                         + "HSN.HSNCode as HSNCode,"
+                        + "A" + loopEnd + ".IsDrug as IsDrug,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -1708,6 +1711,7 @@ public class ProductHelper {
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
+                    product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
@@ -6941,6 +6945,7 @@ public class ProductHelper {
                         + "A" + loopEnd + ".tagDescription,"
                         + "A" + loopEnd + ".HSNId as HSNId,"
                         + "HSN.HSNCode as HSNCode,"
+                        + "A" + loopEnd + ".IsDrug as IsDrug,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -7052,6 +7057,7 @@ public class ProductHelper {
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
+                    product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
@@ -7422,6 +7428,33 @@ public class ProductHelper {
     public Vector<CompetitorFilterLevelBO> getCompetitorSequenceValues() {
         return mCompetitorSequenceValues;
 
+    }
+    //If SAO Config enabled this method will be called
+    //this method will take ProductId and compair with BomMaster and passes Product name
+    public ArrayList<String> getSkuMixtureProductName(String productId)
+    {
+        ArrayList<String> mBpids = new ArrayList<>();
+        ArrayList<String> productShortName=new ArrayList<>();
+        if(bmodel.productHelper.getBomMaster()!=null) {
+            for (BomMasterBO id : bmodel.productHelper.getBomMaster()) {
+
+                if (id.getPid().equalsIgnoreCase(productId)) {
+
+                    mBpids.add(id.getBomBO().get(0).getbPid());
+                }
+            }
+        }
+        if(mBpids.size()>0) {
+            for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
+
+                for (int i = 0; i < mBpids.size(); i++)
+                    if (mBpids.get(i).equalsIgnoreCase(bo.getProductID()))
+                        productShortName.add(bo.getProductShortName());
+
+            }
+            return productShortName;
+        }
+        return null;
     }
 
 }

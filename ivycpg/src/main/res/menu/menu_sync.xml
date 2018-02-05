@@ -21,4 +21,11 @@
         android:title="@string/catalog_images_download"
         android:orderInCategory="1013"/>
 
+    <item
+        android:id="@+id/menu_switch_user"
+        IvyDist:showAsAction="collapseActionView"
+        android:icon="@drawable/ic_people_white_36px"
+        android:title="@string/switch_user"
+        android:orderInCategory="1014"/>
+
 </menu>

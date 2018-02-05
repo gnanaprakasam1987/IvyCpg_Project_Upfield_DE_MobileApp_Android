@@ -1401,7 +1401,6 @@ SynchronizationHelper {
     public void downloadMasterAtVolley(final FROM_SCREEN fromLogin, DownloadType whichDownload) {
         mDownloadUrlCount = 0;
         if (mDownloadUrlList != null) {
-            int size = mDownloadUrlList.size();
             try {
                 JSONObject json = new JSONObject();
                 json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
@@ -1414,7 +1413,6 @@ SynchronizationHelper {
                 } else if (whichDownload == DownloadType.DISTRIBUTOR_WISE_DOWNLOAD) {
                     json.put("IsDistributor", 1);
                     insert = DISTRIBUTOR_WISE_DOWNLOAD_INSERT;
-
                 }
 
                 mURLList = new HashMap<>();
@@ -1422,7 +1420,7 @@ SynchronizationHelper {
 
                 for (String url : mDownloadUrlList) {
                     String downloadUrl = DataMembers.SERVER_URL + url;
-                    callVolley(downloadUrl, fromLogin, size,
+                    callVolley(downloadUrl, fromLogin, mDownloadUrlList.size(),
                             insert, json);
                 }
             } catch (JSONException e) {
@@ -1549,17 +1547,24 @@ SynchronizationHelper {
         }
     }
 
-
+    /**
+     *
+     * @param url
+     * @param isFromWhere
+     * @param totalListCount
+     * @param which
+     * @param headerInfo
+     */
     private void callVolley(final String url, final FROM_SCREEN isFromWhere,
-                            final int totalListCount, final int which, JSONObject json) {
+                            final int totalListCount, final int which, JSONObject headerInfo) {
         JsonObjectRequest jsonObjectRequest;
         try {
 
-            json.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-            json.put("MobileUTCDateTime",
+            headerInfo.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            headerInfo.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             if (!DataMembers.backDate.isEmpty())
-                json.put("RequestDate",
+                headerInfo.put("RequestDate",
                         SDUtil.now(SDUtil.DATE_TIME_NEW));
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -1570,7 +1575,7 @@ SynchronizationHelper {
             mURLList.put(url, new URLListBO());
 
         jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST, url, json,
+                Request.Method.POST, url, headerInfo,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
@@ -1734,8 +1739,6 @@ SynchronizationHelper {
 
                             }
                         }
-
-
                     }
 
                 } catch (Exception e) {
@@ -1793,8 +1796,10 @@ SynchronizationHelper {
                 (int) TimeUnit.SECONDS.toMillis(30),
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
         jsonObjectRequest.setRetryPolicy(policy);
         jsonObjectRequest.setShouldCache(false);
+
         addToRequestQueue(jsonObjectRequest,
                 TAG_JSON_OBJ);
     }
@@ -2512,7 +2517,7 @@ SynchronizationHelper {
         }
     }
 
-    public String userAuthenticate(JSONObject jsonObject, boolean isDeviceChanged) {
+    public String userInitialAuthenticate(JSONObject jsonObject, boolean isDeviceChanged) {
         if (!bmodel.isOnline()) {
             return "E06";
         }
@@ -2573,14 +2578,18 @@ SynchronizationHelper {
         return "E01";
     }
 
+    /*Methods used add deviceID's json Validation params
+    *  - isDeviceChanged - false - validate -1 and Update -0
+    *  - isDeviceChaned - True - validate -0 and Update - 1
+    *  if activation false or is in internal activation ie uses ivy apis both values set to 0*/
     public void addDeviceValidationParameters(boolean isDeviceChanged, JSONObject jsonObject) {
         int mDeviceIdValidate, mDeviceIdChange;
         try {
-
             if (isInternalActivation || !ApplicationConfigs.withActivation) {
                 mDeviceIdValidate = 0;
                 mDeviceIdChange = 0;
             } else if (isDeviceChanged) {
+                //if device changed then stop validations and update new device ID
                 mDeviceIdValidate = 0;
                 mDeviceIdChange = 1;
             } else {
@@ -4197,7 +4206,7 @@ SynchronizationHelper {
     public String downloadSessionId(String url) {
         updateAuthenticateToken();
         String sessionId = "";
-        if (mAuthErrorCode.equals(AUTHENTICATION_SUCCESS_CODE)) {
+        if (getAuthErroCode().equals(AUTHENTICATION_SUCCESS_CODE)) {
             try {
 
                 MyHttpConnectionNew http = new MyHttpConnectionNew();
@@ -4669,6 +4678,13 @@ SynchronizationHelper {
         }
     }
 
+    /**
+     * This method is used to retrive response as string.
+     * Headers will not be processed.
+     * @param url
+     * @param jsonObject
+     * @return
+     */
     public String sendPostMethod(String url, JSONObject jsonObject) {
         if (!bmodel.isOnline()) {
             return "E06";
@@ -4702,10 +4718,6 @@ SynchronizationHelper {
                 }
                 in.close();
                 Commons.print(response.toString());
-                // security token key updated
-                if (con.getHeaderField(SECURITY_HEADER) != null)
-                    mSecurityKey = con.getHeaderField(SECURITY_HEADER);
-
                 return response.toString();
             } else {
                 Commons.print("POST request not worked");
@@ -5019,8 +5031,12 @@ SynchronizationHelper {
 
     private List<S3ObjectSummary> filesList;
 
+    public void setImageDetials(List<S3ObjectSummary> imageDetails) {
+        filesList = imageDetails;
+    }
+
     public List<S3ObjectSummary> getImageDetails() {
-        filesList = new ArrayList<>();
+       /* filesList = new ArrayList<>();
         S3ObjectSummary fileData;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -5028,10 +5044,10 @@ SynchronizationHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("Select * from CatalogImagesDetails where Flag != 1");
-            /*Cursor c = db.selectSQL("Select CID.Key, CID.lastModified,PM.pCode,CID.Flag from CatalogImagesDetails CID " +
+            *//*Cursor c = db.selectSQL("Select CID.Key, CID.lastModified,PM.pCode,CID.Flag from CatalogImagesDetails CID " +
                     "INNER JOIN ProductMaster PM ON CID.Key = '" + DataMembers.S3_ROOT_DIRECTORY + "/Product/ProductCatalog/'" +
                     "|| PM.pCode ||'.jpg' AND PM.PLid = (Select Max(LevelId) from ProductLevel) Where CID.Flag != 1");
-*/
+*//*
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
                     fileData = new S3ObjectSummary();
@@ -5046,7 +5062,9 @@ SynchronizationHelper {
         } catch (Exception e) {
             Commons.printException("Error catalog images list", e);
         }
-        Commons.print("File List size " + filesList.size());
+        Commons.print("File List size " + filesList.size());*/
+        if (filesList == null)
+            return new ArrayList<>();
         return filesList;
     }
 
@@ -5101,14 +5119,14 @@ SynchronizationHelper {
 
     public void clearCatalogImages() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+           /* DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
-            db.executeQ("Delete from CatalogImagesDetails");
+            db.executeQ("Delete from CatalogImagesDetails");*/
             deleteFiles(getStorageDir(context.getResources().getString(R.string.app_name)));
-            db.closeDB();
+           // db.closeDB();
         } catch (Exception e) {
             Commons.printException("deleteImageDetails" + e);
         }

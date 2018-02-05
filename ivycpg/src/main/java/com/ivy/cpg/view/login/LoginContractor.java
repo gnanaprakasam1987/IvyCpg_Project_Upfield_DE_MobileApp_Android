@@ -25,9 +25,7 @@ public interface LoginContractor {
 
         void onLoginClick();
 
-        void callAuthentication(boolean isDeviceChanged);
-
-        void deleteTables(boolean isDownloaded);
+        void callInitialAuthentication(boolean isDeviceChanged);
 
         void applyLastSyncPref();
 
@@ -69,7 +67,7 @@ public interface LoginContractor {
 
         void threadActions();
 
-        void showDialog();
+        void showDeviceLockedDialog();
 
         void resetPassword();
 

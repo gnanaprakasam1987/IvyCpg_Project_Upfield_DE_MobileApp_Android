@@ -18,6 +18,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.CatalogOrder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -451,6 +452,10 @@ public class ConfigurationMasterHelper {
     private boolean LOAD_COMP_CONFIGS;
     public boolean SHOW_TIME_VIEW;
     public boolean SHOW_SPINNER;
+
+    private static final String CODE_MOQ_ENABLED = "FUN66";//change config code
+    public boolean IS_MOQ_ENABLED;
+
     /**
      * RoadActivity config *
      */
@@ -1235,6 +1240,10 @@ public class ConfigurationMasterHelper {
     public boolean IS_SALES_RETURN_VALIDATE;
     private static final String CODE_SALES_RETURN_SIGN = "SR14";
     public boolean IS_SALES_RETURN_SIGN;
+    private static final String CODE_COMPUTE_DUE_DATE = "DDATE";
+    public boolean COMPUTE_DUE_DATE;
+    private static final String CODE_COMPUTE_DUE_DAYS = "DDAYS";
+    public boolean COMPUTE_DUE_DAYS;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1323,7 +1332,8 @@ public class ConfigurationMasterHelper {
 
         } catch (Exception e) {
             Commons.printException("" + e);
-            db.closeDB();
+            if (db != null)
+                db.closeDB();
         }
     }
 
@@ -2170,8 +2180,8 @@ public class ConfigurationMasterHelper {
            loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
-
-
+        this.IS_MOQ_ENABLED= hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
+        
     }
 
     public void loadOrderReportConfiguration() {
@@ -5103,5 +5113,84 @@ public class ConfigurationMasterHelper {
         } catch (Exception e) {
             Commons.printException("Unable to load the configurations " + e);
         }
+    }
+
+    public void loadInvoiceMasterDueDateAndDateConfig() {
+
+        try {
+            COMPUTE_DUE_DATE = true;
+            COMPUTE_DUE_DATE = true;
+            String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='SR01'";
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL(sql);
+            String rFieldValue = "";
+            if (c != null && c.getCount() != 0) {
+
+                while (c.moveToNext()) {
+                    rFieldValue = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+            if (rFieldValue != null && rFieldValue.length() > 0 && rFieldValue.contains(",")) {
+                String rFieldSplit[] = rFieldValue.split(",");
+                for (String temp : rFieldSplit) {
+                    if (temp.equals(CODE_COMPUTE_DUE_DAYS))
+                        COMPUTE_DUE_DATE = false;
+                    else if (temp.equals(CODE_COMPUTE_DUE_DATE))
+                        COMPUTE_DUE_DAYS = false;
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("Unable to load the configurations " + e);
+        }
+    }
+
+
+
+    /**
+     * This method will return spl filter code set as default.
+     *
+     * @return
+     */
+    public String getDefaultFilter() {
+        String defaultfilter = CatalogOrder.GENERAL;
+        try {
+            Vector<ConfigureBO> genfilter = bmodel.configurationMasterHelper
+                    .getGenFilter();
+            for (int i = 0; i < genfilter.size(); i++) {
+                if (genfilter.get(i).getHasLink() == 1) {
+                    if (!bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                        defaultfilter = genfilter.get(i).getConfigCode();
+                        break;
+                    } else {
+                        if (bmodel.getRetailerMasterBO().getIsVansales() == 1) {
+                            if (genfilter.get(i).getConfigCode().equals("Filt13")) {
+                                defaultfilter = genfilter.get(i).getConfigCode();
+                                break;
+                            } else if (!genfilter.get(i).getConfigCode().equals("Filt08")) {
+                                defaultfilter = genfilter.get(i).getConfigCode();
+                                break;
+                            }
+                        } else {
+                            if (genfilter.get(i).getConfigCode().equals("Filt08")) {
+                                defaultfilter = genfilter.get(i).getConfigCode();
+                                break;
+                            } else if (!genfilter.get(i).getConfigCode().equals("Filt13")) {
+                                defaultfilter = genfilter.get(i).getConfigCode();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        return defaultfilter;
     }
 }

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,7 +8,7 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <android.support.v4.widget.DrawerLayout xmlns:tools="http://schemas.android.com/tools"
+    <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,123 +21,9 @@
             android:orientation="vertical">
 
             <include
-                android:id="@+id/top_toolbar"
-                layout="@layout/tool_bar"
-                android:visibility="gone" />
-
-            <include
                 android:id="@+id/search_toolbar"
                 layout="@layout/search_bar"
                 android:visibility="visible" />
-
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:layout_marginLeft="@dimen/recycler_margin"
-                android:layout_marginRight="@dimen/recycler_margin"
-                android:layout_marginTop="@dimen/recycler_margin"
-                android:visibility="gone"
-                card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="@dimen/card_elevation"
-                card_view:contentPadding="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/brand_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/brand_recy_height"
-                        android:layout_marginLeft="@dimen/recycler_margin"
-                        android:layout_marginRight="@dimen/recycler_margin"
-                        android:layout_weight="1"
-                        android:fadingEdge="none"
-                        android:overScrollMode="never"
-                        android:visibility="visible"></android.support.v7.widget.RecyclerView>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/list_menu_left_start"></View>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:orientation="vertical">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentTop="true"
-                                android:fontFamily="sans-serif"
-                                android:paddingLeft="2dp"
-                                android:paddingTop="2dp"
-                                android:text="Brand"
-                                android:textColor="@color/GRAY_TEXT"
-                                android:textSize="@dimen/text_sz_small" />
-
-                            <TextView
-                                android:id="@+id/brand_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:fontFamily="sans-serif-medium"
-                                android:padding="1dp"
-                                android:textColor="@color/Black"
-                                android:textSize="@dimen/font_small"
-                                android:textStyle="normal|bold"
-                                tools:text="seg " />
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/list_menu_left_start"></View>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentTop="true"
-                                android:fontFamily="sans-serif"
-                                android:paddingLeft="2dp"
-                                android:paddingTop="2dp"
-                                android:text="Total Value"
-                                android:textColor="@color/GRAY_TEXT"
-                                android:textSize="@dimen/text_sz_small" />
-
-                            <TextView
-                                android:id="@+id/total_value_txt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:fontFamily="sans-serif-medium"
-                                android:padding="1dp"
-                                android:textColor="@color/Black"
-                                android:textSize="@dimen/font_small"
-                                android:textStyle="normal|bold"
-                                tools:text="seg " />
-                        </RelativeLayout>
-                    </LinearLayout>
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -155,6 +41,7 @@
                     android:clipToPadding="false"
                     android:nestedScrollingEnabled="false"
                     android:scrollbars="none"
+                    card_view:layout_behavior="@string/appbar_scrolling_view_behavior"
                     tools:ignore="UnusedAttribute"></android.support.v7.widget.RecyclerView>
 
                 <LinearLayout
@@ -173,7 +60,6 @@
                         android:layout_height="wrap_content" />
                 </LinearLayout>
             </RelativeLayout>
-
         </LinearLayout>
 
         <FrameLayout
