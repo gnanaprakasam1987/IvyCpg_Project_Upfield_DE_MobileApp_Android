@@ -64,9 +64,7 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.CatalogOrder;
-import com.ivy.sd.png.view.CollectionBeforeInvoiceDialog;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.sd.png.view.DiscountDialog;
 import com.ivy.sd.png.view.EmailDialog;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.IndicativeOrderReasonDialog;
@@ -74,7 +72,6 @@ import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.OrderConfirmationDialog;
 import com.ivy.sd.png.view.OrderRemarkDialog;
 import com.ivy.sd.png.view.OrderSummaryDialogFragment;
-import com.ivy.sd.png.view.ReturnProductDialog;
 import com.ivy.sd.png.view.SerialNoEntryScreen;
 import com.ivy.sd.png.view.StoreWiseDiscountDialog;
 import com.ivy.sd.print.BtService;
@@ -1430,9 +1427,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if (!isClick) {
 
             isClick = true;
-
-            if (BModel.configurationMasterHelper.IS_TEMP_ORDER_SAVE && screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER))
-                BModel.orderTimer.cancel();
 
             if (mOrderedProductList.size() > 0) {
 
@@ -2884,8 +2878,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             if (BModel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
                 android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
-                EmailDialog dialog = new EmailDialog(
-                        "MENU_STK_ORD", OrderSummary.this, BModel.getRetailerMasterBO().getEmail());
+                EmailDialog dialog = new EmailDialog(OrderSummary.this, BModel.getRetailerMasterBO().getEmail());
                 dialog.setCancelable(false);
                 dialog.show(ft, "MENU_STK_ORD");
             }

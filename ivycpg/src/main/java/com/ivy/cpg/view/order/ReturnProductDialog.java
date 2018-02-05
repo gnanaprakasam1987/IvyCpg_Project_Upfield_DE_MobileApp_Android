@@ -1,11 +1,10 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -23,8 +22,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.commons.SDUtil;

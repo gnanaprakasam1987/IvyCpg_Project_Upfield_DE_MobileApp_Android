@@ -288,7 +288,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
     }
 
-    interface savePcsValue
+   public interface savePcsValue
     {
         void saveChanges();
 

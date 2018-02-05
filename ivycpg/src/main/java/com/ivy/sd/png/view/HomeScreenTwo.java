@@ -3686,10 +3686,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
 
                 discountHelper.downloadBillWiseDiscount(this);
-                discountHelper.loadExistingBillWiseRangeDiscount();
+                discountHelper.loadExistingBillWiseRangeDiscount(this);
             }
             // apply bill wise pay term discount
-            discountHelper.downloadBillWisePayTermDiscount();
+            discountHelper.downloadBillWisePayTermDiscount(this);
 
             bmodel.productHelper.downloadInStoreLocations();
 
