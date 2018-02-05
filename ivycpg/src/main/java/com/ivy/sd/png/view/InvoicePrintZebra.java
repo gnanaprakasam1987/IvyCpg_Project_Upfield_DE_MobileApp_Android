@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bixolon.android.library.BxlService;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.Logs;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -85,6 +86,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
     private ZebraPrinterConnection zebraPrinterConnection;
     private TextView statusField;
     private ZebraPrinter printer;
+    private OrderHelper orderHelper;
 
     // philippines
 
@@ -96,6 +98,8 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         setContentView(R.layout.invoice_print_preview);
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        orderHelper=OrderHelper.getInstance(this);
+        
         mStatusTV = (TextView) findViewById(R.id.status_tv);
         statusField = (TextView) findViewById(R.id.status_bar);
         mDateTimeTV = (TextView) findViewById(R.id.date_time_tv);
@@ -175,7 +179,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
         // updateConnectionState();
 
-        mDiscoutnValueTV.setText(bmodel.invoiceDisount + "%");
+        mDiscoutnValueTV.setText(orderHelper.invoiceDiscount + "%");
         mProducts = bmodel.productHelper.getProductMaster();
 
         if (null == mProducts) {
@@ -360,7 +364,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         }
 
         double discount = (mTotalValue / 100)
-                * SDUtil.convertToFloat(bmodel.invoiceDisount);
+                * SDUtil.convertToFloat(orderHelper.invoiceDiscount);
 
         mTotalValue = Math.round(mTotalValue);
 
@@ -386,7 +390,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
         sb.delete(0, sb.length());
         f.format("%-15s %15d%%\n", "Discount",
-                (int) SDUtil.convertToFloat(bmodel.invoiceDisount));
+                (int) SDUtil.convertToFloat(orderHelper.invoiceDiscount));
         mPrintDiscount = sb.toString();
 
         sb.delete(0, sb.length());
@@ -413,12 +417,13 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         @Override
         public void handleMessage(Message msg) {
 
+            OrderHelper orderHelper=OrderHelper.getInstance(InvoicePrintZebra.this);
             if (msg.what == 9) {
                 pd.dismiss();
                 bmodel = (BusinessModel) getApplicationContext();
                 bmodel.showAlert(
                         "Order Saved Locally. Order ID is "
-                                + bmodel.getOrderid(),
+                                + orderHelper.getOrderId(),
                         DataMembers.NOTIFY_UPLOAD_ERROR);
             }
             if (msg.what == 10) {
@@ -426,13 +431,13 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
                 if (isDayClosed) {
                     bmodel = (BusinessModel) getApplicationContext();
                     bmodel.showAlert("Order Saved Locally. Order ID is "
-                                    + bmodel.getOrderid(),
+                                    + orderHelper.getOrderId(),
                             DataMembers.NOTIFY_UPLOAD_ERROR);
                 } else {
                     bmodel = (BusinessModel) getApplicationContext();
                     bmodel.showAlert(
                             "You are not Closed the Previous day.Order Saved Locally. Order ID is "
-                                    + bmodel.getOrderid(), 98);
+                                    + orderHelper.getOrderId(), 98);
                 }
 
             }
@@ -441,14 +446,14 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
                 bmodel = (BusinessModel) getApplicationContext();
                 bmodel.showAlert(
                         "Order Saved Locally. Order ID is "
-                                + bmodel.getOrderid(),
+                                + orderHelper.getOrderId(),
                         DataMembers.NOTIFY_UPLOAD_ERROR);
             }
             if (msg.what == 5) {
                 pd.dismiss();
                 bmodel = (BusinessModel) getApplicationContext();
                 bmodel.showAlert(
-                        "Order Submitted. Order ID is " + bmodel.getOrderid(),
+                        "Order Submitted. Order ID is " + orderHelper.getOrderId(),
                         DataMembers.NOTIFY_UPLOADED);
             }
         }

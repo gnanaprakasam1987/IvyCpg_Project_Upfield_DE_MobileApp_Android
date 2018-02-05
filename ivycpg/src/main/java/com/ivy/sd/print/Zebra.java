@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
@@ -180,7 +181,7 @@ public class Zebra extends IvyBaseActivityNoActionBar {
                         getBaseContext().getResources().getDisplayMetrics());
             }
 
-            mDiscoutnValueTV.setText(bmodel.invoiceDisount + "%");
+            mDiscoutnValueTV.setText(OrderHelper.getInstance(this).invoiceDiscount + "%");
 
             if (null == mProducts) {
                 bmodel.showAlert(

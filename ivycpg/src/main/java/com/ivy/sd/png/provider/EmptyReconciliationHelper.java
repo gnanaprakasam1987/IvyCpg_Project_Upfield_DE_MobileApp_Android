@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -449,7 +449,7 @@ public class EmptyReconciliationHelper {
 	public void updateEmptyReconilationTable() {
 		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
 		try {
-			ArrayList<BomRetunBo> returnProducts = bmodel.productHelper
+			ArrayList<BomReturnBO> returnProducts = bmodel.productHelper
 					.getBomReturnProducts();
 			db.openDataBase();
 			Cursor cursor;
@@ -457,7 +457,7 @@ public class EmptyReconciliationHelper {
 					.selectSQL("SELECT Pid,Qty FROM EmptyReconciliationDetail ORDER BY Pid");
 			if (cursor.getCount() > 0) {
 				while (cursor.moveToNext()) {
-					for (BomRetunBo bomReturnBo : returnProducts) {
+					for (BomReturnBO bomReturnBo : returnProducts) {
 						if (bomReturnBo.getReturnQty() > 0) {
 							if (bomReturnBo.getPid()
 									.equals(cursor.getString(0))) {

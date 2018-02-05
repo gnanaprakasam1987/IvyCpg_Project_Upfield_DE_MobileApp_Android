@@ -45,6 +45,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -56,7 +57,7 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.sd.png.view.OrderSummary;
+import com.ivy.cpg.view.order.OrderSummary;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -116,6 +117,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private String PRINT_STATE = "";
     private Toolbar toolbar;
     Bitmap screen;
+    private OrderHelper orderHelper;
 
     private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -129,6 +131,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        orderHelper=OrderHelper.getInstance(this);
 
         mPrinterStatusTV = (TextView) findViewById(R.id.printer_status);
         mPrintCountSpinner = (Spinner) findViewById(R.id.print_count);
@@ -197,7 +200,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         Bundle extras = getIntent().getExtras();
                         if (extras != null) {
                             i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                            i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                            i.putExtra("CurrentActivityCode", OrderSummary.mCurrentActivityCode);
                         }
                     } else {
                         i = new Intent(CommonPrintPreviewActivity.this, HomeScreenActivity.class);
@@ -393,7 +396,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private void onScreenPreparation() {
         try {
 
-            mPrintCount = bmodel.getPrint_count();
+            mPrintCount = orderHelper.getPrint_count();
 
             mSpinnerAdapter = new ArrayAdapter<CharSequence>(this,
                     android.R.layout.simple_spinner_item);
@@ -737,7 +740,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                         Bundle extras = getIntent().getExtras();
                         if (extras != null) {
                             i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                            i.putExtra("CurrentActivityCode", OrderSummary.mActivityCode);
+                            i.putExtra("CurrentActivityCode", OrderSummary.mCurrentActivityCode);
                         }
                     } else {
                         i = new Intent(CommonPrintPreviewActivity.this, HomeScreenActivity.class);

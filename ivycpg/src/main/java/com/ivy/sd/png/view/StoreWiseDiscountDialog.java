@@ -1,214 +1,289 @@
 package com.ivy.sd.png.view;
 
-import android.app.Dialog;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class StoreWiseDiscountDialog extends Dialog implements OnClickListener {
-    private Context context;
-
-    private ListView lvwplist;
+/**
+ * Created by rajesh.k on 9/27/2016.
+ */
+public class StoreWiseDiscountDialog extends DialogFragment {
     private BusinessModel bmodel;
-    private OrderSummary initAct;
-    private ArrayList<StoreWsieDiscountBO> discountlist;
-    private LinearLayout discountll;
-    private Button ok, cancel;
+    private ArrayList<StoreWiseDiscountBO> mDiscountList;
+
+    private Button mDoneBTN;
     private OnMyDialogResult mDialogResult;
-    private int type, discountId, isCompanygiven;
-    private MyAdapter adapter;
-    private int numberOfCheckboxesChecked;
-    private double value,discount;
-    private int dtype;
-    private DecimalFormat df;
-
-    public StoreWiseDiscountDialog(Context context,
-                                   OnMyDialogResult onmydailogresult, double value, int dtype) {
-        super(context);
-        this.context = context;
-        initAct = (OrderSummary) context;
-
-        mDialogResult = onmydailogresult;
-        this.value = value;
-        this.dtype = dtype;
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        LinearLayout ll = (LinearLayout) LayoutInflater.from(context).inflate(
-                R.layout.dialog_store_wise_discount, null);
-        setContentView(ll);
-        setCancelable(true);
-        lvwplist = (ListView) findViewById(R.id.list);
-        bmodel = (BusinessModel) context.getApplicationContext();
-        discountll = (LinearLayout) findViewById(R.id.discountlayout);
-        ok = (Button) findViewById(R.id.btn_ok);
-        ok.setOnClickListener(this);
-        cancel = (Button) findViewById(R.id.btn_cancel);
-        cancel.setOnClickListener(this);
-        bmodel.productHelper.downloadBillwiseDiscount();
-        discountlist = bmodel.productHelper.getBillWiseDiscountList();
-
-        Commons.print("list size" + discountlist.size());
-        // UpdateDialog();
-        adapter = new MyAdapter(discountlist);
-        lvwplist.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-        lvwplist.setAdapter(adapter);
-        lvwplist.setOnItemSelectedListener(new OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                StoreWsieDiscountBO disbo = (StoreWsieDiscountBO) parent
-                        .getSelectedItem();
-                discount = disbo.getDiscount();
-                type = disbo.getIsPercentage();
-                discountId = disbo.getDiscountId();
-                isCompanygiven = disbo.getIsCompanyGiven();
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        df = new DecimalFormat("###.#");
-    }
+    private TextView mMinRangeTV, mMaxRangeTV, mTitleTv;
+    private EditText mDiscountET, QUANTITY;
+    private StoreWiseDiscountBO mStorewiseDiscountBO;
+    public InputMethodManager inputManager;
+    private double mTotalOrderValue,mEnteredDiscAmtOrPercent;
+    DiscountHelper discountHelper;
 
 
-    StoreWsieDiscountBO discountbo;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    class MyAdapter extends ArrayAdapter<StoreWsieDiscountBO> {
-        ArrayList<StoreWsieDiscountBO> items;
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+        mDialogResult = (OnMyDialogResult) getActivity();
+        mTotalOrderValue = getArguments().getDouble("totalValue", 0);
+        mEnteredDiscAmtOrPercent = getArguments().getDouble("enteredDiscAmtOrPercent", 0);
+        discountHelper=DiscountHelper.getInstance(getActivity());
 
-        MyAdapter(ArrayList<StoreWsieDiscountBO> items) {
-            super(context, R.layout.dialog_store_wise_discount_row, items);
-            this.items = items;
-        }
-
-        public StoreWsieDiscountBO getItem(int position) {
-            return items.get(position);
-        }
-
-        public long getItemId(int position) {
-            return position;
-        }
-
-        public int getCount() {
-            return items.size();
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            discountbo = (StoreWsieDiscountBO) items.get(position);
-            final ViewHolder holder;
-            View row = convertView;
-            if (row == null) {
-                LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(R.layout.dialog_store_wise_discount_row,
-                        parent, false);
-                holder = new ViewHolder();
-                holder.discountck = (CheckBox) row
-                        .findViewById(R.id.list_item_check_box);
-
-                holder.discountck.setPadding(holder.discountck.getPaddingLeft()
-                                + (int) (10.0f * 5 + 0.5f),
-                        holder.discountck.getPaddingTop(),
-                        holder.discountck.getPaddingRight(),
-                        holder.discountck.getPaddingBottom());
-                row.setTag(holder);
-            } else {
-                holder = (ViewHolder) row.getTag();
-            }
-
-            holder.discountck
-                    .setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-                        public void onCheckedChanged(CompoundButton buttonView,
-                                                     boolean isChecked) {
-                            if (isChecked && numberOfCheckboxesChecked >= 1) {
-                                holder.discountck.setChecked(false);
-                            } else {
-                                if (isChecked) {
-                                    discount = holder.discountBO.getDiscount();
-                                    if (holder.discountBO.getIsPercentage() == 1)
-                                        type = 1;
-                                    else
-                                        type = 2;
-                                    discountId = holder.discountBO.getDiscountId();
-                                    isCompanygiven = holder.discountBO.getIsCompanyGiven();
-                                    numberOfCheckboxesChecked++;
-
-                                    bmodel.setDiscountlist(holder.discountBO);
-                                } else {
-                                    numberOfCheckboxesChecked--;
-
-                                }
-                            }
-                        }
-                    });
-
-            holder.position = position;
-            holder.discountBO = discountbo;
-            Commons.print("position" + position);
-            if (holder.discountBO != null)
-                if (String.valueOf(holder.discountBO.getDiscount())
-                        .equalsIgnoreCase(df.format(value))) {
-                    holder.discountck.setChecked(true);
-                    Commons.print("checked");
-                } else {
-                    Commons.print("not checked"
-                            + holder.discountBO.getDiscount() + " " + value);
-                    holder.discountck.setChecked(false);
-                }
-            holder.discountck.setText(discountbo.getDiscount() + "");
-
-            return row;
-        }
 
     }
 
-    class ViewHolder {
-        int position;
-        StoreWsieDiscountBO discountBO;
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        CheckBox discountck;
+        if (getDialog() != null) {
+            getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
+
+        getDialog().setCancelable(false);
+        this.setCancelable(false);
+
+        View rootView = inflater.inflate(R.layout.fragment_storewise_discount, container, false);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        return rootView;
     }
 
     @Override
-    public void onClick(View v) {
-        int b = v.getId();
-        if (b == R.id.btn_ok) {
-            this.initAct.onResume();
-            // lvwplist.getSelectedItemPosition()
-            mDialogResult.finish(String.valueOf(discount), type,discountId,isCompanygiven);
-            mDialogResult.cancel();
-        } else if (b == R.id.btn_cancel)
-            mDialogResult.cancel();
-
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        inputManager = (InputMethodManager) getActivity().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
+        if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
+            mDiscountList = discountHelper.getBillWiseDiscountList();
+            findDiscout();
+            if (mStorewiseDiscountBO == null) {
+                getDialog().dismiss();
+                return;
+            }
+        }
+
+        // getDialog().setTitle(mStorewiseDiscountBO.getDescription());
+        mMinRangeTV = (TextView) getView().findViewById(R.id.tv_min_range);
+        mMaxRangeTV = (TextView) getView().findViewById(R.id.tv_max_range);
+        mTitleTv = (TextView) getView().findViewById(R.id.tvTitle);
+        mDiscountET = (EditText) getView().findViewById(R.id.edit_discount_value);
+
+        mTitleTv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        mDiscountET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        mMinRangeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        mMaxRangeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        if (mStorewiseDiscountBO != null) {
+
+            mTitleTv.setText(mStorewiseDiscountBO.getDescription());
+            mMinRangeTV.setText("Minimum Range  : " + mStorewiseDiscountBO.getDiscount() + "");
+            mMaxRangeTV.setText("Maximum Range  : " + mStorewiseDiscountBO.getToDiscount() + "");
+            mDiscountET.setText(mStorewiseDiscountBO.getAppliedDiscount() + "");
+        } else if (bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
+            mTitleTv.setText(getResources().getString(R.string.title_entry_discount));
+            mMinRangeTV.setVisibility(View.GONE);
+            mMaxRangeTV.setText("Discount  :");
+            String strDiscCnt = mEnteredDiscAmtOrPercent + "";
+            mDiscountET.setText(strDiscCnt);
+        }
+        ((Button) getView().findViewById(R.id.calcdot)).setVisibility(View.VISIBLE);
+        mDiscountET.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                QUANTITY = mDiscountET;
+                int inType = mDiscountET.getInputType();
+                mDiscountET.setInputType(InputType.TYPE_NULL);
+                mDiscountET.onTouchEvent(event);
+                mDiscountET.setInputType(inType);
+                mDiscountET.selectAll();
+                inputManager.hideSoftInputFromWindow(
+                        QUANTITY.getWindowToken(), 0);
+                mDiscountET.requestFocus();
+
+
+                return true;
+            }
+        });
+        mDiscountET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String qty = s.toString();
+                if (!qty.equals("")) {
+                    if (mStorewiseDiscountBO != null) {
+                        double discValue = Double.parseDouble(qty);
+                        mStorewiseDiscountBO.setAppliedDiscount(discValue);
+                    }
+
+                } else {
+                    mDiscountET.setText(0 + "");
+                }
+            }
+
+
+        });
+
+
+        mDoneBTN = (Button) getView().findViewById(R.id.btn_done);
+        mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mDoneBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mStorewiseDiscountBO != null) {
+                    if (isValidate()) {
+                        mDialogResult.onDiscountDismiss(String.valueOf(mStorewiseDiscountBO.getAppliedDiscount()), mStorewiseDiscountBO.getIsPercentage(), mStorewiseDiscountBO.getDiscountId(), mStorewiseDiscountBO.getIsCompanyGiven());
+                        getDialog().dismiss();
+                    } else {
+                        Toast.makeText(
+                                getActivity(),
+                                "Please enter value between range",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    mDialogResult.onDiscountDismiss(mDiscountET.getText().toString(), 0, 0, 0);
+                    getDialog().dismiss();
+                }
+            }
+        });
+    }
+
+
     public interface OnMyDialogResult {
-        void finish(String result, int result1,int result3,int result4);
+        void onDiscountDismiss(String result, int result1, int result3, int result4);
 
         void cancel();
     }
 
-    public void setDialogResult(OnMyDialogResult onMyDialogResult) {
-        mDialogResult = onMyDialogResult;
+    public void numberPressed(View vw) {
 
+
+        if (QUANTITY == null) {
+            Toast.makeText(getActivity(), getResources().getString(R.string.please_select_item), Toast.LENGTH_SHORT).show();
+        } else {
+            int id = vw.getId();
+            if (id == R.id.calcdel) {
+
+                String enterText = (String) QUANTITY.getText().toString();
+                if (enterText.contains(".")) {
+                    String[] splitValue = enterText.split("\\.");
+                    try {
+
+                        int s = SDUtil.convertToInt(splitValue[1]);
+                        if (s == 0) {
+                            s = SDUtil.convertToInt(splitValue[0]);
+                            QUANTITY.setText(s + "");
+                        } else {
+                            s = s / 10;
+
+                            QUANTITY.setText(splitValue[0] + "." + s);
+                        }
+
+
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        QUANTITY.setText(SDUtil.convertToInt(enterText) + "");
+                    }
+
+
+                } else {
+
+                    int s = SDUtil.convertToInt((String) QUANTITY.getText()
+                            .toString());
+                    s = s / 10;
+                    QUANTITY.setText(s + "");
+
+                }
+            } else if (id == R.id.calcdot) {
+                String s = QUANTITY.getText().toString();
+
+                if (s != null) {
+                    if (!s.contains(".")) {
+                        QUANTITY.setText(s + ".");// QUANTITY.append(".");
+                    }
+                }
+
+            } else {
+                Button ed = (Button) getDialog().findViewById(vw.getId());
+                String append = ed.getText().toString();
+                eff(append);
+
+            }
+
+        }
     }
+
+    public void eff(String append) {
+        String s = (String) QUANTITY.getText().toString();
+        if (!s.equals("0") && !s.equals("0.0")) {
+            QUANTITY.setText(QUANTITY.getText() + append);
+        } else
+            QUANTITY.setText(append);
+    }
+
+    private void findDiscout() {
+        if (mDiscountList != null) {
+            for (StoreWiseDiscountBO storeWiseDiscountBO : mDiscountList) {
+                if (mTotalOrderValue >= storeWiseDiscountBO.getMinAmount() && mTotalOrderValue <= storeWiseDiscountBO.getMaxAmount()) {
+                    mStorewiseDiscountBO = storeWiseDiscountBO;
+                    mStorewiseDiscountBO.setApplied(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    private boolean isValidate() {
+        double enteredeValue = Double.parseDouble(mDiscountET.getText().toString());
+        if (enteredeValue < mStorewiseDiscountBO.getDiscount() || enteredeValue > mStorewiseDiscountBO.getToDiscount()) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

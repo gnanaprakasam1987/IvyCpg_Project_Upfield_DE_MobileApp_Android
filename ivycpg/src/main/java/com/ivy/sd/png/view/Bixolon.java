@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -91,6 +92,7 @@ public class Bixolon extends IvyBaseActivityNoActionBar {
     public String receipttitle;
     public double discount = 0;
     private Toolbar toolbar;
+    private OrderHelper orderHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,7 @@ public class Bixolon extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        orderHelper=OrderHelper.getInstance(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -219,7 +222,7 @@ public class Bixolon extends IvyBaseActivityNoActionBar {
             if (bmodel.configurationMasterHelper.discountType == 0)
                 discount = 0;
             else
-                discount = SDUtil.convertToDouble(bmodel.invoiceDisount);
+                discount = SDUtil.convertToDouble(orderHelper.invoiceDiscount);
             mDiscoutnValueTV
                     .setText(bmodel.formatValue(discount)
                             + " "
@@ -267,7 +270,7 @@ public class Bixolon extends IvyBaseActivityNoActionBar {
             mOutletName = bmodel.getRetailerMasterBO().getRetailerName();
             mRetailerAddress = bmodel.getRetailerMasterBO().getAddress1();
 
-            mOrderId = bmodel.getOrderid();
+            mOrderId = OrderHelper.getInstance(this).getOrderId();
             mInvoiceNumber = getInvoiceNumber(mOrderId);
             Commons.print("orderid" + mOrderId + " invoicenum" + mInvoiceNumber);
             mSellerName.setText(bmodel.userMasterHelper.getUserMasterBO()

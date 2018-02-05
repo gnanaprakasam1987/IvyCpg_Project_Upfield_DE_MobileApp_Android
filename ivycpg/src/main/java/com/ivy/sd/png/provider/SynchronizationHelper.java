@@ -5031,8 +5031,12 @@ SynchronizationHelper {
 
     private List<S3ObjectSummary> filesList;
 
+    public void setImageDetials(List<S3ObjectSummary> imageDetails) {
+        filesList = imageDetails;
+    }
+
     public List<S3ObjectSummary> getImageDetails() {
-        filesList = new ArrayList<>();
+       /* filesList = new ArrayList<>();
         S3ObjectSummary fileData;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -5040,10 +5044,10 @@ SynchronizationHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("Select * from CatalogImagesDetails where Flag != 1");
-            /*Cursor c = db.selectSQL("Select CID.Key, CID.lastModified,PM.pCode,CID.Flag from CatalogImagesDetails CID " +
+            *//*Cursor c = db.selectSQL("Select CID.Key, CID.lastModified,PM.pCode,CID.Flag from CatalogImagesDetails CID " +
                     "INNER JOIN ProductMaster PM ON CID.Key = '" + DataMembers.S3_ROOT_DIRECTORY + "/Product/ProductCatalog/'" +
                     "|| PM.pCode ||'.jpg' AND PM.PLid = (Select Max(LevelId) from ProductLevel) Where CID.Flag != 1");
-*/
+*//*
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
                     fileData = new S3ObjectSummary();
@@ -5058,7 +5062,9 @@ SynchronizationHelper {
         } catch (Exception e) {
             Commons.printException("Error catalog images list", e);
         }
-        Commons.print("File List size " + filesList.size());
+        Commons.print("File List size " + filesList.size());*/
+        if (filesList == null)
+            return new ArrayList<>();
         return filesList;
     }
 
@@ -5113,14 +5119,14 @@ SynchronizationHelper {
 
     public void clearCatalogImages() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+           /* DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
-            db.executeQ("Delete from CatalogImagesDetails");
+            db.executeQ("Delete from CatalogImagesDetails");*/
             deleteFiles(getStorageDir(context.getResources().getString(R.string.app_name)));
-            db.closeDB();
+           // db.closeDB();
         } catch (Exception e) {
             Commons.printException("deleteImageDetails" + e);
         }

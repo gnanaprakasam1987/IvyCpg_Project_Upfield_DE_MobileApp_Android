@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.aem.api.AEMPrinter;
 import com.aem.api.AEMScrybeDevice;
 import com.bixolon.printer.BixolonPrinter;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -538,7 +539,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + bmodel.getOrderid(),
+                                        + OrderHelper.getInstance(CollectionPreviewScreen.this).getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception

@@ -50,9 +50,9 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
-import com.ivy.sd.png.view.OrderSummary;
+import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.view.SchemeApply;
-import com.ivy.sd.png.view.StockAndOrder;
+import com.ivy.cpg.view.order.StockAndOrder;
 
 import java.util.ArrayList;
 import java.util.Collections;

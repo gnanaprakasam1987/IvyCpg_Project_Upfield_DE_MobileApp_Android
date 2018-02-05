@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ivy.sd.png.view.OrderSummary;
+import com.ivy.cpg.view.order.OrderSummary;
 
 /**
  * Created by vinodh.r on 03-11-2015.

@@ -29,10 +29,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -99,6 +100,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
     private SparseArray<ArrayList<Integer>> mDiscountIdListByTypeId;
     private SparseArray<Double> mDiscountValueByTypeId;
     private Toolbar toolbar;
+    private OrderHelper orderHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +111,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
         try {
             bmodel = (BusinessModel) getApplicationContext();
             bmodel.setContext(this);
+            orderHelper=OrderHelper.getInstance(this);
+
             mInvoiceno = bmodel.invoiceNumber;
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
@@ -216,8 +220,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
             // Used to hide the app logo icon from actionbar
             // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
-            storediscount = bmodel.invoiceDisount;
-            Commons.print("discount" + bmodel.invoiceDisount + " "
+            storediscount = orderHelper.invoiceDiscount;
+            Commons.print("discount" + orderHelper.invoiceDiscount + " "
                     + bmodel.configurationMasterHelper.discountType);
         } catch (Exception e1) {
             Commons.printException("" + e1);
@@ -482,15 +486,15 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                         String discountDescription = "";
                         for (int discountid : discountIdList) {
 
-                            ArrayList<StoreWsieDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
+                            ArrayList<StoreWiseDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
 
 
                             if (discountList != null) {
 
-                                for (StoreWsieDiscountBO storeWsieDiscountBO : discountList) {
+                                for (StoreWiseDiscountBO storeWiseDiscountBO : discountList) {
 
-                                    discountDescription = storeWsieDiscountBO.getDescription();
-                                    ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWsieDiscountBO.getProductId() + "");
+                                    discountDescription = storeWiseDiscountBO.getDescription();
+                                    ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWiseDiscountBO.getProductId() + "");
                                     if (productMasterBO != null) {
                                         int totalProductQty = 0;
                                         totalProductQty = productMasterBO.getOrderedPcsQty()
@@ -518,12 +522,12 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                                                     * batchProductBO.getOsrp();
                                                         }
 
-                                                        if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                            batchDiscountValue = totalValue * storeWsieDiscountBO.getDiscount() / 100;
+                                                        if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                            batchDiscountValue = totalValue * storeWiseDiscountBO.getDiscount() / 100;
 
 
-                                                        } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                            batchDiscountValue = totalBatchQty * storeWsieDiscountBO.getDiscount();
+                                                        } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                            batchDiscountValue = totalBatchQty * storeWiseDiscountBO.getDiscount();
                                                         }
 
                                                         totalDiscountValue = totalDiscountValue + batchDiscountValue;
@@ -545,12 +549,12 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                                             + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp();
                                                 }
 
-                                                if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                    productDiscount = totalValue * storeWsieDiscountBO.getDiscount() / 100;
+                                                if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                    productDiscount = totalValue * storeWiseDiscountBO.getDiscount() / 100;
 
 
-                                                } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                    productDiscount = totalProductQty * storeWsieDiscountBO.getDiscount();
+                                                } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                    productDiscount = totalProductQty * storeWiseDiscountBO.getDiscount();
                                                 }
 
                                                 totalDiscountValue = totalDiscountValue + productDiscount;
@@ -1126,14 +1130,14 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                 for (int discountid : discountIdList) {
 
 
-                                    ArrayList<StoreWsieDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
+                                    ArrayList<StoreWiseDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
 
                                     if (discountList != null) {
 
-                                        for (StoreWsieDiscountBO storeWsieDiscountBO : discountList) {
+                                        for (StoreWiseDiscountBO storeWiseDiscountBO : discountList) {
 
-                                            discountDescription = storeWsieDiscountBO.getDescription();
-                                            ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWsieDiscountBO.getProductId() + "");
+                                            discountDescription = storeWiseDiscountBO.getDescription();
+                                            ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWiseDiscountBO.getProductId() + "");
                                             if (productMasterBO != null) {
                                                 int totalProductQty = 0;
                                                 totalProductQty = productMasterBO.getOrderedPcsQty()
@@ -1161,12 +1165,12 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                                                             * batchProductBO.getOsrp();
                                                                 }
 
-                                                                if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                                    batchDiscountValue = totalValue * storeWsieDiscountBO.getDiscount() / 100;
+                                                                if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                                    batchDiscountValue = totalValue * storeWiseDiscountBO.getDiscount() / 100;
 
 
-                                                                } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                                    batchDiscountValue = totalBatchQty * storeWsieDiscountBO.getDiscount();
+                                                                } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                                    batchDiscountValue = totalBatchQty * storeWiseDiscountBO.getDiscount();
                                                                 }
 
                                                                 totalDiscountValue = totalDiscountValue + batchDiscountValue;
@@ -1188,12 +1192,12 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                                                     + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp();
                                                         }
 
-                                                        if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                            productDiscount = totalValue * storeWsieDiscountBO.getDiscount() / 100;
+                                                        if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                            productDiscount = totalValue * storeWiseDiscountBO.getDiscount() / 100;
 
 
-                                                        } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                            productDiscount = totalProductQty * storeWsieDiscountBO.getDiscount();
+                                                        } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                            productDiscount = totalProductQty * storeWiseDiscountBO.getDiscount();
                                                         }
 
                                                         totalDiscountValue = totalDiscountValue + productDiscount;
@@ -1569,7 +1573,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + bmodel.getOrderid(),
+                                        + orderHelper.getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception

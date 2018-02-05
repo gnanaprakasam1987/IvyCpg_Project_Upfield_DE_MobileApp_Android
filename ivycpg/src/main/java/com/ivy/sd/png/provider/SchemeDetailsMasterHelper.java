@@ -9,7 +9,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -3918,7 +3918,7 @@ public class SchemeDetailsMasterHelper {
                                                         * schemeProductBO
                                                         .getQuantitySelected());
 
-                                            for (BomRetunBo returnBo : bmodel.productHelper
+                                            for (BomReturnBO returnBo : bmodel.productHelper
                                                     .getBomReturnProducts()) {
                                                 if (bomBo.getbPid().equals(
                                                         returnBo.getPid())) {

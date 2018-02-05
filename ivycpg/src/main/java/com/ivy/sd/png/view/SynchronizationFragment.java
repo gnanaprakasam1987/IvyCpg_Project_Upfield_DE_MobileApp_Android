@@ -2378,7 +2378,8 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         @Override
         protected void onPostExecute(SynchronizationHelper.NEXT_METHOD response) {
             super.onPostExecute(response);
-            alertDialog.dismiss();
+            if (alertDialog != null && alertDialog.isShowing())
+                alertDialog.dismiss();
             bmodel.synchronizationHelper.isLastVisitTranDownloadDone = true;
             bmodel.synchronizationHelper.isSihDownloadDone = false;
             bmodel.synchronizationHelper.isDistributorDownloadDone = false;

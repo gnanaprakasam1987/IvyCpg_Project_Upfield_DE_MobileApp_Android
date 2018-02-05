@@ -2036,8 +2036,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                         SDUtil.now(SDUtil.DATE_GLOBAL), time
                         , distance, photoPath, fnameStarts, mVisitMode, mNFCReasonId);
 
-                alertDialog.dismiss();
-
+                if (alertDialog != null && alertDialog.isShowing()) {
+                    alertDialog.dismiss();
+                }
                 //set selected retailer location and its used on retailer modules
                 bmodel.mSelectedRetailerLatitude = LocationUtil.latitude;
                 bmodel.mSelectedRetailerLongitude = LocationUtil.longitude;

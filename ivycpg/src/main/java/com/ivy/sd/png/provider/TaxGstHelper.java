@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.TaxBO;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 /**
  * Created by mansoor on 19/1/18.
@@ -873,7 +875,7 @@ public class TaxGstHelper implements TaxInterface {
             StringBuffer sb = new StringBuffer();
             if (isOrder) {
                 sb.append("select sum(taxValue) from OrderTaxDetails ");
-                sb.append("where orderid=" + mBusinessModel.getOrderid());
+                sb.append("where orderid=" + OrderHelper.getInstance(mContext).getOrderId());
             } else {
                 sb.append("select sum(taxValue) from InvoiceTaxDetails ");
                 sb.append("where invoiceid=" + mBusinessModel.QT(mBusinessModel.invoiceNumber));
@@ -889,4 +891,14 @@ public class TaxGstHelper implements TaxInterface {
         return taxValue;
     }
 
+
+    @Override
+    public void removeTaxFromPrice() {
+
+    }
+
+    @Override
+    public void applyRemovedTax(LinkedList<ProductMasterBO> mOrderedProductList) {
+
+    }
 }

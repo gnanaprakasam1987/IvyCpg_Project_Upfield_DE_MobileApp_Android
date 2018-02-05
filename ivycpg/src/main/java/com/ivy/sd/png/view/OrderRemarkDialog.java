@@ -17,7 +17,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.OrderSummary.OrderRemarksClickListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,10 +34,9 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
     private String mnextDate;
     public String mdate_selected;
     private Context con;
-    private OrderRemarksClickListener mRmarkListner;
     private boolean isFrmDelivery = false;
 
-    public OrderRemarkDialog(Context context, OrderRemarksClickListener rmkListner, boolean isFromDelivery) {
+    public OrderRemarkDialog(Context context, boolean isFromDelivery) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_order_remarks);
@@ -50,7 +48,6 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
 
         bmodel = (BusinessModel) context.getApplicationContext();
         con = context;
-        mRmarkListner = rmkListner;
         isFrmDelivery = isFromDelivery;
 
         try {
@@ -168,7 +165,6 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
                 bmodel.getOrderHeaderBO().setDeliveryDate(Utils.formatDateAsUserRequired(
                         mBtnDate.getText().toString(), "MM/dd/yyyy",
                         "yyyy/MM/dd"));
-//			mRmarkListner.onRemarkClicked();
                 bmodel.setOrderHeaderNote(mEdtRemark.getText().toString());
                 mEdtPO.setText("");
                 mEdtRemark.setText("");

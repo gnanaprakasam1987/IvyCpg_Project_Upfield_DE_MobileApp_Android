@@ -47,14 +47,14 @@
 
             <Button
                 android:id="@+id/refresh_catalog"
-                style="?attr/roundedCustomButtonNormal"
+                style="?attr/roundedCustomButtonSmall"
                 android:layout_toLeftOf="@+id/full_download_catalog"
                 android:layout_centerVertical="true"
                 android:text="Refresh" />
 
             <Button
                 android:id="@+id/full_download_catalog"
-                style="?attr/roundedCustomButtonNormal"
+                style="?attr/roundedCustomButtonSmall"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="Full Download"
@@ -78,4 +78,3 @@
 
 
 </LinearLayout>
-

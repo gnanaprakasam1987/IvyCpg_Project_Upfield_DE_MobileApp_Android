@@ -36,9 +36,8 @@ public class CatalogImageDownloadService extends IntentService {
             AmazonS3Client s3 = new AmazonS3Client(myCredentials);
             TransferUtility transferUtility = new TransferUtility(s3, getApplicationContext());
             Thread downloaderThread = new DownloaderThreadCatalog(getApplicationContext(),
-                    null, (ArrayList<S3ObjectSummary>) businessModel.synchronizationHelper.getImageDetails(),
-                    businessModel.userMasterHelper.getUserMasterBO()
-                            .getUserid(), transferUtility);
+                    (ArrayList<S3ObjectSummary>) businessModel.synchronizationHelper.getImageDetails(),
+                    transferUtility);
             downloaderThread.start();
         }
     }

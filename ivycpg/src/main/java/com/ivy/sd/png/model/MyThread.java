@@ -6,6 +6,7 @@ import android.os.Handler;
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.LoginScreen;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.util.Commons;
@@ -16,7 +17,7 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
-import com.ivy.sd.png.view.OrderSummary;
+import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.print.GhanaPrintPreviewActivity;
@@ -47,6 +48,7 @@ public class MyThread extends Thread {
     public void run() {
         BusinessModel bmodel = (BusinessModel) ctx.getApplicationContext();
         bmodel.setContext(ctx);
+        OrderHelper orderHelper=OrderHelper.getInstance(ctx);
         //FragmentManager fm = ((FragmentActivity)ctx).getSupportFragmentManager();
         //HomeScreenFragment fragment = (HomeScreenFragment)fm.findFragmentById(R.id.synchronization_fragment);
 
@@ -237,7 +239,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             // Save Order
-            bmodel.saveOrder();
+            orderHelper.saveOrder(ctx);
             bmodel.updateSbdDistStockinRetailerMaster();
 
             // Save Discount
@@ -331,7 +333,7 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.DELETE_ORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-            bmodel.deleteOrder(bmodel.getRetailerMasterBO().getRetailerID());
+            orderHelper.deleteOrder(ctx,bmodel.getRetailerMasterBO().getRetailerID());
 
             // Calculate and set Distribution percent
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
@@ -382,7 +384,64 @@ public class MyThread extends Thread {
             }
 
             frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_DELETED);
-        } else if (opt == DataMembers.DIST_DELETE_ORDER) {
+        } else if (opt == DataMembers.DELETE_STOCK_AND_ORDER) {
+            bmodel = (BusinessModel) ctx.getApplicationContext();
+            bmodel.setContext(ctx);
+
+            orderHelper.deleteStockAndOrder(ctx);
+
+            orderHelper.deleteOrder(ctx,bmodel.getRetailerMasterBO().getRetailerID());
+
+            // Calculate and set Distribution percent
+            if (!bmodel.configurationMasterHelper.IS_INVOICE) {
+                String percent = bmodel.getSBDDistributionPrecentNewPhilip();
+                bmodel.sbdMerchandisingHelper
+                        .setSBDDistributionPercent(percent);
+                bmodel.setDistributionPercent(percent);
+                bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
+            }
+
+            if (!bmodel.isOrderTaken()) {
+                bmodel.setIsOrdered("N");
+                bmodel.setOrderedInDB("N");
+                bmodel.getRetailerMasterBO().setOrdered("N");
+            }
+
+            // bmodel.initiativeHelper.storeInitiativePrecentageInDB("0",0);
+            // bmodel.initiativeHelper.setInitiativePrecentInBO("0");
+            // bmodel.getRetailerMasterBO().setInitiativePercent("0");
+            bmodel.getRetailerMasterBO().setVisit_Actual(0);
+
+            // bmodel.productHelper.clearOrderTableAndUpdateSIH();
+            bmodel.productHelper.clearOrderTableForInitiative();
+            if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
+                bmodel.initiativeHelper.loadInitiativeStatus(true,
+                        bmodel.retailerMasterBO.getRetailerID(), false, false,
+                        bmodel.getRetailerMasterBO().getSubchannelid());
+                bmodel.initiativeHelper
+                        .updateInitAchievedPercentInRetailerMaster();
+            }
+
+            OrderSummary frm = (OrderSummary) ctx;
+            bmodel.productHelper.clearOrderTable();
+            // If Empties Management(Bottle Return Module) delete the objects
+            // value while deleting the Order
+            if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
+                bmodel.productHelper.clearBomReturnProductsTable();
+                bmodel.mEmptyReconciliationhelper
+                        .deleteEmptyReconciliationOrder();
+            }
+            bmodel.setOrderHeaderBO(null);
+            if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
+                if (!bmodel.synchronizationHelper.backUpDB()) {
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_DATABASE_NOT_SAVED);
+
+                }
+            }
+
+            frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_DELETED);
+        }else if (opt == DataMembers.DIST_DELETE_ORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
             bmodel.deleteDistributorOrder(bmodel.distributorMasterHelper.getDistributor().getDId());
@@ -416,7 +475,7 @@ public class MyThread extends Thread {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
 
-            bmodel.saveOrder();
+            orderHelper.saveOrder(ctx);
 
             bmodel.setOrderHeaderNote("");
 
@@ -446,7 +505,7 @@ public class MyThread extends Thread {
                 //bmodel.updateStockinHandMaster();
 
 
-                bmodel.saveNewInvoice();
+                orderHelper.saveInvoice(ctx);
             }
 
             bmodel.setRField1("");

@@ -212,7 +212,7 @@
             android:name="com.ivy.cpg.view.van.PlanningSubScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.StockAndOrder"
+            android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -345,7 +345,7 @@
             android:name="com.ivy.sd.png.view.NewOutlet"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.OrderSummary"
+            android:name="com.ivy.cpg.view.order.OrderSummary"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.BatchAllocation"

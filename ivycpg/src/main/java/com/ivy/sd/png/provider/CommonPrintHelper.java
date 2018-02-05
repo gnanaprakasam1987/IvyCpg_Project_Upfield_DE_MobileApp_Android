@@ -4,11 +4,13 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.SparseArray;
 
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
@@ -44,6 +46,7 @@ public class CommonPrintHelper {
     private Context context;
     private BusinessModel bmodel;
     private static CommonPrintHelper instance = null;
+    private OrderHelper orderHelper;
 
     private XmlPullParserFactory xmlFactoryObject;
     private XmlPullParser xmlParser;
@@ -165,6 +168,7 @@ public class CommonPrintHelper {
     private CommonPrintHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
+        orderHelper=OrderHelper.getInstance(context);
     }
 
     public static CommonPrintHelper getInstance(Context context) {
@@ -578,7 +582,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_APPLY)) {
             value = getProductLevelApplyDiscount(precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_ENTRY)) {
-            value = alignWithLabelForSingleLine(label, formatValueInPrint(bmodel.productHelper.updateProductDiscountUsingEntry(mOrderedProductList), precisionCount));
+            value = alignWithLabelForSingleLine(label, formatValueInPrint((DiscountHelper.getInstance(context).calculateUserEntryLevelDiscount(mOrderedProductList)), precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_TAX_PRODUCT)) {
             value = getProductLevelTax(precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_BILL_ENTRY)) {
@@ -602,7 +606,7 @@ public class CommonPrintHelper {
             if (mKeyValues != null)
                 value = label + mKeyValues.get(TAG_KEY2);
         } else if (tag.equalsIgnoreCase(TAG_ORDER_NUMBER)) {
-            value = label + bmodel.getOrderid().replaceAll("\'", "");
+            value = label + orderHelper.getOrderId().replaceAll("\'", "");
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_ROUTE)) {
             value = label + bmodel.beatMasterHealper.getBeatMasterBOByID(bmodel.getRetailerMasterBO().getBeatID());
         } else if (tag.equalsIgnoreCase(TAG_NET_SCHEME_DISCOUNT)) {
@@ -1225,11 +1229,11 @@ public class CommonPrintHelper {
                     String discountDescription = "";
                     double totalDiscountValue = 0;
                     for (int discountid : discountIdList) {
-                        ArrayList<StoreWsieDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
+                        ArrayList<StoreWiseDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
                         if (discountList != null) {
-                            for (StoreWsieDiscountBO storeWsieDiscountBO : discountList) {
-                                discountDescription = storeWsieDiscountBO.getDescription();
-                                ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWsieDiscountBO.getProductId() + "");
+                            for (StoreWiseDiscountBO storeWiseDiscountBO : discountList) {
+                                discountDescription = storeWiseDiscountBO.getDescription();
+                                ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWiseDiscountBO.getProductId() + "");
                                 if (productMasterBO != null) {
                                     int totalProductQty = 0;
                                     totalProductQty = productMasterBO.getOrderedPcsQty()
@@ -1257,12 +1261,12 @@ public class CommonPrintHelper {
                                                                 * batchProductBO.getOsrp();
                                                     }
 
-                                                    if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                        batchDiscountValue = totalValue * storeWsieDiscountBO.getDiscount() / 100;
+                                                    if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                        batchDiscountValue = totalValue * storeWiseDiscountBO.getDiscount() / 100;
 
 
-                                                    } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                        batchDiscountValue = totalBatchQty * storeWsieDiscountBO.getDiscount();
+                                                    } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                        batchDiscountValue = totalBatchQty * storeWiseDiscountBO.getDiscount();
                                                     }
 
                                                     totalDiscountValue = totalDiscountValue + batchDiscountValue;
@@ -1280,10 +1284,10 @@ public class CommonPrintHelper {
                                                         + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp();
                                             }
 
-                                            if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                productDiscount = totalValue * storeWsieDiscountBO.getDiscount() / 100;
-                                            } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                productDiscount = totalProductQty * storeWsieDiscountBO.getDiscount();
+                                            if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                productDiscount = totalValue * storeWiseDiscountBO.getDiscount() / 100;
+                                            } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                productDiscount = totalProductQty * storeWiseDiscountBO.getDiscount();
                                             }
 
                                             totalDiscountValue = totalDiscountValue + productDiscount;
@@ -1487,7 +1491,7 @@ public class CommonPrintHelper {
      */
     private void getBillLevelDiscount() {
 
-        double discount = SDUtil.convertToDouble(bmodel.invoiceDisount);
+        double discount = SDUtil.convertToDouble(orderHelper.invoiceDiscount);
         double discountValue = 0;
 
         if (bmodel.configurationMasterHelper.discountType == 1) {
@@ -1586,7 +1590,7 @@ public class CommonPrintHelper {
 
     private void getEmptyReturnValue() {
 
-        ArrayList<BomRetunBo> mEmptyProducts;
+        ArrayList<BomReturnBO> mEmptyProducts;
         double totalEmp = 0;
 
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
@@ -1596,8 +1600,8 @@ public class CommonPrintHelper {
             mEmptyProducts = bmodel.productHelper.getBomReturnProducts();
 
         if (mEmptyProducts != null && mEmptyProducts.size() > 0) {
-            Collections.sort(mEmptyProducts, BomRetunBo.SKUWiseAscending);
-            for (BomRetunBo productBO : mEmptyProducts) {
+            Collections.sort(mEmptyProducts, BomReturnBO.SKUWiseAscending);
+            for (BomReturnBO productBO : mEmptyProducts) {
                 totalEmp = (productBO.getLiableQty() * productBO.getpSrp()) - (productBO.getReturnQty() * productBO.getpSrp());
                 mEmptyTotalValue = mEmptyTotalValue + totalEmp;
             }
@@ -1614,7 +1618,7 @@ public class CommonPrintHelper {
 
         sb.append("\n");
 
-        ArrayList<BomRetunBo> mEmptyProducts;
+        ArrayList<BomReturnBO> mEmptyProducts;
         //double totalEmp = 0 , mLiableTot = 0, mReturnTot = 0;
 
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
@@ -1628,11 +1632,11 @@ public class CommonPrintHelper {
 
             //sb.append("\n");
 
-            Collections.sort(mEmptyProducts, BomRetunBo.SKUWiseAscending);
+            Collections.sort(mEmptyProducts, BomReturnBO.SKUWiseAscending);
             String mProductValue = "";
 
             //Liable
-            for (BomRetunBo prod : mEmptyProducts) {
+            for (BomReturnBO prod : mEmptyProducts) {
                 if ((prod.getLiableQty() > 0)) {
                     for (AttributeListBO attr : mAttrList) {
                         mProductValue = "";
@@ -1665,7 +1669,7 @@ public class CommonPrintHelper {
                 }
             }
 
-            for (BomRetunBo prod : mEmptyProducts) {
+            for (BomReturnBO prod : mEmptyProducts) {
                 if ((prod.getReturnQty() > 0)) {
                     for (AttributeListBO attr : mAttrList) {
                         mProductValue = "";

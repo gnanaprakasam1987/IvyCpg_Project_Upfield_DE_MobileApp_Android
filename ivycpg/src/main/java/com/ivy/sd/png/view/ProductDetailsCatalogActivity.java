@@ -59,7 +59,7 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
                         .load(prd)
                         .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
                         .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(pdt_image_details);
 
             } else {
