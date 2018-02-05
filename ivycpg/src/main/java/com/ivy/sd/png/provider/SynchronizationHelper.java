@@ -5126,7 +5126,7 @@ SynchronizationHelper {
 
             db.executeQ("Delete from CatalogImagesDetails");*/
             deleteFiles(getStorageDir(context.getResources().getString(R.string.app_name)));
-           // db.closeDB();
+            // db.closeDB();
         } catch (Exception e) {
             Commons.printException("deleteImageDetails" + e);
         }

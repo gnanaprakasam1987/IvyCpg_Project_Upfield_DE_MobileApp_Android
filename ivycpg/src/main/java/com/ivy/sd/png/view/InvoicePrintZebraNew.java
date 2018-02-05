@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.commons.SDUtil;
@@ -410,7 +411,7 @@ public class InvoicePrintZebraNew extends Zebra {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + bmodel.getOrderid(),
+                                        + OrderHelper.getInstance(InvoicePrintZebraNew.this).getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -530,7 +531,7 @@ public class InvoicePrintZebraNew extends Zebra {
                 bmodel.setOrderHeaderBO(ord);
 
                 if (bmodel.hasOrder()) {
-                    bmodel.invoiceDisount = "0";
+                    OrderHelper.getInstance(this).invoiceDiscount = "0";
                     if (bmodel.configurationMasterHelper.IS_INVOICE) {
                         /*pd = ProgressDialog.show(
                                 InvoicePrintZebraNew.this,

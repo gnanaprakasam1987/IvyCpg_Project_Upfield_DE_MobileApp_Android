@@ -11,13 +11,14 @@ import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -30,9 +31,8 @@ import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
-import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -41,7 +41,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +60,7 @@ public class ProductHelper {
     private Context mContext;
     private BusinessModel bmodel;
     private Vector<ProductMasterBO> productMaster = null;
-    private Vector<ProductMasterBO> shortProductMaster;
+
 
     private Map<String, ProductMasterBO> productMasterById;
 
@@ -102,20 +101,15 @@ public class ProductHelper {
     private HashMap<Integer, Vector<LevelBO>> mRetailerModuleFilterObjectBySequence;
     private Vector<LevelBO> mrRetailerModuleSequence;
 
-    private HashMap<Integer, ArrayList<StoreWsieDiscountBO>> mProductIdListByDiscoutId;
+    private HashMap<Integer, ArrayList<StoreWiseDiscountBO>> mProductIdListByDiscoutId;
     private ArrayList<Integer> mDiscountIdList;
 
-    private HashMap<String, HashMap<Integer, Double>> mDiscountmapByProductwithBathid = new HashMap<String, HashMap<Integer, Double>>();
+
     private SparseArray<ArrayList<Integer>> mDiscountIdListByTypeid;
     private ArrayList<Integer> mTypeIdList;
     private HashMap<Integer, String> mDescriptionByTypeId;
 
-    // Bill wise discount details list and hashmap
-    private ArrayList<StoreWsieDiscountBO> mBillWiseDiscountList;
-    // Bill wise  payterm discount details list and hashmap
-    private ArrayList<StoreWsieDiscountBO> mBillWisePayternDiscountList;
 
-    private SparseArray<ArrayList<SerialNoBO>> mSerialNoListByProductid;
     private SparseArray<LoadManagementBO> mLoadManagementBOByProductId;
 
     private HashMap<Integer, Vector<CompetitorFilterLevelBO>> mCompetitorFilterlevelBo;
@@ -3275,9 +3269,9 @@ public class ProductHelper {
     }
 
 
-    private ArrayList<BomRetunBo> bomReturnProducts;
+    private ArrayList<BomReturnBO> bomReturnProducts;
     private ArrayList<BomMasterBO> bomMaster;
-    private ArrayList<BomRetunBo> bomReturnTypeProducts;
+    private ArrayList<BomReturnBO> bomReturnTypeProducts;
 
     /**
      * Download the isReturnable products and its Quantity from ProductMaster
@@ -3306,9 +3300,9 @@ public class ProductHelper {
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
-                bomReturnProducts = new ArrayList<BomRetunBo>();
+                bomReturnProducts = new ArrayList<BomReturnBO>();
                 while (c.moveToNext()) {
-                    BomRetunBo bomMasterBO = new BomRetunBo();
+                    BomReturnBO bomMasterBO = new BomReturnBO();
                     bomMasterBO.setPid(c.getString(0));
                     bomMasterBO.setParentID(c.getInt(1));
                     bomMasterBO.setProductName(c.getString(2));
@@ -3413,12 +3407,12 @@ public class ProductHelper {
      */
     public void setReturnQty() {
 
-        for (BomRetunBo bom : getBomReturnProducts()) {
+        for (BomReturnBO bom : getBomReturnProducts()) {
             bom.setLiableQty(0);
             bom.setReturnQty(0);
         }
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
-            for (BomRetunBo bom : getBomReturnTypeProducts()) {
+            for (BomReturnBO bom : getBomReturnTypeProducts()) {
                 bom.setLiableQty(0);
                 // bom.setReturnQty(0);
             }
@@ -3447,7 +3441,7 @@ public class ProductHelper {
                                     + sku.getCrownOrderedCaseQty() + sku
                                     .getFreeCaseQty()));
 
-                        for (BomRetunBo returnBo : getBomReturnProducts()) {
+                        for (BomReturnBO returnBo : getBomReturnProducts()) {
                             if (bomBo.getbPid().equals(returnBo.getPid())) {
                                 returnBo.setLiableQty(returnBo.getLiableQty()
                                         + bomBo.getTotalQty());
@@ -3471,7 +3465,7 @@ public class ProductHelper {
         try {
             double balance = 0;
 
-            for (BomRetunBo bomReturnBo : getBomReturnProducts()) {
+            for (BomReturnBO bomReturnBo : getBomReturnProducts()) {
                 balance = balance
                         + ((bomReturnBo.getLiableQty() - bomReturnBo
                         .getReturnQty()) * bomReturnBo.getpSrp());
@@ -3492,7 +3486,7 @@ public class ProductHelper {
         try {
             double balance = 0;
 
-            for (BomRetunBo bomReturnBo : getBomReturnTypeProducts()) {
+            for (BomReturnBO bomReturnBo : getBomReturnTypeProducts()) {
                 balance = balance
                         + ((bomReturnBo.getLiableQty() - bomReturnBo
                         .getReturnQty()) * bomReturnBo.getpSrp());
@@ -3532,7 +3526,7 @@ public class ProductHelper {
             }
             cursor.close();
 
-            ArrayList<BomRetunBo> returnProducts = null;
+            ArrayList<BomReturnBO> returnProducts = null;
             String returncolumns = "OrderID,Pid,LiableQty,ReturnQty,Qty,Price, UomID,TypeID,LineValue,RetailerID";
             if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
                 returnProducts = bmodel.productHelper
@@ -3542,7 +3536,7 @@ public class ProductHelper {
 
             }
             String pid;
-            for (BomRetunBo bomReturnBo : returnProducts) {
+            for (BomReturnBO bomReturnBo : returnProducts) {
 
                 if (bomReturnBo.getLiableQty() > 0
                         || bomReturnBo.getReturnQty() > 0) {
@@ -3803,9 +3797,9 @@ public class ProductHelper {
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
-                bomReturnTypeProducts = new ArrayList<BomRetunBo>();
+                bomReturnTypeProducts = new ArrayList<BomReturnBO>();
                 while (c.moveToNext()) {
-                    BomRetunBo bomMasterBO = new BomRetunBo();
+                    BomReturnBO bomMasterBO = new BomReturnBO();
                     bomMasterBO.setPid(c.getString(0));
                     bomMasterBO.setProductName(c.getString(1));
                     bomMasterBO.setProductShortName(c.getString(2));
@@ -3834,11 +3828,11 @@ public class ProductHelper {
         try {
             int total;
 
-            for (BomRetunBo groupWiseProducts : bmodel.productHelper
+            for (BomReturnBO groupWiseProducts : bmodel.productHelper
                     .getBomReturnTypeProducts()) {
                 total = 0;
 
-                for (BomRetunBo bomReturnProducts : bmodel.productHelper
+                for (BomReturnBO bomReturnProducts : bmodel.productHelper
                         .getBomReturnProducts()) {
 
                     if (groupWiseProducts.getPid().equals(
@@ -3906,12 +3900,12 @@ public class ProductHelper {
 
     public void clearBomReturnProductsTable() {
         try {
-            for (BomRetunBo temp : getBomReturnProducts()) {
+            for (BomReturnBO temp : getBomReturnProducts()) {
                 temp.setLiableQty(0);
                 temp.setReturnQty(0);
             }
             if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
-                for (BomRetunBo temp : getBomReturnTypeProducts()) {
+                for (BomReturnBO temp : getBomReturnTypeProducts()) {
                     temp.setLiableQty(0);
                     temp.setReturnQty(0);
                 }
@@ -4049,7 +4043,7 @@ public class ProductHelper {
      */
     public void saveReturnDetails(String uid, int flag, DBUtil db) {
 
-        ArrayList<BomRetunBo> returnProducts = null;
+        ArrayList<BomReturnBO> returnProducts = null;
         String tableName = "";
         String returncolumns = "";
         if (flag == 1) {
@@ -4068,7 +4062,7 @@ public class ProductHelper {
 
         }
         String pid;
-        for (BomRetunBo bomReturnBo : returnProducts) {
+        for (BomReturnBO bomReturnBo : returnProducts) {
             StringBuffer sb = new StringBuffer();
             if (bomReturnBo.getLiableQty() > 0
                     || bomReturnBo.getReturnQty() > 0) {
@@ -4226,7 +4220,7 @@ public class ProductHelper {
 
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    for (BomRetunBo bomReturnBo : getBomReturnTypeProducts()) {
+                    for (BomReturnBO bomReturnBo : getBomReturnTypeProducts()) {
                         if (bomReturnBo.getLiableQty() > 0
                                 || bomReturnBo.getReturnQty() > 0) {
                             String pid = cursor.getString(0);
@@ -4243,7 +4237,7 @@ public class ProductHelper {
                 }
                 cursor.close();
             } else {
-                for (BomRetunBo bomReturnBo : getBomReturnTypeProducts()) {
+                for (BomReturnBO bomReturnBo : getBomReturnTypeProducts()) {
 
                     values = bomReturnBo.getTypeId() + ","
                             + bomReturnBo.getReturnQty();
@@ -4273,7 +4267,7 @@ public class ProductHelper {
 
             if (cur != null) {
                 while (cur.moveToNext()) {
-                    for (BomRetunBo product : getBomReturnProducts()) {
+                    for (BomReturnBO product : getBomReturnProducts()) {
 
                         if (product.getPid().equals(cur.getString(0))) {
                             product.setTypeId(cur.getString(1));
@@ -4371,7 +4365,7 @@ public class ProductHelper {
 
     }
 
-    public ArrayList<BomRetunBo> getBomReturnProducts() {
+    public ArrayList<BomReturnBO> getBomReturnProducts() {
         return bomReturnProducts;
     }
 
@@ -4379,7 +4373,7 @@ public class ProductHelper {
         return bomMaster;
     }
 
-    public ArrayList<BomRetunBo> getBomReturnTypeProducts() {
+    public ArrayList<BomReturnBO> getBomReturnTypeProducts() {
         return bomReturnTypeProducts;
     }
 
@@ -4988,7 +4982,7 @@ public class ProductHelper {
 
     public void downloadProductDiscountDetails() {
 
-        mProductIdListByDiscoutId = new HashMap<Integer, ArrayList<StoreWsieDiscountBO>>();
+        mProductIdListByDiscoutId = new HashMap<Integer, ArrayList<StoreWiseDiscountBO>>();
 
         mDiscountIdList = new ArrayList<Integer>();
         DBUtil db = null;
@@ -5014,14 +5008,14 @@ public class ProductHelper {
             sb.append("where ListCode='ITEM' and ListType='DISCOUNT_APPLY_TYPE') ");
             sb.append("and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE')");
             sb.append(" order by dm.DiscountId,dm.isCompanyGiven desc");
-            ArrayList<StoreWsieDiscountBO> productdiscountList = new ArrayList<StoreWsieDiscountBO>();
-            StoreWsieDiscountBO storeWiseDiscountBO;
+            ArrayList<StoreWiseDiscountBO> productdiscountList = new ArrayList<StoreWiseDiscountBO>();
+            StoreWiseDiscountBO storeWiseDiscountBO;
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
                 if (c.getCount() > 0) {
                     int discountid = 0;
                     while (c.moveToNext()) {
-                        storeWiseDiscountBO = new StoreWsieDiscountBO();
+                        storeWiseDiscountBO = new StoreWiseDiscountBO();
                         storeWiseDiscountBO.setDiscount(c.getDouble(0));
                         storeWiseDiscountBO.setIsPercentage(c.getInt(1));
                         storeWiseDiscountBO.setType(c.getInt(2));
@@ -5036,7 +5030,7 @@ public class ProductHelper {
                             if (discountid != 0) {
                                 mProductIdListByDiscoutId.put(discountid,
                                         productdiscountList);
-                                productdiscountList = new ArrayList<StoreWsieDiscountBO>();
+                                productdiscountList = new ArrayList<StoreWiseDiscountBO>();
                                 productdiscountList.add(storeWiseDiscountBO);
                                 discountid = storeWiseDiscountBO
                                         .getDiscountId();
@@ -5077,90 +5071,14 @@ public class ProductHelper {
         return new ArrayList<Integer>();
     }
 
-    public HashMap<Integer, ArrayList<StoreWsieDiscountBO>> getProductDiscountListByDiscountID() {
+    public HashMap<Integer, ArrayList<StoreWiseDiscountBO>> getProductDiscountListByDiscountID() {
         return mProductIdListByDiscoutId;
     }
 
 
-    /**
-     * Method to use apply itemlevel discount
-     *
-     * @return
-     */
-    public double updateItemLevelDiscount() {
-        double totalDiscountValue = 0.0;
-        if (mDiscountIdList != null) {
-            for (Integer discountID : mDiscountIdList) {
-
-                double discountValue = updateItemLeveDiscountbyPercentageOrAmt(discountID);
-
-                totalDiscountValue = totalDiscountValue + discountValue;
-            }
-        }
-
-        return totalDiscountValue;
-    }
-
-    private double updateItemLeveDiscountbyPercentageOrAmt(int discouId) {
-        double totalDiscountValue = 0.0;
-
-        ArrayList<StoreWsieDiscountBO> discountProductIdList = mProductIdListByDiscoutId
-                .get(discouId);
-        if (discountProductIdList != null) {
-            for (StoreWsieDiscountBO storewiseDiscountBO : discountProductIdList) {
-                ProductMasterBO productBo = bmodel.productHelper
-                        .getProductMasterBOById(storewiseDiscountBO
-                                .getProductId() + "");
-                if (productBo != null) {
-                    if (productBo.getOrderedPcsQty() > 0
-                            || productBo.getOrderedCaseQty() > 0
-                            || productBo.getOrderedOuterQty() > 0) {
-
-                        boolean isBatchwise = false;
-                        int perorAmtDiscount = storewiseDiscountBO
-                                .getIsPercentage() == 1 ? 1 : 0;
-                        if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
-                                && bmodel.configurationMasterHelper.IS_INVOICE
-                                && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (productBo.getBatchwiseProductCount() > 0) {
-                                isBatchwise = true;
-
-                            } else {
-                                isBatchwise = false;
-                            }
-                        } else {
-                            isBatchwise = false;
-                        }
-                        boolean isCompanyWiseDisc = false;
-                        if (storewiseDiscountBO.getIsCompanyGiven() == 1) {
-                            isCompanyWiseDisc = true;
-                        } else {
-                            isCompanyWiseDisc = false;
-                        }
 
 
-                        final double discountValue = getProductsDisCountValue(productBo,
-                                storewiseDiscountBO.getDiscount(), perorAmtDiscount,
-                                isBatchwise, discouId, isCompanyWiseDisc);
 
-                        productBo.setProductDiscAmount(productBo.getProductDiscAmount() + discountValue);
-
-
-                        if (productBo.getDiscount_order_value() > 0) {
-                            productBo.setDiscount_order_value(productBo
-                                    .getDiscount_order_value() - discountValue);
-                        }
-
-                        totalDiscountValue = totalDiscountValue + discountValue;
-
-                    }
-                }
-            }
-        }
-
-        return totalDiscountValue;
-
-    }
 
     public void saveItemLevelDiscount(String orderID, DBUtil db) {
 
@@ -5168,10 +5086,10 @@ public class ProductHelper {
         if (mDiscountIdList != null) {
             StringBuffer sb = null;
             for (Integer discountid : mDiscountIdList) {
-                ArrayList<StoreWsieDiscountBO> storewiseDiscountList = mProductIdListByDiscoutId
+                ArrayList<StoreWiseDiscountBO> storewiseDiscountList = mProductIdListByDiscoutId
                         .get(discountid);
                 if (storewiseDiscountList != null) {
-                    for (StoreWsieDiscountBO storewiseDiscountBo : storewiseDiscountList) {
+                    for (StoreWiseDiscountBO storewiseDiscountBo : storewiseDiscountList) {
                         ProductMasterBO productBo = bmodel.productHelper
                                 .getProductMasterBOById(storewiseDiscountBo
                                         .getProductId() + "");
@@ -5220,42 +5138,7 @@ public class ProductHelper {
 
     }
 
-    /**
-     * save bill wise discount by range wise
-     *
-     * @param orderid
-     * @param db
-     */
-    public void saveBillWiseDiscountRangewise(String orderid, DBUtil db) {
-        if (mBillWiseDiscountList != null) {
-            String columns = "OrderId,Typeid,Value,Percentage,ApplyLevelid,RetailerId,discountid,isCompanyGiven,pid";
-            for (StoreWsieDiscountBO storeWsieDiscountBO : mBillWiseDiscountList) {
-                if (storeWsieDiscountBO.isApplied()) {
-                    double value = 0;
-                    double percentage = 0;
-                    if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                        percentage = storeWsieDiscountBO.getAppliedDiscount();
-                    } else {
-                        value = storeWsieDiscountBO.getAppliedDiscount();
-                    }
-                    StringBuffer sb = new StringBuffer();
-                    sb.append(orderid + "," + storeWsieDiscountBO.getType() + "," + value + "," + percentage);
-                    sb.append("," + percentage + storeWsieDiscountBO.getApplyLevel());
-                    sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                    sb.append("," + storeWsieDiscountBO.getDiscountId());
-                    sb.append("," + storeWsieDiscountBO.getIsCompanyGiven());
-                    sb.append(",0");
-                    db.insertSQL("InvoiceDiscountDetail", columns,
-                            sb.toString());
-                    db.insertSQL("OrderDiscountDetail", columns,
-                            sb.toString());
-                    break;
 
-                }
-
-            }
-        }
-    }
 
 
     public void updateInvoiceIdInItemLevelDiscount(DBUtil db, String invid,
@@ -5267,195 +5150,9 @@ public class ProductHelper {
 
     }
 
-    /**
-     * @param orderedList
-     * @return
-     * @author rajesh.k Method to use update use entry level product discount
-     */
-
-    public double updateProductDiscountUsingEntry(
-            List<ProductMasterBO> orderedList) {
-        mDiscountmapByProductwithBathid = new HashMap<String, HashMap<Integer, Double>>();
-        double totalDiscountValue = 0;
-        if (orderedList != null) {
-
-            for (ProductMasterBO productBO : orderedList) {
-                double discountvalue = 0.0;
-                double totalEnteredDiscount = productBO.getD1()
-                        + productBO.getD2() + productBO.getD3();
-                boolean isBatchwise = false;
-                if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
-                        && bmodel.configurationMasterHelper.IS_INVOICE
-                        && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    if (productBO.getBatchwiseProductCount() > 0) {
-                        isBatchwise = true;
-
-                    } else {
-                        isBatchwise = false;
-                    }
-                } else {
-                    isBatchwise = false;
-                }
-                if (totalEnteredDiscount > 0) {
-                    discountvalue = getProductsDisCountValue(productBO,
-                            totalEnteredDiscount, 1, isBatchwise, 0, true);
-
-                } else if (productBO.getDA() > 0) {
-                    discountvalue = getProductsDisCountValue(productBO,
-                            productBO.getDA(), 0, isBatchwise, 0, true);
-
-                }
-                if (productBO.getDiscount_order_value() > 0) {
-                    productBO.setDiscount_order_value(productBO
-                            .getDiscount_order_value() - discountvalue);
-                }
-                totalDiscountValue = totalDiscountValue + discountvalue;
-            }
-        }
-        return totalDiscountValue;
-
-    }
-
-    public HashMap<String, HashMap<Integer, Double>> getDiscountMapByProductwidthBatchid() {
-        return mDiscountmapByProductwithBathid;
-    }
-
-    private double getProductsDisCountValue(ProductMasterBO productBO,
-                                            double value, int discOrAmt, boolean isBatchwise, int discountId, boolean isCompanyDiscount) {
-        double totalDiscOrAmtValue = 0;
-
-        if (isBatchwise) {
-            totalDiscOrAmtValue = getProductDiscountValueIsBatchwise(productBO,
-                    value, discOrAmt, discountId);
-
-        } else {
-            int totalQty = productBO.getOrderedPcsQty()
-                    + productBO.getOrderedCaseQty() * productBO.getCaseSize()
-                    + productBO.getOrderedOuterQty() * productBO.getOutersize();
-
-            double line_total_price = (productBO.getOrderedCaseQty() * productBO
-                    .getCsrp())
-                    + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                    + (productBO.getOrderedOuterQty() * productBO.getOsrp());
-
-            double totalValue = 0.0;
-
-            if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productBO.getBatchwiseProductCount() > 0) {
-                totalValue = bmodel.schemeDetailsMasterHelper
-                        .getbatchWiseTotalValue(productBO);
-            } else {
-                totalValue = line_total_price;
-
-            }
-
-            if (isCompanyDiscount) {
-                totalValue = totalValue - productBO.getDistributorTypeDiscount();
-            }
-            if (discOrAmt == 1) {
-                totalDiscOrAmtValue = totalValue * value / 100;
-
-            } else if (discOrAmt == 0) {
-                totalDiscOrAmtValue = totalQty * value;
-
-            }
-
-            if (discountId == 0) {
-                productBO.setApplyValue(totalDiscOrAmtValue);
-            }
-
-            if (isCompanyDiscount) {
-                productBO.setCompanyTypeDiscount(productBO.getCompanyTypeDiscount() + totalDiscOrAmtValue);
-            } else {
-                productBO.setDistributorTypeDiscount(productBO.getDistributorTypeDiscount() + totalDiscOrAmtValue);
-            }
-            HashMap<Integer, Double> discountValueByDiscountId = mDiscountmapByProductwithBathid.get(productBO.getProductID());
-            if (discountValueByDiscountId == null)
-                discountValueByDiscountId = new HashMap<Integer, Double>();
-
-            discountValueByDiscountId.put(discountId, totalDiscOrAmtValue);
-
-            mDiscountmapByProductwithBathid.put(productBO.getProductID(), discountValueByDiscountId);
-
-        }
-
-        return totalDiscOrAmtValue;
-    }
-
-    /**
-     * Method to use apply product levele discount
-     *
-     * @param productBO - apply for this proudct object
-     * @param value     - discount value
-     * @param discOrAmt - if 1 - percentage,0 - amount based discount
-     * @return
-     */
-    private double getProductDiscountValueIsBatchwise(
-            ProductMasterBO productBO, double value, int discOrAmt, int discountid) {
 
 
-        double totalProductDisOrAmtValue = 0.0;
-        ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper
-                .getBatchlistByProductID().get(productBO.getProductID());
-        if (batchList != null) {
-            for (ProductMasterBO batchProductBo : batchList) {
-                double totalbatchDiscOrAmtValue = 0;
-                int totalQty = batchProductBo.getOrderedPcsQty()
-                        + batchProductBo.getOrderedCaseQty()
-                        * productBO.getCaseSize()
-                        + batchProductBo.getOrderedOuterQty()
-                        * productBO.getOutersize();
-                if (totalQty > 0) {
-                    double totalValue = 0.0;
-                    if (batchProductBo.getSchemeAppliedValue() > 0) {
-                        totalValue = batchProductBo.getSchemeAppliedValue();
-                    } else {
-                        totalValue = batchProductBo.getOrderedPcsQty()
-                                * batchProductBo.getSrp()
-                                + batchProductBo.getOrderedCaseQty()
-                                * batchProductBo.getCsrp()
-                                + batchProductBo.getOrderedOuterQty()
-                                * batchProductBo.getOsrp();
 
-                    }
-
-                    if (discOrAmt == 1) {
-                        totalbatchDiscOrAmtValue = totalValue * value / 100;
-                    } else if (discOrAmt == 0) {
-                        totalbatchDiscOrAmtValue = totalValue - (totalQty * (batchProductBo.getSrp() - value));
-
-                    }
-                    String productWithbatchId = batchProductBo.getProductID() + batchProductBo.getBatchid();
-                    HashMap<Integer, Double> discountValueByDiscountId = mDiscountmapByProductwithBathid.get(productWithbatchId);
-                    if (discountValueByDiscountId == null)
-                        discountValueByDiscountId = new HashMap<Integer, Double>();
-                    batchProductBo.setProductDiscAmount(batchProductBo.getProductDiscAmount() + totalbatchDiscOrAmtValue);
-
-
-                    discountValueByDiscountId.put(discountid, totalbatchDiscOrAmtValue);
-
-                    mDiscountmapByProductwithBathid.put(productWithbatchId, discountValueByDiscountId);
-
-
-                    if (batchProductBo.getDiscount_order_value() > 0) {
-                        batchProductBo.setDiscount_order_value(batchProductBo
-                                .getDiscount_order_value()
-                                - totalbatchDiscOrAmtValue);
-                    }
-
-                    if (discountid == 0) {
-                        batchProductBo.setApplyValue(totalbatchDiscOrAmtValue);
-                    }
-
-
-                    totalProductDisOrAmtValue = totalProductDisOrAmtValue
-                            + totalbatchDiscOrAmtValue;
-
-                }
-            }
-        }
-        return totalProductDisOrAmtValue;
-
-    }
 
     public int getMappingLocationId(int loclevelid, int Retlocid) {
         int locid = 0;
@@ -5803,73 +5500,9 @@ public class ProductHelper {
     }
 
 
-    public void loadSerialNo() {
-        DBUtil db = null;
-        try {
-            mSerialNoListByProductid = new SparseArray<ArrayList<SerialNoBO>>();
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select productid,fromNo,toNo,scannedQty from temp_serialno ");
-            sb.append("where retailerid =" + bmodel.getRetailerMasterBO().getRetailerID());
-            sb.append(" order by productid");
-            Cursor c = db.selectSQL(sb.toString());
-            int produtid = 0;
-            if (c.getCount() > 0) {
-                ArrayList<SerialNoBO> serialNoList = new ArrayList<SerialNoBO>();
-                SerialNoBO serialNoBO;
-                while (c.moveToNext()) {
-                    serialNoBO = new SerialNoBO();
-                    serialNoBO.setFromNo(c.getString(1));
-                    serialNoBO.setToNo(c.getString(2));
-                    serialNoBO.setScannedQty(c.getInt(3));
-                    if (produtid != c.getInt(0)) {
-                        if (produtid != 0) {
-                            mSerialNoListByProductid.put(produtid, serialNoList);
-                            serialNoList = new ArrayList<SerialNoBO>();
-                            serialNoList.add(serialNoBO);
-                            produtid = c.getInt(0);
-                        } else {
-                            serialNoList = new ArrayList<SerialNoBO>();
-                            serialNoList.add(serialNoBO);
-                            produtid = c.getInt(0);
-                        }
-                    } else {
-                        serialNoList.add(serialNoBO);
-                    }
 
 
-                }
-                if (serialNoList.size() > 0) {
-                    mSerialNoListByProductid.put(produtid, serialNoList);
-                }
-            }
-            c.close();
-            db.closeDB();
 
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-
-    }
-
-    public boolean isAllScanned() {
-
-        for (ProductMasterBO productBO : productMaster) {
-            int totalQty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize())
-                    + (productBO.getOrderedOuterQty() * productBO.getOutersize());
-            if (totalQty > 0 && productBO.getScannedProduct() == 1) {
-                if (totalQty != productBO.getTotalScannedQty()) {
-                    return false;
-                }
-            }
-
-
-        }
-        return true;
-
-
-    }
 
     public ArrayList<Integer> getTypeIdList() {
         if (mTypeIdList != null) {
@@ -6099,146 +5732,12 @@ public class ProductHelper {
 
     }
 
-    public SparseArray<ArrayList<SerialNoBO>> getSerialNoListByProductid() {
-        return mSerialNoListByProductid;
-    }
-
-    public void setmSerialNoListByProductid(SparseArray<ArrayList<SerialNoBO>> serialNoListByProductid) {
-        this.mSerialNoListByProductid = serialNoListByProductid;
-    }
 
 
-    public void saveSerialNoTemp() {
-        DBUtil db = null;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            db.deleteSQL("temp_serialno", "retailerid=" + bmodel.getRetailerMasterBO().getRetailerID(), false);
 
 
-            String columns = "productid,fromNo,toNo,Retailerid,scannedQty";
-            StringBuffer sb;
-            if (mSerialNoListByProductid != null) {
-                for (int i = 0; i < mSerialNoListByProductid.size(); i++) {
-                    int key = mSerialNoListByProductid.keyAt(i);
-                    ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductid.valueAt(i);
-                    if (serialNoList != null) {
-                        for (SerialNoBO serialNoBO : serialNoList) {
-
-                            sb = new StringBuffer();
-                            sb.append(key + "," + bmodel.QT(serialNoBO.getFromNo()));
-                            sb.append("," + bmodel.QT(serialNoBO.getToNo()));
-                            sb.append("," + bmodel.getRetailerMasterBO().getRetailerID());
-                            sb.append("," + serialNoBO.getScannedQty());
-                            db.insertSQL("temp_serialno", columns, sb.toString());
-                        }
-                    }
 
 
-                }
-            }
-
-            db.closeDB();
-
-
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-
-    }
-
-    public void saveSerialNo(DBUtil db) {
-        String columns = "orderid,invoiceid,pid,serialNumber,uomid,Retailerid";
-        StringBuffer sb;
-        if (mSerialNoListByProductid != null) {
-            for (ProductMasterBO productBO : productMaster) {
-                if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
-
-                    ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductid.get(Integer.parseInt(productBO.getProductID()));
-                    if (serialNoList != null) {
-                        for (SerialNoBO serialNoBo : serialNoList) {
-                            if (serialNoBo.getScannedQty() > 0) {
-                                for (int i = 0; i < serialNoBo.getScannedQty(); i++) {
-                                    try {
-                                        BigInteger serialNo = new BigInteger(serialNoBo.getFromNo());
-                                        BigInteger one = new BigInteger(i + "");
-                                        BigInteger sumValue = serialNo.add(one);
-                                        sb = new StringBuffer();
-                                        sb.append(bmodel.getOrderid() + "," + bmodel.QT(bmodel.getInvoiceNumber()) + ",");
-                                        sb.append(productBO.getProductID() + "," + bmodel.QT(sumValue + "") + "," + productBO.getPcUomid());
-                                        sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                                        db.insertSQL("InvoiceSerialNumbers", columns, sb.toString());
-                                    } catch (NumberFormatException e) {
-                                        sb = new StringBuffer();
-                                        sb.append(bmodel.getOrderid() + "," + bmodel.QT(bmodel.getInvoiceNumber()) + ",");
-                                        sb.append(productBO.getProductID() + "," + bmodel.QT(serialNoBo.getFromNo() + "") + "," + productBO.getPcUomid());
-                                        sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                                        db.insertSQL("InvoiceSerialNumbers", columns, sb.toString());
-                                    }
-
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-        }
-
-        db.deleteSQL("temp_serialno", "retailerid=" + bmodel.getRetailerMasterBO().getRetailerID(), false);
-        mSerialNoListByProductid = null;
-
-
-    }
-
-    /**
-     * Method to find duplicate serialnumber entered
-     *
-     * @return
-     */
-    public boolean isDuplicateSerialNo() {
-        ArrayList<Integer> serialNo;
-        if (mSerialNoListByProductid != null) {
-
-
-            for (ProductMasterBO productBO : productMaster) {
-                if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
-                    if (productBO.getScannedProduct() == 1) {
-                        serialNo = new ArrayList<Integer>();
-
-                        ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductid.get(Integer.parseInt(productBO.getProductID()));
-                        if (serialNoList != null) {
-                            for (SerialNoBO serialNoBO : serialNoList) {
-
-                                for (int i = 0; i < serialNoBO.getScannedQty(); i++) {
-                                    try {
-
-                                        int number = Integer.parseInt(serialNoBO.getFromNo()) + i;
-
-                                        if (!serialNo.contains(number)) {
-                                            serialNo.add(number);
-                                        } else {
-                                            return true;
-                                        }
-                                    } catch (NumberFormatException e) {
-                                        Commons.print(e.getMessage());
-                                    }
-                                }
-
-
-                            }
-
-
-                        }
-                    }
-
-                }
-            }
-        }
-
-
-        return false;
-    }
 
 
     public ArrayList<AttributeBO> getmAttributesList() {
@@ -6399,115 +5898,7 @@ public class ProductHelper {
         }
     }
 
-    public void downloadBillwiseDiscount() {
 
-        try {
-
-            StoreWsieDiscountBO discountbo;
-            mBillWiseDiscountList = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = null;
-
-
-            StringBuffer sb = new StringBuffer();
-            sb.append("select Value,IsPercentage,Typeid,Description,ApplyLevelid,Moduleid,ProductId,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
-            sb.append("where (Retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + " OR ");
-            sb.append(" Channelid=" + bmodel.getRetailerMasterBO().getSubchannelid() + "  OR ");
-            sb.append(" Channelid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + ") OR ");
-            sb.append(" locationid in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ") OR ");
-            sb.append(" Accountid =" + bmodel.getRetailerMasterBO().getAccountid() + " and Accountid!=0 ))");
-            sb.append(" and dm.moduleid in(select ListId from StandardListMaster where ListCode='INVOICE') ");
-            sb.append(" and dm.ApplyLevelid in(select ListId from StandardListMaster where ListCode='BILL') ");
-            sb.append(" and dm.Typeid not in (select ListId from StandardListMaster where ListCode='PAYTERM')");
-            sb.append(" order by dm.isCompanyGiven asc");
-            c = db.selectSQL(sb.toString());
-
-           /* c = db
-                    .selectSQL("select Value,IsPercentage,Typeid,Description,ApplyLevelid,Moduleid,ProductId from DiscountProductMapping dpm inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping where ChannelId="
-                            + bmodel.getRetailerMasterBO().getChannelID()
-                            + ") and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE') and dm.ApplyLevelid=(select ListId from StandardListMaster where ListCode='BILL') and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE') ");*/
-            if (c != null) {
-                while (c.moveToNext()) {
-                    discountbo = new StoreWsieDiscountBO();
-                    discountbo.setDiscount(c.getDouble(0));
-                    discountbo.setIsPercentage(c.getInt(1));
-                    discountbo.setType(c.getInt(2));
-                    discountbo.setDescription(c.getString(3));
-                    discountbo.setApplyLevel(c.getInt(4));
-                    discountbo.setModule(c.getInt(5));
-                    discountbo.setProductId(c.getInt(6));
-                    discountbo.setDiscountId(c.getInt(7));
-                    discountbo.setIsCompanyGiven(c.getInt(8));
-                    discountbo.setToDiscount(c.getDouble(9));
-                    discountbo.setMinAmount(c.getDouble(10));
-                    discountbo.setMaxAmount(c.getDouble(11));
-                    mBillWiseDiscountList.add(discountbo);
-                    // adapt.add(discountbo);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-
-    }
-
-    public ArrayList<StoreWsieDiscountBO> getBillWiseDiscountList() {
-        if (mBillWiseDiscountList != null)
-            return mBillWiseDiscountList;
-        return new ArrayList<>();
-    }
-
-    public static boolean isApply = true;
-
-    public double updateBillwiseDiscount(double totalOrderValue) {
-        double totalValue = totalOrderValue;
-        double totalBillwiseDiscountValue = 0;
-        double billWiseCompanyDiscount = 0;
-        double billWiseDistributorDiscount = 0;
-        if (mBillWiseDiscountList != null && mBillWiseDiscountList.size() > 0 && isApply) {
-            for (StoreWsieDiscountBO storeWsieDiscountBO : mBillWiseDiscountList) {
-                if (storeWsieDiscountBO.getIsCompanyGiven() == 1) {
-                    totalOrderValue = totalValue - billWiseDistributorDiscount;
-                }
-                double discountValue = 0;
-                if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                    discountValue = totalOrderValue * storeWsieDiscountBO.getDiscount() / 100;
-                } else if (storeWsieDiscountBO.getType() == 0) {
-                    discountValue = storeWsieDiscountBO.getDiscount();
-                }
-
-                storeWsieDiscountBO.setDiscountValue(discountValue);
-                if (storeWsieDiscountBO.getIsCompanyGiven() == 1) {
-                    billWiseCompanyDiscount = billWiseCompanyDiscount + discountValue;
-                } else {
-                    billWiseDistributorDiscount = billWiseDistributorDiscount + discountValue;
-                }
-
-                totalBillwiseDiscountValue = totalBillwiseDiscountValue + discountValue;
-            }
-
-        }
-        bmodel.getRetailerMasterBO().setBillWiseCompanyDiscount(billWiseCompanyDiscount);
-        bmodel.getRetailerMasterBO().setBillWiseDistributorDiscount(billWiseDistributorDiscount);
-
-
-        return totalBillwiseDiscountValue;
-    }
-
-    public void updateMinimumRangeAsBillwiseDisc() {
-        if (mBillWiseDiscountList != null) {
-            for (StoreWsieDiscountBO storeWsieDiscountBO : mBillWiseDiscountList) {
-                storeWsieDiscountBO.setAppliedDiscount(storeWsieDiscountBO.getDiscount());
-                storeWsieDiscountBO.setApplied(false);
-            }
-        }
-    }
 
     public void downloadDiscountRange() {
         // HashMap<String,ProductMasterBO> lstRangesByProductId=null;
@@ -6608,75 +5999,14 @@ public class ProductHelper {
 
     }
 
-    public void insertBillWiseDisc(DBUtil db, String uid) {
-        String columns = "Orderid,pid,typeid,Value,Percentage,Applylevelid,Retailerid,DiscountId,isCompanyGiven";
-        for (StoreWsieDiscountBO discountBO : mBillWiseDiscountList) {
-            StringBuffer sb = new StringBuffer();
-            sb.append(uid + "," + "0," + discountBO.getType() + ",");
-            if (discountBO.getIsPercentage() == 1) {
-                sb.append(discountBO.getDiscountValue() + "," + discountBO.getDiscount());
-            } else {
-                sb.append(discountBO.getDiscountValue() + ",0");
-            }
-
-            sb.append("," + discountBO.getApplyLevel() + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + "," + discountBO.getDiscountId() + "," + discountBO.getIsCompanyGiven());
-            db.insertSQL(DataMembers.tbl_InvoiceDiscountDetail, columns, sb.toString());
-            db.insertSQL(DataMembers.tbl_OrderDiscountDetail, columns, sb.toString());
-        }
 
 
-    }
-
-    public void insertBillWisePaytermDisc(DBUtil db, String uid) {
-        String columns = "Orderid,pid,typeid,Value,Percentage,Applylevelid,Retailerid,DiscountId,isCompanyGiven";
-        if (mBillWisePayternDiscountList != null) {
-            for (StoreWsieDiscountBO discountBO : mBillWisePayternDiscountList) {
-                StringBuffer sb = new StringBuffer();
-                sb.append(uid + "," + "0," + discountBO.getType() + ",");
-                if (discountBO.getIsPercentage() == 1) {
-                    sb.append(discountBO.getDiscountValue() + "," + discountBO.getDiscount());
-                } else {
-                    sb.append(discountBO.getDiscountValue() + ",0");
-                }
-
-                sb.append("," + discountBO.getApplyLevel() + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + "," + discountBO.getDiscountId() + "," + discountBO.getIsCompanyGiven());
-                db.insertSQL(DataMembers.tbl_InvoiceDiscountDetail, columns, sb.toString());
-                db.insertSQL(DataMembers.tbl_OrderDiscountDetail, columns, sb.toString());
-            }
-        }
 
 
-    }
-
-    /**
-     * Method to use clear discount and tax value
-     *
-     * @param orderList
-     */
-    public void clearProductDiscAndTaxValue(List<ProductMasterBO> orderList) {
-        for (ProductMasterBO productMasterBO : orderList) {
-            if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productMasterBO.getBatchwiseProductCount() > 0) {
-                ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
-                if (batchList != null) {
-                    for (ProductMasterBO batchProduct : batchList) {
-                        batchProduct.setProductDiscAmount(0);
-                        batchProduct.setSchemeDiscAmount(0);
-                        batchProduct.setTaxValue(0);
-                    }
-                }
-
-            } else {
-                productMasterBO.setProductDiscAmount(0);
-                productMasterBO.setSchemeDiscAmount(0);
-                productMasterBO.setTaxValue(0);
-            }
-        }
-
-    }
 
 
     public void updateSchemeAndDiscAndTaxValue(DBUtil db, String invoiceid) {
-        bmodel.invoiceDisount = 0 + "";
+        OrderHelper.getInstance(mContext).invoiceDiscount = 0 + "";
 
         double totDiscVaue = 0;
         double totSchemeAmountValue = 0;
@@ -6714,7 +6044,7 @@ public class ProductHelper {
             while (c.moveToNext()) {
                 double billWiseDisc = c.getDouble(0);
                 totDiscVaue = totDiscVaue + billWiseDisc;
-                bmodel.invoiceDisount = billWiseDisc + "";
+                OrderHelper.getInstance(mContext).invoiceDiscount = billWiseDisc + "";
             }
         }
         sb = new StringBuffer();
@@ -6724,12 +6054,12 @@ public class ProductHelper {
         db.updateSQL(sb.toString());
 
         c.close();
-        bmodel.invoiceDisount = totDiscVaue + "";
+        OrderHelper.getInstance(mContext).invoiceDiscount = totDiscVaue + "";
 
     }
 
     public void updateBillWiseDiscountInObj(String invoiceid) {
-        bmodel.invoiceDisount = 0 + "";
+        OrderHelper.getInstance(mContext).invoiceDiscount = 0 + "";
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -6741,7 +6071,7 @@ public class ProductHelper {
             while (c.moveToNext()) {
                 double billWiseDisc = c.getDouble(0);
 
-                bmodel.invoiceDisount = billWiseDisc + "";
+                OrderHelper.getInstance(mContext).invoiceDiscount = billWiseDisc + "";
             }
         }
         c.close();
@@ -6926,75 +6256,8 @@ public class ProductHelper {
 
     }
 
-    public void updateRangeWiseBillDiscountFromDB() {
-
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-        StringBuffer sb = new StringBuffer();
-        sb.append("select value,Percentage,discountid from invoicediscountdetail id ");
-        sb.append(" inner join orderHeader od on id.orderid=od.orderid  ");
-        sb.append(" where  id.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-        sb.append(" and invoicestatus=0 and id.upload='N'");
-        Cursor c = db.selectSQL(sb.toString());
-        if (c.getCount() > 0) {
-            while (c.moveToNext()) {
-                final double value = c.getDouble(0);
-                final double percentage = c.getDouble(1);
-                final int discountid = c.getInt(2);
-                if (mBillWiseDiscountList != null) {
-                    for (StoreWsieDiscountBO storeWsieDiscountBO : mBillWiseDiscountList) {
-                        if (storeWsieDiscountBO.getDiscountId() == discountid) {
-                            storeWsieDiscountBO.setApplied(true);
-                            if (value > 0) {
-                                storeWsieDiscountBO.setAppliedDiscount(value);
-                            } else if (percentage > 0) {
-                                storeWsieDiscountBO.setAppliedDiscount(percentage);
-                            }
-                            break;
-                        }
-
-                    }
-                }
-            }
-        }
-        c.close();
-        db.closeDB();
-    }
-
-    /**
-     * Method to use get total value after applying range wise bill discount
-     *
-     * @param totalOrderValue
-     * @return
-     */
-    public double updateBillwiseRangeDiscount(double totalOrderValue) {
-        double discountValue = 0;
-        if (mBillWiseDiscountList != null) {
-            for (StoreWsieDiscountBO storeWsieDiscountBO : mBillWiseDiscountList) {
-                if (totalOrderValue >= storeWsieDiscountBO.getMinAmount() && totalOrderValue <= storeWsieDiscountBO.getMaxAmount()) {
-                    if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                        discountValue = (totalOrderValue * storeWsieDiscountBO.getAppliedDiscount() / 100);
-
-                    } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                        discountValue = storeWsieDiscountBO.getAppliedDiscount();
-                    }
-                    storeWsieDiscountBO.setDiscountValue(discountValue);
-
-                    bmodel.getOrderHeaderBO().setDiscountValue(discountValue);
-                    bmodel.getOrderHeaderBO().setDiscount(storeWsieDiscountBO.getDiscount());
-                    bmodel.getOrderHeaderBO().setDiscountId(storeWsieDiscountBO.getDiscountId());
-                    bmodel.getOrderHeaderBO().setIsCompanyGiven(storeWsieDiscountBO.getIsCompanyGiven());
-                    break;
-                }
-            }
-
-        }
-        return discountValue;
 
 
-    }
 
     //add loyalty points
     public void downloadLoyaltyDescription(String retailerID) {
@@ -7207,167 +6470,7 @@ public class ProductHelper {
 
     private Vector<LevelBO> categoryExpandableList = new Vector<>();
 
-    public void downloadBillwisePaytermDiscount() {
 
-        try {
-
-            StoreWsieDiscountBO discountbo;
-            mBillWisePayternDiscountList = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = null;
-
-
-            StringBuffer sb = new StringBuffer();
-            sb.append("select distinct Value,IsPercentage,Typeid,Description,ApplyLevelid,Moduleid,ProductId,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
-            sb.append("where (Retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + " OR ");
-            sb.append(" Channelid=" + bmodel.getRetailerMasterBO().getSubchannelid() + "  OR ");
-            sb.append(" Channelid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + ") OR ");
-            sb.append(" locationid in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ") OR ");
-            sb.append(" Accountid =" + bmodel.getRetailerMasterBO().getAccountid() + "))");
-            sb.append(" and dm.moduleid in(select ListId from StandardListMaster where ListCode='INVOICE') ");
-            sb.append(" and dm.ApplyLevelid in(select ListId from StandardListMaster where ListCode='BILL') ");
-            sb.append(" and dm.Typeid in(select ListId from StandardListMaster where ListCode='PAYTERM') ");
-            // sb.append(" and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE')");
-            sb.append(" and " + bmodel.getRetailerMasterBO().getCreditDays() + " between minvalue and maxvalue");
-            sb.append(" order by dm.isCompanyGiven asc");
-            c = db.selectSQL(sb.toString());
-
-           /* c = db
-                    .selectSQL("select Value,IsPercentage,Typeid,Description,ApplyLevelid,Moduleid,ProductId from DiscountProductMapping dpm inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping where ChannelId="
-                            + bmodel.getRetailerMasterBO().getChannelID()
-                            + ") and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE') and dm.ApplyLevelid=(select ListId from StandardListMaster where ListCode='BILL') and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE') ");*/
-            if (c != null) {
-                while (c.moveToNext()) {
-                    discountbo = new StoreWsieDiscountBO();
-                    discountbo.setDiscount(c.getDouble(0));
-                    discountbo.setIsPercentage(c.getInt(1));
-                    discountbo.setType(c.getInt(2));
-                    discountbo.setDescription(c.getString(3));
-                    discountbo.setApplyLevel(c.getInt(4));
-                    discountbo.setModule(c.getInt(5));
-                    discountbo.setProductId(c.getInt(6));
-                    discountbo.setDiscountId(c.getInt(7));
-                    discountbo.setIsCompanyGiven(c.getInt(8));
-                    discountbo.setToDiscount(c.getDouble(9));
-                    discountbo.setMinAmount(c.getDouble(10));
-                    discountbo.setMaxAmount(c.getDouble(11));
-                    mBillWisePayternDiscountList.add(discountbo);
-                    // adapt.add(discountbo);
-                }
-                c.close();
-            }
-            db.closeDB();
-            if (mBillWisePayternDiscountList.size() == 0)
-                downloadRetailerBillwisePaytermDiscount();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-
-    }
-
-    public void downloadRetailerBillwisePaytermDiscount() {
-
-        try {
-
-            StoreWsieDiscountBO discountbo;
-            mBillWisePayternDiscountList = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            int applyLevelID = 0;
-            Cursor c = null;
-
-
-            c = db.selectSQL("select ListId from StandardListMaster where ListCode='BILL' and ListType='DISCOUNT_APPLY_TYPE'");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    applyLevelID = c.getInt(0);
-                }
-                c.close();
-            }
-
-            StringBuffer sb = new StringBuffer();
-            sb.append("select Percentage,DiscountTypeID from PayTermDiscount ");
-            sb.append("where Retailerid=" + bmodel.getRetailerMasterBO().getRetailerID());
-            sb.append(" and " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between FromDate and ToDate");
-            c = db.selectSQL(sb.toString());
-
-            if (c != null) {
-                while (c.moveToNext()) {
-                    discountbo = new StoreWsieDiscountBO();
-                    discountbo.setDiscount(c.getDouble(0));
-                    discountbo.setType(c.getInt(1));
-                    discountbo.setIsPercentage(1);
-                    discountbo.setDescription("Pay Term");
-                    discountbo.setApplyLevel(applyLevelID);
-                    discountbo.setModule(0);
-                    discountbo.setProductId(0);
-                    discountbo.setDiscountId(0);
-                    discountbo.setIsCompanyGiven(0);
-                    discountbo.setToDiscount(0);
-                    discountbo.setMinAmount(0);
-                    discountbo.setMaxAmount(0);
-                    mBillWisePayternDiscountList.add(discountbo);
-                    // adapt.add(discountbo);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-
-    }
-
-    public double updateBillwisePaytermDiscount(double totalOrderValue) {
-
-
-        double totalValue = totalOrderValue;
-        double discountValue = 0;
-        double billWiseCompanyDiscount = 0;
-        double billWiseDistributorDiscount = 0;
-        if (mBillWisePayternDiscountList != null) {
-            for (StoreWsieDiscountBO storeWsieDiscountBO : mBillWisePayternDiscountList) {
-                if (storeWsieDiscountBO.getIsCompanyGiven() == 0) {
-
-                    totalOrderValue = totalValue - billWiseCompanyDiscount;
-                }
-                if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                    discountValue = (totalOrderValue * storeWsieDiscountBO.getDiscount() / 100);
-
-                } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                    discountValue = storeWsieDiscountBO.getDiscount();
-                }
-
-                if (storeWsieDiscountBO.getIsCompanyGiven() == 1)
-                    billWiseCompanyDiscount = billWiseCompanyDiscount + discountValue;
-                else
-                    billWiseDistributorDiscount = billWiseDistributorDiscount + discountValue;
-
-
-                storeWsieDiscountBO.setDiscountValue(discountValue);
-
-                bmodel.getOrderHeaderBO().setDiscountValue(discountValue);
-                bmodel.getOrderHeaderBO().setDiscount(storeWsieDiscountBO.getDiscount());
-                bmodel.getOrderHeaderBO().setDiscountId(storeWsieDiscountBO.getDiscountId());
-                bmodel.getOrderHeaderBO().setIsCompanyGiven(storeWsieDiscountBO.getIsCompanyGiven());
-                break;
-
-            }
-
-        }
-        bmodel.getRetailerMasterBO().setBillWiseCompanyDiscount(billWiseCompanyDiscount);
-        bmodel.getRetailerMasterBO().setBillWiseDistributorDiscount(billWiseDistributorDiscount);
-        return discountValue;
-
-
-    }
 
 
     public String getProductImageUrl() {
@@ -7398,36 +6501,7 @@ public class ProductHelper {
 
     private String productImageUrl;
 
-    public void loadBillwiseDiscount(String invoiceid) {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("select discountid,value from InvoiceDiscountDetail ");
-            sb.append(" where invoiceid=").append(bmodel.QT(invoiceid));
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    int discountId = c.getInt(0);
-                    double value = c.getDouble(1);
-                    if (mBillWiseDiscountList != null) {
-                        for (StoreWsieDiscountBO storeWsieDiscountBO : mBillWiseDiscountList) {
-                            if (discountId == storeWsieDiscountBO.getDiscountId()) {
-                                storeWsieDiscountBO.setDiscountValue(value);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
 
-    }
 
     public boolean isSihAvailableForOrderProducts(List<ProductMasterBO> orderList) {
 
@@ -7582,19 +6656,7 @@ public class ProductHelper {
         this.pdname = pdname;
     }
 
-    public void clearDiscountQuantity() {
-        ProductMasterBO product;
-        int siz = productMaster.size();
-        for (int i = 0; i < siz; ++i) {
-            product = productMaster.get(i);
 
-            product.setD1(0);
-            product.setD2(0);
-            product.setD3(0);
-            product.setDA(0);
-            product.setApplyValue(0);
-        }
-    }
 
     public LinkedList<String> getmProductidOrderByEntry() {
         return mProductidOrderByEntry;
@@ -7604,13 +6666,7 @@ public class ProductHelper {
         this.mProductidOrderByEntry = mProductidOrderByEntry;
     }
 
-    public Vector<ProductMasterBO> getShortProductMaster() {
-        return shortProductMaster;
-    }
 
-    public void setShortProductMaster(Vector<ProductMasterBO> shortProductMaster) {
-        this.shortProductMaster = shortProductMaster;
-    }
 
     public Vector<LevelBO> getGlobalCategory() {
         return globalCategory;
@@ -8370,13 +7426,13 @@ public class ProductHelper {
         return mCompetitorSequenceValues;
 
     }
+
     //If SAO Config enabled this method will be called
     //this method will take ProductId and compair with BomMaster and passes Product name
-    public ArrayList<String> getSkuMixtureProductName(String productId)
-    {
+    public ArrayList<String> getSkuMixtureProductName(String productId) {
         ArrayList<String> mBpids = new ArrayList<>();
-        ArrayList<String> productShortName=new ArrayList<>();
-        if(bmodel.productHelper.getBomMaster()!=null) {
+        ArrayList<String> productShortName = new ArrayList<>();
+        if (bmodel.productHelper.getBomMaster() != null) {
             for (BomMasterBO id : bmodel.productHelper.getBomMaster()) {
 
                 if (id.getPid().equalsIgnoreCase(productId)) {
@@ -8385,7 +7441,7 @@ public class ProductHelper {
                 }
             }
         }
-        if(mBpids.size()>0) {
+        if (mBpids.size() > 0) {
             for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
 
                 for (int i = 0; i < mBpids.size(); i++)

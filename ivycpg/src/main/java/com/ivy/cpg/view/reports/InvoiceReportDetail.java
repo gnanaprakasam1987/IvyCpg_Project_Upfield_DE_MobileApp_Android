@@ -22,17 +22,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.TaxTempBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -94,6 +93,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
     private Connection zebraPrinterConnection;
     private AlertDialog.Builder build;
     private AlertDialog alertDialog;
+    private OrderHelper orderHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +103,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
+        orderHelper = OrderHelper.getInstance(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -331,7 +332,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
         } else if (i == R.id.menu_print) {
             businessModel.invoiceNumber = mInvoiceId;
-            businessModel.getPrintCount();
+            OrderHelper.getInstance(this).getPrintedCountForCurrentInvoice(getApplicationContext());
 
             Intent intent = new Intent();
 
@@ -728,8 +729,8 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
     public void printInvoice(String printername) {
         int count = 0;
         try {
-            businessModel.getPrintCount();
-            businessModel.printHelper.setPrintCnt(businessModel.getPrint_count());
+            OrderHelper.getInstance(this).getPrintedCountForCurrentInvoice(getApplicationContext());
+            businessModel.printHelper.setPrintCnt(orderHelper.getPrint_count());
             if (printername.equals(ZEBRA_3INCH)) {
 
                 if (businessModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
@@ -738,15 +739,14 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                         count = count + 1;
                         zebraPrinterConnection.write(businessModel.printHelper.printDatafor3inchprinterForUnipal(mProductsForAdapter, false, 1));
                         businessModel.updatePrintCount(1);
-                        businessModel.getPrintCount();
-                        businessModel.printHelper.setPrintCnt(businessModel.print_count);
+                        businessModel.printHelper.setPrintCnt(OrderHelper.getInstance(this).getPrintedCountForCurrentInvoice(getApplicationContext()));
 
                     }
 
                     ////
                 } else if (businessModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                     double entryLevelDiscountValue = 0;
-                    if (businessModel.configurationMasterHelper.SHOW_DISCOUNT_DIALOG) {
+                    if (businessModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
                         entryLevelDiscountValue = businessModel.printHelper.getEntryLevelDiscountValue(mProductsForAdapter);
                     }
 
@@ -782,7 +782,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         } catch (Exception e) {
             Commons.printException(e);
         } finally {
-            businessModel.updatePrintCount(businessModel.getPrint_count() + count);
+            businessModel.updatePrintCount(orderHelper.getPrint_count() + count);
             disconnect();
         }
     }

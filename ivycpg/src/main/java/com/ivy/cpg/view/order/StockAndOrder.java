@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -87,6 +87,22 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.BatchAllocation;
+import com.ivy.sd.png.view.CrownReturnActivity;
+import com.ivy.sd.png.view.CustomKeyBoard;
+import com.ivy.sd.png.view.FilterFagmentMultiSelection;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.InitiativeActivity;
+import com.ivy.sd.png.view.MOQHighlightDialog;
+import com.ivy.sd.png.view.MustSellReasonDialog;
+import com.ivy.sd.png.view.OrderDiscount;
+import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
+import com.ivy.sd.png.view.ReasonPhotoDialog;
+import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.sd.png.view.SchemeApply;
+import com.ivy.sd.png.view.SchemeDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -227,6 +243,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private Vector<ProductMasterBO> productList = new Vector<>();
 
     boolean isFromHomeScreen = false;
+    private OrderHelper orderHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -237,6 +254,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        orderHelper = OrderHelper.getInstance(this);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
@@ -455,7 +473,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mTotalScreenWidth = dm.widthPixels;
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            bmodel.productHelper.updateMinimumRangeAsBillwiseDisc();
+            DiscountHelper.getInstance(this).setMinimumRangeAsBillWiseDiscount();
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
@@ -2516,7 +2534,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.total.setText(strFormatValue);
                             holder.productObj.setTotalamount(tot);
                         }
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                             updateData(holder.productObj);
 
                         updateOrderedCount();
@@ -2696,7 +2714,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.total.setText(strTotal);
                             holder.productObj.setTotalamount(tot);
                         }
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                             updateData(holder.productObj);
 
                         updateOrderedCount();
@@ -2877,7 +2895,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.total.setText(strFormatValue);
                             holder.productObj.setTotalamount(tot);
                         }
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                             updateData(holder.productObj);
 
                         updateOrderedCount();
@@ -3931,7 +3949,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.hasOrder()) {
                 //if this config IS_RFIELD1_ENABLED enabled below code will work
                 //and
-                if(bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
+                if (bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
                     int size = bmodel.productHelper
                             .getProductMaster().size();
                     int count = 0;
@@ -4016,7 +4034,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
-            bmodel.excludeTaxFromSRP();
+            bmodel.productHelper.taxHelper.removeTaxFromPrice();
         }
 
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
@@ -4119,7 +4137,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     .clearOrderTableAndUpdateSIH();
                         }
                         bmodel.productHelper.clearOrderTable();
-                        bmodel.productHelper.setmSerialNoListByProductid(null);
+                        orderHelper.setSerialNoListByProductId(null);
 
                         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
                             bmodel.productHelper
@@ -4178,7 +4196,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             try {
 
                 if (bmodel.isOrderTaken() && bmodel.isEdit())
-                    bmodel.deleteOrder(bmodel.getRetailerMasterBO().getRetailerID());
+                    orderHelper.deleteOrder(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());
 
                 if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                     // save price check
@@ -5035,7 +5053,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             startActivity(new Intent(this, SurveyActivityNew.class));
             return true;
         } else if (i == R.id.menu_next) {
-            if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+            if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 bmodel.productHelper.setmProductidOrderByEntry(mProductList);
 
             if (bmodel.getOrderHeaderBO() == null)
@@ -6563,7 +6581,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .getOsrp());
             product.setTotalamount(tot);
         }
-        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
             updateData(product);
 
         updateOrderedCount();
@@ -6663,22 +6681,23 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         super.onRestart();
 
     }
+
     //if Rfield1 enabled show this dialog
-    private class MOQConfigEnabled extends AsyncTask <Void, Void, Boolean>
-    {
+    private class MOQConfigEnabled extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             return null;
         }
+
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
 
-                android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
-                mMOQHighlightDialog = new MOQHighlightDialog();
-                mMOQHighlightDialog.setCancelable(false);
-                mMOQHighlightDialog.show(ft, "Sample Fragment");
+            android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
+            mMOQHighlightDialog = new MOQHighlightDialog();
+            mMOQHighlightDialog.setCancelable(false);
+            mMOQHighlightDialog.show(ft, "Sample Fragment");
         }
     }
 

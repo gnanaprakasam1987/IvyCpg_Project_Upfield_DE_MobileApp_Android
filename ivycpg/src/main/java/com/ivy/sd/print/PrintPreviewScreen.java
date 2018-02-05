@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
@@ -103,6 +104,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
     private String storediscount = "0";
     private Map<String, Double> lineWiseDiscount;
     private SalesReturnHelper salesReturnHelper;
+    private OrderHelper orderHelper;
 
     private Toolbar toolbar;
 
@@ -113,6 +115,8 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
         try {
             bmodel = (BusinessModel) getApplicationContext();
             bmodel.setContext(this);
+            orderHelper = OrderHelper.getInstance(this);
+
             salesReturnHelper = SalesReturnHelper.getInstance(this);
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
@@ -176,8 +180,8 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
             // Used to hide the app logo icon from actionbar
             // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
-            storediscount = bmodel.invoiceDisount;
-            Commons.print("discount" + bmodel.invoiceDisount + " "
+            storediscount = orderHelper.invoiceDiscount;
+            Commons.print("discount" + orderHelper.invoiceDiscount + " "
                     + bmodel.configurationMasterHelper.discountType);
         } catch (Exception e1) {
             Commons.printException("" + e1);
@@ -445,7 +449,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                     }
 
                     /** Calculate discounted line wise order value **/
-                    if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_DIALOG) {
+                    if (bmodel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
 
                         double line_discount_sum = productBO.getD1()
                                 + productBO.getD2() + productBO.getD3();
@@ -950,7 +954,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.order_deleted_sucessfully)
-                                        + bmodel.getOrderid(),
+                                        + orderHelper.getOrderId(),
                                 DataMembers.NOTIFY_ORDER_SAVED);
                     } catch (Exception e) {
                         // TODO: handle exception

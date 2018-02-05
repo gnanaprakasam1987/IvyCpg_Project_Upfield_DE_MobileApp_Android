@@ -25,9 +25,9 @@ public class MustSellReasonDialog extends Dialog {
 	ArrayAdapter<ReasonMaster> dataAdapter;
 	Context context;
 
-	protected MustSellReasonDialog(Context context, boolean cancelable,
-			OnCancelListener cancelListener, final BusinessModel bmodel) {
-		super(context, cancelable, cancelListener);
+    public MustSellReasonDialog(Context context, boolean cancelable,
+                                OnCancelListener cancelListener, final BusinessModel bmodel) {
+        super(context, cancelable, cancelListener);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.must_sell_dialog);
 		this.bmodel = bmodel;

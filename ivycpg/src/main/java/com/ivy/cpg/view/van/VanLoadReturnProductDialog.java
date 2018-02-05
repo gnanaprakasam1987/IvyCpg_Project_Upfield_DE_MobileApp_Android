@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -39,7 +39,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
     // Declare Context
     private Context context;
     // List to add values and Show in ListView
-    private ArrayList<BomRetunBo> mylist;
+    private ArrayList<BomReturnBO> mylist;
     // Vairalbes
     private String append = "";
     // Views
@@ -103,7 +103,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
      */
     private void showListValues() {
         try {
-            ArrayList<BomRetunBo> totalSize = bmodel.productHelper
+            ArrayList<BomReturnBO> totalSize = bmodel.productHelper
                     .getBomReturnProducts();
             // If Total Size is null,Show alert in the Screen
             if (totalSize == null) {
@@ -117,7 +117,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
             mylist = new ArrayList<>();
             // Add the products into list
             for (int i = 0; i < size; ++i) {
-                BomRetunBo productBo = totalSize.get(i);
+                BomReturnBO productBo = totalSize.get(i);
                 mylist.add(productBo);
 
             }
@@ -128,15 +128,15 @@ public class VanLoadReturnProductDialog extends Dialog implements
         }
     }
 
-    private class ProductAdapter extends ArrayAdapter<BomRetunBo> {
-        private ArrayList<BomRetunBo> items;
+    private class ProductAdapter extends ArrayAdapter<BomReturnBO> {
+        private ArrayList<BomReturnBO> items;
 
-        private ProductAdapter(ArrayList<BomRetunBo> mylist) {
+        private ProductAdapter(ArrayList<BomReturnBO> mylist) {
             super(context, R.layout.dialog_initiative_listrow, mylist);
             this.items = mylist;
         }
 
-        public BomRetunBo getItem(int position) {
+        public BomReturnBO getItem(int position) {
             return items.get(position);
         }
 
@@ -248,7 +248,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
     }
 
     class ViewHolder {
-        BomRetunBo mSKUBO;
+        BomReturnBO mSKUBO;
         TextView tvBarcode, tvSKUName, tvLiableQty;
         EditText etReturnQty;
 

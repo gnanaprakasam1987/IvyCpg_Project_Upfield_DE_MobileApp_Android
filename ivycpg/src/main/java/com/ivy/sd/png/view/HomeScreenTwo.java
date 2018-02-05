@@ -45,6 +45,10 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
+import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.OrderSummary;
+import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
@@ -1663,6 +1667,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     surveyHelperNew.loadSurveyAnswers(0);
                 }
 
+                OrderHelper orderHelper = OrderHelper.getInstance(this);
                 if (bmodel.productHelper.getProductMaster().size() > 0) {
                     bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_ORDER);
 
@@ -1677,21 +1682,21 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         }
 
                         bmodel.setEdit(false);
-                        if (bmodel.hasAlreadyOrdered(bmodel.getRetailerMasterBO()
+                        if (orderHelper.hasAlreadyOrdered(this, bmodel.getRetailerMasterBO()
                                 .getRetailerID())) {
                             bmodel.setEdit(true);
                         }
 
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE) {
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
                             bmodel.productHelper.getmProductidOrderByEntry().clear();
                             bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                         }
 
 
                         if (bmodel.isEdit()) {
-                            bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                            orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                     .getRetailerID(), null);
-                            bmodel.productHelper.loadSerialNo();
+                            orderHelper.loadSerialNo(this);
                             enableSchemeModule();
                         }
                         if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
@@ -1738,7 +1743,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         bmodel.productHelper.downloadInStoreLocations();
 
-                        OrderSummary.mActivityCode = menu.getConfigCode();
+                        OrderSummary.mCurrentActivityCode = menu.getConfigCode();
 
                         //load currency data
                         if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
@@ -1857,6 +1862,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
+                OrderHelper orderHelper = OrderHelper.getInstance(this);
+
                 if (bmodel.configurationMasterHelper.IS_RESTRICT_ORDER_TAKING
                         && (bmodel.getRetailerMasterBO().getRField4().equals("1")
                         || (bmodel.getRetailerMasterBO().getTinExpDate() != null && !bmodel.getRetailerMasterBO().getTinExpDate().isEmpty() && SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.getRetailerMasterBO().getTinExpDate(), "yyyy/MM/dd") > 0))) {
@@ -1908,24 +1915,24 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         }
                         bmodel.productHelper.setProductImageUrl();
                         bmodel.setEdit(false);
-                        if (bmodel.hasAlreadyOrdered(bmodel.getRetailerMasterBO()
+                        if (orderHelper.hasAlreadyOrdered(this, bmodel.getRetailerMasterBO()
                                 .getRetailerID())) {
                             bmodel.setEdit(true);
                         }
 
 
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE) {
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
                             bmodel.productHelper.getmProductidOrderByEntry().clear();
                             bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                         }
 
                         bmodel.productHelper.downloadIndicativeOrderList();//moved here to check size of indicative order
-                        bmodel.selectedOrderId = "";
+                        orderHelper.selectedOrderId = "";
                         if (bmodel.productHelper.getIndicativeList() != null
                                 && bmodel.productHelper.getIndicativeList().size() < 1
                                 && bmodel.configurationMasterHelper.IS_MULTI_STOCKORDER) {
                             if (bmodel.isEdit()) {
-                                bmodel.selectedOrderId = "";//cleared to avoid reuse of id
+                                orderHelper.selectedOrderId = "";//cleared to avoid reuse of id
                                 final String menuConfigCode = menu.getConfigCode();
                                 final String menuName = menu.getMenuName();
                                 OrderTransactionListDialog obj = new OrderTransactionListDialog(getApplicationContext(), HomeScreenTwo.this, new OrderTransactionListDialog.newOrderOnClickListener() {
@@ -1940,13 +1947,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 }, new OrderTransactionListDialog.oldOrderOnClickListener() {
                                     @Override
                                     public void onOldOrderButtonClick(String id) {
-                                        bmodel.selectedOrderId = id;
+                                        OrderHelper.getInstance(HomeScreenTwo.this).selectedOrderId = id;
                                         //the methods that were called during normal stock and order loading in edit mode are called here
                                         //selectedOrderId is passed to loadOrderedProducts method  to load ordered products for that id
                                         //loadSerialNo,enableSchemeModule included as these were called in edit mode
-                                        bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                                        OrderHelper.getInstance(HomeScreenTwo.this).loadOrderedProducts(HomeScreenTwo.this, bmodel.getRetailerMasterBO()
                                                 .getRetailerID(), id);
-                                        bmodel.productHelper.loadSerialNo();
+                                        OrderHelper.getInstance(HomeScreenTwo.this).loadSerialNo(HomeScreenTwo.this);
                                         enableSchemeModule();
                                         loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
                                         loadOrderSummaryScreen(menuConfigCode);
@@ -1962,9 +1969,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             }
                         } else {
                             if (bmodel.isEdit()) {//doubt
-                                bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                                orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                         .getRetailerID(), null);
-                                bmodel.productHelper.loadSerialNo();
+                                orderHelper.loadSerialNo(this);
                                 enableSchemeModule();
                             } else {
                                 bmodel.setOrderHeaderBO(null);
@@ -2011,6 +2018,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
 
+                OrderHelper orderHelper = OrderHelper.getInstance(this);
+
                 /** Load the stock check if opened in edit mode. **/
                 bmodel.setEditStockCheck(false);
                 if (bmodel.hasAlreadyStockChecked(bmodel.getRetailerMasterBO()
@@ -2022,14 +2031,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 bmodel.setEdit(false);
 
-                if (bmodel.hasAlreadyOrdered(bmodel.getRetailerMasterBO()
+                if (orderHelper.hasAlreadyOrdered(this, bmodel.getRetailerMasterBO()
                         .getRetailerID())) {
                     bmodel.setEdit(true);
 
                     if (bmodel.isEdit()) {
-                        bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                        orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                 .getRetailerID(), null);
-                        bmodel.productHelper.loadSerialNo();
+                        orderHelper.loadSerialNo(this);
                         enableSchemeModule();
                     }
                     bmodel.productHelper.downloadProductFilter("MENU_STK_ORD");
@@ -2064,7 +2073,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
 
-                    OrderSummary.mActivityCode = menu.getConfigCode();
+                    OrderSummary.mCurrentActivityCode = menu.getConfigCode();
 
                     Intent i = new Intent(HomeScreenTwo.this,
                             OrderSummary.class);
@@ -2301,13 +2310,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
 
+                OrderHelper orderHelper = OrderHelper.getInstance(this);
+
                 if (bmodel.isOrderExistToCreateInvoice()) {
 
                     if (bmodel.isEdit()) {
                         bmodel.setEdit(true);
-                        bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                        orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                 .getRetailerID(), null);
-                        bmodel.productHelper.loadSerialNo();
+                        orderHelper.loadSerialNo(this);
                         enableSchemeModule();
                     }
 
@@ -2334,7 +2345,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     if (bmodel.configurationMasterHelper.IS_PRODUCT_DISPLAY_FOR_PIRAMAL)
                         bmodel.productHelper.updateProductColorAndSequance();
 
-                    bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                    orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                             .getRetailerID(), null);
                     // Intent intent = new Intent(HomeScreenTwo.this,
                     // OrderSummary.class);
@@ -2629,7 +2640,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 // bmodel.productHelper.downloadIndicativeOrder();
 
                 if (bmodel.isEdit()) {
-                    bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                    OrderHelper.getInstance(this).loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                             .getRetailerID(), null);
                     enableSchemeModule();
                 }
@@ -3504,10 +3515,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
 
-                if (bmodel.hasAlreadyOrdered(bmodel.getRetailerMasterBO()
+                OrderHelper orderHelper = OrderHelper.getInstance(this);
+                if (orderHelper.hasAlreadyOrdered(this, bmodel.getRetailerMasterBO()
                         .getRetailerID())) {
 
-                    bmodel.loadOrderedProducts(bmodel.getRetailerMasterBO()
+                    orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                             .getRetailerID(), null);
                     enableSchemeModule();
 
@@ -3669,12 +3681,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             /** Settign color **/
             bmodel.configurationMasterHelper.downloadFilterList();
             bmodel.productHelper.updateProductColor();
+
+            DiscountHelper discountHelper = DiscountHelper.getInstance(this);
             if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-                bmodel.productHelper.downloadBillwiseDiscount();
-                bmodel.productHelper.updateRangeWiseBillDiscountFromDB();
+
+                discountHelper.downloadBillWiseDiscount(this);
+                discountHelper.loadExistingBillWiseRangeDiscount(this);
             }
-            // apply bill wise payterm discount
-            bmodel.productHelper.downloadBillwisePaytermDiscount();
+            // apply bill wise pay term discount
+            discountHelper.downloadBillWisePayTermDiscount(this);
 
             bmodel.productHelper.downloadInStoreLocations();
 
@@ -3704,7 +3719,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         // Reset the Configuration if Directly goes from
         // HomeScreenTwo
         bmodel.mSelectedModule = -1;
-        OrderSummary.mActivityCode = configCode;
+        OrderSummary.mCurrentActivityCode = configCode;
         bmodel.mSelectedActivityName = menuName;
     }
 

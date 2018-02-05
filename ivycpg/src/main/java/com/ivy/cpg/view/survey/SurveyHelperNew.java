@@ -3,6 +3,7 @@ package com.ivy.cpg.view.survey;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.text.TextUtils;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -14,6 +15,7 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 public class SurveyHelperNew {
@@ -132,6 +134,7 @@ public class SurveyHelperNew {
 
     /**
      * Get valid survey id and groupid by comparing retailer attributes
+     *
      * @param db
      */
     private ArrayList<String> getValidGroupIdByAttributeCriteriaMapping(DBUtil db) {
@@ -322,6 +325,44 @@ public class SurveyHelperNew {
         return surveyIds;
     }
 
+    public HashMap<Integer, QuestionBO> getValidateQuestions() {
+        return validateQuestions;
+    }
+
+    private HashMap<Integer, QuestionBO> validateQuestions = new HashMap<>();
+
+    public void getSurveyValidateOptions() {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("select Qid,QType,FromValue,ToValue,ifnull(Precision,0) as Precision from SurveyQuestionValidations");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    QuestionBO questionBO = new QuestionBO();
+                    questionBO.setQuestionID(c.getInt(c.getColumnIndex("Qid")));
+                    questionBO.setQuestionTypeId(c.getInt(c.getColumnIndex("QType")));
+                    questionBO.setFromValue(c.getString(c.getColumnIndex("FromValue")));
+                    questionBO.setToValue(c.getString(c.getColumnIndex("ToValue")));
+                    questionBO.setPrecision(c.getInt(c.getColumnIndex("Precision")));
+                    validateQuestions.put(questionBO.getQuestionID(), questionBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+
+        } catch (Exception ex) {
+
+            Commons.printException(ex);
+        }
+    }
+
 
     /**
      * Download survey and its questions along with option and score matching criteria.
@@ -330,7 +371,7 @@ public class SurveyHelperNew {
      */
     public void downloadQuestionDetails(String moduleCode) {
         try {
-
+            getSurveyValidateOptions();
             survey = new ArrayList<>();
 
             int tempSurveyId = -1;
@@ -409,6 +450,12 @@ public class SurveyHelperNew {
                         questionBO = new QuestionBO();
                         questionBO.setSurveyid(c.getInt(0));
                         questionBO.setQuestionID(c.getInt(3));
+                        if (getValidateQuestions().containsKey(questionBO.getQuestionID())) {
+                            QuestionBO validateQns = getValidateQuestions().get(questionBO.getQuestionID());
+                            questionBO.setPrecision(validateQns.getPrecision());
+                            questionBO.setFromValue(validateQns.getFromValue());
+                            questionBO.setToValue(validateQns.getToValue());
+                        }
                         questionBO.setQuestionDescription(c.getString(4));
                         questionBO.setQuestionTypeId(c.getInt(5));
                         questionBO.setQuestionType(c.getString(6));
@@ -507,6 +554,12 @@ public class SurveyHelperNew {
                             questionBO.setBrandID(c.getInt(7));
                             questionBO.setIsMandatory(c.getInt(8));
                             questionBO.setQuestWeight(c.getInt(9));
+                            if (getValidateQuestions().containsKey(questionBO.getQuestionID())) {
+                                QuestionBO validateQns = getValidateQuestions().get(questionBO.getQuestionID());
+                                questionBO.setPrecision(validateQns.getPrecision());
+                                questionBO.setFromValue(validateQns.getFromValue());
+                                questionBO.setToValue(validateQns.getToValue());
+                            }
                             if (mtempGName.equals(c.getString(10)))
                                 questionBO.setGroupName("");
                             else {
@@ -651,7 +704,12 @@ public class SurveyHelperNew {
                         questionBO.setQuestionTypeId(c.getInt(2));
                         questionBO.setQuestionType(c.getString(3));
                         questionBO.setIsMandatory(c.getInt(4));
-
+                        if (getValidateQuestions().containsKey(questionBO.getQuestionID())) {
+                            QuestionBO validateQns = getValidateQuestions().get(questionBO.getQuestionID());
+                            questionBO.setPrecision(validateQns.getPrecision());
+                            questionBO.setFromValue(validateQns.getFromValue());
+                            questionBO.setToValue(validateQns.getToValue());
+                        }
                         optionIndex = 0;
                         tempOptionId = c.getInt(5);
                         answerBO = new AnswerBO();
@@ -723,7 +781,8 @@ public class SurveyHelperNew {
      */
     public boolean isAllAnswered() {
 
-
+        invalidEmails = new StringBuilder();
+        notInRange = new StringBuilder();
         for (SurveyBO sBO : getSurvey()) {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
 
@@ -733,13 +792,50 @@ public class SurveyHelperNew {
                     if (qus.getSelectedAnswer().isEmpty() && qus.getSelectedAnswerIDs().isEmpty()) {
                         return false;
                     }
+                    if (qus.getQuestionType().equals("EMAIL")) {
+                        if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
+                            invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                            invalidEmails.append("\n");
+                        }
+                    }
+                    if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
+                        if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
+                            if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
+                                if (!isInRange(Float.parseFloat(qus.getFromValue()), Float.parseFloat(qus.getToValue()),
+                                        Float.parseFloat(qus.getSelectedAnswer().get(0)))) {
+                                    notInRange.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                                    notInRange.append("\n");
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
         }
 
+        if (invalidEmails.toString().length() > 0) {
+            return false;
+        }
+
+        if (notInRange.toString().length() > 0) {
+            return false;
+        }
+
         return true;
     }
+
+
+    public String getInvalidEmails() {
+        return invalidEmails.toString();
+    }
+
+    public String getNotInRange() {
+        return notInRange.toString();
+    }
+
+    StringBuilder invalidEmails;
+    StringBuilder notInRange;
 
 
     /**
@@ -749,6 +845,8 @@ public class SurveyHelperNew {
      */
     public boolean isMandatoryQuestionAnswered() {
         boolean returnFlag = true;
+        invalidEmails = new StringBuilder();
+        notInRange = new StringBuilder();
         for (SurveyBO sBO : getSurvey()) {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
@@ -777,11 +875,43 @@ public class SurveyHelperNew {
                             }
                         }
                     }
+                    if (qus.getQuestionType().equals("EMAIL")) {
+                        if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
+                            invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                            invalidEmails.append("\n");
+                        }
+                    }
+                    if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
+                        if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
+                            if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
+                                if (!isInRange(Float.parseFloat(qus.getFromValue()),
+                                        Float.parseFloat(qus.getToValue()),
+                                        Float.parseFloat(qus.getSelectedAnswer().get(0)))) {
+                                    notInRange.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                                    notInRange.append("\n");
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-
+        if (invalidEmails.toString().length() > 0) {
+            return false;
+        }
+        if (notInRange.toString().length() > 0) {
+            return false;
+        }
         return returnFlag;
+    }
+
+    private boolean isInRange(float a, float b, float c) {
+        return b > a ? c >= a && c <= b : c >= b && c <= a;
+
+    }
+
+    private boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     private boolean isMandatorySubQuestionsAnswered(QuestionBO qus, SurveyBO surveyBO) {
@@ -820,17 +950,41 @@ public class SurveyHelperNew {
      */
     public boolean hasDataToSave() {
 
-
+        invalidEmails = new StringBuilder();
+        notInRange = new StringBuilder();
         for (SurveyBO sBO : getSurvey()) {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
-                    if (!qus.getSelectedAnswer().isEmpty()
-                            || !qus.getSelectedAnswerIDs().isEmpty()) {
+                    if ((!qus.getSelectedAnswer().isEmpty()
+                            || !qus.getSelectedAnswerIDs().isEmpty()) && !qus.getQuestionType().equals("EMAIL")) {
                         return true;
+                    }
+                    if (qus.getQuestionType().equals("EMAIL")) {
+                        if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
+                            invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                            invalidEmails.append("\n");
+                        }
+                    }
+                    if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
+                        if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
+                            if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
+                                if (!isInRange(Float.parseFloat(qus.getFromValue()), Float.parseFloat(qus.getToValue()),
+                                        Float.parseFloat(qus.getSelectedAnswer().get(0)))) {
+                                    notInRange.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                                    notInRange.append("\n");
+                                }
+                            }
+                        }
                     }
                 }
             }
+        }
+        if (invalidEmails.toString().isEmpty()) {
+            return true;
+        }
+        if (notInRange.toString().isEmpty()) {
+            return true;
         }
         return false;
     }
@@ -1096,7 +1250,8 @@ public class SurveyHelperNew {
                                 + " AND menucode=" + QT(menuCode)
                                 + " AND upload='N'" + " AND SupervisiorId = "
                                 + superwiserID
-                                + " AND userid=" + userid;
+                                + " AND userid=" + userid
+                                + " AND frequency!='MULTIPLE'";
                         ;
 
                         Cursor headerCursor = db.selectSQL(sql);

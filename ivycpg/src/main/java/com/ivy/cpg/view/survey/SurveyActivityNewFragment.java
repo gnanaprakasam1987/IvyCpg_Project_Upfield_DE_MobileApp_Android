@@ -3,6 +3,7 @@ package com.ivy.cpg.view.survey;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
@@ -49,6 +51,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -81,9 +84,11 @@ import com.ivy.sd.png.view.SlantView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -586,9 +591,15 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             checkClicked = false;
                         }
                     } else {
-                        bmodel.showAlert(
-                                getResources().getString(
-                                        R.string.pleaseanswerallthequestions), 0);
+                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
+                        } else {
+                            bmodel.showAlert(
+                                    getResources().getString(
+                                            R.string.pleaseanswerallthequestions), 0);
+                        }
                         checkClicked = false;
                     }
                 } else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY) {
@@ -604,11 +615,17 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     } else {
                         isSaveClicked = true;
                         questionsRv.setAdapter(rvAdapter);
-                        bmodel.showAlert(
-                                getResources()
-                                        .getString(
-                                                R.string.please_answer_all_mandatory_questions),
-                                0);
+                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
+                        } else {
+                            bmodel.showAlert(
+                                    getResources()
+                                            .getString(
+                                                    R.string.please_answer_all_mandatory_questions),
+                                    0);
+                        }
                         checkClicked = false;
                     }
                 } else {
@@ -622,8 +639,14 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             checkClicked = false;
                         }
                     } else {
-                        bmodel.showAlert(
-                                getResources().getString(R.string.no_data_tosave), 0);
+                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
+                        } else {
+                            bmodel.showAlert(
+                                    getResources().getString(R.string.no_data_tosave), 0);
+                        }
                         questionsRv.setAdapter(rvAdapter);
                         checkClicked = false;
                     }
@@ -685,6 +708,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             int qNo = position + 1;
             String strQuestionNo = qNo + ". ";
             holder.questionNO.setText(strQuestionNo);
+            holder.questionBO.setQuestionNo(strQuestionNo);
             holder.questionTV.setText(holder.questionBO.getQuestionDescription());
             if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY && isSaveClicked) {
                 if (holder.questionBO.getIsMandatory() == 1 && holder.questionBO.isMandatoryQuestNotAnswered()) {
@@ -793,6 +817,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     break;
                 case "EMAIL":
                     showEditText(3, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
+                    break;
+                case "DATE":
+                    showEditText(4, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
+                    break;
+                case "PH_NO":
+                    showEditText(1, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
                     break;
                 default:
                     showEditText(0, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
@@ -1290,6 +1320,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 obj)) {
                             mCurrentQuestionBO.getSelectedAnswerIDs().remove(
                                     obj);
+                            mCurrentQuestionBO.getSelectedAnswer().remove(buttonView.getText().toString());
                         }
                         for (int i = 0; i < answers.size(); i++) {
                             if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(answers.get(i).getAnswerID())) {
@@ -1517,6 +1548,15 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     case "PERC":
                         showEditText(2, answerLayout, questBO, subQuestLayout);
                         break;
+                    case "EMAIL":
+                        showEditText(3, answerLayout, questBO, subQuestLayout);
+                        break;
+                    case "DATE":
+                        showEditText(4, answerLayout, questBO, subQuestLayout);
+                        break;
+                    case "PH_NO":
+                        showEditText(1, answerLayout, questBO, subQuestLayout);
+                        break;
                     default:
                         showEditText(0, answerLayout, questBO, subQuestLayout);
                         break;
@@ -1623,7 +1663,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                               final QuestionBO mCurrentQuestionBO, final LinearLayout subQLL) {
         answerLL.removeAllViews();
         subQLL.removeAllViews();
-        EditText et = (EditText) getActivity().getLayoutInflater().inflate(R.layout.survey_dit_text, null);
+        final EditText et = (EditText) getActivity().getLayoutInflater().inflate(R.layout.survey_dit_text, null);
         if (!mCurrentQuestionBO.getSelectedAnswer().isEmpty())
             et.setText(mCurrentQuestionBO.getSelectedAnswer().get(0));
         else
@@ -1638,14 +1678,106 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         et.setLayoutParams(lp);
         et.setPadding(15, 7, 7, 7);
         et.setTextColor(Color.BLACK);
-        if (i == 1)
-            et.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        if (i == 0) {
+            et.setFilters(new InputFilter[]{new InputFilter.LengthFilter(255)});
+        }
+        if (i == 1) {
+
+            if (mCurrentQuestionBO.getPrecision() == 0) {
+                et.setInputType(InputType.TYPE_CLASS_NUMBER);
+            } else {
+                et.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+            int digitsBeforeZero = 8;
+            if (mCurrentQuestionBO.getToValue() != null) {
+                digitsBeforeZero = mCurrentQuestionBO.getToValue().length();
+            }
+            if (mCurrentQuestionBO.getFromValue() != null && !mCurrentQuestionBO.getFromValue().equals("")
+                    && mCurrentQuestionBO.getToValue() != null && !mCurrentQuestionBO.getToValue().equals("")) {
+                if (!et.getText().toString().isEmpty()) {
+                    if (!isInRange(Float.parseFloat(mCurrentQuestionBO.getFromValue()), Float.parseFloat(mCurrentQuestionBO.getToValue()),
+                            Float.parseFloat(et.getText().toString()))) {
+                        et.setTextColor(Color.RED);
+                    } else {
+                        et.setTextColor(Color.BLACK);
+                    }
+                }
+                et.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (!et.getText().toString().isEmpty()) {
+                            if (!isInRange(Float.parseFloat(mCurrentQuestionBO.getFromValue()), Float.parseFloat(mCurrentQuestionBO.getToValue()),
+                                    Float.parseFloat(et.getText().toString()))) {
+                                et.setTextColor(Color.RED);
+                            } else {
+                                et.setTextColor(Color.BLACK);
+                            }
+                        }
+                    }
+                });
+
+                InputFilter inputFilter[] = new InputFilter[1];
+
+                if (mCurrentQuestionBO.getPrecision() > 0) {
+                    inputFilter[0] = new DecimalDigitsInputFilter(digitsBeforeZero, mCurrentQuestionBO.getPrecision(),
+                            0, 0, 0, "", "");
+                } else {
+                    inputFilter[0] = new InputFilter.LengthFilter(mCurrentQuestionBO.getToValue().length());
+                }
+                et.setFilters(inputFilter);
+            } else if (mCurrentQuestionBO.getPrecision() > 0) {
+                et.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(digitsBeforeZero, mCurrentQuestionBO.getPrecision(),
+                        0, 0, 0, "", "")});
+            }
+
+        }
+
         if (i == 2) {
             et.setInputType(InputType.TYPE_CLASS_NUMBER);
             et.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         }
         if (i == 3) {
+            if (!isValidEmail(et.getText().toString())) {
+                et.setTextColor(Color.RED);
+            } else {
+                et.setTextColor(Color.BLACK);
+            }
             et.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            et.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (!et.getText().toString().equals("")) {
+                        if (!isValidEmail(et.getText().toString())) {
+                            et.setTextColor(Color.RED);
+                            //Toast.makeText(getContext(),"Kindly provide valid email for "+mCurrentQuestionBO.getQuestionDescription(),Toast.LENGTH_LONG).show();
+                        } else {
+                            et.setTextColor(Color.BLACK);
+                        }
+                    }
+
+
+                }
+            });
             InputFilter inputFilter = new InputFilter() {
                 @Override
                 public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -1662,14 +1794,60 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             };
             et.setFilters(new InputFilter[]{inputFilter});
         }
+        if (i == 4) {
+            et.setFocusable(false);
+            et.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar_qn, 0, 0, 0);
+            et.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Calendar calendar = Calendar.getInstance();
+                    int yy = calendar.get(Calendar.YEAR);
+                    int mm = calendar.get(Calendar.MONTH);
+                    int dd = calendar.get(Calendar.DAY_OF_MONTH);
+                    DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            /*String date = String.valueOf(dayOfMonth) + "/" + String.valueOf(monthOfYear+1)
+                                    + "/" + String.valueOf(year);*/
+                            String date = String.valueOf(year) + "/" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1))
+                                    + "/" + ((dayOfMonth) < 10 ? "0" + (dayOfMonth) : (dayOfMonth));
+
+                            et.setText(date);
+                        }
+                    }, yy, mm, dd);
+                    DatePicker datePicker1 = datePicker.getDatePicker();
+                    Calendar c = Calendar.getInstance();
+                    if (mCurrentQuestionBO.getFromValue() != null && !mCurrentQuestionBO.getFromValue().equals("")) {
+                        try {
+                            String[] splitDates = mCurrentQuestionBO.getFromValue().split("/");
+                            c.set(Integer.parseInt(splitDates[0]), Integer.parseInt(splitDates[1]) - 1, Integer.parseInt(splitDates[2]));
+                            //Date date = dateFormat.parse(mCurrentQuestionBO.getFromValue());
+                            datePicker1.setMinDate(c.getTimeInMillis());
+                            Calendar c1 = Calendar.getInstance();
+                            splitDates = mCurrentQuestionBO.getToValue().split("/");
+                            c1.set(Calendar.HOUR_OF_DAY, 23);
+                            c1.set(Calendar.MINUTE, 59);
+                            c1.set(Calendar.SECOND, 59);
+                            c1.set(Integer.parseInt(splitDates[0]), Integer.parseInt(splitDates[1]) - 1, Integer.parseInt(splitDates[2]));
+                            //date = dateFormat.parse(mCurrentQuestionBO.getToValue());
+                            datePicker1.setMaxDate(c1.getTimeInMillis());
+                        } catch (Exception e) {
+                        }
+                    }
+
+                    datePicker.show();
+                }
+            });
+        }
         et.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
                 String s1 = s.toString().replaceAll("'", "''").trim();
                 mCurrentQuestionBO.getSelectedAnswerIDs().clear();
                 mCurrentQuestionBO.getSelectedAnswer().clear();
-                mCurrentQuestionBO.setSelectedAnswer(s1);
+
                 if (!"".equals(s1) && s1.length() > 0) {
+                    mCurrentQuestionBO.setSelectedAnswer(s1);
                     mCurrentQuestionBO.setSelectedAnswerID(0);
                 }
             }
@@ -1703,6 +1881,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(
                 R.menu.menu_survey, menu);
+    }
+
+    private boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     @Override
@@ -2278,6 +2460,58 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         private boolean isInRange(int a, int b, int c) {
             return b > a ? c >= a && c <= b : c >= b && c <= a;
         }
+    }
+
+    private String checkRange(String input, float minValue, float maxValue) {
+
+        float inputValue = Float.parseFloat(input);
+        if (inputValue <= minValue || inputValue >= maxValue) {
+            return "";
+        }
+
+        return null;
+    }
+
+    public class DecimalDigitsInputFilter implements InputFilter {
+
+        private final Pattern mPattern;
+        private final float min;
+        private final float max;
+        private final int rangeCheckStartAt;
+        private final String c;
+        private final String endChar;
+
+
+        public DecimalDigitsInputFilter(int digitsBeforeZero, int digitsAfterZero, float min, float max, int rangeCheckStartAt, String c, String end) {
+            mPattern = Pattern.compile(String.format("[0-9]{0,%d}(\\.[0-9]{0,%d})?", digitsBeforeZero, digitsAfterZero));
+            this.min = min;
+            this.max = max;
+            this.rangeCheckStartAt = rangeCheckStartAt;
+            this.c = c;
+            this.endChar = end;
+        }
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            Matcher matcher = mPattern.matcher(createResultString(source, start, end, dest, dstart, dend));
+
+            if (!matcher.matches()) {
+                return "";
+            }
+            return null;
+        }
+
+
+        private String createResultString(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            String sourceString = source.toString();
+            String destString = dest.toString();
+            return destString.substring(0, dstart) + sourceString.substring(start, end) + destString.substring(dend);
+        }
+    }
+
+    private boolean isInRange(float a, float b, float c) {
+        return b > a ? c >= a && c <= b : c >= b && c <= a;
+
     }
 
     private boolean isFileExist(String filePath) {

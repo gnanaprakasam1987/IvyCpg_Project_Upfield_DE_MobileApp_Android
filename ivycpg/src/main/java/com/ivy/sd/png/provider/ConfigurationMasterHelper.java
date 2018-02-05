@@ -577,7 +577,7 @@ public class ConfigurationMasterHelper {
     // Added in 32 version
     public boolean IS_WSIH; // ORDB16
     public boolean SHOW_HIGHLIGHT_FOR_OOS; // ORDB15
-    public boolean SHOW_DISCOUNT_DIALOG; // FUN02
+    public boolean IS_ENTRY_LEVEL_DISCOUNT; // FUN02
     // Added in 33 version
     public boolean SHOW_CREDIT_BALANCE;//
     public boolean SHOW_CREDIT_DAYS;//
@@ -585,7 +585,6 @@ public class ConfigurationMasterHelper {
     public boolean HAS_STOCK_IN_DIST_POST;
     public boolean SHOW_INITIATIVE_MERCHANDISING;
     // Added in 35 version
-    public boolean SHOW_PRINT_ORDER;
     public boolean SHOW_CALC;
     public boolean IS_SCHEME_ON;
     public boolean IS_SCHEME_EDITABLE;
@@ -791,8 +790,8 @@ public class ConfigurationMasterHelper {
 
     public int LOAD_STOCK_COMPETITOR = 0;
 
-    public int LOAD_MAX_DELIVERY_DATE = 0;
-    public int LOAD_MAX_DELIVERY_DATE_ALLOWED = 0;
+    public int DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+    public int MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     private static final String CODE_LOCATION_TIMER_PERIOD = "LOCTIMER";
     public int LOCATION_TIMER_PERIOD = 20;
 
@@ -1121,8 +1120,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_DELETE_OPTION = "FUN48";
     public boolean IS_SHOW_DELETE_OPTION;
 
-    private static final String CODE_SHOW_IRDERING_SEQUENCE = "FUN49";
-    public boolean IS_SHOW_IRDERING_SEQUENCE;
+    private static final String CODE_SHOW_ORDERING_SEQUENCE = "FUN49";
+    public boolean IS_SHOW_ORDERING_SEQUENCE;
 
     private static final String CODE_GUIDED_SELLING = "FUN51";
     public boolean IS_GUIDED_SELLING;
@@ -1688,11 +1687,10 @@ public class ConfigurationMasterHelper {
         this.SHOW_INIT_FOOTER = hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) : false;
         this.SHOW_REVIEW_AND_PO = hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) : false;
         this.SHOW_HIGHLIGHT_FOR_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) : false;
-        this.SHOW_DISCOUNT_DIALOG = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) : false;
+        this.IS_ENTRY_LEVEL_DISCOUNT = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) : false;
         this.SHOW_DISCOUNT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) : false;
         this.HAS_STOCK_IN_DIST_POST = hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) : false;
         this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
-        this.SHOW_PRINT_ORDER = hashMapHHTModuleConfig.get(CODE_ORDER_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_PRINT) : false;
         this.SHOW_CALC = hashMapHHTModuleConfig.get(CODE_CALCULATOR) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATOR) : false;
         this.IS_SCHEME_EDITABLE = hashMapHHTModuleConfig.get(CODE_SCHEME_EDITABLE) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_EDITABLE) : false;
         this.IS_MUST_SELL = hashMapHHTModuleConfig.get(CODE_MUST_SELL) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL) : false;
@@ -2056,7 +2054,7 @@ public class ConfigurationMasterHelper {
         this.IS_RETAIN_NEAREXPIRY_CURRENT_TRAN_IN_STOCKCHECK = hashMapHHTModuleConfig.get(CODE_RETAIN_NEAREXPIRY_CURRENT_TRAN_IN_STOCKCHECK) != null ? hashMapHHTModuleConfig.get(CODE_RETAIN_NEAREXPIRY_CURRENT_TRAN_IN_STOCKCHECK) : false;
         this.IS_SPL_FILTER_TAB = hashMapHHTModuleConfig.get(CODE_SPL_FILTER_TAB) != null ? hashMapHHTModuleConfig.get(CODE_SPL_FILTER_TAB) : false;
         this.IS_SHOW_DELETE_OPTION = hashMapHHTModuleConfig.get(CODE_SHOW_DELETE_OPTION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DELETE_OPTION) : false;
-        this.IS_SHOW_IRDERING_SEQUENCE = hashMapHHTModuleConfig.get(CODE_SHOW_IRDERING_SEQUENCE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_IRDERING_SEQUENCE) : false;
+        this.IS_SHOW_ORDERING_SEQUENCE = hashMapHHTModuleConfig.get(CODE_SHOW_ORDERING_SEQUENCE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ORDERING_SEQUENCE) : false;
         this.MOVE_NEXT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_MOVE_NEXT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_MOVE_NEXT_ACTIVITY) : false;
         this.IS_GUIDED_SELLING = hashMapHHTModuleConfig.get(CODE_GUIDED_SELLING) != null ? hashMapHHTModuleConfig.get(CODE_GUIDED_SELLING) : false;
         this.IS_PRINT_FILE_SAVE = hashMapHHTModuleConfig.get(CODE_PRINT_FILE_SAVE) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_FILE_SAVE) : false;
@@ -2182,7 +2180,7 @@ public class ConfigurationMasterHelper {
            loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
-        this.IS_MOQ_ENABLED= hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
+        this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
         
     }
 
@@ -3182,8 +3180,8 @@ public class ConfigurationMasterHelper {
 
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
-            LOAD_MAX_DELIVERY_DATE = 0;
-            LOAD_MAX_DELIVERY_DATE_ALLOWED = 0;
+            DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+            MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
             LOAD_REMARKS_FIELD_STRING = "";
             SHOW_INCLUDE_BILL_TAX = false;
 
@@ -3559,9 +3557,9 @@ public class ConfigurationMasterHelper {
             if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
                 if (codeSplit[0] != null && !codeSplit[0].equals(""))
-                    LOAD_MAX_DELIVERY_DATE = Integer.parseInt(codeSplit[0]);
+                    DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = Integer.parseInt(codeSplit[0]);
                 if (codeSplit[1] != null && !codeSplit[1].equals(""))
-                    LOAD_MAX_DELIVERY_DATE_ALLOWED = Integer.parseInt(codeSplit[1]);
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = Integer.parseInt(codeSplit[1]);
             }
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -4114,18 +4112,6 @@ public class ConfigurationMasterHelper {
         this.signatureTitle = signatureTitle;
     }
 
-    public boolean isStockAvailable() {
-        Vector<ConfigureBO> config = getActivityMenu();
-        for (int i = 0; i < config.size(); i++) {
-            ConfigureBO con = config.get(i);
-            if (con.getConfigCode().equals("MENU_STOCK")
-                    || con.getConfigCode().equals("MENU_STK_ORD"))
-                if (con.getHasLink() == 1 && con.isFlag() == 1)
-                    return true;
-        }
-
-        return false;
-    }
 
     /**
      * Get the Date format from HHTModuleMaster
@@ -5163,7 +5149,6 @@ public class ConfigurationMasterHelper {
             Commons.printException("Unable to load the configurations " + e);
         }
     }
-
 
 
     /**

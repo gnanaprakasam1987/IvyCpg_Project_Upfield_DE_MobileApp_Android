@@ -47,7 +47,7 @@
     <screenName name="com.ivy.sd.png.view.WebViewPlanActivity">WebView Plan</screenName>
     <screenName name="com.ivy.sd.png.view.TLAttendanceActivity">ReAllocation</screenName>
 
-    <screenName name="com.ivy.sd.png.view.StockAndOrder">StockAndOrder</screenName>
+    <screenName name="com.ivy.cpg.view.order.StockAndOrder">StockAndOrder</screenName>
     <screenName name="com.ivy.sd.png.view.OrderNewOutlet">OrderNewOutlet</screenName>
     <screenName name="com.ivy.sd.png.view.OpportunityNewOutlet">Opportunity</screenName>
     <screenName name="com.ivy.sd.png.view.Task">Task</screenName>

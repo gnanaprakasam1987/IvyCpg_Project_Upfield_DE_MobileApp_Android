@@ -2,7 +2,7 @@ package com.ivy.sd.png.bo;
 
 import java.util.Comparator;
 
-public class BomRetunBo {
+public class BomReturnBO {
 
 	private String pid, barcode, productName, productShortName, TypeId,
 			prodCode="";
@@ -115,12 +115,12 @@ public class BomRetunBo {
 		this.totalReturnQty = totalReturnQty;
 	}
 
-	public static final Comparator<BomRetunBo> SKUWiseAscending = new Comparator<BomRetunBo>() {
+    public static final Comparator<BomReturnBO> SKUWiseAscending = new Comparator<BomReturnBO>() {
 
 		@Override
-		public int compare(BomRetunBo PM1, BomRetunBo PM2) {
-			return PM1.getProductName().compareTo(PM2.getProductName());
-		}
+        public int compare(BomReturnBO PM1, BomReturnBO PM2) {
+            return PM1.getProductName().compareTo(PM2.getProductName());
+        }
 	};
 
 }

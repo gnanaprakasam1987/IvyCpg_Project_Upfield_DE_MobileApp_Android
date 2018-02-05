@@ -58,6 +58,8 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -459,7 +461,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         mTotalScreenWidth = dm.widthPixels;
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            bmodel.productHelper.updateMinimumRangeAsBillwiseDisc();
+            DiscountHelper.getInstance(this).setMinimumRangeAsBillWiseDiscount();
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
@@ -782,7 +784,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         holder.total.setText(strFormatValue);
                         holder.productObj.setTotalamount(tot);
 
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                             updateData(holder.productObj);
                     }
 
@@ -888,7 +890,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         holder.total.setText(strTotal);
                         holder.productObj.setTotalamount(tot);
 
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                             updateData(holder.productObj);
                     }
 
@@ -991,7 +993,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         String strFormatValue = bmodel.formatValue(tot) + "";
                         holder.total.setText(strFormatValue);
                         holder.productObj.setTotalamount(tot);
-                        if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                             updateData(holder.productObj);
                     }
 
@@ -1578,7 +1580,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                     .clearOrderTableAndUpdateSIH();
                         }
                         bmodel.productHelper.clearOrderTable();
-                        bmodel.productHelper.setmSerialNoListByProductid(null);
+                        OrderHelper.getInstance(OrderNewOutlet.this).setSerialNoListByProductId(null);
 
                         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
                             bmodel.productHelper
@@ -2241,7 +2243,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
             startActivity(new Intent(this, SurveyActivityNew.class));
             return true;
         } else if (i == R.id.menu_next) {
-            if (bmodel.configurationMasterHelper.IS_SHOW_IRDERING_SEQUENCE)
+            if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 bmodel.productHelper.setmProductidOrderByEntry(mProductList);
 
             if (bmodel.getOrderHeaderBO() == null)

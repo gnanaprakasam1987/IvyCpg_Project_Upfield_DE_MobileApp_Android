@@ -8,13 +8,14 @@ import android.graphics.Color;
 import android.os.Environment;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.BomRetunBo;
+import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.StoreWsieDiscountBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
@@ -40,6 +41,7 @@ public class PrintHelper {
     private final Context mContext;
     private final BusinessModel bmodel;
     private static PrintHelper instance = null;
+    OrderHelper orderHelper;
 
     private double mEmpTotalValue;
     private double mCaseTotalValue;
@@ -53,13 +55,14 @@ public class PrintHelper {
     private String mNhilName = "";
 
     private Bitmap m_bmp;
-    private final ArrayList<BomRetunBo> mEmptyLiaProductsForAdapter = new ArrayList<>();
-    private final ArrayList<BomRetunBo> mEmptyRetProductsForAdapter = new ArrayList<>();
+    private final ArrayList<BomReturnBO> mEmptyLiaProductsForAdapter = new ArrayList<>();
+    private final ArrayList<BomReturnBO> mEmptyRetProductsForAdapter = new ArrayList<>();
     private ArrayList<ProductMasterBO> mProductsForAdapter = new ArrayList<>();
 
     private PrintHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
+        orderHelper = OrderHelper.getInstance(context);
     }
 
     public static PrintHelper getInstance(Context context) {
@@ -83,7 +86,7 @@ public class PrintHelper {
                 sb.append("T 5 0 200 " + (5 + totalLength));
                 sb.append(" Order Receipt " + "\r\n");
                 sb.append("T 5 0 10 " + (55 + totalLength));
-                sb.append(" Order No :" + bmodel.getOrderid().replaceAll("\'", "") + "\r\n");
+                sb.append(" Order No :" + orderHelper.getOrderId().replaceAll("\'", "") + "\r\n");
                 sb.append("T 5 0 350 " + (55 + totalLength));
                 sb.append("Date:" + SDUtil.now(SDUtil.DATE_GLOBAL) + "\r\n");
                 sb.append("T 5 0 10 " + (120 + totalLength));
@@ -1029,11 +1032,11 @@ public class PrintHelper {
                                 String discountDescription = "";
                                 double totalDiscountValue = 0;
                                 for (int discountid : discountIdList) {
-                                    ArrayList<StoreWsieDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
+                                    ArrayList<StoreWiseDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
                                     if (discountList != null) {
-                                        for (StoreWsieDiscountBO storeWsieDiscountBO : discountList) {
-                                            discountDescription = storeWsieDiscountBO.getDescription();
-                                            ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWsieDiscountBO.getProductId() + "");
+                                        for (StoreWiseDiscountBO storeWiseDiscountBO : discountList) {
+                                            discountDescription = storeWiseDiscountBO.getDescription();
+                                            ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWiseDiscountBO.getProductId() + "");
                                             if (productMasterBO != null) {
                                                 int totalProductQty;
                                                 totalProductQty = productMasterBO.getOrderedPcsQty()
@@ -1060,10 +1063,10 @@ public class PrintHelper {
                                                                             + batchProductBO.getOrderedOuterQty()
                                                                             * batchProductBO.getOsrp();
                                                                 }
-                                                                if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                                    batchDiscountValue = totalValue * storeWsieDiscountBO.getDiscount() / 100;
-                                                                } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                                    batchDiscountValue = totalBatchQty * storeWsieDiscountBO.getDiscount();
+                                                                if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                                    batchDiscountValue = totalValue * storeWiseDiscountBO.getDiscount() / 100;
+                                                                } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                                    batchDiscountValue = totalBatchQty * storeWiseDiscountBO.getDiscount();
                                                                 }
                                                                 totalDiscountValue = totalDiscountValue + batchDiscountValue;
                                                             }
@@ -1080,12 +1083,12 @@ public class PrintHelper {
                                                                     + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp();
                                                         }
 
-                                                        if (storeWsieDiscountBO.getIsPercentage() == 1) {
-                                                            productDiscount = totalValue * storeWsieDiscountBO.getDiscount() / 100;
+                                                        if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                                                            productDiscount = totalValue * storeWiseDiscountBO.getDiscount() / 100;
 
 
-                                                        } else if (storeWsieDiscountBO.getIsPercentage() == 0) {
-                                                            productDiscount = totalProductQty * storeWsieDiscountBO.getDiscount();
+                                                        } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                                                            productDiscount = totalProductQty * storeWiseDiscountBO.getDiscount();
                                                         }
 
                                                         totalDiscountValue = totalDiscountValue + productDiscount;
@@ -1349,8 +1352,8 @@ public class PrintHelper {
                         sb.append("Order No:\r\n");
                         sb.append("T 7 0 190 " + hght + " ");
 
-                        if (bmodel.getOrderid() != null) {
-                            sb.append(bmodel.getOrderid() + "\r\n");
+                        if (orderHelper.getOrderId() != null) {
+                            sb.append(orderHelper.getOrderId() + "\r\n");
                         } else {
                             sb.append("\r\n");
                         }
@@ -1644,7 +1647,7 @@ public class PrintHelper {
      * set values in product list
      **/
     private void updateEmptiesproducts() {
-        ArrayList<BomRetunBo> mEmptyProducts;
+        ArrayList<BomReturnBO> mEmptyProducts;
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
             mEmptyProducts = bmodel.productHelper
                     .getBomReturnTypeProducts();
@@ -1654,8 +1657,8 @@ public class PrintHelper {
         try {
             double mLiableTot = 0, mRetTot = 0;
             if (mEmptyProducts != null) {
-                Collections.sort(mEmptyProducts, BomRetunBo.SKUWiseAscending);
-                for (BomRetunBo productBO : mEmptyProducts) {
+                Collections.sort(mEmptyProducts, BomReturnBO.SKUWiseAscending);
+                for (BomReturnBO productBO : mEmptyProducts) {
                     if ((productBO.getLiableQty() > 0)) {
                         mEmptyLiaProductsForAdapter.add(productBO);
 
@@ -1667,7 +1670,7 @@ public class PrintHelper {
             }
 
             if (mEmptyProducts != null) {
-                for (BomRetunBo productBO2 : mEmptyProducts) {
+                for (BomReturnBO productBO2 : mEmptyProducts) {
                     if ((productBO2.getReturnQty() > 0)) {
                         mEmptyRetProductsForAdapter.add(productBO2);
                         mRetTot = mRetTot
@@ -2051,7 +2054,7 @@ public class PrintHelper {
                         + x
                         + " --------------------------------------------------\r\n";
 
-                for (BomRetunBo productBO : mEmptyLiaProductsForAdapter) {
+                for (BomReturnBO productBO : mEmptyLiaProductsForAdapter) {
                     if ((productBO.getLiableQty() > 0)) {
                         x += 20;
                         String productname;

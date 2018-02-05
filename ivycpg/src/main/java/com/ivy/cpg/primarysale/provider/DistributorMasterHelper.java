@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -239,7 +240,7 @@ public class DistributorMasterHelper {
 
             // ClosingStock Detail entry
             columns = "UId,PId,BatchId,Upload,UomId,UomCount,Qty,Price,LineValue";
-            bmodel.setOrderid(id);
+            OrderHelper.getInstance(context).setOrderId(id);
             int siz = bmodel.productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
                 product = bmodel.productHelper.getProductMaster().elementAt(i);

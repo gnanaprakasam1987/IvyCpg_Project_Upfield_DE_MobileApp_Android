@@ -40,6 +40,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
+import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -108,6 +110,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             isFocusBrand2, isSIH, isOOS, isNMustSell, isStock, isDiscount, isNearExpiryTag, isFocusBrand3, isFocusBrand4, isSMP;
     //private TypedArray typearr;
     private BusinessModel bmodel;
+    private Timer orderTimer;
     private RecyclerView pdt_recycler_view;
     private String tempPo, tempRemark, tempRField1, tempRField2;
     private MustSellReasonDialog dialog;
@@ -390,7 +393,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         //FUN07 - Bill wise discount
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
-            bmodel.productHelper.updateMinimumRangeAsBillwiseDisc();
+            DiscountHelper.getInstance(this).setMinimumRangeAsBillWiseDiscount();
         }
 
         mSelectedIdByLevelId = (HashMap<Integer, Integer>) getIntent().getSerializableExtra("FiveFilter");
@@ -1191,7 +1194,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     startActivity(new Intent(CatalogOrder.this,
                             HomeScreenTwo.class));
                     finish();
-                }else {
+                } else {
                     bmodel.outletTimeStampHelper
                             .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
                     startActivity(new Intent(CatalogOrder.this,

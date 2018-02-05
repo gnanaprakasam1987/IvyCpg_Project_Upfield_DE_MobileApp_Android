@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -157,7 +155,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             holder.configureBO = productConfigs.get(position);
             holder.menuTV.setText(holder.configureBO.getMenuName());
             holder.valueTV.setText(setValue(holder.configureBO, productObj));
-            if(holder.configureBO.getConfigCode().equalsIgnoreCase("PRODET14"))
+            if (holder.configureBO.getConfigCode().equalsIgnoreCase("PRODET14"))
                 showSkuMixtureView();
 
             if (position % 4 < 4) {
@@ -258,9 +256,8 @@ public class ProductDetailsFragment extends IvyBaseFragment {
     }
 
     //IF configBo has value PRODE14 this config is enabled show SkuMixture Product name
-    private  void showSkuMixtureView()
-    {
-        if(bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID())!=null) {
+    private void showSkuMixtureView() {
+        if (bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID()) != null) {
             ArrayList<String> value = bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID());
             rootView.findViewById(R.id.ll_sao_view).setVisibility(View.VISIBLE);
             TextView soaMixtureTitle = (TextView) rootView.findViewById(R.id.sku_mixture_title);
@@ -279,7 +276,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             }
 
             LinearLayout skuMixtureProductName = (LinearLayout) rootView.findViewById(R.id.ll_sku_mixture_product_name);
-            for(int i=0;i<value.size();i++) {
+            for (int i = 0; i < value.size(); i++) {
                 TextView tv = new TextView(getActivity());
                 tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 tv.setText(value.get(i));
