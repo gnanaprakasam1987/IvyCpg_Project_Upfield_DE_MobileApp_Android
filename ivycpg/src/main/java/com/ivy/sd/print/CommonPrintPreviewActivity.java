@@ -84,7 +84,7 @@ import java.util.UUID;
 import mmsl.DeviceUtility.DeviceBluetoothCommunication;
 import mmsl.DeviceUtility.DeviceCallBacks;
 
-public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
+public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar implements DeviceCallBacks {
     private TextView mPrinterStatusTV;
     private Spinner mPrintCountSpinner;
     private TextView mPreviewTV;
