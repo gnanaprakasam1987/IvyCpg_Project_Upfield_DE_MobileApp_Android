@@ -224,13 +224,6 @@ public class ReportMenufragment extends IvyBaseFragment {
             } else {
                 Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CS_RPT)) {
-            bmodel.mCounterSalesHelper.loadVisitedCustomer();
-            if (bmodel.mCounterSalesHelper.getCSCustomerVisitedUID().size() >= 1) {
-                intoreportacti(config);
-            } else {
-                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
-            }
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVENTORY_RPT)) {
             intoreportacti(config);
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {

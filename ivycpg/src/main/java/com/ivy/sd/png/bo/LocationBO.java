@@ -1,6 +1,6 @@
 package com.ivy.sd.png.bo;
 
-import com.ivy.countersales.bo.CS_StockReasonBO;
+
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class LocationBO {
     private int availability = -1;
 
 
-    ArrayList<CS_StockReasonBO> lstStockReasons;
+
 
     private ArrayList<NearExpiryDateBO> nearexpiryDate;
 
@@ -356,14 +356,6 @@ public class LocationBO {
 
     public void setCockTailQty(int cockTailQty) {
         this.cockTailQty = cockTailQty;
-    }
-
-    public ArrayList<CS_StockReasonBO> getLstStockReasons() {
-        return lstStockReasons;
-    }
-
-    public void setLstStockReasons(ArrayList<CS_StockReasonBO> lstStockReasons) {
-        this.lstStockReasons = lstStockReasons;
     }
 
     public int getAvailability() {

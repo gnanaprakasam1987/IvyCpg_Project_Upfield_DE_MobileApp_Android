@@ -9,7 +9,6 @@
     <color name="Burgundy">#800000</color>
     <color name="RED">#FF0000</color>
     <color name="GREEN">#00bd35</color>
-    <color name="GREEN_LIGHT">#1ff25a</color>
     <color name="GRAY_TEXT">#89000000</color>
     <color name="white">#FFFFFF</color>
     <color name="dark_red">#ffcc0000</color>
@@ -27,11 +26,8 @@
     <color name="white_box_border">#f7f7f7</color>
 
     <!-- home_list_menu_left_bg.xml -->
-    <color name="list_menu_left_start">#DBDDDD</color>
     <color name="list_menu_left_end">#D3D3D3</color>
     <color name="list_menu_left_center">#E0E0E0</color>
-
-    <color name="order_split_green_color">#b8c483</color>
 
     <!-- Shelf Share Dialog -->
 
@@ -87,14 +83,12 @@
     <color name="textColorPrimary">#004360</color>
     <color name="WHITE">#F2FFFFFF</color>
 
-    <color name="colorPrimaryGreen">#009688</color>
     <color name="colorPrimaryDarkGreen">#004D40</color>
     <color name="textColorPrimaryGreen">#00796B</color>
 
     <!-- N BLUE THEME -->
 
     <color name="colorPrimaryNBlue">#283593</color>
-    <color name="colorPrimaryDarkNBlue">#00136f</color>
     <color name="textColorPrimaryNBlue">#3f51b5</color>
 
     <!-- RED THEME -->
@@ -297,7 +291,6 @@
     <!--<color name="scheme_title_grey">#acacac</color>-->
     <!--<color name="scheme_title_grey">#cccccc</color>-->
     <color name="scheme_title_grey">#E9E7E7</color>
-    <color name="grey_odd">#f2f2f2</color>
 
     <color name="checkbox_default_color">#949494</color>
 

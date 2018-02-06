@@ -54,7 +54,6 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.ivy.countersales.CSHomeScreenFragment;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
@@ -1329,41 +1328,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             }
 
-        } else if (menuItem.getConfigCode().equals(MENU_COUNTER)) {
-
-            if (!isClicked) {
-                isClicked = false;
-
-                if (bmodel.configurationMasterHelper.SHOW_MENU_COUNTER_ALERT && isMenuAttendCS) {
-                    if (!bmodel.mAttendanceHelper.loadAttendanceMaster()) {
-                        bmodel.showAlert(getResources().getString(R.string.mark_attendance), 0);
-                        return;
-                    }
-                }
-                //bmodel.setRetailerMasterBO(new RetailerMasterBO());
-                bmodel.getCounterIdForUser();
-                String retailerId = bmodel.getRetailerIdForCounter();
-                bmodel.setCounterRetailerId(retailerId);
-                bmodel.CS_StockApplyHelper.updateCSSihFromRejectedVariance();
-                for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
-                    if (bo.getRetailerID().equals(retailerId)) {
-                        bmodel.setRetailerMasterBO(bo);
-                        break;
-
-                    }
-                }
-
-                if (bmodel.getRetailerMasterBO() != null) {
-                    bmodel.setCounterId(bmodel.userMasterHelper.getUserMasterBO().getCounterId());
-                    bmodel.mSelectedActivityName = menuItem.getMenuName();
-                    switchFragment(MENU_COUNTER, menuItem.getMenuName());
-
-                } else
-                    Toast.makeText(getActivity(), R.string.retailer_not_mapped, Toast.LENGTH_LONG).show();
-            }
-
-
-        } else if (menuItem.getConfigCode().equals(MENU_PRESENCE)) {
+        }  else if (menuItem.getConfigCode().equals(MENU_PRESENCE)) {
             switchFragment(MENU_PRESENCE, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_IN_OUT)) {
             bmodel.configurationMasterHelper.setTradecoveragetitle(menuItem.getMenuName());
@@ -1506,8 +1471,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         NewOutletEditFragment newOutletEditFragment = (NewOutletEditFragment) fm
                 .findFragmentByTag(MENU_NEWRET_EDT);
 
-        CSHomeScreenFragment csProfileActivity = (CSHomeScreenFragment) fm
-                .findFragmentByTag(MENU_COUNTER);
+
         GroomingFragment groomingFragment = (GroomingFragment) fm
                 .findFragmentByTag(MENU_GROOM_CS);
         AcknowledgementFragment acknowledgementFragment = (AcknowledgementFragment) fm
@@ -1600,9 +1564,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 (newOutletEditFragment != null && (fragmentName.equals(MENU_NEWRET_EDT))
                         && newOutletEditFragment.isVisible()) {
             return;
-        } else if (csProfileActivity != null && (fragmentName.equals(MENU_COUNTER)
-                && csProfileActivity.isVisible())) {
-            return;
         } else if (groomingFragment != null && (fragmentName.equals(MENU_GROOM_CS)
                 && groomingFragment.isVisible())) {
             return;
@@ -1672,8 +1633,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(stockProposalFragment);
         if (newOutletEditFragment != null)
             ft.remove(newOutletEditFragment);
-        if (csProfileActivity != null)
-            ft.remove(csProfileActivity);
+
         if (groomingFragment != null)
             ft.remove(groomingFragment);
         if (acknowledgementFragment != null)
@@ -1933,12 +1893,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 break;
 
             case MENU_COUNTER:
-                bndl = new Bundle();
-                bndl.putString("screentitle", menuName);
-                fragment = new CSHomeScreenFragment();
-                fragment.setArguments(bndl);
-                ft.add(R.id.fragment_content, fragment,
-                        MENU_COUNTER);
+
                 break;
             case MENU_GROOM_CS:
                 bndl = new Bundle();

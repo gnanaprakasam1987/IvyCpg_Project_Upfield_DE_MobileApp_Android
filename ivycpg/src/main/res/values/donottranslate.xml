@@ -73,7 +73,6 @@
 
 
     <string name="tax_not_availble_for_some_product">Tax not available for some Product.</string>
-    <string name="free">Free</string>
 
     <string name="rfield1_klgs">RField1</string>
     <string name="rfield2_klgs">RField2</string>
@@ -82,10 +81,6 @@
     <string name="no_match_found">No Match Found</string>
 
     <!--history fragment-->
-    <string name="normal_product">Normal product</string>
-    <string name="valid_discount_amt">Enter Valid Discount Amt</string>
-    <string name="valid_amt">Enter Valid Amt</string>
-    <string name="variance">Variance</string>
 
     <string name="export_and_share">Export and Share</string>
     <string name="export_and_email">Export and Email</string>
@@ -101,7 +96,6 @@
     <string name="successfully_exported">Successfully Exported</string>
 
     <string name="please_fill_adherence">Please Fill Adherence</string>
-    <string name="enter_variance_reason_for_all_qty">"Kindly Enter Variance For All The Qty</string>
     <string name="attendance_activity_not_completed">Attendance Activity Not Completed</string>
 
     <string name="deviceId_change_msg_title">You are already logged in on another device</string>
@@ -117,9 +111,7 @@
     <string name="select_location">Select Location</string>
     <string name="reason_required_for">Reason required for  </string>
     <string name="title_opportunity">Opportunity</string>
-    <string name="apply_or_test_feedback">Apply/Test Feedback</string>
     <string name="date_label">Date</string>
-    <string name="customer_feedback">Customer FeedBack</string>
     <string name="minPhoto">Min.Photo</string>
     <string name="maxPhoto">Max.Photo</string>
     <string name="saveTransaction">Do you wish to save the transaction</string>
@@ -127,9 +119,7 @@
     <string name="drafted_sales_not_processed">Drafts exists without processing</string>
 
     <string name="user">User</string>
-    <string name="total_calls">Total Calls</string>
     <string name="call_details">Call Details</string>
-    <string name="date_txt">Date</string>
 
     <string name="incentivetext">Total Incentive</string>
     <string name="hasannouncer">Has Announcer</string>
@@ -157,8 +147,6 @@
     <string name="downloading">Downloading.. Catalog Images</string>
     <string name="docRefNo">DocRefNo</string>
     <string name="contact_name">Contact Name</string>
-    <string name="enter_contact_name">Kindly Enter Contact Name</string>
-    <string name="enter_contact_number">Kindly Enter Contact Number</string>
     <string name="enter_docref_number">Kindly Enter DocRef Number</string>
     <string name="get_signature">Kindly get Signature</string>
     <string name="downloading_rpt">Downloading Report</string>
@@ -208,7 +196,6 @@
     <string name="location_captured">Location captured.</string>
 
     <string name="last_image_download_time">Last downloaded time : </string>
-    <string name="fetching_location_pls_wait">Fetching location. Please wait for %d seconds</string>
     <plurals name="fetching_location">
         <item quantity="zero">Fetching location.</item>
         <item quantity="one">Fetching location. Please wait for a second.</item>
@@ -234,7 +221,6 @@
     <string name="display_period">Display period</string>
     <string name="booking_period">Booking period</string>
     <string name="qualifiers">Qualifiers</string>
-    <string name="slabs">Slabs</string>
     <string name="get_type">Get type</string>
     <string name="products">Products</string>
     <string name="free_products">Free products</string>
@@ -265,7 +251,6 @@
     <string name="this_is_exceptional_order">This is an exceptional order.</string>
     <string name="confirm">Confirm</string>
     <!-- Show Rfield1 dialog -->
-    <string name="Please_enter_multipal">Enter pieceQyt</string>
     <string name="edit_piece">EditPieceDialog</string>
     <string name="Please_enter_multiple_of">Please enter multiple of rfield value</string>
     <string name="piece">Piece</string>

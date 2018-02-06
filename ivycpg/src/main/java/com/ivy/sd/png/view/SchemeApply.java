@@ -30,8 +30,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.countersales.CS_sale_summary;
-import com.ivy.countersales.CSsale;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
@@ -207,12 +205,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 // Intent returnIntent = new Intent();
                 // setResult(RESULT_CANCELED, returnIntent);
                 // super.onDestroy();
-                if (screenCode.equalsIgnoreCase("CSale")) {
-                    Intent i = new Intent(this,
-                            CSsale.class);
-                    startActivity(i);
-                    finish();
-                } else if ((bmodel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bmodel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
+                if ((bmodel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bmodel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
                         && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     Intent intent = new Intent(SchemeApply.this,
                             CrownReturnActivity.class);
@@ -247,14 +240,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
                     return;
                 }
-                if (screenCode.equalsIgnoreCase("CSale")) {
-                    Intent i = new Intent(this,
-                            CS_sale_summary.class);
-                    i.putExtra("refid", getIntent().getStringExtra("refid"));
-                    i.putExtra("isFromSale", true);
-                    i.putExtra("finalValue", getIntent().getDoubleExtra("finalValue", 0));
-                    startActivity(i);
-                } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
+                if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
                     Intent init = new Intent(SchemeApply.this,
                             OrderDiscount.class);
                     init.putExtra("ScreenCode", screenCode);

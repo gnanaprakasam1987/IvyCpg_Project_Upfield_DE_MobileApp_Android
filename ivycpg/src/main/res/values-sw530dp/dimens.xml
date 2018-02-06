@@ -85,14 +85,11 @@
     <!-- Order Split -->
     <dimen name="ordersplit_heder_name_width">160dp</dimen>
     <dimen name="ordersplit_heder_qty_width">120dp</dimen>
-    <dimen name="ordersplit_heder_images_width">64dp</dimen>
 
     <!-- digital Screen -->
     <dimen name="digital_screen_name_width">400dp</dimen>
 
     <dimen name="digital_text_bg_height">36dp</dimen>
-    <dimen name="digital_content_image_height">128dp</dimen>
-    <dimen name="digital_bottom_margin">132dp</dimen>
 
     <!-- Search Filter -->
     <dimen name="filter_icon">28.8dp</dimen>
@@ -178,7 +175,6 @@
     <dimen name="dialog_height">480dp</dimen>
 
     <!--Ordersummary -->
-    <dimen name="order_summary_dialog_height">400dp</dimen>
 
     <dimen name="expandedTitleMarginStart">38.4dp</dimen>
     <dimen name="expandedTitleMarginEnd">51.2dp</dimen>
@@ -249,8 +245,6 @@
     <dimen name="order_lay_height">32dp</dimen>
     <dimen name="card_elevation">3.2dp</dimen>
     <dimen name="recycler_margin">8dp</dimen>
-    <dimen name="brand_recy_height">96dp</dimen>
-    <dimen name="brand_image">80dp</dimen>
 
     <!-- Custom Keyboard-->
 
@@ -477,7 +471,6 @@
 
     <dimen name="sos_dialog_height">240dp</dimen>
     <dimen name="sos_dialog_margin">12.8dp</dimen>
-    <dimen name="keyboard_height">32dp</dimen>
     <dimen name="row_top_margin">12.8dp</dimen>
     <dimen name="total_layout_height">56dp</dimen>
     <!--Visual Sos-->
@@ -518,7 +511,6 @@
     <dimen name="profile_dimention">16dp</dimen>
     <dimen name="profile_margin_26dp">17.6dp</dimen>
     <dimen name="profile_22dp">17.6dp</dimen>
-    <dimen name="prfoile_28dp">22.4dp</dimen>
     <dimen name="profile_23dp">18.4dp</dimen>
     <dimen name="profile_30dp">24dp</dimen>
     <dimen name="profile_31dp">25.6dp</dimen>
@@ -660,7 +652,6 @@
     <!--Schemeview-->
     <dimen name="comp_margin">8dp</dimen>
     <!--Stock and order-->
-    <dimen name="widht_large">64dp</dimen>
     <dimen name="widht_medium">60dp</dimen>
 
     <!--custom keyboard dialog-->
@@ -717,7 +708,6 @@
     <dimen name="percent_value_size">14.4sp</dimen>
 
 
-    <dimen name="special_filter_item_text_size">9.6sp</dimen>
     <dimen name="search_edt_text_size">11.2sp</dimen>
 
     <!-- List item text size -->
@@ -757,13 +747,10 @@
     <dimen name="header_card_margin_top">200dp</dimen>
     <dimen name="all_score_card_height">24dp</dimen>
     <dimen name="card_content_padding">8dp</dimen>
-    <dimen name="score_content_ts_large">30.4sp</dimen>
-    <dimen name="score_content_ts_tiny">11.2sp</dimen>
     <dimen name="category_recycler_height">40dp</dimen>
     <dimen name="card_view_height">72dp</dimen>
     <dimen name="store_card_image">32dp</dimen>
     <dimen name="score_card_height">120dp</dimen>
     <dimen name="qn_text_margin_left">8dp</dimen>
     <dimen name="web_view_width">216dp</dimen>
-    <dimen name="image_size">72dp</dimen>
 </resources>

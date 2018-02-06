@@ -742,12 +742,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     alertDialog.dismiss();
                     if (bmodel.synchronizationHelper.checkStockTable())
                         startSync(UPLOAD_STOCK_APPLY);
-                    else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-                        startSync(UPLOAD_CS_SIH);
-                    else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                        startSync(UPLOAD_CS_STOCK_APPLY);
-                    else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                        startSync(UPLOAD_CS_REJECTED_VARIANCE);
                     else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
                         startSync(UPLOAD_LOYALTY_POINTS);
                     else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
@@ -766,13 +760,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.NOTIFY_STOCKAPLY_UPLOADED:
                     alertDialog.dismiss();
-                    if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-                        startSync(UPLOAD_CS_SIH);
-                    else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                        startSync(UPLOAD_CS_STOCK_APPLY);
-                    else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                        startSync(UPLOAD_CS_REJECTED_VARIANCE);
-                    else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
+                    if (bmodel.synchronizationHelper.checkLoyaltyPoints())
                         startSync(UPLOAD_LOYALTY_POINTS);
                     else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
                             && !dayCloseCheckBox.isChecked()) {
@@ -790,11 +778,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     break;
                 case DataMembers.NOTIFY_COUNTER_SIH_UPLOADED:
                     alertDialog.dismiss();
-                    if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                        startSync(UPLOAD_CS_STOCK_APPLY);
-                    else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                        startSync(UPLOAD_CS_REJECTED_VARIANCE);
-                    else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
+                    if (bmodel.synchronizationHelper.checkLoyaltyPoints())
                         startSync(UPLOAD_LOYALTY_POINTS);
                     else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
                             && !dayCloseCheckBox.isChecked()) {
@@ -805,9 +789,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     break;
                 case DataMembers.NOTIFY_COUNTER_STOCK_APPLY_UPLOADED:
                     alertDialog.dismiss();
-                    if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                        startSync(UPLOAD_CS_REJECTED_VARIANCE);
-                    else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
+                    if (bmodel.synchronizationHelper.checkLoyaltyPoints())
                         startSync(UPLOAD_LOYALTY_POINTS);
                     else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
                             && !dayCloseCheckBox.isChecked()) {
@@ -1131,12 +1113,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             startSync(UPLOAD_STOCK_IN_HAND);
         else if (bmodel.synchronizationHelper.checkStockTable())
             startSync(UPLOAD_STOCK_APPLY);
-        else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-            startSync(UPLOAD_CS_SIH);
-        else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-            startSync(UPLOAD_CS_STOCK_APPLY);
-        else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-            startSync(UPLOAD_CS_REJECTED_VARIANCE);
+
         else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
             startSync(UPLOAD_LOYALTY_POINTS);
         else if (bmodel.synchronizationHelper.checkDataForSync()) {
@@ -1159,12 +1136,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                         startSync(UPLOAD_STOCK_IN_HAND);
                     else if (bmodel.synchronizationHelper.checkStockTable())
                         startSync(UPLOAD_STOCK_APPLY);
-                    else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-                        startSync(UPLOAD_CS_SIH);
-                    else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                        startSync(UPLOAD_CS_STOCK_APPLY);
-                    else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                        startSync(UPLOAD_CS_REJECTED_VARIANCE);
+
                     else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
                         startSync(UPLOAD_LOYALTY_POINTS);
                     else
@@ -1189,12 +1161,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                             startSync(UPLOAD_STOCK_IN_HAND);
                         else if (bmodel.synchronizationHelper.checkStockTable())
                             startSync(UPLOAD_STOCK_APPLY);
-                        else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-                            startSync(UPLOAD_CS_SIH);
-                        else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                            startSync(UPLOAD_CS_STOCK_APPLY);
-                        else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                            startSync(UPLOAD_CS_REJECTED_VARIANCE);
+
                         else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
                             startSync(UPLOAD_LOYALTY_POINTS);
                         else
@@ -1770,12 +1737,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                         startSync(UPLOAD_STOCK_IN_HAND);
                     else if (bmodel.synchronizationHelper.checkStockTable())
                         startSync(UPLOAD_STOCK_APPLY);
-                    else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-                        startSync(UPLOAD_CS_SIH);
-                    else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                        startSync(UPLOAD_CS_STOCK_APPLY);
-                    else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                        startSync(UPLOAD_CS_REJECTED_VARIANCE);
                     else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
                         startSync(UPLOAD_LOYALTY_POINTS);
                     else
@@ -1881,12 +1842,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     startSync(UPLOAD_STOCK_IN_HAND);
                 else if (bmodel.synchronizationHelper.checkStockTable())
                     startSync(UPLOAD_STOCK_APPLY);
-                else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-                    startSync(UPLOAD_CS_SIH);
-                else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                    startSync(UPLOAD_CS_STOCK_APPLY);
-                else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                    startSync(UPLOAD_CS_REJECTED_VARIANCE);
+
                 else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
                     startSync(UPLOAD_LOYALTY_POINTS);
                 else
@@ -1897,12 +1853,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 startSync(UPLOAD_STOCK_IN_HAND);
             else if (bmodel.synchronizationHelper.checkStockTable())
                 startSync(UPLOAD_STOCK_APPLY);
-            else if (bmodel.CS_StockApplyHelper.isCounterSIHDataToUpload())
-                startSync(UPLOAD_CS_SIH);
-            else if (bmodel.CS_StockApplyHelper.isCounterStockApplyDataToUpload())
-                startSync(UPLOAD_CS_STOCK_APPLY);
-            else if (bmodel.CS_StockApplyHelper.isCSRejectedVarianceStatus())
-                startSync(UPLOAD_CS_REJECTED_VARIANCE);
+
             else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
                 startSync(UPLOAD_LOYALTY_POINTS);
             else
