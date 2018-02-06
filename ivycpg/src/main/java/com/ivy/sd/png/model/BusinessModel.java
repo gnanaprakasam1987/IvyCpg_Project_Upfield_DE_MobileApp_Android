@@ -61,9 +61,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.ivy.countersales.bo.CounterSaleBO;
-import com.ivy.countersales.provider.CS_CommonPrintHelper;
-import com.ivy.countersales.provider.CS_StockApplyHelper;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
@@ -120,7 +117,6 @@ import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.CounterSalesHelper;
 import com.ivy.sd.png.provider.DashBoardHelper;
 import com.ivy.sd.png.provider.DeliveryManagementHelper;
 import com.ivy.sd.png.provider.DynamicReportHelper;
@@ -308,15 +304,12 @@ public class BusinessModel extends Application {
     public JExcelHelper mJExcelHelper;
     public DeliveryManagementHelper deliveryManagementHelper;
     public CommonPrintHelper mCommonPrintHelper;
-    public CS_CommonPrintHelper mCS_commonPrintHelper;
     public DynamicReportHelper dynamicReportHelper;
-    public CounterSalesHelper mCounterSalesHelper;
     public RetailerContractHelper retailerContractHelper;
     public TeamLeaderMasterHelper teamLeadermasterHelper;
     private static BusinessModel mInstance;
     public LoyalityHelper mLoyalityHelper;
     public NewOutletAttributeHelper newOutletAttributeHelper;
-    public CS_StockApplyHelper CS_StockApplyHelper;
     public ModuleTimeStampHelper moduleTimeStampHelper;
     public AcknowledgementHelper acknowledgeHelper;
     public FitScoreHelper fitscoreHelper;
@@ -485,16 +478,13 @@ public class BusinessModel extends Application {
         mJExcelHelper = JExcelHelper.getInstance(this);
         deliveryManagementHelper = DeliveryManagementHelper.getInstance(this);
         mCommonPrintHelper = CommonPrintHelper.getInstance(this);
-        mCS_commonPrintHelper = CS_CommonPrintHelper.getInstance(this);
         dynamicReportHelper = DynamicReportHelper.getInstance(this);
-        mCounterSalesHelper = CounterSalesHelper.getInstance(this);
         teamLeadermasterHelper = TeamLeaderMasterHelper.getInstance(this);
 
         retailerContractHelper = RetailerContractHelper.getInstance(this);
         mLoyalityHelper = LoyalityHelper.getInstance(this);
         newOutletAttributeHelper = NewOutletAttributeHelper.getInstance(this);
 
-        CS_StockApplyHelper = CS_StockApplyHelper.getInstance(this);
         moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(this);
         acknowledgeHelper = AcknowledgementHelper.getInstance(this);
         fitscoreHelper = FitScoreHelper.getInstance(this);
@@ -5419,210 +5409,6 @@ public class BusinessModel extends Application {
     }
 
 
-    public void saveCSClosingStock() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            String id = QT(userMasterHelper.getUserMasterBO().getUserid() + getRetailerMasterBO().getRetailerID()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID));
-
-            boolean isVariance = false;
-            // ClosingStock Header entry
-
-            String columns = "Uid,Date,RetailerID,RetailerCode,latitude,longitude,upload,utcdate,counter_id";
-
-            String values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + ", " + QT(getRetailerMasterBO().getRetailerID()) + ", "
-                    + QT(getRetailerMasterBO().getRetailerCode()) + ","
-                    + LocationUtil.latitude + "," + LocationUtil.longitude + ",'N'" + "," + DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) + "," + getCounterId();
-            ;
-
-            db.insertSQL(DataMembers.tbl_cs_closingstockheader, columns, values);
-
-            ProductMasterBO product;
-
-            // ClosingStock Detail entry
-
-            columns = "Uid,Date,Pid,uomid,qty,stock_type,isown,upload";
-
-            int siz = productHelper.getProductMaster().size();
-            for (int i = 0; i < siz; ++i) {
-                product = productHelper.getProductMaster().elementAt(i);
-
-                int siz1 = product.getLocations().size();
-                for (int j = 0; j < siz1; j++) {
-                    if (product.getLocations().get(j).getShelfPiece() > 0
-                            || product.getLocations().get(j).getShelfCase() > 0
-                            || product.getLocations().get(j).getShelfOuter() > 0
-                            ) {
-
-                        if (product.getLocations().get(j).getShelfPiece() > 0) {
-                            values = (id) + ","
-                                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                                    + product.getProductID() + ","
-                                    + product.getPcUomid() + ","
-                                    + product.getLocations().get(j).getShelfPiece() + ","
-                                    + product.getLocations().get(j).getLocationId()
-                                    + "," + product.getOwn() + ",'N'";
-
-                            db.insertSQL(DataMembers.tbl_cs_closingstockdetail,
-                                    columns, values);
-                            product.getLocations().get(j).setShelfPiece(0);
-                        }
-                        if (product.getLocations().get(j).getShelfCase() > 0) {
-                            values = (id) + ","
-                                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                                    + product.getProductID() + ","
-                                    + product.getCaseUomId() + ","
-                                    + product.getLocations().get(j).getShelfCase() + ","
-                                    + product.getLocations().get(j).getLocationId()
-                                    + "," + product.getOwn() + ",'N'";
-
-                            db.insertSQL(DataMembers.tbl_cs_closingstockdetail,
-                                    columns, values);
-                            product.getLocations().get(j).setShelfCase(0);
-                        }
-                        if (product.getLocations().get(j).getShelfOuter() > 0) {
-                            values = (id) + ","
-                                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                                    + product.getProductID() + ","
-                                    + product.getOuUomid() + ","
-                                    + product.getLocations().get(j).getShelfOuter() + ","
-                                    + product.getLocations().get(j).getLocationId()
-                                    + "," + product.getOwn() + ",'N'";
-
-                            db.insertSQL(DataMembers.tbl_cs_closingstockdetail,
-                                    columns, values);
-                            product.getLocations().get(j).setShelfOuter(0);
-                        }
-
-                    }
-                }
-            }
-
-            // public static final String tbl_cs_closingstockvariancereasondetail = "CS_StockEntryVarianceDetails";
-            // private static final String tbl_cs_closingstockvariancereasondetail_cols = "Uid,Pid,uomid,qty,stock_type,reasonid";
-
-            // ClosingStock Header entry
-
-
-            columns = "Uid,Pid,uomid,qty,stock_type,upload,lineValue";
-
-            double totalValue = 0, lineValue = 0;
-            siz = productHelper.getProductMaster().size();
-            for (int i = 0; i < siz; ++i) {
-                product = productHelper.getProductMaster().elementAt(i);
-
-                int siz1 = product.getLocations().size();
-                for (int j = 0; j < siz1; j++) {
-                    lineValue = 0;
-                    if (product.getLocations().get(j).getFacingQty() > 0) {
-
-                        if (product.getLocations().get(j).getFacingQty() > 0) {
-                            isVariance = true;
-
-                            lineValue += (product.getLocations().get(j).getFacingQty() * product.getMRP());
-                            totalValue += lineValue;
-
-                            values = (id) + ","
-                                    + product.getProductID() + ","
-                                    + product.getPcUomid() + ","
-                                    + product.getLocations().get(j).getFacingQty() + ","
-                                    + product.getLocations().get(j).getLocationId()
-                                    + ",'N'," + lineValue;
-
-                            db.insertSQL(DataMembers.tbl_cs_closingstockvariancedetail,
-                                    columns, values);
-                            db.updateSQL("update CS_SIHDetails set upload='N',sih=sih-" + product.getLocations().get(j).getFacingQty() + ",upload='N' where stock_type="
-                                    + product.getLocations().get(j).getLocationId() + " and pid=" + product.getProductID());
-                            product.getLocations().get(j).setFacingQty(0);
-                        }
-
-
-                    }
-                }
-            }
-
-            if (isVariance) {
-                columns = "Uid,Date,RetailerID,upload,counterid,totalValue";
-
-                values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                        + ", " + QT(getRetailerMasterBO().getRetailerID())
-                        + ",'N'" + "," + getCounterId() + "," + totalValue;
-                ;
-
-                db.insertSQL(DataMembers.tbl_cs_closingstockvarianceheader, columns, values);
-            }
-
-
-            columns = "Uid,Pid,uomid,qty,stock_type,upload,reasonid";
-            siz = productHelper.getTaggedProducts().size();
-            for (int i = 0; i < siz; ++i) {
-                product = productHelper.getTaggedProducts().elementAt(i);
-
-                for (int j = 0; j < product.getLocations().size(); j++) {
-                    LocationBO locationBO = product.getLocations().get(j);
-                    int siz1 = locationBO.getLstStockReasons().size();
-                    for (int k = 0; k < siz1; k++) {
-                        if (locationBO.getLstStockReasons().get(k).getPieceQty() > 0) {
-
-                            values = (id) + ","
-                                    + product.getProductID() + ","
-                                    + product.getPcUomid() + ","
-                                    + locationBO.getLstStockReasons().get(k).getPieceQty() + ","
-                                    + locationBO.getLocationId()
-                                    + ",'N'," + locationBO.getLstStockReasons().get(k).getReasonID();
-
-
-                            db.insertSQL(DataMembers.tbl_cs_closingstockvariancereasondetail,
-                                    columns, values);
-
-                        }
-                    }
-                }
-            }
-
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    /**
-     * Release the stock.
-     *
-     * @param uid
-     */
-    private void updateSIHOnDeleteOrder(String uid) {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select ProductId,qty from OrderDetail where OrderId="
-                            + uid + "");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    db.executeQ("update productmaster set sih=sih+"
-                            + c.getInt(1) + " where pid=" + c.getInt(0)
-                            + " and isAlloc=1");
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-
-            Commons.printException(e);
-        }
-
-    }
-
-
     public HashMap<String, ArrayList<TaxBO>> getmFreeProductTaxListByProductId() {
         return mFreeProductTaxListByProductId;
     }
@@ -7953,53 +7739,6 @@ public class BusinessModel extends Application {
             Commons.printException(ex);
         }
     }
-
-    public String getRetailerIdForCounter() {
-        String retailerId = "0";
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            if (userMasterHelper.getUserMasterBO().getCounterId() != 0) {
-                Cursor c1 = db.selectSQL("select retailerid from CS_CounterMaster" +
-                        " where counter_id=" + userMasterHelper.getUserMasterBO().getCounterId() + "");
-                if (c1 != null) {
-                    if (c1.moveToNext()) {
-                        retailerId = c1.getString(0);
-
-                    }
-                    c1.close();
-                }
-            }
-            if (getCounterSaleBO() != null) {
-                getCounterSaleBO().setCounterId(userMasterHelper.getUserMasterBO().getCounterId());
-                getCounterSaleBO().setRetailerId(retailerId);
-            } else {
-                CounterSaleBO bo = new CounterSaleBO();
-                bo.setRetailerId(retailerId);
-                bo.setCounterId(userMasterHelper.getUserMasterBO().getCounterId());
-                setCounterSaleBO(bo);
-            }
-            db.closeDB();
-            return retailerId;
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            return retailerId;
-        }
-    }
-
-
-    public CounterSaleBO getCounterSaleBO() {
-        return counterSaleBO;
-    }
-
-    public void setCounterSaleBO(CounterSaleBO counterSaleBO) {
-        this.counterSaleBO = counterSaleBO;
-    }
-
-    private CounterSaleBO counterSaleBO;
 
     private int counterId = 0;
 

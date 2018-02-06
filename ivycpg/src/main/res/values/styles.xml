@@ -86,11 +86,6 @@
         <item name="android:textColor">@color/WHITE</item>
     </style>
 
-    <style name="customButtonBlue" parent="@android:style/Widget.Button">
-        <item name="android:background">@drawable/bottom_border_blue</item>
-        <item name="android:stateListAnimator" tools:targetApi="lollipop">@null</item>
-    </style>
-
     <!-- To apply theme for dialogs
            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
            windowBackground: To avoid two alert dialog frames in prelollipop devices
@@ -203,11 +198,6 @@
         <item name="android:background">@color/colorPrimaryRed</item>
         <item name="android:layout_margin">0dp</item>
         <item name="android:textColor">@color/WHITE</item>
-    </style>
-
-    <style name="customButtonRed" parent="@android:style/Widget.Button">
-        <item name="android:background">@drawable/bottom_border_red</item>
-        <item name="android:stateListAnimator" tools:targetApi="lollipop">@null</item>
     </style>
 
     <!-- To apply theme for dialogs
@@ -324,11 +314,6 @@
         <item name="android:textColor">@color/WHITE</item>
     </style>
 
-    <style name="customButtonOrange" parent="@android:style/Widget.Button">
-        <item name="android:background">@drawable/bottom_border_orange</item>
-        <item name="android:stateListAnimator" tools:targetApi="lollipop">@null</item>
-    </style>
-
     <!-- To apply theme for dialogs
            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
            windowBackground: To avoid two alert dialog frames in prelollipop devices
@@ -443,11 +428,6 @@
         <item name="android:textColor">@color/WHITE</item>
     </style>
 
-    <style name="customButtonCarlsberg" parent="@android:style/Widget.Button">
-        <item name="android:background">@drawable/bottom_border_green</item>
-        <item name="android:stateListAnimator" tools:targetApi="lollipop">@null</item>
-    </style>
-
     <!-- To apply theme for dialogs
            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
            windowBackground: To avoid two alert dialog frames in prelollipop devices
@@ -559,11 +539,6 @@
         <item name="android:background">@color/colorPrimaryPink</item>
         <item name="android:layout_margin">0dp</item>
         <item name="android:textColor">@color/WHITE</item>
-    </style>
-
-    <style name="customButtonPink" parent="@android:style/Widget.Button">
-        <item name="android:background">@drawable/bottom_border_pink</item>
-        <item name="android:stateListAnimator" tools:targetApi="lollipop">@null</item>
     </style>
 
     <!-- To apply theme for dialogs
@@ -836,16 +811,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ButtonListLeftIcon" parent="@android:style/Widget.ImageButton">
-        <item name="android:height">40dp</item>
-        <item name="android:width">40dp</item>
-        <item name="android:textSize">@dimen/font_small</item>
-        <item name="android:gravity">center</item>
-        <item name="android:background">@color/GRAY</item>
-        <item name="android:textStyle">bold|bold</item>
-        <item name="android:typeface">serif</item>
-    </style>
-
     <style name="TextViewHorizontalLineBlue">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
@@ -925,28 +890,6 @@
         <item name="font_xlarge">32sp</item>
     </style>
 
-
-    <style name="checkBoxItemStyle" parent="@android:style/Widget.CompoundButton.CheckBox">
-        <item name="android:textSize">@dimen/font_medium</item>
-    </style>
-
-    <style name="radioButtonItemStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:textSize">@dimen/font_medium</item>
-
-    </style>
-
-    <style name="tabWidgetItemStyle" parent="@android:style/Widget.TabWidget">
-        <item name="android:textAppearance">@style/CustomTabWidgetText</item>
-    </style>
-
-    <style name="CustomTabWidgetText" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:textSize">@dimen/font_large</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="CustomTabWidget" parent="@android:style/Widget.TabWidget">
-        <item name="android:textAppearance">@style/CustomTabWidgetText</item>
-    </style>
 
     <style name="Widget.CardContent" parent="android:Widget">
         <item name="android:paddingLeft">16dp</item>

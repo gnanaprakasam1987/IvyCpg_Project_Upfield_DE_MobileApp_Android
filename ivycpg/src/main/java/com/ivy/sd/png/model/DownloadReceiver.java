@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.ivy.countersales.CustomerVisitFragment;
 import com.ivy.cpg.view.login.LoginScreen.MyReceiver;
 import com.ivy.cpg.view.van.LoadManagementScreen;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -56,9 +55,7 @@ public class DownloadReceiver extends BroadcastReceiver {
                 context.sendBroadcast(broadCIntent);
                 break;
             case COUNTER_SALES_SELECTION:
-                broadCIntent.setAction(CustomerVisitFragment.MyReceiver.PROCESS_RESPONSE);
-                broadCIntent.putExtras(bundle);
-                context.sendBroadcast(broadCIntent);
+
                 break;
             case TL_ALLOCATION:
                 broadCIntent.setAction(TLAttendanceActivity.TeamLeadReceiver.PROCESS_RESPONSE);

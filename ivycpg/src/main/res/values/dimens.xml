@@ -68,7 +68,6 @@
     <dimen name="sku_text_product_name">250dp</dimen>
     <dimen name="sku_text_qty">80dp</dimen>
     <dimen name="stock_screen_txtview_height">35dp</dimen>
-    <dimen name="order_summary_dialog_height">300dp</dimen>
 
     <!-- Visit Targe Screen -->
     <dimen name="visit_lst_img_width">20dp</dimen>
@@ -99,14 +98,11 @@
     <!-- Order Split -->
     <dimen name="ordersplit_heder_name_width">150dp</dimen>
     <dimen name="ordersplit_heder_qty_width">100dp</dimen>
-    <dimen name="ordersplit_heder_images_width">70dp</dimen>
 
     <!-- digital Screen -->
     <dimen name="digital_screen_name_width">260dp</dimen>
 
     <dimen name="digital_text_bg_height">32dp</dimen>
-    <dimen name="digital_content_image_height">100dp</dimen>
-    <dimen name="digital_bottom_margin">105dp</dimen>
 
     <!-- Search Filter -->
     <dimen name="filter_icon">24dp</dimen>
@@ -301,8 +297,6 @@
     <dimen name="order_lay_height">35dp</dimen>
     <dimen name="card_elevation">3dp</dimen>
     <dimen name="recycler_margin">5dp</dimen>
-    <dimen name="brand_recy_height">90dp</dimen>
-    <dimen name="brand_image">70dp</dimen>
 
     <!-- Custom Keyboard-->
 
@@ -548,7 +542,6 @@
 
     <dimen name="sos_dialog_height">150dp</dimen>
     <dimen name="sos_dialog_margin">8dp</dimen>
-    <dimen name="keyboard_height">25dp</dimen>
     <dimen name="row_top_margin">8dp</dimen>
     <dimen name="total_layout_height">45dp</dimen>
 
@@ -591,7 +584,6 @@
     <dimen name="profile_dimention">10dp</dimen>
     <dimen name="profile_margin_26dp">18dp</dimen>
     <dimen name="profile_22dp">15dp</dimen>
-    <dimen name="prfoile_28dp">14dp</dimen>
     <dimen name="profile_23dp">12dp</dimen>
     <dimen name="profile_31dp">16dp</dimen>
     <dimen name="profile_30dp">15dp</dimen>
@@ -746,7 +738,6 @@
 
     <dimen name="comp_margin">2dp</dimen>
     <!--Stock and order-->
-    <dimen name="widht_large">48dp</dimen>
     <dimen name="widht_medium">45dp</dimen>
 
     <!--custom keyboard dialog-->
@@ -807,7 +798,6 @@
     <dimen name="percent_value_size">12sp</dimen>
 
 
-    <dimen name="special_filter_item_text_size">4sp</dimen>
     <dimen name="search_edt_text_size">10sp</dimen>
 
     <!-- remove this with micro_small -->
@@ -847,15 +837,11 @@
     <dimen name="header_card_margin_top">140dp</dimen>
     <dimen name="all_score_card_height">20dp</dimen>
     <dimen name="card_content_padding">2dp</dimen>
-    <dimen name="score_content_ts_large">24sp</dimen>
-    <dimen name="score_content_ts_tiny">12sp</dimen>\
+    \
     <dimen name="category_recycler_height">40dp</dimen>
     <dimen name="card_view_height">60dp</dimen>
     <dimen name="store_card_image">20dp</dimen>
     <dimen name="score_card_height">120dp</dimen>
     <dimen name="qn_text_margin_left">5dp</dimen>
     <dimen name="web_view_width">180dp</dimen>
-    <dimen name="image_size">50dp</dimen>
-    <dimen name="list_item_width_perfectdashboard_medium">225dp</dimen>
-    <dimen name="list_item_width_perfectdashboard_small">90dp</dimen>
 </resources>

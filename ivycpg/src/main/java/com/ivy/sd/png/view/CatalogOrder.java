@@ -110,7 +110,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             isFocusBrand2, isSIH, isOOS, isNMustSell, isStock, isDiscount, isNearExpiryTag, isFocusBrand3, isFocusBrand4, isSMP;
     //private TypedArray typearr;
     private BusinessModel bmodel;
-    private Timer orderTimer;
+
     private RecyclerView pdt_recycler_view;
     private String tempPo, tempRemark, tempRField1, tempRField2;
     private MustSellReasonDialog dialog;

@@ -30,7 +30,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ivy.countersales.CSHomeScreenFragment;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.sd.png.asean.view.R;
@@ -121,9 +120,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             calledFrom = calledFrom != null ? calledFrom : "Digi";
         }
 
-        if (calledFrom != null && calledFrom.equals("DigiCS")) {
-            mBModel.productHelper.downloadProductFilter(CSHomeScreenFragment.MENU_DGT_CS);
-        } else if (calledFrom != null && calledFrom.equalsIgnoreCase(MENU_DGT_SW)) {
+        if (calledFrom != null && calledFrom.equalsIgnoreCase(MENU_DGT_SW)) {
             mBModel.productHelper.downloadProductFilter(MENU_DGT_SW);
         } else {
             mBModel.productHelper.downloadProductFilter(MENU_DGT);

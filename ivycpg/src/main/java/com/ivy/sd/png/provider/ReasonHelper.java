@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 
-import com.ivy.countersales.bo.CS_StockReasonBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -681,45 +680,6 @@ public class ReasonHelper {
             Commons.printException(e);
         }
         return lst;
-    }
-
-    public ArrayList<CS_StockReasonBO> getLstCSstockReasons() {
-        return lstCSstockReasons;
-    }
-
-    public void setLstCSstockReasons(ArrayList<CS_StockReasonBO> lstCSstockReasons) {
-        this.lstCSstockReasons = lstCSstockReasons;
-    }
-
-    ArrayList<CS_StockReasonBO> lstCSstockReasons;
-
-    public void downloadCSStockReasons() {
-        try {
-            lstCSstockReasons = new ArrayList<>();
-            CS_StockReasonBO reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-           /* reason = new CS_StockReasonBO();
-            reason.setReasonID("0");
-            reason.setReasonCategory(StandardListMasterConstants.COUNTER_SALES_STOCK_REASON_TYPE);
-            reason.setReasonDesc("Select Reason");
-            lstCSstockReasons.add(reason);*/
-            Cursor c = db.selectSQL(getReasonFromStdListMaster("STK_ADJST_SHOT"));//StandardListMasterConstants.COUNTER_SALES_STOCK_REASON_TYPE));
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    reason = new CS_StockReasonBO();
-                    reason.setReasonID(c.getString(0));
-                    reason.setReasonDesc(c.getString(1));
-                    reason.setReasonCategory(StandardListMasterConstants.COUNTER_SALES_STOCK_REASON_TYPE);
-                    lstCSstockReasons.add(reason);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e + "");
-        }
     }
 
     public void setAssetReasonsBasedOnType(ArrayList<ReasonMaster> assetReasonsBasedOnType) {

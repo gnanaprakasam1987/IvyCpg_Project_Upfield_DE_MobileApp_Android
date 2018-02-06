@@ -99,7 +99,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private TimeAndTravelReport mTimeAndTravelReport;
     private ProductivityReport mProductivityReport;
     private DeliveryStockReport mDeliveryStockReport;
-    private CSCustomerVisited csCustomerVisited;
     private InventoryReportFragment mInventoryReport;
     private SellerMapViewReportFragment mSellerMapviewReport;
     private SellerPerformanceReportFragment mSellerPerformReport;
@@ -227,7 +226,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mTimeAndTravelReport.setArguments(getIntent().getExtras());
         mProductivityReport = new ProductivityReport();
         mProductivityReport.setArguments(getIntent().getExtras());
-        csCustomerVisited = new CSCustomerVisited();
         mInventoryReport = new InventoryReportFragment();
         mSellerMapviewReport = new SellerMapViewReportFragment();
         mSellerPerformReport = new SellerPerformanceReportFragment();
@@ -618,12 +616,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.replace(R.id.fragment_content, mContractReport);
             transaction.addToBackStack(null);
             getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_CS_RPT)) {
-            transaction.replace(R.id.fragment_content, csCustomerVisited);
-            bmodel.mSelectedActivityName = config.getMenuName();
-            transaction.addToBackStack(null);
             transaction.commit();
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SFG_REPORT)) {
             transaction.replace(R.id.fragment_content, salesFundamentalGapReportFragment);
