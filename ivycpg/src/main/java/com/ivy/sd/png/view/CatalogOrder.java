@@ -120,7 +120,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private String strBarCodeSearch = "ALL";
 
 
-    private TextView brand_name;//, total_value_bottom;
+
     private Toolbar toolbar;
 
     private Vector<ProductMasterBO> asyncList = new Vector<>();
@@ -330,10 +330,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             }
         });
-
-
-        brand_name = (TextView) findViewById(R.id.brand_name);
-
 
         GridLayoutManager gridLayoutManager;
         if (ScreenOrientation.isCatalogDevice(CatalogOrder.this)) {

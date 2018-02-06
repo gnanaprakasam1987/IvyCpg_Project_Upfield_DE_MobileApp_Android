@@ -156,7 +156,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
                 mDrawerLayout, /* DrawerLayout object */
-                R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
+                R.drawable.ic_action_bottle_return, /* nav drawer image to replace 'Up' caret */
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */
         ) {
