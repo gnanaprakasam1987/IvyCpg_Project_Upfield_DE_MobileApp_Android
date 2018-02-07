@@ -1273,7 +1273,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        bmodel.saveClosingStock();
+                                        bmodel.saveClosingStock(true);
 
                                         Toast.makeText(
                                                 CatalogOrder.this,

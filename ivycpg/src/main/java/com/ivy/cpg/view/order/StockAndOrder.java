@@ -4209,7 +4209,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
                 // Save closing stock
-                bmodel.saveClosingStock();
+                bmodel.saveClosingStock(true);
 
                 bmodel.saveModuleCompletion(OrderedFlag);
 

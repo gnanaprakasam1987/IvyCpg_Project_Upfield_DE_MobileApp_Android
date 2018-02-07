@@ -255,6 +255,8 @@ public class ProductHelper {
     }
 
     public Vector<ProductMasterBO> getTaggedProducts() {
+        if (mTaggedProducts == null)
+            return new Vector<ProductMasterBO>();
         return mTaggedProducts;
     }
 
@@ -5076,10 +5078,6 @@ public class ProductHelper {
     }
 
 
-
-
-
-
     public void saveItemLevelDiscount(String orderID, DBUtil db) {
 
         String columns = "OrderId,Pid,Typeid,Value,Percentage,ApplyLevelid,RetailerId,discountid,isCompanyGiven";
@@ -5139,8 +5137,6 @@ public class ProductHelper {
     }
 
 
-
-
     public void updateInvoiceIdInItemLevelDiscount(DBUtil db, String invid,
                                                    String orderId) {
 
@@ -5149,9 +5145,6 @@ public class ProductHelper {
         db.updateSQL(query);
 
     }
-
-
-
 
 
     public int getMappingLocationId(int loclevelid, int Retlocid) {
@@ -5500,10 +5493,6 @@ public class ProductHelper {
     }
 
 
-
-
-
-
     public ArrayList<Integer> getTypeIdList() {
         if (mTypeIdList != null) {
             return mTypeIdList;
@@ -5733,13 +5722,6 @@ public class ProductHelper {
     }
 
 
-
-
-
-
-
-
-
     public ArrayList<AttributeBO> getmAttributesList() {
         return mAttributesList;
     }
@@ -5899,7 +5881,6 @@ public class ProductHelper {
     }
 
 
-
     public void downloadDiscountRange() {
         // HashMap<String,ProductMasterBO> lstRangesByProductId=null;
         try {
@@ -5998,11 +5979,6 @@ public class ProductHelper {
         db.insertSQL(DataMembers.tbl_OrderDiscountDetail, columns, sb.toString());
 
     }
-
-
-
-
-
 
 
     public void updateSchemeAndDiscAndTaxValue(DBUtil db, String invoiceid) {
@@ -6257,8 +6233,6 @@ public class ProductHelper {
     }
 
 
-
-
     //add loyalty points
     public void downloadLoyaltyDescription(String retailerID) {
         try {
@@ -6471,8 +6445,6 @@ public class ProductHelper {
     private Vector<LevelBO> categoryExpandableList = new Vector<>();
 
 
-
-
     public String getProductImageUrl() {
         return productImageUrl;
     }
@@ -6500,7 +6472,6 @@ public class ProductHelper {
     }
 
     private String productImageUrl;
-
 
 
     public boolean isSihAvailableForOrderProducts(List<ProductMasterBO> orderList) {
@@ -6657,7 +6628,6 @@ public class ProductHelper {
     }
 
 
-
     public LinkedList<String> getmProductidOrderByEntry() {
         return mProductidOrderByEntry;
     }
@@ -6665,7 +6635,6 @@ public class ProductHelper {
     public void setmProductidOrderByEntry(LinkedList<String> mProductidOrderByEntry) {
         this.mProductidOrderByEntry = mProductidOrderByEntry;
     }
-
 
 
     public Vector<LevelBO> getGlobalCategory() {
