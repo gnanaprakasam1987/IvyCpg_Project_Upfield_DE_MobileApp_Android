@@ -110,6 +110,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_LINE_VALUE = "prod_line_value";
     private static String TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX = "prod_line_value_excl_tax";
     private static String TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX = "prod_line_value_incl_tax";
+    private static String TAG_PRODUCT_TAX_PERCENTAGE="prod_line_tax_percentage";
 
     private static String TAG_PRODUCT_TAG_DESC = "prod_tag_desc";
 
@@ -768,6 +769,18 @@ public class CommonPrintHelper {
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
                     mProductValue = prod.getProductCode();
                 }
+                else if(attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAX_PERCENTAGE)){
+                    double taxPercentage=0;
+                    if(bmodel.productHelper.taxHelper.getmTaxListByProductId()!=null) {
+                        ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getmTaxListByProductId().get(prod.getProductID());
+                        if (taxList != null) {
+                            for (int index = 0; index < taxList.size(); index++) {
+                                taxPercentage += taxList.get(index).getTaxRate();
+                            }
+                        }
+                    }
+                    mProductValue=SDUtil.format(taxPercentage,1,0);
+                }
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
                     if (mProductValue.length() > attr.getAttributeLength()) {
@@ -1112,7 +1125,7 @@ public class CommonPrintHelper {
                             }
                         }
 
-                        netSchemeAmount += schemeBO.getSelectedAmount();
+                        netSchemeAmount += mBuyProdDiscountedValue;
                     }
 
 

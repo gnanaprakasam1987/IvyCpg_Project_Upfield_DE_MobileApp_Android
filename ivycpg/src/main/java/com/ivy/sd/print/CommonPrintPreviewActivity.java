@@ -81,8 +81,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import mmsl.DeviceUtility.DeviceBluetoothCommunication;
+import mmsl.DeviceUtility.DeviceCallBacks;
 
-public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
+public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar implements DeviceCallBacks {
     private TextView mPrinterStatusTV;
     private Spinner mPrintCountSpinner;
     private TextView mPreviewTV;
@@ -118,6 +120,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     private Toolbar toolbar;
     Bitmap screen;
     private OrderHelper orderHelper;
+    DeviceBluetoothCommunication bluetoothCommunication;
+    CommonDialog commonDialog;
 
     private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -157,6 +161,19 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
         heightImage = bmodel.mCommonPrintHelper.height_image;
 
         onScreenPreparation();
+
+        if (bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS) {
+            try {
+                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
+                        .getDefaultAdapter();
+                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(getMacAddressFieldText().toUpperCase());
+                bluetoothCommunication = new DeviceBluetoothCommunication();
+                bluetoothCommunication.StartConnection(device, this);
+                mPrinterStatusTV.setText("Connected");
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -235,6 +252,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                     } else if (bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
                         new Print().execute("2");
                     }
+                    else if (bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS)
+                        doMaestroPrintNew();
                 }
                 break;
             case R.id.menu_share_pdf:
@@ -718,8 +737,13 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
             updateStatus("Printer error.");
             msg = "Error";
         }
+        if(commonDialog!=null && commonDialog.isShowing()){
+            commonDialog.dismiss();
+            commonDialog.cancel();
+            commonDialog=null;
+        }
 
-        new CommonDialog(getApplicationContext(), this,
+        commonDialog =new CommonDialog(getApplicationContext(), this,
                 "", msg,
                 false, getResources().getString(R.string.ok),
                 null, new CommonDialog.positiveOnClickListener() {
@@ -765,8 +789,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
             @Override
             public void onNegativeButtonClick() {
             }
-        }).show();
-
+        });
+        commonDialog.show();
     }
 
 
@@ -1221,4 +1245,222 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar {
     }
 
 
+    class PrintMaestro extends AsyncTask<Void, Void, Boolean> {
+        protected void onPreExecute() {
+            updateStatus("Connecting...");
+        }
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                if (!getMacAddressFieldText().equals("")) {
+                    mPrinterStatusTV.setText("Printing");
+                    bluetoothCommunication.SendData(getDataZebra());
+                    mDataPrintCount++;
+                    mPrintCount++;
+                } else {
+                    updateStatus("Mac address is empty...");
+                }
+                DemoSleeper.sleep(2000);
+            } catch (Exception ex) {
+                Commons.printException(ex);
+            }
+            return true;
+        }
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            showAlert();
+        }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS) {
+            if (bluetoothCommunication != null)
+                bluetoothCommunication.StopConnection();
+        }
+    }
+
+    private void doMaestroPrintNew() {
+        try {
+            new PrintMaestro().execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Overriding Maestro Printer interface methods
+    @Override
+    public void onBatteryStatus(byte[] bytes) {
+    }
+    @Override
+    public void onNoSmartCardFound() {
+    }
+    @Override
+    public void onSmartCardPresent() {
+    }
+    @Override
+    public void onFalseFingerDetected() {
+    }
+    @Override
+    public void onCancelledCommand() {
+    }
+    @Override
+    public void onCorruptDataRecieved() {
+    }
+    @Override
+    public void onCorruptDataSent() {
+    }
+    @Override
+    public void onInternalFPModuleCommunicationerror() {
+    }
+    @Override
+    public void onParameterOutofRange() {
+    }
+    @Override
+    public void onFingerPrintTimeout() {
+    }
+    @Override
+    public void onWSQCOMLETE(int i) {
+    }
+    @Override
+    public void onConnectComplete() {
+    }
+    @Override
+    public void onConnectionFailed() {
+    }
+    @Override
+    public void onPlaceFinger() {
+    }
+    @Override
+    public void onMoveFingerUP() {
+    }
+    @Override
+    public void onMoveFingerDown() {
+    }
+    @Override
+    public void onMoveFingerRight() {
+    }
+    @Override
+    public void onMoveFingerLeft() {
+    }
+    @Override
+    public void onPressFingerHard() {
+    }
+    @Override
+    public void onLatentFingerHard(String s) {
+    }
+    @Override
+    public void onRemoveFinger() {
+    }
+    @Override
+    public void onWSQFingerReceived(byte[] bytes) {
+    }
+    @Override
+    public void onFingeracquisitioncompeted(String s) {
+    }
+    @Override
+    public void onFingerScanStarted(int i) {
+    }
+    @Override
+    public void onFingerTooMoist() {
+    }
+    @Override
+    public void onNoResponseFromCard() {
+    }
+    @Override
+    public void onCardNotSupported() {
+    }
+    @Override
+    public void onCommandNotSupported() {
+    }
+    @Override
+    public void onInvalidCommand() {
+    }
+    @Override
+    public void onErrorOccured() {
+    }
+    @Override
+    public void onVerificationSuccessful(int i) {
+    }
+    @Override
+    public void onSerialNumber(byte[] bytes) {
+    }
+    @Override
+    public void onVersionNumberReceived(byte[] bytes) {
+    }
+    @Override
+    public void onVerificationfailed() {
+    }
+    @Override
+    public void onFingerImageRecieved(byte[] bytes) {
+    }
+    @Override
+    public void onCommandRecievedWhileProcessing() {
+    }
+    @Override
+    public void onCommandRecievedWhileAnotherRunning() {
+    }
+    @Override
+    public void onCryptographicError() {
+    }
+    @Override
+    public void onOperationNotSupported() {
+    }
+    @Override
+    public void onTemplateRecieved(byte[] bytes) {
+    }
+    @Override
+    public void onNFIQ(int i) {
+    }
+    @Override
+    public void onOutofPaper() {
+    }
+    @Override
+    public void onPlatenOpen() {
+    }
+    @Override
+    public void onHighHeadTemperature() {
+    }
+    @Override
+    public void onLowHeadTemperature() {
+    }
+    @Override
+    public void onImproperVoltage() {
+    }
+    @Override
+    public void onSuccessfulPrintIndication() {
+    }
+    @Override
+    public void onSmartCardDataRecieved(byte[] bytes) {
+    }
+    @Override
+    public void onCPUSmartCardCommandDataRecieved(byte[] bytes) {
+    }
+    @Override
+    public void onMSRDataRecieved(String s) {
+    }
+    @Override
+    public void onNoData() {
+    }
+    @Override
+    public void onImproveSwipe() {
+    }
+    @Override
+    public void onSameFinger() {
+    }
+    @Override
+    public void onWriteToSmartCardSuccessful() {
+    }
+    @Override
+    public void onErrorReadingSmartCard() {
+    }
+    @Override
+    public void onErrorOccuredWhileProccess() {
+    }
+    @Override
+    public void onErrorWritingSmartCard() {
+    }
 }
