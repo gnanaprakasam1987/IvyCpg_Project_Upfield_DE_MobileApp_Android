@@ -257,7 +257,7 @@ public class MyThread extends Thread {
             // If Stock and order is enabled , then save stock too.
             if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                     && bmodel.hasStockInOrder()) {
-                bmodel.saveClosingStock();
+                bmodel.saveClosingStock(true);
 
                 if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                     // save price check
@@ -487,7 +487,7 @@ public class MyThread extends Thread {
 
             if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                     && bmodel.hasStockInOrder()) {
-                bmodel.saveClosingStock();
+                bmodel.saveClosingStock(true);
 
                 if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                     // save price check

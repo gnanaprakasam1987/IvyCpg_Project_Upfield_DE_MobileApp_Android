@@ -707,7 +707,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     public boolean isEditStockCheck() {
         return isEditStockCheck;
     }
@@ -1306,7 +1305,6 @@ public class BusinessModel extends Application {
         db.closeDB();
         return f;
     }
-
 
 
     //Anand Asir V
@@ -2045,7 +2043,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     public void updateIsTodayAndIsVanSalesInRetailerMasterInfo() {
         DBUtil db = null;
         try {
@@ -2745,8 +2742,6 @@ public class BusinessModel extends Application {
     }
 
 
-
-
     //Applying currence value config or normal format(2)
     public String formatValueBasedOnConfig(double value) {
         String formattedValue = "0";
@@ -2781,9 +2776,6 @@ public class BusinessModel extends Application {
         }
         return formattedValue;
     }
-
-
-
 
 
     public ArrayList<String> getOrderIDList() {
@@ -2932,9 +2924,6 @@ public class BusinessModel extends Application {
         db.closeDB();
         return date;
     }
-
-
-
 
 
     public void loadLastVisitStockCheckedProducts(String retailerId) {
@@ -3102,7 +3091,6 @@ public class BusinessModel extends Application {
 
 
     }
-
 
 
     private void setProductDetails(String productid, int pieceqty, int caseqty,
@@ -5103,12 +5091,12 @@ public class BusinessModel extends Application {
 
     public boolean hasStockCheck() {
 
-        int siz = productHelper.getProductMaster().size();
+        int siz = productHelper.getTaggedProducts().size();
         if (siz == 0)
             return false;
         for (int i = 0; i < siz; ++i) {
             ProductMasterBO product = productHelper
-                    .getProductMaster().get(i);
+                    .getTaggedProducts().get(i);
 
             int siz1 = product.getLocations().size();
             for (int j = 0; j < siz1; j++) {
@@ -5153,13 +5141,14 @@ public class BusinessModel extends Application {
         return true;
     }
 
-    public void saveClosingStock() {
+    public void saveClosingStock(boolean isFromOrder) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
+            boolean isData;
             String id = QT(userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
             if (this.isEditStockCheck()) {
@@ -5185,25 +5174,9 @@ public class BusinessModel extends Application {
                 fitscoreHelper.getWeightage(getRetailerMasterBO().getRetailerID(), DataMembers.FIT_STOCK);
             }
 
-            // ClosingStock Header entry
+            String columns, values;
+
             int moduleWeightage = 0, productWeightage = 0, sum = 0;
-            String columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID";
-
-            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                columns = columns + ",Weightage,Score";
-            }
-
-            String values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + ", " + QT(getRetailerMasterBO().getRetailerID()) + ", "
-                    + QT(getRetailerMasterBO().getRetailerCode()) + ","
-                    + QT(getStockCheckRemark()) + "," + getRetailerMasterBO().getDistributorId();
-
-            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                moduleWeightage = fitscoreHelper.getModuleWeightage(DataMembers.FIT_STOCK);
-                values = values + "," + moduleWeightage + ",0";
-            }
-
-            db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
 
             ProductMasterBO product;
 
@@ -5215,192 +5188,132 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 columns = columns + ",Score";
             }
+            isData = false;
+            int siz;
 
-            int siz = productHelper.getProductMaster().size();
+            if (isFromOrder)
+                siz = productHelper.getProductMaster().size();
+            else
+                siz = productHelper.getTaggedProducts().size();
+
             for (int i = 0; i < siz; ++i) {
-                product = productHelper.getProductMaster().elementAt(i);
+                if (isFromOrder)
+                    product = productHelper.getProductMaster().elementAt(i);
+                else
+                    product = productHelper.getTaggedProducts().elementAt(i);
 
                 int dd = product.getIsDistributed();
                 int ld = product.getIsListed();
 
                 int siz1 = product.getLocations().size();
-                if (configurationMasterHelper.LOAD_STOCK_COMPETITOR != 1) {
-                    for (int j = 0; j < siz1; j++) {
-                        if (product.getLocations().get(j).getShelfPiece() > -1
-                                || product.getLocations().get(j).getShelfCase() > -1
-                                || product.getLocations().get(j).getShelfOuter() > -1
-                                || product.getLocations().get(j).getWHPiece() > 0
-                                || product.getLocations().get(j).getWHCase() > 0
-                                || product.getLocations().get(j).getWHOuter() > 0
-                                || product.getLocations().get(j).getIsPouring() > 0
-                                || product.getLocations().get(j).getCockTailQty() > 0
-                                || product.getLocations().get(j).getFacingQty() > 0
-                                || product.getLocations().get(j).getAudit() != 2
-                                || product.getLocations().get(j).getAvailability() > -1) {
+                for (int j = 0; j < siz1; j++) {
+                    if (product.getLocations().get(j).getShelfPiece() > -1
+                            || product.getLocations().get(j).getShelfCase() > -1
+                            || product.getLocations().get(j).getShelfOuter() > -1
+                            || product.getLocations().get(j).getWHPiece() > 0
+                            || product.getLocations().get(j).getWHCase() > 0
+                            || product.getLocations().get(j).getWHOuter() > 0
+                            || product.getLocations().get(j).getIsPouring() > 0
+                            || product.getLocations().get(j).getCockTailQty() > 0
+                            || product.getLocations().get(j).getFacingQty() > 0
+                            || product.getLocations().get(j).getAudit() != 2
+                            || product.getLocations().get(j).getAvailability() > -1) {
 
-                            int count = product.getLocations().get(j)
-                                    .getShelfPiece()
-                                    + product.getLocations().get(j).getWHPiece();
-                            int rField1 = product.getLocations().get(j).getIsPouring();
-                            int rField2 = product.getLocations().get(j).getIsPouring();
-                            int rField3 = 0;
-                            if (configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
-                                rField1 = product.getQty_klgs();
-                                rField2 = product.getRfield1_klgs();
-                                rField3 = product.getRfield2_klgs();
+                        int count = product.getLocations().get(j)
+                                .getShelfPiece()
+                                + product.getLocations().get(j).getWHPiece();
+                        int rField1 = product.getLocations().get(j).getIsPouring();
+                        int rField2 = product.getLocations().get(j).getIsPouring();
+                        int rField3 = 0;
+                        if (configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
+                            rField1 = product.getQty_klgs();
+                            rField2 = product.getRfield1_klgs();
+                            rField3 = product.getRfield2_klgs();
 
-                            }
-
-                            int shelfCase = ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase());
-                            int shelfPiece = ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece());
-                            int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
-                            values = (id) + ","
-                                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                                    + QT(product.getProductID()) + ","
-                                    + product.getCaseSize() + ","
-                                    + QT(retailerMasterBO.getRetailerID()) + ","
-                                    + product.getCaseUomId() + ","
-                                    + product.getMSQty() + "," + count + ","
-                                    + product.getOuUomid() + ","
-                                    + product.getOutersize() + ","
-                                    + shelfPiece
-                                    + ","
-                                    + shelfCase
-                                    + ","
-                                    + shelfOuter
-                                    + ","
-                                    + product.getLocations().get(j).getWHPiece()
-                                    + ","
-                                    + product.getLocations().get(j).getWHCase()
-                                    + ","
-                                    + product.getLocations().get(j).getWHOuter()
-                                    + ","
-                                    + product.getLocations().get(j).getLocationId()
-                                    + "," + dd + "," + ld + ","
-                                    + product.getReasonID() + ","
-                                    + product.getLocations().get(j).getAudit()
-                                    + ","
-                                    + product.getLocations().get(j).getFacingQty()
-                                    + "," + product.getOwn()
-                                    + "," + product.getPcUomid()
-                                    + "," + rField1
-                                    + "," + rField2
-                                    + "," + rField3
-                                    + "," + product.getLocations().get(j).getAvailability();
-
-
-                            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                int pieces = (shelfCase * product.getCaseSize())
-                                        + (shelfOuter * product.getOutersize())
-                                        + shelfPiece;
-                                productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
-                                values = values + "," + productWeightage;
-                                sum = sum + productWeightage;
-                            }
-
-                            db.insertSQL(DataMembers.tbl_closingstockdetail,
-                                    columns, values);
                         }
+
+                        int shelfCase = ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase());
+                        int shelfPiece = ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece());
+                        int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
+                        values = (id) + ","
+                                + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                                + QT(product.getProductID()) + ","
+                                + product.getCaseSize() + ","
+                                + QT(retailerMasterBO.getRetailerID()) + ","
+                                + product.getCaseUomId() + ","
+                                + product.getMSQty() + "," + count + ","
+                                + product.getOuUomid() + ","
+                                + product.getOutersize() + ","
+                                + shelfPiece
+                                + ","
+                                + shelfCase
+                                + ","
+                                + shelfOuter
+                                + ","
+                                + product.getLocations().get(j).getWHPiece()
+                                + ","
+                                + product.getLocations().get(j).getWHCase()
+                                + ","
+                                + product.getLocations().get(j).getWHOuter()
+                                + ","
+                                + product.getLocations().get(j).getLocationId()
+                                + "," + dd + "," + ld + ","
+                                + product.getReasonID() + ","
+                                + product.getLocations().get(j).getAudit()
+                                + ","
+                                + product.getLocations().get(j).getFacingQty()
+                                + "," + product.getOwn()
+                                + "," + product.getPcUomid()
+                                + "," + rField1
+                                + "," + rField2
+                                + "," + rField3
+                                + "," + product.getLocations().get(j).getAvailability();
+
+
+                        if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                            int pieces = (shelfCase * product.getCaseSize())
+                                    + (shelfOuter * product.getOutersize())
+                                    + shelfPiece;
+                            productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
+                            values = values + "," + productWeightage;
+                            sum = sum + productWeightage;
+                        }
+
+                        db.insertSQL(DataMembers.tbl_closingstockdetail,
+                                columns, values);
+                        isData = true;
                     }
                 }
             }
 
-            if (productHelper.getTaggedProducts() != null) {
-//                    if (configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR) {
-                for (ProductMasterBO taggedProduct : productHelper.getTaggedProducts()) {
-                    if (taggedProduct.getOwn() == 0) {
-                        int dd = taggedProduct.getIsDistributed();
-                        int ld = taggedProduct.getIsListed();
+            // ClosingStock Header entry
+            if (isData) {
+                columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID";
 
-                        int siz2 = taggedProduct.getLocations().size();
-                        for (int j = 0; j < siz2; j++) {
-                            if (taggedProduct.getLocations().get(j).getShelfPiece() > -1
-                                    || taggedProduct.getLocations().get(j).getShelfCase() > -1
-                                    || taggedProduct.getLocations().get(j).getShelfOuter() > -1
-                                    || taggedProduct.getLocations().get(j).getWHPiece() > 0
-                                    || taggedProduct.getLocations().get(j).getWHCase() > 0
-                                    || taggedProduct.getLocations().get(j).getWHOuter() > 0
-                                    || taggedProduct.getLocations().get(j).getIsPouring() > 0
-                                    || taggedProduct.getLocations().get(j).getCockTailQty() > 0
-                                    || taggedProduct.getLocations().get(j).getFacingQty() > 0
-                                    || taggedProduct.getLocations().get(j).getAudit() != 2
-                                    || taggedProduct.getLocations().get(j).getAvailability() > -1) {
+                if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                    columns = columns + ",Weightage,Score";
+                }
 
-                                int count = taggedProduct.getLocations().get(j)
-                                        .getShelfPiece()
-                                        + taggedProduct.getLocations().get(j).getWHPiece();
-                                int rField1 = taggedProduct.getLocations().get(j).getIsPouring();
-                                int rField2 = taggedProduct.getLocations().get(j).getIsPouring();
-                                int rField3 = 0;
-                                if (configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
-                                    rField1 = taggedProduct.getQty_klgs();
-                                    rField2 = taggedProduct.getRfield1_klgs();
-                                    rField3 = taggedProduct.getRfield2_klgs();
+                values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + ", " + QT(getRetailerMasterBO().getRetailerID()) + ", "
+                        + QT(getRetailerMasterBO().getRetailerCode()) + ","
+                        + QT(getStockCheckRemark()) + "," + getRetailerMasterBO().getDistributorId();
 
-                                }
+                if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                    moduleWeightage = fitscoreHelper.getModuleWeightage(DataMembers.FIT_STOCK);
+                    values = values + "," + moduleWeightage + ",0";
+                }
 
-                                int shelfCase = taggedProduct.getLocations().get(j).getShelfCase();
-                                int shelfPiece = taggedProduct.getLocations().get(j).getShelfPiece();
-                                int shelfOuter = taggedProduct.getLocations().get(j).getShelfOuter();
-                                values = (id) + ","
-                                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                                        + QT(taggedProduct.getProductID()) + ","
-                                        + taggedProduct.getCaseSize() + ","
-                                        + QT(retailerMasterBO.getRetailerID()) + ","
-                                        + taggedProduct.getCaseUomId() + ","
-                                        + taggedProduct.getMSQty() + "," + count + ","
-                                        + taggedProduct.getOuUomid() + ","
-                                        + taggedProduct.getOutersize() + ","
-                                        + shelfPiece
-                                        + ","
-                                        + shelfCase
-                                        + ","
-                                        + shelfOuter
-                                        + ","
-                                        + taggedProduct.getLocations().get(j).getWHPiece()
-                                        + ","
-                                        + taggedProduct.getLocations().get(j).getWHCase()
-                                        + ","
-                                        + taggedProduct.getLocations().get(j).getWHOuter()
-                                        + ","
-                                        + taggedProduct.getLocations().get(j).getLocationId()
-                                        + "," + dd + "," + ld + ","
-                                        + taggedProduct.getReasonID() + ","
-                                        + taggedProduct.getLocations().get(j).getAudit()
-                                        + ","
-                                        + taggedProduct.getLocations().get(j).getFacingQty()
-                                        + "," + taggedProduct.getOwn()
-                                        + "," + taggedProduct.getPcUomid()
-                                        + "," + rField1
-                                        + "," + rField2
-                                        + "," + rField3
-                                        + "," + taggedProduct.getLocations().get(j).getAvailability();
+                db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
 
-
-                                if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    int pieces = (shelfCase * taggedProduct.getCaseSize())
-                                            + (shelfOuter * taggedProduct.getOutersize())
-                                            + shelfPiece;
-                                    productWeightage = fitscoreHelper.checkWeightage(taggedProduct.getProductID(), pieces);
-                                    values = values + "," + (productWeightage > 0 ? productWeightage : 0);
-
-                                    sum = sum + productWeightage;
-                                }
-
-                                db.insertSQL(DataMembers.tbl_closingstockdetail,
-                                        columns, values);
-                            }
-                        }
-                    }
+                if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
+                    double achieved = (((double) sum / (double) 100) * moduleWeightage);
+                    db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +
+                            " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
+                            " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
                 }
             }
 
-            if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                double achieved = (((double) sum / (double) 100) * moduleWeightage);
-                db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +
-                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
-                        " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
-            }
 
             db.closeDB();
         } catch (Exception e) {
@@ -5506,8 +5419,6 @@ public class BusinessModel extends Application {
         }
 
     }
-
-
 
 
     // for amazon cloud image upload
@@ -8536,7 +8447,6 @@ public class BusinessModel extends Application {
     }
 
 
-
 //    public Bitmap getCircularBitmapFrom(Bitmap source) {
 //        if (source == null || source.isRecycled()) {
 //            return null;
@@ -8936,10 +8846,6 @@ public class BusinessModel extends Application {
         }
         return true;
     }
-
-
-
-
 
 
     //Pending invoice report

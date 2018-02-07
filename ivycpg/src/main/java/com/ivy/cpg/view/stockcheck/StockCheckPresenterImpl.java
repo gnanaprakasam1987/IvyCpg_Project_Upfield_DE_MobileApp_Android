@@ -75,7 +75,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
 
 
     public void saveClosingStock(ArrayList<ProductMasterBO> stockList) {
-        if (businessModel.hasStockCheck() || businessModel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR) {
+        if (businessModel.hasStockCheck()) {
             if (!businessModel.configurationMasterHelper.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS || businessModel.isReasonSelectedForAllProducts()) {
                 new SaveClosingStockAsyncTask(stockList).execute();
             } else {
@@ -166,7 +166,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 businessModel.saveNearExpiry();
 
                 // Save closing stock
-                businessModel.saveClosingStock();
+                businessModel.saveClosingStock(false);
 
                 // Upadte isVisited Flag
                 businessModel.updateIsVisitedFlag();

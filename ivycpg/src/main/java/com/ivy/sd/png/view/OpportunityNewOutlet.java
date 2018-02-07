@@ -1198,7 +1198,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        bmodel.saveClosingStock();
+                                        bmodel.saveClosingStock(true);
 
                                         Toast.makeText(
                                                 OpportunityNewOutlet.this,
