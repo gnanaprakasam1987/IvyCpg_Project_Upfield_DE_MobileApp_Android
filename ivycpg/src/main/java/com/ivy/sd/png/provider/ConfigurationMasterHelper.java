@@ -891,6 +891,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MENU_COUNTER_ALERT; //FUN28
     public boolean isRetailerBOMEnabled = false;
 
+
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
@@ -1247,6 +1248,8 @@ public class ConfigurationMasterHelper {
     public boolean COMPUTE_DUE_DATE;
     private static final String CODE_COMPUTE_DUE_DAYS = "DDAYS";
     public boolean COMPUTE_DUE_DAYS;
+
+    public boolean SHOW_STOCK_RETURN ;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2180,11 +2183,11 @@ public class ConfigurationMasterHelper {
 
         this.LOAD_COMP_CONFIGS = hashMapHHTModuleConfig.get(CODE_COMPETITOR) != null ? hashMapHHTModuleConfig.get(CODE_COMPETITOR) : false;
         if(LOAD_COMP_CONFIGS){
-           loadCompetitorConfig();
+            loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
-        
+
     }
 
     public void loadOrderReportConfiguration() {
@@ -3202,6 +3205,7 @@ public class ConfigurationMasterHelper {
             SHOW_NEW_OUTLET_OPPR = false;
             SHOW_NEW_OUTLET_ORDER = false;
             IS_STK_ORD_BS = false;
+            SHOW_STOCK_RETURN = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3287,7 +3291,8 @@ public class ConfigurationMasterHelper {
                         SHOW_COMB_STOCK_SHELF_OUTER = true;
                     else if (temp.equals("CCB"))
                         SHOW_COMB_STOCK_CB = true;
-
+                    else if (temp.equals("SR"))
+                        SHOW_STOCK_RETURN = true;
 
                 }
             }

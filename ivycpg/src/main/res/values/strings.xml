@@ -441,6 +441,7 @@
     <string name="mfg_date">Mfg. Date</string>
     <string name="exp_date">Exp. Date</string>
     <string name="srp">SRP</string>
+    <string name="sr">SR</string>
     <string name="must_sell">Must Sell</string>
     <string name="max_free_qty">Mx.Fr.Qty</string>
     <string name="buy_qty">BuyQty</string>

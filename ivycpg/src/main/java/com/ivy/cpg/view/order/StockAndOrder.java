@@ -18,6 +18,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -68,6 +70,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
@@ -245,6 +248,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     boolean isFromHomeScreen = false;
     private OrderHelper orderHelper;
 
+    private static final int SALES_RETURN = 3;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -360,7 +365,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
 
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -1626,6 +1631,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.srpEdit = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_srpedit);
 
+                holder.stockReturn = (EditText) row
+                        .findViewById(R.id.stock_and_order_listview_stock_return_qty);
+
                 holder.total = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_total);
 
@@ -1976,6 +1984,17 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     } catch (Exception e) {
                         Commons.printException(e + "");
                     }
+                }
+
+                if (bmodel.configurationMasterHelper.SHOW_STOCK_RETURN
+                        || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
+//                int strStkReturn = holder.productObj.getLocations()
+//                        .get(mSelectedLocationIndex).getStockReturn();
+//                if (strStkReturn >= 0) {
+//                    holder.stockReturn.setText(strStkReturn + "");
+//                } else {
+                    holder.stockReturn.setText("");
+//                }
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
@@ -3113,6 +3132,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 });
 
+                holder.stockReturn.setFocusable(false);
+                holder.stockReturn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        View vChild = lvwplist.getChildAt(0);
+                        int holderPosition = lvwplist.getFirstVisiblePosition();
+                        int holderTop = (vChild == null) ? 0 : (vChild.getTop() - lvwplist.getPaddingTop());
+
+                        productName.setText(holder.pname);
+                        showSalesReturnDialog(holder.productObj.getProductID(), v, holderPosition, holderTop);
+                    }
+                });
+
 
                 holder.iv_info.setOnClickListener(new OnClickListener() {
                     @Override
@@ -3551,6 +3583,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView rep_cs;
         private TextView rep_ou;
         private ImageView iv_info, imageView_stock;
+        private EditText stockReturn;
     }
 
     private void calculateSONew(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
@@ -4329,24 +4362,36 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-            } else {
-                // Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-                strBarCodeSearch = result.getContents();
-                if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
-                    bmodel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));
-                    mEdt_searchproductName.setText(strBarCodeSearch);
-                    if (viewFlipper.getDisplayedChild() == 0) {
-                        viewFlipper.showNext();
 
-
+        if (requestCode == SALES_RETURN) {
+            if (resultCode == RESULT_OK) {
+                overridePendingTransition(0, R.anim.zoom_exit);
+                updateValue();
+                refreshList();
+                Bundle extras = data.getExtras();
+                int holderPosition = extras.getInt("position", 0);
+                int holderTop = extras.getInt("top", 0);
+                if (mylist.size() > 0)
+                    lvwplist.setSelectionFromTop(holderPosition, holderTop);
+            }
+        }else {
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                } else {
+                    // Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                    strBarCodeSearch = result.getContents();
+                    if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
+                        bmodel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));
+                        mEdt_searchproductName.setText(strBarCodeSearch);
+                        if (viewFlipper.getDisplayedChild() == 0) {
+                            viewFlipper.showNext();
+                        }
                     }
                 }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -6699,6 +6744,38 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mMOQHighlightDialog.setCancelable(false);
             mMOQHighlightDialog.show(ft, "Sample Fragment");
         }
+    }
+
+    private void showSalesReturnDialog(String productId, View v, int holderPostion, int holderTop) {
+        SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
+        salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
+        bmodel.reasonHelper.downloadSalesReturnReason();
+        if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
+            bmodel.productHelper.downloadSalesReturnProducts();
+            if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
+                bmodel.productHelper.downloadSalesReturnSKUs();
+
+            bmodel.productHelper.cloneReasonMaster();
+
+            salesReturnHelper.getInstance(this).clearSalesReturnTable();
+        }
+        Intent intent = new Intent(this,SalesReturnEntryActivity.class);
+        intent.putExtra("pid", productId);
+        intent.putExtra("position", holderPostion);
+        intent.putExtra("top", holderTop);
+
+        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+        ActivityCompat.startActivityForResult(this, intent, SALES_RETURN, opts.toBundle());
+    }
+
+    public void refreshList() {
+        String strPname = getResources().getString(
+                R.string.product_name)
+                + " (" + mylist.size() + ")";
+        pnametitle.setText(strPname);
+        // MyAdapter lvwplist = new MyAdapter(mylist);
+        lvwplist.setAdapter(new MyAdapter(mylist));
+//        salesReturnHelper = SalesReturnHelper.getInstance(this);
     }
 
 }

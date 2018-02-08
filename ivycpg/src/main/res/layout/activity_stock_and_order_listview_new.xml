@@ -550,7 +550,7 @@
                 android:layout_toLeftOf="@+id/lltotwight"
                 android:background="@color/white"
                 android:orientation="horizontal"
-                android:weightSum="7">
+                android:weightSum="8">
 
                 <LinearLayout
                     android:id="@+id/llAvail"
@@ -576,7 +576,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
 
-                        />
+                    />
                 </LinearLayout>
 
                 <LinearLayout
@@ -676,7 +676,6 @@
 
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:id="@+id/llOuter"
                     android:layout_width="wrap_content"
@@ -745,6 +744,32 @@
 
                     <EditText
                         android:id="@+id/stock_and_order_listview_srpedit"
+                        style="@style/EditText_ListItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/zero"
+                        android:maxLength="8" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llStkRtEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/stkRteditTitle"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="stock_return"
+                        android:text="@string/sr" />
+
+                    <EditText
+                        android:id="@+id/stock_and_order_listview_stock_return_qty"
                         style="@style/EditText_ListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
