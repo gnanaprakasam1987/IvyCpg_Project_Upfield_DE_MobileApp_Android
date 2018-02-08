@@ -1692,6 +1692,18 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                         }
 
+//                        SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
+//                        salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
+//                        bmodel.reasonHelper.downloadSalesReturnReason();
+//                        if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
+//                            bmodel.productHelper.downloadSalesReturnProducts();
+//                            if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
+//                                bmodel.productHelper.downloadSalesReturnSKUs();
+//
+//                            bmodel.productHelper.cloneReasonMaster();
+//
+//                            salesReturnHelper.getInstance(this).clearSalesReturnTable();
+//                        }
 
                         if (bmodel.isEdit()) {
                             orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
@@ -1830,6 +1842,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 finish();
                             }
                         }
+
                     } else {
                         Toast.makeText(
                                 this,

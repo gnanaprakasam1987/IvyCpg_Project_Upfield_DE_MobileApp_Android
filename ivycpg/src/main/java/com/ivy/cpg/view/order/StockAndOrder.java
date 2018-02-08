@@ -72,6 +72,7 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
@@ -482,6 +483,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
+
+        SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
+        salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
+        bmodel.reasonHelper.downloadSalesReturnReason();
+        if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
+            bmodel.productHelper.downloadSalesReturnProducts();
+            if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
+                bmodel.productHelper.downloadSalesReturnSKUs();
+
+            bmodel.productHelper.cloneReasonMaster();
+
+            salesReturnHelper.getInstance(this).clearSalesReturnTable();
+        }
     }
 
     private void prepareScreen() {
@@ -1988,13 +2002,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 if (bmodel.configurationMasterHelper.SHOW_STOCK_RETURN
                         || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
-//                int strStkReturn = holder.productObj.getLocations()
-//                        .get(mSelectedLocationIndex).getStockReturn();
-//                if (strStkReturn >= 0) {
-//                    holder.stockReturn.setText(strStkReturn + "");
-//                } else {
-                    holder.stockReturn.setText("");
-//                }
+                    int total = 0;
+                    for (SalesReturnReasonBO obj : product.getSalesReturnReasonList())
+                        total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
+                    String strTotal = Integer.toString(total);
+                    holder.stockReturn.setText(strTotal);
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
@@ -6747,18 +6759,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     private void showSalesReturnDialog(String productId, View v, int holderPostion, int holderTop) {
-        SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-        salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
-        bmodel.reasonHelper.downloadSalesReturnReason();
-        if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
-            bmodel.productHelper.downloadSalesReturnProducts();
-            if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
-                bmodel.productHelper.downloadSalesReturnSKUs();
-
-            bmodel.productHelper.cloneReasonMaster();
-
-            salesReturnHelper.getInstance(this).clearSalesReturnTable();
-        }
         Intent intent = new Intent(this,SalesReturnEntryActivity.class);
         intent.putExtra("pid", productId);
         intent.putExtra("position", holderPostion);
