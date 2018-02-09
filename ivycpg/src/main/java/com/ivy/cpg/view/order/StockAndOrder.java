@@ -1680,6 +1680,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.rep_pcs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.indicativeOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.cleanedOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.stockReturn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
 
                 if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
                     holder.psq.setVisibility(View.VISIBLE);
@@ -1987,13 +1989,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
 
-                if (bmodel.configurationMasterHelper.SHOW_STOCK_RETURN
-                        || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
-                    int total = 0;
-                    for (SalesReturnReasonBO obj : product.getSalesReturnReasonList())
-                        total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
-                    String strTotal = Integer.toString(total);
-                    holder.stockReturn.setText(strTotal);
+                if (!bmodel.configurationMasterHelper.SHOW_STOCK_RETURN)
+                    ((LinearLayout) row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
+                else {
+                    try {
+                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.stkRtTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.stkRtTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
@@ -3131,7 +3139,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 });
 
-                holder.stockReturn.setFocusable(false);
+
                 holder.stockReturn.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -3293,6 +3301,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 } else {
                     holder.shelfouter.setText("");
                 }
+            }
+
+            if (bmodel.configurationMasterHelper.SHOW_STOCK_RETURN
+                    || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
+                int total = 0;
+                for (SalesReturnReasonBO obj : product.getSalesReturnReasonList())
+                    total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
+                String strTotal = Integer.toString(total);
+                holder.stockReturn.setText(strTotal);
             }
 
             if (holder.productObj.getLocations()

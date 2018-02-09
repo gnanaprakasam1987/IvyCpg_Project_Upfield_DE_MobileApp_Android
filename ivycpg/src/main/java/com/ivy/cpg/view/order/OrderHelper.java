@@ -6,6 +6,7 @@ import android.database.DatabaseUtils;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -620,8 +621,11 @@ public class OrderHelper {
                 Commons.printException(e);
             }
 
+            if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION)
+                updateCreditNoteprintList();
+
             SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
-            salesReturnHelper.saveSalesReturn(mContext,this.getOrderId(),"ORDER");
+            salesReturnHelper.saveSalesReturn(mContext, this.getOrderId(), "ORDER");
             salesReturnHelper.clearSalesReturnTable();
 
             businessModel.setOrderHeaderNote("");
@@ -635,6 +639,45 @@ public class OrderHelper {
 
         }
 
+    }
+
+    private void updateCreditNoteprintList() {
+
+        for (ProductMasterBO product : businessModel.productHelper.getSalesReturnProducts()) {
+            List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
+
+            int totalSalesReturnQty = 0;
+            float totalSalesReturnAmt = 0;
+            float replacementPrice = 0;
+            if (reasonList != null) {
+
+                for (SalesReturnReasonBO reasonBO : reasonList) {
+                    if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
+                        //Calculate sales return total qty and price.
+                        int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
+                        totalSalesReturnQty = totalSalesReturnQty + totalQty;
+                        totalSalesReturnAmt = totalSalesReturnAmt + (totalQty * reasonBO.getSrpedit());
+                        // Higher SRP edit price will be considered for replacement product price.
+                        if (replacementPrice < reasonBO.getSrpedit())
+                            replacementPrice = reasonBO.getSrpedit();
+                    }
+                }
+            }
+
+            // Calculate replacement qty price.
+            int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
+            float totalReplacementPrice = totalReplaceQty * replacementPrice;
+
+            int totalBalanceQty = totalSalesReturnQty - totalReplaceQty;
+            float totalBalanceAmount = totalSalesReturnAmt - totalReplacementPrice;
+
+            // set the total qty and value in ProductBO to enable print.
+            if (totalBalanceQty > 0) {
+                ProductMasterBO productMasterBO = new ProductMasterBO(product);
+                productMasterBO.setOrderedPcsQty(totalBalanceQty);
+                productMasterBO.setDiscount_order_value(totalBalanceAmount);
+            }
+        }
     }
 
 
@@ -1228,7 +1271,6 @@ public class OrderHelper {
             }
         }
     }
-
 
     /**
      * This method will save the Invoice into InvoiceMaster table as well as the
