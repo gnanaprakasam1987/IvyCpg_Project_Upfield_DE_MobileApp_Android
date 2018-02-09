@@ -24,7 +24,7 @@
             android:id="@+id/status_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:src="@drawable/redball" />
 
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/status_iv"
+            android:layout_toEndOf="@+id/status_iv"
             android:padding="4dp"
             android:text=""
             android:textColor="@color/RED" />
@@ -42,7 +42,7 @@
             android:id="@+id/printcount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:focusable="true"></Spinner>
     </RelativeLayout>
@@ -51,15 +51,15 @@
         android:id="@+id/et_mac"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/edit_text" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Enter Printer&apos;s MAC address \nex: 00:22:58:3C:B3:02" />
 
     <ScrollView
@@ -261,7 +261,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="horizontal">
 
                     <TextView
@@ -934,7 +934,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".6"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:orientation="horizontal">
 
                         <TextView
@@ -951,7 +951,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".4"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:orientation="horizontal">
 
                         <TextView
@@ -984,7 +984,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".6"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:orientation="vertical">
 
                         <TextView
@@ -1001,7 +1001,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".4"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:orientation="vertical">
 
                         <TextView
@@ -1033,7 +1033,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".6"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:orientation="vertical">
 
                         <TextView
@@ -1050,7 +1050,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".4"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:orientation="vertical">
 
                         <TextView
@@ -1084,7 +1084,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="horizontal">
 
                     <TextView
@@ -1100,14 +1100,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".25"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:orientation="horizontal">
 
                         <TextView
@@ -1124,7 +1124,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".25"
-                        android:gravity="left">
+                        android:gravity="start">
 
                         <TextView
                             android:id="@+id/cash"
@@ -1159,7 +1159,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="horizontal">
 
                     <TextView
@@ -1175,14 +1175,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:orientation="horizontal">
 
                         <TextView
@@ -1199,7 +1199,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:orientation="horizontal">
 
                         <TextView
@@ -1234,7 +1234,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".75"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="vertical">
 
                     <TextView
@@ -1251,7 +1251,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".25"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="vertical">
 
                     <TextView
@@ -1306,7 +1306,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="vertical">
 
                     <TextView

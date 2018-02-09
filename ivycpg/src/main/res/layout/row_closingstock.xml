@@ -10,7 +10,7 @@
         style="?attr/customListItemPrimary"
         android:layout_width="@dimen/list_product_name_width_medium"
         android:layout_height="match_parent"
-        android:layout_marginLeft="3dp"
+        android:layout_marginStart="3dp"
         android:singleLine="true"
         android:text="@string/product_name"
         />

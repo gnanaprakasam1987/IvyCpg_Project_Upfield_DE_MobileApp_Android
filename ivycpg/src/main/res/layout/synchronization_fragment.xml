@@ -19,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="@dimen/card_margin_lr"
-        android:layout_marginRight="@dimen/card_margin_lr"
+        android:layout_marginStart="@dimen/card_margin_lr"
+        android:layout_marginEnd="@dimen/card_margin_lr"
         android:layout_marginTop="@dimen/card_margin_top"
         card_view:cardBackgroundColor="@color/WHITE"
         card_view:cardCornerRadius="1dp"
@@ -62,8 +62,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/card_margin_top"
-                android:layout_marginLeft="@dimen/content_margin_lr"
-                android:layout_marginRight="@dimen/content_margin_lr"
+                android:layout_marginStart="@dimen/content_margin_lr"
+                android:layout_marginEnd="@dimen/content_margin_lr"
                 android:layout_marginTop="@dimen/card_margin_top"
                 android:orientation="vertical">
 
@@ -71,8 +71,8 @@
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/card_margin_top"
-                    android:layout_marginRight="@dimen/card_margin_top"
+                    android:layout_marginStart="@dimen/card_margin_top"
+                    android:layout_marginEnd="@dimen/card_margin_top"
                     android:gravity="bottom"
                     android:hint="User Id"
                     android:inputType="text"
@@ -92,8 +92,8 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/card_margin_top"
-                    android:layout_marginRight="@dimen/card_margin_top"
+                    android:layout_marginStart="@dimen/card_margin_top"
+                    android:layout_marginEnd="@dimen/card_margin_top"
                     android:gravity="bottom"
                     android:hint="Password"
                     android:inputType="textPassword"
@@ -110,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="@dimen/content_margin_lr"
+                    android:layout_marginStart="@dimen/content_margin_lr"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -151,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:paddingLeft="@dimen/card_margin_top"
+                    android:paddingStart="@dimen/card_margin_top"
                     android:paddingTop="@dimen/card_margin_top"
                     android:text="@string/close_the_day"
                     android:textSize="@dimen/font_micro_small" />
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/close_day_tv"
                     android:paddingBottom="@dimen/card_margin_top"
-                    android:paddingLeft="@dimen/card_margin_top"
+                    android:paddingStart="@dimen/card_margin_top"
                     android:paddingTop="2dp"
                     android:textSize="@dimen/text_sz_small"
                     tools:text="19/01/2017" />
@@ -172,9 +172,9 @@
                     android:id="@+id/dayClose"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/card_margin_top" />
+                    android:layout_marginEnd="@dimen/card_margin_top" />
 
 
             </RelativeLayout>
@@ -199,7 +199,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_gravity="center_vertical"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:padding="2dp"
                         android:text=""
                         android:textSize="@dimen/text_sz_small"></TextView>
@@ -214,8 +214,8 @@
                 android:id="@+id/alert_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/card_margin_lr"
-                android:layout_marginRight="@dimen/card_margin_lr"
+                android:layout_marginStart="@dimen/card_margin_lr"
+                android:layout_marginEnd="@dimen/card_margin_lr"
                 card_view:cardBackgroundColor="@color/WHITE"
                 card_view:cardCornerRadius="1dp"
                 card_view:cardElevation="5dp"
@@ -229,8 +229,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:text="Lorem Ipsum is"
-                    android:layout_marginLeft="@dimen/card_margin_lr"
-                    android:layout_marginRight="@dimen/card_margin_lr"
+                    android:layout_marginStart="@dimen/card_margin_lr"
+                    android:layout_marginEnd="@dimen/card_margin_lr"
                     style="?attr/customListItemPrimary" />
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -262,8 +262,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:gravity="left|center"
-                android:layout_marginRight="10dp"
+                android:gravity="start|center"
+                android:layout_marginEnd="10dp"
                 android:inputType="none"
                 android:maxLength="10"
                 android:text="11-05-2017"
@@ -273,7 +273,7 @@
                 android:id="@+id/download"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_marginBottom="@dimen/activity_margin1"
-                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_marginTop="@dimen/activity_margin1"
                 android:text="@string/download" />
 
@@ -281,7 +281,7 @@
                 android:id="@+id/startsync"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_marginBottom="@dimen/activity_margin1"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="@dimen/activity_margin1"
                 android:text="Sync" />
         </LinearLayout>

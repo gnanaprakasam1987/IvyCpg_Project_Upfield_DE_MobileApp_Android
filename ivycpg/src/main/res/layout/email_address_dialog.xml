@@ -20,18 +20,18 @@
         style="?attr/customListItemPrimary"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center|left"
-        android:paddingLeft="@dimen/dimen_10dp"
+        android:gravity="center|start"
+        android:paddingStart="@dimen/dimen_10dp"
         android:text="@string/email" />
 
     <EditText
         android:id="@+id/edt_email"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimens_50dp"
-        android:gravity="center|left"
+        android:gravity="center|start"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
-        android:paddingLeft="@dimen/dimen_10dp" />
+        android:paddingStart="@dimen/dimen_10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

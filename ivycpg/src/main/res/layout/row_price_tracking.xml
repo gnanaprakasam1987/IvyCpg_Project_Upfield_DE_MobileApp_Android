@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingLeft="@dimen/list_padding_left_n_right"
-    android:paddingRight="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
 
@@ -39,7 +39,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dimen_2dp"
+                    android:layout_marginEnd="@dimen/dimen_2dp"
                     android:ellipsize="marquee"
                     android:singleLine="true" />
 
@@ -48,7 +48,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dimen_2dp"
+                    android:layout_marginEnd="@dimen/dimen_2dp"
                     android:ellipsize="marquee"
                     android:singleLine="true" />
 
@@ -89,7 +89,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="8"
                 android:visibility="gone" />
@@ -99,7 +99,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="8"
                 android:visibility="gone" />
@@ -109,7 +109,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="8"
                 android:visibility="gone" />
@@ -142,7 +142,7 @@
             android:id="@+id/reason"
             android:layout_width="@dimen/spinner_width"
             android:layout_height="@dimen/spinner_height"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/view_dotted_line"
             android:layout_centerVertical="true"
             android:layout_marginTop="@dimen/list_item_inter_margin"
@@ -154,7 +154,7 @@
             android:id="@+id/ll_prev_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_below="@+id/view_dotted_line">
 
             <TextView
@@ -169,15 +169,15 @@
             <View
                 android:layout_width="@dimen/dimen_1dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/dimen_8dp"
-                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_marginStart="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:background="@color/GRAY" />
 
             <LinearLayout
                 android:id="@+id/ll_prev_price_ca"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:visibility="gone">
 
 
@@ -187,7 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dimen_4dp"
+                    android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
                     android:text="@string/ca" />
 
@@ -206,7 +206,7 @@
                 android:id="@+id/ll_prev_price_oo"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:visibility="gone">
 
                 <TextView
@@ -215,7 +215,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dimen_4dp"
+                    android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
                     android:text="@string/ou" />
 
@@ -234,7 +234,7 @@
                 android:id="@+id/ll_prev_price_pc"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:visibility="gone">
 
                 <TextView
@@ -243,7 +243,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dimen_4dp"
+                    android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
                     android:text="@string/pc" />
 
@@ -263,7 +263,7 @@
             android:id="@+id/ll_prev_mrp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_below="@+id/ll_prev_price">
 
             <TextView
@@ -278,15 +278,15 @@
             <View
                 android:layout_width="@dimen/dimen_1dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/dimen_8dp"
-                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_marginStart="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:background="@color/GRAY" />
 
             <LinearLayout
                 android:id="@+id/ll_prev_mrp_ca"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:visibility="gone">
 
                 <TextView
@@ -295,7 +295,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dimen_4dp"
+                    android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
                     android:text="@string/ca" />
 
@@ -314,7 +314,7 @@
                 android:id="@+id/ll_prev_mrp_oo"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:visibility="gone">
 
                 <TextView
@@ -323,7 +323,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dimen_4dp"
+                    android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
                     android:text="@string/ou" />
 
@@ -342,7 +342,7 @@
                 android:id="@+id/ll_prev_mrp_pc"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:visibility="gone">
 
                 <TextView
@@ -351,7 +351,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dimen_4dp"
+                    android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
                     android:text="@string/pc" />
 

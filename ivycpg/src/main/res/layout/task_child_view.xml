@@ -32,7 +32,7 @@
                     style="?attr/customListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/list_margin"
+                    android:layout_marginStart="@dimen/list_margin"
                     android:layout_marginTop="@dimen/list_margin"
                     android:textSize="@dimen/font_small" />
 
@@ -42,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/list_margin"
-                    android:layout_marginLeft="@dimen/list_margin"
+                    android:layout_marginStart="@dimen/list_margin"
                     android:textSize="@dimen/font_micro_small" />
 
 

@@ -24,7 +24,7 @@
             android:id="@+id/status_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/image_desc"
             android:src="@drawable/redball" />
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/status_iv"
+            android:layout_toEndOf="@+id/status_iv"
             android:padding="4dp"
             android:text=""
             android:textColor="@color/RED" />
@@ -43,7 +43,7 @@
             android:id="@+id/printcount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:focusable="true"></Spinner>
     </RelativeLayout>
@@ -52,15 +52,15 @@
         android:id="@+id/et_mac"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/edit_text" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Enter Printer&apos;s MAC address \nex: 00:22:58:3C:B3:02" />
 
     <ScrollView
@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="5dp"
-                android:paddingLeft="10dp">
+                android:paddingStart="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -335,7 +335,7 @@
                                 android:id="@+id/case1"
                                 android:layout_width="@dimen/ppd_case"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:padding="5dp"
                                 android:text="@string/case_u"
                                 android:textColor="@android:color/black"
@@ -345,7 +345,7 @@
                                 android:id="@+id/bottles"
                                 android:layout_width="@dimen/ppd_bot"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:padding="5dp"
                                 android:text="@string/bottle"
                                 android:textColor="@android:color/black"
@@ -355,7 +355,7 @@
                                 android:id="@+id/unitprice"
                                 android:layout_width="@dimen/ppd_unit_price"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:padding="5dp"
                                 android:text="@string/unit_price"
                                 android:textColor="@android:color/black"
@@ -365,7 +365,7 @@
                                 android:id="@+id/amount"
                                 android:layout_width="@dimen/ppd_amount"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:padding="5dp"
                                 android:text="@string/Amount"
                                 android:textColor="@android:color/black"
@@ -696,7 +696,7 @@
                             <LinearLayout
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:orientation="horizontal">
 
                                 <TextView
@@ -769,7 +769,7 @@
                             <LinearLayout
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:orientation="horizontal">
 
                                 <TextView
@@ -837,7 +837,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:orientation="horizontal">
 
                         <TextView
@@ -859,7 +859,7 @@
                         <TextView
                             android:layout_width="@dimen/ppd_bot"
                             android:layout_height="wrap_content"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
                             android:textSize="12sp"></TextView>
@@ -867,7 +867,7 @@
                         <TextView
                             android:layout_width="@dimen/ppd_unit_price"
                             android:layout_height="wrap_content"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
                             android:textSize="12sp"></TextView>
@@ -876,7 +876,7 @@
                             android:id="@+id/cash"
                             android:layout_width="@dimen/ppd_amount"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="5dp"
+                            android:paddingStart="5dp"
                             android:textColor="@android:color/black"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -901,7 +901,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:orientation="horizontal">
 
                         <TextView
@@ -922,7 +922,7 @@
                         <TextView
                             android:layout_width="@dimen/ppd_bot"
                             android:layout_height="wrap_content"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
                             android:textSize="12sp"></TextView>
@@ -930,7 +930,7 @@
                         <TextView
                             android:layout_width="@dimen/ppd_unit_price"
                             android:layout_height="wrap_content"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
                             android:textSize="12sp"></TextView>
@@ -939,7 +939,7 @@
                             android:id="@+id/check"
                             android:layout_width="@dimen/ppd_amount"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="5dp"
+                            android:paddingStart="5dp"
                             android:textColor="@android:color/black"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -963,7 +963,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:orientation="horizontal">
 
                         <TextView
@@ -984,7 +984,7 @@
                         <TextView
                             android:layout_width="@dimen/ppd_bot"
                             android:layout_height="wrap_content"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
                             android:textSize="12sp"></TextView>
@@ -992,7 +992,7 @@
                         <TextView
                             android:layout_width="@dimen/ppd_unit_price"
                             android:layout_height="wrap_content"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
                             android:textSize="12sp"></TextView>
@@ -1001,7 +1001,7 @@
                             android:id="@+id/totcredit"
                             android:layout_width="@dimen/ppd_amount"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="5dp"
+                            android:paddingStart="5dp"
                             android:textColor="@android:color/black"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -1049,7 +1049,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:orientation="vertical">
 
                         <TextView

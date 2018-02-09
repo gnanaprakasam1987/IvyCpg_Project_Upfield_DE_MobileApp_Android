@@ -26,8 +26,8 @@
             style="?attr/customListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:text="Equipment Type"
             android:textColor="@color/DependentBlack"
             android:textSize="@dimen/dimens_18dp"
@@ -51,8 +51,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_5dp"
-                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:layout_marginStart="@dimen/dimen_5dp"
+                    android:layout_marginEnd="@dimen/dimen_5dp"
                     android:text="Serial Number"
                     android:textSize="@dimen/dimen_18dp"
                     android:textStyle="normal"
@@ -63,8 +63,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
-                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:layout_marginStart="@dimen/dimen_10dp"
+                    android:layout_marginEnd="@dimen/dimen_10dp"
                     android:text="@string/serial_no"
                     android:textSize="@dimen/dimens_16dp" />
 
@@ -72,8 +72,8 @@
                     android:id="@+id/input__outletcode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_5dp"
-                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:layout_marginStart="@dimen/dimen_5dp"
+                    android:layout_marginEnd="@dimen/dimen_5dp"
                     android:text="Outlet Code"
                     android:textSize="@dimen/dimen_16dp"
                     android:textStyle="normal"
@@ -99,8 +99,8 @@
                     android:id="@+id/spinnerCustomDialog"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
-                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:layout_marginStart="@dimen/dimen_10dp"
+                    android:layout_marginEnd="@dimen/dimen_10dp"
                     android:background="@android:color/transparent" />
             </LinearLayout>
 
@@ -124,7 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/feedbck_edit_ht"
                 android:background="@drawable/feedback_edit_selector"
-                android:gravity="top|left"
+                android:gravity="top|start"
                 android:hint="@string/description"
                 android:imeOptions="actionDone"
                 android:inputType="text"
@@ -137,8 +137,8 @@
                 android:singleLine="false"
                 android:textSize="@dimen/dimens_16dp"
 
-                android:layout_marginLeft="@dimen/dimen_10dp"
-                android:layout_marginRight="@dimen/dimen_10dp"/>
+                android:layout_marginStart="@dimen/dimen_10dp"
+                android:layout_marginEnd="@dimen/dimen_10dp"/>
         </LinearLayout>
 
         <LinearLayout

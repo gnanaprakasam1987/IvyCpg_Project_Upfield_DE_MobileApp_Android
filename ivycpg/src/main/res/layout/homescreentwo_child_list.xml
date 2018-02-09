@@ -9,7 +9,7 @@
         android:id="@+id/activity_icon1"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/activity_margin4">
+        android:layout_marginStart="@dimen/activity_margin4">
 
         <ImageView
             android:id="@+id/circle"
@@ -42,9 +42,9 @@
         android:id="@+id/img_arrow"
         android:layout_width="@dimen/activity_list_icon_size"
         android:layout_height="@dimen/activity_list_icon_size"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/activity_margin3"
+        android:layout_marginEnd="@dimen/activity_margin3"
         android:src="@drawable/activity_icon_next"
         android:tint="#ffffff" />
 
@@ -53,10 +53,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/activity_margin3"
-        android:layout_marginRight="@dimen/activity_margin3"
-        android:layout_toLeftOf="@id/img_arrow"
-        android:layout_toRightOf="@id/activity_icon1"
+        android:layout_marginStart="@dimen/activity_margin3"
+        android:layout_marginEnd="@dimen/activity_margin3"
+        android:layout_toStartOf="@id/img_arrow"
+        android:layout_toEndOf="@id/activity_icon1"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/sub_activity_name_text_size" />
 

@@ -13,8 +13,8 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_footer"
         android:layout_below="@+id/toolbar"
-        android:layout_marginLeft="@dimen/search_edt_margin_left_n_right"
-        android:layout_marginRight="@dimen/search_edt_margin_left_n_right"
+        android:layout_marginStart="@dimen/search_edt_margin_left_n_right"
+        android:layout_marginEnd="@dimen/search_edt_margin_left_n_right"
         android:orientation="vertical">
 
 
@@ -40,8 +40,8 @@
         android:layout_alignParentBottom="true"
         android:background="@color/footer_bg"
         android:minHeight="@dimen/call_analysis_footer_min_height"
-        android:paddingLeft="@dimen/search_edt_margin_left_n_right"
-        android:paddingRight="@dimen/search_edt_margin_left_n_right">
+        android:paddingStart="@dimen/search_edt_margin_left_n_right"
+        android:paddingEnd="@dimen/search_edt_margin_left_n_right">
 
         <LinearLayout
             android:id="@+id/ll_duration"
@@ -74,7 +74,7 @@
         <Button
             android:id="@+id/button1"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:onClick="onClose"
             android:text="@string/close_call"

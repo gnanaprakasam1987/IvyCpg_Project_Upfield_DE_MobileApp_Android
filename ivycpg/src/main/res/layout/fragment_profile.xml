@@ -13,8 +13,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/profile_margin_26dp"
-                android:layout_marginRight="@dimen/profile_margin_26dp"
+                android:layout_marginStart="@dimen/profile_margin_26dp"
+                android:layout_marginEnd="@dimen/profile_margin_26dp"
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/profile_str_name"
@@ -192,8 +192,8 @@
                         android:background="@drawable/button_rounded_corner_orange"
                         android:textOff="DeActivate"
                         android:textOn="Activate"
-                        android:paddingLeft="@dimen/dimen_5dp"
-                        android:paddingRight="@dimen/dimen_5dp"
+                        android:paddingStart="@dimen/dimen_5dp"
+                        android:paddingEnd="@dimen/dimen_5dp"
                         android:textAllCaps="false"
                         android:minWidth="@dimen/btn_round_corner_width"/>
 

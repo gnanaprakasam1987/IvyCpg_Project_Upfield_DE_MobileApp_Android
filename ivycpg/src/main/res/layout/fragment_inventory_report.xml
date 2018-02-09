@@ -91,8 +91,8 @@
         android:background="@color/list_title_bg_color"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/list_padding_left_n_right"
-        android:paddingRight="@dimen/list_padding_left_n_right"
+        android:paddingStart="@dimen/list_padding_left_n_right"
+        android:paddingEnd="@dimen/list_padding_left_n_right"
         android:weightSum="10">
 
         <TextView
@@ -101,7 +101,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:gravity="left|center_vertical"
+            android:gravity="start|center_vertical"
             android:text="@string/product_name" />
 
         <TextView

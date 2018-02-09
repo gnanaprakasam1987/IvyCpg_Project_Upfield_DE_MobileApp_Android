@@ -24,9 +24,9 @@
                 android:id="@+id/icon_ll"
                 android:layout_width="@dimen/activity_list_height"
                 android:layout_height="@dimen/activity_list_height"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/activity_margin3"
+                android:layout_marginStart="@dimen/activity_margin3"
                 android:background="@drawable/activity_icon_bg_normal"
                 android:gravity="center"
                 android:visibility="gone">
@@ -42,9 +42,9 @@
                 android:id="@+id/img_arrow"
                 android:layout_width="@dimen/profile_history_20dp"
                 android:layout_height="@dimen/activity_list_icon_size"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/dialog_list_item_left_margin"
+                android:layout_marginEnd="@dimen/dialog_list_item_left_margin"
                 android:src="@drawable/activity_icon_next"
                 android:tint="@color/black_bg1" />
 
@@ -53,10 +53,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
-                android:layout_marginRight="@dimen/activity_margin3"
-                android:layout_toLeftOf="@id/img_arrow"
-                android:layout_toRightOf="@id/icon_ll"
+                android:layout_marginStart="@dimen/dialog_list_item_left_margin"
+                android:layout_marginEnd="@dimen/activity_margin3"
+                android:layout_toStartOf="@id/img_arrow"
+                android:layout_toEndOf="@id/icon_ll"
                 android:textColor="#000000"
                 android:textSize="@dimen/activity_name_text_size" />
 

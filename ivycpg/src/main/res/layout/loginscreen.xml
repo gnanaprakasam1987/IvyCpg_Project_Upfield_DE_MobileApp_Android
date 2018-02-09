@@ -31,8 +31,8 @@
                     android:id="@+id/iv_setting"
                     android:layout_width="@dimen/settings_icon_height"
                     android:layout_height="@dimen/settings_icon_height"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/dimen_10dp"
                     android:layout_marginTop="@dimen/dimen_10dp"
                     android:src="@drawable/icon_settings" />
 
@@ -66,7 +66,7 @@
                     android:contentDescription="@string/app_name"
                     android:hint="@string/username"
                     android:lines="1"
-                    android:paddingLeft="@dimen/dimen_10dp"
+                    android:paddingStart="@dimen/dimen_10dp"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/login_edittext_text_size" />
 
@@ -84,8 +84,8 @@
                         android:hint="@string/password"
                         android:inputType="textPassword"
                         android:lines="1"
-                        android:paddingLeft="@dimen/dimen_10dp"
-                        android:paddingRight="@dimen/forgot_text_width"
+                        android:paddingStart="@dimen/dimen_10dp"
+                        android:paddingEnd="@dimen/forgot_text_width"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/login_edittext_text_size" />
 
@@ -95,7 +95,7 @@
                         android:layout_height="match_parent"
                         android:layout_alignBaseline="@+id/EditText022"
                         android:layout_alignBottom="@+id/EditText022"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_marginBottom="@dimen/dimen_10dp"
                         android:clickable="true"
                         android:gravity="center"

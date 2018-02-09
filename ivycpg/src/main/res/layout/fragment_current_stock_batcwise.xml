@@ -54,7 +54,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:singleLine="true"
                             android:textColor="@color/highlighter"
                             android:textSize="@dimen/font_small"></TextView>
@@ -95,7 +95,7 @@
                                 android:layout_height="@dimen/filter_icon"
                                 android:layout_weight="1"
                                 android:background="@android:color/transparent"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:imeOptions="actionDone"
                                 android:singleLine="true"
                                 android:text=""
@@ -141,7 +141,7 @@
                             android:layout_width="@dimen/dimen_0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="5"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:text="@string/product_name" />
 
                         <LinearLayout

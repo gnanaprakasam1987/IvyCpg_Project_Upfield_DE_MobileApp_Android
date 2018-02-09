@@ -23,15 +23,15 @@
                 style="?attr/customListItemValue"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/survey_group_margin_left"
+                android:layout_marginStart="@dimen/survey_group_margin_left"
                 android:textSize="@dimen/font_large"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/dimen_1dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
                 android:background="#1F000000" />
         </LinearLayout>
 
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/survey_group_margin_height"
+                    android:paddingStart="@dimen/survey_group_margin_height"
                     android:paddingTop="@dimen/survey_group_margin_height">
 
                     <TextView
@@ -69,7 +69,7 @@
                         style="?attr/customListItemValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
+                        android:layout_marginStart="2dp"
                         android:gravity="center"
                         android:text="1"
                         android:textSize="@dimen/font_small"
@@ -81,8 +81,8 @@
                         style="?attr/customListItemValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_toRightOf="@+id/questionno"
+                        android:layout_marginStart="1dp"
+                        android:layout_toEndOf="@+id/questionno"
                         android:padding="@dimen/list_item_padding"
                         android:text="Thats the question Description text?"
                         android:textSize="@dimen/font_small" />
@@ -99,8 +99,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/list_margin"
-                    android:layout_marginLeft="@dimen/survey_answer_left"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginStart="@dimen/survey_answer_left"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginTop="@dimen/list_margin"
                     android:orientation="horizontal"
                     android:padding="2dp">
@@ -133,7 +133,7 @@
                     android:id="@+id/scoreTV"
                     android:layout_width="@dimen/main_photo_width"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:gravity="center"
                     android:text="0"
                     android:textSize="@dimen/highlight_normal" />
@@ -142,7 +142,7 @@
                     android:id="@+id/ll_photo"
                     android:layout_width="@dimen/main_photo_width"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_below="@+id/scoreTV"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -171,7 +171,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="@dimen/icon_height"
                                 android:layout_weight="6"
-                                android:gravity="center|right">
+                                android:gravity="center|end">
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -190,7 +190,7 @@
                                         android:id="@+id/textOne"
                                         android:layout_width="20sp"
                                         android:layout_height="20sp"
-                                        android:layout_alignRight="@id/imgBtn"
+                                        android:layout_alignEnd="@id/imgBtn"
                                         android:layout_alignTop="@id/imgBtn"
                                         android:background="@drawable/badge_circle"
                                         android:gravity="center_horizontal|center_vertical|center"
@@ -207,8 +207,8 @@
                                 android:id="@+id/indicator_view"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/one_dp_width"
-                                android:layout_marginRight="@dimen/one_dp_width"
+                                android:layout_marginStart="@dimen/one_dp_width"
+                                android:layout_marginEnd="@dimen/one_dp_width"
                                 android:layout_weight="1"
                                 android:visibility="gone"
                                 android:orientation="horizontal">
@@ -225,7 +225,7 @@
                                 android:layout_height="@dimen/icon_height"
                                 android:layout_weight="6"
                                 android:visibility="gone"
-                                android:gravity="center|left">
+                                android:gravity="center|start">
 
                                 <ImageView
                                     android:id="@+id/photos"
@@ -264,7 +264,7 @@
                 android:id="@+id/mandatory_view"
                 android:layout_width="@dimen/dimen_30dp"
                 android:layout_height="@dimen/dimen_30dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:visibility="visible">
 
                 <com.ivy.sd.png.view.SlantView
@@ -283,7 +283,7 @@
             android:id="@+id/subqLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_30dp"
+            android:layout_marginStart="@dimen/dimen_30dp"
             android:orientation="vertical" />
 
     </LinearLayout>

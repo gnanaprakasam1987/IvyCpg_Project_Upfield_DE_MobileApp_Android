@@ -20,8 +20,8 @@
                 android:layout_height="@dimen/list_header_height"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/list_padding_left_n_right"
-                android:paddingRight="@dimen/list_padding_left_n_right"
+                android:paddingStart="@dimen/list_padding_left_n_right"
+                android:paddingEnd="@dimen/list_padding_left_n_right"
                 android:background="@color/list_title_bg_color"
                 android:weightSum="11.5">
                 <TextView

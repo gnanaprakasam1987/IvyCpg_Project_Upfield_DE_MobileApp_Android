@@ -32,8 +32,8 @@
                         android:background="@color/list_title_bg_color"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingLeft="@dimen/list_padding_left_n_right"
-                        android:paddingRight="@dimen/list_padding_left_n_right">
+                        android:paddingStart="@dimen/list_padding_left_n_right"
+                        android:paddingEnd="@dimen/list_padding_left_n_right">
                         <!--android:weightSum="6"-->
                         <TextView
                             android:id="@+id/tvDesc"
@@ -141,11 +141,11 @@
                     style="?attr/roundedCustomButtonSmall"
                     android:layout_marginBottom="@dimen/activity_margin1"
                     android:layout_marginTop="@dimen/activity_margin1"
-                    android:layout_marginRight="@dimen/activity_margin1"
+                    android:layout_marginEnd="@dimen/activity_margin1"
                     android:text="@string/save"
                     android:textAllCaps="false"
                     android:layout_below="@+id/keypad_view"
-                    android:layout_alignParentRight="true" />
+                    android:layout_alignParentEnd="true" />
         </RelativeLayout>
     </RelativeLayout>
 

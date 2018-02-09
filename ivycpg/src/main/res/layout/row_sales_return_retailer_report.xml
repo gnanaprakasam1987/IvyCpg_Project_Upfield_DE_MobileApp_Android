@@ -40,9 +40,9 @@
     <ImageView
         android:layout_width="@dimen/icon_drop_list"
         android:layout_height="@dimen/icon_drop_list"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/dimen_14dp"
+        android:layout_marginEnd="@dimen/dimen_14dp"
         android:src="@drawable/activity_icon_next" />
 
     <LinearLayout

@@ -15,8 +15,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
-            android:paddingLeft="3dp"
+            android:gravity="start"
+            android:paddingStart="3dp"
             android:singleLine="true"
             android:text=""
             android:textColor="@android:color/black"
@@ -33,9 +33,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="start"
             android:textStyle="italic"
-            android:paddingLeft="3dp"
+            android:paddingStart="3dp"
             android:text=""
             android:textColor="@android:color/black" />
 
@@ -62,8 +62,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".6"
-            android:gravity="right"
-            android:paddingRight="7dp"
+            android:gravity="end"
+            android:paddingEnd="7dp"
             android:text=""
             android:textColor="?attr/primarycolor" />
             </LinearLayout>
@@ -84,8 +84,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".6"
-            android:gravity="right"
-            android:paddingRight="7dp"
+            android:gravity="end"
+            android:paddingEnd="7dp"
             android:text=""
             android:textColor="?attr/primarycolor" />
         </LinearLayout>

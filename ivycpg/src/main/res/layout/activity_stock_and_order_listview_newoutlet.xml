@@ -27,10 +27,10 @@
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/list_margin"
-                android:layout_toLeftOf="@+id/ivInfoicon"
+                android:layout_marginEnd="@dimen/list_margin"
+                android:layout_toStartOf="@+id/ivInfoicon"
                 android:maxLines="1"
                 android:text="@string/product_name" />
 
@@ -38,7 +38,7 @@
                 android:id="@+id/ivInfoicon"
                 android:layout_width="@dimen/info_icon"
                 android:layout_height="@dimen/info_icon"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/list_item_padding"
                 android:src="@drawable/ic_info_new"
@@ -50,8 +50,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
-                android:layout_gravity="right|center"
-                android:gravity="left|center"
+                android:layout_gravity="end|center"
+                android:gravity="start|center"
                 android:maxLines="1"
                 android:text="@string/barcode"
                 android:visibility="gone" />
@@ -69,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -85,8 +85,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_1dp"
-                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
+                    android:layout_marginEnd="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -116,8 +116,8 @@
                 android:id="@+id/lleditLaouyt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/lltotwight"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/lltotwight"
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:weightSum="5">
@@ -142,7 +142,7 @@
                         style="@style/EditText_ListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:text="@string/zero" />
 
                 </LinearLayout>
@@ -168,7 +168,7 @@
                         style="@style/EditText_ListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:text="@string/zero" />
 
                 </LinearLayout>
@@ -193,7 +193,7 @@
                         style="@style/EditText_ListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:text="@string/zero" />
 
                 </LinearLayout>
@@ -205,16 +205,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignBottom="@+id/lleditLaouyt"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/lleditLaouyt"
-                android:layout_marginRight="@dimen/list_margin"
+                android:layout_marginEnd="@dimen/list_margin"
                 android:gravity="top">
 
                 <LinearLayout
                     android:id="@+id/llTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="right|top"
+                    android:gravity="end|top"
                     android:orientation="vertical">
 
                     <TextView
@@ -231,7 +231,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="@dimen/meter_text_width"
                         android:layout_height="match_parent"
-                        android:gravity="center|right"
+                        android:gravity="center|end"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
                         android:textSize="@dimen/font_micro_small" />
@@ -241,7 +241,7 @@
                     android:id="@+id/llWeight"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="vertical">
 
                     <TextView
@@ -258,7 +258,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="@dimen/meter_text_width"
                         android:layout_height="match_parent"
-                        android:gravity="center|right"
+                        android:gravity="center|end"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
                         android:textSize="@dimen/font_micro_small" />

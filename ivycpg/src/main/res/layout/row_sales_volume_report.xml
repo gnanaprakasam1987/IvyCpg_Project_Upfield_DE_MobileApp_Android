@@ -56,7 +56,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/store_margin_top">
+            android:layout_marginStart="@dimen/store_margin_top">
 
             <TextView
                 android:id="@+id/PRDNAME"
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:padding="1dp"
                 tools:text="hjjhjjhjj"
-                android:gravity="left|center_vertical"
+                android:gravity="start|center_vertical"
                 android:layout_gravity="center_vertical"
                 android:textSize="@dimen/font_micro_small"
                 android:layout_marginTop="@dimen/divder_margin" />

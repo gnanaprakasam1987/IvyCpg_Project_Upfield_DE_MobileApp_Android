@@ -45,8 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginTop="@dimen/header_card_margin_top"
         android:visibility="gone"
         card_view:cardBackgroundColor="#1f1f1f"
@@ -128,7 +128,7 @@
                         android:layout_alignBottom="@+id/total_score_header"
                         android:layout_toEndOf="@+id/total_score_header"
                         android:layout_toRightOf="@+id/total_score_header"
-                        android:paddingRight="20dp"
+                        android:paddingEnd="20dp"
                         android:text=" pts"
                         android:textColor="#70FFFFFF"
                         android:textSize="@dimen/font_nano_small"
@@ -177,7 +177,7 @@
                         android:layout_alignBottom="@+id/category_count"
                         android:layout_toEndOf="@+id/category_count"
                         android:layout_toRightOf="@+id/category_count"
-                        android:paddingRight="2dp"
+                        android:paddingEnd="2dp"
                         android:text=" Modules"
                         android:textColor="#70FFFFFF"
                         android:textSize="@dimen/font_nano_small"
@@ -193,8 +193,8 @@
         android:layout_height="@dimen/category_recycler_height"
         android:layout_below="@+id/appbar"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginTop="5dp"></android.support.v7.widget.RecyclerView>
 
     <LinearLayout
@@ -210,8 +210,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:visibility="gone"
             card_view:cardBackgroundColor="@color/WHITE"
             card_view:cardCornerRadius="4dp"
@@ -232,9 +232,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center_vertical"
+                    android:layout_gravity="start|center_vertical"
                     android:layout_weight="1"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:orientation="vertical"
                     android:padding="@dimen/card_content_padding">
 
@@ -270,7 +270,7 @@
                             android:layout_alignBottom="@+id/ach_tv_content"
                             android:layout_toEndOf="@+id/ach_tv_content"
                             android:layout_toRightOf="@+id/ach_tv_content"
-                            android:paddingRight="20dp"
+                            android:paddingEnd="20dp"
                             android:text="weight"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/font_nano_small"
@@ -289,7 +289,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="#20ffffff"
-                    android:gravity="center_vertical|left"
+                    android:gravity="center_vertical|start"
                     android:orientation="vertical"
                     android:padding="@dimen/card_content_padding">
 
@@ -324,7 +324,7 @@
                             android:layout_alignBottom="@+id/previous_score_tv_content"
                             android:layout_toEndOf="@+id/previous_score_tv_content"
                             android:layout_toRightOf="@+id/previous_score_tv_content"
-                            android:paddingRight="20dp"
+                            android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/font_nano_small"
@@ -343,7 +343,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="#20ffffff"
-                    android:gravity="center_vertical|left"
+                    android:gravity="center_vertical|start"
                     android:orientation="vertical"
                     android:padding="@dimen/card_content_padding">
 
@@ -378,7 +378,7 @@
                             android:layout_alignBottom="@+id/score_growth_tv_content"
                             android:layout_toEndOf="@+id/score_growth_tv_content"
                             android:layout_toRightOf="@+id/score_growth_tv_content"
-                            android:paddingRight="20dp"
+                            android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/font_nano_small"
@@ -391,7 +391,7 @@
                     android:layout_width="@dimen/store_card_image"
                     android:layout_height="@dimen/store_card_image"
                     android:layout_gravity="center"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:src="@drawable/icon_star_gold" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -406,8 +406,8 @@
                 style="@style/TextViewListTitle"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/category_recycler_height"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/GRAY"
                 android:orientation="horizontal"
@@ -418,7 +418,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1.6"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:padding="5dp"
                     android:singleLine="true"
                     android:text="Questions"
@@ -472,7 +472,7 @@
                     android:layout_weight="0.3"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:paddingRight="5dp"
+                    android:paddingEnd="5dp"
                     android:text="Score"
                     android:textStyle="bold"
                     android:visibility="gone"
@@ -484,8 +484,8 @@
                 android:id="@+id/questions_dashboard_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"></android.support.v7.widget.RecyclerView>
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"></android.support.v7.widget.RecyclerView>
 
             <TextView
                 android:id="@+id/no_data"
@@ -599,7 +599,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/relativeLayout"
                 android:layout_toStartOf="@+id/relativeLayout"
-                android:paddingRight="15dp">
+                android:paddingEnd="15dp">
 
                 <TextView
                     android:id="@+id/textView9"
@@ -637,7 +637,7 @@
                         android:layout_alignBottom="@+id/total_weightage_bottom"
                         android:layout_toEndOf="@+id/total_weightage_bottom"
                         android:layout_toRightOf="@+id/total_weightage_bottom"
-                        android:paddingRight="20dp"
+                        android:paddingEnd="20dp"
                         android:text=" pts"
                         android:textColor="@color/GRAY_TEXT"
                         android:textSize="@dimen/font_nano_small"
@@ -651,7 +651,7 @@
                 android:layout_width="2dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/relativeLayout"
+                android:layout_toStartOf="@+id/relativeLayout"
                 android:background="@color/Black"></View>
 
             <RelativeLayout
@@ -661,9 +661,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:gravity="right">
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="end">
 
                 <TextView
                     android:id="@+id/textView10"
@@ -701,7 +701,7 @@
                         android:layout_alignBottom="@+id/total_score_bottom"
                         android:layout_toEndOf="@+id/total_score_bottom"
                         android:layout_toRightOf="@+id/total_score_bottom"
-                        android:paddingRight="20dp"
+                        android:paddingEnd="20dp"
                         android:text=" pts"
                         android:textColor="@color/GRAY_TEXT"
                         android:textSize="@dimen/font_nano_small"

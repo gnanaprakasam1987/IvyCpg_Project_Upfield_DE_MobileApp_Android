@@ -54,11 +54,11 @@
                 android:layout_height="@dimen/edittext_height"
                 android:background="@color/white_box_border"
                 android:cursorVisible="true"
-                android:gravity="left"
+                android:gravity="start"
                 android:lines="1"
                 android:paddingBottom="0dp"
-                android:paddingLeft="@dimen/dimen_10dp"
-                android:paddingRight="@dimen/forgot_text_width"
+                android:paddingStart="@dimen/dimen_10dp"
+                android:paddingEnd="@dimen/forgot_text_width"
                 android:textColor="@color/FullBlack"
                 android:textCursorDrawable="@null"
                 android:textSize="@dimen/login_edittext_text_size" />
@@ -108,7 +108,7 @@
                     style="?attr/roundedCustomButtonNormalTransparent"
                     android:layout_gravity="center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginRight="@dimen/profile_history_20dp"
+                    android:layout_marginEnd="@dimen/profile_history_20dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:text="Cancel" />
 
@@ -117,7 +117,7 @@
                     style="?attr/roundedCustomButtonNormal"
                     android:layout_gravity="center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_20dp"
+                    android:layout_marginStart="@dimen/profile_history_20dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:text="Ok" />
 

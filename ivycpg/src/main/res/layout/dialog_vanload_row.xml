@@ -8,8 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/profile_history_20dp"
-        android:layout_marginRight="@dimen/profile_history_20dp"
+        android:layout_marginStart="@dimen/profile_history_20dp"
+        android:layout_marginEnd="@dimen/profile_history_20dp"
         android:orientation="vertical">
 
         <com.ivy.sd.png.commons.MaterialSpinner
@@ -25,8 +25,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/profile_history_20dp"
-        android:layout_marginRight="@dimen/profile_history_20dp"
+        android:layout_marginStart="@dimen/profile_history_20dp"
+        android:layout_marginEnd="@dimen/profile_history_20dp"
         android:orientation="horizontal"
         android:weightSum="3">
 
@@ -39,10 +39,10 @@
                 android:id="@+id/productqtyPieces"
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/list_item_width"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginTop="@dimen/dimens_2dp"
                 android:layout_weight="1"
-                android:gravity="left|center_vertical"
+                android:gravity="start|center_vertical"
                 android:hint="@string/avail_pcs"
                 android:inputType="number"
                 android:selectAllOnFocus="false"
@@ -58,10 +58,10 @@
                 android:id="@+id/productqtyCases"
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/list_item_width"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginTop="@dimen/dimens_2dp"
                 android:layout_weight="1"
-                android:gravity="left|center_vertical"
+                android:gravity="start|center_vertical"
                 android:hint="@string/avail_cases"
                 android:inputType="number"
                 android:selectAllOnFocus="false"
@@ -77,10 +77,10 @@
                 android:id="@+id/outerproductqtyCases"
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/list_item_width"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginTop="@dimen/dimens_2dp"
                 android:layout_weight="1"
-                android:gravity="left|center_vertical"
+                android:gravity="start|center_vertical"
                 android:hint="@string/avail_outer"
                 android:inputType="number"
                 android:selectAllOnFocus="false"

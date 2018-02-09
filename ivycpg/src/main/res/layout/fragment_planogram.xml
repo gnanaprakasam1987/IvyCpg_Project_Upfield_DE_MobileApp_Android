@@ -16,8 +16,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/footerLine"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="@dimen/plano_list_left_margin"
-            android:layout_marginRight="@dimen/plano_list_right_margin"
+            android:layout_marginStart="@dimen/plano_list_left_margin"
+            android:layout_marginEnd="@dimen/plano_list_right_margin"
             android:layout_marginTop="@dimen/plano_list_top_margin"></android.support.v7.widget.RecyclerView>
 
         <LinearLayout
@@ -109,7 +109,7 @@
             android:id="@+id/saveButton"
             style="?attr/roundedCustomButtonSmall"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginBottom="@dimen/dimen_10dp"
             android:layout_marginTop="@dimen/dimen_2dp"
             android:gravity="center"
@@ -164,7 +164,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="10dp"
                         android:visibility="gone">
 
                         <TextView
@@ -198,7 +198,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:orientation="horizontal"
-                        android:paddingLeft="20dp"
+                        android:paddingStart="20dp"
                         android:visibility="gone">
 
                         <TextView
