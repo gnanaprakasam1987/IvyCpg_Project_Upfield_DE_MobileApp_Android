@@ -3,6 +3,7 @@ package com.ivy.cpg.view.order;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -636,12 +637,14 @@ public class OrderHelper {
 
         } catch (Exception e) {
             Commons.printException(e);
-
         }
 
     }
 
     private void updateCreditNoteprintList() {
+
+        int totalBalanceQty = 0;
+        float totalBalanceAmount = 0;
 
         for (ProductMasterBO product : businessModel.productHelper.getSalesReturnProducts()) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
@@ -668,15 +671,15 @@ public class OrderHelper {
             int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
             float totalReplacementPrice = totalReplaceQty * replacementPrice;
 
-            int totalBalanceQty = totalSalesReturnQty - totalReplaceQty;
-            float totalBalanceAmount = totalSalesReturnAmt - totalReplacementPrice;
+            totalBalanceQty = totalBalanceQty + (totalSalesReturnQty - totalReplaceQty);
+            totalBalanceAmount = totalBalanceAmount + (totalSalesReturnAmt - totalReplacementPrice);
 
             // set the total qty and value in ProductBO to enable print.
-            if (totalBalanceQty > 0) {
-                ProductMasterBO productMasterBO = new ProductMasterBO(product);
-                productMasterBO.setOrderedPcsQty(totalBalanceQty);
-                productMasterBO.setDiscount_order_value(totalBalanceAmount);
-            }
+        }
+
+        if (totalBalanceQty > 0) {
+            Log.d("TotalBalanceQty",totalBalanceQty+"");
+            Log.d("TotalBalanceAmount",totalBalanceAmount+"");
         }
     }
 
