@@ -131,7 +131,6 @@ public class SOSFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("SOS Tracking");
     }
 
     @Override

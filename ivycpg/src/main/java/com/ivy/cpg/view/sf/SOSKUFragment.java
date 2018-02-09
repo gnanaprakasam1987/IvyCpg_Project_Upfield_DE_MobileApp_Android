@@ -1170,7 +1170,6 @@ public class SOSKUFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("SOSKU Tracking");
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),

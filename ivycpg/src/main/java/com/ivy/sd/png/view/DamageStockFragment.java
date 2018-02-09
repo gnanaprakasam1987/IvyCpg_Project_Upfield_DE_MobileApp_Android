@@ -65,7 +65,7 @@ public class DamageStockFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("Damage Stock");
+
     }
 
     @Override

@@ -203,7 +203,6 @@ public class SODFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("SOD Tracking");
     }
 
     @Override

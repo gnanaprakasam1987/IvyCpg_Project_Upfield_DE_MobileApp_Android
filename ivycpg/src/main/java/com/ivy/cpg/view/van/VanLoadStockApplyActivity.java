@@ -336,7 +336,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
     @Override
     protected void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("VanLoad Stock View");
+
     }
 
     @Override

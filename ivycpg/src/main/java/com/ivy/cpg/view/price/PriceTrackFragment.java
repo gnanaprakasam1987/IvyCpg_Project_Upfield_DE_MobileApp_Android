@@ -113,7 +113,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("Price Tracking");
     }
 
     @Override
