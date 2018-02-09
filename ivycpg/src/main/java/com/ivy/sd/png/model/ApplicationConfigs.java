@@ -8,7 +8,7 @@ ApplicationConfigs {
     boolean withActivation = false;
 
     boolean checkUTCTime = true;
-    String LANGUAGE = "en";
+    String LANGUAGE = "ar";
 
     boolean expiryEnable = false;
     String expiryDate = "2013/09/01";

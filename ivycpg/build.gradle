@@ -33,7 +33,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 25
         multiDexEnabled true
-        resConfigs "en", "in", "lo", "th", "vi", "tr"
+        resConfigs "en", "in", "lo", "th", "vi", "tr" ,"ar"
     }
 
     lintOptions {
