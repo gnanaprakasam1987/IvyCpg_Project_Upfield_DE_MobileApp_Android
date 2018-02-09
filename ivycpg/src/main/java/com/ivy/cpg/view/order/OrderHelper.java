@@ -620,6 +620,10 @@ public class OrderHelper {
                 Commons.printException(e);
             }
 
+            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
+            salesReturnHelper.saveSalesReturn(mContext,this.getOrderId(),"ORDER");
+            salesReturnHelper.clearSalesReturnTable();
+
             businessModel.setOrderHeaderNote("");
             businessModel.getOrderHeaderBO().setPO("");
             businessModel.getOrderHeaderBO().setRemark("");

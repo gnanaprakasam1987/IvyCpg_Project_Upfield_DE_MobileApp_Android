@@ -352,7 +352,7 @@ public class SalesReturnHelper {
     /**
      * Save sales return details and update SIH.
      */
-    public void saveSalesReturn(Context mContext) {
+    public void saveSalesReturn(Context mContext,String orderId,String module) {
         try {
             ProductMasterBO product;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -393,7 +393,7 @@ public class SalesReturnHelper {
             }
 
             // Preapre and save salesreturn header.
-            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName";
+            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,RefModuleTId,RefModule";
             String values = getSalesReturnID() + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
@@ -409,11 +409,17 @@ public class SalesReturnHelper {
                     + bmodel.retailerMasterBO.getDistParentId() + ","
                     + QT(getSignaturePath()) + ","
                     + QT(getSignatureName());
+
+            if(!orderId.equals(""))
+                values = values+ ","+orderId+ ","+QT(module);
+            else
+                values = values+ ","+QT("")+ ","+QT("");
+
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
             // insert sales replacement and decrease the stock in hand.
             if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
-                saveReplacementDetails(db, getSalesReturnID());
+                saveReplacementDetails(db, getSalesReturnID(),orderId,module);
             }
 
             columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode";
@@ -956,11 +962,18 @@ public class SalesReturnHelper {
         return total;
     }
 
-    private void saveReplacementDetails(DBUtil db, String uid) {
+    private void saveReplacementDetails(DBUtil db, String uid,String orderId,String module) {
         String clumns = "uid,returnpid,batchid,uomid,uomCount,returnQty,Retailerid,pid,price,value,qty";
         final Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
         StringBuffer sb;
         double totalReplacementValue = 0.0;
+
+        String appendOrderDet;
+        if(!orderId.equals(""))
+            appendOrderDet = ","+orderId+","+module;
+        else
+            appendOrderDet = ","+""+","+"";
+
         for (ProductMasterBO product : productMaster) {
 
             if (product.getRepPieceQty() > 0 || product.getRepCaseQty() > 0 || product.getRepOuterQty() > 0) {

@@ -483,19 +483,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
-
-        SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-        salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
-        bmodel.reasonHelper.downloadSalesReturnReason();
-        if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
-            bmodel.productHelper.downloadSalesReturnProducts();
-            if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
-                bmodel.productHelper.downloadSalesReturnSKUs();
-
-            bmodel.productHelper.cloneReasonMaster();
-
-            salesReturnHelper.getInstance(this).clearSalesReturnTable();
-        }
     }
 
     private void prepareScreen() {
@@ -1645,7 +1632,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.srpEdit = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_srpedit);
 
-                holder.stockReturn = (EditText) row
+                holder.stockReturn = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_stock_return_qty);
 
                 holder.total = (TextView) row
@@ -3595,7 +3582,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView rep_cs;
         private TextView rep_ou;
         private ImageView iv_info, imageView_stock;
-        private EditText stockReturn;
+        private TextView stockReturn;
     }
 
     private void calculateSONew(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
