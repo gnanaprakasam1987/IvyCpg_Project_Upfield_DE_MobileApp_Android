@@ -412,7 +412,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("Promotion Tracking");
+
     }
 
     /**

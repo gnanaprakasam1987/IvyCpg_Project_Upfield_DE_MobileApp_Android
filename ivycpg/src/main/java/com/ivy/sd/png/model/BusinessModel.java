@@ -48,9 +48,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -723,16 +720,7 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
-            //enable the google analytics for live build only
-            String phase = PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString("application", "");
-            if (phase.length() > 0) {
-                if (!Pattern.compile(Pattern.quote("ivy"), Pattern.CASE_INSENSITIVE).matcher(phase).find()) {
-                    AnalyticsTrackers.initialize(this);
-                    if (AnalyticsTrackers.getInstance() != null)
-                        AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
-                }
-            }
+
         } catch (Exception ex) {
             Commons.printException(ex);
         }
@@ -8096,39 +8084,6 @@ public class BusinessModel extends Application {
         }
 
         return 0;
-    }
-
-
-    public synchronized Tracker getGoogleAnalyticsTracker() {
-        AnalyticsTrackers analyticsTrackers = AnalyticsTrackers.getInstance();
-
-        return analyticsTrackers.get(AnalyticsTrackers.Target.APP);
-    }
-
-    /***
-     * Tracking screen view
-     *
-     * @param screenName screen name to be displayed on GA dashboard
-     */
-
-    public void trackScreenView(String screenName) {
-        try {
-            String phase = PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString("application", "");
-            if (phase.length() > 0) {
-                if (!Pattern.compile(Pattern.quote("ivy"), Pattern.CASE_INSENSITIVE).matcher(phase).find()) {
-                    if (AnalyticsTrackers.getInstance() != null) {
-                        Tracker t = getGoogleAnalyticsTracker();
-                        t.setScreenName(screenName);
-                        t.send(new HitBuilders.ScreenViewBuilder().build());
-                        GoogleAnalytics.getInstance(this).dispatchLocalHits();
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-
     }
 
     public boolean isModuleCompleted(String menuName) {

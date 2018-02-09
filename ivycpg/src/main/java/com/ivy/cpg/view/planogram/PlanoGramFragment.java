@@ -273,7 +273,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("Planogram");
         //if statement to make sure the alert is displayed only for the first time
         if (mPlanoGramHelper.getInStoreLocation().size() != 1 && !isDialogPopup) {
             if (!mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)

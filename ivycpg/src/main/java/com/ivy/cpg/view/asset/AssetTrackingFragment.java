@@ -211,8 +211,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     @Override
     public void onResume() {
         super.onResume();
-        //GA screen tracking
-        BusinessModel.getInstance().trackScreenView(TAG);
+
     }
 
     @Override

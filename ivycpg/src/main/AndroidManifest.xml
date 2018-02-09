@@ -625,27 +625,7 @@
         <activity
             android:name="com.ivy.cpg.view.planogram.CounterPlanogramActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CustomerVisitActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CSConsultingActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CSFreeSample"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CSapply"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CSsale"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CSHomeScreen"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CS_StockCheckFragmentActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.sd.png.view.TLAttendanceActivity"
             android:screenOrientation="portrait" />
@@ -727,28 +707,7 @@
         <activity
             android:name="com.ivy.sd.png.view.profile.HistoryDetailActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CS_StockApply"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CS_StockApply_Detail"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CS_sale_summary"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.countersales.CS_CommonPrintPreviewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.CsProductSchemeDetailsActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.CsAllSchemeDetailActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.cpg.view.survey.DragDropPictureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

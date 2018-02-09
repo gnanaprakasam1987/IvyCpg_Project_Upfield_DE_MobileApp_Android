@@ -68,7 +68,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("Empty Return");
+
     }
 
     @Override

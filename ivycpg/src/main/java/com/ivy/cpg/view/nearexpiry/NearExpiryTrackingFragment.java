@@ -223,7 +223,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     public void onResume() {
         lvwplist.invalidateViews();
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("Near Expiry Tracking");
+
         // if statement to make sure the alert is displayed
         // only for the first time
         if (mBModel.productHelper.getInStoreLocation().size() > 1 && !isAlertShowed) {
