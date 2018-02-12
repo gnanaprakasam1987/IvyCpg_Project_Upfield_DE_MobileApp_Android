@@ -108,10 +108,6 @@ public class ReplaceFragment extends IvyBaseFragment {
 
     private void process() {
 
-        if (bmodel.configurationMasterHelper.IS_INVOICE && bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER) {
-            bmodel.configurationMasterHelper.IS_SIH_VALIDATION = true;
-        }
-
         if (Pid != null) {
             productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
         }
@@ -318,7 +314,6 @@ public class ReplaceFragment extends IvyBaseFragment {
                 etRepPiece.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
 
                         if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                             dialogCustomKeyBoard = new CustomKeyBoard(getActivity(), etRepPiece);

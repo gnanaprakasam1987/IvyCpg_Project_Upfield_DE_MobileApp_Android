@@ -67,7 +67,7 @@ public class SalesReturnHelper {
     public boolean IS_PRD_CNT_DIFF_SR;
 
 
-    private final String CREDIT_TYPE = "CREDIT";
+    public static final String CREDIT_TYPE = "CREDIT";
 
     private double totalValue = 0;
 
@@ -877,7 +877,6 @@ public class SalesReturnHelper {
                     }
                 }
             }
-
         }
     }
 
@@ -1195,7 +1194,7 @@ public class SalesReturnHelper {
             }
 
             boolean checkType;
-            if( (module.equals("ORDER") && code.equals(CREDIT_TYPE) && bmodel.configurationMasterHelper.IS_INVOICE)
+            if( (module.equals("ORDER") && code.equals(CREDIT_TYPE))
                     || module.equals(""))
                 checkType = true;
             else

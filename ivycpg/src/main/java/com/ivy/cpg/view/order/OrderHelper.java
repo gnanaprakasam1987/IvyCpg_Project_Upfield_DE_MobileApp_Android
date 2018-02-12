@@ -622,10 +622,12 @@ public class OrderHelper {
                 Commons.printException(e);
             }
 
-            if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION)
+            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
+
+            if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION
+                    && businessModel.retailerMasterBO.getRpTypeCode().equals(salesReturnHelper.CREDIT_TYPE))
                 updateCreditNoteprintList();
 
-            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
             salesReturnHelper.saveSalesReturn(mContext, this.getOrderId(), "ORDER");
             salesReturnHelper.clearSalesReturnTable();
 
