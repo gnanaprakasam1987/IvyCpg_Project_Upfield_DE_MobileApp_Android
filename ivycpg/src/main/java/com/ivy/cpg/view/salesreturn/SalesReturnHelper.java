@@ -66,6 +66,9 @@ public class SalesReturnHelper {
     private String CODE_SR_DIFF_CNT = "SR12";
     public boolean IS_PRD_CNT_DIFF_SR;
 
+
+    private final String CREDIT_TYPE = "CREDIT";
+
     private double totalValue = 0;
 
     private String SignaturePath;
@@ -419,7 +422,7 @@ public class SalesReturnHelper {
 
             // insert sales replacement and decrease the stock in hand.
             if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
-                saveReplacementDetails(db, getSalesReturnID(),orderId,module);
+                saveReplacementDetails(db, getSalesReturnID());
             }
 
             columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode";
@@ -560,7 +563,7 @@ public class SalesReturnHelper {
 
             // If credit note is generated, then tax appyled details should get saved.
             if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
-                saveSalesReturnTaxAndCreditNoteDetail(db, getSalesReturnID());
+                saveSalesReturnTaxAndCreditNoteDetail(db, getSalesReturnID(),module,bmodel.retailerMasterBO.getRpTypeCode());
 
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
@@ -962,17 +965,12 @@ public class SalesReturnHelper {
         return total;
     }
 
-    private void saveReplacementDetails(DBUtil db, String uid,String orderId,String module) {
+    private void saveReplacementDetails(DBUtil db, String uid) {
         String clumns = "uid,returnpid,batchid,uomid,uomCount,returnQty,Retailerid,pid,price,value,qty";
         final Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
         StringBuffer sb;
         double totalReplacementValue = 0.0;
 
-        String appendOrderDet;
-        if(!orderId.equals(""))
-            appendOrderDet = ","+orderId+","+module;
-        else
-            appendOrderDet = ","+""+","+"";
 
         for (ProductMasterBO product : productMaster) {
 
@@ -1157,7 +1155,7 @@ public class SalesReturnHelper {
      * @param db  db
      * @param uid uid
      */
-    private void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid) {
+    private void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid,String module,String code) {
 
         String columns = "uid,Retailerid,taxRate,taxType,applyLevelId,taxValue,pid";
         setTotalValue(getTotalCreditNoteWithOutTAX(db));
@@ -1196,7 +1194,14 @@ public class SalesReturnHelper {
                 }
             }
 
-            if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION) {
+            boolean checkType;
+            if( (module.equals("ORDER") && code.equals(CREDIT_TYPE) && bmodel.configurationMasterHelper.IS_INVOICE)
+                    || module.equals(""))
+                checkType = true;
+            else
+                checkType = false;
+
+            if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION && checkType) {
                 StringBuffer creditNoteBuffer = new StringBuffer();
                 String creditNoteColumns = "id,refno,amount,retailerid,date,CreatedDate,upload,actualamount,creditnotetype";
 

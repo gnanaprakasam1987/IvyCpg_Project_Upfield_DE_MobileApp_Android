@@ -55,7 +55,6 @@ public class ReplaceFragment extends IvyBaseFragment {
         view = inflater.inflate(R.layout.fragment_replace,
                 container, false);
 
-
         return view;
     }
 
@@ -108,6 +107,10 @@ public class ReplaceFragment extends IvyBaseFragment {
     }
 
     private void process() {
+
+        if (bmodel.configurationMasterHelper.IS_INVOICE && bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER) {
+            bmodel.configurationMasterHelper.IS_SIH_VALIDATION = true;
+        }
 
         if (Pid != null) {
             productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
