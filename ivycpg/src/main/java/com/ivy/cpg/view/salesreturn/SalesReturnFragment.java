@@ -1005,6 +1005,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         intent.putExtra("pid", productId);
         intent.putExtra("position", holderPostion);
         intent.putExtra("top", holderTop);
+        intent.putExtra("from","SALESRETURN");
 
         ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.zoom_enter, R.anim.hold);
         ActivityCompat.startActivityForResult(getActivity(), intent, SALES_ENTRY, opts.toBundle());

@@ -1249,7 +1249,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_COMPUTE_DUE_DAYS = "DDAYS";
     public boolean COMPUTE_DUE_DAYS;
 
-    public boolean SHOW_STOCK_RETURN ;
+    public boolean SHOW_SALES_RETURN_IN_ORDER;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -3205,7 +3205,7 @@ public class ConfigurationMasterHelper {
             SHOW_NEW_OUTLET_OPPR = false;
             SHOW_NEW_OUTLET_ORDER = false;
             IS_STK_ORD_BS = false;
-            SHOW_STOCK_RETURN = false;
+            SHOW_SALES_RETURN_IN_ORDER = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3292,7 +3292,7 @@ public class ConfigurationMasterHelper {
                     else if (temp.equals("CCB"))
                         SHOW_COMB_STOCK_CB = true;
                     else if (temp.equals("SR"))
-                        SHOW_STOCK_RETURN = true;
+                        SHOW_SALES_RETURN_IN_ORDER = true;
 
                 }
             }

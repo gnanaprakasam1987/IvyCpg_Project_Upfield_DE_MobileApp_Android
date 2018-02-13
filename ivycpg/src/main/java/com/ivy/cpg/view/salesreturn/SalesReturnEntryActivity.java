@@ -134,10 +134,13 @@ public class SalesReturnEntryActivity extends IvyBaseActivityNoActionBar {
                     returnFragment.setArguments(bundle);
                     return returnFragment;
                 case 1:
+
                     Bundle bundle1 = new Bundle();
                     bundle1.putString("pid", Pid);
                     bundle1.putInt("position", holderPosition);
                     bundle1.putInt("top", holderTop);
+                    bundle1.putString("from",getIntent().getExtras().get("from").toString());
+
                     Fragment replaceFragment = new ReplaceFragment();
                     replaceFragment.setArguments(bundle1);
                     return replaceFragment;

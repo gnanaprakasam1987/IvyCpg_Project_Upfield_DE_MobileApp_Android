@@ -36,6 +36,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -1632,8 +1633,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.srpEdit = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_srpedit);
 
-                holder.stockReturn = (TextView) row
-                        .findViewById(R.id.stock_and_order_listview_stock_return_qty);
+                holder.salesReturn = (TextView) row
+                        .findViewById(R.id.stock_and_order_listview_sales_return_qty);
 
                 holder.total = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_total);
@@ -1680,7 +1681,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.rep_pcs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.indicativeOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.cleanedOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.stockReturn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.salesReturn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
                 if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
@@ -1697,6 +1698,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_SEC)
                     holder.ssrp.setVisibility(View.GONE);
+
+                if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                    holder.salesReturn.setVisibility(View.VISIBLE);
+
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP)
                     holder.mrp.setVisibility(View.GONE);
 
@@ -1989,7 +1994,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_RETURN)
+                if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
                     ((LinearLayout) row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
                 else {
                     try {
@@ -3140,7 +3145,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 });
 
 
-                holder.stockReturn.setOnClickListener(new OnClickListener() {
+                holder.salesReturn.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         View vChild = lvwplist.getChildAt(0);
@@ -3303,13 +3308,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
 
-            if (bmodel.configurationMasterHelper.SHOW_STOCK_RETURN
+            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
                     || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
                 int total = 0;
                 for (SalesReturnReasonBO obj : product.getSalesReturnReasonList())
                     total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
                 String strTotal = Integer.toString(total);
-                holder.stockReturn.setText(strTotal);
+                holder.salesReturn.setText(strTotal);
             }
 
             if (holder.productObj.getLocations()
@@ -3599,7 +3604,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView rep_cs;
         private TextView rep_ou;
         private ImageView iv_info, imageView_stock;
-        private TextView stockReturn;
+        private TextView salesReturn;
     }
 
     private void calculateSONew(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
@@ -3904,8 +3909,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (vw == mBtnNext) {
 
+            if(bmodel.retailerMasterBO.getRpTypeCode().equals("CH")) {
+                if (getBalanceReplaceAmt()) {
+                    onnext();
+                } else {
+                    Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT);
+                }
+            }
+            else
+                onnext();
 
-            onnext();
         } else if (vw == mBtnGuidedSelling_next) {
             boolean isAllDone = true;
             boolean isCurrentLogicDone = false;
@@ -6767,6 +6780,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         intent.putExtra("pid", productId);
         intent.putExtra("position", holderPostion);
         intent.putExtra("top", holderTop);
+        intent.putExtra("from","ORDER");
 
         ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
         ActivityCompat.startActivityForResult(this, intent, SALES_RETURN, opts.toBundle());
@@ -6780,6 +6794,52 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         // MyAdapter lvwplist = new MyAdapter(mylist);
         lvwplist.setAdapter(new MyAdapter(mylist));
 //        salesReturnHelper = SalesReturnHelper.getInstance(this);
+    }
+
+    private boolean getBalanceReplaceAmt() {
+
+        int totalBalanceQty = 0;
+        float totalBalanceAmount = 0;
+
+        for (ProductMasterBO product : bmodel.productHelper.getSalesReturnProducts()) {
+            List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
+
+            int totalSalesReturnQty = 0;
+            float totalSalesReturnAmt = 0;
+            float replacementPrice = 0;
+            if (reasonList != null) {
+
+                for (SalesReturnReasonBO reasonBO : reasonList) {
+                    if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
+                        //Calculate sales return total qty and price.
+                        int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
+                        totalSalesReturnQty = totalSalesReturnQty + totalQty;
+                        totalSalesReturnAmt = totalSalesReturnAmt + (totalQty * reasonBO.getSrpedit());
+                        // Higher SRP edit price will be considered for replacement product price.
+                        if (replacementPrice < reasonBO.getSrpedit())
+                            replacementPrice = reasonBO.getSrpedit();
+                    }
+                }
+            }
+
+            // Calculate replacement qty price.
+            int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
+            float totalReplacementPrice = totalReplaceQty * replacementPrice;
+
+            totalBalanceQty = totalBalanceQty + (totalSalesReturnQty - totalReplaceQty);
+            totalBalanceAmount = totalBalanceAmount + (totalSalesReturnAmt - totalReplacementPrice);
+
+            // set the total qty and value in ProductBO to enable print.
+        }
+
+        Log.d("TotalBalanceQty",totalBalanceQty+"");
+        Log.d("TotalBalanceAmount",totalBalanceAmount+"");
+
+        if (totalBalanceAmount > 0)
+            return false;
+        else
+            return true;
+
     }
 
 }

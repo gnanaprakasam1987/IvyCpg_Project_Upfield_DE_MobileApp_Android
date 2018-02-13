@@ -1193,12 +1193,20 @@ public class SalesReturnHelper {
                 }
             }
 
-            boolean checkType;
-            if( (module.equals("ORDER") && code.equals(CREDIT_TYPE))
-                    || module.equals(""))
+            //Credit note will be generated only for van seller with type CREDIT from ORDER Module
+            //Credit note will be generated from SalesReturn Module too
+            boolean checkType=false;
+            if( ((module.equals("ORDER") && code.equals(CREDIT_TYPE)) &&
+                    ((bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 1) || bmodel.configurationMasterHelper.IS_INVOICE))
+                    ) {
+                // from order module
                 checkType = true;
-            else
-                checkType = false;
+            }
+            else if(module.equals("")){
+                //From sales return  module
+                checkType=true;
+            }
+
 
             if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION && checkType) {
                 StringBuffer creditNoteBuffer = new StringBuffer();

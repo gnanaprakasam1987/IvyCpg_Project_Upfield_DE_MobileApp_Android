@@ -255,4 +255,7 @@
     <string name="Please_enter_multiple_of">Please enter multiple of rfield value</string>
     <string name="piece">Piece</string>
     <string name="multiple_of">Multiple of</string>
+
+    <string name="return_products_price_not_matching_total_replacing_product_price">Return products price not matching total replacing product price</string>
+
 </resources>

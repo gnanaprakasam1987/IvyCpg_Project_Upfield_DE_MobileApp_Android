@@ -1881,20 +1881,22 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     surveyHelperNew.loadSurveyAnswers(0);
                 }
 
-                SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-                salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
-                bmodel.reasonHelper.downloadSalesReturnReason();
-                if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
-                    bmodel.productHelper.downloadSalesReturnProducts();
-                    if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
-                        bmodel.productHelper.downloadSalesReturnSKUs();
+                if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+                    SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
+                    salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
+                    bmodel.reasonHelper.downloadSalesReturnReason();
+                    if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
+                        bmodel.productHelper.downloadSalesReturnProducts();
+                        if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
+                            bmodel.productHelper.downloadSalesReturnSKUs();
 
-                    bmodel.productHelper.cloneReasonMaster();
+                        bmodel.productHelper.cloneReasonMaster();
 
-                    salesReturnHelper.getInstance(this).clearSalesReturnTable();
+                        salesReturnHelper.getInstance(this).clearSalesReturnTable();
 
-                    salesReturnHelper.getInstance(this).removeSalesReturnTable();
-                    salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext());
+                        salesReturnHelper.getInstance(this).removeSalesReturnTable();
+                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext());
+                    }
                 }
 
                 if (bmodel.productHelper.getProductMaster().size() > 0) {
