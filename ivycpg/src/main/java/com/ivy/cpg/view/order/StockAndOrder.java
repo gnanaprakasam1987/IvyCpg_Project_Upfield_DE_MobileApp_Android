@@ -6828,13 +6828,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             totalBalanceQty = totalBalanceQty + (totalSalesReturnQty - totalReplaceQty);
             totalBalanceAmount = totalBalanceAmount + (totalSalesReturnAmt - totalReplacementPrice);
-
-            // set the total qty and value in ProductBO to enable print.
         }
-
-        Log.d("TotalBalanceQty",totalBalanceQty+"");
-        Log.d("TotalBalanceAmount",totalBalanceAmount+"");
-
         if (totalBalanceAmount > 0)
             return false;
         else

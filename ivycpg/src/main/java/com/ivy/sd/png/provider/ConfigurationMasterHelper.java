@@ -1224,6 +1224,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_RESTRICT_ORDER_TAKING = "ORDB70";
     public boolean IS_RESTRICT_ORDER_TAKING;
 
+    private static final String CODE_STK_ORD_CREDIT_LIMIT = "ORDB71";
+    public boolean ORD_CREDIT_LIMIT_CHK;
+
+    private static final String CODE_STK_ORD_OVER_DUE = "ORDB72";
+    public boolean ORD_OVER_DUE_CHK;
+
     public boolean IS_COMBINED_STOCK_CHECK_FROM_ORDER;
     public boolean SHOW_COMB_STOCK_SC;
     public boolean SHOW_COMB_STOCK_SP;
@@ -2187,6 +2193,9 @@ public class ConfigurationMasterHelper {
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
+
+        this.ORD_CREDIT_LIMIT_CHK = hashMapHHTModuleConfig.get(CODE_STK_ORD_CREDIT_LIMIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_ORD_CREDIT_LIMIT) : false;
+        this.ORD_OVER_DUE_CHK = hashMapHHTModuleConfig.get(CODE_STK_ORD_OVER_DUE) != null ? hashMapHHTModuleConfig.get(CODE_STK_ORD_OVER_DUE) : false;
 
     }
 

@@ -1425,6 +1425,30 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     return;
                 }
 
+                if(BModel.configurationMasterHelper.ORD_CREDIT_LIMIT_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
+                    if(totalOrderValue > BModel.retailerMasterBO.getCreditLimit()){
+                        Toast.makeText(
+                                this,
+                                getResources().getString(
+                                        R.string.order_value_exceeded_credit_limit),
+                                Toast.LENGTH_SHORT).show();
+                        isClick = false;
+                        return;
+                    }
+                }
+                if(BModel.configurationMasterHelper.ORD_OVER_DUE_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
+                    if(orderHelper.isOverDueAvail(this)){
+                        Toast.makeText(
+                                this,
+                                getResources().getString(
+                                        R.string.pending_due_found_Order_cannot_be_proceed),
+                                Toast.LENGTH_SHORT).show();
+                        isClick = false;
+                        return;
+                    }
+                }
+
+
                 if ((BModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || BModel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !orderHelper.isReasonProvided(mOrderedProductList)) {
 
                     indicativeReasonDialog = new IndicativeOrderReasonDialog(this, BModel);

@@ -1881,6 +1881,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     surveyHelperNew.loadSurveyAnswers(0);
                 }
 
+//                bmodel.getRetailerMasterBO().setDistributorId(mSupplierList.get(mDefaultSupplierSelection).getSupplierID());
+
+                if(bmodel.getRetailerMasterBO().getRpTypeCode().equals("CREDIT") && mSupplierList !=null && mSupplierList.size() > 0 &&
+                        mSupplierList.get(mDefaultSupplierSelection).getCreditLimit() > 0){
+                    bmodel.getRetailerMasterBO().setCreditLimit(mSupplierList.get(mDefaultSupplierSelection).getCreditLimit());
+                }
+
                 if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                     SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
                     salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
@@ -1894,8 +1901,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         salesReturnHelper.getInstance(this).clearSalesReturnTable();
 
-                        salesReturnHelper.getInstance(this).removeSalesReturnTable();
-                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext());
+//                        if (!bmodel.configurationMasterHelper.IS_INVOICE) {
+                            salesReturnHelper.getInstance(this).removeSalesReturnTable();
+                            salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(),"ORDER");
+//                        }
                     }
                 }
 
@@ -2515,7 +2524,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                         salesReturnHelper.getInstance(this).removeSalesReturnTable();
-                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext());
+                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(),"");
                     }
 
                     bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);

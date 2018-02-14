@@ -27,7 +27,11 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -2645,6 +2649,44 @@ public class OrderHelper {
         }
 
         return false;
+    }
+
+    public boolean isOverDueAvail(Context mContext){
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        boolean isDuePassed = false;
+        try{
+            Cursor c = db.selectSQL("select InvoiceDate from InvoiceMaster where Retailerid='" + businessModel.getRetailerMasterBO().getRetailerID() + "' and invNetAmount > paidAmount");
+            if (businessModel.getRetailerMasterBO().getCreditDays() > 0 && c != null && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+                    Date date = format.parse(c.getString(0));
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    calendar.add(Calendar.DAY_OF_YEAR, businessModel.retailerMasterBO.getCreditDays());
+                    Date dueDate = format.parse(format.format(calendar.getTime()));
+                    Date currDate = format.parse(SDUtil.now(4));
+                    Commons.print("Order Helper," + "dueDate " + dueDate + " -- currDate "+currDate);
+
+                    if (dueDate.compareTo(currDate) != 0 && currDate.after(dueDate)) {
+                        isDuePassed = true;
+                        break;
+                    }
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+            return isDuePassed;
+
+        }catch(Exception e){
+            db.closeDB();
+            Commons.printException("" + e);
+        }
+        return isDuePassed;
     }
 
 
