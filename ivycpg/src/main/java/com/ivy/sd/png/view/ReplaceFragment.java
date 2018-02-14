@@ -134,6 +134,10 @@ public class ReplaceFragment extends IvyBaseFragment {
                 ((TextView) view.findViewById(R.id.sroutercaseTitle)).setText(getResources().getString(R.string.avail_outer));
 
 
+            etRepPiece.setText(productMasterBO.getRepPieceQty()+"");
+            etRepCase.setText(productMasterBO.getRepCaseQty()+"");
+            etRepOuter.setText(productMasterBO.getRepOuterQty()+"");
+
             etRepPiece.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {

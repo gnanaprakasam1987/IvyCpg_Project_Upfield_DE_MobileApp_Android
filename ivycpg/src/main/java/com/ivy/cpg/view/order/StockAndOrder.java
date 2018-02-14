@@ -3909,11 +3909,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (vw == mBtnNext) {
 
-            if(bmodel.retailerMasterBO.getRpTypeCode().equals("CH")) {
-                if (getBalanceReplaceAmt()) {
+            if(bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
+                if (isBalanceReplaceAmt()) {
                     onnext();
                 } else {
-                    Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT);
+                    Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
                 }
             }
             else
@@ -6796,7 +6796,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 //        salesReturnHelper = SalesReturnHelper.getInstance(this);
     }
 
-    private boolean getBalanceReplaceAmt() {
+    private boolean isBalanceReplaceAmt() {
 
         int totalBalanceQty = 0;
         float totalBalanceAmount = 0;
