@@ -22,27 +22,23 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * Downloads a file in a thread. Will send messages to the HomeSceen activity to
- * update the progress bar.
+ * Downloads APK in a thread. Will send messages to
+ * update progress bar.
  */
-public class DownloaderThread extends Thread {
-    // constants
+public class ApkDownloaderThread extends Thread {
+    
     private static final int DOWNLOAD_BUFFER_SIZE = 4096;
-
-    public static final int ZIP_DOWNLOAD = 151;
     public static final int APK_DOWNLOAD = 152;
-
     public static final int CONNECTION_TIME_OUT = 20000;
 
     // instance variables
     private Context parentActivity;
     private String downloadUrl;
     private Handler activityHandler;
-    private boolean isDigitalContent;
     private int type;
 
     /**
-     * Instantiates a new DownloaderThread object.
+     * Instantiates a new ApkDownloaderThread object.
      *
      * @param inParentActivity   Reference to activity.
      * @param h          Reference to handler in activity.
@@ -50,16 +46,15 @@ public class DownloaderThread extends Thread {
      * @param isDigitalContent is Digital content Download.
      * @param type             Type of Data download , zip or apk or others
      */
-    public DownloaderThread(Context inParentActivity, Handler h, String inUrl,
-                            boolean isDigitalContent, int type) {
+    public ApkDownloaderThread(Context inParentActivity, Handler h, String inUrl,
+                               boolean isDigitalContent, int type) {
         downloadUrl = "";
         if (inUrl != null) {
             downloadUrl = inUrl;
         }
         parentActivity = inParentActivity;
         activityHandler = h;
-        this.isDigitalContent = isDigitalContent;
-        this.type = type;
+        type=type;
 
     }
 
@@ -80,7 +75,7 @@ public class DownloaderThread extends Thread {
         FileOutputStream fileStream;
         Message msg;
 
-        if (!isNonMarketInstallationOptionEnable() && !isDigitalContent) {
+        if (!isNonMarketInstallationOptionEnable()) {
             String errMsg = parentActivity
                     .getString(R.string.thirdparty_installation_error);
             msg = Message.obtain(activityHandler,
@@ -161,7 +156,7 @@ public class DownloaderThread extends Thread {
                     outFile.delete();
                 } else {
                     msg = Message.obtain(activityHandler,
-                            DataMembers.MESSAGE_DOWNLOAD_COMPLETE, type, 0);
+                            DataMembers.MESSAGE_APK_DOWNLOAD_COMPLETE, type, 0);
                     activityHandler.sendMessage(msg);
                 }
             } catch (SocketTimeoutException e) {
@@ -169,7 +164,7 @@ public class DownloaderThread extends Thread {
                 String errMsg = parentActivity
                         .getString(R.string.socket_time_out_exception);
                 msg = Message.obtain(activityHandler,
-                        DataMembers.MESSAGE_ENCOUNTERED_ERROR, 0, 0, errMsg);
+                        DataMembers.MESSAGE_ENCOUNTERED_ERROR_APK, 0, 0, errMsg);
                 activityHandler.sendMessage(msg);
 
             } catch (MalformedURLException e) {
@@ -177,7 +172,7 @@ public class DownloaderThread extends Thread {
                 String errMsg = parentActivity
                         .getString(R.string.error_message_bad_url);
                 msg = Message.obtain(activityHandler,
-                        DataMembers.MESSAGE_ENCOUNTERED_ERROR, 0, 0, errMsg);
+                        DataMembers.MESSAGE_ENCOUNTERED_ERROR_APK, 0, 0, errMsg);
                 activityHandler.sendMessage(msg);
             } catch (FileNotFoundException e) {
                 Commons.print("File Not Found Exception");
@@ -185,30 +180,34 @@ public class DownloaderThread extends Thread {
                 String errMsg = parentActivity
                         .getString(R.string.error_message_file_not_found);
                 msg = Message.obtain(activityHandler,
-                        DataMembers.MESSAGE_ENCOUNTERED_ERROR, 0, 0, errMsg);
+                        DataMembers.MESSAGE_ENCOUNTERED_ERROR_APK, 0, 0, errMsg);
                 activityHandler.sendMessage(msg);
             } catch (Exception e) {
                 Commons.printException(e);
                 String errMsg = parentActivity
                         .getString(R.string.error_message_general);
                 msg = Message.obtain(activityHandler,
-                        DataMembers.MESSAGE_ENCOUNTERED_ERROR, type, 0, errMsg);
+                        DataMembers.MESSAGE_ENCOUNTERED_ERROR_APK, type, 0, errMsg);
                 activityHandler.sendMessage(msg);
             }
 
         }
     }
 
+    /**
+     * Check APK install from unknown sources enabled or not.
+     * @return true | false
+     */
     private boolean isNonMarketInstallationOptionEnable() {
         String str = Secure.getString(parentActivity.getContentResolver(),
                 Secure.INSTALL_NON_MARKET_APPS);
-        if (str.equals("1")) {
-            return true;
-        } else {
-            return false;
-        }
+        return str.equals("1");
     }
 
+    /**
+     * Check is external storage availabe with atleast 20 mb space.
+     * @return true | false
+     */
     private boolean isExternalStorageAvailable() {
 
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory()
@@ -219,8 +218,8 @@ public class DownloaderThread extends Thread {
         double mbAvailable = sdAvailSize / 1048576;
 
         String state = Environment.getExternalStorageState();
-        boolean mExternalStorageAvailable = false;
-        boolean mExternalStorageWriteable = false;
+        boolean mExternalStorageAvailable;
+        boolean mExternalStorageWriteable;
 
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             // We can read and write the media
@@ -236,12 +235,8 @@ public class DownloaderThread extends Thread {
             mExternalStorageAvailable = mExternalStorageWriteable = false;
         }
 
-        if (mExternalStorageAvailable == true
-                && mExternalStorageWriteable == true && mbAvailable > 10) {
-            return true;
-        } else {
-            return false;
-        }
+        return mExternalStorageAvailable
+                && mExternalStorageWriteable && mbAvailable > 20;
     }
 
 }

@@ -255,4 +255,11 @@
     <string name="Please_enter_multiple_of">Please enter multiple of rfield value</string>
     <string name="piece">Piece</string>
     <string name="multiple_of">Multiple of</string>
+
+    <string name="connection_error_please_try_again">Connection error. Please try again.</string>
+    <string name="refreshing">Refreshing</string>
+    <string name="no_space">No space available.</string>
+    <string name="un_zip">Unzipping...</string>
+
+
 </resources>

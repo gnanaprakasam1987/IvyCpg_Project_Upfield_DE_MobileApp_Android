@@ -55,7 +55,7 @@
     <string name="press_start_sync">Please press \'Start Sync\' before download.</string>
     <string name="enter_activation_id">Please enter activation Key.</string>
     <string name="thirdparty_installation_error">Please enable "Unknown Sources" in settings.</string>
-    <string name="external_storage_not_available">External Storage space not available. Please check SDCard.</string>
+    <string name="external_storage_not_available">External Storage space not available. Please check space available.</string>
     <string name="no_application_available_to_view_pdf">No Application available to view PDF.</string>
     <string name="no_application_available_to_view_ppt">No Application available to view PPT.</string>
     <string name="no_application_available_to_view_excel">No Application available to view Excel.</string>
