@@ -172,7 +172,7 @@
                 android:textStyle="bold"
                 android:textAllCaps="false"
                 android:onClick="onClick"
-                android:text="@string/accept"
+                android:text="@string/Apply"
                 android:visibility="visible" />
 
         </LinearLayout>

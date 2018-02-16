@@ -45,7 +45,7 @@ public class RetailerContractFragment extends IvyBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("Retailer Contract");
+
     }
 
     @Override

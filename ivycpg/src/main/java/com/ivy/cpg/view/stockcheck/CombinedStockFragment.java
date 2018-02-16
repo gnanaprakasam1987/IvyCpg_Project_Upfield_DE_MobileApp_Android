@@ -1513,8 +1513,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     public void onResume() {
         super.onResume();
 
-        //GA screen tracking
-        BusinessModel.getInstance().trackScreenView("Stock Check");
+
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),

@@ -1882,7 +1882,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
     public void onResume() {
         super.onResume();
 
-        BusinessModel.getInstance().trackScreenView("Stock Check");
+        ;
 
         if (businessModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),

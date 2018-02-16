@@ -29,6 +29,9 @@ public class DataMembers {
 
     public static String fileName = "sd_png_asean_android.apk";
 
+    public static String zip_Down_URL = "Product/CatalogImages.zip";
+    public static final int MESSAGE_UNZIPPED = 10113;
+
     public static final String DIGITAL_CONTENT = "TRAN";
     public static final String APP_DIGITAL_CONTENT = "APP";
     public static final String PLANOGRAM = "PL";
@@ -224,13 +227,13 @@ public class DataMembers {
     private static final String tbl_retailerpriorityproducts_cols = "RetailerId,ProductId,LevelId";
 
     public static final String CR1 = "\n";
-    // Used to communicate state changes in the DownloaderThread
+    // Used to communicate state changes in the ApkDownloaderThread
     public static final int MESSAGE_DOWNLOAD_STARTED = 1000;
-    public static final int MESSAGE_DOWNLOAD_COMPLETE = 1001;
+    public static final int MESSAGE_APK_DOWNLOAD_COMPLETE = 1001;
     public static final int MESSAGE_UPDATE_PROGRESS_BAR = 1002;
     public static final int MESSAGE_DOWNLOAD_CANCELED = 1003;
     public static final int MESSAGE_CONNECTING_STARTED = 1004;
-    public static final int MESSAGE_ENCOUNTERED_ERROR = 1005;
+    public static final int MESSAGE_ENCOUNTERED_ERROR_APK = 1005;
     public static final int THIRD_PARTY_INSTALLATION_ERROR = 1006;
     public static final int SDCARD_NOT_AVAILABLE = 1007;
     public static final int MESSAGE_DOWNLOAD_COMPLETE_DC = 1008;

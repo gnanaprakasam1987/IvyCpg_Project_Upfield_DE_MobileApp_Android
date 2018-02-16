@@ -1293,8 +1293,9 @@ public class ProfileFragment extends IvyBaseFragment {
 
     /**
      * This is the Handler for this activity. It will receive messages from the
-     * DownloaderThread and make the necessary updates to the UI.
+     * ApkDownloaderThread and make the necessary updates to the UI.
      */
+    @SuppressLint("HandlerLeak")
     private final Handler activityHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -1308,18 +1309,6 @@ public class ProfileFragment extends IvyBaseFragment {
                 case DataMembers.MESSAGE_ENCOUNTERED_ERROR_DC:
                     Commons.print("Retailer Image Downloading Error");
                     break;
-                /*
-             * Handling MESSAGE_ENCOUNTERED_ERROR: 1. Check the obj field of the
-			 * message for the actual error message that will be displayed to
-			 * the user. 2. Remove any progress bars from the screen. 3. Display
-			 * a Toast with the error message.
-			 */
-                case DataMembers.MESSAGE_ENCOUNTERED_ERROR:
-                    // obj will contain a string representing the error message
-                    if (msg.obj != null && msg.obj instanceof String) {
-                        String errorMessage = (String) msg.obj;
-                        Commons.print("Retailer Image Downloading Error:" + errorMessage);
-                    }
                 default:
                     // nothing to do here
                     break;

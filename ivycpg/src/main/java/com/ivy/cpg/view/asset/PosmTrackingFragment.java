@@ -315,7 +315,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView(TAG);
+
     }
 
     @Override

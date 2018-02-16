@@ -519,8 +519,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     public void onResume() {
         super.onResume();
 
-        //GA screen tracking
-        BusinessModel.getInstance().trackScreenView("Home Screen");
+
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());

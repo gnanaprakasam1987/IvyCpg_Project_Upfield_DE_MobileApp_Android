@@ -210,7 +210,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        BusinessModel.getInstance().trackScreenView("Competitor Tracking");
+
         bmodel.competitorTrackingHelper.loadcompetitors();
         updateList();
     }

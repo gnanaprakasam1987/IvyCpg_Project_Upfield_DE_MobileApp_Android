@@ -1077,7 +1077,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         }
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        BusinessModel.getInstance().trackScreenView("Survey");
     }
 
     @Override

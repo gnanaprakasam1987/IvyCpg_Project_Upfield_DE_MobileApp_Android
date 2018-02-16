@@ -1,13 +1,11 @@
 package com.ivy.cpg.view.login;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -15,18 +13,16 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.CatalogImageDownloadService;
 import com.ivy.sd.png.provider.AttendanceHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -43,7 +39,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -853,9 +848,11 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 downloadDigitalContents();
             } else {
 
+                if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
+                        CatalogImageDownloadProvider.getInstance(businessModel).callCatalogImageDownload();
+                }
                 checkLogin();
                 loginView.finishActivity();
-
             }
         }
     }
@@ -935,64 +932,10 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         }
     }
 
-    public class CatalogImagesDownload extends AsyncTask<String, Void, String> {
 
 
-        protected void onPreExecute() {
 
-        }
 
-        @Override
-        protected String doInBackground(String... params) {
-            // TODO Auto-generated method stub
-            Commons.print("CaTALOG IMAGE download start");
-            try {
-                if (android.os.Build.VERSION.SDK_INT > 9) {
-                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                    StrictMode.setThreadPolicy(policy);
-
-                    businessModel.getimageDownloadURL();
-                    businessModel.configurationMasterHelper.setAmazonS3Credentials();
-                    initializeTransferUtility();
-
-                    BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                            ConfigurationMasterHelper.SECRET_KEY);
-                    AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-
-                    ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.img_Down_URL + "Product/ProductCatalog/");
-                    List<S3ObjectSummary> files = listing.getObjectSummaries();
-
-                    while (listing.isTruncated()) {
-                        listing = s3.listNextBatchOfObjects(listing);
-                        files.addAll(listing.getObjectSummaries());
-                    }
-
-                    if (files != null && files.size() > 0) {
-                        businessModel.synchronizationHelper.setCatalogImageDownloadFinishTime(files.size() + "");
-                        businessModel.synchronizationHelper.setImageDetials(files);
-                    }
-                }
-                return "";
-            } catch (Exception e) {
-                Commons.printException(e);
-                return "Error";
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (!s.equalsIgnoreCase("Error")) {
-                Intent intent = new Intent(context, CatalogImageDownloadService.class);
-                context.startService(intent);
-            }
-
-        }
-
-    }
-
-    public void callCatalogImageDownload() {
-        new CatalogImagesDownload().execute();
-    }
 
     /**
      * After download all distributor wise data send acknowledge to server using this class
@@ -1044,12 +987,6 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     public void callRetailerFinish() {
         new UpdateRetailerFinish().execute();
-    }
-
-    public void clearAmazonDownload() {
-        if (transferUtility != null) {
-            transferUtility.cancelAllWithType(TransferType.DOWNLOAD);
-        }
     }
 
     /**
