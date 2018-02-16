@@ -1679,7 +1679,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                         }
 
-
                         if (bmodel.isEdit()) {
                             orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                     .getRetailerID(), null);
@@ -1817,6 +1816,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 finish();
                             }
                         }
+
                     } else {
                         Toast.makeText(
                                 this,
@@ -1866,6 +1866,28 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     surveyHelperNew.downloadModuleId("STANDARD");
                     surveyHelperNew.downloadQuestionDetails(MENU_STK_ORD);
                     surveyHelperNew.loadSurveyAnswers(0);
+                }
+
+                //Config to be confirmed for supplier Credit Limit
+//                if(bmodel.getRetailerMasterBO().getRpTypeCode().equals("CREDIT") && mSupplierList !=null && mSupplierList.size() > 0 &&
+//                        mSupplierList.get(mDefaultSupplierSelection).getCreditLimit() > 0){
+//                    bmodel.getRetailerMasterBO().setCreditLimit(mSupplierList.get(mDefaultSupplierSelection).getCreditLimit());
+//                }
+
+                if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+                    SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
+                    salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
+                    bmodel.reasonHelper.downloadSalesReturnReason();
+                    if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
+                        bmodel.productHelper.cloneReasonMaster(true);
+//
+                        salesReturnHelper.getInstance(this).clearSalesReturnTable(true);
+//
+////                        if (!bmodel.configurationMasterHelper.IS_INVOICE) {
+                            salesReturnHelper.getInstance(this).removeSalesReturnTable(true);
+                            salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(),"ORDER");
+////                        }
+                    }
                 }
 
                 if (bmodel.productHelper.getProductMaster().size() > 0) {
@@ -2476,15 +2498,18 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.productHelper.downloadSalesReturnSKUs();
 
 
-                    bmodel.productHelper.cloneReasonMaster();
+                    bmodel.productHelper.cloneReasonMaster(false);
 
                     Commons.print("Sales Return Prod Size<><><><<>" + bmodel.productHelper.getSalesReturnProducts().size());
 
-                    salesReturnHelper.getInstance(this).clearSalesReturnTable();
+                    salesReturnHelper.getInstance(this).clearSalesReturnTable(false);
+
+//                    Commons.print("Sales Return Prod <><><><<>" + bmodel.productHelper.getSalesReturnProducts());
 
                     if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                        salesReturnHelper.getInstance(this).removeSalesReturnTable();
-                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext());
+                        salesReturnHelper.getInstance(this).removeSalesReturnTable(false);
+//                        Commons.print("Sales Return Prod <><><><<>" + bmodel.productHelper.getSalesReturnProducts());
+                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(),"");
                     }
 
                     bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);

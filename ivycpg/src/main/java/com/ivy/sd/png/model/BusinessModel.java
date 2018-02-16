@@ -6751,7 +6751,7 @@ public class BusinessModel extends Application {
                 sb.append("select did,dname,type,0,parentid from DistributorMaster ");
 
             } else {
-                sb.append("select sid,sname,stype,isPrimary,parentid from Suppliermaster ");
+                sb.append("select sid,sname,stype,isPrimary,parentid,creditlimit from Suppliermaster ");
                 sb.append("where rid=" + QT(retailerMasterBO.getRetailerID()));
                 sb.append(" or rid= 0 order by isPrimary desc");
             }
@@ -6768,6 +6768,12 @@ public class BusinessModel extends Application {
                     }
                     supplierMasterBO.setIsPrimary(c.getInt(3));
                     supplierMasterBO.setDistParentID(c.getInt(4));
+
+                    if(c.getColumnCount() == 6)
+                        supplierMasterBO.setCreditLimit(c.getFloat(5));
+
+
+
                     mSupplierList.add(supplierMasterBO);
                 }
             }
