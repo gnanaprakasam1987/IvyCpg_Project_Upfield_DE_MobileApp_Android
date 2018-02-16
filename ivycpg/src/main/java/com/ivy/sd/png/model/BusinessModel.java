@@ -9043,6 +9043,176 @@ public class BusinessModel extends Application {
         return FileProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", f);
 
     }
+
+
+
+    public int getTotalCallsForTheDayExcludingDeviatedVisits() {
+        int total_calls = 0;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT COUNT(DISTINCT RETAILERID) FROM RETAILERMASTER");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext())
+                        total_calls = c.getInt(0);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getTotalCallsForTheDayExcludingDeviatedVisits", e);
+        }
+        return total_calls;
+    }
+
+    public int getVisitedCallsForTheDayExcludingDeviatedVisits() {
+        int visited_calls = 0;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select count(distinct retailerid) from retailermaster" +
+                    " where isvisited='Y' and isPlanned='Y' and isdeviated='N'");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    if (c.moveToNext()) {
+                        visited_calls = c.getInt(0);
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(
+                    "Error at getVisitedCallsForTheDayExcludingDeviatedVisits", e);
+        }
+        return visited_calls;
+    }
+
+    public int getProductiveCallsForTheDayExcludingDeviatedVisits() {
+        int productive_calls = 0;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = null;
+            if (configurationMasterHelper.IS_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+
+                if (beatMasterHealper.getTodayBeatMasterBO() == null
+                        || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                    c = db.selectSQL("select distinct(i.Retailerid) from InvoiceMaster i" +
+                            " inner join retailermaster r on i.retailerid=r.retailerid where r.isdeviated='N' and isPlanned='Y'");
+                } else {
+                    c = db.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
+                            + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
+                            + " where r.isdeviated='N' or RMI.isToday=1 and i.IsPreviousInvoice = 0 and isPlanned='Y'");
+                }
+            } else {
+                c = db.selectSQL("select  distinct(r.Retailerid) from OrderHeader o" +
+                        " inner join retailermaster r on o.retailerid=r.retailerid where r.isdeviated='N' and isPlanned='Y'");
+            }
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext())
+                        productive_calls = c.getCount();
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return productive_calls;
+    }
+
+    public DailyReportBO getNoOfInvoiceAndValue() {
+        DailyReportBO dailyRp = new DailyReportBO();
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select count(distinct InvoiceNo),sum(invNetamount) from Invoicemaster");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        dailyRp.setTotLines(c.getInt(0) + "");
+                        dailyRp.setTotValues(c.getDouble(1) + "");
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getNoOfInvoiceAndValue", e);
+        }
+        return dailyRp;
+    }
+
+    public DailyReportBO getFocusBrandInvoiceAmt() {
+        DailyReportBO dailyRp = new DailyReportBO();
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select count(distinct OrderID),sum(FocusPackValues) from OrderHeader");
+            sb.append(" where invoicestatus=1");
+            Cursor c = db
+                    .selectSQL(sb.toString());
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        dailyRp.setEffCoverage(c.getInt(0) + "");
+                        dailyRp.setTotValues(c.getDouble(1) + "");
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getFocusBrandInvoiceAmt", e);
+        }
+        return dailyRp;
+    }
+
+    public double getSalesReturnValue() {
+        double sale_return_value=0;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader");
+            Cursor c = db
+                    .selectSQL(sb.toString());
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        sale_return_value=c.getDouble(1);
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getFocusBrandInvoiceAmt", e);
+        }
+        return sale_return_value;
+    }
+
 }
 
 
