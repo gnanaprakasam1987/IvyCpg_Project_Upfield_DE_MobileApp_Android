@@ -690,8 +690,7 @@ public class OrderHelper {
         }
 
         if (totalBalanceQty > 0) {
-            Log.d("TotalBalanceQty",totalBalanceQty+"");
-            Log.d("TotalBalanceAmount",totalBalanceAmount+"");
+            //todo
         }
     }
 

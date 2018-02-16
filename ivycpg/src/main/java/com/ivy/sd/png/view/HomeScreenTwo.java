@@ -1882,10 +1882,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
                 //Config to be confirmed for supplier Credit Limit
-                if(bmodel.getRetailerMasterBO().getRpTypeCode().equals("CREDIT") && mSupplierList !=null && mSupplierList.size() > 0 &&
-                        mSupplierList.get(mDefaultSupplierSelection).getCreditLimit() > 0){
-                    bmodel.getRetailerMasterBO().setCreditLimit(mSupplierList.get(mDefaultSupplierSelection).getCreditLimit());
-                }
+//                if(bmodel.getRetailerMasterBO().getRpTypeCode().equals("CREDIT") && mSupplierList !=null && mSupplierList.size() > 0 &&
+//                        mSupplierList.get(mDefaultSupplierSelection).getCreditLimit() > 0){
+//                    bmodel.getRetailerMasterBO().setCreditLimit(mSupplierList.get(mDefaultSupplierSelection).getCreditLimit());
+//                }
 
                 if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                     SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);

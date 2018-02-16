@@ -1425,17 +1425,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     return;
                 }
 
-                if(BModel.configurationMasterHelper.ORD_CREDIT_LIMIT_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
-                    if(totalOrderValue > BModel.retailerMasterBO.getCreditLimit()){
-                        Toast.makeText(
-                                this,
-                                getResources().getString(
-                                        R.string.order_value_exceeded_credit_limit),
-                                Toast.LENGTH_SHORT).show();
-                        isClick = false;
-                        return;
-                    }
-                }
+//                if(BModel.configurationMasterHelper.ORD_CREDIT_LIMIT_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
+//                    if(totalOrderValue > BModel.retailerMasterBO.getCreditLimit()){
+//                        Toast.makeText(
+//                                this,
+//                                getResources().getString(
+//                                        R.string.order_value_exceeded_credit_limit),
+//                                Toast.LENGTH_SHORT).show();
+//                        isClick = false;
+//                        return;
+//                    }
+//                }
+
                 if(BModel.configurationMasterHelper.ORD_OVER_DUE_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
                     if(BModel.getRetailerMasterBO().getCreditDays() > 0  && orderHelper.isOverDueAvail(this)){
                         Toast.makeText(

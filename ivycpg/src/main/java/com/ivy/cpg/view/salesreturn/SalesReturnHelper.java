@@ -421,11 +421,7 @@ public class SalesReturnHelper {
             else
                 values = values+ ","+QT("")+ ","+QT("");
 
-            Log.d("ORDER ID INSERT ",orderId);
-
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
-
-            Log.d("ORDER ID INSERT ",values);
 
             // insert sales replacement and decrease the stock in hand.
             if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
