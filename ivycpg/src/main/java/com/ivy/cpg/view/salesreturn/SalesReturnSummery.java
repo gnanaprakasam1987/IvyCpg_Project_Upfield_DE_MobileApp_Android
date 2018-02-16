@@ -645,7 +645,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                 salesReturnHelper.saveSalesReturn(getApplicationContext(),"","");
                 // Update isVisited Flag
                 bmodel.updateIsVisitedFlag();
-                salesReturnHelper.clearSalesReturnTable();
+                salesReturnHelper.clearSalesReturnTable(false);
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);

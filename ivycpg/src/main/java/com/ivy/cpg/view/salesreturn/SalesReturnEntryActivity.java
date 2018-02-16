@@ -61,7 +61,10 @@ public class SalesReturnEntryActivity extends IvyBaseActivityNoActionBar {
         holderTop = getIntent().getIntExtra("top", 0);
 
         if (Pid != null)
-            setScreenTitle(bmodel.productHelper.getSalesReturnProductBOById(Pid).getProductShortName());
+            if(getIntent().getExtras().get("from").toString().equals("ORDER"))
+                setScreenTitle(bmodel.productHelper.getProductMasterBOById(Pid).getProductShortName());
+            else
+                setScreenTitle(bmodel.productHelper.getSalesReturnProductBOById(Pid).getProductShortName());
 
         initializeViews();
 
@@ -130,6 +133,7 @@ public class SalesReturnEntryActivity extends IvyBaseActivityNoActionBar {
                     bundle.putString("pid", Pid);
                     bundle.putInt("position", holderPosition);
                     bundle.putInt("top", holderTop);
+                    bundle.putString("from",getIntent().getExtras().get("from").toString());
                     Fragment returnFragment = new ReturnFragment();
                     returnFragment.setArguments(bundle);
                     return returnFragment;

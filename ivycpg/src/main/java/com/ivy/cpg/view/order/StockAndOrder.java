@@ -1415,7 +1415,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                     if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS) {
                         SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-                        salesReturnHelper.clearSalesReturnTable();
+                        salesReturnHelper.clearSalesReturnTable(true);
                         bmodel.productHelper.updateSalesReturnInfoInProductObj(null, "0", false);
                     }
                 } catch (Exception e) {
@@ -3909,8 +3909,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (vw == mBtnNext) {
 
-            if(bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
-                if (isBalanceReplaceAmt()) {
+            if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
+                if (!orderHelper.isPendingReplaceAmt()) {
                     onnext();
                 } else {
                     Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
@@ -6794,46 +6794,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         // MyAdapter lvwplist = new MyAdapter(mylist);
         lvwplist.setAdapter(new MyAdapter(mylist));
 //        salesReturnHelper = SalesReturnHelper.getInstance(this);
-    }
-
-    private boolean isBalanceReplaceAmt() {
-
-        int totalBalanceQty = 0;
-        float totalBalanceAmount = 0;
-
-        for (ProductMasterBO product : bmodel.productHelper.getSalesReturnProducts()) {
-            List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
-
-            int totalSalesReturnQty = 0;
-            float totalSalesReturnAmt = 0;
-            float replacementPrice = 0;
-            if (reasonList != null) {
-
-                for (SalesReturnReasonBO reasonBO : reasonList) {
-                    if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
-                        //Calculate sales return total qty and price.
-                        int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
-                        totalSalesReturnQty = totalSalesReturnQty + totalQty;
-                        totalSalesReturnAmt = totalSalesReturnAmt + (totalQty * reasonBO.getSrpedit());
-                        // Higher SRP edit price will be considered for replacement product price.
-                        if (replacementPrice < reasonBO.getSrpedit())
-                            replacementPrice = reasonBO.getSrpedit();
-                    }
-                }
-            }
-
-            // Calculate replacement qty price.
-            int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
-            float totalReplacementPrice = totalReplaceQty * replacementPrice;
-
-            totalBalanceQty = totalBalanceQty + (totalSalesReturnQty - totalReplaceQty);
-            totalBalanceAmount = totalBalanceAmount + (totalSalesReturnAmt - totalReplacementPrice);
-        }
-        if (totalBalanceAmount > 0)
-            return false;
-        else
-            return true;
-
     }
 
 }

@@ -1437,7 +1437,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                 }
                 if(BModel.configurationMasterHelper.ORD_OVER_DUE_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
-                    if(orderHelper.isOverDueAvail(this)){
+                    if(BModel.getRetailerMasterBO().getCreditDays() > 0  && orderHelper.isOverDueAvail(this)){
                         Toast.makeText(
                                 this,
                                 getResources().getString(

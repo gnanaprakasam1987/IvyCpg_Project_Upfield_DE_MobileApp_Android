@@ -119,7 +119,7 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
                 .findFragmentById(R.id.homescreen_fragment);
         mHomeScreenFragment.setmHomeScreenItemClickedListener(this);
 
-//        tempDbBackupMethod();
+        // tempDbBackupMethod();
 
     }
 

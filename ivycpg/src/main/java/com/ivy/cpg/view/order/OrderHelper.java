@@ -213,6 +213,10 @@ public class OrderHelper {
                         db.deleteSQL("OrderHeader", "OrderID=" + uid, false);
                         db.deleteSQL("OrderDetail", "OrderID=" + uid, false);
 
+                        if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) { //If Sales Return Available for Order
+                            deleteSalesReturnDatas(db,uid);
+                        }
+
                         // if scheme module enable ,delete tha scheme table
                         if (businessModel.configurationMasterHelper.IS_SCHEME_ON) {
                             db.deleteSQL(DataMembers.tbl_scheme_details,
@@ -632,8 +636,10 @@ public class OrderHelper {
                     && businessModel.retailerMasterBO.getRpTypeCode().equals(salesReturnHelper.CREDIT_TYPE))
                 updateCreditNoteprintList();
 
-            salesReturnHelper.saveSalesReturn(mContext, this.getOrderId(), "ORDER");
-            salesReturnHelper.clearSalesReturnTable();
+            if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+                salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER");
+                salesReturnHelper.clearSalesReturnTable(true);
+            }
 
             businessModel.setOrderHeaderNote("");
             businessModel.getOrderHeaderBO().setPO("");
@@ -2659,15 +2665,11 @@ public class OrderHelper {
         boolean isDuePassed = false;
         try{
             Cursor c = db.selectSQL("select InvoiceDate from InvoiceMaster where Retailerid='" + businessModel.getRetailerMasterBO().getRetailerID() + "' and invNetAmount > paidAmount");
-            if (businessModel.getRetailerMasterBO().getCreditDays() > 0 && c != null && c.getCount() > 0) {
+            if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-                    Date date = format.parse(c.getString(0));
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
-                    calendar.add(Calendar.DAY_OF_YEAR, businessModel.retailerMasterBO.getCreditDays());
-                    Date dueDate = format.parse(format.format(calendar.getTime()));
-                    Date currDate = format.parse(SDUtil.now(4));
+
+                    Date dueDate = DateUtil.addDaystoDate(DateUtil.convertStringToDateObject(c.getString(0),"yyyy/MM/dd"),businessModel.retailerMasterBO.getCreditDays());
+                    Date currDate = DateUtil.convertStringToDateObject(SDUtil.now(4),"yyyy/MM/dd");
                     Commons.print("Order Helper," + "dueDate " + dueDate + " -- currDate "+currDate);
 
                     if (dueDate.compareTo(currDate) != 0 && currDate.after(dueDate)) {
@@ -2689,5 +2691,53 @@ public class OrderHelper {
         return isDuePassed;
     }
 
+    public boolean isPendingReplaceAmt() {
 
+        float totalReturnAmount = 0;
+        float totalReplaceAmount = 0;
+
+        for (ProductMasterBO product : businessModel.productHelper.getSalesReturnProducts()) {
+            List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
+            if (reasonList != null) {
+                for (SalesReturnReasonBO reasonBO : reasonList) {
+                    if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
+                        //Calculate sales return total qty and price.
+                        int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
+                        totalReturnAmount = totalReturnAmount + (totalQty * product.getSrp());
+                    }
+                }
+            }
+            // Calculate replacement qty price.
+            int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
+            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * product.getSrp();
+        }
+        if (totalReturnAmount == totalReplaceAmount)
+            return false;
+        else
+            return true;
+
+    }
+
+    private void deleteSalesReturnDatas(DBUtil db,String id){
+
+        try{
+            Cursor c = db.selectSQL("Select uid from SalesReturnHeader where RefModuleTId = "+id);
+
+            if (c != null && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    String uid = c.getString(0);
+                    db.deleteSQL(DataMembers.tbl_SalesReturnHeader, "uid="
+                            + DatabaseUtils.sqlEscapeString(uid), false);
+                    db.deleteSQL(DataMembers.tbl_SalesReturnDetails, "uid="
+                            + DatabaseUtils.sqlEscapeString(uid), false);
+                    db.deleteSQL(DataMembers.tbl_SalesReturnReplacementDetails, "uid=" + DatabaseUtils.sqlEscapeString(uid), false);
+                }
+            }
+            c.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }

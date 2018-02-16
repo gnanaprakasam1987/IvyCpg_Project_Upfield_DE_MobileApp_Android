@@ -2723,9 +2723,15 @@ public class ProductHelper {
     }
 
 
-    public void cloneReasonMaster() {
+    public void cloneReasonMaster(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
         try {
-            for (ProductMasterBO product : mSalesReturnProducts) {
+            Vector<ProductMasterBO> productMasterBOs = null;
+            if(isFromOrder)
+                productMasterBOs = productMaster;
+            else
+                productMasterBOs = mSalesReturnProducts;
+
+            for (ProductMasterBO product : productMasterBOs) {
                 product.setSalesReturnReasonList(cloneIsolateList(product));
             }
         } catch (Exception e) {
@@ -2736,7 +2742,7 @@ public class ProductHelper {
     public static List<SalesReturnReasonBO> cloneIsolateList(ProductMasterBO product) {
         List<SalesReturnReasonBO> clone = null;
         try {
-            clone = new ArrayList<SalesReturnReasonBO>();
+            clone = new ArrayList<>();
             SalesReturnReasonBO item = new SalesReturnReasonBO();
             item.setCaseSize(product.getCaseSize());
             item.setOuterSize(product.getOutersize());

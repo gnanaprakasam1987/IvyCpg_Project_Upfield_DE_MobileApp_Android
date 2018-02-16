@@ -257,5 +257,6 @@
     <string name="multiple_of">Multiple of</string>
 
     <string name="return_products_price_not_matching_total_replacing_product_price">Return products price not matching total replacing product price</string>
-
+    <string name="order_value_exceeded_credit_limit">Order value exceeded credit limit</string>
+    <string name="pending_due_found_Order_cannot_be_proceed">Pending due found, Order cannot be proceed</string>
 </resources>

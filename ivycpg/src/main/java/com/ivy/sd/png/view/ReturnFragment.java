@@ -117,7 +117,10 @@ public class ReturnFragment extends IvyBaseFragment {
     private void process() {
 
         if (Pid != null) {
-            productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
+            if(getArguments().getString("from").equals("ORDER"))
+                productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
+            else
+                productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
         }
         if (productMasterBO != null) {
             //for pre saler

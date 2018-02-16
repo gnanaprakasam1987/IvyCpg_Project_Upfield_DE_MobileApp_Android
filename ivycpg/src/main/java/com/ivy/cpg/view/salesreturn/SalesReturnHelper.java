@@ -3,6 +3,9 @@ package com.ivy.cpg.view.salesreturn;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.ivy.lib.Utils;
@@ -418,21 +421,34 @@ public class SalesReturnHelper {
             else
                 values = values+ ","+QT("")+ ","+QT("");
 
+            Log.d("ORDER ID INSERT ",orderId);
+
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
+
+            Log.d("ORDER ID INSERT ",values);
 
             // insert sales replacement and decrease the stock in hand.
             if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
-                saveReplacementDetails(db, getSalesReturnID());
+                saveReplacementDetails(db, getSalesReturnID(),module);
             }
 
             columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode";
 
-            int siz = bmodel.productHelper.getSalesReturnProducts().size();
+            int siz = 0;
+            if (module.equals("ORDER"))
+                siz = bmodel.productHelper.getProductMaster().size();
+            else
+                siz = bmodel.productHelper.getSalesReturnProducts().size();
             int totalQty;
             double totalvalue = 0;
             for (int i = 0; i < siz; ++i) {
-                product = bmodel.productHelper
-                        .getSalesReturnProducts().elementAt(i);
+
+                if (module.equals("ORDER"))
+                    product = bmodel.productHelper
+                            .getProductMaster().elementAt(i);
+                else
+                    product = bmodel.productHelper
+                            .getSalesReturnProducts().elementAt(i);
 
                 for (SalesReturnReasonBO bo : product
                         .getSalesReturnReasonList()) {
@@ -769,12 +785,13 @@ public class SalesReturnHelper {
     public void loadSalesReturnData(Context mContext,String module) {
         DBUtil db = null;
         try {
+            String uId ="" ;
             db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             //previously stored status fetched from DB and set to obj
             String sb = "select SI.productid,SI.batchid,SI.Condition,SI.Pqty,SI.Cqty,SI.oldmrp,SI.mfgdate,SI.expdate,SI.outerqty,Si.invoiceno," +
-                    "SI.srpedited,SI.reason_type,SI.LotNumber,SI.status from SalesReturnDetails SI inner join SalesReturnHeader SH ON SH.uid=SI.uid " +
+                    "SI.srpedited,SI.reason_type,SI.LotNumber,SI.status,SH.uid from SalesReturnDetails SI inner join SalesReturnHeader SH ON SH.uid=SI.uid " +
                     "where SH.Retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and SH.upload='N' and SH.RefModule = '"+module+"' and SH.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId();
             Cursor c = db.selectSQL(sb);
             if (c != null && c.getCount() > 0) {
@@ -797,15 +814,17 @@ public class SalesReturnHelper {
                     if ("null".equals(lotNo)) {
                         lotNo = "";
                     }
-                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13));
+                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13),module);
                     Commons.print("inside sales return data load");
+
+                    uId = c.getString(14);
                 }
             }
             if (c != null) {
                 c.close();
             }
             if (SHOW_STOCK_REPLACE_PCS || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_OUTER)
-                loadSalesReplacementData(db);
+                loadSalesReplacementData(db,module,uId);
         } catch (Exception e) {
             Commons.printException(e + "");
         } finally {
@@ -815,8 +834,14 @@ public class SalesReturnHelper {
         }
     }
 
-    private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo, String status) {
-        ProductMasterBO productBO = bmodel.productHelper.getSalesReturnProductBOById(Integer.toString(pid));
+    private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo, String status,String module) {
+
+        ProductMasterBO productBO;
+        if(module.equals("ORDER"))
+            productBO = bmodel.productHelper.getProductMasterBOById(Integer.toString(pid));
+        else
+            productBO = bmodel.productHelper.getSalesReturnProductBOById(Integer.toString(pid));
+
         if (productBO != null) {
             for (SalesReturnReasonBO bo : bmodel.reasonHelper.getReasonSalesReturnMaster()) {
                 if (bo.getReasonID().equals(condition)) {
@@ -848,9 +873,15 @@ public class SalesReturnHelper {
     /**
      * This will clear the sales return value from the objects.
      */
-    public void clearSalesReturnTable() {
+    public void clearSalesReturnTable(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
         ProductMasterBO product;
-        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
+        Vector<ProductMasterBO> productMaster ;
+
+        if(isFromOrder)
+            productMaster = bmodel.productHelper.getProductMaster();
+        else
+            productMaster = bmodel.productHelper.getSalesReturnProducts();
+
         int siz = productMaster.size();
         for (int i = 0; i < siz; ++i) {
             product = productMaster.get(i);
@@ -881,14 +912,18 @@ public class SalesReturnHelper {
     }
 
     // set new to add data from db
-    public void removeSalesReturnTable() {
+    public void removeSalesReturnTable(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
         ProductMasterBO product;
-        Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
+        Vector<ProductMasterBO> productMaster ;
+        if(isFromOrder)
+            productMaster = bmodel.productHelper.getProductMaster();
+        else
+            productMaster = bmodel.productHelper.getSalesReturnProducts();
+
         int siz = productMaster.size();
         for (int i = 0; i < siz; ++i) {
             product = productMaster.get(i);
             product.setSalesReturnReasonList(new ArrayList<SalesReturnReasonBO>());
-
         }
     }
 
@@ -964,9 +999,13 @@ public class SalesReturnHelper {
         return total;
     }
 
-    private void saveReplacementDetails(DBUtil db, String uid) {
+    private void saveReplacementDetails(DBUtil db, String uid,String module) {
         String clumns = "uid,returnpid,batchid,uomid,uomCount,returnQty,Retailerid,pid,price,value,qty";
-        final Vector<ProductMasterBO> productMaster = bmodel.productHelper.getSalesReturnProducts();
+        final Vector<ProductMasterBO> productMaster;
+        if(module.equals("ORDER"))
+            productMaster= bmodel.productHelper.getProductMaster();
+        else
+            productMaster= bmodel.productHelper.getSalesReturnProducts();
         StringBuffer sb;
         double totalReplacementValue = 0.0;
 
@@ -1255,15 +1294,19 @@ public class SalesReturnHelper {
      *
      * @param db connection
      */
-    private void loadSalesReplacementData(DBUtil db) {
+    private void loadSalesReplacementData(DBUtil db,String module,String productId) {
         String sb = "select pid,batchid,uomid,qty from SalesReturnReplacementDetails " +
                 " where Retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
-                " and upload='N'";
+                " and upload='N' and uid = "+bmodel.QT(productId);
         Cursor c = db.selectSQL(sb);
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
                 String pid = c.getString(0);
-                ProductMasterBO productBO = bmodel.productHelper.getSalesReturnProductBOById(pid);
+                ProductMasterBO productBO;
+                if(module.equals("ORDER"))
+                    productBO = bmodel.productHelper.getProductMasterBOById(pid);
+                else
+                    productBO = bmodel.productHelper.getSalesReturnProductBOById(pid);
                 if (productBO != null) {
                     int uomid = c.getInt(2);
                     if (uomid == productBO.getPcUomid()) {
@@ -1323,7 +1366,7 @@ public class SalesReturnHelper {
             }
 
             // Clearing sales return object
-            clearSalesReturnTable();
+            clearSalesReturnTable(false);
 
             db.closeDB();
         } catch (Exception e) {

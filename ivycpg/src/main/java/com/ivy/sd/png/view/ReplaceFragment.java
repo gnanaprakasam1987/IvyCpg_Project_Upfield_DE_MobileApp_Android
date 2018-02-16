@@ -92,9 +92,6 @@ public class ReplaceFragment extends IvyBaseFragment {
         etRepCase = (EditText) view.findViewById(R.id.et_rep_csValue);
         etRepOuter = (EditText) view.findViewById(R.id.et_rep_ouValue);
 
-        productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
-
-
         btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) view.findViewById(R.id.tvTitleReturnQty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) view.findViewById(R.id.tvTitlerep)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -109,9 +106,11 @@ public class ReplaceFragment extends IvyBaseFragment {
     }
 
     private void process() {
-
         if (Pid != null) {
-            productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
+            if (getArguments().getString("from").equals("ORDER"))
+                productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
+            else
+                productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
         }
         if (productMasterBO != null) {
             int total = 0, caseSize = 0, outerSize = 0;

@@ -605,7 +605,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                     @Override
                     public void onPositiveButtonClick() {
                         salesReturnHelper
-                                .clearSalesReturnTable();
+                                .clearSalesReturnTable(false);
                         bmodel.outletTimeStampHelper
                                 .updateTimeStampModuleWise(SDUtil
                                         .now(SDUtil.TIME));
@@ -934,7 +934,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                salesReturnHelper.clearSalesReturnTable();
+                salesReturnHelper.clearSalesReturnTable(false);
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

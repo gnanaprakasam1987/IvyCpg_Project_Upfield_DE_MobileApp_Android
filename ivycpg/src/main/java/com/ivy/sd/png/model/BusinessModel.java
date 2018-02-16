@@ -6783,8 +6783,7 @@ public class BusinessModel extends Application {
 
                     if(c.getColumnCount() == 6)
                         supplierMasterBO.setCreditLimit(c.getFloat(5));
-                    else
-                        supplierMasterBO.setCreditLimit(0f);
+
 
 
                     mSupplierList.add(supplierMasterBO);
