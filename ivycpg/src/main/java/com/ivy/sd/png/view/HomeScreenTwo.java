@@ -1881,6 +1881,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     surveyHelperNew.loadSurveyAnswers(0);
                 }
 
+                if(bmodel.configurationMasterHelper.IS_SUPPLIER_CREDIT_LIMIT
+                        && bmodel.getRetailerMasterBO().getSupplierBO() !=null  &&
+                        bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit() > 0){
+                    bmodel.getRetailerMasterBO().setCreditLimit(bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit());
+                }
+
                 if (bmodel.productHelper.getProductMaster().size() > 0) {
                     bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_STK_ORD);
                     if (!bmodel.configurationMasterHelper.IS_VALIDATE_CREDIT_DAYS

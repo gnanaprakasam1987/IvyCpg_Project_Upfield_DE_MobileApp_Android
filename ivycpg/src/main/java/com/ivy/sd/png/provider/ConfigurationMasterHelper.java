@@ -209,6 +209,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_VANGPS_VALIDATION = "VGPSVAL";
     private static final String CODE_RET_SKIP_VALIDATION = "RSEQVAL";
     private static final String CODE_INV_CREDIT_BALANCE = "CREDIT01";
+    public boolean IS_SUPPLIER_CREDIT_LIMIT = false;
     private static final String CODE_POST_DATE_ALLOW = "COLL01";
     private static final String CODE_DELIVERY_DATE = "ORDB30";
     private static final String CODE_ALLOW_DECIMAL = "ORDB31";
@@ -2184,7 +2185,7 @@ public class ConfigurationMasterHelper {
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
-        
+
     }
 
     public void loadOrderReportConfiguration() {
@@ -3718,6 +3719,20 @@ public class ConfigurationMasterHelper {
 
             }
 
+            //RField Check to get Credit Limit value from Supplier Master
+            codeValue = null;
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster +
+                    " where hhtcode=" + bmodel.QT(CODE_INV_CREDIT_BALANCE) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    int value = c.getInt(0);
+                    if (value == 1) {
+                        IS_SUPPLIER_CREDIT_LIMIT = true;
+                    }
+                }
+                c.close();
+            }
 
             db.closeDB();
         } catch (Exception e) {
