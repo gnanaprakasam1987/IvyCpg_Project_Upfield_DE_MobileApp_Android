@@ -602,28 +602,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         updateMenuVisitStatus(menuDB);
         updateMenuVisitStatus(mInStoreMenu);
 
-        if (bmodel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID) {
-            String rSalesType = bmodel.getStandardListCode(bmodel.getRetailerMasterBO().getSalesTypeId());
+        String rSalesType = bmodel.getStandardListCode(bmodel.getRetailerMasterBO().getSalesTypeId());
+        if (bmodel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID && rSalesType.equalsIgnoreCase("INDIRECT")) {
 
-            if (rSalesType.equalsIgnoreCase("INDIRECT")) {
-                bmodel.retailerMasterBO.setDistributorId(Integer.parseInt(bmodel.retailerMasterBO.getRetailerID()));
+            bmodel.retailerMasterBO.setDistributorId(Integer.parseInt(bmodel.retailerMasterBO.getRetailerID()));
                 bmodel.retailerMasterBO.setDistParentId(0);
                 if (bmodel.retailerMasterBO.getAddress3() != null)
                     retailerCodeTxt.setText(bmodel.retailerMasterBO.getAddress3());
 
-            } else if (rSalesType.equalsIgnoreCase("DIRECT")) {
 
-                if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE
-                        && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
-                    mSupplierList = bmodel.downloadSupplierDetails();
-                    mSupplierAdapter = new ArrayAdapter<>(this,
-                            R.layout.supplier_selection_list_adapter, mSupplierList);
-
-                    updateDefaultSupplierSelection();
-                }
-
-
-            }
 
         } else {
             if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE

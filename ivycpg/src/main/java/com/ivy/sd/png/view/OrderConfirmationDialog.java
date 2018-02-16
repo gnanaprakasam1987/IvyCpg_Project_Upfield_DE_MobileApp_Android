@@ -43,9 +43,10 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
     private Context context;
 
     private TextView textView_shipment_label, textView_payment_label, textView_channel_label, textView_delivery_label, textView_delivery;
-    private TextView textView_supplier_label, textView_note, textView_note_label, textView_order_value, textView_order_value_label,label_drug_note, text_drug_note;;
+    private TextView textView_supplier_label, textView_note, textView_note_label, textView_order_value, textView_order_value_label, label_drug_note, text_drug_note;
+    ;
     private Spinner spinner_shipment, spinner_payment, spinner_dist_channel;
-    private LinearLayout layout_shipment, layout_payment, layout_channel, layout_delivery_date, layout_supplier, layout_note, layout_order_value,layout_drug_note;
+    private LinearLayout layout_shipment, layout_payment, layout_channel, layout_delivery_date, layout_supplier, layout_note, layout_order_value, layout_drug_note;
     private AutoCompleteTextView autoCompleteTextView_suppliers;
 
     private boolean isMandatory_shipment, isMandatory_payterm, isMandatory_channel;
@@ -190,45 +191,51 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_delivery_label.setText(configureBO.getMenuName());
                     textView_delivery.setText(businessModel.getOrderHeaderBO().getDeliveryDate());
                 } else if (configureBO.getConfigCode().equals(SUPPLIER_SELECTION)) {
-                    layout_supplier.setVisibility(View.VISIBLE);
-                    textView_supplier_label.setText(configureBO.getMenuName());
 
-                    ArrayList<SupplierMasterBO> mSupplierList = businessModel.downloadSupplierDetails();
-                    ArrayAdapter<SupplierMasterBO> mSupplierAdapter = new ArrayAdapter<>(context,
-                            R.layout.autocompelete_bluetext_layout, mSupplierList);
-                    mSupplierAdapter.setDropDownViewResource(R.layout.autocomplete_bluetext_list_item);
-                    autoCompleteTextView_suppliers.setAdapter(mSupplierAdapter);
-                    //  autoCompleteTextView_suppliers.setThreshold(1);
+                    String rSalesType = businessModel.getStandardListCode(businessModel.getRetailerMasterBO().getSalesTypeId());
+                    if (businessModel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID && rSalesType.equalsIgnoreCase("INDIRECT")) {
+                        layout_supplier.setVisibility(View.INVISIBLE);
+                    } else {
 
-                    autoCompleteTextView_suppliers.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View view, MotionEvent motionEvent) {
-                            autoCompleteTextView_suppliers.showDropDown();
-                            return false;
+                        layout_supplier.setVisibility(View.VISIBLE);
+                        textView_supplier_label.setText(configureBO.getMenuName());
+
+                        ArrayList<SupplierMasterBO> mSupplierList = businessModel.downloadSupplierDetails();
+                        ArrayAdapter<SupplierMasterBO> mSupplierAdapter = new ArrayAdapter<>(context,
+                                R.layout.autocompelete_bluetext_layout, mSupplierList);
+                        mSupplierAdapter.setDropDownViewResource(R.layout.autocomplete_bluetext_list_item);
+                        autoCompleteTextView_suppliers.setAdapter(mSupplierAdapter);
+                        //  autoCompleteTextView_suppliers.setThreshold(1);
+
+                        autoCompleteTextView_suppliers.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View view, MotionEvent motionEvent) {
+                                autoCompleteTextView_suppliers.showDropDown();
+                                return false;
+                            }
+                        });
+
+                        autoCompleteTextView_suppliers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+                                businessModel.getRetailerMasterBO().setDistributorId(((SupplierMasterBO) parent.getItemAtPosition(pos)).getSupplierID());
+                                businessModel.getRetailerMasterBO().setDistParentId(((SupplierMasterBO) parent.getItemAtPosition(pos)).getDistParentID());
+                            }
+                        });
+
+                        int position = 0;
+                        for (SupplierMasterBO supplierBO : mSupplierList) {
+                            if (businessModel.getRetailerMasterBO().getDistributorId() == supplierBO.getSupplierID()) {
+                                autoCompleteTextView_suppliers.setText(supplierBO.getSupplierName());
+                                break;
+                            } else {
+                                position++;
+                            }
                         }
-                    });
-
-                    autoCompleteTextView_suppliers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-                            businessModel.getRetailerMasterBO().setDistributorId(((SupplierMasterBO) parent.getItemAtPosition(pos)).getSupplierID());
-                            businessModel.getRetailerMasterBO().setDistParentId(((SupplierMasterBO) parent.getItemAtPosition(pos)).getDistParentID());
-                        }
-                    });
-
-                    int position = 0;
-                    for (SupplierMasterBO supplierBO : mSupplierList) {
-                        if (businessModel.getRetailerMasterBO().getDistributorId() == supplierBO.getSupplierID()) {
-                            autoCompleteTextView_suppliers.setText(supplierBO.getSupplierName());
-                            break;
-                        } else {
-                            position++;
-                        }
+                        autoCompleteTextView_suppliers.setSelection(position);
+                        mSupplierAdapter.notifyDataSetChanged();
+                        autoCompleteTextView_suppliers.dismissDropDown();
                     }
-                    autoCompleteTextView_suppliers.setSelection(position);
-                    mSupplierAdapter.notifyDataSetChanged();
-                    autoCompleteTextView_suppliers.dismissDropDown();
-
                     //
                 } else if (configureBO.getConfigCode().equals(NOTE)) {
                     layout_note.setVisibility(View.VISIBLE);
@@ -246,7 +253,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_order_value_label.setText(configureBO.getMenuName());
 
 
-                }else if (configureBO.getConfigCode().equals(ORDER_DRUG) && isDLDateExpired()) {
+                } else if (configureBO.getConfigCode().equals(ORDER_DRUG) && isDLDateExpired()) {
                     if (isDrugOrder(mOrderedProductList)) {
                         layout_drug_note.setVisibility(View.VISIBLE);
                         try {
@@ -262,7 +269,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
 
                         text_drug_note.setTextColor(context.getResources().getColor(R.color.RED));
                         label_drug_note.setText(configureBO.getMenuName());
-                    }else{
+                    } else {
                         layout_drug_note.setVisibility(View.GONE);
                     }
 
@@ -277,7 +284,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
 
     private boolean isDrugOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
         for (ProductMasterBO bo : mOrderedProductList) {
-            if (bo.getIsDrug()==1) {
+            if (bo.getIsDrug() == 1) {
                 return true;
             }
         }
