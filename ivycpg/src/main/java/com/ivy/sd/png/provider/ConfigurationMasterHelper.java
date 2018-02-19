@@ -1257,6 +1257,9 @@ public class ConfigurationMasterHelper {
 
     public boolean SHOW_SALES_RETURN_IN_ORDER;
 
+    private static final String CODE_CONTNIOUS_PRINT = "DUMMY";
+    public boolean IS_CONTNIOUS_PRINT=true;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
