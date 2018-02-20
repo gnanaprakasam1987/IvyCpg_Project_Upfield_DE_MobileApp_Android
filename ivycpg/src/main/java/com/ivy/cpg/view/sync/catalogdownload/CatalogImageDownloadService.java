@@ -3,13 +3,16 @@ package com.ivy.cpg.view.sync.catalogdownload;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -28,7 +31,7 @@ import java.util.zip.ZipInputStream;
 public class CatalogImageDownloadService extends IntentService {
     public static boolean isServiceRunning;
     public CatalogImageDownloadProvider catalogImageDownloadProvider;
-
+    private Intent broadCIntent;
     public CatalogImageDownloadService() {
         super(CatalogImageDownloadService.class.getName());
         catalogImageDownloadProvider = CatalogImageDownloadProvider.getInstance(this);
@@ -74,14 +77,16 @@ public class CatalogImageDownloadService extends IntentService {
         }
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Commons.print("Catalog service starting");
+        Commons.print("Unzip service starting");
+        broadCIntent = new Intent();
+        broadCIntent.setAction(CatalogImagesDownlaod.ImageDownloadReceiver.PROCESS_RESPONSE);
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public static boolean unzip(File zipFile, File targetDirectory) throws IOException {
+
+    public boolean unzip(File zipFile, File targetDirectory) throws IOException {
         Log.e("StartTimeZip", String.valueOf(new Date()));
         ZipInputStream zis = new ZipInputStream(
                 new BufferedInputStream(new FileInputStream(zipFile)));
@@ -122,6 +127,18 @@ public class CatalogImageDownloadService extends IntentService {
             zis.close();
         }
         Log.e("EndTimeZip", String.valueOf(new Date()));
+
+
+        if (broadCIntent != null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("Status", DataMembers.MESSAGE_UNZIPPED);
+            broadCIntent.putExtras(bundle);
+            sendBroadcast(broadCIntent);
+        }
+        // store time in SDCard
+        catalogImageDownloadProvider.setCatalogImageDownloadFinishTime("1", SDUtil.now(SDUtil.DATE_TIME));
+
+
         return true;
 
     }
