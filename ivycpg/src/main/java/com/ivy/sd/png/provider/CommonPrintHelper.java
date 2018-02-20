@@ -54,6 +54,8 @@ public class CommonPrintHelper {
     private int mPaperLenghtInChar;
     private int mGlobalPrecision;
 
+    private boolean isFromLabelMaster;
+
     private static String ALIGNMENT_RIGHT = "RIGHT";
     private static String ALIGNMENT_LEFT = "LEFT";
     private static String ALIGNMENT_CENTER = "CENTER";
@@ -419,6 +421,7 @@ public class CommonPrintHelper {
                             property_special = property_special == null ? "" : property_special;
                             String pres_str = xmlParser.getAttributeValue(null, "precision_count");
                             mGlobalPrecision = pres_str == null ? -1 : Integer.parseInt(pres_str);
+                            isFromLabelMaster = xmlParser.getAttributeValue(null, "isFromLabel").equalsIgnoreCase("yes") ? true : false;
                         } else if (name.equalsIgnoreCase("logo")) {
                             isLogoEnabled = true;
                         } else if (name.equalsIgnoreCase("newline")) {
@@ -1993,5 +1996,11 @@ public class CommonPrintHelper {
 
         setInvoiceData(sb);
 
+    }
+
+
+
+    public boolean isFromLabelMaster() {
+        return isFromLabelMaster;
     }
 }
