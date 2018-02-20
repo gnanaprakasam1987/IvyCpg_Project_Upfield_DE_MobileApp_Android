@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.login;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -35,13 +36,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.ApkDownloaderThread;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.DownloaderThread;
 import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -60,7 +62,6 @@ import com.ivy.sd.png.view.UserSettingsActivity;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
-
 
 
 public class LoginScreen extends IvyBaseActivityNoActionBar implements ApplicationConfigs, LoginContractor.LoginView {
@@ -307,6 +308,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
         return handler;
     }
 
+
+    @SuppressLint("HandlerLeak")
     private final Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             businessModel = (BusinessModel) getApplicationContext();
@@ -314,6 +317,10 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                 case DataMembers.NOTIFY_USEREXIST:
                     dismissAlertDialog();
                     loginPresenter.checkLogin();
+
+                    // This call will help to intiatiate catalog image download services.
+                    CatalogImageDownloadProvider.getInstance(businessModel).checkCatalogDownload();
+
                     finish();
                     break;
                 case DataMembers.NOTIFY_NOT_USEREXIST:
@@ -366,9 +373,10 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
     /**
      * This is the Handler for this activity. It will receive messages from the
-     * DownloaderThread and make the necessary updates to the UI.
+     * ApkDownloaderThread and make the necessary updates to the UI.
      */
-    private final Handler activityHandler = new Handler() {
+    @SuppressLint("HandlerLeak")
+    private final Handler fileDownloadHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
             /*
@@ -403,8 +411,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
                         callProgressDialog(getApplicationContext()
                                 .getString(R.string.progress_dialog_title_connecting), getApplicationContext()
-                                .getString(R.string.progress_dialog_message_prefix_connecting) + " " + url, 0, Message.obtain(this,
-                                DataMembers.MESSAGE_DOWNLOAD_CANCELED), false);
+                                .getString(R.string.progress_dialog_message_prefix_connecting) + " " + url, 0, null, false);
                     }
                     break;
             /*
@@ -425,71 +432,55 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                         callProgressDialog(getApplicationContext()
                                         .getString(R.string.progress_dialog_title_downloading), getApplicationContext()
                                         .getString(R.string.progress_dialog_message_prefix_downloading) + " " + fileName,
-                                msg.arg1, Message.obtain(this,
-                                        DataMembers.MESSAGE_DOWNLOAD_CANCELED), true);
+                                msg.arg1, null, true);
                     }
                     break;
 
 			/*
-             * Handling MESSAGE_DOWNLOAD_COMPLETE: 1. Remove the progress bar
+             * Handling MESSAGE_APK_DOWNLOAD_COMPLETE: 1. Remove the progress bar
 			 * from the screen. 2. Display Toast that says download is complete.
 			 */
-                case DataMembers.MESSAGE_DOWNLOAD_COMPLETE:
-                    dismissCurrentProgressDialog();
-                    if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
-                        LoginHelper.getInstance(LoginScreen.this).deleteAllValues(getApplicationContext());
-                        businessModel.activationHelper.clearAppUrl();
-                        businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
-                        try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setDataAndType(FileProvider.getUriForFile(LoginScreen.this, BuildConfig.APPLICATION_ID + ".provider", new File(LoginScreen.this.
-                                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                    + "/" + DataMembers.fileName)), "application/vnd.android.package-archive");
+                case DataMembers.MESSAGE_APK_DOWNLOAD_COMPLETE:
 
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            Commons.printException(e);
-                        }
-                    } else {
-                        loginPresenter.checkLogin();
-                        finishActivity();
+                    dismissCurrentProgressDialog();
+
+                    LoginHelper.getInstance(LoginScreen.this).deleteAllValues(getApplicationContext());
+                    businessModel.activationHelper.clearAppUrl();
+                    businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(FileProvider.getUriForFile(LoginScreen.this, BuildConfig.APPLICATION_ID + ".provider", new File(LoginScreen.this.
+                                getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                + "/" + DataMembers.fileName)), "application/vnd.android.package-archive");
+
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Commons.printException(e);
                     }
+
                     break;
 
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC:
                     dismissCurrentProgressDialog();
+
                     if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
-                        loginPresenter.callCatalogImageDownload();
-                    loginPresenter.checkLogin();
+                        CatalogImageDownloadProvider.getInstance(businessModel).callCatalogImageDownload();
+
                     finishActivity();
-                    break;
-
-			/*
-             * Handling MESSAGE_DOWNLOAD_CANCELLED: 1. Interrupt the downloader
-			 * thread. 2. Remove the progress bar from the screen. 3. Display
-			 * Toast that says download is complete.
-			 */
-                case DataMembers.MESSAGE_DOWNLOAD_CANCELED:
-                    loginPresenter.clearAmazonDownload();
-                    dismissCurrentProgressDialog();
-                    showAlert(getString(R.string.user_message_download_canceled), true);
-                    //finish();
-                    //businessModel.loadDashBordHome();
-                    BusinessModel.loadActivity(LoginScreen.this,
-                            DataMembers.actHomeScreen);
+                    loginPresenter.checkLogin();
 
                     break;
 
 			/*
-             * Handling MESSAGE_ENCOUNTERED_ERROR: 1. Check the obj field of the
+             * Handling MESSAGE_ENCOUNTERED_ERROR_APK: 1. Check the obj field of the
 			 * message for the actual error message that will be displayed to
 			 * the user. 2. Remove any progress bars from the screen. 3. Display
 			 * a Toast with the error message.
 			 */
-                case DataMembers.MESSAGE_ENCOUNTERED_ERROR:
+                case DataMembers.MESSAGE_ENCOUNTERED_ERROR_APK:
                     // obj will contain a string representing the error message
                     if (msg.obj != null && msg.obj instanceof String) {
                         String errorMessage = (String) msg.obj;
@@ -497,27 +488,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                         showAlert(errorMessage, false);
                     }
 
-                    if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
-                        try {
-                            LoginHelper.getInstance(LoginScreen.this).deleteUserMaster(getApplicationContext());
-                            startActivity(new Intent(LoginScreen.this, LoginScreen.class));
-                            finish();
-                            break;
-                        } catch (Exception e) {
-                            Commons.printException(e);
-                        }
+                    try {
+                        LoginHelper.getInstance(LoginScreen.this).deleteUserMaster(getApplicationContext());
+                        startActivity(new Intent(LoginScreen.this, LoginScreen.class));
+                        finish();
+                        break;
+                    } catch (Exception e) {
+                        Commons.printException(e);
                     }
 
-                    finish();
-
-                    if (businessModel.isDigitalContentAvailable()) {
-                        businessModel.configurationMasterHelper.setAmazonS3Credentials();
-                        loginPresenter.initializeTransferUtility();
-                        loginPresenter.downloadDigitalContents();
-                    } else {
-                        loginPresenter.checkLogin();
-                        finishActivity();
-                    }
 
                     break;
 
@@ -528,10 +507,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                         dismissCurrentProgressDialog();
                         showAlert(errorMessage, false);
                     }
+
                     if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
-                        loginPresenter.callCatalogImageDownload();
-                    finish();
+                        CatalogImageDownloadProvider.getInstance(businessModel).callCatalogImageDownload();
+
+                    finishActivity();
                     loginPresenter.checkLogin();
+
+
+
                     break;
 
                 case DataMembers.THIRD_PARTY_INSTALLATION_ERROR:
@@ -742,10 +726,10 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
             @Override
             public void onPositiveButtonClick() {
                 Commons.printInformation(businessModel.getUpdateURL());
-                Thread downloaderThread = new DownloaderThread(
-                        LoginScreen.this, activityHandler, businessModel
+                Thread downloaderThread = new ApkDownloaderThread(
+                        LoginScreen.this, fileDownloadHandler, businessModel
                         .getUpdateURL(), false,
-                        DownloaderThread.APK_DOWNLOAD);
+                        ApkDownloaderThread.APK_DOWNLOAD);
                 downloaderThread.start();
             }
         }).show();
@@ -856,7 +840,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
     @Override
     public void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility) {
         Thread downloaderThread = new DownloaderThreadNew(LoginScreen.this,
-                activityHandler, imgUrls,
+                fileDownloadHandler, imgUrls,
                 businessModel.userMasterHelper.getUserMasterBO()
                         .getUserid(), transferUtility);
         downloaderThread.start();
@@ -878,8 +862,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
             progressDialog.setIndeterminate(true);
         }
         // set the message to be sent when this dialog is canceled
-        progressDialog.setCancelMessage(newMsg);
-        progressDialog.setCancelable(true);
+        //progressDialog.setCancelMessage(newMsg);
+        // Don't allow cancellation
+        progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }

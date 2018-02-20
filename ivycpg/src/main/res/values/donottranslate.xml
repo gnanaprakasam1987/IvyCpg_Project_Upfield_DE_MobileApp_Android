@@ -255,4 +255,15 @@
     <string name="Please_enter_multiple_of">Please enter multiple of rfield value</string>
     <string name="piece">Piece</string>
     <string name="multiple_of">Multiple of</string>
+
+    <string name="return_products_price_not_matching_total_replacing_product_price">Return products price not matching total replacing product price</string>
+    <string name="order_value_exceeded_credit_limit">Order value exceeded credit limit</string>
+    <string name="pending_due_found_Order_cannot_be_proceed">Pending due found, Order cannot be proceed</string>
+
+    <string name="connection_error_please_try_again">Connection error. Please try again.</string>
+    <string name="refreshing">Refreshing</string>
+    <string name="no_space">No space available.</string>
+    <string name="un_zip">Unzipping...</string>
+
+
 </resources>

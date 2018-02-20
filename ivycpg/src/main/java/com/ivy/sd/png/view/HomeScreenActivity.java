@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
@@ -20,8 +22,16 @@ import com.ivy.cpg.view.van.PlanningSubScreenFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created by rajkumar.s on 12/30/2016.
@@ -109,6 +119,8 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
                 .findFragmentById(R.id.homescreen_fragment);
         mHomeScreenFragment.setmHomeScreenItemClickedListener(this);
 
+        // tempDbBackupMethod();
+
     }
 
     public Handler getHandler() {
@@ -174,6 +186,48 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
+        }
+    }
+
+    public boolean tempDbBackupMethod() {
+
+//        ivyapp.deleteMethod();
+        String currentDBPath = DataMembers.DB_PATH.concat(ApplicationConfigs.DB_NAME);
+        Boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+        if (isSDPresent) {
+            File folder;
+            folder = new File(
+                    this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                            + "/pandg/");
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+
+            String path = folder + "";
+
+            File SDPath = new File(path);
+            if (!SDPath.exists()) {
+                SDPath.mkdir();
+            }
+            try {
+                File currentDB = new File(currentDBPath);
+                InputStream input = new FileInputStream(currentDB);
+                byte dataa[] = new byte[input.available()];
+                input.read(dataa);
+
+                OutputStream out = new FileOutputStream(path + "/"
+                        + ApplicationConfigs.DB_NAME);
+                out.write(dataa);
+                out.flush();
+                out.close();
+                input.close();
+            } catch (Exception e) {
+                Log.d("exception", e + "");
+                return false;
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 }

@@ -18,6 +18,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -34,6 +36,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -68,7 +71,9 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
@@ -245,6 +250,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     boolean isFromHomeScreen = false;
     private OrderHelper orderHelper;
 
+    private static final int SALES_RETURN = 3;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -360,7 +367,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
 
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -1408,7 +1415,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                     if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS) {
                         SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-                        salesReturnHelper.clearSalesReturnTable();
+                        salesReturnHelper.clearSalesReturnTable(true);
                         bmodel.productHelper.updateSalesReturnInfoInProductObj(null, "0", false);
                     }
                 } catch (Exception e) {
@@ -1626,6 +1633,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.srpEdit = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_srpedit);
 
+                holder.salesReturn = (TextView) row
+                        .findViewById(R.id.stock_and_order_listview_sales_return_qty);
+
                 holder.total = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_total);
 
@@ -1671,6 +1681,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.rep_pcs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.indicativeOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.cleanedOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.salesReturn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
 
                 if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
                     holder.psq.setVisibility(View.VISIBLE);
@@ -1686,6 +1698,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_SEC)
                     holder.ssrp.setVisibility(View.GONE);
+
+                if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                    holder.salesReturn.setVisibility(View.VISIBLE);
+
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP)
                     holder.mrp.setVisibility(View.GONE);
 
@@ -1973,6 +1989,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     .setText(bmodel.labelsMasterHelper
                                             .applyLabels(row.findViewById(
                                                     R.id.srpTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
+
+                if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                    ((LinearLayout) row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
+                else {
+                    try {
+                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.stkRtTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.stkRtTitle).getTag()));
                     } catch (Exception e) {
                         Commons.printException(e + "");
                     }
@@ -3114,6 +3145,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 });
 
 
+                holder.salesReturn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        View vChild = lvwplist.getChildAt(0);
+                        int holderPosition = lvwplist.getFirstVisiblePosition();
+                        int holderTop = (vChild == null) ? 0 : (vChild.getTop() - lvwplist.getPaddingTop());
+
+                        productName.setText(holder.pname);
+                        showSalesReturnDialog(holder.productObj.getProductID(), v, holderPosition, holderTop);
+                    }
+                });
+
+
                 holder.iv_info.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -3262,6 +3306,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 } else {
                     holder.shelfouter.setText("");
                 }
+            }
+
+            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                    || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
+                int total = 0;
+                for (SalesReturnReasonBO obj : product.getSalesReturnReasonList())
+                    total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
+                String strTotal = Integer.toString(total);
+                holder.salesReturn.setText(strTotal);
             }
 
             if (holder.productObj.getLocations()
@@ -3551,6 +3604,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView rep_cs;
         private TextView rep_ou;
         private ImageView iv_info, imageView_stock;
+        private TextView salesReturn;
     }
 
     private void calculateSONew(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
@@ -3855,8 +3909,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (vw == mBtnNext) {
 
+            if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
+                if (!orderHelper.isPendingReplaceAmt()) {
+                    onnext();
+                } else {
+                    Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
+                }
+            }
+            else
+                onnext();
 
-            onnext();
         } else if (vw == mBtnGuidedSelling_next) {
             boolean isAllDone = true;
             boolean isCurrentLogicDone = false;
@@ -4329,24 +4391,36 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-            } else {
-                // Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-                strBarCodeSearch = result.getContents();
-                if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
-                    bmodel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));
-                    mEdt_searchproductName.setText(strBarCodeSearch);
-                    if (viewFlipper.getDisplayedChild() == 0) {
-                        viewFlipper.showNext();
 
-
+        if (requestCode == SALES_RETURN) {
+            if (resultCode == RESULT_OK) {
+                overridePendingTransition(0, R.anim.zoom_exit);
+                updateValue();
+                refreshList();
+                Bundle extras = data.getExtras();
+                int holderPosition = extras.getInt("position", 0);
+                int holderTop = extras.getInt("top", 0);
+                if (mylist.size() > 0)
+                    lvwplist.setSelectionFromTop(holderPosition, holderTop);
+            }
+        }else {
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                } else {
+                    // Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                    strBarCodeSearch = result.getContents();
+                    if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
+                        bmodel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));
+                        mEdt_searchproductName.setText(strBarCodeSearch);
+                        if (viewFlipper.getDisplayedChild() == 0) {
+                            viewFlipper.showNext();
+                        }
                     }
                 }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -6699,6 +6773,27 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mMOQHighlightDialog.setCancelable(false);
             mMOQHighlightDialog.show(ft, "Sample Fragment");
         }
+    }
+
+    private void showSalesReturnDialog(String productId, View v, int holderPostion, int holderTop) {
+        Intent intent = new Intent(this,SalesReturnEntryActivity.class);
+        intent.putExtra("pid", productId);
+        intent.putExtra("position", holderPostion);
+        intent.putExtra("top", holderTop);
+        intent.putExtra("from","ORDER");
+
+        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+        ActivityCompat.startActivityForResult(this, intent, SALES_RETURN, opts.toBundle());
+    }
+
+    public void refreshList() {
+        String strPname = getResources().getString(
+                R.string.product_name)
+                + " (" + mylist.size() + ")";
+        pnametitle.setText(strPname);
+        // MyAdapter lvwplist = new MyAdapter(mylist);
+        lvwplist.setAdapter(new MyAdapter(mylist));
+//        salesReturnHelper = SalesReturnHelper.getInstance(this);
     }
 
 }

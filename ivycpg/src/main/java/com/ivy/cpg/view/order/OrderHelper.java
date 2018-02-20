@@ -3,9 +3,11 @@ package com.ivy.cpg.view.order;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -25,7 +27,11 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -206,6 +212,10 @@ public class OrderHelper {
 
                         db.deleteSQL("OrderHeader", "OrderID=" + uid, false);
                         db.deleteSQL("OrderDetail", "OrderID=" + uid, false);
+
+                        if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) { //If Sales Return Available for Order
+                            deleteSalesReturnDatas(db,uid);
+                        }
 
                         // if scheme module enable ,delete tha scheme table
                         if (businessModel.configurationMasterHelper.IS_SCHEME_ON) {
@@ -620,6 +630,17 @@ public class OrderHelper {
                 Commons.printException(e);
             }
 
+            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
+
+            if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION
+                    && businessModel.retailerMasterBO.getRpTypeCode().equals(salesReturnHelper.CREDIT_TYPE))
+                updateCreditNoteprintList();
+
+            if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+                salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER");
+                salesReturnHelper.clearSalesReturnTable(true);
+            }
+
             businessModel.setOrderHeaderNote("");
             businessModel.getOrderHeaderBO().setPO("");
             businessModel.getOrderHeaderBO().setRemark("");
@@ -628,9 +649,49 @@ public class OrderHelper {
 
         } catch (Exception e) {
             Commons.printException(e);
-
         }
 
+    }
+
+    private void updateCreditNoteprintList() {
+
+        int totalBalanceQty = 0;
+        float totalBalanceAmount = 0;
+
+        for (ProductMasterBO product : businessModel.productHelper.getSalesReturnProducts()) {
+            List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
+
+            int totalSalesReturnQty = 0;
+            float totalSalesReturnAmt = 0;
+            float replacementPrice = 0;
+            if (reasonList != null) {
+
+                for (SalesReturnReasonBO reasonBO : reasonList) {
+                    if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
+                        //Calculate sales return total qty and price.
+                        int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
+                        totalSalesReturnQty = totalSalesReturnQty + totalQty;
+                        totalSalesReturnAmt = totalSalesReturnAmt + (totalQty * reasonBO.getSrpedit());
+                        // Higher SRP edit price will be considered for replacement product price.
+                        if (replacementPrice < reasonBO.getSrpedit())
+                            replacementPrice = reasonBO.getSrpedit();
+                    }
+                }
+            }
+
+            // Calculate replacement qty price.
+            int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
+            float totalReplacementPrice = totalReplaceQty * replacementPrice;
+
+            totalBalanceQty = totalBalanceQty + (totalSalesReturnQty - totalReplaceQty);
+            totalBalanceAmount = totalBalanceAmount + (totalSalesReturnAmt - totalReplacementPrice);
+
+            // set the total qty and value in ProductBO to enable print.
+        }
+
+        if (totalBalanceQty > 0) {
+            //todo
+        }
     }
 
 
@@ -1224,7 +1285,6 @@ public class OrderHelper {
             }
         }
     }
-
 
     /**
      * This method will save the Invoice into InvoiceMaster table as well as the
@@ -2596,5 +2656,87 @@ public class OrderHelper {
         return false;
     }
 
+    public boolean isOverDueAvail(Context mContext){
 
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        boolean isDuePassed = false;
+        try{
+            Cursor c = db.selectSQL("select InvoiceDate from InvoiceMaster where Retailerid='" + businessModel.getRetailerMasterBO().getRetailerID() + "' and invNetAmount > paidAmount");
+            if (c != null && c.getCount() > 0) {
+                while (c.moveToNext()) {
+
+                    Date dueDate = DateUtil.addDaystoDate(DateUtil.convertStringToDateObject(c.getString(0),"yyyy/MM/dd"),businessModel.retailerMasterBO.getCreditDays());
+                    Date currDate = DateUtil.convertStringToDateObject(SDUtil.now(4),"yyyy/MM/dd");
+                    Commons.print("Order Helper," + "dueDate " + dueDate + " -- currDate "+currDate);
+
+                    if (dueDate.compareTo(currDate) != 0 && currDate.after(dueDate)) {
+                        isDuePassed = true;
+                        break;
+                    }
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+            return isDuePassed;
+
+        }catch(Exception e){
+            db.closeDB();
+            Commons.printException("" + e);
+        }
+        return isDuePassed;
+    }
+
+    public boolean isPendingReplaceAmt() {
+
+        float totalReturnAmount = 0;
+        float totalReplaceAmount = 0;
+
+        for (ProductMasterBO product : businessModel.productHelper.getSalesReturnProducts()) {
+            List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
+            if (reasonList != null) {
+                for (SalesReturnReasonBO reasonBO : reasonList) {
+                    if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
+                        //Calculate sales return total qty and price.
+                        int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
+                        totalReturnAmount = totalReturnAmount + (totalQty * product.getSrp());
+                    }
+                }
+            }
+            // Calculate replacement qty price.
+            int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
+            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * product.getSrp();
+        }
+        if (totalReturnAmount == totalReplaceAmount)
+            return false;
+        else
+            return true;
+
+    }
+
+    private void deleteSalesReturnDatas(DBUtil db,String id){
+
+        try{
+            Cursor c = db.selectSQL("Select uid from SalesReturnHeader where RefModuleTId = "+id);
+
+            if (c != null && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    String uid = c.getString(0);
+                    db.deleteSQL(DataMembers.tbl_SalesReturnHeader, "uid="
+                            + DatabaseUtils.sqlEscapeString(uid), false);
+                    db.deleteSQL(DataMembers.tbl_SalesReturnDetails, "uid="
+                            + DatabaseUtils.sqlEscapeString(uid), false);
+                    db.deleteSQL(DataMembers.tbl_SalesReturnReplacementDetails, "uid=" + DatabaseUtils.sqlEscapeString(uid), false);
+                }
+            }
+            c.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }

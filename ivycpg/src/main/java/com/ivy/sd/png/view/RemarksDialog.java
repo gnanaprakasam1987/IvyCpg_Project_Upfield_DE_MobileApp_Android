@@ -294,7 +294,12 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                     bmodel.setRField1((isSpinnerAvailable) ?
                             ((ReasonMaster) spnRField1.getSelectedItem()).getReasonDesc() : rField1.getText().toString());
                     bmodel.setRField2(rField2.getText().toString());
-                    bmodel.setRemarkType(((ReasonMaster) spinner_remark_type.getSelectedItem()).getReasonID());
+                    try {
+                        bmodel.setRemarkType(((ReasonMaster) spinner_remark_type.getSelectedItem()).getReasonID());
+                    }catch (NullPointerException e){
+                        bmodel.setRemarkType("0");
+                    }
+
                     break;
                 case "MENU_CLOSING":
                     bmodel.setStockCheckRemark(remarks.getText().toString());

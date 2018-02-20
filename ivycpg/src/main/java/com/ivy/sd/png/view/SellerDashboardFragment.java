@@ -104,6 +104,12 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private static final String CODE11 = "ASP";
     private static final String CODE12 = "ABV";
     private static final String CODE13 = "INV";
+    private static final String CODE_EFF_VISIT = "EFV";
+    private static final String CODE_EFF_SALE = "EFS";
+    private static final String CODE_DROP_SIZE = "DSZ";
+    private static final String CODE_SALES_VS_WEEKLY_OBJ = "SWO";
+    private static final String CODE_INIT_VS_WEEKLY_OBJ = "IWO";
+    private static final String CODE_RETURN_RATE = "RRA";
 
     private int NUM_ITEMS = 1;
     private double incentive = 0.0;
@@ -467,7 +473,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             if (dashboardData.getFlex1() == 1) {
                 holder.acheived.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiAcheived()));
                 holder.target.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiTarget()));
-                holder.balance.setText(bmodel.dashBoardHelper.getWhole(bmodel.formatValue(SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived()))));
+                holder.balance.setText(bmodel.dashBoardHelper.getWhole(bmodel.formatValue(SDUtil.convertToDouble(dashboardData.getKpiTarget()) - SDUtil.convertToDouble(dashboardData.getKpiAcheived()))));
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
                 float temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
                 if (temp_ach > 0) {
@@ -498,7 +504,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 } else {
                     holder.index.setText(strCalcPercentage);
                 }
-                holder.balance.setText(bmodel.formatValue((SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived()))));
+                holder.balance.setText(bmodel.formatValue((SDUtil.convertToDouble(dashboardData.getKpiTarget()) - SDUtil.convertToDouble(dashboardData.getKpiAcheived()))));
                 holder.kpiFlex1.setText(dashboardData.getKpiFlex());
                 holder.incentive.setText(bmodel.formatValue(SDUtil.convertToDouble(dashboardData.getKpiIncentive() + "")));
                 String strKpiScore = dashboardData.getKpiScore() + "";
@@ -925,6 +931,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                 if (selectedInterval.equals(DAY) && mSelectedUserId == bmodel.userMasterHelper.getUserMasterBO().getUserid()) {
                     DailyReportBO outlet = bmodel.getDailyRep();
+                    int totalcalls = bmodel.getTotalCallsForTheDayExcludingDeviatedVisits();
+                    //in getNoOfInvoiceAndValue getTotValues refers sum of invoice amt and getTotLines refers num of invoice
+                    DailyReportBO dailrp = bmodel.getNoOfInvoiceAndValue();
+
                     for (DashBoardBO dashBoardBO : bmodel.dashBoardHelper.getDashListViewList()) {
                         if (dashBoardBO.getCode().equalsIgnoreCase(CODE9) | dashBoardBO.getCode().equalsIgnoreCase(CODE10) || dashBoardBO.getCode().equalsIgnoreCase(CODE11) ||
                                 dashBoardBO.getCode().equalsIgnoreCase(CODE12)) {
@@ -1274,6 +1284,42 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                             }
 
                         }
+                        else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_VISIT)) {
+                            int visitedcalls = bmodel.getVisitedCallsForTheDayExcludingDeviatedVisits();
+                            if (totalcalls == 0) {
+                                dashBoardBO.setKpiAcheived("0");
+                            } else {
+                                dashBoardBO.setKpiAcheived((visitedcalls / totalcalls) + "");
+                            }
+
+                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_SALE)) {
+                            int productivecalls = bmodel.getProductiveCallsForTheDayExcludingDeviatedVisits();
+                            if (totalcalls == 0) {
+                                dashBoardBO.setKpiAcheived("0");
+                            } else {
+                                dashBoardBO.setKpiAcheived((productivecalls / totalcalls) + "");
+                            }
+                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_DROP_SIZE)) {
+                            if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
+                                dashBoardBO.setKpiAcheived("0");
+                            } else {
+                                dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp.getTotValues()) / SDUtil.convertToDouble(dailrp.getTotLines())) + "");
+                            }
+                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_SALES_VS_WEEKLY_OBJ)) {
+                            dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp.getTotValues())) + "");
+                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_INIT_VS_WEEKLY_OBJ)) {
+                            //in getFocusBrandInvoiceAmt getTotValues refers sum of invoice amt of focus brands
+                            DailyReportBO dailrp_focus_brand = bmodel.getFocusBrandInvoiceAmt();
+                            dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp_focus_brand.getTotValues())) + "");
+                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE)) {
+                            double sales_ret_val = bmodel.getSalesReturnValue();
+                            if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
+                                dashBoardBO.setKpiAcheived("0");
+                            } else {
+                                dashBoardBO.setKpiAcheived((sales_ret_val / (SDUtil.convertToDouble(dailrp.getTotValues()))) + "");
+                            }
+                        }
+
                     }
                     dashBoardListViewAdapter.notifyDataSetChanged();
                 } else if (selectedInterval.equals(P3M)) {
