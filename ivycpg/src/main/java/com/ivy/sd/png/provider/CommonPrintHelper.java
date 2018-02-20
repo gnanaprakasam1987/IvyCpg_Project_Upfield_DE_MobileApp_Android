@@ -239,6 +239,8 @@ public class CommonPrintHelper {
             int product_header_border_char_length = 0;
             String product_header_border_char = "-";
 
+            int mLengthUptoPName=0;
+
             int event = xmlParser.getEventType();
             while (event != XmlPullParser.END_DOCUMENT) {
                 String name = xmlParser.getName();
@@ -274,6 +276,7 @@ public class CommonPrintHelper {
                                     sb.append(newline);
 
                                 }
+
                             }
 
                             lineValue = "";
@@ -316,6 +319,7 @@ public class CommonPrintHelper {
                                     mAttrValue = attr_text;
                                 }
 
+
                             } else {
                                 mAttrValue = getValue(attr_name, attr_text, attr_secondary_text, attr_precision);
 
@@ -325,6 +329,7 @@ public class CommonPrintHelper {
                                     else
                                         mAttrValue = attr_name;
                                 }
+
                             }
                             if (!attr_name.contains("discount_bill_entry")
                                     && !attr_name.contains("discount_product")
@@ -380,6 +385,21 @@ public class CommonPrintHelper {
 
                             sb.append(mAttrValue);
                             lineValue += mAttrValue;
+
+
+                            if (group_name != null && group_name.equalsIgnoreCase("product_details")) {
+                                mLengthUptoPName = mLengthUptoPName + attr_length + attr_space;
+                                if (product_name_single_line.equalsIgnoreCase("YES")) {
+                                    if (attr_name.equalsIgnoreCase(TAG_PRODUCT_NAME)) {
+                                        sb.append("\n");
+                                        char emptySpace = ' ';
+                                        for (int sp = 0; sp < mLengthUptoPName; sp++) {
+                                            sb.append(emptySpace);
+                                        }
+
+                                    }
+                                }
+                            }
 
                             if (group_name != null) {
                                 AttributeListBO attr = new AttributeListBO();
