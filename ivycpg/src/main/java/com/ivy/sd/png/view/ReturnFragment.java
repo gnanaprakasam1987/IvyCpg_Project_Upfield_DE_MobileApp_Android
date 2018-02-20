@@ -85,7 +85,6 @@ public class ReturnFragment extends IvyBaseFragment {
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 getActivity().INPUT_METHOD_SERVICE);
 
-
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         bmodel.configurationMasterHelper.checkSalesReturnValidateConfig();
@@ -110,7 +109,6 @@ public class ReturnFragment extends IvyBaseFragment {
         returnList = (ListView) view.findViewById(R.id.list);
         returnList.setCacheColorHint(0);
 
-
         btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
         tvAddreason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
@@ -119,7 +117,10 @@ public class ReturnFragment extends IvyBaseFragment {
     private void process() {
 
         if (Pid != null) {
-            productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
+            if(getArguments().getString("from").equals("ORDER"))
+                productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
+            else
+                productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
         }
         if (productMasterBO != null) {
             //for pre saler

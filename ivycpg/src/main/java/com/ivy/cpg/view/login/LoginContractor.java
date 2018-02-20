@@ -34,6 +34,7 @@ public interface LoginContractor {
         int getPasswordLockCount();
 
         void callUpdateFinish();
+
     }
 
     interface LoginView {

@@ -448,12 +448,8 @@ public class DownloaderThreadNew extends Thread {
             mExternalStorageAvailable = mExternalStorageWriteable = false;
         }
 
-        if (mExternalStorageAvailable == true
-                && mExternalStorageWriteable == true && mbAvailable > 10) {
-            return true;
-        } else {
-            return false;
-        }
+        return mExternalStorageAvailable
+                && mExternalStorageWriteable && mbAvailable > 10;
     }
 
 }

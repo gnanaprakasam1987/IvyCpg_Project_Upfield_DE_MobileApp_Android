@@ -1548,7 +1548,6 @@ SynchronizationHelper {
     }
 
     /**
-     *
      * @param url
      * @param isFromWhere
      * @param totalListCount
@@ -4681,6 +4680,7 @@ SynchronizationHelper {
     /**
      * This method is used to retrive response as string.
      * Headers will not be processed.
+     *
      * @param url
      * @param jsonObject
      * @return
@@ -4997,236 +4997,6 @@ SynchronizationHelper {
         return check;
     }
 
-    public void insertImageDetails(List<S3ObjectSummary> filesList) {
-        Commons.print("insert start time " + SDUtil.now(SDUtil.TIME));
-        android.database.sqlite.SQLiteDatabase database;
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            database = db.getWritableDatabase();
-            database.beginTransaction();
-            String columns = "Key,lastModified";
-            ContentValues values = new ContentValues();
-            for (int i = 0; i < filesList.size(); i++) {
-                values.put("Key", filesList.get(i).getKey());
-                values.put("lastModified", filesList.get(i).getLastModified() + "");
-                values.put("Flag", 0);
-
-                /*String values = bmodel.QT(filesList.get(i).getKey())
-                        + ","
-                        + bmodel.QT(filesList.get(i).getLastModified() + "");*/
-
-                database.insert("CatalogImagesDetails", columns, values);
-            }
-            database.setTransactionSuccessful();
-            database.endTransaction();
-            db.closeDB();
-            Commons.print("insert end time " + SDUtil.now(SDUtil.TIME));
-        } catch (Exception e) {
-            Commons.printException("insertImageDetails" + e);
-        }
-    }
-
-    private List<S3ObjectSummary> filesList;
-
-    public void setImageDetials(List<S3ObjectSummary> imageDetails) {
-        filesList = imageDetails;
-    }
-
-    public List<S3ObjectSummary> getImageDetails() {
-       /* filesList = new ArrayList<>();
-        S3ObjectSummary fileData;
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            Cursor c = db.selectSQL("Select * from CatalogImagesDetails where Flag != 1");
-            *//*Cursor c = db.selectSQL("Select CID.Key, CID.lastModified,PM.pCode,CID.Flag from CatalogImagesDetails CID " +
-                    "INNER JOIN ProductMaster PM ON CID.Key = '" + DataMembers.S3_ROOT_DIRECTORY + "/Product/ProductCatalog/'" +
-                    "|| PM.pCode ||'.jpg' AND PM.PLid = (Select Max(LevelId) from ProductLevel) Where CID.Flag != 1");
-*//*
-            if (c != null && c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    fileData = new S3ObjectSummary();
-                    fileData.setKey(c.getString(c.getColumnIndex("Key")));
-                    fileData.setBucketName(DataMembers.S3_ROOT_DIRECTORY);
-                    fileData.setETag(c.getString(c.getColumnIndex("lastModified")));
-                    filesList.add(fileData);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("Error catalog images list", e);
-        }
-        Commons.print("File List size " + filesList.size());*/
-        if (filesList == null)
-            return new ArrayList<>();
-        return filesList;
-    }
-
-    public void updateImageDetails(List<S3ObjectSummary> filesList) {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            String columns = "Key,lastModified,Flag";
-            android.database.sqlite.SQLiteDatabase database = db.getWritableDatabase();
-            database.beginTransaction();
-            for (S3ObjectSummary s3ObjectSummary : filesList) {
-                database.delete("CatalogImagesDetails", "Key=?", new String[]{bmodel.QT(s3ObjectSummary.getKey())});
-            }
-
-            for (int i = 0; i < filesList.size(); i++) {
-
-                /*String values = bmodel.QT(filesList.get(i).getKey())
-                        + ","
-                        + bmodel.QT(filesList.get(i).getLastModified() + "") + "," + 0;*/
-                ContentValues values = new ContentValues();
-                values.put("Key", filesList.get(i).getKey());
-                values.put("lastModified", filesList.get(i).getLastModified() + "");
-                values.put("Flag", 0);
-                database.insert("CatalogImagesDetails", columns, values);
-            }
-            database.setTransactionSuccessful();
-            database.endTransaction();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("insertImageDetails" + e);
-        }
-    }
-
-    public void deleteImageDetails(List<S3ObjectSummary> filesList) {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            for (S3ObjectSummary s3ObjectSummary : filesList) {
-                db.deleteSQL("CatalogImagesDetails", "Key=" + s3ObjectSummary.getKey(), false);
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("deleteImageDetails" + e);
-        }
-    }
-
-    public void clearCatalogImages() {
-        try {
-           /* DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            db.executeQ("Delete from CatalogImagesDetails");*/
-            deleteFiles(getStorageDir(context.getResources().getString(R.string.app_name)));
-            // db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("deleteImageDetails" + e);
-        }
-    }
-
-    public void deleteFiles(File file) {
-
-        if (file.exists()) {
-            String deleteCmd = "rm -r " + file.getAbsolutePath();
-            Runtime runtime = Runtime.getRuntime();
-            try {
-                runtime.exec(deleteCmd);
-            } catch (IOException e) {
-            }
-        }
-    }
-
-    /* Flag - Download Status
-    *  0 - Download Failed / Not yet downloaded
-    *  1 - Download Success */
-    //private static int update_count = 0;
-    public void updateFlagInCatalogImage(HashMap<String, Integer> downloadImageStatus) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        try {
-            //update_count++;
-            db.createDataBase();
-            db.openDataBase();
-            android.database.sqlite.SQLiteDatabase database = db.getWritableDatabase();
-            database.beginTransaction();
-            for (String keys : downloadImageStatus.keySet()) {
-                Commons.print("Key" + keys + ", " + downloadImageStatus.get(keys));
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("Flag", downloadImageStatus.get(keys));
-                database.update("CatalogImagesDetails", contentValues, "Key=?", new String[]{keys});
-            }
-            Commons.print("Catalog image update ");
-            database.setTransactionSuccessful();
-            database.endTransaction();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public int getCatalogImagesCount() {
-        return totalCatalogImageCount;
-    }
-
-    public void setCatalogImageDownloadFinishTime(String count) {
-        String filename = "log";
-        String string = SDUtil.now(SDUtil.DATE_TIME) + "\n";
-        FileOutputStream outputStream;
-        Commons.print("time " + string);
-        try {
-            Commons.print("FilePath " + getStorageDir(context.getResources().getString(R.string.app_name)) + "/" + filename);
-            outputStream = new FileOutputStream(getStorageDir(context.getResources().getString(R.string.app_name)) + "/" + filename);//context.openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(string.getBytes());
-            outputStream.write(count.getBytes());
-
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    int totalCatalogImageCount = 0;
-
-    public String getLastDownloadedDateTime() {
-        //Find the directory for the SD Card using the API
-        File sdcard = getStorageDir(context.getResources().getString(R.string.app_name));
-
-//Get the text file
-        File file = new File(sdcard, "log");
-        if (file.exists()) {
-//Read text from file
-            StringBuilder text = new StringBuilder();
-
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
-                int count = 0;
-                while ((line = br.readLine()) != null) {
-                    if (count == 0) {
-                        text.append(line);
-                    } else {
-                        totalCatalogImageCount = Integer.parseInt(line);
-                    }
-                    Commons.print("read line" + line);
-                    count++;
-                }
-                br.close();
-                Commons.print("Last downloaded time " + text);
-                return text.toString();
-            } catch (IOException e) {
-                Commons.print("error" + e.getMessage());
-            }
-        }
-        return "";
-    }
-
     public File getStorageDir(String folderName) {
 
         File docsFolder = new File(Environment.getExternalStorageDirectory(), folderName);
@@ -5236,4 +5006,5 @@ SynchronizationHelper {
         return docsFolder;
 
     }
+
 }
