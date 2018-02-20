@@ -315,6 +315,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 boolean bool = validateProfile();
                 if (bool) {
 
+                    if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
+                        if (lattitude == 0 || longitude == 0 || (bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl)) {
+                            Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+
                     setValues();
 
                     if (!bmodel.newOutletHelper.getNewoutlet().getOutletName().isEmpty()) {
@@ -1670,6 +1677,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         .equalsIgnoreCase("LATLONG")
                         && mandatory == 1) {
 
+                    String accuracyRange = profileConfig.get(i).getRField6();
+                    Log.d("Location Accuracy ",LocationUtil.accuracy+" -- "+accuracyRange);
+
                     if (latlongtextview.getText().toString().startsWith("0.0")) {
                         validate = false;
                         latlongtextview.requestFocus();
@@ -1679,6 +1689,17 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                                 Toast.LENGTH_SHORT).show();
                         break;
                     }
+                    else if(accuracyRange!= null && Float.parseFloat(accuracyRange)>0
+                            && LocationUtil.accuracy <= Float.parseFloat(accuracyRange)) {
+                        validate = false;
+                        latlongtextview.requestFocus();
+                        scrollview2.smoothScrollTo(0, latlongtextview.getTop());
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.location_accuration_mis_match),
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("EMAIL")
                         ) {
@@ -3976,58 +3997,87 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
             return true;
         } else if (i == R.id.menu_capture) {// AlertDialog.Builder builder;
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                    .setTitle(null)
-                    .setSingleChoiceItems(mImageTypeAdapter, 0,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int item) {
-                                    if (bmodel.synchronizationHelper
-                                            .isExternalStorageAvailable()) {
-                                        PHOTO_PATH = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                                                + "/"
-                                                + DataMembers.photoFolderName
-                                                + "/";
-                                        Commons.print(TAG + ":Photo path :" + PHOTO_PATH);
+            //Dont allow if Fun57 is enabled and mandatory,
+            //Generally check for location and show toast if no location found.
 
-                                        int ImageId = bmodel.newOutletHelper
-                                                .getImageTypeList()
-                                                .get(item).getListId();
-                                        imageName = moduleName + uID + "_"
-                                                + ImageId + "_img.jpg";
-                                        String fnameStarts = moduleName + uID
-                                                + "_" + ImageId;
-                                        Commons.print(TAG + ",FName Starts :"
-                                                + fnameStarts);
-                                        boolean nfiles_there = bmodel.checkForNFilesInFolder(
-                                                PHOTO_PATH, 1,
-                                                fnameStarts);
+            boolean isLatLongMenuAvail = false;
+            for (int conf = 0; conf < profileConfig.size(); conf++) {
+                if(profileConfig.get(conf).getConfigCode().equalsIgnoreCase("LATLONG") &&
+                       profileConfig.get(conf).getMandatory() == 1) {
+                    isLatLongMenuAvail = true;
+                    break;
+                }
+            }
 
-                                        if (nfiles_there) {
-                                            showFileDeleteAlert(fnameStarts);
+            if(!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
+                    || (bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl)){
+
+                Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
+                return true;
+            }else {
+                if (LocationUtil.latitude == 0 || LocationUtil.longitude == 0) {
+                    Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
+                }else{
+                    if(!isLatLongMenuAvail && (outlet.getNewOutletlattitude() == 0 || outlet.getNewOutletLongitude() == 0)) {
+                        lattitude = LocationUtil.latitude;
+                        longitude = LocationUtil.longitude;
+                        outlet.setNewOutletlattitude(lattitude);
+                        outlet.setNewOutletLongitude(longitude);
+                    }
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                        .setTitle(null)
+                        .setSingleChoiceItems(mImageTypeAdapter, 0,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int item) {
+                                        if (bmodel.synchronizationHelper
+                                                .isExternalStorageAvailable()) {
+                                            PHOTO_PATH = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                                                    + "/"
+                                                    + DataMembers.photoFolderName
+                                                    + "/";
+                                            Commons.print(TAG + ":Photo path :" + PHOTO_PATH);
+
+                                            int ImageId = bmodel.newOutletHelper
+                                                    .getImageTypeList()
+                                                    .get(item).getListId();
+                                            imageName = moduleName + uID + "_"
+                                                    + ImageId + "_img.jpg";
+                                            String fnameStarts = moduleName + uID
+                                                    + "_" + ImageId;
+                                            Commons.print(TAG + ",FName Starts :"
+                                                    + fnameStarts);
+                                            boolean nfiles_there = bmodel.checkForNFilesInFolder(
+                                                    PHOTO_PATH, 1,
+                                                    fnameStarts);
+
+                                            if (nfiles_there) {
+                                                showFileDeleteAlert(fnameStarts);
+                                            } else {
+
+                                                captureCustom();
+                                                outlet.ImageId.add(ImageId);
+                                                outlet.ImageName.add(imageName);
+                                                dialog.dismiss();
+                                                return;
+
+                                            }
+
                                         } else {
-
-                                            captureCustom();
-                                            outlet.ImageId.add(ImageId);
-                                            outlet.ImageName.add(imageName);
-                                            dialog.dismiss();
-                                            return;
-
+                                            Toast.makeText(getActivity(),
+                                                    getResources().getString(R.string.external_storage_not_available),
+                                                    Toast.LENGTH_SHORT).show();
+                                            getActivity().finish();
                                         }
-
-                                    } else {
-                                        Toast.makeText(getActivity(),
-                                                getResources().getString(R.string.external_storage_not_available),
-                                                Toast.LENGTH_SHORT).show();
-                                        getActivity().finish();
+                                        dialog.dismiss();
                                     }
-                                    dialog.dismiss();
-                                }
 
-                            });
-            bmodel.applyAlertDialogTheme(builder);
-            return true;
+                                });
+                bmodel.applyAlertDialogTheme(builder);
+                return true;
+            }
         } else if (i == R.id.menu_order) {
             bmodel.configurationMasterHelper.downloadProductDetailsList();
             /* Settign color **/

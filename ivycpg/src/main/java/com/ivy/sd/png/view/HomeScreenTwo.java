@@ -1868,11 +1868,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     surveyHelperNew.loadSurveyAnswers(0);
                 }
 
-                //Config to be confirmed for supplier Credit Limit
-//                if(bmodel.getRetailerMasterBO().getRpTypeCode().equals("CREDIT") && mSupplierList !=null && mSupplierList.size() > 0 &&
-//                        mSupplierList.get(mDefaultSupplierSelection).getCreditLimit() > 0){
-//                    bmodel.getRetailerMasterBO().setCreditLimit(mSupplierList.get(mDefaultSupplierSelection).getCreditLimit());
-//                }
+                if(bmodel.configurationMasterHelper.IS_SUPPLIER_CREDIT_LIMIT
+                        && bmodel.getRetailerMasterBO().getSupplierBO() !=null  &&
+                        bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit() > 0){
+                    bmodel.getRetailerMasterBO().setCreditLimit(bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit());
+                }
 
                 if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                     SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);

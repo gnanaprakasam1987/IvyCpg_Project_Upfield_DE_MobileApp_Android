@@ -209,6 +209,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_VANGPS_VALIDATION = "VGPSVAL";
     private static final String CODE_RET_SKIP_VALIDATION = "RSEQVAL";
     private static final String CODE_INV_CREDIT_BALANCE = "CREDIT01";
+    public boolean IS_SUPPLIER_CREDIT_LIMIT = false;
     private static final String CODE_POST_DATE_ALLOW = "COLL01";
     private static final String CODE_DELIVERY_DATE = "ORDB30";
     private static final String CODE_ALLOW_DECIMAL = "ORDB31";
@@ -1224,12 +1225,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_RESTRICT_ORDER_TAKING = "ORDB70";
     public boolean IS_RESTRICT_ORDER_TAKING;
 
-//    private static final String CODE_STK_ORD_CREDIT_LIMIT = "ORDB71";
-//    public boolean ORD_CREDIT_LIMIT_CHK;
-//
-//    private static final String CODE_STK_ORD_OVER_DUE = "ORDB72";
-//    public boolean ORD_OVER_DUE_CHK;
-
     public boolean IS_COMBINED_STOCK_CHECK_FROM_ORDER;
     public boolean SHOW_COMB_STOCK_SC;
     public boolean SHOW_COMB_STOCK_SP;
@@ -1256,6 +1251,8 @@ public class ConfigurationMasterHelper {
     public boolean COMPUTE_DUE_DAYS;
 
     public boolean SHOW_SALES_RETURN_IN_ORDER;
+
+    public int newRetailerLocAccuracyLvl;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2194,8 +2191,7 @@ public class ConfigurationMasterHelper {
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
 
-//        this.ORD_CREDIT_LIMIT_CHK = hashMapHHTModuleConfig.get(CODE_STK_ORD_CREDIT_LIMIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_ORD_CREDIT_LIMIT) : false;
-//        this.ORD_OVER_DUE_CHK = hashMapHHTModuleConfig.get(CODE_STK_ORD_OVER_DUE) != null ? hashMapHHTModuleConfig.get(CODE_STK_ORD_OVER_DUE) : false;
+        this.newRetailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
 
     }
 
@@ -3732,6 +3728,20 @@ public class ConfigurationMasterHelper {
 
             }
 
+            //RField Check to get Credit Limit value from Supplier Master
+            codeValue = null;
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster +
+                    " where hhtcode=" + bmodel.QT(CODE_INV_CREDIT_BALANCE) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    int value = c.getInt(0);
+                    if (value == 1) {
+                        IS_SUPPLIER_CREDIT_LIMIT = true;
+                    }
+                }
+                c.close();
+            }
 
             db.closeDB();
         } catch (Exception e) {
