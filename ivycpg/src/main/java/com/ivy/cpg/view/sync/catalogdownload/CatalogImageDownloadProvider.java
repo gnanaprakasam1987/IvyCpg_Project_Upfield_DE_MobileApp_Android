@@ -59,7 +59,7 @@ public class CatalogImageDownloadProvider {
             String date = getLastDownloadedDateTime();
 
             // Initiate only if there is not log file.
-            if (date.isEmpty()) {
+            //if (date.isEmpty()) {
                 // Set Digital content download path.
                 businessModel.getimageDownloadURL();
                 // Load credentials
@@ -79,7 +79,7 @@ public class CatalogImageDownloadProvider {
 
                 // Store download id in shared preference.
                 storeCatalogDownloadStatus(observer.getId(), "DOWNLOADING");
-            }
+            //}
         } catch (Exception e) {
             //TODO: clear the text file. Or call at right palce.
             Commons.printException(e);
@@ -182,8 +182,6 @@ public class CatalogImageDownloadProvider {
             Log.d("IvyCPG", "onStateChanged: " + id + ", " + state);
             if (state.equals(TransferState.COMPLETED)) {
 
-                // store time in SDCard
-                setCatalogImageDownloadFinishTime("1", SDUtil.now(SDUtil.DATE_TIME));
 
                 // update shared preference
                 storeCatalogDownloadStatus(getCatalogDownloadStatusId(), CatalogDownloadConstants.UNZIP);
