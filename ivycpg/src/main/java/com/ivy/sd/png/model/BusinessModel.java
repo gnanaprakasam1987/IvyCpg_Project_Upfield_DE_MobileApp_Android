@@ -5389,6 +5389,7 @@ public class BusinessModel extends Application {
                             schemeProduct.setOrderedPcsQty(0);
                             schemeProduct.setOrderedCaseQty(0);
                             schemeProduct.setOrderedOuterQty(0);
+                            schemeProduct.setFoc(0);
 
                             // excluding tax values
                             productHelper.taxHelper.calculateTaxOnTax(schemeProduct, taxBO, true);

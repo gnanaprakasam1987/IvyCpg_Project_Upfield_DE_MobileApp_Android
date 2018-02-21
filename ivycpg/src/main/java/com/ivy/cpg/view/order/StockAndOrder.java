@@ -1181,6 +1181,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e + "");
                     }
                 }
+                if (!bmodel.configurationMasterHelper.SHOW_FOC) {
+                    findViewById(R.id.focTitle).setVisibility(View.GONE);
+                } else {
+                    try {
+                        ((TextView) findViewById(R.id.focTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                                R.id.focTitle).getTag()) != null)
+                            ((TextView) findViewById(R.id.focTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(findViewById(
+                                                    R.id.focTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                     findViewById(R.id.srpTitle).setVisibility(View.GONE);
                 } else {
@@ -1949,7 +1964,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                if (!bmodel.configurationMasterHelper.SHOW_FOC)
                     ((LinearLayout) row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
                 else {
                     try {
@@ -3626,6 +3641,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
                 String strPcsQty = holder.productObj.getOrderedPcsQty() + "";
                 holder.pcsQty.setText(strPcsQty);
+            }
+            if (bmodel.configurationMasterHelper.SHOW_FOC) {
+                String strFoc = holder.productObj.getFoc() + "";
+                holder.foc.setText(strFoc);
             }
             if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
                 String strOuterQty = holder.productObj.getOrderedOuterQty() + "";
