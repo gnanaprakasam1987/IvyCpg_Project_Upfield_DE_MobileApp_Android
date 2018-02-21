@@ -3308,8 +3308,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
 
-            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
-                    || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
+            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                 int total = 0;
                 for (SalesReturnReasonBO obj : product.getSalesReturnReasonList())
                     total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());

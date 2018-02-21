@@ -11,32 +11,127 @@
         android:layout_height="@dimen/spinner_height"
         android:layout_alignParentTop="true"/>
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardViewList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_margin"
-        card_view:cardBackgroundColor="@color/WHITE"
-        card_view:cardCornerRadius="0dp"
-        card_view:cardElevation="5dp"
-        card_view:cardPreventCornerOverlap="true"
-        card_view:cardUseCompatPadding="true"
-        card_view:contentPadding="0dp"
+    <LinearLayout
+        android:id="@+id/orderScreenListRow"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/retake_img_wd_ht"
+        android:background="@color/list_title_bg_color"
+        android:descendantFocusability="blocksDescendants"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:layout_marginRight="@dimen/list_margin"
+        android:layout_marginLeft="@dimen/list_margin"
+        android:orientation="horizontal"
         android:layout_below="@+id/spn_retailer_closing_stk">
+
+        <TextView
+            android:id="@+id/skucode"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="@dimen/prodcode_width"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/sr_list_view_margin_left"
+            android:layout_weight="1"
+            android:text="@string/prod_code"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/skuname"
+            style="?attr/customListItemPrimary"
+            android:textColor="@color/white"
+            android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|center"
+            android:layout_marginLeft="@dimen/skuwise_right_margin"
+            android:layout_weight="1"
+            android:gravity="left|center"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:text="@string/product_name" />
+
+        <TextView
+            android:id="@+id/case_qty"
+            style="?attr/customListItemPrimary"
+            android:textColor="@color/white"
+            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_height="@dimen/stock_screen_txtview_height"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="@string/sc"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/piece_qty"
+            style="?attr/customListItemPrimary"
+            android:textColor="@color/white"
+            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_height="@dimen/stock_screen_txtview_height"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="@string/pieces_label" />
+
+        <TextView
+            android:id="@+id/outer_qty"
+            style="?attr/customListItemPrimary"
+            android:textColor="@color/white"
+            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_height="@dimen/stock_screen_txtview_height"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="@string/souter"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/facing_qty"
+            style="?attr/customListItemPrimary"
+            android:textColor="@color/white"
+            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_height="@dimen/stock_screen_txtview_height"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="@string/facing"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <!--<android.support.v7.widget.CardView-->
+        <!--android:id="@+id/cardViewList"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="@dimen/list_margin"-->
+        <!--android:layout_marginRight="@dimen/list_margin"-->
+        <!--android:layout_marginLeft="@dimen/list_margin"-->
+        <!--card_view:cardBackgroundColor="@color/WHITE"-->
+        <!--card_view:cardCornerRadius="0dp"-->
+        <!--card_view:cardElevation="5dp"-->
+        <!--card_view:cardPreventCornerOverlap="true"-->
+        <!--card_view:cardUseCompatPadding="true"-->
+        <!--card_view:contentPadding="0dp"-->
+        <!--android:layout_below="@+id/orderScreenListRow">-->
 
         <ListView
             android:id="@+id/lvwpList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/plano_list_left_margin"
+            android:layout_marginBottom="@dimen/list_margin"
+            android:layout_marginRight="@dimen/list_margin"
+            android:layout_marginLeft="@dimen/list_margin"
             android:cacheColorHint="@null"
             android:divider="@android:color/white"
             android:dividerHeight="0dp"
             android:drawSelectorOnTop="false"
             android:fitsSystemWindows="true"
+            android:layout_below="@+id/orderScreenListRow"
             android:scrollbarAlwaysDrawHorizontalTrack="true"
             android:scrollbarAlwaysDrawVerticalTrack="true" />
-    </android.support.v7.widget.CardView>
+    <!--</android.support.v7.widget.CardView>-->
 
 
 </RelativeLayout>
