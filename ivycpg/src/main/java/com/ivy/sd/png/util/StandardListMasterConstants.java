@@ -119,6 +119,8 @@ public class StandardListMasterConstants {
 	public static final String PRINT_FILE_ORDER = "PF_ORD_";
 	public static final String PRINT_FILE_PATH = "PrintFile/";
 
+	public static final String MENU_CLOSING_STK_REPORT = "MENU_CLOSING_STK_REPORT";
+
 
 	public static final HashMap<String,String> mActivityCodeByMenuCode=new HashMap<>();
 

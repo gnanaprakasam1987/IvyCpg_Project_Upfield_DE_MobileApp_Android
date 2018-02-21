@@ -78,6 +78,8 @@ public class ReportHelper {
     private ArrayList<RetailerMasterBO> assetRetailerList;
     private ArrayList<AssetTrackingBrandBO> assetBrandList;
 
+    private Vector<RetailerMasterBO> retailerMaster;
+
     private ReportHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
@@ -3625,5 +3627,65 @@ public class ReportHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+    public Vector<RetailerMasterBO> getRetailerMaster() {
+        return retailerMaster;
+    }
+
+    public void setRetailerMaster(Vector<RetailerMasterBO> retailerMaster) {
+        this.retailerMaster = retailerMaster;
+    }
+
+    public void getRetailers() {
+        try {
+            RetailerMasterBO temp;
+            retailerMaster = new Vector<RetailerMasterBO>();
+            int siz = bmodel.getRetailerMaster().size();
+            for (int ii = 0; ii < siz; ii++) {
+                if (((bmodel
+                        .getRetailerMaster().get(ii).getIsToday() == 1)) || bmodel.getRetailerMaster().get(ii).getIsDeviated()
+                        .equals("Y")) {
+                    temp = new RetailerMasterBO();
+                    temp.setTretailerId(Integer.parseInt(bmodel.getRetailerMaster().get(ii).getRetailerID()));
+                    temp.setTretailerName(bmodel.getRetailerMaster().get(ii).getRetailerName());
+                    retailerMaster.add(temp);
+                }
+            }
+
+        } catch (Exception e) {
+
+            Commons.printException(e);
+        }
+    }
+
+
+
+    public ArrayList<LoadManagementBO> downloadClosingStock(int id){
+
+        ArrayList<LoadManagementBO>  loadManagementBOs = new ArrayList<>();
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+
+        Cursor cursor = db.selectSQL("select PM.PName,SH.retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,Facing"
+                + " from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId INNER JOIN ProductMaster PM ON PM.PID = SD.ProductID where SH.retailerId  = "+id);
+
+        if(cursor!=null && cursor.getCount()>0){
+            while(cursor.moveToNext()){
+                LoadManagementBO temp = new LoadManagementBO();
+                temp.setProductname(cursor.getString(0));
+                temp.setProductid(cursor.getInt(2));
+                temp.setCaseqty(cursor.getInt(14));
+                temp.setPieceqty(cursor.getInt(14));
+                temp.setOuterQty(cursor.getInt(14));
+
+                loadManagementBOs.add(temp);
+            }
+        }
+
+        return loadManagementBOs;
+
     }
 }

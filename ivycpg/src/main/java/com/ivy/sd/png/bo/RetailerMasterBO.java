@@ -1,5 +1,6 @@
 package com.ivy.sd.png.bo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -1530,4 +1531,5 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public String getDLNoExpDate() {
         return DLNoExpDate;
     }
+
 }

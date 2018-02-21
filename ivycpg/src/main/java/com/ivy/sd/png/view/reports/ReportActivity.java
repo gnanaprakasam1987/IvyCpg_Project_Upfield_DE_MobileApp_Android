@@ -104,6 +104,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private SellerPerformanceReportFragment mSellerPerformReport;
     private SalesReturnReportFragment salesReturnReport;
     private WebViewArchivalReportFragment webViewArchivalReportFragment;
+    private ClosingStockReportFragment closingStockReportFragment;
 
     private Toolbar toolbar;
 
@@ -231,6 +232,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mSellerPerformReport = new SellerPerformanceReportFragment();
         mOutletPerformanceReportFragmnet = new OutletPerformanceReportFragmnet();
         webViewArchivalReportFragment = new WebViewArchivalReportFragment();
+
+        closingStockReportFragment = new ClosingStockReportFragment();
 
 
         salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
@@ -705,6 +708,15 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.replace(R.id.fragment_content, webViewArchivalReportFragment);
             transaction.addToBackStack(null);
             getSupportActionBar().setSubtitle(config.getMenuName());
+            transaction.commit();
+        }
+        else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_CLOSING_STK_REPORT)) {
+            transaction.replace(R.id.fragment_content, closingStockReportFragment);
+            transaction.addToBackStack(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
         }
         // Commit the transaction
