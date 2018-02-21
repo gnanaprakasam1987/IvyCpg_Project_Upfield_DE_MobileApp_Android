@@ -1625,6 +1625,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         .findViewById(R.id.stock_and_order_listview_case_qty);
                 holder.pcsQty = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_pcs_qty);
+                holder.foc = (EditText) row
+                        .findViewById(R.id.stock_and_order_listview_foc);
                 holder.outerQty = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_outer_case_qty);
 
@@ -1672,6 +1674,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.sihOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.pcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.foc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.srp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1945,6 +1948,23 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e + "");
                     }
                 }
+
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    ((LinearLayout) row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
+                else {
+                    try {
+                        ((TextView) row.findViewById(R.id.focTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.focTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.focTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.focTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
+
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
                     ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
@@ -2641,6 +2661,88 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     });
                 }
 
+
+
+                holder.foc.addTextChangedListener(new TextWatcher() {
+                    public void afterTextChanged(Editable s) {
+
+                        String qty = s.toString();
+                        if(qty==null || qty.trim().equals(""))
+                            holder.productObj.setFoc(0);
+                        else
+                           holder.productObj.setFoc(SDUtil.convertToInt(qty));
+
+                        Log.e("saved------","saved=======foc=========="+holder.productObj.getFoc());
+                    }
+
+                    public void beforeTextChanged(CharSequence s, int start,
+                                                  int count, int after) {
+                    }
+
+                    public void onTextChanged(CharSequence s, int start,
+                                              int before, int count) {
+                    }
+                });
+
+                if (bmodel.configurationMasterHelper.SHOW_CUSTOM_KEYBOARD_NEW) {
+
+                    holder.foc.setFocusable(false);
+
+                    holder.foc.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
+                                strProductObj = "[SIH :" + holder.productObj.getSIH() + "] "
+                                        + holder.pname;
+                                productName.setText(strProductObj);
+                            } else
+                                productName.setText(holder.pname);
+
+                            if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
+                                dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.foc);
+                                dialogCustomKeyBoard.show();
+                                dialogCustomKeyBoard.setCancelable(false);
+
+                                //Grab the window of the dialog, and change the width
+                                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                                Window window = dialogCustomKeyBoard.getWindow();
+                                lp.copyFrom(window.getAttributes());
+                                lp.width = (int) getResources().getDimension(R.dimen.custom_keyboard_width);
+                                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                window.setAttributes(lp);
+                            }
+                        }
+                    });
+                } else {
+                    holder.foc.setFocusable(true);
+
+                    holder.foc.setOnTouchListener(new OnTouchListener() {
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
+                                strProductObj = "[SIH :"
+                                        + holder.productObj.getSIH() + "] "
+                                        + holder.pname;
+                                productName.setText(strProductObj);
+                            } else
+                                productName.setText(holder.pname);
+
+                            QUANTITY = holder.foc;
+                            QUANTITY.setTag(holder.productObj);
+                            int inType = holder.foc.getInputType();
+                            holder.foc.setInputType(InputType.TYPE_NULL);
+                            holder.foc.onTouchEvent(event);
+                            holder.foc.setInputType(inType);
+                            holder.foc.selectAll();
+                            holder.foc.requestFocus();
+                            inputManager.hideSoftInputFromWindow(
+                                    mEdt_searchproductName.getWindowToken(), 0);
+                            return true;
+                        }
+                    });
+                }
+
+
                 holder.pcsQty.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         if (holder.productObj.getPcUomid() == 0) {
@@ -3311,6 +3413,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
                     || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
                 int total = 0;
+                if(product!=null && product.getSalesReturnReasonList()!=null)
                 for (SalesReturnReasonBO obj : product.getSalesReturnReasonList())
                     total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
                 String strTotal = Integer.toString(total);
@@ -3595,6 +3698,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private EditText shelfPcsQty;
         private EditText shelfCaseQty;
         private EditText pcsQty;
+        private EditText foc;
         private EditText caseQty;
         private EditText outerQty;
         private EditText shelfouter;

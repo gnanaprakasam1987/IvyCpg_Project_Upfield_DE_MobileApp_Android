@@ -352,7 +352,7 @@ public class OrderHelper {
 
             // Save order details
             Vector<ProductMasterBO> finalProductList;
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,foc,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
             else
@@ -713,6 +713,7 @@ public class OrderHelper {
         double osrp;
         int orderPieceQty;
         int orderCaseQty;
+        int foc;
         int orderOuterQty;
         String batchid;
         double priceOffValue;
@@ -731,6 +732,7 @@ public class OrderHelper {
             osrp = batchProductBO.getOsrp();
             orderPieceQty = batchProductBO.getOrderedPcsQty();
             orderCaseQty = batchProductBO.getOrderedCaseQty();
+            foc = batchProductBO.getFoc();
             orderOuterQty = batchProductBO.getOrderedOuterQty();
             batchid = batchProductBO.getBatchid();
             priceOffValue = batchProductBO.getPriceoffvalue() * pieceCount;
@@ -749,6 +751,7 @@ public class OrderHelper {
             osrp = productBo.getOsrp();
             orderPieceQty = productBo.getOrderedPcsQty();
             orderCaseQty = productBo.getOrderedCaseQty();
+            foc = productBo.getFoc();
             orderOuterQty = productBo.getOrderedOuterQty();
             batchid = 0 + "";
             priceOffValue = productBo.getPriceoffvalue() * pieceCount;
@@ -765,7 +768,7 @@ public class OrderHelper {
         StringBuffer sb = new StringBuffer();
         sb.append(orderId + "," + productBo.getProductID() + ",");
         sb.append(pieceCount + "," + srp + "," + productBo.getCaseSize() + ","
-                + orderPieceQty + "," + orderCaseQty + ",");
+                + orderPieceQty + "," + orderCaseQty + "," + foc + ",");
         sb.append(productBo.getCaseUomId() + ","
                 + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) + ","
                 + productBo.getMSQty() + ",");
@@ -1514,7 +1517,7 @@ public class OrderHelper {
 
             // Save invoice details table and update sih
             ProductMasterBO product;
-            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode";
+            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,foc,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode";
             int siz = businessModel.productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
                 product = businessModel.productHelper.getProductMaster()
@@ -1645,6 +1648,7 @@ public class OrderHelper {
         int orderedPcsQty;
         int orderedCaseQty;
         int orderedOuterQty;
+        int foc;
 
         String batchId;
         double priceOffValue;
@@ -1664,6 +1668,7 @@ public class OrderHelper {
                 batchWiseProductBO = batchWiseBO;
                 orderedPcsQty = batchWiseProductBO.getOrderedPcsQty();
                 orderedCaseQty = batchWiseProductBO.getOrderedCaseQty();
+                foc=batchWiseProductBO.getFoc();
                 orderedOuterQty = batchWiseProductBO.getOrderedOuterQty();
                 batchId = batchWiseProductBO.getBatchid();
                 schemeOrderType = businessModel.productHelper.getmOrderType().get(1);
@@ -1697,6 +1702,7 @@ public class OrderHelper {
                 orderedPcsQty = product.getOrderedPcsQty();
                 orderedCaseQty = product.getOrderedCaseQty();
                 orderedOuterQty = product.getOrderedOuterQty();
+                foc=product.getFoc();
                 srp = product.getSrp();
                 csrp = product.getCsrp();
                 osrp = product.getOsrp();
@@ -1738,6 +1744,7 @@ public class OrderHelper {
             sb.append(product.getCaseSize() + ",");
             sb.append(orderedCaseQty + ",");
             sb.append(orderedPcsQty + ",");
+            sb.append(foc + ",");
             sb.append(product.getD1() + "," + product.getD2());
             sb.append("," + product.getD3() + ",");
             sb.append(product.getDA() + ",");
