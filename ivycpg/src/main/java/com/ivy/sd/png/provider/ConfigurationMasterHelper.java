@@ -159,7 +159,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_INITIATIVE_MERCHANDISING = "VLD02";
     private static final String CODE_SUGGESTED_ORDER_LOGIC = "ORDB18";
     // code added in v 35
-    private static final String CODE_ORDER_PRINT = "ORDB19";
+
     private static final String CODE_CALCULATOR = "FUN04";
     private static final String CODE_SCHEME_ON = "SCH01";
     private static final String CODE_SCHEME_EDITABLE = "SCH02";
@@ -233,7 +233,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SECONDARY_CONTACT_NUMBER = "PROFILE12";
     private static final String CODE_BATCH_WISE_PRODUCT = "BWP01";
     private static final String CODE_SIGNATURE_SCREEN = "ORDB03";
-    private static final String CODE_MENU_ICON_SCHEME = "SCH04";
+    private static final String CODE_FOC_ACCUMULATION_VALIDATION = "SCH04";
     private static final String CODE_PARTIAL_PAYMENT = "COLL03";
     private static final String CODE_COLLECTION_ORDER = "COLL04";
     private static final String CODE_COLLECTION_REASON = "COLL05";
@@ -459,6 +459,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MOQ_ENABLED = "FUN66";//change config code
     public boolean IS_MOQ_ENABLED;
 
+
     /**
      * RoadActivity config *
      */
@@ -654,7 +655,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_NEWOUTLET_IMAGETYPE;
     public boolean IS_NEWOUTLET_LOCATION;
     public boolean SHOW_DISC_AMOUNT_ALLOW;
-    public boolean SHOW_MENU_ICON_SCHEME;
+    public boolean IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE;
     public boolean IS_PARTIAL_PAYMENT = true;
     public boolean IS_COLLECTION_ORDER;
     public boolean SHOW_COLLECTION_REASON;
@@ -1257,8 +1258,11 @@ public class ConfigurationMasterHelper {
 
     public boolean SHOW_SALES_RETURN_IN_ORDER;
 
-    private static final String CODE_CONTNIOUS_PRINT = "DUMMY";
-    public boolean IS_CONTNIOUS_PRINT=true;
+
+
+    private static final String CODE_ALLOW_CONTINUOUS_PRINT = "ORDB19";
+    public boolean IS_ALLOW_CONTINUOUS_PRINT;
+
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1743,7 +1747,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_BATCH_WISE_PRICE = hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) != null ? hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) : false;
         this.SHOW_SIGNATURE_SCREEN = hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) : false;
         this.SHOW_DISC_AMOUNT_ALLOW = hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) : false;
-        this.SHOW_MENU_ICON_SCHEME = hashMapHHTModuleConfig.get(CODE_MENU_ICON_SCHEME) != null ? hashMapHHTModuleConfig.get(CODE_MENU_ICON_SCHEME) : false;
+        this.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE = hashMapHHTModuleConfig.get(CODE_FOC_ACCUMULATION_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_FOC_ACCUMULATION_VALIDATION) : false;
         this.IS_PARTIAL_PAYMENT = hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) : false;
         this.SHOW_SKUWISE_INCENTIVE = hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) != null ? hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) : false;
         this.CALC_OUTSTANDING = hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) : false;
@@ -2199,6 +2203,8 @@ public class ConfigurationMasterHelper {
 
 //        this.ORD_CREDIT_LIMIT_CHK = hashMapHHTModuleConfig.get(CODE_STK_ORD_CREDIT_LIMIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_ORD_CREDIT_LIMIT) : false;
 //        this.ORD_OVER_DUE_CHK = hashMapHHTModuleConfig.get(CODE_STK_ORD_OVER_DUE) != null ? hashMapHHTModuleConfig.get(CODE_STK_ORD_OVER_DUE) : false;
+
+        this.IS_ALLOW_CONTINUOUS_PRINT =hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT)!=null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
 
     }
 

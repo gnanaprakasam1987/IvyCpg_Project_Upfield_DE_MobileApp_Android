@@ -1625,7 +1625,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
                             //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
-                            orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList);
+                            orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList,totalOrderValue);
 
 
                             new MyThread(this, DataMembers.SAVEINVOICE).start();
@@ -1822,7 +1822,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
-                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList);
+                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList,totalOrderValue);
 
                 new MyThread(this, DataMembers.SAVEINVOICE).start();
             } else {

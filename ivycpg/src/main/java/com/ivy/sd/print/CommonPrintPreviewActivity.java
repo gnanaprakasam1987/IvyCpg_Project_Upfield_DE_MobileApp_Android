@@ -434,6 +434,10 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 mPrintCountSpinner.setVisibility(View.GONE);
             }
 
+            if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT){
+                mPrintCountSpinner.setVisibility(View.GONE);
+            }
+
             mPrintCountSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
@@ -454,7 +458,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 mDistLogoIV.setImageBitmap(bmp);
             }
 
-            mPreviewTV.setText(bmodel.mCommonPrintHelper.getInvoiceData().toString().replace("#B#", "").replace("print_type", "").replace("print_no", ""));
+            mPreviewTV.setText(bmodel.mCommonPrintHelper.getInvoiceData().toString().replace("#B#", "").replace("print_type", "").replace("print_no", "").replace("print_title", ""));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -775,7 +779,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             commonDialog=null;
         }
 
-        if(bmodel.configurationMasterHelper.IS_CONTNIOUS_PRINT
+        if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT
                 &&isPrintSuccess&&mTotalNumbersPrinted<bmodel.configurationMasterHelper.printCount){
             msg = getResources().getString(R.string.do_u_want_to_take_one_more_print);
 
@@ -811,6 +815,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 }
             });
         }
+        commonDialog.setCancelable(false);
         commonDialog.show();
     }
 
