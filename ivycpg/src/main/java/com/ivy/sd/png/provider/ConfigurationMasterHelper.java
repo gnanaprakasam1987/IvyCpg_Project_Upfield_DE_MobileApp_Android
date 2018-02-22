@@ -3323,7 +3323,7 @@ public class ConfigurationMasterHelper {
                         SHOW_ORDER_CASE = true;
                     else if (temp.equals("PS"))
                         SHOW_ORDER_PCS = true;
-                    else if (temp.equals("FOC"))
+                    else if (temp.equals("RF"))
                         SHOW_FOC = true;
                     else if (temp.equals("OOC"))
                         SHOW_OUTER_CASE = true;
