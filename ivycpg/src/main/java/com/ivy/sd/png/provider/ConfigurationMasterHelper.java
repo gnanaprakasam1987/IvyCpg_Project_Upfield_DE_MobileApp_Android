@@ -459,6 +459,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MOQ_ENABLED = "FUN66";//change config code
     public boolean IS_MOQ_ENABLED;
 
+    private static final String CODE_ALLOW_CONTINUOUS_PRINT = "FUN67";
+    public boolean IS_ALLOW_CONTINUOUS_PRINT;
+
 
     /**
      * RoadActivity config *
@@ -1259,9 +1262,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_SALES_RETURN_IN_ORDER;
 
 
-
-    private static final String CODE_ALLOW_CONTINUOUS_PRINT = "ORDB19";
-    public boolean IS_ALLOW_CONTINUOUS_PRINT;
 
 
     private ConfigurationMasterHelper(Context context) {
