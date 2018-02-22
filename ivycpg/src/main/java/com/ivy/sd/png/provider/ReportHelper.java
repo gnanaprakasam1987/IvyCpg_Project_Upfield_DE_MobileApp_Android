@@ -47,6 +47,7 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -79,6 +80,7 @@ public class ReportHelper {
     private ArrayList<AssetTrackingBrandBO> assetBrandList;
 
     private Vector<RetailerMasterBO> retailerMaster;
+    private HashMap<String,ArrayList<ProductMasterBO>> closingStkReportByRetailId;
 
     private ReportHelper(Context context) {
         this.mContext = context;
@@ -3637,55 +3639,86 @@ public class ReportHelper {
         this.retailerMaster = retailerMaster;
     }
 
-    public void getRetailers() {
+    public void downloadClosingStockRetailers(){
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
         try {
+            retailerMaster = new Vector<>();
+
             RetailerMasterBO temp;
-            retailerMaster = new Vector<RetailerMasterBO>();
-            int siz = bmodel.getRetailerMaster().size();
-            for (int ii = 0; ii < siz; ii++) {
-                if (((bmodel
-                        .getRetailerMaster().get(ii).getIsToday() == 1)) || bmodel.getRetailerMaster().get(ii).getIsDeviated()
-                        .equals("Y")) {
+
+            Cursor cursor = db.selectSQL("select RM.retailerid,RM.RetailerName from ClosingStockDetail SD " +
+                    " INNER JOIN RetailerMaster RM ON RM.RetailerID = SD.RetailerID group by RM.RetailerID");
+
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
                     temp = new RetailerMasterBO();
-                    temp.setTretailerId(Integer.parseInt(bmodel.getRetailerMaster().get(ii).getRetailerID()));
-                    temp.setTretailerName(bmodel.getRetailerMaster().get(ii).getRetailerName());
+                    temp.setTretailerId(Integer.parseInt(cursor.getString(0)));
+                    temp.setTretailerName(cursor.getString(1));
                     retailerMaster.add(temp);
                 }
+                cursor.close();
             }
 
-        } catch (Exception e) {
-
+            db.closeDB();
+        }catch(Exception e){
+            db.closeDB();
             Commons.printException(e);
         }
     }
 
+    public ArrayList<ProductMasterBO> getClosingStkReport(String retailId){
+        if (closingStkReportByRetailId == null)
+            return null;
+        return closingStkReportByRetailId.get(retailId);
+    }
 
-
-    public ArrayList<LoadManagementBO> downloadClosingStock(int id){
-
-        ArrayList<LoadManagementBO>  loadManagementBOs = new ArrayList<>();
+    public void downloadClosingStock(){
+        closingStkReportByRetailId = new HashMap<>();
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
 
-        Cursor cursor = db.selectSQL("select PM.PName,SH.retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,Facing"
-                + " from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId INNER JOIN ProductMaster PM ON PM.PID = SD.ProductID where SH.retailerId  = "+id);
+        try {
 
-        if(cursor!=null && cursor.getCount()>0){
-            while(cursor.moveToNext()){
-                LoadManagementBO temp = new LoadManagementBO();
-                temp.setProductname(cursor.getString(0));
-                temp.setProductid(cursor.getInt(2));
-                temp.setCaseqty(cursor.getInt(14));
-                temp.setPieceqty(cursor.getInt(14));
-                temp.setOuterQty(cursor.getInt(14));
+            ArrayList<ProductMasterBO> productMasterBOs;
 
-                loadManagementBOs.add(temp);
+            Cursor cursor = db.selectSQL("select PM.PName,SH.retailerid,productId,Sum(shelfpqty),Sum(shelfcqty)," +
+                    "Sum(shelfoqty),Facing,PM.pCode,RM.RetailerName,PM.dUomQty,PM.dOUomQty from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId " +
+                    "INNER JOIN ProductMaster PM ON PM.PID = SD.ProductID INNER JOIN RetailerMaster RM ON RM.RetailerID = SH.RetailerID " +
+                    "group by SH.RetailerID,productId");
+
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ProductMasterBO temp = new ProductMasterBO();
+                    temp.setProductName(cursor.getString(0));
+                    temp.setProductID(cursor.getString(2));
+                    temp.setCsCase(cursor.getInt(4));
+                    temp.setCsPiece(cursor.getInt(3));
+                    temp.setCsOuter(cursor.getInt(5));
+                    temp.setProductCode(cursor.getString(7));
+                    temp.setCaseSize(cursor.getInt(9));
+                    temp.setOutersize(cursor.getInt(10));
+
+                    if (closingStkReportByRetailId.get(cursor.getString(1)) != null) {
+                        ArrayList<ProductMasterBO> productMasterBO1 = closingStkReportByRetailId.get(cursor.getString(1));
+                        productMasterBO1.add(temp);
+
+                    } else {
+                        productMasterBOs = new ArrayList<>();
+                        productMasterBOs.add(temp);
+                        closingStkReportByRetailId.put(cursor.getString(1), productMasterBOs);
+                    }
+                }
+                cursor.close();
             }
+
+            db.closeDB();
+        }catch(Exception e){
+            db.closeDB();
+            Commons.printException(e);
         }
-
-        return loadManagementBOs;
-
     }
 }
