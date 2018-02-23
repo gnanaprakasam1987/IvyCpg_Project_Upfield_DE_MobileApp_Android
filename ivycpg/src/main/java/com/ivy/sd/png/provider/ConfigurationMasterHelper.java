@@ -555,6 +555,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_SP;
     public boolean SHOW_CAT_STOCK_SP;
     public boolean SHOW_ORDER_PCS;
+    public boolean SHOW_FOC;
     public boolean SHOW_ORDER_CASE;
     public boolean SHOW_ORDER_TOTAL;
     public boolean SHOW_INDICATIVE_ORDER;
@@ -3158,6 +3159,7 @@ public class ConfigurationMasterHelper {
             SHOW_SHELF_OUTER = false;
             SHOW_ORDER_CASE = false;
             SHOW_ORDER_PCS = false;
+            SHOW_FOC=false;
             SHOW_OUTER_CASE = false;
             SHOW_ICO = false;
             SHOW_BARCODE = false;
@@ -3325,6 +3327,8 @@ public class ConfigurationMasterHelper {
                         SHOW_ORDER_CASE = true;
                     else if (temp.equals("PS"))
                         SHOW_ORDER_PCS = true;
+                    else if (temp.equals("RF"))
+                        SHOW_FOC = true;
                     else if (temp.equals("OOC"))
                         SHOW_OUTER_CASE = true;
                     else if (temp.equals("ICO"))
