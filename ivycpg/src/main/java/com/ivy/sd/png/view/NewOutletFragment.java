@@ -316,7 +316,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 if (bool) {
 
                     if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                        if (lattitude == 0 || longitude == 0 || (bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl)) {
+                        if (lattitude == 0 || longitude == 0 || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl !=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
                             Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                             return;
                         }
@@ -3997,7 +3997,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
 
             if(!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
-                    || (bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl)){
+                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl !=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)){
 
                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                 return true;
