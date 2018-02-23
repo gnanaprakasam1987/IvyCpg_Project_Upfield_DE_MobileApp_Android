@@ -807,7 +807,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
             } else {
 
-                if (mSelectedItem.equals(getResources().getString(R.string.partially_fullfilled))) {
+                if (mSelectedItem.equals(getResources().getString(R.string.partially_fullfilled)) && bmodel.configurationMasterHelper.IS_DELIVERY_PRINT) {
 
                     for (ProductMasterBO product : mProductList) {
                         product.setOrderedPcsQty(product.getInit_pieceqty());

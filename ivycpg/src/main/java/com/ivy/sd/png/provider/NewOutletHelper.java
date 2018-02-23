@@ -1328,6 +1328,7 @@ public class NewOutletHelper {
                     ConfigureBO.setMenuNumber((c.getString(3)));
                     ConfigureBO.setMandatory((c.getInt(4)));
                     ConfigureBO.setHasLink(c.getInt(5));
+                    ConfigureBO.setRField6(String.valueOf(c.getInt(6)));
                     String str = c.getString(7);
                     if (str != null && !str.isEmpty()) {
                         if (str.contains("<") && str.contains(">")) {

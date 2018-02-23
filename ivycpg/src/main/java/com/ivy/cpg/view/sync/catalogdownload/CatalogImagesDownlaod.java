@@ -53,6 +53,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
     private String lastDownloadTime;
     private CatalogImageDownloadProvider catalogImageDownloadProvider;
 
+    private ImageDownloadReceiver receiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,10 +118,90 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         last_download_time.setText(getResources().getString(R.string.last_image_download_time) + " " +
                 lastDownloadTime);
 
+
+
+
+        if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
+            //((CardView) findViewById(R.id.catalog_card)).setVisibility(View.VISIBLE);
+
+            //catalogRefresh.setVisibility(View.VISIBLE);
+            /* Register reciver to receive downlaod status. */
+            IntentFilter filter = new IntentFilter(ImageDownloadReceiver.PROCESS_RESPONSE);
+            filter.addCategory(Intent.CATEGORY_DEFAULT);
+            receiver = new ImageDownloadReceiver();
+            registerReceiver(receiver, filter);
+            isServiceRunning();
+            tvDownloadStatus.setText("Downloaded " + totalDownloadedCount );
+            /*if (totalDownloadedCount == totalDownloadImageCount) {
+                catalogRefresh.setVisibility(View.INVISIBLE);
+                full_download_catalog.setVisibility(View.VISIBLE);
+            }*/
+            if (!isExternalStorageAvailable()) {
+                tvDownloadStatus.setText(getResources().getString(R.string.external_storage_not_available));
+            }
+
+            last_download_time = (TextView) findViewById(R.id.last_download_time);
+            last_download_time.setText(getResources().getString(R.string.last_image_download_time) + " " +
+                    lastDownloadTime);
+        }
+//        else {
+//            ((CardView) findViewById(R.id.catalog_card)).setVisibility(View.GONE);
+//        }
+
+
         resumeDownload();
 
 
     }
+
+
+    private void isServiceRunning() {
+        if (CatalogImageDownloadService.isServiceRunning) {
+            catalogRefreshButton.setVisibility(View.INVISIBLE);
+            catalogFullDownloadButton.setVisibility(View.INVISIBLE);
+        } else {
+            catalogRefreshButton.setVisibility(View.VISIBLE);
+            catalogFullDownloadButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+
+    private boolean isExternalStorageAvailable() {
+
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory()
+                .getPath());
+        double sdAvailSize = (double) stat.getAvailableBlocks()
+                * (double) stat.getBlockSize();
+        // One binary gigabyte equals 1,073,741,824 bytes.
+        double mbAvailable = sdAvailSize / 1048576;
+
+        String state = Environment.getExternalStorageState();
+        boolean mExternalStorageAvailable = false;
+        boolean mExternalStorageWriteable = false;
+
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            // We can read and write the media
+            mExternalStorageAvailable = mExternalStorageWriteable = true;
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            // We can only read the media
+            mExternalStorageAvailable = true;
+            mExternalStorageWriteable = false;
+        } else {
+            // Something else is wrong. It may be one of many other states, but
+            // all we need
+            // to know is we can neither read nor write
+            mExternalStorageAvailable = mExternalStorageWriteable = false;
+        }
+
+        if (mExternalStorageAvailable == true
+                && mExternalStorageWriteable == true && mbAvailable > 10) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     private void resumeDownload() {
         if (catalogImageDownloadProvider.getCatalogDownloadStatus().equals(CatalogDownloadConstants.DOWNLOADING)) {
@@ -157,7 +239,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
         } else if (catalogImageDownloadProvider.getCatalogDownloadStatus().equals(CatalogDownloadConstants.DONE)) {
 
-            tvDownloadStatus.setText("Total Images Downloaded :" + getFilesCount());
+            tvDownloadStatus.setText("Total Images Downloaded :" + getFilesCount() + "/" + getFilesCount());
 
             catalogFullDownloadButton.setVisibility(View.VISIBLE);
             catalogRefreshButton.setVisibility(View.VISIBLE);
@@ -167,8 +249,58 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
+    }
+
+
+    public class ImageDownloadReceiver extends BroadcastReceiver {
+        public static final String PROCESS_RESPONSE = "com.ivy.intent.action.CatalogImageDownload";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateDownloadStatus(intent);
+
+        }
+    }
+
+    public void updateDownloadStatus(Intent intent) {
+        if (intent != null) {
+            if (intent.getExtras() != null) {
+
+                catalogFullDownloadButton.setVisibility(View.INVISIBLE);
+                catalogRefreshButton.setVisibility(View.INVISIBLE);
+                Bundle b = intent.getExtras();
+                if (b.getString("Error") != null) {
+                    Toast.makeText(getApplicationContext(), b.getString("Error"), Toast.LENGTH_LONG).show();
+                } else if (b.getInt("errorCode") != 0) {
+                    if (b.getString("errorMessage") != null)
+                        tvDownloadStatus.setText(b.getString("errorMessage"));
+                } else if (b.getInt("Status") != 0) {
+                    if (b.getInt("Status") == DataMembers.MESSAGE_DOWNLOAD_COMPLETE_CATALOG) {
+                        tvDownloadStatus.setText("Total Images Downloaded : " + b.getInt("responseCount") + "/" + getFilesCount());
+                        catalogFullDownloadButton.setVisibility(View.VISIBLE);
+                        catalogRefreshButton.setVisibility(View.VISIBLE);
+                    }
+                    if (b.getInt("Status") == DataMembers.MESSAGE_UNZIPPED) {
+                        tvDownloadStatus.setText("Total Images Downloaded : " + getFilesCount() + "/" + getFilesCount());
+                        catalogFullDownloadButton.setVisibility(View.VISIBLE);
+                        catalogRefreshButton.setVisibility(View.VISIBLE);
+                        //bmodel.synchronizationHelper.setCatalogImageDownloadFinishTime(getFilesCount() + "");
+                    }
+                } else if (b.getInt("responseCount") != 0) {
+                    tvDownloadStatus.setText("Downloading " + b.getInt("responseCount"));
+                } else if (b.getInt("progressCode") != 0) {
+                    if (b.getString("progressMessage") != null)
+                        tvDownloadStatus.setText(b.getString("progressMessage"));
+                }
+            }
+
+        }
 
     }
+
 
 
     public class CatalogImagesRefresh extends AsyncTask<String, Void, String> {
@@ -281,7 +413,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 Toast.makeText(getApplicationContext(), "All images are upTo date", Toast.LENGTH_LONG).show();
             }
             catalogImageDownloadProvider.setCatalogImageDownloadFinishTime(getFilesCount() + "", SDUtil.now(SDUtil.DATE_TIME));
-            tvDownloadStatus.setText("Downloaded " + getFilesCount() + "/" + getFilesCount());
+            tvDownloadStatus.setText("Total Images Downloaded : " + getFilesCount() + "/" + getFilesCount());
             catalogRefreshButton.setVisibility(View.VISIBLE);
             catalogFullDownloadButton.setVisibility(View.VISIBLE);
 
@@ -359,6 +491,9 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         return true;
     }
 
+
+
+
     public class DownloadListener implements TransferListener {
         Context context;
 
@@ -389,8 +524,6 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             Commons.print("IvyCPG" + "onStateChanged: " + id + ", " + state);
             if (state.equals(TransferState.COMPLETED)) {
 
-                // store time in SDCard.
-                catalogImageDownloadProvider.setCatalogImageDownloadFinishTime("1", SDUtil.now(SDUtil.DATE_TIME));
                 // update log file with time.
                 catalogImageDownloadProvider.storeCatalogDownloadStatus(id, CatalogDownloadConstants.UNZIP);
 
@@ -400,7 +533,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
                 // Update time in UI
                 if (last_download_time != null)
-                    last_download_time.setText(SDUtil.now(SDUtil.DATE_TIME));
+                    last_download_time.setText(getResources().getString(R.string.last_image_download_time) + " " +
+                            SDUtil.now(SDUtil.DATE_TIME));
 
                 int mb = 10;
                 try {

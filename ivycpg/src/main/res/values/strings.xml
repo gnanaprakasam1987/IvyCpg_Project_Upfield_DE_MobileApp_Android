@@ -1133,6 +1133,9 @@
     <string name="old_order_volume">Original value</string>
 
 
+    <string name="location_accuration_mis_match">Location accuracy not good, Choose Location</string>
+
+
     <string-array name="task_tab_header">
         <item>All</item>
         <item>Assigned</item>
