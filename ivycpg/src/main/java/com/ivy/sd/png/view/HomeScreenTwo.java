@@ -1868,7 +1868,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     surveyHelperNew.loadSurveyAnswers(0);
                 }
 
-                if(bmodel.configurationMasterHelper.IS_SUPPLIER_CREDIT_LIMIT
+                if(bmodel.configurationMasterHelper.IS_SUPPLIER_CREDIT_LIMIT && !bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
                         && bmodel.getRetailerMasterBO().getSupplierBO() !=null  &&
                         bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit() > 0){
                     bmodel.getRetailerMasterBO().setCreditLimit(bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit());
@@ -1880,13 +1880,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.reasonHelper.downloadSalesReturnReason();
                     if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
                         bmodel.productHelper.cloneReasonMaster(true);
-//
+
                         salesReturnHelper.getInstance(this).clearSalesReturnTable(true);
-//
-////                        if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                            salesReturnHelper.getInstance(this).removeSalesReturnTable(true);
-                            salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(),"ORDER");
-////                        }
+                        salesReturnHelper.getInstance(this).removeSalesReturnTable(true);
+                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(),"ORDER");
+
                     }
                 }
 

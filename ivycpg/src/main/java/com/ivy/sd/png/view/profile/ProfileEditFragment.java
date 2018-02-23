@@ -239,7 +239,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (validateEditProfile()) {
 
                         if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                            if (lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("") || Double.parseDouble(longitude) == 0) {
+                            if ((lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("") || Double.parseDouble(longitude) == 0)
+                                    || (bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl)) {
                                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                                 return;
                             }

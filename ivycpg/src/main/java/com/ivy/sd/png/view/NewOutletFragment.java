@@ -1677,25 +1677,12 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         .equalsIgnoreCase("LATLONG")
                         && mandatory == 1) {
 
-                    String accuracyRange = profileConfig.get(i).getRField6();
-                    Log.d("Location Accuracy ",LocationUtil.accuracy+" -- "+accuracyRange);
-
                     if (latlongtextview.getText().toString().startsWith("0.0")) {
                         validate = false;
                         latlongtextview.requestFocus();
                         scrollview2.smoothScrollTo(0, latlongtextview.getTop());
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.choose_location),
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    else if(accuracyRange!= null && Float.parseFloat(accuracyRange)>0
-                            && LocationUtil.accuracy <= Float.parseFloat(accuracyRange)) {
-                        validate = false;
-                        latlongtextview.requestFocus();
-                        scrollview2.smoothScrollTo(0, latlongtextview.getTop());
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.location_accuration_mis_match),
                                 Toast.LENGTH_SHORT).show();
                         break;
                     }

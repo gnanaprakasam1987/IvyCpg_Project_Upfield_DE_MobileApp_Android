@@ -3686,7 +3686,7 @@ public class ReportHelper {
             ArrayList<ProductMasterBO> productMasterBOs;
 
             Cursor cursor = db.selectSQL("select PM.PName,SH.retailerid,productId,Sum(shelfpqty),Sum(shelfcqty)," +
-                    "Sum(shelfoqty),Facing,PM.pCode,RM.RetailerName,PM.dUomQty,PM.dOUomQty from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId " +
+                    "Sum(shelfoqty),Facing,PM.pCode,RM.RetailerName,SD.uomqty,SD.ouomqty from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId " +
                     "INNER JOIN ProductMaster PM ON PM.PID = SD.ProductID INNER JOIN RetailerMaster RM ON RM.RetailerID = SH.RetailerID " +
                     "group by SH.RetailerID,productId");
 
