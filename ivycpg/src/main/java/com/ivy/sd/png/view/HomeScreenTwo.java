@@ -1864,9 +1864,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     surveyHelperNew.loadSurveyAnswers(0);
                 }
 
-                if (bmodel.configurationMasterHelper.IS_SUPPLIER_CREDIT_LIMIT
-                        && bmodel.getRetailerMasterBO().getSupplierBO() != null &&
-                        bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit() > 0) {
+
+                if(bmodel.configurationMasterHelper.IS_SUPPLIER_CREDIT_LIMIT
+                        && !bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
+                        && bmodel.getRetailerMasterBO().getSupplierBO() !=null &&
+                        bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit() > 0){
                     bmodel.getRetailerMasterBO().setCreditLimit(bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit());
                 }
 
