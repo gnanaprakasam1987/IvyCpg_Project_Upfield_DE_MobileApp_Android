@@ -1821,16 +1821,16 @@ public class OrderHelper {
                 focusBrandProdValues += bo.getDiscount_order_value();
             }
             if (bo.getIsFocusBrand() == 1) {
-                focusBrandProducts1 = 1;
+                focusBrandProducts1 += 1;
             }
             if (bo.getIsFocusBrand2() == 1) {
-                focusBrandProducts2 = 1;
+                focusBrandProducts2 += 1;
             }
             if (bo.getIsFocusBrand3() == 1) {
-                focusBrandProducts3 = 1;
+                focusBrandProducts3 += 1;
             }
             if (bo.getIsFocusBrand4() == 1) {
-                focusBrandProducts4 = 1;
+                focusBrandProducts4 += 1;
             }
 
 

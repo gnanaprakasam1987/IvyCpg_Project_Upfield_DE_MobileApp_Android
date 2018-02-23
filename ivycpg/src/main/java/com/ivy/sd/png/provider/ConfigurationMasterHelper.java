@@ -460,6 +460,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MOQ_ENABLED = "FUN66";//change config code
     public boolean IS_MOQ_ENABLED;
 
+    private static final String CODE_PRINT_DELIVERY = "DLRYPRINT";
+    public boolean IS_DELIVERY_PRINT;
+
+
     /**
      * RoadActivity config *
      */
@@ -2192,7 +2196,7 @@ public class ConfigurationMasterHelper {
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
 
         this.newRetailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
-
+        this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
     }
 
     public void loadOrderReportConfiguration() {

@@ -476,7 +476,8 @@ public class AttendanceHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT FromDate,ToDate,Session,Remarks,Atd_ID,Tid,Status,LeaveType_LovId,TimeSpent,Upload FROM AttendanceDetail order by FromDate desc");
+                    .selectSQL("SELECT distinct AD.FromDate,AD.ToDate,AD.Session,AD.Remarks,AD.Atd_ID,AD.Tid,Status,AD.LeaveType_LovId," +
+                            "AD.TimeSpent,AD.Upload,UM.username FROM AttendanceDetail AD left join UserMaster UM on UM.userID = AD.UserId order by FromDate desc");
             if (c != null) {
                 // setReason(new ArrayList<NonFieldMaster>());
                 NonFieldBO reasonBO;
@@ -492,6 +493,7 @@ public class AttendanceHelper {
                     reasonBO.setLeaveLovId(c.getInt(7));
                     reasonBO.setTimeSpent(c.getString(8));
                     reasonBO.setUpload(c.getString(9));
+                    reasonBO.setUserName(c.getString(10));
                     String mName = monthName(reasonBO.getFrmDate());
                     reasonBO.setMonthName(mName);
                     dateList.remove(mName);

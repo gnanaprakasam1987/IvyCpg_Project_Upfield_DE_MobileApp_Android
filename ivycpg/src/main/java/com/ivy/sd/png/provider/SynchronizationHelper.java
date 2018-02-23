@@ -4623,6 +4623,7 @@ SynchronizationHelper {
     }
 
     public boolean validateJointCallUser(int userId, String username, String password) {
+        LoginHelper.getInstance(context).loadPasswordConfiguration(context);
         ArrayList<UserMasterBO> mjoinCallUserList = bmodel.userMasterHelper.getUserMasterBO()
                 .getJoinCallUserList();
         UserMasterBO jointCallUser = new UserMasterBO();
