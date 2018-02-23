@@ -3092,6 +3092,34 @@ public class ProductHelper {
         return true;
     }
 
+    public boolean isMustSellFilledStockCheck() {
+
+        int siz = mTaggedProducts.size();
+        if (siz == 0)
+            return false;
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO product = mTaggedProducts.get(i);
+
+            int siz1 = product.getLocations().size();
+            for (int j = 0; j < siz1; j++) {
+                if (product.getIsMustSell() == 1
+                        && (product.getLocations().get(j).getShelfPiece() < 0
+                        && product.getLocations().get(j).getShelfCase() < 0
+                        && product.getLocations().get(j).getShelfOuter() < 0
+                        && product.getLocations().get(j).getWHPiece() == 0
+                        && product.getLocations().get(j).getWHCase() == 0
+                        && product.getLocations().get(j).getWHOuter() == 0
+                        && product.getLocations().get(j).getCockTailQty() == 0
+                        && product.getIsListed() == 0
+                        && product.getIsDistributed() == 0
+                        && product.getReasonID().equals("0")
+                        && product.getLocations().get(j).getAvailability() < 0))
+                    return false;
+            }
+        }
+        return true;
+    }
+
     public boolean isCSMustSellFilled() {//For counter Sales
         if (bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES) {
 
