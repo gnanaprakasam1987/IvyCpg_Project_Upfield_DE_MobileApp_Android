@@ -876,6 +876,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     public boolean onTouch(View v, MotionEvent event) {
 
                         QUANTITY = holder.priceET;
+                        QUANTITY.setTag(holder.schemeBO);
                         int inType = holder.priceET.getInputType();
                         holder.priceET.setInputType(InputType.TYPE_NULL);
                         holder.priceET.onTouchEvent(event);
@@ -891,6 +892,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     public boolean onTouch(View v, MotionEvent event) {
 
                         QUANTITY = holder.percentET;
+                        QUANTITY.setTag(holder.schemeBO);
                         int inType = holder.percentET.getInputType();
                         holder.percentET.setInputType(InputType.TYPE_NULL);
                         holder.percentET.onTouchEvent(event);
@@ -906,6 +908,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     public boolean onTouch(View v, MotionEvent event) {
 
                         QUANTITY = holder.amountET;
+                        QUANTITY.setTag(holder.schemeBO);
                         int inType = holder.amountET.getInputType();
                         holder.amountET.setInputType(InputType.TYPE_NULL);
                         holder.amountET.onTouchEvent(event);
@@ -1354,12 +1357,14 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 append = "0";
                 eff();
             } else if (id == R.id.calcdel) {
-                int length = QUANTITY.getText().length();
-                if (length > 1)
-                    QUANTITY.setText(QUANTITY.getText().subSequence(0,
-                            length - 1));
-                else
-                    QUANTITY.setText("0");
+                String s = QUANTITY.getText().toString();
+                if (!(s.length() == 0)) {
+                    s = s.substring(0, s.length() - 1);
+                    if (s.length() == 0) {
+                        s = "0";
+                    }
+                }
+                QUANTITY.setText(s);
 
             } else if (id == R.id.calcdot) {
 

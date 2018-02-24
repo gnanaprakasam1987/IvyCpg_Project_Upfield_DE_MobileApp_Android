@@ -96,6 +96,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_capture);
+        checkAndRequestPermissionAtRunTime(2);
 
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);

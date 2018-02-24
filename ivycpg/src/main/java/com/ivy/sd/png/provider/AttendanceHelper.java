@@ -1110,7 +1110,7 @@ public class AttendanceHelper {
                             + ","
                             + bmodel.QT(mLeaves.getFrequencytype())
                             + ","
-                            + (mLeaves.getAppliedDays().equals("0.5") ? "1.0" : mLeaves.getAppliedDays());
+                            + bmodel.QT(mLeaves.getAppliedDays());
                     db.insertSQL("LeaveDetail", split_columns, split_values);
                 }
 

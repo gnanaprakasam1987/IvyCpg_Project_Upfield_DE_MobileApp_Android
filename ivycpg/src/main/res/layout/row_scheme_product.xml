@@ -33,7 +33,7 @@
                 android:gravity="left|center"
                 android:padding="4dp"
                 android:text="Scheme Name"
-                android:textColor="@color/black_bg1"/>
+                android:textColor="@color/black_bg1" />
 
             <LinearLayout
                 android:id="@+id/infoLayout"
@@ -55,7 +55,7 @@
                         android:gravity="center_vertical"
                         android:maxLines="2"
                         android:paddingLeft="4dp"
-                        android:text="slab_name"/>
+                        android:text="slab_name" />
 
                     <TextView
                         android:id="@+id/tv_buying_qty"
@@ -194,7 +194,6 @@
                         android:layout_width="@dimen/target_plan_editbox_width"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_margin="4dp"
                         android:maxLength="6"
                         android:padding="4dp"
                         android:textSize="@dimen/total_title_size" />
@@ -262,7 +261,6 @@
                         android:layout_width="@dimen/target_plan_editbox_width"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_margin="4dp"
                         android:maxLength="6"
                         android:padding="4dp"
                         android:textSize="@dimen/total_title_size" />
@@ -329,7 +327,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:maxLength="5"
-                        android:layout_margin="4dp"
                         android:padding="4dp"
                         android:textSize="@dimen/total_title_size" />
 
@@ -340,8 +337,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/et_selected_percent"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/list_margin" />
+                        android:layout_gravity="center_vertical" />
                 </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>

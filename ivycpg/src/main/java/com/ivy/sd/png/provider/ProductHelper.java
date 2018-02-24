@@ -658,7 +658,7 @@ public class ProductHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + mSelectedGlobalLevelID + " and PM1.PID =" + mSelectedGlobalProductId;
+            query = query + " WHERE PM1.PLid = " + mSelectedGlobalLevelID + " and PM1.PID =" + mSelectedGlobalProductId + " Order By PM" + mProductLevelId + ".RowId";
 
         } else {
             query = "SELECT DISTINCT PM1.PID, PM1.PName FROM ProductMaster PM1"
@@ -705,7 +705,7 @@ public class ProductHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + mSelectedGlobalLevelID + " AND PM1.PID = " + mSelectedGlobalProductId;
+            query = query + " WHERE PM1.PLid = " + mSelectedGlobalLevelID + " AND PM1.PID = " + mSelectedGlobalProductId + " Order By PM" + filterGap + ".RowId,PM" + mProductLevelId + ".RowId";
 
         } else {
 
@@ -718,7 +718,8 @@ public class ProductHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + mParentLevelId;
+            query = query + " WHERE PM1.PLid = " + mParentLevelId +
+                    " Order By PM" + filterGap + ".RowId,PM1.RowId";
         }
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1529,7 +1530,7 @@ public class ProductHelper {
                         + loopEnd
                         + ".pcode,A"
                         + loopEnd
-                        + ".pname,A" + parentLevelID + ".pid,A"
+                        + ".pname,A" + (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY ? bmodel.configurationMasterHelper.globalSeqId : parentLevelID) + ".pid,A"
                         + loopEnd
                         + ".sih,A"
                         + loopEnd
@@ -2726,7 +2727,7 @@ public class ProductHelper {
     public void cloneReasonMaster(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
         try {
             Vector<ProductMasterBO> productMasterBOs = null;
-            if(isFromOrder)
+            if (isFromOrder)
                 productMasterBOs = productMaster;
             else
                 productMasterBOs = mSalesReturnProducts;

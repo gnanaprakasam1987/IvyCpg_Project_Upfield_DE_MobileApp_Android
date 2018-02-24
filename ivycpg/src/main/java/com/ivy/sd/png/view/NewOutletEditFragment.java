@@ -147,6 +147,7 @@ public class NewOutletEditFragment extends IvyBaseFragment {
             holder.ib_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    selectedRetId = retailer.getRetailerId();
                     new LoadNewOutLet().execute("1");
                 }
             });

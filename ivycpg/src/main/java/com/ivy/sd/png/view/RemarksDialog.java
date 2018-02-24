@@ -3,7 +3,9 @@ package com.ivy.sd.png.view;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.method.DigitsKeyListener;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -36,7 +38,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
     private EditText rField2;
     private Spinner spnRField1;
     private LinearLayout textInputLayout2;
-    private LinearLayout textInputLayout3,layout_remark;
+    private LinearLayout textInputLayout3, layout_remark;
     private LinearLayout lnrRField1;
     private BusinessModel bmodel;
     @SuppressLint("ValidFragment")
@@ -73,14 +75,30 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
         textInputLayout3 = (LinearLayout) view.findViewById(R.id.editText_layout3);
         lnrRField1 = (LinearLayout) view.findViewById(R.id.lnrRField1);
 
-        layout_remark=(LinearLayout)view.findViewById(R.id. editText_layout1);
-        layout_remark_type=(LinearLayout)view.findViewById(R.id. layout_remark_type);
-        spinner_remark_type=(Spinner) view.findViewById(R.id. spinner_remark_type);
+        layout_remark = (LinearLayout) view.findViewById(R.id.editText_layout1);
+        layout_remark_type = (LinearLayout) view.findViewById(R.id.layout_remark_type);
+        spinner_remark_type = (Spinner) view.findViewById(R.id.spinner_remark_type);
 
         DisplayMetrics outMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay()
                 .getMetrics(outMetrics);
         remarks.setWidth(outMetrics.widthPixels);
+
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                char[] chars = {'\'', '"', '<', '>'};
+                for (int i = start; i < end; i++) {
+                    if (new String(chars).contains(String.valueOf(source.charAt(i)))) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
+        remarks.setFilters(new InputFilter[]{filter});
+
         try {
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.remarks).getTag()) != null)
@@ -106,13 +124,13 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                                         R.id.rField2)
                                         .getTag()));
 
-                if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                        R.id.remark_type_label).getTag()) != null)
-                    ((TextView) view.findViewById(R.id.remark_type_label))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(view.findViewById(
-                                            R.id.remark_type_label)
-                                            .getTag()));
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.remark_type_label).getTag()) != null)
+                ((TextView) view.findViewById(R.id.remark_type_label))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.remark_type_label)
+                                        .getTag()));
 
 
         } catch (Exception e) {
@@ -163,8 +181,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
 
                     } else if (token.contains("RF2")) {
                         textInputLayout3.setVisibility(View.VISIBLE);
-                    }
-                    else if (token.contains("REMD")) {
+                    } else if (token.contains("REMD")) {
                         layout_remark_type.setVisibility(View.VISIBLE);
                         layout_remark.setVisibility(View.GONE);
 
@@ -296,7 +313,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                     bmodel.setRField2(rField2.getText().toString());
                     try {
                         bmodel.setRemarkType(((ReasonMaster) spinner_remark_type.getSelectedItem()).getReasonID());
-                    }catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         bmodel.setRemarkType("0");
                     }
 

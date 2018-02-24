@@ -5,9 +5,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -42,6 +45,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderSummary;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -118,7 +122,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private String brandbutton, generalbutton;
     private int mSelectedBrandID = 0;
     private String strBarCodeSearch = "ALL";
-
 
 
     private Toolbar toolbar;
@@ -1792,31 +1795,26 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }
             if (holder.pdt_image != null) {
-                //if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
-                //if (isExternalStorageAvailable()) {
-                /*File prd = new File(Utils.getSdcardPath(getApplicationContext())
-                        + "/" + bmodel.productHelper.getProductImageUrl() + "/" + holder.productObj.getProductCode() + ".jpg");*/
-                //File prd = new File(getImageFilePath(holder.productObj.getProductCode()));
+
+                Uri path;
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(CatalogOrder.this, BuildConfig.APPLICATION_ID + ".provider", new File(
+                            appImageFolderPath
+                                    + "/"
+                                    + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg"));
+                } else {
+                    path = Uri.fromFile(new File(
+                            appImageFolderPath
+                                    + "/"
+                                    + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg"));
+                }
 
                 Glide.with(getApplicationContext())
-                        .load(
-                                        /*Environment.DIRECTORY_DOWNLOADS)
-                                        + "/"
-                                        + bmodel.userMasterHelper.getUserMasterBO()
-                                        .getUserid()
-                                        + DataMembers.DIGITAL_CONTENT*/
-                                appImageFolderPath
-                                        + "/"
-                                        + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg")
+                        .load(path)
                         .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
                         .dontAnimate()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.pdt_image);
-                //}
-
-                /*} else {
-                    holder.pdt_image.setImageResource(R.drawable.no_image_available);
-                }*/
 
                 //set SIH value
                 if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {

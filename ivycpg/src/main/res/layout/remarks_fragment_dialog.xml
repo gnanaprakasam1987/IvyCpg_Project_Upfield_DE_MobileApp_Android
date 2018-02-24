@@ -46,9 +46,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"
                 android:hint="@string/enter_remark_to_set"
-                android:maxLength="50"
+                android:maxLength="250"
                 android:maxLines="1"
                 android:paddingLeft="6dp"
                 android:paddingRight="6dp"
@@ -160,27 +159,27 @@
                 android:tag="@string/remark"
                 android:textSize="@dimen/font_small"></EditText>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/layout_remark_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_5dp"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="35dp"
-            android:layout_marginBottom="@dimen/dimen_5dp"
             android:orientation="vertical"
-            android:visibility="gone"
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
-            >
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/remark_type_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimens_10dp"
-                android:text="@string/remarks_type_label"
                 android:tag="remark_type"
+                android:text="@string/remarks_type_label"
                 android:textColor="@color/GRAY_TEXT"
                 android:textSize="@dimen/list_primary" />
 

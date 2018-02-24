@@ -152,7 +152,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
     static String longitude = "";
     Vector<RetailerMasterBO> mNearbyRetIds;
     Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
-    private boolean is_contact_title1 = false, is_contact_title2 = false;
+    private boolean is_contact_title1 = false, is_contact_title2 = false, isLatLong = false;
     private String mcontact_title1_lovId = "",
             mcontact_title2_lovId = "", mcontact_title1_text = "0", mcontact_title2_text = "0";
     ToggleButton btn_Deactivate;
@@ -228,7 +228,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
         bmodel.newOutletHelper.loadContactStatus();
         bmodel.newOutletHelper.downloadLinkRetailer();
         new DownloadAsync().execute();
-      //  bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+        //  bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         // get previous changes from retailerEdit  Header and Detail table
         bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
         createTabViewForProfileForEdit();
@@ -367,7 +367,12 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
             }
 
-
+            if ((configureBO.getConfigCode().equalsIgnoreCase("PROFILE08") && configureBO.isFlag() == 1)
+                    || (configureBO.getConfigCode().equalsIgnoreCase("PROFILE31") && configureBO.isFlag() == 1)) {
+                isLatLong = true;
+                lat = retailerObj.getLatitude() + "";
+                longitude = retailerObj.getLongitude() + "";
+            }
         }
 
         if (is_contact_title2 || is_contact_title1) {
@@ -594,13 +599,13 @@ public class ProfileEditFragment extends IvyBaseFragment {
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_NUMBER),
                             commonsparams);
                 } else if (configCode.equals("PROFILE30") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
-                    if (retailerObj.getContactnumber1() == null
-                            || retailerObj.getContactnumber1().equals(
+                    if (retailerObj.getContactnumber() == null
+                            || retailerObj.getContactnumber().equals(
                             "null")) {
-                        retailerObj.setContactnumber1("");
+                        retailerObj.setContactnumber("");
                     }
 
-                    String text = retailerObj.getContactnumber1() + "";
+                    String text = retailerObj.getContactnumber() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
@@ -695,14 +700,14 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
 
                 } else if (configCode.equals("PROFILE10") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
-                    if (retailerObj.getContactnumber() == null
-                            || retailerObj.getContactnumber().equals(
+                    if (retailerObj.getContactnumber1() == null
+                            || retailerObj.getContactnumber1().equals(
                             "null")) {
-                        retailerObj.setContactnumber("");
+                        retailerObj.setContactnumber1("");
                     }
 
                     String text = "";
-                    text = retailerObj.getContactnumber();
+                    text = retailerObj.getContactnumber1();
 
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
@@ -1126,7 +1131,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
             editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
             editText[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
             editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            if (textValue.equals("0"))
+            if (textValue.equals("0") || textValue.equals("-1"))
                 editText[mNumber].setText("");
             else
                 editText[mNumber].setText(textValue);
@@ -1184,6 +1189,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
             //    firstlayout.setPadding(0, 0, 0, 0);
             textview[mNumber] = new TextView(getActivity());
             textview[mNumber].setText(MName);
+            textview[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             textview[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
             textview[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
             firstlayout.addView(textview[mNumber], weight1);
@@ -1193,7 +1199,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
             editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
             editText[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
             editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            editText[mNumber].setHint("First Name");
+            editText[mNumber].setHint(getResources().getString(R.string.contact_person_first_name));
             editText[mNumber].setText(textValue);
             editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
             if (inputFilters != null && inputFilters.size() > 0) {
@@ -1211,7 +1217,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
             if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE09")) {
                 editTextInputLayout1 = new TextInputLayout(getActivity());
                 editText[lName1_editText_index] = new AppCompatEditText(getActivity());
-                editText[lName1_editText_index].setHint("Last Name");
+                editText[lName1_editText_index].setHint(getResources().getString(R.string.contact_person_last_name));
                 editText[lName1_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
                 editText[lName1_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
                 editText[lName1_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1247,7 +1253,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
             if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE11")) {
                 editTextInputLayout2 = new TextInputLayout(getActivity());
                 editText[lName2_editText_index] = new AppCompatEditText(getActivity());
-                editText[lName2_editText_index].setHint("Last Name");
+                editText[lName2_editText_index].setHint(getResources().getString(R.string.contact_person_last_name));
                 editText[lName2_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
                 editText[lName2_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
                 editText[lName2_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1511,13 +1517,21 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
     private void checkRegex(String regex) {
         final String reg;
+        String temp;
         try {
             if (regex != null && !regex.isEmpty()) {
                 if (regex.contains("<") && regex.contains(">")) {
-                    reg = regex.replaceAll("\\<.*?\\>", "");
+                    temp = regex.replaceAll("\\<.*?\\>", "");
                 } else {
-                    reg = regex;
+                    temp = regex;
                 }
+                String[] a = temp.split("\\{");
+                if (a.length >= 2)
+                    temp = "[" + a[0] + "]{" + a[1];
+                else {
+                    temp = "[" + temp + "]";
+                }
+                reg = temp;
                 //data.replaceAll("\\(.*?\\)", "()"); //if you want to keep the brackets
                 InputFilter filter = new InputFilter() {
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -2537,7 +2551,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
             public boolean onLongClick(View v) {
                 boolean isLatLongMenuAvail = false;
                 for (int conf = 0; conf < profileConfig.size(); conf++) {
-                    if(profileConfig.get(conf).getConfigCode().equalsIgnoreCase("PROFILE08") &&
+                    if (profileConfig.get(conf).getConfigCode().equalsIgnoreCase("PROFILE08") &&
                             profileConfig.get(conf).getModule_Order() == 1) {
                         for (int conf1 = 0; conf1 < profileConfig.size(); conf1++) {
                             if (profileConfig.get(conf1).getConfigCode().equalsIgnoreCase("PROFILE31") &&
@@ -2550,12 +2564,12 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 }
                 //Dont allow if Fun57 is enabled and mandatory,
                 //Generally check for location and show toast if no location found.
-                if(!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
-                        || (bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl)){
+                if (!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
+                        || (bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl != 0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl)) {
 
                     Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     return false;
-                }else {
+                } else {
                     if (LocationUtil.latitude == 0 || LocationUtil.longitude == 0) {
                         Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     }
@@ -2793,8 +2807,12 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("") || Double.parseDouble(longitude) == 0) {
                         Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     } else {
-                        profileConfig.add(new ConfigureBO("PROFILE08", "Latitude", lat, 0, 0, 0));
-                        profileConfig.add(new ConfigureBO("PROFILE31", "Latitude", longitude, 0, 0, 0));
+                        if (!isLatLong) {
+                            profileConfig.add(new ConfigureBO("PROFILE08", "Latitude", lat, 0, 0, 0));
+                            profileConfig.add(new ConfigureBO("PROFILE31", "Latitude", longitude, 0, 0, 0));
+                        } else {
+                            latlongtextview.setText(lat + "," + longitude);
+                        }
                         Toast.makeText(getActivity(), "Location captured successfully.", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -3507,6 +3525,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
             progressDialogue.dismiss();
             bmodel.latlongImageFileName = "";
+            lat = "";
+            longitude = "";
             showAlert(
                     getActivity().getResources().getString(
                             R.string.profile_updated_scccess), 0);
