@@ -858,9 +858,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             else
                 menu.findItem(R.id.menu_spl_filter).setVisible(false);
 
-            if (scheme_button_enable)
-                menu.findItem(R.id.menu_scheme).setVisible(!drawerOpen);
-            else
+
                 menu.findItem(R.id.menu_scheme).setVisible(false);
 
             menu.findItem(R.id.menu_apply_so).setVisible(false);
@@ -900,12 +898,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 menu.findItem(R.id.menu_remarks).setVisible(false);
             } else
                 menu.findItem(R.id.menu_remarks).setVisible(true);
-            if (!bmodel.configurationMasterHelper.SHOW_MENU_ICON_SCHEME
-                    || bmodel.configurationMasterHelper.IS_PRODUCT_DIALOG) {
-                hideShemeButton();
-                menu.findItem(R.id.menu_scheme).setVisible(false);
-            } else
-                menu.findItem(R.id.menu_scheme).setVisible(true);
+
 
             if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                 menu.findItem(R.id.menu_competitor_filter).setVisible(true);
@@ -975,7 +968,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_apply_std_qty) {
             return true;
         } else if (i == R.id.menu_scheme) {
-            loadSchemeDialog();
             return true;
         } else if (i == R.id.menu_sih_apply) {
             return true;
@@ -1097,16 +1089,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     }
 
 
-    private void loadSchemeDialog() {
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-        SchemeDialog sc = new SchemeDialog(getActivity(), null, "",
-                "", null, 0, 0);
 
-        //sc.show();
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        sc.show(fm, "");
-    }
 
     private void onNextButtonClick() {
         if (bmodel.hasStockCheck()) {
