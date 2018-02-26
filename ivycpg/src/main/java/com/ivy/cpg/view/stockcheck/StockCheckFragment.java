@@ -1512,14 +1512,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     private void onNextButtonClick() {
-        if (businessModel.configurationMasterHelper.IS_MUST_SELL
+        if (businessModel.configurationMasterHelper.IS_MUST_SELL_STK
                 && !businessModel.productHelper.isMustSellFilledStockCheck()) {
-            if (dialog == null) {
-                dialog = new MustSellReasonDialog(
-                        getActivity(), false,
-                        diagDismissListen, businessModel);
-            }
-            dialog.show();
+            Toast.makeText(getActivity(), R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
             return;
         }
         stockCheckPresenter.saveClosingStock(stockList);

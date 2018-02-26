@@ -1254,6 +1254,9 @@ public class ConfigurationMasterHelper {
 
     public int newRetailerLocAccuracyLvl;
 
+    private static final String CODE_MUST_SELL_STK = "MSLSTK";
+    public boolean IS_MUST_SELL_STK;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2193,6 +2196,7 @@ public class ConfigurationMasterHelper {
 
         this.newRetailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
 
+        this.IS_MUST_SELL_STK = hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) : false;
     }
 
     public void loadOrderReportConfiguration() {
