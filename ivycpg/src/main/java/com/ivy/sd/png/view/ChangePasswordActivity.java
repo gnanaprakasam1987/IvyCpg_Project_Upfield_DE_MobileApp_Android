@@ -228,6 +228,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                         Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                 jsonObject.put("MobileUTCDateTime",
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+                jsonObject.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationSubVersionName());
                 Commons.printInformation("Change password upload " + jsonObject.toString());
                 final String appendUrl = DataMembers.CHANGE_PWD;
                 Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject, appendUrl, true);

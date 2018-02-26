@@ -134,6 +134,7 @@ SynchronizationHelper {
 
     public static final String USER_ID = "UserId";
     public static final String VERSION_CODE = "VersionCode";
+    public static final String VERSION_NAME = "VersionName";
     public static final String MOBILE_DATE_TIME = "MobileDateTime";
     public static final String MOBILE_UTC_DATE_TIME = "MobileUTCDateTime";
     public static final String REQUEST_MOBILE_DATE_TIME = "RequestDate";
@@ -1371,6 +1372,7 @@ SynchronizationHelper {
             json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
             JSONArray jsonArray = new JSONArray();
             for (RetailerMasterBO retailerMasterBO : retailerList) {
                 jsonArray.put(retailerMasterBO.getRetailerID());
@@ -1406,6 +1408,7 @@ SynchronizationHelper {
                 json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid());
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
+                json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
 
                 int insert = VOLLEY_DOWNLOAD_INSERT;
                 if (whichDownload == DownloadType.RETAILER_WISE_DOWNLOAD) {
@@ -1438,6 +1441,7 @@ SynchronizationHelper {
                 json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid());
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
+                json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
                 if (whichDownload == 1)
                     json.put("IsRetailer", 1);
                 else if (whichDownload == 2)
@@ -1911,6 +1915,7 @@ SynchronizationHelper {
             json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
             json.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             json.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
@@ -2415,6 +2420,7 @@ SynchronizationHelper {
             jsonObj.put("Model", Build.MODEL);
             jsonObj.put("VersionCode",
                     bmodel.getApplicationVersionNumber());
+            jsonObj.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationSubVersionName());
             jsonObj.put("DeviceId",
                     bmodel.activationHelper.getIMEINumber());
             jsonObj.put("RegistrationId", bmodel.regid);
@@ -2468,6 +2474,7 @@ SynchronizationHelper {
             jsonObj.put("Model", Build.MODEL);
             jsonObj.put("VersionCode",
                     bmodel.getApplicationVersionNumber());
+            jsonObj.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationSubVersionName());
             jsonObj.put("DeviceId",
                     bmodel.activationHelper.getIMEINumber());
             jsonObj.put("RegistrationId", bmodel.regid);
@@ -2749,6 +2756,7 @@ SynchronizationHelper {
                 json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid());
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
+                json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
                 json.put("RetailerId", retailerid);
                 int size = mNewRetailerDownloadUrlList.size();
                 for (String url : mNewRetailerDownloadUrlList) {
@@ -2809,6 +2817,7 @@ SynchronizationHelper {
                         .getUserid());
                 json.put("UserId", bmodel.retailerMasterBO.getSelectedUserID());
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
+                json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
                 json.put("RetailerId", retailerid);
                 int size = mUserRetailerTranDownloadUrlList.size();
                 for (String url : mUserRetailerTranDownloadUrlList) {
@@ -2905,6 +2914,7 @@ SynchronizationHelper {
             json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
 
             callVolley(DataMembers.SERVER_URL + appendSihUrl, fromWhere, 1, SIH_DOWNLOAD, json);
         } catch (Exception e) {
@@ -2934,6 +2944,7 @@ SynchronizationHelper {
             json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
 
 
             downloadurl = DataMembers.SERVER_URL + downloadurl;
@@ -2979,6 +2990,7 @@ SynchronizationHelper {
                 json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid());
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
+                json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
                 JSONArray jsonArray = new JSONArray();
                 jsonArray.put(id);
                 json.put("LocationIds", jsonArray);
@@ -2986,6 +2998,7 @@ SynchronizationHelper {
                 json.put("LoginUserId", bmodel.userMasterHelper.getUserMasterBO().getUserid());
                 json.put("UserId", id);
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
+                json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
             }
 
 
@@ -3027,6 +3040,7 @@ SynchronizationHelper {
             json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
             json.put("Key", retailerName);
 
 
@@ -3051,6 +3065,7 @@ SynchronizationHelper {
             json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
 
 
             callVolley(sb.toString(), fromWhere, 0, updateWhere, json);
@@ -3425,6 +3440,7 @@ SynchronizationHelper {
                         bmodel.activationHelper.getIMEINumber());
                 jsonFormatter.addParameter("VersionCode",
                         bmodel.getApplicationVersionNumber());
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationSubVersionName());
                 jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
                 if (isDayClosed()) {
@@ -3886,6 +3902,7 @@ SynchronizationHelper {
                         bmodel.activationHelper.getIMEINumber());
                 jsonFormatter.addParameter("VersionCode",
                         bmodel.getApplicationVersionNumber());
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationSubVersionName());
                 jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
                 jsonFormatter.addParameter("MobileDate",
@@ -4014,6 +4031,7 @@ SynchronizationHelper {
                         bmodel.activationHelper.getIMEINumber());
                 jsonFormatter.addParameter("VersionCode",
                         bmodel.getApplicationVersionNumber());
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationSubVersionName());
                 jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
                 if (isDayClosed()) {
@@ -4126,6 +4144,7 @@ SynchronizationHelper {
             json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
             json.put("PhoneNo", phoneNum);
 
             callVolley(sb.toString(), FROM_SCREEN.COUNTER_SALES_SELECTION, 1, VOLLEY_CUSTOMER_SEARCH, json);
@@ -4148,6 +4167,7 @@ SynchronizationHelper {
             jsonObject.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             jsonObject.put("VersionCode", bmodel.getApplicationVersionNumber());
+            jsonObject.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
             for (TeamLeadBO teamLeadBO : absenteesList) {
                 if (teamLeadBO.getAttendance() == 0) {
 
@@ -4216,6 +4236,7 @@ SynchronizationHelper {
                         .getUserid());
                 jsonObj.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
                 jsonObj.put("VersionCode", bmodel.getApplicationVersionNumber());
+                jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
                 http.setParamsJsonObject(jsonObj);
 
                 http.connectMe();
@@ -4533,6 +4554,7 @@ SynchronizationHelper {
                     .getUserMasterBO().getLoginName());
             jsonFormatter.addParameter("VersionCode",
                     bmodel.getApplicationVersionNumber());
+            jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationSubVersionName());
             jsonFormatter.addParameter("DistributorId", bmodel.userMasterHelper
                     .getUserMasterBO().getDistributorid());
             jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
@@ -4853,6 +4875,7 @@ SynchronizationHelper {
             json.put(SynchronizationHelper.USER_ID, bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put(SynchronizationHelper.VERSION_CODE, bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationSubVersionName());
             json.put(SynchronizationHelper.MOBILE_DATE_TIME,
                     Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             json.put(SynchronizationHelper.MOBILE_UTC_DATE_TIME,

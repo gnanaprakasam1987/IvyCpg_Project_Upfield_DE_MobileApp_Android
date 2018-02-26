@@ -420,6 +420,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                         Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                 jsonObj.put(SynchronizationHelper.MOBILE_UTC_DATE_TIME,
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+                jsonObj.put(SynchronizationHelper.VERSION_NAME,businessModel.getApplicationSubVersionName());
                 if (!DataMembers.backDate.isEmpty())
                     jsonObj.put(SynchronizationHelper.REQUEST_MOBILE_DATE_TIME,
                             SDUtil.now(SDUtil.DATE_TIME_NEW));
