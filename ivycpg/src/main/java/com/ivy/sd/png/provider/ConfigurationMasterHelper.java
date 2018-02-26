@@ -460,6 +460,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MOQ_ENABLED = "FUN66";//change config code
     public boolean IS_MOQ_ENABLED;
 
+    private static final String CODE_PRINT_DELIVERY = "DLRYPRINT";
+    public boolean IS_DELIVERY_PRINT;
+
+
     /**
      * RoadActivity config *
      */
@@ -551,6 +555,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_SP;
     public boolean SHOW_CAT_STOCK_SP;
     public boolean SHOW_ORDER_PCS;
+    public boolean SHOW_FOC;
     public boolean SHOW_ORDER_CASE;
     public boolean SHOW_ORDER_TOTAL;
     public boolean SHOW_INDICATIVE_ORDER;
@@ -2192,7 +2197,7 @@ public class ConfigurationMasterHelper {
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
 
         this.newRetailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
-
+        this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
     }
 
     public void loadOrderReportConfiguration() {
@@ -3154,6 +3159,7 @@ public class ConfigurationMasterHelper {
             SHOW_SHELF_OUTER = false;
             SHOW_ORDER_CASE = false;
             SHOW_ORDER_PCS = false;
+            SHOW_FOC=false;
             SHOW_OUTER_CASE = false;
             SHOW_ICO = false;
             SHOW_BARCODE = false;
@@ -3321,6 +3327,8 @@ public class ConfigurationMasterHelper {
                         SHOW_ORDER_CASE = true;
                     else if (temp.equals("PS"))
                         SHOW_ORDER_PCS = true;
+                    else if (temp.equals("RF"))
+                        SHOW_FOC = true;
                     else if (temp.equals("OOC"))
                         SHOW_OUTER_CASE = true;
                     else if (temp.equals("ICO"))

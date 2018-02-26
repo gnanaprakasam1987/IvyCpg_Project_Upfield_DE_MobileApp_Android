@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;

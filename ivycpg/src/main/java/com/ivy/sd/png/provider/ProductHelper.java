@@ -2985,6 +2985,7 @@ public class ProductHelper {
             product.setOrderedPcsQty(0);
             product.setOrderedCaseQty(0);
             product.setOrderedOuterQty(0);
+            product.setFoc(0);
         }
     }
 
@@ -2999,6 +3000,7 @@ public class ProductHelper {
             product.setLocalOrderPieceqty(0);
             product.setLocalOrderCaseqty(0);
             product.setLocalOrderOuterQty(0);
+            product.setFoc(0);
             // clear discount fields
             product.setD1(0);
             product.setD2(0);
@@ -3064,6 +3066,7 @@ public class ProductHelper {
             product.setOrderedPcsQty(0);
             product.setOrderedCaseQty(0);
             product.setOrderedOuterQty(0);
+            product.setFoc(0);
             product.setCheked(false);
         }
     }

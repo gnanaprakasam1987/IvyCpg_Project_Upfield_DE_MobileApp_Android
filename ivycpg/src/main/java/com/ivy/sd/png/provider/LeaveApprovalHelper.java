@@ -58,7 +58,7 @@ public class LeaveApprovalHelper {
             leavePending = new ArrayList<LeaveApprovalBO>();
             leaveApproved = new ArrayList<LeaveApprovalBO>();
 
-            sql = new String("select LR.userid,LR.refid,LR.fromdate,LR.todate,LR.status,SM.Listname,SM1.Listname,UM.username from Leaverequestdetails LR "
+            sql = new String("select distinct LR.userid,LR.refid,LR.fromdate,LR.todate,LR.status,SM.Listname,SM1.Listname,UM.username from Leaverequestdetails LR "
                     + "inner join StandardListMaster SM1 on SM1.Listid= LR.reasonid "
                     + "inner join StandardListMaster SM on SM.ListCode = LR.status "
                     + "inner join UserMaster UM on UM.userid = LR.userid "
@@ -90,7 +90,7 @@ public class LeaveApprovalHelper {
             c.close();
             c = null;
 
-            sql = new String("select LR.userid,LR.refid,LR.fromdate,LR.todate,LR.status,SM.Listname,SM1.Listname,UM.username from Leaverequestdetails LR "
+            sql = new String("select distinct LR.userid,LR.refid,LR.fromdate,LR.todate,LR.status,SM.Listname,SM1.Listname,UM.username from Leaverequestdetails LR "
                     + "inner join StandardListMaster SM1 on SM1.Listid= LR.reasonid "
                     + "inner join StandardListMaster SM on SM.ListCode = LR.status "
                     + "inner join UserMaster UM on UM.userid = LR.userid "
