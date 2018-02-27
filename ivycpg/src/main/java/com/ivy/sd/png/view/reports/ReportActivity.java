@@ -596,12 +596,11 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             setScreenTitle(config.getMenuName());
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_WEBVIEW_RPT01)) {
-
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_WEBVIEW_RPT01) ||
+                config.getConfigCode().equals(StandardListMasterConstants.MENU_WEBVIEW_RPT02)) {
 
             if (bmodel.isOnline()) {
-                bmodel.reportHelper.downloadWebViewReportUrl(StandardListMasterConstants.MENU_WEBVIEW_RPT01);
+                bmodel.reportHelper.downloadWebViewReportUrl(config.getConfigCode());
                 if (!bmodel.reportHelper.getWebReportUrl().equals("")) {
                     transaction
                             .replace(R.id.fragment_content, sOreportFragment);

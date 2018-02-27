@@ -89,6 +89,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_LOG = "MENU_LOG"; // Activity Log
 	public static final String MENU_RTR_RPT = "MENU_RTR_RPT"; // Retailer Report
 	public static final String MENU_WEBVIEW_RPT01 = "MENU_WVW_RPT01";
+	public static final String MENU_WEBVIEW_RPT02 = "MENU_WVW_RPT02";
 	public static final String MENU_CREDIT_NOTE_REPORT = "MENU_CREDIT_RPT";
 	public static final String MENU_ATTENDANCE_REPORT = "MENU_ATTENDANCE_RPT";
 	public static final String MENU_DELIVERY_STOCK_REPORT = "MENU_DELIVERYSTK";
