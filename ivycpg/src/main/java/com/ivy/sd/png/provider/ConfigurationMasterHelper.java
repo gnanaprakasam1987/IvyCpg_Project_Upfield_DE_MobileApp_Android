@@ -4800,6 +4800,9 @@ public class ConfigurationMasterHelper {
                         MVPTheme = R.style.MVPTheme_Green;
                     else if (c.getString(0).equalsIgnoreCase("pink"))
                         MVPTheme = R.style.MVPTheme_Pink;
+                    else if (c.getString(0).equalsIgnoreCase("nblue"))
+                        MVPTheme = R.style.MVPTheme_NBlue;
+
                 }
             }
 

@@ -14,6 +14,18 @@
 
     <!-- Blue Theme End-->
 
+    <!-- N Blue Theme Start-->
+    <!-- To apply theme to dialogs
+            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
+            buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
+    <style name="DialogStyleNBlue" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccentNBlue</item>
+        <item name="android:buttonStyle">@style/MyButtonNBlue</item>
+    </style>
+
+
+    <!-- N Blue Theme End-->
+
 
     <!-- Red Theme Start-->
 
