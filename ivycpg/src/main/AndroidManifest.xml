@@ -133,7 +133,7 @@
         </receiver>
 
         <service android:name="com.ivy.sd.png.view.GcmIntentService" />
-        <service android:name="com.ivy.sd.png.model.CatalogImageDownloadService" />
+        <service android:name="com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadService" />
 
         <receiver
             android:name="com.ivy.sd.png.view.GcmBroadcastReceiver"
@@ -749,7 +749,7 @@
             android:value="9b1eac89f0eeff5747964654e134359f51160fde" />
 
         <activity
-            android:name="com.ivy.sd.png.view.CatalogImagesDownlaod"
+            android:name="com.ivy.cpg.view.sync.catalogdownload.CatalogImagesDownlaod"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CollectionReference"

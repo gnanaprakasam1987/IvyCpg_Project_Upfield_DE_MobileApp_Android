@@ -95,6 +95,8 @@ public class ProductMasterBO {
 
     private double distiributorSchemeDiscount;
 
+    private int foc;
+
     public ProductMasterBO() {
         //to avoid compile time error when object with no parameter/s created
     }
@@ -1822,5 +1824,13 @@ public class ProductMasterBO {
     }
     public int getIsDrug() {
         return isDrug;
+    }
+
+    public int getFoc() {
+        return foc;
+    }
+
+    public void setFoc(int foc) {
+        this.foc = foc;
     }
 }

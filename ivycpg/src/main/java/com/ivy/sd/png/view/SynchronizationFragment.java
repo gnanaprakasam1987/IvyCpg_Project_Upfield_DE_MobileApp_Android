@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -56,6 +57,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.sync.catalogdownload.CatalogImagesDownlaod;
 import com.ivy.cpg.view.van.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -64,8 +66,8 @@ import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.ApkDownloaderThread;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.DownloaderThread;
 import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -1196,10 +1198,10 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     public void onClick(DialogInterface dialog, int which) {
                         if (idd == DataMembers.NOTIFY_AUTOUPDATE_FOUND) {
                             Commons.printInformation(bmodel.getUpdateURL());
-                            downloaderThread = new DownloaderThread(
+                            downloaderThread = new ApkDownloaderThread(
                                     getActivity(), activityHandler, bmodel
                                     .getUpdateURL(), false,
-                                    DownloaderThread.APK_DOWNLOAD);
+                                    ApkDownloaderThread.APK_DOWNLOAD);
                             downloaderThread.start();
                         }
                     }
@@ -1336,8 +1338,9 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
     /**
      * This is the Handler for this activity. It will receive messages from the
-     * apk DownloaderThread and make the necessary updates to the UI.
+     * apk ApkDownloaderThread and make the necessary updates to the UI.
      */
+    @SuppressLint("HandlerLeak")
     public Handler activityHandler = new Handler() {
         public void handleMessage(Message msg) {
             setDayCloseEnableDisable();
@@ -1382,10 +1385,9 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                         progressDialog
                                 .setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         progressDialog.setIndeterminate(true);
-                        // set the message to be sent when this dialog is canceled
-                        Message newMsg = Message.obtain(this,
-                                DataMembers.MESSAGE_DOWNLOAD_CANCELED);
-                        progressDialog.setCancelMessage(newMsg);
+
+                        progressDialog.setCancelable(false);
+
                         progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.show();
                     }
@@ -1420,72 +1422,48 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                                 .setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                         progressDialog.setProgress(0);
                         progressDialog.setMax(maxValue);
-                        // set the message to be sent when this dialog is canceled
-                        Message newMsg = Message.obtain(this,
-                                DataMembers.MESSAGE_DOWNLOAD_CANCELED);
-                        progressDialog.setCancelMessage(newMsg);
-                        progressDialog.setCancelable(true);
+
+                        progressDialog.setCancelable(false);
                         progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.show();
                     }
                     break;
 
 			/*
-             * Handling MESSAGE_DOWNLOAD_COMPLETE: 1. Remove the progress bar
+             * Handling MESSAGE_APK_DOWNLOAD_COMPLETE: 1. Remove the progress bar
 			 * from the screen. 2. Display Toast that says download is complete.
 			 */
-                case DataMembers.MESSAGE_DOWNLOAD_COMPLETE:
+                case DataMembers.MESSAGE_APK_DOWNLOAD_COMPLETE:
                     dismissCurrentProgressDialog();
                     // Here Code to call dwnloaded apk.
 
-                    if (msg.arg1 == DownloaderThread.APK_DOWNLOAD) {
-                        LoginHelper.getInstance(getActivity()).deleteAllValues(getContext().getApplicationContext());
-                        bmodel.activationHelper.clearAppUrl();
-                        bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
-                        try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setDataAndType(FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(getActivity().
-                                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                    + "/" + DataMembers.fileName)), "application/vnd.android.package-archive");
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            Commons.printException(e);
-                        }
-                    } else {
 
-                        startActivity(new Intent(getActivity(),
-                                HomeScreenActivity.class));
-                        getActivity().finish();
+                    LoginHelper.getInstance(getActivity()).deleteAllValues(getContext().getApplicationContext());
+                    bmodel.activationHelper.clearAppUrl();
+                    bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(getActivity().
+                                getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                + "/" + DataMembers.fileName)), "application/vnd.android.package-archive");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Commons.printException(e);
                     }
 
-                    break;
-
-			/*
-             * Handling MESSAGE_DOWNLOAD_CANCELLED: 1. Interrupt the downloader
-			 * thread. 2. Remove the progress bar from the screen. 3. Display
-			 * Toast that says download is complete.
-			 */
-                case DataMembers.MESSAGE_DOWNLOAD_CANCELED:
-                    dismissCurrentProgressDialog();
-                    clearAmazonDownload();
-                    displayMessage(getString(R.string.user_message_download_canceled));
-
-                    getActivity().finish();
-                    BusinessModel.loadActivity(getActivity(),
-                            DataMembers.actHomeScreen);
 
                     break;
 
 			/*
-             * Handling MESSAGE_ENCOUNTERED_ERROR: 1. Check the obj field of the
+             * Handling MESSAGE_ENCOUNTERED_ERROR_APK: 1. Check the obj field of the
 			 * message for the actual error message that will be displayed to
 			 * the user. 2. Remove any progress bars from the screen. 3. Display
 			 * a Toast with the error message.
 			 */
-                case DataMembers.MESSAGE_ENCOUNTERED_ERROR:
+                case DataMembers.MESSAGE_ENCOUNTERED_ERROR_APK:
                     // obj will contain a string representing the error message
                     if (msg.obj != null && msg.obj instanceof String) {
                         String errorMessage = (String) msg.obj;
@@ -1501,12 +1479,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                                 bmodel.userMasterHelper.getUserMasterBO()
                                         .getUserid(), transferUtility);
                         downloaderThread.start();
-                    }
-
-                    if (msg.arg1 == DownloaderThread.ZIP_DOWNLOAD) {
-                        getActivity().finish();
-                        BusinessModel.loadActivity(getActivity(),
-                                DataMembers.actHomeScreen);
                     }
 
                     break;

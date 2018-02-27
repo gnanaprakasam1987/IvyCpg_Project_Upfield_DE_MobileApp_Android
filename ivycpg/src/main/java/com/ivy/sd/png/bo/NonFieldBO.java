@@ -33,6 +33,7 @@ public class NonFieldBO {
     }
 
     private String monthName;
+    private String userName;
 
     public NonFieldBO() {
         // no operation
@@ -202,4 +203,13 @@ public class NonFieldBO {
     public void setUpload(String upload) {
         this.upload = upload;
     }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
 }

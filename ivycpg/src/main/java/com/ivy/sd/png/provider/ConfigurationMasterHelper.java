@@ -159,7 +159,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_INITIATIVE_MERCHANDISING = "VLD02";
     private static final String CODE_SUGGESTED_ORDER_LOGIC = "ORDB18";
     // code added in v 35
-    private static final String CODE_ORDER_PRINT = "ORDB19";
+
     private static final String CODE_CALCULATOR = "FUN04";
     private static final String CODE_SCHEME_ON = "SCH01";
     private static final String CODE_SCHEME_EDITABLE = "SCH02";
@@ -209,6 +209,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_VANGPS_VALIDATION = "VGPSVAL";
     private static final String CODE_RET_SKIP_VALIDATION = "RSEQVAL";
     private static final String CODE_INV_CREDIT_BALANCE = "CREDIT01";
+    public boolean IS_SUPPLIER_CREDIT_LIMIT = false;
     private static final String CODE_POST_DATE_ALLOW = "COLL01";
     private static final String CODE_DELIVERY_DATE = "ORDB30";
     private static final String CODE_ALLOW_DECIMAL = "ORDB31";
@@ -233,7 +234,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SECONDARY_CONTACT_NUMBER = "PROFILE12";
     private static final String CODE_BATCH_WISE_PRODUCT = "BWP01";
     private static final String CODE_SIGNATURE_SCREEN = "ORDB03";
-    private static final String CODE_MENU_ICON_SCHEME = "SCH04";
+    private static final String CODE_FOC_ACCUMULATION_VALIDATION = "SCH04";
     private static final String CODE_PARTIAL_PAYMENT = "COLL03";
     private static final String CODE_COLLECTION_ORDER = "COLL04";
     private static final String CODE_COLLECTION_REASON = "COLL05";
@@ -459,6 +460,14 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MOQ_ENABLED = "FUN66";//change config code
     public boolean IS_MOQ_ENABLED;
 
+    private static final String CODE_ALLOW_CONTINUOUS_PRINT = "FUN67";
+    public boolean IS_ALLOW_CONTINUOUS_PRINT;
+
+
+    private static final String CODE_PRINT_DELIVERY = "DLRYPRINT";
+    public boolean IS_DELIVERY_PRINT;
+
+
     /**
      * RoadActivity config *
      */
@@ -550,6 +559,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_SP;
     public boolean SHOW_CAT_STOCK_SP;
     public boolean SHOW_ORDER_PCS;
+    public boolean SHOW_FOC;
     public boolean SHOW_ORDER_CASE;
     public boolean SHOW_ORDER_TOTAL;
     public boolean SHOW_INDICATIVE_ORDER;
@@ -654,7 +664,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_NEWOUTLET_IMAGETYPE;
     public boolean IS_NEWOUTLET_LOCATION;
     public boolean SHOW_DISC_AMOUNT_ALLOW;
-    public boolean SHOW_MENU_ICON_SCHEME;
+    public boolean IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE;
     public boolean IS_PARTIAL_PAYMENT = true;
     public boolean IS_COLLECTION_ORDER;
     public boolean SHOW_COLLECTION_REASON;
@@ -890,6 +900,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_ORDER_FOCUS_COUNT; //ORDB54
     public boolean SHOW_MENU_COUNTER_ALERT; //FUN28
     public boolean isRetailerBOMEnabled = false;
+
 
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
@@ -1247,6 +1258,10 @@ public class ConfigurationMasterHelper {
     public boolean COMPUTE_DUE_DATE;
     private static final String CODE_COMPUTE_DUE_DAYS = "DDAYS";
     public boolean COMPUTE_DUE_DAYS;
+
+    public boolean SHOW_SALES_RETURN_IN_ORDER;
+
+    public int retailerLocAccuracyLvl;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1731,7 +1746,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_BATCH_WISE_PRICE = hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) != null ? hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) : false;
         this.SHOW_SIGNATURE_SCREEN = hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) : false;
         this.SHOW_DISC_AMOUNT_ALLOW = hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) : false;
-        this.SHOW_MENU_ICON_SCHEME = hashMapHHTModuleConfig.get(CODE_MENU_ICON_SCHEME) != null ? hashMapHHTModuleConfig.get(CODE_MENU_ICON_SCHEME) : false;
+        this.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE = hashMapHHTModuleConfig.get(CODE_FOC_ACCUMULATION_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_FOC_ACCUMULATION_VALIDATION) : false;
         this.IS_PARTIAL_PAYMENT = hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) : false;
         this.SHOW_SKUWISE_INCENTIVE = hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) != null ? hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) : false;
         this.CALC_OUTSTANDING = hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) : false;
@@ -2180,11 +2195,14 @@ public class ConfigurationMasterHelper {
 
         this.LOAD_COMP_CONFIGS = hashMapHHTModuleConfig.get(CODE_COMPETITOR) != null ? hashMapHHTModuleConfig.get(CODE_COMPETITOR) : false;
         if(LOAD_COMP_CONFIGS){
-           loadCompetitorConfig();
+            loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
-        
+
+        this.IS_ALLOW_CONTINUOUS_PRINT =hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT)!=null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
+        this.retailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
+        this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
     }
 
     public void loadOrderReportConfiguration() {
@@ -3146,6 +3164,7 @@ public class ConfigurationMasterHelper {
             SHOW_SHELF_OUTER = false;
             SHOW_ORDER_CASE = false;
             SHOW_ORDER_PCS = false;
+            SHOW_FOC=false;
             SHOW_OUTER_CASE = false;
             SHOW_ICO = false;
             SHOW_BARCODE = false;
@@ -3202,6 +3221,7 @@ public class ConfigurationMasterHelper {
             SHOW_NEW_OUTLET_OPPR = false;
             SHOW_NEW_OUTLET_ORDER = false;
             IS_STK_ORD_BS = false;
+            SHOW_SALES_RETURN_IN_ORDER = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3287,7 +3307,8 @@ public class ConfigurationMasterHelper {
                         SHOW_COMB_STOCK_SHELF_OUTER = true;
                     else if (temp.equals("CCB"))
                         SHOW_COMB_STOCK_CB = true;
-
+                    else if (temp.equals("SR"))
+                        SHOW_SALES_RETURN_IN_ORDER = true;
 
                 }
             }
@@ -3311,6 +3332,8 @@ public class ConfigurationMasterHelper {
                         SHOW_ORDER_CASE = true;
                     else if (temp.equals("PS"))
                         SHOW_ORDER_PCS = true;
+                    else if (temp.equals("RF"))
+                        SHOW_FOC = true;
                     else if (temp.equals("OOC"))
                         SHOW_OUTER_CASE = true;
                     else if (temp.equals("ICO"))
@@ -3718,6 +3741,20 @@ public class ConfigurationMasterHelper {
 
             }
 
+            //RField Check to get Credit Limit value from Supplier Master
+            codeValue = null;
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster +
+                    " where hhtcode=" + bmodel.QT(CODE_INV_CREDIT_BALANCE) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    int value = c.getInt(0);
+                    if (value == 1) {
+                        IS_SUPPLIER_CREDIT_LIMIT = true;
+                    }
+                }
+                c.close();
+            }
 
             db.closeDB();
         } catch (Exception e) {

@@ -2723,9 +2723,15 @@ public class ProductHelper {
     }
 
 
-    public void cloneReasonMaster() {
+    public void cloneReasonMaster(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
         try {
-            for (ProductMasterBO product : mSalesReturnProducts) {
+            Vector<ProductMasterBO> productMasterBOs = null;
+            if(isFromOrder)
+                productMasterBOs = productMaster;
+            else
+                productMasterBOs = mSalesReturnProducts;
+
+            for (ProductMasterBO product : productMasterBOs) {
                 product.setSalesReturnReasonList(cloneIsolateList(product));
             }
         } catch (Exception e) {
@@ -2736,7 +2742,7 @@ public class ProductHelper {
     public static List<SalesReturnReasonBO> cloneIsolateList(ProductMasterBO product) {
         List<SalesReturnReasonBO> clone = null;
         try {
-            clone = new ArrayList<SalesReturnReasonBO>();
+            clone = new ArrayList<>();
             SalesReturnReasonBO item = new SalesReturnReasonBO();
             item.setCaseSize(product.getCaseSize());
             item.setOuterSize(product.getOutersize());
@@ -2979,6 +2985,7 @@ public class ProductHelper {
             product.setOrderedPcsQty(0);
             product.setOrderedCaseQty(0);
             product.setOrderedOuterQty(0);
+            product.setFoc(0);
         }
     }
 
@@ -2993,6 +3000,7 @@ public class ProductHelper {
             product.setLocalOrderPieceqty(0);
             product.setLocalOrderCaseqty(0);
             product.setLocalOrderOuterQty(0);
+            product.setFoc(0);
             // clear discount fields
             product.setD1(0);
             product.setD2(0);
@@ -3058,6 +3066,7 @@ public class ProductHelper {
             product.setOrderedPcsQty(0);
             product.setOrderedCaseQty(0);
             product.setOrderedOuterQty(0);
+            product.setFoc(0);
             product.setCheked(false);
         }
     }
@@ -3243,7 +3252,6 @@ public class ProductHelper {
         return true;
 
     }
-
 
     public boolean isCheckCreditPeriod() {
         bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");

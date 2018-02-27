@@ -602,26 +602,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         updateMenuVisitStatus(menuDB);
         updateMenuVisitStatus(mInStoreMenu);
 
-        if (bmodel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID) {
-            String rSalesType = bmodel.getStandardListCode(bmodel.getRetailerMasterBO().getSalesTypeId());
+        String rSalesType = bmodel.getStandardListCode(bmodel.getRetailerMasterBO().getSalesTypeId());
+        if (bmodel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID && rSalesType.equalsIgnoreCase("INDIRECT")) {
 
-            if (rSalesType.equalsIgnoreCase("INDIRECT")) {
-                bmodel.retailerMasterBO.setDistributorId(Integer.parseInt(bmodel.retailerMasterBO.getRetailerID()));
-                bmodel.retailerMasterBO.setDistParentId(0);
-                if (bmodel.retailerMasterBO.getAddress3() != null)
-                    retailerCodeTxt.setText(bmodel.retailerMasterBO.getAddress3());
+            bmodel.retailerMasterBO.setDistributorId(Integer.parseInt(bmodel.retailerMasterBO.getRetailerID()));
+            bmodel.retailerMasterBO.setDistParentId(0);
+            if (bmodel.retailerMasterBO.getAddress3() != null)
+                retailerCodeTxt.setText(bmodel.retailerMasterBO.getAddress3());
 
-            } else if (rSalesType.equalsIgnoreCase("DIRECT")) {
-
-                if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE
-                        && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
-                    mSupplierList = bmodel.downloadSupplierDetails();
-                    mSupplierAdapter = new ArrayAdapter<>(this,
-                            R.layout.supplier_selection_list_adapter, mSupplierList);
-
-                    updateDefaultSupplierSelection();
-                }
-            }
 
         } else {
             if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE
@@ -656,6 +644,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             break;
 
                         }
+
                     }
                 } else {
                     bmodel.getRetailerMasterBO().setOrderTypeId(mOrderTypeList.get(0).getListID());
@@ -1390,10 +1379,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     }
                 } else if (menuDB.get(i).getConfigCode().equals(MENU_RTR_KPI)) {
                     if (menuDB.get(i).getHasLink() == 1) {
-                        if (bmodel.getRetailerMasterBO().getIsOrdered()
-                                .equals("Y")
-                                || bmodel.getRetailerMasterBO()
-                                .getIsOrderMerch().equals("Y") || bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
                     } else {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
@@ -1689,7 +1675,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                         }
 
-
                         if (bmodel.isEdit()) {
                             orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                     .getRetailerID(), null);
@@ -1827,6 +1812,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 finish();
                             }
                         }
+
                     } else {
                         Toast.makeText(
                                 this,
@@ -1876,6 +1862,30 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     surveyHelperNew.downloadModuleId("STANDARD");
                     surveyHelperNew.downloadQuestionDetails(MENU_STK_ORD);
                     surveyHelperNew.loadSurveyAnswers(0);
+                }
+
+
+                if(bmodel.configurationMasterHelper.IS_SUPPLIER_CREDIT_LIMIT
+                        && !bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
+                        && bmodel.getRetailerMasterBO().getSupplierBO() !=null &&
+                        bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit() > 0){
+                    bmodel.getRetailerMasterBO().setCreditLimit(bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit());
+                }
+
+                if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+                    SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
+                    salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
+                    bmodel.reasonHelper.downloadSalesReturnReason();
+                    if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
+                        bmodel.productHelper.cloneReasonMaster(true);
+//
+                        salesReturnHelper.getInstance(this).clearSalesReturnTable(true);
+//
+////                        if (!bmodel.configurationMasterHelper.IS_INVOICE) {
+                        salesReturnHelper.getInstance(this).removeSalesReturnTable(true);
+                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(), "ORDER");
+////                        }
+                    }
                 }
 
                 if (bmodel.productHelper.getProductMaster().size() > 0) {
@@ -2486,15 +2496,18 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.productHelper.downloadSalesReturnSKUs();
 
 
-                    bmodel.productHelper.cloneReasonMaster();
+                    bmodel.productHelper.cloneReasonMaster(false);
 
                     Commons.print("Sales Return Prod Size<><><><<>" + bmodel.productHelper.getSalesReturnProducts().size());
 
-                    salesReturnHelper.getInstance(this).clearSalesReturnTable();
+                    salesReturnHelper.getInstance(this).clearSalesReturnTable(false);
+
+//                    Commons.print("Sales Return Prod <><><><<>" + bmodel.productHelper.getSalesReturnProducts());
 
                     if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                        salesReturnHelper.getInstance(this).removeSalesReturnTable();
-                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext());
+                        salesReturnHelper.getInstance(this).removeSalesReturnTable(false);
+//                        Commons.print("Sales Return Prod <><><><<>" + bmodel.productHelper.getSalesReturnProducts());
+                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(), "");
                     }
 
                     bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);

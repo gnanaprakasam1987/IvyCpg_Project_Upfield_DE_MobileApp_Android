@@ -35,6 +35,17 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tvusername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_2dp"
+        android:gravity="start|center_vertical"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/space_between_edt"
+        android:text="@string/username"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="@dimen/font_nano_small" />
 
     <LinearLayout
         android:id="@+id/row"

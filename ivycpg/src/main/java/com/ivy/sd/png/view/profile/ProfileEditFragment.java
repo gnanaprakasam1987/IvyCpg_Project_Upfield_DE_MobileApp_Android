@@ -239,7 +239,10 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (validateEditProfile()) {
 
                         if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                            if (lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("") || Double.parseDouble(longitude) == 0) {
+                            if ((lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("")
+                                    || Double.parseDouble(longitude) == 0)
+                                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl !=0
+                                    && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
                                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -2535,8 +2538,33 @@ public class ProfileEditFragment extends IvyBaseFragment {
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                takePhoto(retailerObj, false);
-                return false;
+                boolean isLatLongMenuAvail = false;
+                for (int conf = 0; conf < profileConfig.size(); conf++) {
+                    if(profileConfig.get(conf).getConfigCode().equalsIgnoreCase("PROFILE08") &&
+                            profileConfig.get(conf).getModule_Order() == 1) {
+                        for (int conf1 = 0; conf1 < profileConfig.size(); conf1++) {
+                            if (profileConfig.get(conf1).getConfigCode().equalsIgnoreCase("PROFILE31") &&
+                                    profileConfig.get(conf1).getModule_Order() == 1) {
+                                isLatLongMenuAvail = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                //Dont allow if Fun57 is enabled and mandatory,
+                //Generally check for location and show toast if no location found.
+                if(!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
+                        || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)){
+
+                    Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
+                    return false;
+                }else {
+                    if (LocationUtil.latitude == 0 || LocationUtil.longitude == 0) {
+                        Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
+                    }
+                    takePhoto(retailerObj, false);
+                    return false;
+                }
             }
         });
 
@@ -2761,7 +2789,6 @@ public class ProfileEditFragment extends IvyBaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-
                 if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
                     lat = LocationUtil.latitude + "";
                     longitude = LocationUtil.longitude + "";
@@ -2773,8 +2800,6 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         profileConfig.add(new ConfigureBO("PROFILE31", "Latitude", longitude, 0, 0, 0));
                         Toast.makeText(getActivity(), "Location captured successfully.", Toast.LENGTH_LONG).show();
                     }
-
-
                 }
 
                 Uri uri = bmodel.profilehelper

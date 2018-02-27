@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class ConfigureBO implements Serializable {
 
-    private String configCode, menuName, locationType, RField2;
+    private String configCode, menuName, locationType, RField2,RField6;
     private String menuNumber = "0";
     private int flag, hasLink;
     private int moduleOrder;
@@ -161,5 +161,13 @@ public class ConfigureBO implements Serializable {
     }
     public String getRegex() {
         return regex;
+    }
+
+    public String getRField6() {
+        return RField6;
+    }
+
+    public void setRField6(String RField6) {
+        this.RField6 = RField6;
     }
 }

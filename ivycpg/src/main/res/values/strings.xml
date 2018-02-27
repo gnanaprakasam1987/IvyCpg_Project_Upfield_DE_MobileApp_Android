@@ -55,7 +55,7 @@
     <string name="press_start_sync">Please press \'Start Sync\' before download.</string>
     <string name="enter_activation_id">Please enter activation Key.</string>
     <string name="thirdparty_installation_error">Please enable "Unknown Sources" in settings.</string>
-    <string name="external_storage_not_available">External Storage space not available. Please check SDCard.</string>
+    <string name="external_storage_not_available">External Storage space not available. Please check space available.</string>
     <string name="no_application_available_to_view_pdf">No Application available to view PDF.</string>
     <string name="no_application_available_to_view_ppt">No Application available to view PPT.</string>
     <string name="no_application_available_to_view_excel">No Application available to view Excel.</string>
@@ -98,6 +98,7 @@
     <string name="wp">WP</string>
     <string name="sp">SP</string>
     <string name="item_piece">OP</string>
+    <string name="foc">FfoOC</string>
     <string name="collection">Collection</string>
     <string name="invoice_no">Invoice No</string>
     <string name="invoice_date">Invoice Date</string>
@@ -441,6 +442,7 @@
     <string name="mfg_date">Mfg. Date</string>
     <string name="exp_date">Exp. Date</string>
     <string name="srp">SRP</string>
+    <string name="sr">SR</string>
     <string name="must_sell">Must Sell</string>
     <string name="max_free_qty">Mx.Fr.Qty</string>
     <string name="buy_qty">BuyQty</string>
@@ -1130,6 +1132,9 @@
     <!-- Order summary success dialog message -->
     <string name="delivery_date_is">Delivery Date is: </string>
     <string name="old_order_volume">Original value</string>
+
+
+    <string name="location_accuration_mis_match">Location accuracy not good, Choose Location</string>
 
 
     <string-array name="task_tab_header">

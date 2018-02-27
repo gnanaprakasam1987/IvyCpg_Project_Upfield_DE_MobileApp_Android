@@ -47,6 +47,7 @@ public class ReplaceFragment extends IvyBaseFragment {
     private EditText etRepPiece, etRepCase, etRepOuter;
     private CustomKeyBoard dialogCustomKeyBoard;
     private int holderPosition, holderTop;
+    private String moduleFrom;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,7 +55,6 @@ public class ReplaceFragment extends IvyBaseFragment {
 
         view = inflater.inflate(R.layout.fragment_replace,
                 container, false);
-
 
         return view;
     }
@@ -72,6 +72,7 @@ public class ReplaceFragment extends IvyBaseFragment {
         Pid = getArguments().getString("pid");
         holderPosition = getArguments().getInt("position", 0);
         holderTop = getArguments().getInt("top", 0);
+        moduleFrom = getArguments().getString("from");
 
         salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
 
@@ -91,9 +92,6 @@ public class ReplaceFragment extends IvyBaseFragment {
         etRepCase = (EditText) view.findViewById(R.id.et_rep_csValue);
         etRepOuter = (EditText) view.findViewById(R.id.et_rep_ouValue);
 
-        productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
-
-
         btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) view.findViewById(R.id.tvTitleReturnQty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) view.findViewById(R.id.tvTitlerep)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -108,9 +106,11 @@ public class ReplaceFragment extends IvyBaseFragment {
     }
 
     private void process() {
-
         if (Pid != null) {
-            productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
+            if (getArguments().getString("from").equals("ORDER"))
+                productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
+            else
+                productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
         }
         if (productMasterBO != null) {
             int total = 0, caseSize = 0, outerSize = 0;
@@ -132,6 +132,10 @@ public class ReplaceFragment extends IvyBaseFragment {
             else
                 ((TextView) view.findViewById(R.id.sroutercaseTitle)).setText(getResources().getString(R.string.avail_outer));
 
+
+            etRepPiece.setText(productMasterBO.getRepPieceQty()+"");
+            etRepCase.setText(productMasterBO.getRepCaseQty()+"");
+            etRepOuter.setText(productMasterBO.getRepOuterQty()+"");
 
             etRepPiece.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -155,7 +159,7 @@ public class ReplaceFragment extends IvyBaseFragment {
                             totalReturnQty = totalReturnQty + reasonBO.getPieceQty() + (reasonBO.getCaseQty() * productMasterBO.getCaseSize()) + (reasonBO.getOuterQty() * productMasterBO.getOutersize());
                         }
 
-                        if (totalReturnQty >= totalRepQty && (productMasterBO.getSIH() >= totalRepQty || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
+                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= totalRepQty || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
                             productMasterBO.setRepPieceQty(enteredQty);
                         } else {
                             if (!("0".equals(qty))) {
@@ -213,7 +217,7 @@ public class ReplaceFragment extends IvyBaseFragment {
                             totalReturnQty = totalReturnQty + reasonBO.getPieceQty() + (reasonBO.getCaseQty() * productMasterBO.getCaseSize()) + (reasonBO.getOuterQty() * productMasterBO.getOutersize());
                         }
 
-                        if (totalReturnQty >= totalRepQty && (productMasterBO.getSIH() >= totalRepQty || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
+                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= totalRepQty || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
                             productMasterBO.setRepCaseQty(SDUtil
                                     .convertToInt(qty));
                         } else {
@@ -275,7 +279,7 @@ public class ReplaceFragment extends IvyBaseFragment {
                             totalReturnQty = totalReturnQty + reasonBO.getPieceQty() + (reasonBO.getCaseQty() * productMasterBO.getCaseSize()) + (reasonBO.getOuterQty() * productMasterBO.getOutersize());
                         }
 
-                        if (totalReturnQty >= totalRepQty && (productMasterBO.getSIH() >= totalRepQty || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
+                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= totalRepQty || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
                             productMasterBO.setRepOuterQty(SDUtil
                                     .convertToInt(qty));
                         } else {
@@ -315,7 +319,6 @@ public class ReplaceFragment extends IvyBaseFragment {
                 etRepPiece.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
 
                         if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                             dialogCustomKeyBoard = new CustomKeyBoard(getActivity(), etRepPiece);
@@ -436,21 +439,17 @@ public class ReplaceFragment extends IvyBaseFragment {
                     }
                 });
             }
-
-
         }
 
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent intent = new Intent();
-                intent.putExtra("position", holderPosition);
-                intent.putExtra("top", holderTop);
-                getActivity().setResult(RESULT_OK, intent);
-                getActivity().finish();
-
+                    Intent intent = new Intent();
+                    intent.putExtra("position", holderPosition);
+                    intent.putExtra("top", holderTop);
+                    getActivity().setResult(RESULT_OK, intent);
+                    getActivity().finish();
             }
         });
 
