@@ -96,6 +96,9 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
         lvcategorylist = (ListView) view.findViewById(R.id.lvcategorylist);
         tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
 
+        float scale = getContext().getResources().getDisplayMetrics().widthPixels;
+        scale = scale / bmodel.competitorTrackingHelper.getCompanyList().size();
+
 
         TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         final int color = typearr.getColor(R.styleable.MyTextView_textColor, 0);
@@ -107,17 +110,18 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
             companyBO = bmodel.competitorTrackingHelper.getCompanyList().get(i);
             TabLayout.Tab tab = tabLayout.newTab();
 
-            TextView txtVw = new TextView(getActivity());
+            TextView txtVw = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
             txtVw.setGravity(Gravity.CENTER);
-            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            txtVw.setTextColor(color);
-            txtVw.setMaxLines(1);
+            txtVw.setWidth((int) scale);
+
+            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             txtVw.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             txtVw.setText(companyBO.getCompetitorName());
 
             tab.setTag(companyBO.getCompetitorid());
             tab.setCustomView(txtVw);
             tabLayout.addTab(tab);
+
         }
 
         mSelectedCompany = (int) tabLayout.getTabAt(0).getTag();
