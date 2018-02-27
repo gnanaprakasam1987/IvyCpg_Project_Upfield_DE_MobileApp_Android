@@ -10,7 +10,7 @@
         android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:paddingLeft="@dimen/list_padding_left_n_right"
+        android:paddingStart="@dimen/list_padding_left_n_right"
         android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatCheckBox
@@ -18,15 +18,15 @@
             android:layout_width="@dimen/order_stock_list_item_width_small"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="left|center"
+            android:gravity="start|center"
            ></android.support.v7.widget.AppCompatCheckBox>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_minus20dp"
-            android:gravity="left|center"
+            android:layout_marginStart="@dimen/margin_minus20dp"
+            android:gravity="start|center"
             android:orientation="vertical">
 
             <TextView
@@ -34,8 +34,8 @@
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left|center"
-                android:gravity="left|center"
+                android:layout_gravity="start|center"
+                android:gravity="start|center"
                 android:text="@string/zero"
                 android:layout_weight="1"
                 android:maxLines="1" />
@@ -45,8 +45,8 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left|center"
-                android:gravity="left|center"
+                android:layout_gravity="start|center"
+                android:gravity="start|center"
                 android:text=" " />
 
         </LinearLayout>
@@ -80,7 +80,7 @@
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="right|center"
+        android:gravity="end|center"
         android:layout_weight="1"
         android:orientation="horizontal"
         >
@@ -88,11 +88,11 @@
             android:id="@+id/inv_view_btn"
             android:layout_width="@dimen/profile_history_20dp"
             android:layout_height="@dimen/profile_history_25dp"
-            android:layout_gravity="right|center"
-            android:layout_marginRight="@dimen/profile_history_10dp"
+            android:layout_gravity="end|center"
+            android:layout_marginEnd="@dimen/profile_history_10dp"
             android:src="@drawable/activity_icon_next"
             android:tint="@color/new_grey"
-            android:gravity="right|center"
+            android:gravity="end|center"
             />
     </LinearLayout>
 

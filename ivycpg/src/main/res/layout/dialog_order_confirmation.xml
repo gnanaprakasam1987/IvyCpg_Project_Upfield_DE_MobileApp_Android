@@ -41,7 +41,7 @@
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="@dimen/dimen_40dp"
             android:layout_weight="6"
-            android:drawableRight="@drawable/ic_arrow_drop_down"
+            android:drawableEnd="@drawable/ic_arrow_drop_down"
             android:ems="10"
             android:hint="@string/search"
             android:imeOptions="actionDone"
@@ -320,7 +320,7 @@
         <Button
             android:id="@+id/btn_ok"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:text="@string/confirm"
             android:textAllCaps="false"/>
     </LinearLayout>

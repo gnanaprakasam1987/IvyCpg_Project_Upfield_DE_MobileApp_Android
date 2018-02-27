@@ -9,8 +9,8 @@
         android:padding="10dp"
         android:id="@+id/layoutTaskHeader"
         android:background="@drawable/rounded_top_corner"
-        android:layout_marginLeft="@dimen/margin_24px_width"
-        android:layout_marginRight="@dimen/margin_24px_width"
+        android:layout_marginStart="@dimen/margin_24px_width"
+        android:layout_marginEnd="@dimen/margin_24px_width"
         android:layout_marginTop="@dimen/margin_height">
 
             <LinearLayout

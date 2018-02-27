@@ -269,7 +269,7 @@ public class DashboardFragment extends IvyBaseFragment {
                 setScreenTitle(getActivity().getIntent().getStringExtra("screentitle"));
         }
         //if (!BusinessModel.dashHomeStatic)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
 
     }

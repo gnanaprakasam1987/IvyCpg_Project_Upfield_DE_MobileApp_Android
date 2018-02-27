@@ -520,7 +520,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         super.onResume();
 
 
-
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
@@ -963,7 +962,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 vanUnloadStockAdjustmentSubroutine(menuItem.getMenuName());
             }
-        }  else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
+        } else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
             if (isLeave_today) {
                 if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
                     Toast.makeText(getActivity(),
@@ -1327,7 +1326,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             }
 
-        }  else if (menuItem.getConfigCode().equals(MENU_PRESENCE)) {
+        } else if (menuItem.getConfigCode().equals(MENU_PRESENCE)) {
             switchFragment(MENU_PRESENCE, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_IN_OUT)) {
             bmodel.configurationMasterHelper.setTradecoveragetitle(menuItem.getMenuName());

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="@dimen/profile_custom_label_txt"
-        android:layout_marginLeft="@dimen/dimen_20dp"
+        android:layout_marginStart="@dimen/dimen_20dp"
         android:layout_marginTop="@dimen/profile_custom_label_txt"
         android:text="Channel"
         android:textSize="@dimen/font_micro_small" />
@@ -25,11 +25,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/menu_name"
-        android:layout_gravity="left|bottom"
+        android:layout_gravity="start|bottom"
         android:layout_marginBottom="@dimen/dimen_20dp"
-        android:layout_marginLeft="@dimen/dimen_20dp"
+        android:layout_marginStart="@dimen/dimen_20dp"
         android:layout_marginTop="@dimen/profile_margin_top_minus"
-        android:gravity="left|bottom"
+        android:gravity="start|bottom"
         android:text="Retailer Shop"
         android:textSize="@dimen/font_micro_small" />
 
@@ -38,9 +38,9 @@
         android:id="@+id/divider"
         android:layout_width="2dp"
         android:layout_height="@dimen/list_vertical_seperator"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_gravity="center|right"
+        android:layout_gravity="center|end"
         android:background="@color/profile_devider_color" />
 
 </RelativeLayout>

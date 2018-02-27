@@ -4,7 +4,7 @@
     android:layout_height="@dimen/list_item_space"
     android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:paddingLeft="@dimen/space_betwn_icon_and_text">
+    android:paddingStart="@dimen/space_betwn_icon_and_text">
 
     <ImageView
         android:id="@+id/list_item_icon_ib"
@@ -16,8 +16,8 @@
         style="@style/menuNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/space_betwn_icon_and_text"
-        android:layout_marginRight="@dimen/dimen_2dp"
+        android:layout_marginStart="@dimen/space_betwn_icon_and_text"
+        android:layout_marginEnd="@dimen/dimen_2dp"
         android:gravity="center_vertical"
         android:textStyle="bold" />
 

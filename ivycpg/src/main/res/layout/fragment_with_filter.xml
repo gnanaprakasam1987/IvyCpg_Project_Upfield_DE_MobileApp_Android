@@ -63,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/target_top_margin"
-                    android:layout_toRightOf="@+id/ll_value"
+                    android:layout_toEndOf="@+id/ll_value"
                     android:orientation="vertical">
 
                     <TextView
@@ -91,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/target_top_margin"
-                    android:layout_toRightOf="@+id/ll_lpc"
+                    android:layout_toEndOf="@+id/ll_lpc"
                     android:orientation="vertical"
                     android:visibility="gone">
 
@@ -120,7 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/target_top_margin"
-                    android:layout_toRightOf="@+id/ll_vanloadsih_lty"
+                    android:layout_toEndOf="@+id/ll_vanloadsih_lty"
                     android:orientation="vertical"
                     android:visibility="gone">
 
@@ -149,7 +149,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/target_top_margin"
-                    android:layout_toRightOf="@+id/ll_vanloadcase_lty"
+                    android:layout_toEndOf="@+id/ll_vanloadcase_lty"
                     android:orientation="vertical"
                     android:visibility="gone">
 
@@ -178,7 +178,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/target_top_margin"
-                    android:layout_toRightOf="@+id/ll_vanloadouter_lty"
+                    android:layout_toEndOf="@+id/ll_vanloadouter_lty"
                     android:orientation="vertical"
                     android:visibility="gone">
 
@@ -205,7 +205,7 @@
                 <Button
                     android:id="@+id/btn_next"
                     style="?attr/roundedCustomButtonSmall"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_margin="@dimen/target_top_margin"
                     android:text="@string/next"
@@ -226,8 +226,8 @@
                 android:id="@+id/filterscreenlayout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/list_margin"
-                android:layout_marginRight="@dimen/list_margin"
+                android:layout_marginStart="@dimen/list_margin"
+                android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginTop="@dimen/list_margin"
                 android:background="@android:color/transparent"
                 android:orientation="vertical">
@@ -237,8 +237,8 @@
                     android:id="@+id/view_flipper"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/list_margin"
-                    android:layout_marginRight="@dimen/list_margin">
+                    android:layout_marginStart="@dimen/list_margin"
+                    android:layout_marginEnd="@dimen/list_margin">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -251,7 +251,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:maxLines="1"
                             android:textColor="@color/highlighter"
                             android:textSize="@dimen/font_small"></TextView>
@@ -260,7 +260,7 @@
                             android:id="@+id/btn_search"
                             android:layout_width="@dimen/filter_icon"
                             android:layout_height="@dimen/filter_icon"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:layout_gravity="center"
                             android:background="@drawable/ic_vector_search" />
                     </LinearLayout>
@@ -286,7 +286,7 @@
                             android:layout_height="@dimen/filter_icon"
                             android:layout_alignParentTop="true"
                             android:layout_centerVertical="true"
-                            android:layout_toRightOf="@+id/btn_filter_popup"
+                            android:layout_toEndOf="@+id/btn_filter_popup"
                             android:background="@drawable/edittext_bottom_border"
                             android:gravity="center_vertical"
                             android:hint="@string/search"
@@ -299,7 +299,7 @@
                             android:id="@+id/btn_clear"
                             android:layout_width="@dimen/filter_icon"
                             android:layout_height="@dimen/filter_icon"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:background="@drawable/ic_vector_action_clear_grey" />
                     </RelativeLayout>
@@ -337,8 +337,8 @@
                             style="?attr/customListTitle"
                             android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                             android:layout_height="match_parent"
-                            android:layout_gravity="left|center"
-                            android:gravity="left|center"
+                            android:layout_gravity="start|center"
+                            android:gravity="start|center"
                             android:textStyle="bold"
                             android:layout_weight="1"
                             android:padding="3dp"

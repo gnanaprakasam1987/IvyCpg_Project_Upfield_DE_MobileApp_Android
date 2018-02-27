@@ -30,8 +30,8 @@
                     android:background="@color/list_title_bg_color"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/list_padding_left_n_right"
-                    android:paddingRight="@dimen/list_padding_left_n_right"
+                    android:paddingStart="@dimen/list_padding_left_n_right"
+                    android:paddingEnd="@dimen/list_padding_left_n_right"
                     android:weightSum="10">
 
 
@@ -41,7 +41,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
-                        android:gravity="left"
+                        android:gravity="start"
                         android:text="@string/product_name" />
 
 
@@ -109,7 +109,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:gravity="left|center"
+                        android:gravity="start|center"
                         android:tag="compliance"
                         android:text="@string/compliance"
                         android:visibility="gone" />
@@ -156,7 +156,7 @@
             <Button
                 android:id="@+id/btn_save"
                 style="?attr/roundedCustomButtonSmall"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:text="@string/save"
                 android:textAllCaps="false" />

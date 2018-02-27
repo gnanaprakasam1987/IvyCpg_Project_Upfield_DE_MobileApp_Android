@@ -9,7 +9,7 @@
         android:id="@+id/ll2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:orientation="vertical"
         android:padding="4dp">
 
@@ -18,7 +18,7 @@
             style="?attr/customListItemPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignWithParentIfMissing="true"
             android:text="@string/dummy_txt"
             android:textColor="@android:color/black"
@@ -29,7 +29,7 @@
             style="?attr/customListItemSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="@string/dummy_txt"
             android:textSize="@dimen/greyed_text_size" />
@@ -38,7 +38,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:orientation="vertical"
         android:padding="4dp">
 
@@ -48,8 +48,8 @@
             android:layout_width="@dimen/target_plan_editbox_width"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="4dp"
-            android:layout_toLeftOf="@+id/tv_sih"
+            android:layout_marginEnd="4dp"
+            android:layout_toStartOf="@+id/tv_sih"
             android:ems="10"
             android:inputType="number"
             android:keepScreenOn="true"
@@ -66,7 +66,7 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:textSize="@dimen/greyed_text_size" />
 
             <TextView
@@ -74,8 +74,8 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_toRightOf="@+id/tv_min_actualvalue"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@+id/tv_min_actualvalue"
                 android:textSize="@dimen/greyed_text_size" />
         </RelativeLayout>
     </LinearLayout>
@@ -85,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll2"
-        android:layout_marginLeft="@dimen/list_margin"
+        android:layout_marginStart="@dimen/list_margin"
         android:textColor="?attr/primarycolor"
         android:text="Type"
         android:textSize="@dimen/font_micro_small" />

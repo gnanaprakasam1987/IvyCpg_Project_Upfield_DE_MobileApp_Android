@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="2"
-            android:gravity="left"
+            android:gravity="start"
             android:maxLines="1"
             android:padding="@dimen/target_top_margin"
             android:text="@string/brand" />
@@ -32,7 +32,7 @@
             style="@style/datePickerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/comp_margin"
+            android:layout_marginEnd="@dimen/comp_margin"
             android:clickable="true"
             android:inputType="none"
             android:maxLength="10"
@@ -43,7 +43,7 @@
             style="@style/datePickerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/comp_margin"
+            android:layout_marginStart="@dimen/comp_margin"
             android:clickable="true"
             android:inputType="none"
             android:maxLength="10"
@@ -84,8 +84,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/target_top_margin"
-        android:layout_marginRight="@dimen/target_top_margin"
+        android:layout_marginStart="@dimen/target_top_margin"
+        android:layout_marginEnd="@dimen/target_top_margin"
         android:orientation="horizontal"
         android:weightSum="2">
 
@@ -94,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginRight="@dimen/right_margin"
+            android:layout_marginEnd="@dimen/right_margin"
             android:layout_weight="1">
 
             <EditText
@@ -105,7 +105,7 @@
                 android:layout_marginBottom="@dimen/list_margin"
                 android:layout_marginTop="@dimen/list_margin"
                 android:cursorVisible="true"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:hint="@string/feedback"
                 android:imeOptions="actionDone"
                 android:inputType="text"
@@ -137,7 +137,7 @@
                 android:layout_marginBottom="@dimen/list_margin"
                 android:layout_weight="1"
                 android:inputType="number"
-                android:gravity="left"
+                android:gravity="start"
                 android:imeOptions="actionDone"
                 android:text="@string/zero" />
         </LinearLayout>
@@ -154,8 +154,8 @@
                 android:id="@+id/spn_reason"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/dimen_2dp"
-                android:layout_marginRight="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_2dp"
+                android:layout_marginEnd="@dimen/dimen_5dp"
                 android:background="@android:color/transparent"
                 android:overlapAnchor="false"
                 android:padding="@dimen/target_top_margin">

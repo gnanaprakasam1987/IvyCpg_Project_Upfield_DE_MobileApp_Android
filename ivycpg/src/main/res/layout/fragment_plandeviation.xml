@@ -9,10 +9,10 @@
         android:id="@+id/reason_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginLeft="@dimen/profile_history_20dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="@dimen/profile_history_20dp"
         android:layout_marginTop="@dimen/profile_header_txt_layout_marginleft"
-        android:gravity="left"
+        android:gravity="start"
         android:padding="@dimen/profile_header_txt_layout_marginleft"
         android:text="@string/select_reason"
         android:textColor="?attr/colorAccent"
@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/profile_history_20dp"
-        android:layout_marginLeft="@dimen/profile_history_25dp"
-        android:layout_marginRight="@dimen/profile_history_25dp"
+        android:layout_marginStart="@dimen/profile_history_25dp"
+        android:layout_marginEnd="@dimen/profile_history_25dp"
         android:layout_marginTop="@dimen/profile_history_10dp">
 
         <android.support.v7.widget.RecyclerView
@@ -59,7 +59,7 @@
                 android:id="@+id/add_reason"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:onClick="onClick"
                 android:text="@string/save"
                 android:visibility="visible" />

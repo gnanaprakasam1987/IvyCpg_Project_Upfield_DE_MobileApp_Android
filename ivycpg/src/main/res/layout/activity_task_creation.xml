@@ -51,8 +51,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
-                android:layout_marginLeft="@dimen/dimen_18dp"
-                android:layout_marginRight="@dimen/dimen_18dp"
+                android:layout_marginStart="@dimen/dimen_18dp"
+                android:layout_marginEnd="@dimen/dimen_18dp"
                 android:layout_marginTop="@dimen/dimen_30dp">
 
                 <TextView
@@ -70,9 +70,9 @@
                     android:id="@+id/tv"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:layout_marginStart="@dimen/dimen_8dp"
                     android:maxLength="25"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/highlight_small"/>
             </LinearLayout>
@@ -82,8 +82,8 @@
                 android:layout_height="wrap_content"
                 card_view:cardBackgroundColor="@color/WHITE"
                 card_view:cardUseCompatPadding="true"
-                android:layout_marginLeft="@dimen/dimen_10dp"
-                android:layout_marginRight="@dimen/dimen_10dp"
+                android:layout_marginStart="@dimen/dimen_10dp"
+                android:layout_marginEnd="@dimen/dimen_10dp"
                 android:layout_marginTop="@dimen/dimen_18dp" >
 
                 <LinearLayout
@@ -92,17 +92,17 @@
                     android:orientation="vertical"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
-                    android:layout_marginRight="@dimen/dimen_10dp">
+                    android:layout_marginStart="@dimen/dimen_10dp"
+                    android:layout_marginEnd="@dimen/dimen_10dp">
 
                     <EditText
                         android:id="@+id/taskView"
                         android:layout_width="fill_parent"
                         android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:paddingLeft="@dimen/dimen_6dp"
+                        android:paddingStart="@dimen/dimen_6dp"
                         android:paddingTop="@dimen/dimen_6dp"
-                        android:gravity="left|top"
+                        android:gravity="start|top"
                         android:background="@drawable/feedback_edit_selector"
                         android:hint="@string/enter_task_description"
                         android:textColorHint="@color/new_grey"
@@ -110,11 +110,11 @@
                         android:textSize="@dimen/font_micro_small"
                         style="@style/EditText_ListItem"
                         android:textColor="@color/task_description_color"
-                        android:layout_marginLeft="@dimen/list_margin"
+                        android:layout_marginStart="@dimen/list_margin"
                         android:maxLength="250"
                         android:inputType="textMultiLine"
                         android:layout_marginBottom="@dimen/list_margin"
-                        android:paddingRight="@dimen/dimen_6dp"
+                        android:paddingEnd="@dimen/dimen_6dp"
                         android:cursorVisible="true"
                         />
 
@@ -143,7 +143,7 @@
                             android:checked="true"
                             android:text="@string/Seller"
                             android:textSize="@dimen/font_small"
-                            android:paddingRight="@dimen/radio_button_gap"
+                            android:paddingEnd="@dimen/radio_button_gap"
                             android:textColor="@color/task_description_color" />
 
                         <RadioButton
@@ -151,7 +151,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/Channelwise"
-                            android:paddingRight="@dimen/radio_button_gap"
+                            android:paddingEnd="@dimen/radio_button_gap"
                             android:textSize="@dimen/font_small"
                             android:textColor="@color/task_description_color" />
                         <RadioButton
@@ -176,7 +176,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="true"
-                            android:paddingRight="@dimen/dimen_20dp"
+                            android:paddingEnd="@dimen/dimen_20dp"
                             android:text="@string/all_channel"
                             android:textSize="@dimen/font_medium"
                             android:textColor="@color/task_description_color"
@@ -209,7 +209,7 @@
                             android:layout_height="wrap_content"
                             android:checked="true"
                             android:visibility="gone"
-                            android:paddingRight="@dimen/dimen_20dp"
+                            android:paddingEnd="@dimen/dimen_20dp"
                             android:text="@string/all_retailer"
                             android:textSize="@dimen/font_medium"
                             android:textColor="@color/task_description_color" />

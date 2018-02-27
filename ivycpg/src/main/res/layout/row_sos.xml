@@ -52,8 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.8"
             android:gravity="center"
-            android:paddingLeft="@dimen/dimen_1dp"
-            android:paddingRight="@dimen/dimen_1dp"
+            android:paddingStart="@dimen/dimen_1dp"
+            android:paddingEnd="@dimen/dimen_1dp"
             android:text="@string/zero" />
 
         <LinearLayout

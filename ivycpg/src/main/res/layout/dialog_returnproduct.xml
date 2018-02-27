@@ -74,8 +74,8 @@
                         android:background="@color/list_title_bg_color"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:paddingLeft="@dimen/list_margin"
-                        android:paddingRight="@dimen/list_margin">
+                        android:paddingStart="@dimen/list_margin"
+                        android:paddingEnd="@dimen/list_margin">
 
                         <TextView
                             android:id="@+id/productBarcodetitle"
@@ -83,7 +83,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center|left"
+                            android:gravity="center|start"
                             android:text="@string/barcode"
                             android:visibility="gone" />
 
@@ -93,7 +93,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
-                            android:gravity="center|left"
+                            android:gravity="center|start"
                             android:text="@string/product_name" />
 
                         <TextView
@@ -118,8 +118,8 @@
                         android:id="@+id/list"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginEnd="1dp"
                         android:cacheColorHint="@null"
                         android:divider="@android:color/transparent"
                         android:dividerHeight="0dp"

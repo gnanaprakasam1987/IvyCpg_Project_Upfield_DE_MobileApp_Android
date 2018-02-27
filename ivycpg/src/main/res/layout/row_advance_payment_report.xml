@@ -23,8 +23,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
-            android:paddingLeft="3dp"
+            android:gravity="start"
+            android:paddingStart="3dp"
             android:singleLine="true"
             android:text=""
             android:textColor="@android:color/black"
@@ -49,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:text="@string/advance_payment"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/text_sz_small"/>
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:text=""
                 android:textColor="?attr/primarycolor"
                 android:textSize="@dimen/font_nano_small"/>
@@ -80,13 +80,13 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/dimens_10dp">
+            android:paddingStart="@dimen/dimens_10dp">
 
             <TextView
                 android:id="@+id/date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
                 android:text="@string/date"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/text_sz_small"/>
@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
                 android:text=""
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_nano_small"/>
@@ -116,7 +116,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/dimens_10dp">
+            android:paddingStart="@dimen/dimens_10dp">
 
             <TextView
                 android:id="@+id/invoiceAmt"
@@ -131,7 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingRight="4dp"
+                android:paddingEnd="4dp"
                 android:text="0000"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_small"/>
