@@ -148,19 +148,17 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/feedbck_edit_ht"
             android:background="@drawable/feedback_edit_selector"
-            android:gravity="top|start"
+            style="@style/EditTextGravity"
             android:hint="@string/description"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:lines="2"
             android:maxLength="200"
-
             android:maxLines="3"
             android:minLines="2"
             android:padding="@dimen/spin_linlay_margin"
             android:singleLine="false"
             android:textSize="@dimen/dimens_16dp"
-
             android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_marginEnd="@dimen/dimen_10dp"/>
     </LinearLayout>

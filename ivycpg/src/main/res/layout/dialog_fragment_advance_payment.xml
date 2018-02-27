@@ -118,6 +118,7 @@
 
                     <EditText
                         android:id="@+id/collectionAmount"
+                        style="@style/EditTextGravity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -200,6 +201,7 @@
 
                                 <EditText
                                     android:id="@+id/collectionchequeNo"
+                                    style="@style/EditTextGravity"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/cheque_no_height"
                                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -305,6 +307,7 @@
 
                                 <EditText
                                     android:id="@+id/edit_bankname"
+                                    style="@style/EditTextGravity"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/cheque_no_height"
                                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
@@ -330,6 +333,7 @@
 
                                 <EditText
                                     android:id="@+id/edit_branchname"
+                                    style="@style/EditTextGravity"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/cheque_no_height"
                                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "

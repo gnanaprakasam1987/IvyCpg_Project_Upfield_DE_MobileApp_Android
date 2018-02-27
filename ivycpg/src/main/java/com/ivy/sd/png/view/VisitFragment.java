@@ -527,7 +527,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         lbl_TodayTgt1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        if (bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN)
+        if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN)
             bmodel.productHelper.taxHelper = TaxGstHelper.getInstance(getActivity());
         else
             bmodel.productHelper.taxHelper = TaxHelper.getInstance(getActivity());
@@ -619,8 +619,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             dialogFragment.setArguments(bundle);
 
             dialogFragment.show(fm, "Sample Fragment");
-
-
         }
 
         return super.onOptionsItemSelected(item);

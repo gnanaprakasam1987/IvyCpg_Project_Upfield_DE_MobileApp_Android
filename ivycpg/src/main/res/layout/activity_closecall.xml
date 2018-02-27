@@ -85,6 +85,7 @@
                 android:background="@android:color/white"
                 android:hint="@string/enter_otp"
                 android:inputType="number"
+                style="@style/EditTextGravity"
                 android:paddingStart="5dp"
                 android:textColor="@android:color/black" />
 

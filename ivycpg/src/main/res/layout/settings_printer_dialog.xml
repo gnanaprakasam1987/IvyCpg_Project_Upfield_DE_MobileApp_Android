@@ -50,15 +50,15 @@
 
             <EditText
                 android:id="@+id/edit_username"
+                style="@style/EditTextGravity"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/edittext_height"
                 android:background="@color/white_box_border"
                 android:cursorVisible="true"
-                android:gravity="start"
                 android:lines="1"
                 android:paddingBottom="0dp"
-                android:paddingStart="@dimen/dimen_10dp"
                 android:paddingEnd="@dimen/forgot_text_width"
+                android:paddingStart="@dimen/dimen_10dp"
                 android:textColor="@color/FullBlack"
                 android:textCursorDrawable="@null"
                 android:textSize="@dimen/login_edittext_text_size" />
@@ -89,6 +89,7 @@
                 android:layout_height="@dimen/list_item_height"
                 android:layout_margin="3dp"
                 android:hint="@string/password"
+                style="@style/EditTextGravity"
                 android:inputType="textPassword"
                 android:padding="4dp"
                 android:singleLine="true"

@@ -124,7 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/feedbck_edit_ht"
                 android:background="@drawable/feedback_edit_selector"
-                android:gravity="top|start"
+                style="@style/EditTextGravity"
                 android:hint="@string/description"
                 android:imeOptions="actionDone"
                 android:inputType="text"

@@ -306,6 +306,7 @@
                                 android:imeOptions="actionDone"
                                 android:inputType="textMultiLine"
                                 android:lines="3"
+                                style="@style/EditTextGravity"
                                 android:maxLines="3"
                                 android:scrollbars="vertical"
                                 android:text=""

@@ -28,7 +28,7 @@
         android:id="@+id/edt_email"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimens_50dp"
-        android:gravity="center|start"
+        style="@style/EditTextGravity"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:paddingStart="@dimen/dimen_10dp" />

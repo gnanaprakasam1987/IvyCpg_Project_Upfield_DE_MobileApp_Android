@@ -621,8 +621,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     updateDefaultSupplierSelection();
                 }
-
-
             }
 
         } else {
@@ -658,7 +656,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             break;
 
                         }
-
                     }
                 } else {
                     bmodel.getRetailerMasterBO().setOrderTypeId(mOrderTypeList.get(0).getListID());
@@ -1540,7 +1537,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                 if (bmodel.configurationMasterHelper.IS_LOAD_STOCK_COMPETITOR) {
-                    if(bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER){
+                    if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                         bmodel.productHelper.downloadCompetitorFiveFilterLevels();
                     }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
@@ -2907,7 +2904,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
 
                 if (priceTrackingHelper.IS_LOAD_PRICE_COMPETITOR) {
-                    if(bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER){
+                    if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                         bmodel.productHelper.downloadCompetitorFiveFilterLevels();
                     }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
