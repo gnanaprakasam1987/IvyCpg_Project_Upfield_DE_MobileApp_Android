@@ -605,7 +605,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                     transaction
                             .replace(R.id.fragment_content, sOreportFragment);
                     transaction.addToBackStack(null);
-                    getSupportActionBar().setSubtitle(config.getMenuName());
+                    getSupportActionBar().setDisplayShowTitleEnabled(false);
+                    setScreenTitle(config.getMenuName());
                     transaction.commit();
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
@@ -712,18 +713,13 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CLOSING_STK_REPORT)) {
 
-            bmodel.reportHelper.downloadClosingStockRetailers();
+            transaction.replace(R.id.fragment_content, closingStockReportFragment);
+            transaction.addToBackStack(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            transaction.commit();
 
-            if(bmodel.reportHelper.getRetailerMaster().size() > 0) {
-                transaction.replace(R.id.fragment_content, closingStockReportFragment);
-                transaction.addToBackStack(null);
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-                setScreenTitle(config.getMenuName());
-                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                transaction.commit();
-            } else {
-                Toast.makeText(this, getResources().getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
-            }
         }
         // Commit the transaction
     }

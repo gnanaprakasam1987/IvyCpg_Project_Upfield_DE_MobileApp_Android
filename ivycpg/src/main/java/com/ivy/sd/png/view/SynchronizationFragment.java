@@ -2441,7 +2441,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 jsonObj.put("LoginId", userName);
                 jsonObj.put("Password", password);
                 jsonObj.put(SynchronizationHelper.VERSION_CODE,bmodel.getApplicationVersionNumber());
-                jsonObj.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationSubVersionName());
+                jsonObj.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
 
                 jsonObj.put("Model", Build.MODEL);
                 jsonObj.put("Platform", "Android");

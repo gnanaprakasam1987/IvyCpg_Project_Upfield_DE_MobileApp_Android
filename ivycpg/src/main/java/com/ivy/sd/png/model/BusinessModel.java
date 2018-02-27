@@ -3326,7 +3326,7 @@ public class BusinessModel extends Application {
                 }
                 jsonFormatter.addParameter("LastDayClose", LastDayClose);
                 jsonFormatter.addParameter("DataValidationKey", synchronizationHelper.generateChecksum(jsonObjData.toString()));
-                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, getApplicationSubVersionName());
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, getApplicationVersionName());
 
                 Commons.print(jsonFormatter.getDataInJson());
             } catch (Exception e) {
@@ -3827,21 +3827,21 @@ public class BusinessModel extends Application {
         return versionNumber + "";
     }
 
-    // *****************************************************
-
-    public String getApplicationSubVersionName() {
-        String versionName = "";
-        try {
-            PackageInfo pinfo = getPackageManager().getPackageInfo(
-                    getPackageName(), 0);
-            String vernameNameArray[] = pinfo.versionName.split("\\.");
-            versionName = vernameNameArray[vernameNameArray.length-1];
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return versionName;
-    }
+//    // *****************************************************
+//
+//    public String getApplicationSubVersionName() {
+//        String versionName = "";
+//        try {
+//            PackageInfo pinfo = getPackageManager().getPackageInfo(
+//                    getPackageName(), 0);
+//            String vernameNameArray[] = pinfo.versionName.split("\\.");
+//            versionName = vernameNameArray[vernameNameArray.length-1];
+//
+//        } catch (Exception e) {
+//            Commons.printException("" + e);
+//        }
+//        return versionName;
+//    }
 
     private void deleteUploadedImage() {
         try {
@@ -6054,7 +6054,7 @@ public class BusinessModel extends Application {
             jsonObj.put("OTPValue", mOTP);
             jsonObj.put("ActivityType", activityType);
             jsonObj.put("VersionCode", getApplicationVersionNumber());
-            jsonObj.put(SynchronizationHelper.VERSION_NAME, getApplicationSubVersionName());
+            jsonObj.put(SynchronizationHelper.VERSION_NAME, getApplicationVersionName());
             String appendUrl = synchronizationHelper.getUploadUrl("SYNOTP");
             appendUrl = appendUrl + "?userinfo=";
             Vector<String> responseVector = synchronizationHelper

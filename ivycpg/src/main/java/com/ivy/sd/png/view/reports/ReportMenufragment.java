@@ -251,7 +251,18 @@ public class ReportMenufragment extends IvyBaseFragment {
                 intoreportacti(config);
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
-        } else {
+        }
+        else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CLOSING_STK_REPORT)) {
+
+            bmodel.reportHelper.downloadClosingStockRetailers();
+
+            if(bmodel.reportHelper.getRetailerMaster().size() > 0) {
+                intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+            }
+        }
+        else {
             intoreportacti(config);
         }
 
