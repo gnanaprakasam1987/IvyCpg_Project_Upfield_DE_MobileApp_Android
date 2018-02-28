@@ -329,7 +329,9 @@ public class ProfileFragment extends IvyBaseFragment {
         profileConfig = new Vector<>();
         profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
-        int size = profileConfig.size();
+        int size = 0;
+        if (profileConfig != null)
+            size = profileConfig.size();
         for (int i = 0; i < size; i++) {
 
             int flag = profileConfig.get(i).isFlag();

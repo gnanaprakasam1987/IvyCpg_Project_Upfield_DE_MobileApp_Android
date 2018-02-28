@@ -2188,7 +2188,10 @@ public class BusinessModel extends Application {
 
         boolean bool = false;
         RetailerMasterBO retailer;
-        int siz = retailerMaster.size();
+        int siz = 0;
+
+        if (retailerMaster != null)
+            siz = retailerMaster.size();
 
         if (siz == 0)
             return bool;
@@ -6770,7 +6773,7 @@ public class BusinessModel extends Application {
                     supplierMasterBO.setIsPrimary(c.getInt(3));
                     supplierMasterBO.setDistParentID(c.getInt(4));
 
-                    if(c.getColumnCount() == 6)
+                    if (c.getColumnCount() == 6)
                         supplierMasterBO.setCreditLimit(c.getFloat(5));
 
                     mSupplierList.add(supplierMasterBO);
@@ -9050,7 +9053,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     public int getTotalCallsForTheDayExcludingDeviatedVisits() {
         int total_calls = 0;
         try {
@@ -9193,7 +9195,7 @@ public class BusinessModel extends Application {
     }
 
     public double getSalesReturnValue() {
-        double sale_return_value=0;
+        double sale_return_value = 0;
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -9206,7 +9208,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
-                        sale_return_value=c.getDouble(1);
+                        sale_return_value = c.getDouble(1);
                     }
                 }
             }

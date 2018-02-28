@@ -228,7 +228,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
         bmodel.newOutletHelper.loadContactStatus();
         bmodel.newOutletHelper.downloadLinkRetailer();
         new DownloadAsync().execute();
-      //  bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+        //  bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         // get previous changes from retailerEdit  Header and Detail table
         bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
         createTabViewForProfileForEdit();
@@ -241,7 +241,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
                             if ((lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("")
                                     || Double.parseDouble(longitude) == 0)
-                                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl !=0
+                                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0
                                     && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
                                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                                 return;
@@ -1594,7 +1594,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
             channel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     ChannelBO tempBo = (ChannelBO) parent.getSelectedItem();
-                    loadsubchannel(tempBo.getChannelId());
+                    if (subchannel != null)
+                        loadsubchannel(tempBo.getChannelId());
                 }
 
                 public void onNothingSelected(AdapterView<?> arg0) {
@@ -2540,7 +2541,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
             public boolean onLongClick(View v) {
                 boolean isLatLongMenuAvail = false;
                 for (int conf = 0; conf < profileConfig.size(); conf++) {
-                    if(profileConfig.get(conf).getConfigCode().equalsIgnoreCase("PROFILE08") &&
+                    if (profileConfig.get(conf).getConfigCode().equalsIgnoreCase("PROFILE08") &&
                             profileConfig.get(conf).getModule_Order() == 1) {
                         for (int conf1 = 0; conf1 < profileConfig.size(); conf1++) {
                             if (profileConfig.get(conf1).getConfigCode().equalsIgnoreCase("PROFILE31") &&
@@ -2553,12 +2554,12 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 }
                 //Dont allow if Fun57 is enabled and mandatory,
                 //Generally check for location and show toast if no location found.
-                if(!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
-                        || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)){
+                if (!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
+                        || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
 
                     Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     return false;
-                }else {
+                } else {
                     if (LocationUtil.latitude == 0 || LocationUtil.longitude == 0) {
                         Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     }
