@@ -76,7 +76,7 @@
                         android:layout_width="@dimen/report_base_sbd"
                         android:layout_height="wrap_content"
                         android:layout_margin="2dp"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:singleLine="true"
                         android:text="@string/total_distribution"
                         android:textSize="@dimen/font_small" />
@@ -94,7 +94,7 @@
                         android:layout_width="@dimen/report_base_sbd"
                         android:layout_height="wrap_content"
                         android:layout_margin="2dp"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:singleLine="true"
                         android:text="@string/total_value"
                         android:textSize="@dimen/font_small" />
@@ -112,7 +112,7 @@
                         android:layout_width="@dimen/report_base_sbd"
                         android:layout_height="wrap_content"
                         android:layout_margin="2dp"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:singleLine="true"
                         android:text="@string/mtd_value"
                         android:textSize="@dimen/font_small" />

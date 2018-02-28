@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/store_margin_top"
+        android:layout_marginStart="@dimen/store_margin_top"
         >
 
         <TextView
@@ -44,7 +44,7 @@
             android:gravity="center"
             android:tag="sih"
             android:text="56656"
-            android:layout_toRightOf="@+id/prdbatchid"
+            android:layout_toEndOf="@+id/prdbatchid"
             android:layout_marginBottom="@dimen/icons_top_margin"
             android:layout_below="@+id/PRDNAME1"
             style="?attr/customListItemSecondary"/>

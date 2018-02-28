@@ -64,8 +64,8 @@
             android:layout_marginBottom="@dimen/activity_margin1"
             android:layout_marginTop="@dimen/activity_margin1"
             android:minWidth="150dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:text="@string/download"
 
             />

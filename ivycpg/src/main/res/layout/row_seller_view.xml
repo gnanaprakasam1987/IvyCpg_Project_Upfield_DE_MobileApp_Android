@@ -17,7 +17,7 @@
         style="?attr/customListItemPrimary"
         android:layout_width="@dimen/dimen_0dp"
         android:layout_height="wrap_content"
-        android:gravity="left|center"
+        android:gravity="start|center"
         android:maxLines="2"
         android:padding="3dp"
         android:text="@string/username"

@@ -72,7 +72,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/target_top_margin"
-                        android:layout_toRightOf="@+id/ll_value"
+                        android:layout_toEndOf="@+id/ll_value"
                         android:orientation="vertical">
 
                         <TextView
@@ -100,7 +100,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/target_top_margin"
-                        android:layout_toRightOf="@+id/ll_lpc"
+                        android:layout_toEndOf="@+id/ll_lpc"
                         android:orientation="vertical"
                         android:visibility="gone">
 
@@ -129,7 +129,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/target_top_margin"
-                        android:layout_toRightOf="@+id/ll_vanloadsih_lty"
+                        android:layout_toEndOf="@+id/ll_vanloadsih_lty"
                         android:orientation="vertical"
                         android:visibility="gone">
 
@@ -158,7 +158,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/target_top_margin"
-                        android:layout_toRightOf="@+id/ll_vanloadcase_lty"
+                        android:layout_toEndOf="@+id/ll_vanloadcase_lty"
                         android:orientation="vertical"
                         android:visibility="gone">
 
@@ -187,7 +187,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/target_top_margin"
-                        android:layout_toRightOf="@+id/ll_vanloadouter_lty"
+                        android:layout_toEndOf="@+id/ll_vanloadouter_lty"
                         android:orientation="vertical"
                         android:visibility="gone">
 
@@ -214,7 +214,7 @@
                     <Button
                         android:id="@+id/btn_next"
                         style="?attr/roundedCustomButtonSmall"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_margin="@dimen/target_top_margin"
                         android:text="@string/next"
@@ -235,8 +235,8 @@
                     android:id="@+id/filterscreenlayout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/list_margin"
-                    android:layout_marginRight="@dimen/list_margin"
+                    android:layout_marginStart="@dimen/list_margin"
+                    android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginTop="@dimen/list_margin"
                     android:background="@android:color/transparent"
                     android:orientation="vertical">
@@ -259,9 +259,9 @@
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/list_margin"
+                                android:layout_marginStart="@dimen/list_margin"
                                 android:layout_weight="1"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:maxLines="1"
                                 android:textColor="?attr/primarycolor"
                                 android:textSize="@dimen/font_nano_small" />
@@ -300,7 +300,7 @@
                                     android:layout_gravity="center_vertical"
                                     android:layout_weight="1"
                                     android:background="@android:color/transparent"
-                                    android:gravity="left|center_vertical"
+                                    android:gravity="start|center_vertical"
                                     android:maxLines="1"
                                     android:inputType="text"
                                     android:text=""

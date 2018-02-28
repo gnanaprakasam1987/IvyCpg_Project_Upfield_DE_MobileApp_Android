@@ -37,8 +37,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:weightSum="10"
-                android:paddingLeft="@dimen/list_padding_left_n_right"
-                android:paddingRight="@dimen/list_padding_left_n_right">
+                android:paddingStart="@dimen/list_padding_left_n_right"
+                android:paddingEnd="@dimen/list_padding_left_n_right">
 
                 <View
                     android:layout_width="@dimen/dimen_40dp"
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="7"
                     android:text="@string/asset"
-                    android:gravity="left"/>
+                    android:gravity="start"/>
 
 
                 <TextView

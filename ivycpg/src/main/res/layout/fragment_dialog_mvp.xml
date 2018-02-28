@@ -9,7 +9,7 @@
         android:id="@+id/grid_mvpImages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_10dp"
+        android:layout_marginStart="@dimen/dimen_10dp"
         android:numColumns="3"
 
         ></GridView>

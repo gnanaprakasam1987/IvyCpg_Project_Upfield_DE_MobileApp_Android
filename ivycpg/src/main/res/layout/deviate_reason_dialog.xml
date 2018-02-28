@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:drawable/ic_menu_close_clear_cancel"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/margin_5px"/>
     <TextView
         android:id="@+id/tv_title"
@@ -36,7 +36,7 @@
         android:text="Reason for visit"
         android:textColor="@color/btn_round_green"
         android:layout_below="@+id/line"
-        android:layout_marginLeft="@dimen/margin_week_layout"
+        android:layout_marginStart="@dimen/margin_week_layout"
         android:layout_marginTop="@dimen/margin_week_layout"/>
 
     <com.ivy.sd.png.view.ToggleButtonGroupTableLayout

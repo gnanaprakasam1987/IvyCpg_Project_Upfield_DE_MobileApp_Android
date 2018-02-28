@@ -17,7 +17,7 @@
         android:id="@+id/tv_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/iv_proof"
+        android:layout_alignEnd="@+id/iv_proof"
         android:background="@drawable/icon_close_" />
 
 </RelativeLayout>

@@ -159,7 +159,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_INITIATIVE_MERCHANDISING = "VLD02";
     private static final String CODE_SUGGESTED_ORDER_LOGIC = "ORDB18";
     // code added in v 35
-    private static final String CODE_ORDER_PRINT = "ORDB19";
+
     private static final String CODE_CALCULATOR = "FUN04";
     private static final String CODE_SCHEME_ON = "SCH01";
     private static final String CODE_SCHEME_EDITABLE = "SCH02";
@@ -234,7 +234,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SECONDARY_CONTACT_NUMBER = "PROFILE12";
     private static final String CODE_BATCH_WISE_PRODUCT = "BWP01";
     private static final String CODE_SIGNATURE_SCREEN = "ORDB03";
-    private static final String CODE_MENU_ICON_SCHEME = "SCH04";
+    private static final String CODE_FOC_ACCUMULATION_VALIDATION = "SCH04";
     private static final String CODE_PARTIAL_PAYMENT = "COLL03";
     private static final String CODE_COLLECTION_ORDER = "COLL04";
     private static final String CODE_COLLECTION_REASON = "COLL05";
@@ -460,6 +460,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MOQ_ENABLED = "FUN66";//change config code
     public boolean IS_MOQ_ENABLED;
 
+    private static final String CODE_ALLOW_CONTINUOUS_PRINT = "FUN67";
+    public boolean IS_ALLOW_CONTINUOUS_PRINT;
+
+
     private static final String CODE_PRINT_DELIVERY = "DLRYPRINT";
     public boolean IS_DELIVERY_PRINT;
 
@@ -660,7 +664,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_NEWOUTLET_IMAGETYPE;
     public boolean IS_NEWOUTLET_LOCATION;
     public boolean SHOW_DISC_AMOUNT_ALLOW;
-    public boolean SHOW_MENU_ICON_SCHEME;
+    public boolean IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE;
     public boolean IS_PARTIAL_PAYMENT = true;
     public boolean IS_COLLECTION_ORDER;
     public boolean SHOW_COLLECTION_REASON;
@@ -1257,7 +1261,7 @@ public class ConfigurationMasterHelper {
 
     public boolean SHOW_SALES_RETURN_IN_ORDER;
 
-    public int newRetailerLocAccuracyLvl;
+    public int retailerLocAccuracyLvl;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1742,7 +1746,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_BATCH_WISE_PRICE = hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) != null ? hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) : false;
         this.SHOW_SIGNATURE_SCREEN = hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) : false;
         this.SHOW_DISC_AMOUNT_ALLOW = hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) : false;
-        this.SHOW_MENU_ICON_SCHEME = hashMapHHTModuleConfig.get(CODE_MENU_ICON_SCHEME) != null ? hashMapHHTModuleConfig.get(CODE_MENU_ICON_SCHEME) : false;
+        this.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE = hashMapHHTModuleConfig.get(CODE_FOC_ACCUMULATION_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_FOC_ACCUMULATION_VALIDATION) : false;
         this.IS_PARTIAL_PAYMENT = hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) : false;
         this.SHOW_SKUWISE_INCENTIVE = hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) != null ? hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) : false;
         this.CALC_OUTSTANDING = hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) : false;
@@ -2196,7 +2200,8 @@ public class ConfigurationMasterHelper {
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
 
-        this.newRetailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
+        this.IS_ALLOW_CONTINUOUS_PRINT =hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT)!=null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
+        this.retailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
         this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
     }
 
@@ -4795,6 +4800,9 @@ public class ConfigurationMasterHelper {
                         MVPTheme = R.style.MVPTheme_Green;
                     else if (c.getString(0).equalsIgnoreCase("pink"))
                         MVPTheme = R.style.MVPTheme_Pink;
+                    else if (c.getString(0).equalsIgnoreCase("nblue"))
+                        MVPTheme = R.style.MVPTheme_NBlue;
+
                 }
             }
 

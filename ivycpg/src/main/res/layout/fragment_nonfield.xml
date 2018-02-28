@@ -36,7 +36,7 @@
                     android:background="@android:color/black"
                     android:orientation="horizontal"
                     android:minHeight="@dimen/list_header_height"
-                    android:paddingLeft="@dimen/space_between_edt">
+                    android:paddingStart="@dimen/space_between_edt">
 
                     <TextView
                         android:id="@+id/txt_Tit_From"
@@ -94,7 +94,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="start|center_vertical"
-                        android:paddingLeft="@dimen/space_between_edt"
+                        android:paddingStart="@dimen/space_between_edt"
                         android:text="@string/status" />
                 </LinearLayout>
 
@@ -145,7 +145,7 @@
                             android:id="@+id/rb_multiple"
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
-                            android:layout_marginLeft="@dimen/dimen_2dp"
+                            android:layout_marginStart="@dimen/dimen_2dp"
                             android:layout_weight="1"
                             android:background="@drawable/background_item"
                             android:gravity="center"
@@ -178,7 +178,7 @@
                                 android:id="@+id/txt_reason"
                                 android:layout_width="@dimen/fromdate_width"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/reason"
 
                                 android:textColor="@android:color/black"
@@ -188,7 +188,7 @@
                                 android:id="@+id/spn_resn"
                                 android:layout_width="fill_parent"
                                 android:layout_height="40dp"
-                                android:layout_marginLeft="5dp"
+                                android:layout_marginStart="5dp"
                                 android:gravity="center"
                                 android:popupBackground="@color/GRAY" />
                         </LinearLayout>
@@ -207,7 +207,7 @@
                                 android:id="@+id/txt_joint"
                                 android:layout_width="@dimen/fromdate_width"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/username"
 
                                 android:textColor="@android:color/black"
@@ -217,7 +217,7 @@
                                 android:id="@+id/spn_joint"
                                 android:layout_width="fill_parent"
                                 android:layout_height="40dp"
-                                android:layout_marginLeft="5dp"
+                                android:layout_marginStart="5dp"
                                 android:gravity="center"
                                 android:popupBackground="@color/GRAY" />
                         </LinearLayout>
@@ -236,7 +236,7 @@
                                 android:id="@+id/txt_traveltime"
                                 android:layout_width="@dimen/fromdate_width"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/travel_time"
 
                                 android:textColor="@android:color/black"
@@ -246,7 +246,7 @@
                                 android:id="@+id/btn_traveltime"
                                 android:layout_width="@dimen/fromdate_width"
                                 android:layout_height="40dp"
-                                android:layout_marginLeft="5dp"
+                                android:layout_marginStart="5dp"
                                 android:gravity="center"
                                 android:popupBackground="@color/GRAY" />
                         </LinearLayout>
@@ -265,7 +265,7 @@
                                 android:id="@+id/txt_leaves_type"
                                 android:layout_width="@dimen/fromdate_width"
                                 android:layout_height="wrap_content"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/text_leave_type"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/font_small"
@@ -275,7 +275,7 @@
                                 android:id="@+id/spn_leaves"
                                 android:layout_width="fill_parent"
                                 android:layout_height="40dp"
-                                android:layout_marginLeft="5dp"
+                                android:layout_marginStart="5dp"
                                 android:gravity="center"
                                 android:popupBackground="@color/GRAY" />
                         </LinearLayout>
@@ -292,7 +292,7 @@
                                 android:layout_width="@dimen/nonfield_descr_width"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/description"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/font_small" />
@@ -301,11 +301,12 @@
                                 android:id="@+id/edt_reason"
                                 android:layout_width="@dimen/description_edt_width"
                                 android:layout_height="@dimen/competitor_edt_height"
-                                android:layout_marginLeft="5dp"
+                                android:layout_marginStart="5dp"
                                 android:background="@android:drawable/editbox_background"
                                 android:imeOptions="actionDone"
                                 android:inputType="textMultiLine"
                                 android:lines="3"
+                                style="@style/EditTextGravity"
                                 android:maxLines="3"
                                 android:scrollbars="vertical"
                                 android:text=""
@@ -333,7 +334,7 @@
                                 style="@style/datePickerButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="@dimen/add_dialog_header_height"
-                                android:layout_marginLeft="5dp"
+                                android:layout_marginStart="5dp"
                                 android:gravity="center"
                                 android:tag="datePicker1"
                                 android:textColor="@android:color/black" />
@@ -374,7 +375,7 @@
                                 android:layout_width="@dimen/fromdate_width"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/session"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/font_small" />
@@ -406,7 +407,7 @@
                                 android:layout_width="@dimen/nonfield_descr_width"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/text_total_leaves"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/font_small" />
@@ -416,8 +417,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="5dp"
-                                android:gravity="left"
+                                android:layout_marginStart="5dp"
+                                android:gravity="start"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/font_small" />
                         </LinearLayout>
@@ -443,7 +444,7 @@
                         android:id="@+id/bt_Cancel"
                         android:layout_width="@dimen/date"
                         android:layout_height="@dimen/add_dialog_header_height"
-                        android:layout_marginLeft="2dp"
+                        android:layout_marginStart="2dp"
                         android:text="@string/cancel"
                         android:visibility="gone" />
                 </LinearLayout>

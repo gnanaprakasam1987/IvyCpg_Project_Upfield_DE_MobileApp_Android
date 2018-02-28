@@ -239,7 +239,10 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (validateEditProfile()) {
 
                         if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                            if (lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("") || Double.parseDouble(longitude) == 0) {
+                            if ((lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("")
+                                    || Double.parseDouble(longitude) == 0)
+                                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl !=0
+                                    && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
                                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -2551,7 +2554,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 //Dont allow if Fun57 is enabled and mandatory,
                 //Generally check for location and show toast if no location found.
                 if(!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
-                        || (bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.newRetailerLocAccuracyLvl)){
+                        || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)){
 
                     Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     return false;

@@ -12,16 +12,16 @@
         style="?attr/customListItemPrimary"
         android:layout_width="match_parent"
         android:layout_height="@dimen/filter_secondary_list_height"
-        android:layout_toLeftOf="@+id/selectedfilters"
-        android:layout_marginLeft="@dimen/list_margin"
-        android:gravity="left|center_vertical"
+        android:layout_toStartOf="@+id/selectedfilters"
+        android:layout_marginStart="@dimen/list_margin"
+        android:gravity="start|center_vertical"
         android:text="@string/dummy_txt" />
 
     <RadioButton
         android:id="@+id/selectedfilters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/list_margin"
         android:clickable="false"
         android:layout_centerVertical="true"

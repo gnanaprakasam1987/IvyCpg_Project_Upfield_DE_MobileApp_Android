@@ -31,7 +31,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:paddingLeft="@dimen/whats_on_item_padding"
+                android:paddingStart="@dimen/whats_on_item_padding"
                 android:text="Value"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/factor_title_size"
@@ -42,8 +42,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:gravity="center|right"
-                android:paddingRight="@dimen/recycler_margin"
+                android:gravity="center|end"
+                android:paddingEnd="@dimen/recycler_margin"
                 android:tag="incentive_day"
                 android:text="@string/value"
                 android:textColor="@color/Black"
@@ -55,8 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.2"
-                android:gravity="center|left"
-                android:paddingLeft="@dimen/recycler_margin"
+                android:gravity="center|start"
+                android:paddingStart="@dimen/recycler_margin"
                 android:text="50"
                 android:textColor="@color/RED"
                 android:textSize="@dimen/incentive_value_size"
@@ -67,8 +67,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginLeft="@dimen/margin_10px"
-            android:layout_marginRight="@dimen/margin_10px"
+            android:layout_marginStart="@dimen/margin_10px"
+            android:layout_marginEnd="@dimen/margin_10px"
             android:background="@color/GRAY"></View>
 
         <RelativeLayout
@@ -79,7 +79,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -88,7 +88,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/target_top_margin"
+                    android:layout_marginStart="@dimen/target_top_margin"
                     android:gravity="center_vertical"
                     android:minHeight="@dimen/dimen_40dp"
                     android:orientation="vertical">
@@ -115,7 +115,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
                     android:gravity="center_vertical"
                     android:minHeight="@dimen/dimen_40dp"
                     android:orientation="vertical">
@@ -138,8 +138,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingBottom="2dp"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp"
                             android:tag="balance_day"
                             android:text="@string/retailer"
                             android:textColor="@color/Orange"
@@ -160,7 +160,7 @@
                             android:id="@+id/txtRetailer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="5dp"
+                            android:paddingStart="5dp"
                             android:text="0"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/value_text_size"
@@ -173,14 +173,14 @@
                     android:id="@+id/verticalSeparatorTarget"
                     android:layout_width="0.3dp"
                     android:layout_height="@dimen/divder_margin"
-                    android:layout_marginLeft="@dimen/target_top_margin"
-                    android:layout_marginRight="@dimen/target_top_margin"
+                    android:layout_marginStart="@dimen/target_top_margin"
+                    android:layout_marginEnd="@dimen/target_top_margin"
                     android:background="@color/GRAY" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
                     android:gravity="center_vertical"
                     android:minHeight="@dimen/dimen_40dp"
                     android:orientation="vertical">
@@ -203,8 +203,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingBottom="2dp"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="5dp"
                             android:tag="flex_day"
                             android:text="@string/date"
                             android:textColor="@color/GREEN"
@@ -225,7 +225,7 @@
                             android:id="@+id/txtDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="5dp"
+                            android:paddingStart="5dp"
                             android:text="0"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/value_text_size"
@@ -237,8 +237,8 @@
                     android:id="@+id/verticalSeparatorFlex"
                     android:layout_width="0.3dp"
                     android:layout_height="@dimen/divder_margin"
-                    android:layout_marginLeft="@dimen/target_top_margin"
-                    android:layout_marginRight="@dimen/target_top_margin"
+                    android:layout_marginStart="@dimen/target_top_margin"
+                    android:layout_marginEnd="@dimen/target_top_margin"
                     android:background="@color/GRAY" />
             </LinearLayout>
 
@@ -246,10 +246,10 @@
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:gravity="center_vertical"
                 android:minHeight="@dimen/dimen_40dp"
-                android:layout_marginRight="@dimen/dimen_5dp"
+                android:layout_marginEnd="@dimen/dimen_5dp"
                 android:orientation="horizontal">
 
                 <CheckBox

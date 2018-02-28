@@ -27,10 +27,10 @@
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/list_margin"
-                android:layout_toLeftOf="@+id/ivInfoicon"
+                android:layout_marginEnd="@dimen/list_margin"
+                android:layout_toStartOf="@+id/ivInfoicon"
                 android:maxLines="1"
                 android:text="@string/product_name" />
 
@@ -64,7 +64,7 @@
                     android:id="@+id/ll_case"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="right|top"
+                    android:gravity="end|top"
                     android:orientation="vertical"
                     android:layout_weight="1">
 
@@ -82,7 +82,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="@dimen/meter_text_width"
                         android:layout_height="match_parent"
-                        android:gravity="center|right"
+                        android:gravity="center|end"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
                         android:textSize="@dimen/font_micro_small" />
@@ -92,7 +92,7 @@
                     android:id="@+id/ll_outer"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="right|top"
+                    android:gravity="end|top"
                     android:orientation="vertical"
                     android:layout_weight="1">
 
@@ -110,7 +110,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="@dimen/meter_text_width"
                         android:layout_height="match_parent"
-                        android:gravity="center|right"
+                        android:gravity="center|end"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
                         android:textSize="@dimen/font_micro_small" />
@@ -120,7 +120,7 @@
                     android:id="@+id/ll_pcs"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="right|top"
+                    android:gravity="end|top"
                     android:orientation="vertical"
                     android:layout_weight="1">
 
@@ -138,7 +138,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="@dimen/meter_text_width"
                         android:layout_height="match_parent"
-                        android:gravity="center|right"
+                        android:gravity="center|end"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
                         android:textSize="@dimen/font_micro_small" />

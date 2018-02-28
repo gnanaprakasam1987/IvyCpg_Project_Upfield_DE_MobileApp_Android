@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomBO;
@@ -2847,41 +2848,45 @@ public class SchemeDetailsMasterHelper {
         }
         if (mOffInvoiceAppliedSchemeList != null) {
             for (SchemeBO schemeBO : mOffInvoiceAppliedSchemeList) {
-                if (schemeBO.isQuantityTypeSelected()) {
-                    final List<SchemeProductBO> freeProductsList = schemeBO.getFreeProducts();
-                    for (SchemeProductBO freeProductBO : freeProductsList) {
-                        if (freeProductBO.getQuantitySelected() > 0) {
-                            ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+                if(!bmodel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
+                        || OrderHelper.getInstance(context).getValidAccumulationSchemes().contains(String.valueOf(schemeBO.getParentId()))) {
 
-                            if (productBO != null) {
-                                StringBuffer sb = new StringBuffer();
-                                sb.append(orderID + "," + freeProductBO.getSchemeId() + ","
-                                        + freeProductBO.getProductId() + ",");
-                                sb.append(freeProductBO.getQuantitySelected() + ","
-                                        + freeProductBO.getUomID() + ",");
-                                if (freeProductBO.getUomID() == productBO.getCaseUomId()
-                                        && productBO.getCaseUomId() != 0) {
-                                    sb.append(productBO.getCaseSize() + ",");
-                                } else if (freeProductBO.getUomID() == productBO.getOuUomid()
-                                        && productBO.getOuUomid() != 0) {
-                                    sb.append(productBO.getOutersize() + ",");
-                                } else if (freeProductBO.getUomID() == productBO.getPcUomid()
-                                        || freeProductBO.getUomID() == 0) {
-                                    sb.append(1 + ",");
-                                } else {
-                                    sb.append(1 + ",");
+                    if (schemeBO.isQuantityTypeSelected()) {
+                        final List<SchemeProductBO> freeProductsList = schemeBO.getFreeProducts();
+                        for (SchemeProductBO freeProductBO : freeProductsList) {
+                            if (freeProductBO.getQuantitySelected() > 0) {
+                                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+
+                                if (productBO != null) {
+                                    StringBuffer sb = new StringBuffer();
+                                    sb.append(orderID + "," + freeProductBO.getSchemeId() + ","
+                                            + freeProductBO.getProductId() + ",");
+                                    sb.append(freeProductBO.getQuantitySelected() + ","
+                                            + freeProductBO.getUomID() + ",");
+                                    if (freeProductBO.getUomID() == productBO.getCaseUomId()
+                                            && productBO.getCaseUomId() != 0) {
+                                        sb.append(productBO.getCaseSize() + ",");
+                                    } else if (freeProductBO.getUomID() == productBO.getOuUomid()
+                                            && productBO.getOuUomid() != 0) {
+                                        sb.append(productBO.getOutersize() + ",");
+                                    } else if (freeProductBO.getUomID() == productBO.getPcUomid()
+                                            || freeProductBO.getUomID() == 0) {
+                                        sb.append(1 + ",");
+                                    } else {
+                                        sb.append(1 + ",");
+                                    }
+                                    sb.append(0 + "," + freeProductBO.getAccProductParentId());
+                                    sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                                    sb.append("," + bmodel.QT(productBO.getHsnCode()));
+
+                                    db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
+                                            sb.toString());
                                 }
-                                sb.append(0 + "," + freeProductBO.getAccProductParentId());
-                                sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                                sb.append("," + bmodel.QT(productBO.getHsnCode()));
-
-                                db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
-                                        sb.toString());
                             }
                         }
+
+
                     }
-
-
                 }
             }
         }
@@ -4479,6 +4484,7 @@ public class SchemeDetailsMasterHelper {
                     ArrayList<SchemeProductBO> freeProductList = new ArrayList<>();
                     SchemeProductBO schemeProductBO;
                     int schemeid = 0;
+                    int parentId=0;
                     String schemeDesc = "";
                     String freeType = "";
                     SchemeBO schemeBO = null;
@@ -4508,6 +4514,7 @@ public class SchemeDetailsMasterHelper {
                             if (schemeid != 0) {
                                 schemeBO = new SchemeBO();
                                 schemeBO.setSchemeId(schemeid + "");
+                                schemeBO.setParentId(parentId);
                                 schemeBO.setFreeType(freeType);
                                 schemeBO.setBuyType("SV");
                                 schemeBO.setSchemeParentName(schemeDesc);
@@ -4521,9 +4528,11 @@ public class SchemeDetailsMasterHelper {
                                 schemeid = c.getInt(4);
                                 schemeDesc = c.getString(6);
                                 freeType = c.getString(9);
+                                parentId=c.getInt(5);
                             } else {
                                 freeProductList.add(schemeProductBO);
                                 schemeid = c.getInt(4);
+                                parentId=c.getInt(5);
                                 schemeDesc = c.getString(6);
                                 freeType = c.getString(9);
                             }
@@ -4539,6 +4548,7 @@ public class SchemeDetailsMasterHelper {
 
                         schemeBO = new SchemeBO();
                         schemeBO.setSchemeId(schemeid + "");
+                        schemeBO.setParentId(parentId);
                         schemeBO.setFreeType(freeType);
                         schemeBO.setBuyType("SV");
                         schemeBO.setSchemeParentName(schemeDesc);

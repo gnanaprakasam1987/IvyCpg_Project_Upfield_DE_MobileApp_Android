@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/margin_10px"
-    android:layout_marginRight="@dimen/margin_10px"
+    android:layout_marginStart="@dimen/margin_10px"
+    android:layout_marginEnd="@dimen/margin_10px"
     android:orientation="vertical"
     android:padding="@dimen/dimens_1dp">
 
@@ -25,7 +25,7 @@
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimens_14dp"
+                android:layout_marginStart="@dimen/dimens_14dp"
                 android:layout_weight="6">
 
                 <TextView
@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_22dp"
                     android:layout_alignParentTop="true"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="adfasd"
                     android:textColor="#212121"
                     android:textSize="@dimen/font_micro_small" />
@@ -43,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_16dp"
                     android:layout_below="@+id/tv_invoice_no"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="@string/invoice_no"
                     android:textColor="#616161"
                     android:textSize="@dimen/text_sz_small" />
@@ -58,7 +58,7 @@
                         android:id="@+id/tv_invoice_date"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dimens_22dp"
-                        android:gravity="left|center_vertical"
+                        android:gravity="start|center_vertical"
                         android:text="asdlfjasdf"
                         android:textColor="#212121"
                         android:textSize="@dimen/font_micro_small" />
@@ -67,8 +67,8 @@
                         android:id="@+id/tv_age"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dimens_22dp"
-                        android:layout_toRightOf="@+id/tv_invoice_date"
-                        android:gravity="left|center_vertical"
+                        android:layout_toEndOf="@+id/tv_invoice_date"
+                        android:gravity="start|center_vertical"
                         android:text="asdlfjasdf"
                         android:textColor="#212121"
                         android:textSize="@dimen/font_micro_small" />
@@ -82,7 +82,7 @@
                     android:layout_below="@+id/rl_invoice_date"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="@string/invoice_date"
                     android:textColor="#616161"
                     android:textSize="@dimen/text_sz_small" />
@@ -92,7 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_22dp"
                     android:layout_below="@+id/tv_invoicedate_title"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="asdlfjasdf"
                     android:textColor="#212121"
                     android:textSize="@dimen/font_micro_small" />
@@ -102,7 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_16dp"
                     android:layout_below="@+id/tv_osamt"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="@string/os_amt"
                     android:textColor="#616161"
                     android:textSize="@dimen/text_sz_small" />
@@ -112,7 +112,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_22dp"
                     android:layout_below="@+id/tv_osamt_title"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:textColor="#212121"
                     android:textSize="@dimen/font_micro_small" />
 
@@ -121,7 +121,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_16dp"
                     android:layout_below="@+id/tv_payableamt"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="Payable Amt"
                     android:textColor="#616161"
                     android:textSize="@dimen/text_sz_small"
@@ -139,7 +139,7 @@
                     android:id="@+id/tv_duedate"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_22dp"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:textColor="#212121"
                     android:textSize="@dimen/font_micro_small" />
 
@@ -148,7 +148,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_16dp"
                     android:layout_below="@+id/tv_duedate"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="@string/due_date"
                     android:textColor="#616161"
                     android:textSize="@dimen/text_sz_small" />
@@ -158,7 +158,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_22dp"
                     android:layout_below="@id/tv_duedate_title"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="Invoice Amount"
                     android:textColor="#212121"
                     android:textSize="@dimen/font_micro_small" />
@@ -168,7 +168,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_16dp"
                     android:layout_below="@+id/tv_invamt"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="Invoice Amount"
                     android:textColor="#616161"
                     android:textSize="@dimen/text_sz_small" />
@@ -178,7 +178,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_22dp"
                     android:layout_below="@+id/tv_invamt_title"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="asdlfjasdf"
                     android:textColor="#212121"
                     android:textSize="@dimen/font_micro_small" />
@@ -188,7 +188,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_16dp"
                     android:layout_below="@+id/tv_received"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="@string/received"
                     android:textColor="#616161"
                     android:textSize="@dimen/text_sz_small" />
@@ -198,7 +198,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_22dp"
                     android:layout_below="@+id/tv_received_title"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="asdlfjasdf"
                     android:textColor="#212121"
                     android:textSize="@dimen/font_micro_small" />
@@ -208,7 +208,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_16dp"
                     android:layout_below="@+id/tv_disc"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="@string/disc_amt"
                     android:textColor="#616161"
                     android:textSize="@dimen/text_sz_small" />
@@ -218,7 +218,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_22dp"
                     android:layout_below="@+id/tv_disc_title"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="123456"
                     android:textColor="#212121"
                     android:textSize="@dimen/font_micro_small" />
@@ -228,7 +228,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_16dp"
                     android:layout_below="@+id/tv_docRef"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:text="@string/docRefNo"
                     android:textColor="#616161"
                     android:textSize="@dimen/text_sz_small" />

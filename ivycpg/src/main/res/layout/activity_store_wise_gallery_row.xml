@@ -48,7 +48,7 @@
                 android:id="@+id/counttxtview"
                 android:layout_width="50dp"
                 android:layout_height="@dimen/digital_text_bg_height"
-                android:gravity="right|center_vertical"
+                android:gravity="end|center_vertical"
                 android:padding="5dp"
                 android:singleLine="false"
                 android:text="1000"

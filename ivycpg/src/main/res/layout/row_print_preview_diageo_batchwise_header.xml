@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_below="@id/productnamelayout"
-        android:layout_marginLeft="@dimen/dimen_40dp">
+        android:layout_marginStart="@dimen/dimen_40dp">
 
 
     </LinearLayout>

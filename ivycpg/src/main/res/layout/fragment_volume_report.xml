@@ -94,7 +94,7 @@
                     android:layout_width="@dimen/report_base_sbd"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:singleLine="true"
                     android:text="@string/total"
                     android:textSize="@dimen/font_small">
@@ -106,7 +106,7 @@
                     android:textColor="@android:color/black"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:singleLine="true"
                     android:text="" >
                 </TextView>
@@ -117,7 +117,7 @@
                     android:textColor="@android:color/black"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:singleLine="true"
                     android:text="" >
                 </TextView>
@@ -128,7 +128,7 @@
                     android:textColor="@android:color/black"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:singleLine="true"
                     android:text="" >
                 </TextView>

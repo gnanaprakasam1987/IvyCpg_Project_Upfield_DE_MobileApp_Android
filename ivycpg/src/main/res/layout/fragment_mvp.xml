@@ -129,7 +129,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dimen_4dp"
+                            android:layout_marginStart="@dimen/dimen_4dp"
                             android:gravity="center"
                             android:text="13"
                             android:textColor="@color/WHITE"
@@ -176,7 +176,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dimen_4dp"
+                            android:layout_marginStart="@dimen/dimen_4dp"
                             android:gravity="center"
                             android:text="34"
                             android:textColor="@color/WHITE"
@@ -221,7 +221,7 @@
                                 android:id="@+id/textview411"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_margin="@dimen/dimen_10dp"
                                 android:text="Badges"
                                 android:textColor="@color/Black"
@@ -231,8 +231,8 @@
                                 android:id="@+id/badgepoints_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:layout_gravity="right"
+                                android:layout_alignParentEnd="true"
+                                android:layout_gravity="end"
                                 android:layout_margin="@dimen/dimen_10dp"
                                 android:text="15"
                                 android:textSize="18sp" />
@@ -251,7 +251,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/ll_line"
                             android:layout_marginTop="@dimen/dimen_10dp"
-                            android:layout_toRightOf="@+id/backdrop"
+                            android:layout_toEndOf="@+id/backdrop"
                             android:minHeight="@dimen/mvpbadge_more_icon_width">
 
                             <LinearLayout
@@ -266,7 +266,7 @@
                             android:id="@+id/btn_more_images"
                             android:layout_width="@dimen/mvpbadge_more_icon_width"
                             android:layout_height="@dimen/mvpbadge_more_icon_width"
-                            android:layout_toRightOf="@+id/scroll_horizontal"
+                            android:layout_toEndOf="@+id/scroll_horizontal"
                             android:background="@drawable/ic_more"
                             android:visibility="gone" />
                     </LinearLayout>
@@ -290,8 +290,8 @@
                             android:id="@+id/ll_teambadge"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dimen_10dp"
-                            android:layout_marginRight="@dimen/dimen_10dp"
+                            android:layout_marginStart="@dimen/dimen_10dp"
+                            android:layout_marginEnd="@dimen/dimen_10dp"
                             android:orientation="horizontal">
 
                         </LinearLayout>
@@ -323,7 +323,7 @@
                                 android:id="@+id/peer_textview"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_margin="@dimen/dimen_10dp"
                                 android:text="Peer"
                                 android:textColor="@color/Black"

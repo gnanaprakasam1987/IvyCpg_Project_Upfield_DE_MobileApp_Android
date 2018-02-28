@@ -11,8 +11,8 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/list_padding_left_n_right"
-    android:paddingRight="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:layout_margin="@dimen/list_margin"
     android:layout_below="@+id/toolbar"
     android:layout_above="@+id/footer">
@@ -32,7 +32,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:gravity="left|center_vertical"
+            android:gravity="start|center_vertical"
             android:text="@string/sos_group" />
 
         <TextView
@@ -83,7 +83,7 @@
         <Button
             android:id="@+id/btn_save"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="@string/save"
             android:textAllCaps="false"/>

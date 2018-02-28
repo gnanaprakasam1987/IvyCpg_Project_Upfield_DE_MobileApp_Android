@@ -32,14 +32,14 @@
         android:layout_below="@+id/lv_colletion_print"
         android:layout_marginBottom="@dimen/dimen_10dp"
         android:orientation="horizontal"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentEnd="true">
 
         <Button
             android:id="@+id/btn_dismiss"
             style="?attr/roundedCustomButtonNormalTransparent"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/profile_history_10dp"
-            android:layout_marginRight="@dimen/profile_history_20dp"
+            android:layout_marginEnd="@dimen/profile_history_20dp"
             android:layout_marginTop="@dimen/profile_history_10dp"
             android:text="@string/no"
             android:textColor="@color/Black"
@@ -50,7 +50,7 @@
             style="?attr/roundedCustomButtonNormal"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/profile_history_10dp"
-            android:layout_marginLeft="@dimen/profile_history_20dp"
+            android:layout_marginStart="@dimen/profile_history_20dp"
             android:layout_marginTop="@dimen/profile_history_10dp"
             android:text="@string/yes"
             android:textSize="@dimen/font_micro_small" />

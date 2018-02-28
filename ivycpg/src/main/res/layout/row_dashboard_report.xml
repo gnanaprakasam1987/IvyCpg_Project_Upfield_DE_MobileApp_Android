@@ -38,7 +38,7 @@
                 style="@style/TextViewBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:singleLine="true"
                 android:text="@string/target"
                 android:textColor="@color/white_box_border" />
@@ -48,7 +48,7 @@
                 style="@style/TextViewBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:singleLine="true"
                 android:text="@string/achieved"
                 android:textColor="@android:color/white" />
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:gravity="left"
+                android:gravity="start"
                 android:singleLine="true"
                 android:text="%"
                 android:textColor="@android:color/white" />

@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/spinnerLayout"
-        android:layout_marginLeft="@dimen/dash_margin"
-        android:layout_marginRight="@dimen/dash_margin"
+        android:layout_marginStart="@dimen/dash_margin"
+        android:layout_marginEnd="@dimen/dash_margin"
         android:layout_marginTop="@dimen/dash_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

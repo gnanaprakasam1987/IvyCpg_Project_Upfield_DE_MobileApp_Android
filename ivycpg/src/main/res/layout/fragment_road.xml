@@ -28,7 +28,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|left">
+                    android:gravity="center_vertical|start">
 
                     <TextView
                         android:id="@+id/choosetype"
@@ -73,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|left">
+                    android:gravity="center_vertical|start">
 
                     <TextView
                         android:id="@+id/tv_roadact_category"
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_between_edt"
                 android:layout_weight="1"
-                android:gravity="center_vertical|left"
+                android:gravity="center_vertical|start"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -119,7 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|left">
+                    android:gravity="center_vertical|start">
 
                     <TextView
                         android:id="@+id/tv_roadact_location1"
@@ -136,7 +136,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|left">
+                    android:gravity="center_vertical|start">
 
                     <Spinner
                         android:id="@+id/province"
@@ -167,7 +167,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|left">
+                    android:gravity="center_vertical|start">
 
                     <TextView
                         android:id="@+id/tv_roadact_location2"
@@ -215,7 +215,7 @@
                     android:id="@+id/chooseimg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical|left">
+                    android:gravity="center_vertical|start">
                     <TextView
                         android:id="@+id/tv_img"
                         style="@dimen/font_small"
@@ -229,7 +229,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical|left">
+                    android:gravity="center_vertical|start">
 
                     <ImageView
                         android:id="@+id/thumb_imageview"

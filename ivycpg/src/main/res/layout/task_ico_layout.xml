@@ -16,7 +16,7 @@
         android:id="@+id/textOne"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:layout_alignRight="@id/myButton"
+        android:layout_alignEnd="@id/myButton"
         android:layout_alignTop="@id/myButton"
         android:background="@drawable/badge_circle"
         android:textColor="#000088"

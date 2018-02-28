@@ -35,7 +35,7 @@
                     android:id="@+id/tv_retailer_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/store_margin_top"
+                    android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/list_margin"
                     android:maxLines="1"
                     android:padding="2dp"
@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:layout_below="@+id/tv_retailer_name"
-                    android:layout_marginLeft="@dimen/store_margin_top"
+                    android:layout_marginStart="@dimen/store_margin_top"
                     android:text="@string/invoice_number"
                     android:textColor="@color/BLUE"
                     android:textSize="@dimen/font_micro_small" />
@@ -59,11 +59,11 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center|right"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center|end"
                     android:text="@string/inv_date"
                     android:textColor="@color/black_bg1"
-                    android:layout_marginRight="@dimen/card_margin"
+                    android:layout_marginEnd="@dimen/card_margin"
                     android:textSize="@dimen/font_micro_small" />
 
             </RelativeLayout>
@@ -106,7 +106,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:gravity="center|right"
+                        android:gravity="center|end"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
                         android:textSize="@dimen/font_micro_small" />
@@ -132,7 +132,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:gravity="center|right"
+                        android:gravity="center|end"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
                         android:textSize="@dimen/font_micro_small" />
@@ -158,7 +158,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:gravity="center|right"
+                        android:gravity="center|end"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
                         android:textSize="@dimen/font_micro_small" />
