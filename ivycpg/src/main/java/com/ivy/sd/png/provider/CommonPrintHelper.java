@@ -166,7 +166,7 @@ public class CommonPrintHelper {
     public int height_image = 100;
     private double mSchemeValueByAmountType = 0;
     private double netSchemeAmount = 0;
-    public boolean isFromLabelMaster;
+    private boolean isFromLabelMaster;
 
     private CommonPrintHelper(Context context) {
         this.context = context;
