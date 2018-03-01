@@ -364,6 +364,8 @@ public class ConfigurationMasterHelper {
     public boolean COMMON_PRINT_LOGON;
     private static final String CODE_COMMON_PRINT_MAESTROS = "PRINT105";
     public boolean COMMON_PRINT_MAESTROS;
+    private static final String CODE_COMMON_PRINT_INTERMEC = "PRINT106";
+    public boolean COMMON_PRINT_INTERMEC;
 
     private static final String CODE_FIT_SCORE = "FITDASH";
     public boolean IS_FITSCORE_NEEDED;
@@ -4286,6 +4288,8 @@ public class ConfigurationMasterHelper {
                 SHOW_SCRIBE_TITAN = true;
             else if(CODE_COMMON_PRINT_MAESTROS.equals(printer))
                 COMMON_PRINT_MAESTROS=true;
+            else if(CODE_COMMON_PRINT_INTERMEC.equals(printer))
+                COMMON_PRINT_INTERMEC=true;
 
 
             String printersize = sharedPrefs.getString("PrinterSizePref", "2");

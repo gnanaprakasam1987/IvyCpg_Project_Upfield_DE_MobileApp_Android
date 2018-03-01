@@ -276,6 +276,9 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         }
         else if (bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS)
             doMaestroPrintNew();
+        else if (bmodel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
+            new Print().execute("3");
+        }
     }
     private class CreatePdf extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;
@@ -515,6 +518,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 doZebraPrintNew(getMacAddressFieldText());
             if (params[0].equals("2"))
                 doLogonPrintNew(getMacAddressFieldText());
+            if (params[0].equals("3"))
+                doInterMecPrint(getMacAddressFieldText());
 
             return true;
         }
@@ -727,6 +732,34 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             mOutputStream.close();
             mBluetoothSocket.close();
 
+        } catch (Exception e) {
+            Commons.printException(e);
+            updateStatus("Connection Failed");
+        }
+    }
+
+    private void doInterMecPrint(String macAddress){
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothDevice mBluetoothDevice = null;
+        BluetoothSocket mBluetoothSocket = null;
+        OutputStream mOutputStream = null;
+        try {
+            if (macAddress.equals(""))
+                updateStatus("Mac address is empty...");
+            mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(macAddress);
+            mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID);
+            mBluetoothSocket.connect();
+            updateStatus("Printing...");
+            for (int i = 0; i < mPrintCountInput; i++) {
+                mOutputStream = mBluetoothSocket.getOutputStream();
+                mOutputStream.write((bmodel.mCommonPrintHelper.getInvoiceData().toString()).getBytes());
+                mOutputStream.flush();
+                mDataPrintCount++;
+                mPrintCount++;
+                mTotalNumbersPrinted++;
+            }
+            mOutputStream.close();
+            mBluetoothSocket.close();
         } catch (Exception e) {
             Commons.printException(e);
             updateStatus("Connection Failed");
