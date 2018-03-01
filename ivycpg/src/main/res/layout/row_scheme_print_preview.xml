@@ -36,7 +36,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingLeft="120dp"
+            android:paddingStart="120dp"
             android:text="@string/zero"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small"/>
@@ -64,8 +64,8 @@
             android:id="@+id/total"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:paddingRight="5dp"
+            android:gravity="end"
+            android:paddingEnd="5dp"
             android:text="@string/zero"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small" />
@@ -74,7 +74,7 @@
             android:id="@+id/vat_tv"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:gravity="end"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small"

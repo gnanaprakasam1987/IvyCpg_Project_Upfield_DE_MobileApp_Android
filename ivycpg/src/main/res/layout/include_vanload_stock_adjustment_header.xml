@@ -8,7 +8,7 @@
         style="?attr/customListTitle"
         android:layout_width="@dimen/order_stock_list_product_name_width"
         android:layout_height="match_parent"
-        android:gravity="left"
+        android:gravity="start"
         android:padding="3dp"
         android:text="@string/product_name" >
     </TextView>

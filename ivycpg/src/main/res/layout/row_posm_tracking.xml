@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingLeft="@dimen/list_padding_left_n_right"
-    android:paddingRight="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
     <LinearLayout
@@ -147,7 +147,7 @@
             android:id="@+id/ll_service_date"
             android:layout_width="@dimen/list_item_date_picker_width"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/ll_install_date"
+            android:layout_toEndOf="@+id/ll_install_date"
             android:orientation="vertical">
 
             <TextView
@@ -162,7 +162,7 @@
                 style="@style/datePickerButton"
                 android:layout_width="@dimen/list_item_date_picker_width"
                 android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="@string/servicedate" />
@@ -172,21 +172,21 @@
             android:id="@+id/spin_reason1"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/spinner_height"
-            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_marginEnd="@dimen/dimen_2dp"
             android:background="@android:color/transparent"
             android:overlapAnchor="false"
             android:textAlignment="center"
-            android:layout_toRightOf="@+id/ll_service_date" />
+            android:layout_toEndOf="@+id/ll_service_date" />
 
         <Spinner
             android:id="@+id/spin_condition"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/spinner_height"
-            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_marginEnd="@dimen/dimen_2dp"
             android:overlapAnchor="false"
             android:background="@android:color/transparent"
             android:textAlignment="center"
-            android:layout_toRightOf="@+id/spin_reason1" />
+            android:layout_toEndOf="@+id/spin_reason1" />
 
 
 

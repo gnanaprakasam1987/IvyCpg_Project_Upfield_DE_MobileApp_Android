@@ -32,9 +32,9 @@
             android:id="@+id/closeButton"
             android:layout_width="50dp"
             android:layout_height="fill_parent"
-            android:layout_gravity="right|center"
+            android:layout_gravity="end|center"
             android:background="@drawable/ic_action_cancel"
-            android:gravity="right"
+            android:gravity="end"
             android:text=""
             android:visibility="gone" />
     </LinearLayout>
@@ -99,8 +99,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/profile_history_20dp"
-                    android:layout_marginRight="@dimen/profile_history_20dp"
+                    android:layout_marginStart="@dimen/profile_history_20dp"
+                    android:layout_marginEnd="@dimen/profile_history_20dp"
                     android:background="@color/GRAY"
                     android:src="@drawable/downloadsuccess" />
             </LinearLayout>

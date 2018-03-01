@@ -619,8 +619,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             dialogFragment.setArguments(bundle);
 
             dialogFragment.show(fm, "Sample Fragment");
-
-
         }
 
         return super.onOptionsItemSelected(item);

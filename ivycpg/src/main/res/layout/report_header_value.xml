@@ -14,7 +14,7 @@
             android:id="@+id/avg_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_20px"
+            android:layout_marginStart="@dimen/margin_20px"
             android:orientation="vertical">
 
             <TextView
@@ -35,7 +35,7 @@
                 style="?textFieldStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_20px"
+                android:layout_marginStart="@dimen/margin_20px"
                 android:layout_weight="4"
                 android:text="0"
                 android:textColor="@color/white"
@@ -47,9 +47,9 @@
             android:id="@+id/view00"
             android:layout_width="1dp"
             android:layout_height="@dimen/ret_card_image"
-            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginStart="@dimen/margin_height"
             android:layout_marginTop="@dimen/icons_top_margin"
-            android:layout_toRightOf="@+id/avg_layout"
+            android:layout_toEndOf="@+id/avg_layout"
             android:background="@android:color/darker_gray"
             android:visibility="gone" />
 
@@ -57,8 +57,8 @@
             android:id="@+id/tot_line_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_20px"
-            android:layout_toRightOf="@+id/view00"
+            android:layout_marginStart="@dimen/margin_20px"
+            android:layout_toEndOf="@+id/view00"
             android:orientation="vertical">
 
             <TextView
@@ -93,9 +93,9 @@
             android:id="@+id/view0"
             android:layout_width="1dp"
             android:layout_height="@dimen/ret_card_image"
-            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginStart="@dimen/margin_height"
             android:layout_marginTop="@dimen/icons_top_margin"
-            android:layout_toRightOf="@+id/tot_line_layout"
+            android:layout_toEndOf="@+id/tot_line_layout"
             android:background="@android:color/darker_gray"
             android:visibility="gone" />
 
@@ -103,8 +103,8 @@
             android:id="@+id/total_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_20px"
-            android:layout_toRightOf="@+id/view0"
+            android:layout_marginStart="@dimen/margin_20px"
+            android:layout_toEndOf="@+id/view0"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -137,17 +137,17 @@
             android:id="@+id/view1"
             android:layout_width="1dp"
             android:layout_height="@dimen/ret_card_image"
-            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginStart="@dimen/margin_height"
             android:layout_marginTop="@dimen/icons_top_margin"
-            android:layout_toRightOf="@+id/total_layout"
+            android:layout_toEndOf="@+id/total_layout"
             android:background="@android:color/darker_gray" />
 
         <LinearLayout
             android:id="@+id/pre_post_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/store_margin_top"
-            android:layout_toRightOf="@+id/view1"
+            android:layout_marginStart="@dimen/store_margin_top"
+            android:layout_toEndOf="@+id/view1"
             android:orientation="vertical">
 
             <TextView
@@ -192,7 +192,7 @@
         <Button
             android:id="@+id/btn_export"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:text="@string/export"
             android:textAllCaps="false"
             android:visibility="gone" />

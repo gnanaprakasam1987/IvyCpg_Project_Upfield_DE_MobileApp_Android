@@ -76,10 +76,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
-                android:gravity="center|left"
+                android:gravity="center|start"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/footer_margin_top"
-                android:paddingLeft="@dimen/footer_margin_left"
+                android:paddingStart="@dimen/footer_margin_left"
                 android:paddingTop="@dimen/footer_margin_top"
                 android:visibility="invisible">
 
@@ -131,10 +131,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
-                android:gravity="center|left"
+                android:gravity="center|start"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/footer_margin_top"
-                android:paddingLeft="@dimen/footer_margin_left"
+                android:paddingStart="@dimen/footer_margin_left"
                 android:paddingTop="@dimen/footer_margin_top"
                 android:visibility="invisible">
 
@@ -188,14 +188,14 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
-                android:gravity="right|center_vertical"
+                android:gravity="end|center_vertical"
                 android:orientation="horizontal"
-                android:paddingRight="10dp">
+                android:paddingEnd="10dp">
 
                 <Button
                     android:id="@+id/save"
                     style="?attr/roundedCustomButtonSmall"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:text="@string/save" />
 
             </LinearLayout>

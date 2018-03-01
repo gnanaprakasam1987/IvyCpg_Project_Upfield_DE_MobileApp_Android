@@ -26,7 +26,7 @@
                 android:id="@+id/tv_retailername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_gravity="center"
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/font_small"
@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_centerVertical="true"
                 android:textSize="@dimen/font_micro_small"
                 android:textColor="@color/GRAY_TEXT"
@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:orientation="horizontal"
-            android:layout_marginRight="@dimen/profile_history_20dp"
+            android:layout_marginEnd="@dimen/profile_history_20dp"
             android:gravity="end">
 
             <ImageButton
@@ -61,7 +61,7 @@
                 android:background="@null"
                 android:scaleType="centerInside"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/profile_history_10dp"
+                android:layout_marginEnd="@dimen/profile_history_10dp"
                 android:src="@drawable/ic_edit"
                 android:tint="@color/GRAY"
                 />
@@ -71,7 +71,7 @@
                 android:layout_height="@dimen/dialog_list_item_left_margin"
                 android:layout_gravity="center"
                 android:background="@color/GRAY"
-                android:layout_marginRight="@dimen/profile_history_10dp"
+                android:layout_marginEnd="@dimen/profile_history_10dp"
                 />
 
             <ImageButton
@@ -82,7 +82,7 @@
                 android:layout_gravity="center"
                 android:background="@null"
                 android:src="@drawable/ic_delete"
-                android:layout_marginRight="@dimen/profile_history_10dp"
+                android:layout_marginEnd="@dimen/profile_history_10dp"
                 android:tint="@color/GRAY"
                 />
         </LinearLayout>

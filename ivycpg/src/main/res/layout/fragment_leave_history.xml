@@ -44,8 +44,8 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
-                android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:text="@string/text_approve" />
@@ -55,8 +55,8 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
-                android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:text="@string/text_pending" />
@@ -66,8 +66,8 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
-                android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:text="@string/text_reject" />

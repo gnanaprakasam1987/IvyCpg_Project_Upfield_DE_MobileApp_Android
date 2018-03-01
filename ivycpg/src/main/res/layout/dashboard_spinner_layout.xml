@@ -4,7 +4,7 @@
     style="?android:attr/spinnerItemStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:drawableRight="@android:drawable/arrow_down_float"
+    android:drawableEnd="@android:drawable/arrow_down_float"
     android:gravity="center"
     android:maxLines="1"
     android:textSize="@dimen/spinner_normal"

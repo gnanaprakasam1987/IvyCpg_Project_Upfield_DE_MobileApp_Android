@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/close_call_btn_width"
-        android:layout_marginLeft="@dimen/profile_history_10dp"
-        android:layout_marginRight="@dimen/profile_history_10dp"
+        android:layout_marginStart="@dimen/profile_history_10dp"
+        android:layout_marginEnd="@dimen/profile_history_10dp"
         android:layout_below="@+id/tolllayout"
         android:layout_marginTop="@dimen/profile_history_20dp"
         android:orientation="vertical"
@@ -53,8 +53,8 @@
                     android:background="@color/list_title_bg_color"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/list_padding_left_n_right"
-                    android:paddingRight="@dimen/list_padding_left_n_right"
+                    android:paddingStart="@dimen/list_padding_left_n_right"
+                    android:paddingEnd="@dimen/list_padding_left_n_right"
                     >
 
                     <LinearLayout
@@ -62,7 +62,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:gravity="left|center"
+                        android:gravity="start|center"
                         android:orientation="vertical">
 
                     <TextView
@@ -70,7 +70,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:gravity="left|center"
+                        android:gravity="start|center"
                         android:text="@string/loading_no"
                         android:textStyle="bold" />
                     </LinearLayout>

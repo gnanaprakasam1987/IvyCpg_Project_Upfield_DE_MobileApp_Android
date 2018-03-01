@@ -20,8 +20,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/toolbar_image_top"
         android:orientation="vertical"
-        android:paddingRight="@dimen/dimen_2dp"
-        android:paddingLeft="@dimen/dimen_2dp">
+        android:paddingEnd="@dimen/dimen_2dp"
+        android:paddingStart="@dimen/dimen_2dp">
 
         <include layout="@layout/visit_fragment_title_layout" />
 
@@ -35,9 +35,9 @@
                 android:id="@+id/tv_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/store_margin_left"
+                android:layout_marginStart="@dimen/store_margin_left"
                 android:text="Stores"
                 android:textColor="@color/store_label"
                 android:textSize="@dimen/highlight_normal"
@@ -48,8 +48,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/margin_10px"
-                android:layout_toLeftOf="@+id/ll_view"
+                android:layout_marginEnd="@dimen/margin_10px"
+                android:layout_toStartOf="@+id/ll_view"
                 android:text="View"
                 android:textColor="@color/black_bg2"
                 android:visibility="gone" />
@@ -68,7 +68,7 @@
                     android:id="@+id/visit_viewchange"
                     android:layout_width="@dimen/profile_23dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
+                    android:layout_gravity="center|start"
                     android:layout_weight="2"
                     android:padding="3dp"
                     android:scaleType="centerInside"
@@ -88,7 +88,7 @@
                     android:id="@+id/map_viewchange"
                     android:layout_width="@dimen/profile_23dp"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center|right"
+                    android:layout_gravity="center|end"
                     android:layout_weight="2"
                     android:padding="3dp"
                     android:scaleType="centerInside"
@@ -116,7 +116,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/dimen_16dp"
         android:scaleType="center"
 

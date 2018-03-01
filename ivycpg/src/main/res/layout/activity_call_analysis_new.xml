@@ -18,8 +18,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/search_edt_margin_left_n_right"
-            android:layout_marginRight="@dimen/search_edt_margin_left_n_right"
+            android:layout_marginStart="@dimen/search_edt_margin_left_n_right"
+            android:layout_marginEnd="@dimen/search_edt_margin_left_n_right"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -31,7 +31,7 @@
                     android:id="@+id/tv_store_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:text="@string/store_status"
                     android:textColor="@color/store_status_text_color"
@@ -42,7 +42,7 @@
                     android:id="@+id/goldstore_iv"
                     android:layout_width="@dimen/store_status_star_width"
                     android:layout_height="@dimen/store_status_star_height"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/golden_store"
@@ -76,8 +76,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:paddingLeft="@dimen/list_padding_left_n_right"
-                                android:paddingRight="@dimen/list_padding_left_n_right"
+                                android:paddingStart="@dimen/list_padding_left_n_right"
+                                android:paddingEnd="@dimen/list_padding_left_n_right"
                                 android:text="@string/sale"
                                 android:textColor="@color/store_status_text_color"
                                 android:textSize="@dimen/font_small" />
@@ -116,8 +116,8 @@
                         android:orientation="vertical"
                         android:id="@+id/layoutCloseCall"
                         android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-                        android:paddingLeft="@dimen/dimen_8dp"
-                        android:paddingRight="@dimen/dimen_8dp"
+                        android:paddingStart="@dimen/dimen_8dp"
+                        android:paddingEnd="@dimen/dimen_8dp"
                         android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
 
@@ -169,8 +169,8 @@
         android:layout_alignParentBottom="true"
         android:background="@color/footer_bg"
         android:minHeight="@dimen/call_analysis_footer_min_height"
-        android:paddingLeft="@dimen/search_edt_margin_left_n_right"
-        android:paddingRight="@dimen/search_edt_margin_left_n_right">
+        android:paddingStart="@dimen/search_edt_margin_left_n_right"
+        android:paddingEnd="@dimen/search_edt_margin_left_n_right">
 
         <LinearLayout
             android:id="@+id/ll_duration"
@@ -203,10 +203,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_marginRight="@dimen/dimen_10dp"
-            android:layout_toLeftOf="@+id/button1"
-            android:layout_toRightOf="@+id/ll_duration"
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_toStartOf="@+id/button1"
+            android:layout_toEndOf="@+id/ll_duration"
             android:orientation="vertical">
 
             <LinearLayout
@@ -287,7 +287,7 @@
         <Button
             android:id="@+id/button1"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:onClick="onClose"
             android:text="@string/close_call"

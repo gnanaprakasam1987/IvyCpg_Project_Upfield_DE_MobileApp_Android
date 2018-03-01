@@ -29,7 +29,7 @@
                 style="?attr/customListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/list_margin"
+                android:layout_marginEnd="@dimen/list_margin"
                 android:maxLines="1"
                 android:text="@string/retailername"
                 android:layout_weight="8.5"/>
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:gravity="right"
+                android:gravity="end"
                 android:layout_weight="1.5"/>
         </LinearLayout>
 
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/lleditLaouyt"
                 android:layout_alignTop="@+id/lleditLaouyt"
-                android:layout_marginRight="@dimen/list_margin"
+                android:layout_marginEnd="@dimen/list_margin"
                 >
 
                 <LinearLayout

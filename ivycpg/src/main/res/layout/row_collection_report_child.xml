@@ -5,8 +5,8 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/dimens_2dp"
     android:paddingBottom="@dimen/dimens_2dp"
-    android:paddingLeft="@dimen/dimens_4dp"
-    android:paddingRight="@dimen/dimens_4dp">
+    android:paddingStart="@dimen/dimens_4dp"
+    android:paddingEnd="@dimen/dimens_4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,8 +18,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
-            android:paddingLeft="3dp"
+            android:gravity="start"
+            android:paddingStart="3dp"
             android:text="mode"
             android:textColor="?attr/colorAccent"
             android:textSize="@dimen/font_micro_small" />
@@ -29,8 +29,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right"
-            android:paddingRight="3dp"
+            android:gravity="end"
+            android:paddingEnd="3dp"
             android:text="03-05-2017"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small"/>
@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:text="Ref No"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/text_sz_small"/>
@@ -63,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:text="12345"
                 android:textColor="?attr/primarycolor"
                 android:textSize="@dimen/font_small" />
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dimens_10dp"
+            android:paddingStart="@dimen/dimens_10dp"
             android:layout_gravity="center_vertical">
 
             <TextView
@@ -94,7 +94,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/amount_paid"
                 android:textColor="@color/Black"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:textSize="@dimen/text_sz_small"/>
 
             <TextView
@@ -104,7 +104,7 @@
                 android:gravity="center_vertical"
                 android:text="0000.00"
                 android:textStyle="bold"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_small"/>
         </LinearLayout>
@@ -127,7 +127,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/dimens_10dp"
+            android:paddingStart="@dimen/dimens_10dp"
             android:visibility="gone">
 
             <TextView
@@ -137,7 +137,7 @@
                 android:text="@string/discounted_amt"
                 android:gravity="center_vertical"
                 android:textColor="@color/Black"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:textSize="@dimen/text_sz_small"/>
 
             <TextView
@@ -146,7 +146,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="0000.00"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_small" />
             </LinearLayout>

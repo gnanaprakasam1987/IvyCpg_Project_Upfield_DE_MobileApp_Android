@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/font_large"
         android:textColor="@color/toolbar_title"
-        android:gravity="left|top"
+        android:gravity="start|top"
         android:background="@android:color/transparent"
         android:text=""
         />

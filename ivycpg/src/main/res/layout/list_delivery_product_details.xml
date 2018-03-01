@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingLeft="@dimen/list_padding_left_n_right"
-    android:paddingRight="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
     <CheckBox
@@ -30,7 +30,7 @@
             android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="left|center"
+            android:gravity="start|center"
             android:maxLines="2"
             android:padding="3dp"
             android:text="@string/product_name" />
@@ -39,7 +39,7 @@
             android:id="@+id/tv_batch_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/stock_and_order_listview_productname"
             android:padding="2dp"
             android:singleLine="true"

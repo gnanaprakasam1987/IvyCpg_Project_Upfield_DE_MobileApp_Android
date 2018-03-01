@@ -16,10 +16,10 @@
             android:id="@+id/pdt_name_keyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/padding_rb"
+            android:paddingEnd="@dimen/padding_rb"
             android:paddingBottom="@dimen/padding_rb"
             android:paddingTop="@dimen/padding_rb"
-            android:paddingLeft="@dimen/padding_l"
+            android:paddingStart="@dimen/padding_l"
             android:textColor="@color/WHITE"
             android:textSize="@dimen/font_medium"
             tools:text="dfg dfgdf"
@@ -31,16 +31,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/padding_l">
+            android:paddingStart="@dimen/padding_l">
 
             <TextView
                 android:id="@+id/sih_keyboard"
                 android:layout_width="@dimen/sih_so_w"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/padding_rb"
+                android:paddingEnd="@dimen/padding_rb"
                 android:textColor="@color/WHITE"
                 android:textSize="@dimen/font_small"
-                android:gravity="left|center_vertical"
+                android:gravity="start|center_vertical"
                 tools:text="SIH"
                 android:fontFamily="sans-serif"
                 android:visibility="visible" />
@@ -52,7 +52,7 @@
                 android:padding="@dimen/padding_rb"
                 android:textColor="@color/WHITE"
                 android:textSize="@dimen/font_small"
-                android:gravity="left|center_vertical"
+                android:gravity="start|center_vertical"
                 android:fontFamily="sans-serif"
                 android:visibility="visible"
                 tools:text="SO" />
@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/value_txt_h"
                 android:layout_weight="5"
-                android:paddingLeft="@dimen/padding_l"
+                android:paddingStart="@dimen/padding_l"
                 android:paddingTop="@dimen/padding_rb"
                 android:textColor="@color/WHITE"
                 android:textSize="@dimen/highlight_large"
@@ -92,9 +92,9 @@
                 android:id="@+id/delete"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/value_txt_h"
-                android:layout_alignParentRight="true"
-                android:paddingLeft="@dimen/padding_l"
-                android:paddingRight="@dimen/padding_l"
+                android:layout_alignParentEnd="true"
+                android:paddingStart="@dimen/padding_l"
+                android:paddingEnd="@dimen/padding_l"
                 android:background="@null"
                 android:src="@drawable/ic_backspace_delete" />
         </RelativeLayout>
@@ -319,7 +319,7 @@
             android:id="@+id/ok"
             android:layout_width="0dp"
             android:layout_height="@dimen/can_ok_btn_h"
-            android:layout_marginLeft="1dp"
+            android:layout_marginStart="1dp"
             android:layout_weight="1"
             android:background="@drawable/ripple_effect_keyboard"
             android:text="Ok"

@@ -3,7 +3,6 @@ package com.ivy.cpg.view.order;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -21,20 +20,23 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
 import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -53,6 +55,8 @@ public class OrderHelper {
 
     private Vector<ProductMasterBO> mSortedOrderedProducts;
     private SparseArray<ArrayList<SerialNoBO>> mSerialNoListByProductId;
+
+    private ArrayList<String> mValidAccumulationSchemes;
 
 
     private OrderHelper(Context context) {
@@ -2461,20 +2465,104 @@ public class OrderHelper {
      *
      * @param mOrderedProductList ordered product list
      */
-    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList) {
+    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList,double totalOrderValue) {
+
+        ArrayList<String> mValidSchemes=null;
+        if(businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE) {
+            mValidSchemes = getValidAccumulationSchemes(totalOrderValue);
+        }
+
+        //
+
         ProductMasterBO productBO = mOrderedProductList.get(mOrderedProductList.size() - 1);
         if (productBO != null) {
             ArrayList<SchemeBO> offInvoiceSchemeList = businessModel.schemeDetailsMasterHelper.getmOffInvoiceAppliedSchemeList();
             if (offInvoiceSchemeList != null) {
                 for (SchemeBO schemeBO : offInvoiceSchemeList) {
                     if (schemeBO.isQuantityTypeSelected()) {
-                        updateSchemeFreeProduct(schemeBO, productBO);
+                        if(!businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
+                                ||mValidSchemes.contains(String.valueOf(schemeBO.getParentId()))) {
+                            updateSchemeFreeProduct(schemeBO, productBO);
+                        }
                     }
                 }
             }
         }
 
     }
+
+    private ArrayList<String> getValidAccumulationSchemes(double totalOrderValue){
+        mValidAccumulationSchemes=new ArrayList<>();
+        try {
+            HashMap<String, Double> mFOCValueBySchemeId = new HashMap<>();
+            for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmOffInvoiceAppliedSchemeList()) {
+                if (schemeBO.isQuantityTypeSelected()) {
+
+                    double FOCValue = 0;
+                    List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
+
+                    if (freeProductList != null) {
+                        for (SchemeProductBO freeProductBO : freeProductList) {
+                            ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+
+                            if (freeProductBO.getUomID() == productMasterBO.getPcUomid())
+                                FOCValue += (freeProductBO.getQuantitySelected() * productMasterBO.getSrp());
+                            else if (freeProductBO.getUomID() == productMasterBO.getCaseUomId())
+                                FOCValue += (freeProductBO.getQuantitySelected() * productMasterBO.getCsrp());
+                            else if (freeProductBO.getUomID() == productMasterBO.getOuUomid())
+                                FOCValue += (freeProductBO.getQuantitySelected() * productMasterBO.getOsrp());
+
+
+                        }
+                        if (mFOCValueBySchemeId.get(String.valueOf(schemeBO.getParentId())) != null) {
+                            mFOCValueBySchemeId.put(String.valueOf(schemeBO.getParentId()), (mFOCValueBySchemeId.get(String.valueOf(schemeBO.getParentId())) + FOCValue));
+                        } else
+                            mFOCValueBySchemeId.put(String.valueOf(schemeBO.getParentId()), FOCValue);
+                    }
+
+                }
+            }
+
+            HashMap<String, Double> mSortedFOCList = sortHasMapByValues(mFOCValueBySchemeId);
+            double tempOrderValue = totalOrderValue;
+
+            for (String schemeId : mSortedFOCList.keySet()) {
+                if (mSortedFOCList.get(schemeId) <= tempOrderValue) {
+                    tempOrderValue -= mSortedFOCList.get(schemeId);
+                    mValidAccumulationSchemes.add(schemeId);
+                }
+
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+        return mValidAccumulationSchemes;
+    }
+
+
+    public ArrayList<String> getValidAccumulationSchemes() {
+        return mValidAccumulationSchemes;
+    }
+
+
+    private static HashMap sortHasMapByValues(HashMap map) {
+        List list = new LinkedList(map.entrySet());
+        Collections.sort(list, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                return ((Comparable) ((Map.Entry) (o2)).getValue()).compareTo(((Map.Entry) (o1)).getValue());
+            }
+        });
+
+        HashMap sortedHashMap = new LinkedHashMap();
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            sortedHashMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedHashMap;
+    }
+
 
     /**
      * Method to add free product list into any one of scheme buy product     *
