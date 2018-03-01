@@ -54,7 +54,6 @@ public class CommonPrintHelper {
     private int mPaperLenghtInChar;
     private int mGlobalPrecision;
 
-    private boolean isFromLabelMaster;
 
     private static String ALIGNMENT_RIGHT = "RIGHT";
     private static String ALIGNMENT_LEFT = "LEFT";
@@ -167,6 +166,7 @@ public class CommonPrintHelper {
     public int height_image = 100;
     private double mSchemeValueByAmountType = 0;
     private double netSchemeAmount = 0;
+    public boolean isFromLabelMaster;
 
     private CommonPrintHelper(Context context) {
         this.context = context;
@@ -194,6 +194,9 @@ public class CommonPrintHelper {
     public boolean isLogoEnabled;
 
     private Vector<AttributeListBO> mAttributeList;
+
+    private int firstColumnWidth;
+
 
     /**
      * Read the tag from xml file and prepare print string from objects
@@ -242,6 +245,7 @@ public class CommonPrintHelper {
             String product_header_border_char = "-";
 
             int mLengthUptoPName=0;
+            firstColumnWidth=0;
 
             int event = xmlParser.getEventType();
             while (event != XmlPullParser.END_DOCUMENT) {
@@ -323,7 +327,7 @@ public class CommonPrintHelper {
 
 
                             } else {
-                                mAttrValue = getValue(attr_name, attr_text, attr_secondary_text, attr_precision);
+                                mAttrValue = getValue(attr_name, attr_text, attr_secondary_text, attr_precision,product_name_single_line);
 
                                 if (mAttrValue.equals("-1")) {
                                     if (!attr_text.equals(""))
@@ -344,7 +348,11 @@ public class CommonPrintHelper {
                                     && !attr_name.contains("amount_word")) {
                                 if (attr_align.equalsIgnoreCase(ALIGNMENT_LEFT)) {
                                     if (mAttrValue.length() > attr_length) {
-                                        mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
+                                        if(!attr_name.equalsIgnoreCase(TAG_PRODUCT_NAME)
+                                                ||(attr_name.equalsIgnoreCase(TAG_PRODUCT_NAME)&&product_name_single_line.equalsIgnoreCase("NO"))) {
+                                            mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
+                                        }
+
                                     } else if (mAttrValue.length() < attr_length) {
                                         int diff = attr_length - mAttrValue.length();
 
@@ -390,12 +398,18 @@ public class CommonPrintHelper {
 
 
                             if (group_name != null && group_name.equalsIgnoreCase("product_details")) {
-                                mLengthUptoPName = mLengthUptoPName + attr_length + attr_space;
+                                //mLengthUptoPName = mLengthUptoPName + attr_length + attr_space;
                                 if (product_name_single_line.equalsIgnoreCase("YES")) {
                                     if (attr_name.equalsIgnoreCase(TAG_PRODUCT_NAME)) {
+                                        // If product name is single line, then second line should be printed after the first column of first line
+                                        // So that bottom common labels will be aligned in straight to the first column(Ex:TAG_PRODUCT_LINE_TOTAL_WITH_QTY)..
+                                        if(firstColumnWidth==0) {
+                                            firstColumnWidth = attr_length + attr_space;
+                                        }
+
                                         sb.append("\n");
                                         char emptySpace = ' ';
-                                        for (int sp = 0; sp < mLengthUptoPName; sp++) {
+                                        for (int sp = 0; sp < firstColumnWidth; sp++) {
                                             sb.append(emptySpace);
                                         }
 
@@ -519,7 +533,7 @@ public class CommonPrintHelper {
      * @param label - will be append with value
      * @return
      */
-    private String getValue(String tag, String label, String mSecondaryLabel, int precisionCount) {
+    private String getValue(String tag, String label, String mSecondaryLabel, int precisionCount,String product_name_single_line) {
         String value = "-1";
         if (tag.equalsIgnoreCase(TAG_TITLE)) {
             if (bmodel.getRetailerMasterBO().getRfield2() != null
@@ -616,7 +630,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL)) {
             value = alignWithLabelForSingleLine(label, formatValueInPrint(total_line_value_incl_tax, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL_WITH_QTY)) {
-            value = getTotalWithQty(label);
+            value = getTotalWithQty(label,product_name_single_line);
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE)) {
             value = alignWithLabelForSingleLine(label, formatSalesValueInPrint(total_net_payable, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE_IN_WORDS)) {
@@ -641,14 +655,19 @@ public class CommonPrintHelper {
         return value;
     }
 
-    private String getTotalWithQty(String label) {
+    private String getTotalWithQty(String label,String product_name_single_line) {
         String mProductValue;
         StringBuilder sb = new StringBuilder();
 
+        boolean isLabelPrinted=false;// to check label is printed or not..
+
         for (AttributeListBO attr : mAttributeList) {
             mProductValue = "";
-            if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
-                mProductValue = label;
+            if (!isLabelPrinted&&attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)) {
+                mProductValue = label;isLabelPrinted=true;
+            }
+            else if (!isLabelPrinted&&attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
+                mProductValue = label;isLabelPrinted=true;
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_CASE)) {
                 mProductValue = mProductCaseQtyTotal + "";
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_PIECE)) {
@@ -670,22 +689,34 @@ public class CommonPrintHelper {
             }
 
 
+            if (!product_name_single_line.equalsIgnoreCase("YES")
+                    ||(!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)&&!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME))) {
+
+                if (mProductValue.length() > attr.getAttributeLength()) {
+                    mProductValue = mProductValue.substring(0, attr.getAttributeLength() - attr.getAttributeSpecialChar().length()) + attr.getAttributeSpecialChar();
+                } else if (mProductValue.length() < attr.getAttributeLength()) {
+                    int diff = attr.getAttributeLength() - mProductValue.length();
+
+                    if (attr.getAttributePadding().equalsIgnoreCase(ALIGNMENT_RIGHT)) {
+                        mProductValue = doAlign(mProductValue, ALIGNMENT_RIGHT, diff);
+                    } else {
+                        mProductValue = doAlign(mProductValue, ALIGNMENT_LEFT, diff);
+                    }
+                }
+
+            }
+            else if(product_name_single_line.equalsIgnoreCase("YES")
+                &&(attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)||attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME))){
+            // To take first column width exactly
             if (mProductValue.length() > attr.getAttributeLength()) {
                 mProductValue = mProductValue.substring(0, attr.getAttributeLength() - attr.getAttributeSpecialChar().length()) + attr.getAttributeSpecialChar();
-            } else if (mProductValue.length() < attr.getAttributeLength()) {
-                int diff = attr.getAttributeLength() - mProductValue.length();
-
-                if (attr.getAttributePadding().equalsIgnoreCase(ALIGNMENT_RIGHT)) {
-                    mProductValue = doAlign(mProductValue, ALIGNMENT_RIGHT, diff);
-                } else {
-                    mProductValue = doAlign(mProductValue, ALIGNMENT_LEFT, diff);
-                }
             }
-
-            mProductValue = doAlign(mProductValue, ALIGNMENT_RIGHT, attr.getAttributeSpace());
-
-            sb.append(mProductValue);
         }
+
+        mProductValue = doAlign(mProductValue, ALIGNMENT_RIGHT, attr.getAttributeSpace());
+
+        sb.append(mProductValue);
+    }
         return sb.toString();
     }
 
@@ -702,6 +733,7 @@ public class CommonPrintHelper {
         //Vector<ProductMasterBO> productList = bmodel.productHelper.getProductMaster();
         int productsCount = productList.size();
         mOrderedProductList = new ArrayList<ProductMasterBO>();
+        firstColumnWidth=0;
 
         ProductMasterBO productBO;
         for (int i = 0; i < productsCount; i++) {
@@ -824,12 +856,16 @@ public class CommonPrintHelper {
 
                 //print the text which is next to the product name into next line
                 if (product_name_single_line.equalsIgnoreCase("YES")) {
+                    // If product name is single line, then second line should be printed after the first column of first line
+                    // So that bottom common labels will be aligned in straight to the first column(Ex:TAG_PRODUCT_LINE_TOTAL_WITH_QTY)..
                     mLengthUptoPName = mLengthUptoPName + attr.getAttributeLength() + attr.getAttributeSpace();
-
+                    if(firstColumnWidth==0) {
+                        firstColumnWidth = attr.getAttributeLength() + attr.getAttributeSpace();
+                    }
                     if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                         sb.append("\n");
                         char emptySpace = ' ';
-                        for (int sp = 0; sp < mLengthUptoPName; sp++) {
+                        for (int sp = 0; sp < firstColumnWidth; sp++) {
                             sb.append(emptySpace);
                         }
                     }

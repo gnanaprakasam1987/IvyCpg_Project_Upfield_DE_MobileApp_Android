@@ -618,13 +618,13 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                 if (s.contains("print_type")) {
                     if (mPrintCount == 0) {
-                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
+                        if(bmodel.mCommonPrintHelper.isFromLabelMaster){
                             String primaryLabel=(bmodel.labelsMasterHelper.applyLabels("print_type_primary")!=null?bmodel.labelsMasterHelper.applyLabels("print_type_primary"):"Original");
                             s=s.replace("print_type",primaryLabel);
                         }else
                           s = s.replace("print_type", "Original");
                     } else {
-                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
+                        if(bmodel.mCommonPrintHelper.isFromLabelMaster){
                             String secondaryLabel=bmodel.labelsMasterHelper.applyLabels("print_type_secondary");
                             s=s.replace("print_type",(secondaryLabel!=null?secondaryLabel:"Duplicate"));
                         }else
@@ -635,13 +635,13 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                 if (s.contains("print_title")) {
                     if (mPrintCount == 0) {
-                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
+                        if(bmodel.mCommonPrintHelper.isFromLabelMaster){
                             String primaryLabel=(bmodel.labelsMasterHelper.applyLabels("print_title_primary")!=null?bmodel.labelsMasterHelper.applyLabels("print_title_primary"):"Original");
                             s=s.replace("print_title",primaryLabel);
                         }else
                             s = s.replace("print_title", "");
                     } else {
-                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
+                        if(bmodel.mCommonPrintHelper.isFromLabelMaster){
                             String secondaryLabel=bmodel.labelsMasterHelper.applyLabels("print_title_secondary");
                             s=s.replace("print_title",(secondaryLabel!=null?secondaryLabel:"Duplicate"));
                         }else
