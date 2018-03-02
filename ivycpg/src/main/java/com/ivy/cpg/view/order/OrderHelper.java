@@ -3,7 +3,6 @@ package com.ivy.cpg.view.order;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -21,20 +20,23 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
 import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -53,6 +55,8 @@ public class OrderHelper {
 
     private Vector<ProductMasterBO> mSortedOrderedProducts;
     private SparseArray<ArrayList<SerialNoBO>> mSerialNoListByProductId;
+
+    private ArrayList<String> mValidAccumulationSchemes;
 
 
     private OrderHelper(Context context) {
@@ -352,7 +356,7 @@ public class OrderHelper {
 
             // Save order details
             Vector<ProductMasterBO> finalProductList;
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,rField,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
             else
@@ -713,6 +717,7 @@ public class OrderHelper {
         double osrp;
         int orderPieceQty;
         int orderCaseQty;
+        int foc;
         int orderOuterQty;
         String batchid;
         double priceOffValue;
@@ -731,6 +736,7 @@ public class OrderHelper {
             osrp = batchProductBO.getOsrp();
             orderPieceQty = batchProductBO.getOrderedPcsQty();
             orderCaseQty = batchProductBO.getOrderedCaseQty();
+            foc = batchProductBO.getFoc();
             orderOuterQty = batchProductBO.getOrderedOuterQty();
             batchid = batchProductBO.getBatchid();
             priceOffValue = batchProductBO.getPriceoffvalue() * pieceCount;
@@ -749,6 +755,7 @@ public class OrderHelper {
             osrp = productBo.getOsrp();
             orderPieceQty = productBo.getOrderedPcsQty();
             orderCaseQty = productBo.getOrderedCaseQty();
+            foc = productBo.getFoc();
             orderOuterQty = productBo.getOrderedOuterQty();
             batchid = 0 + "";
             priceOffValue = productBo.getPriceoffvalue() * pieceCount;
@@ -765,7 +772,7 @@ public class OrderHelper {
         StringBuffer sb = new StringBuffer();
         sb.append(orderId + "," + productBo.getProductID() + ",");
         sb.append(pieceCount + "," + srp + "," + productBo.getCaseSize() + ","
-                + orderPieceQty + "," + orderCaseQty + ",");
+                + orderPieceQty + "," + orderCaseQty + "," + foc + ",");
         sb.append(productBo.getCaseUomId() + ","
                 + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) + ","
                 + productBo.getMSQty() + ",");
@@ -1514,7 +1521,7 @@ public class OrderHelper {
 
             // Save invoice details table and update sih
             ProductMasterBO product;
-            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode";
+            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,rField,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode";
             int siz = businessModel.productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
                 product = businessModel.productHelper.getProductMaster()
@@ -1645,6 +1652,7 @@ public class OrderHelper {
         int orderedPcsQty;
         int orderedCaseQty;
         int orderedOuterQty;
+        int foc;
 
         String batchId;
         double priceOffValue;
@@ -1664,6 +1672,7 @@ public class OrderHelper {
                 batchWiseProductBO = batchWiseBO;
                 orderedPcsQty = batchWiseProductBO.getOrderedPcsQty();
                 orderedCaseQty = batchWiseProductBO.getOrderedCaseQty();
+                foc=batchWiseProductBO.getFoc();
                 orderedOuterQty = batchWiseProductBO.getOrderedOuterQty();
                 batchId = batchWiseProductBO.getBatchid();
                 schemeOrderType = businessModel.productHelper.getmOrderType().get(1);
@@ -1697,6 +1706,7 @@ public class OrderHelper {
                 orderedPcsQty = product.getOrderedPcsQty();
                 orderedCaseQty = product.getOrderedCaseQty();
                 orderedOuterQty = product.getOrderedOuterQty();
+                foc=product.getFoc();
                 srp = product.getSrp();
                 csrp = product.getCsrp();
                 osrp = product.getOsrp();
@@ -1738,6 +1748,7 @@ public class OrderHelper {
             sb.append(product.getCaseSize() + ",");
             sb.append(orderedCaseQty + ",");
             sb.append(orderedPcsQty + ",");
+            sb.append(foc + ",");
             sb.append(product.getD1() + "," + product.getD2());
             sb.append("," + product.getD3() + ",");
             sb.append(product.getDA() + ",");
@@ -1821,16 +1832,16 @@ public class OrderHelper {
                 focusBrandProdValues += bo.getDiscount_order_value();
             }
             if (bo.getIsFocusBrand() == 1) {
-                focusBrandProducts1 = 1;
+                focusBrandProducts1 += 1;
             }
             if (bo.getIsFocusBrand2() == 1) {
-                focusBrandProducts2 = 1;
+                focusBrandProducts2 += 1;
             }
             if (bo.getIsFocusBrand3() == 1) {
-                focusBrandProducts3 = 1;
+                focusBrandProducts3 += 1;
             }
             if (bo.getIsFocusBrand4() == 1) {
-                focusBrandProducts4 = 1;
+                focusBrandProducts4 += 1;
             }
 
 
@@ -2454,20 +2465,104 @@ public class OrderHelper {
      *
      * @param mOrderedProductList ordered product list
      */
-    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList) {
+    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList,double totalOrderValue) {
+
+        ArrayList<String> mValidSchemes=null;
+        if(businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE) {
+            mValidSchemes = getValidAccumulationSchemes(totalOrderValue);
+        }
+
+        //
+
         ProductMasterBO productBO = mOrderedProductList.get(mOrderedProductList.size() - 1);
         if (productBO != null) {
             ArrayList<SchemeBO> offInvoiceSchemeList = businessModel.schemeDetailsMasterHelper.getmOffInvoiceAppliedSchemeList();
             if (offInvoiceSchemeList != null) {
                 for (SchemeBO schemeBO : offInvoiceSchemeList) {
                     if (schemeBO.isQuantityTypeSelected()) {
-                        updateSchemeFreeProduct(schemeBO, productBO);
+                        if(!businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
+                                ||mValidSchemes.contains(String.valueOf(schemeBO.getParentId()))) {
+                            updateSchemeFreeProduct(schemeBO, productBO);
+                        }
                     }
                 }
             }
         }
 
     }
+
+    private ArrayList<String> getValidAccumulationSchemes(double totalOrderValue){
+        mValidAccumulationSchemes=new ArrayList<>();
+        try {
+            HashMap<String, Double> mFOCValueBySchemeId = new HashMap<>();
+            for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmOffInvoiceAppliedSchemeList()) {
+                if (schemeBO.isQuantityTypeSelected()) {
+
+                    double FOCValue = 0;
+                    List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
+
+                    if (freeProductList != null) {
+                        for (SchemeProductBO freeProductBO : freeProductList) {
+                            ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+
+                            if (freeProductBO.getUomID() == productMasterBO.getPcUomid())
+                                FOCValue += (freeProductBO.getQuantitySelected() * productMasterBO.getSrp());
+                            else if (freeProductBO.getUomID() == productMasterBO.getCaseUomId())
+                                FOCValue += (freeProductBO.getQuantitySelected() * productMasterBO.getCsrp());
+                            else if (freeProductBO.getUomID() == productMasterBO.getOuUomid())
+                                FOCValue += (freeProductBO.getQuantitySelected() * productMasterBO.getOsrp());
+
+
+                        }
+                        if (mFOCValueBySchemeId.get(String.valueOf(schemeBO.getParentId())) != null) {
+                            mFOCValueBySchemeId.put(String.valueOf(schemeBO.getParentId()), (mFOCValueBySchemeId.get(String.valueOf(schemeBO.getParentId())) + FOCValue));
+                        } else
+                            mFOCValueBySchemeId.put(String.valueOf(schemeBO.getParentId()), FOCValue);
+                    }
+
+                }
+            }
+
+            HashMap<String, Double> mSortedFOCList = sortHasMapByValues(mFOCValueBySchemeId);
+            double tempOrderValue = totalOrderValue;
+
+            for (String schemeId : mSortedFOCList.keySet()) {
+                if (mSortedFOCList.get(schemeId) <= tempOrderValue) {
+                    tempOrderValue -= mSortedFOCList.get(schemeId);
+                    mValidAccumulationSchemes.add(schemeId);
+                }
+
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+        return mValidAccumulationSchemes;
+    }
+
+
+    public ArrayList<String> getValidAccumulationSchemes() {
+        return mValidAccumulationSchemes;
+    }
+
+
+    private static HashMap sortHasMapByValues(HashMap map) {
+        List list = new LinkedList(map.entrySet());
+        Collections.sort(list, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                return ((Comparable) ((Map.Entry) (o2)).getValue()).compareTo(((Map.Entry) (o1)).getValue());
+            }
+        });
+
+        HashMap sortedHashMap = new LinkedHashMap();
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            sortedHashMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedHashMap;
+    }
+
 
     /**
      * Method to add free product list into any one of scheme buy product     *

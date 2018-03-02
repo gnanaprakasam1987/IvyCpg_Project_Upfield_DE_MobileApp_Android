@@ -72,9 +72,9 @@
                 android:id="@+id/layoutDelivery"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_round_corner_height"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_marginStart="@dimen/card_margin"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
@@ -105,15 +105,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/card_margin"
-                android:layout_toRightOf="@+id/layoutDelivery"
+                android:layout_marginStart="@dimen/card_margin"
+                android:layout_toEndOf="@+id/layoutDelivery"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/lpcLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
+                    android:layout_gravity="start"
                     android:layout_margin="2dp"
                     android:maxLines="1"
                     android:text="@string/lines"
@@ -130,7 +130,7 @@
                         android:id="@+id/lcp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
+                        android:layout_gravity="start|center"
                         android:layout_margin="2dp"
                         android:gravity="center"
                         android:maxLines="1"
@@ -148,15 +148,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/card_margin"
-                android:layout_toRightOf="@+id/ll_lines"
+                android:layout_marginStart="@dimen/card_margin"
+                android:layout_toEndOf="@+id/ll_lines"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/totalValuelbl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
+                    android:layout_gravity="start"
                     android:layout_margin="2dp"
                     android:maxLines="1"
                     android:tag="stk_ord_value"
@@ -175,7 +175,7 @@
                         android:id="@+id/totalValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
+                        android:layout_gravity="start|center"
                         android:layout_margin="2dp"
                         android:gravity="center"
                         android:maxLines="1"
@@ -201,15 +201,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/card_margin"
-                android:layout_toRightOf="@+id/ll_values"
+                android:layout_marginStart="@dimen/card_margin"
+                android:layout_toEndOf="@+id/ll_values"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/title_totalqty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
+                    android:layout_gravity="start"
                     android:layout_margin="2dp"
                     android:maxLines="1"
                     android:text="@string/total_qty"
@@ -226,7 +226,7 @@
                         android:id="@+id/tv_totalqty"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
+                        android:layout_gravity="start|center"
                         android:layout_margin="2dp"
                         android:gravity="center"
                         android:maxLines="1"
@@ -242,7 +242,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:orientation="horizontal">
 
@@ -250,7 +250,7 @@
                     android:id="@+id/orderSummarySave"
                     style="?attr/roundedCustomButtonSmall"
                     android:layout_gravity="center_vertical"
-                    android:layout_toLeftOf="@+id/saveAndGoInvoice"
+                    android:layout_toStartOf="@+id/saveAndGoInvoice"
                     android:tag="ordersave"
                     android:text="@string/text_order"
                     android:textAllCaps="false" />
@@ -259,8 +259,8 @@
                     android:id="@+id/saveAndGoInvoice"
                     style="?attr/roundedCustomButtonSmall"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/card_margin"
-                    android:layout_marginRight="@dimen/card_margin"
+                    android:layout_marginStart="@dimen/card_margin"
+                    android:layout_marginEnd="@dimen/card_margin"
                     android:padding="@dimen/padding_rb"
                     android:tag="invoicesave"
                     android:text="@string/text_invoice"

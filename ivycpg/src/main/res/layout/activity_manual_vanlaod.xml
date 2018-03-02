@@ -28,8 +28,8 @@
                     android:id="@+id/filterscreenlayout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/list_margin"
-                    android:layout_marginRight="@dimen/list_margin"
+                    android:layout_marginStart="@dimen/list_margin"
+                    android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginTop="@dimen/list_margin"
                     android:background="@android:color/transparent"
                     android:orientation="vertical">
@@ -51,9 +51,9 @@
                                 android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/list_margin"
+                                android:layout_marginStart="@dimen/list_margin"
                                 android:layout_weight="1"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:maxLines="1"
                                 android:textColor="?attr/primarycolor"
                                 android:textSize="@dimen/font_nano_small" />
@@ -92,7 +92,7 @@
                                     android:layout_gravity="center_vertical"
                                     android:layout_weight="1"
                                     android:background="@android:color/transparent"
-                                    android:gravity="left|center_vertical"
+                                    android:gravity="start|center_vertical"
                                     android:maxLines="1"
                                     android:inputType="text"
                                     android:text=""
@@ -117,11 +117,11 @@
                     android:id="@+id/ll_depot"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
-                    android:layout_marginRight="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginEnd="@dimen/profile_history_10dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/feedbck_edit_margintopbtm"
-                    android:paddingRight="@dimen/feedbck_edit_margintopbtm"
+                    android:paddingStart="@dimen/feedbck_edit_margintopbtm"
+                    android:paddingEnd="@dimen/feedbck_edit_margintopbtm"
                     android:visibility="visible">
 
                     <TextView
@@ -146,8 +146,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/footer_height"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
-                    android:layout_marginRight="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginEnd="@dimen/profile_history_10dp"
                     android:orientation="vertical"
                     app:cardCornerRadius="@dimen/dimen_2dp"
                     app:cardElevation="@dimen/dimen_4dp">
@@ -180,10 +180,10 @@
                                     style="?attr/customListTitle"
                                     android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                                     android:layout_height="match_parent"
-                                    android:layout_gravity="left|center"
-                                    android:layout_marginLeft="@dimen/skuwise_right_margin"
+                                    android:layout_gravity="start|center"
+                                    android:layout_marginStart="@dimen/skuwise_right_margin"
                                     android:layout_weight="1"
-                                    android:gravity="left|center"
+                                    android:gravity="start|center"
                                     android:text="@string/product_name"
                                     android:textStyle="bold" />
 

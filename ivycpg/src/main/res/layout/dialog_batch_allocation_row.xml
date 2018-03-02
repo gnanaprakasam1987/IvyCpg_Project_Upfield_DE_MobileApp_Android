@@ -17,8 +17,8 @@
             style="?attr/customListItemPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:gravity="left|center"
+            android:layout_alignParentStart="true"
+            android:gravity="start|center"
             android:maxLines="1"
             android:padding="3dp"
             android:text="@string/batch_name"
@@ -29,8 +29,8 @@
             style="?attr/customListItemPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:gravity="left|center"
+            android:layout_alignParentEnd="true"
+            android:gravity="start|center"
             android:maxLines="1"
             android:padding="3dp"
             android:text="@string/batch_no" />
@@ -52,7 +52,7 @@
             android:id="@+id/ll_mfddate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/target_top_margin"
+            android:layout_marginEnd="@dimen/target_top_margin"
             android:orientation="horizontal">
 
             <TextView
@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingStart="@dimen/dimen_2dp"
                 android:text="@string/zero" />
         </LinearLayout>
 
@@ -77,7 +77,7 @@
             android:id="@+id/llExpDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/target_top_margin"
+            android:layout_marginStart="@dimen/target_top_margin"
             android:orientation="horizontal">
 
             <TextView
@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingStart="@dimen/dimen_2dp"
                 android:text="@string/zero" />
         </LinearLayout>
 
@@ -110,8 +110,8 @@
             android:id="@+id/llPc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="@dimen/target_top_margin"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="@dimen/target_top_margin"
             android:orientation="vertical">
 
             <TextView
@@ -129,7 +129,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:maxLines="1"
                 android:text="@string/zero" />
         </LinearLayout>
@@ -138,9 +138,9 @@
             android:id="@+id/llCase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/target_top_margin"
-            android:layout_marginRight="@dimen/target_top_margin"
-            android:layout_toRightOf="@+id/llPc"
+            android:layout_marginStart="@dimen/target_top_margin"
+            android:layout_marginEnd="@dimen/target_top_margin"
+            android:layout_toEndOf="@+id/llPc"
             android:orientation="vertical">
 
             <TextView
@@ -157,7 +157,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:maxLines="1"
                 android:text="@string/zero" />
 
@@ -167,8 +167,8 @@
             android:id="@+id/llOuter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/target_top_margin"
-            android:layout_toRightOf="@+id/llCase"
+            android:layout_marginStart="@dimen/target_top_margin"
+            android:layout_toEndOf="@+id/llCase"
             android:orientation="vertical">
 
             <TextView
@@ -185,7 +185,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:maxLines="1"
                 android:text="@string/zero" />
         </LinearLayout>
@@ -194,8 +194,8 @@
             android:id="@+id/lltotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/card_margin"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/card_margin"
             android:orientation="vertical">
 
             <TextView
@@ -215,7 +215,7 @@
                 android:layout_marginTop="@dimen/dimen_6dp"
                 android:gravity="center"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingStart="@dimen/dimen_2dp"
                 android:text="@string/zero"
                 android:textColor="@color/black_bg1" />
         </LinearLayout>

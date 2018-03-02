@@ -55,7 +55,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="@dimen/sku_text_product_name"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
+                        android:layout_gravity="start"
                         android:text="@string/product_name" />
 
                     <TextView
@@ -63,7 +63,7 @@
                         android:layout_width="@dimen/sku_text_qty"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
                         android:text="@string/qty" />
 
                     <TextView
@@ -71,7 +71,7 @@
                         android:layout_width="@dimen/sku_text_qty"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
                         android:text="@string/ou"
                         android:visibility="gone" />
 
@@ -80,7 +80,7 @@
                         android:layout_width="@dimen/sku_text_qty"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
                         android:text="@string/msq"
                         android:visibility="gone" />
                 </LinearLayout>

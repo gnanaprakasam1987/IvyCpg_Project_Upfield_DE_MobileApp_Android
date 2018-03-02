@@ -33,7 +33,7 @@
                 android:background="@color/plano_list_header"
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/plano_list_header_bottom"
-                android:paddingLeft="@dimen/plano_list_header_left"
+                android:paddingStart="@dimen/plano_list_header_left"
                 android:paddingTop="@dimen/plano_list_header_top"
                 android:text=""
                 android:textColor="@color/font_inactive"
@@ -46,8 +46,8 @@
                 android:layout_height="@dimen/product_name_twenty_five_character"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/plano_img_margin_top"
-                android:layout_marginLeft="@dimen/plano_img_margin_left"
-                android:layout_marginRight="@dimen/plano_img_margin_right"
+                android:layout_marginStart="@dimen/plano_img_margin_left"
+                android:layout_marginEnd="@dimen/plano_img_margin_right"
                 android:layout_marginTop="@dimen/plano_img_margin_top"
                 android:orientation="horizontal"
                 android:padding="@dimen/list_margin">
@@ -71,7 +71,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/plano_img_left"
+                    android:layout_marginStart="@dimen/plano_img_left"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:background="@drawable/plano_image_frame"
@@ -86,7 +86,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/plano_img_left"
+                    android:layout_marginStart="@dimen/plano_img_left"
                     android:layout_weight="1"
                     android:background="@drawable/bg_imageview_photo"
                     android:clickable="true"
@@ -152,8 +152,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/plano_img_margin_left"
-                android:layout_marginRight="@dimen/plano_img_margin_right">
+                android:layout_marginStart="@dimen/plano_img_margin_left"
+                android:layout_marginEnd="@dimen/plano_img_margin_right">
 
                 <TextView
                     android:id="@+id/adherence_text_view"
@@ -171,13 +171,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/plano_rb_gap"
-                    android:layout_toRightOf="@id/adherence_text_view"
+                    android:layout_marginStart="@dimen/plano_rb_gap"
+                    android:layout_toEndOf="@id/adherence_text_view"
                     android:button="@drawable/ic_tick_disable"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:paddingLeft="@dimen/plano_rb_padding"
-                    android:paddingRight="@dimen/plano_rb_padding"
+                    android:paddingStart="@dimen/plano_rb_padding"
+                    android:paddingEnd="@dimen/plano_rb_padding"
                     android:text="@string/yes"
                     android:textColor="@color/plano_yes_grey"
                     android:textSize="@dimen/font_micro_small" />
@@ -187,13 +187,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/plano_rb_gap"
-                    android:layout_toRightOf="@id/yes"
+                    android:layout_marginStart="@dimen/plano_rb_gap"
+                    android:layout_toEndOf="@id/yes"
                     android:button="@drawable/ic_cross_disable"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:paddingLeft="@dimen/plano_rb_padding"
-                    android:paddingRight="@dimen/plano_rb_padding"
+                    android:paddingStart="@dimen/plano_rb_padding"
+                    android:paddingEnd="@dimen/plano_rb_padding"
                     android:text="@string/no"
                     android:textColor="@color/plano_yes_grey"
                     android:textSize="@dimen/font_micro_small" />
@@ -202,9 +202,9 @@
                     android:id="@+id/sp_reason"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/spinner_height"
-                    android:layout_toRightOf="@id/no"
+                    android:layout_toEndOf="@id/no"
                     android:background="@android:color/transparent"
-                    android:gravity="left|center"
+                    android:gravity="start|center"
                     android:overlapAnchor="false" />
                 <!--app:paddingEnd="@dimen/plano_save_padding"-->
                 <!--app:paddingStart="@dimen/plano_save_padding"-->

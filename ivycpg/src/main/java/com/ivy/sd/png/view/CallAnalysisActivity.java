@@ -1772,7 +1772,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         if (vw == mNoOrderCameraBTN) {
             ReasonMaster reason = (ReasonMaster) spinnerNoOrderReason
                     .getSelectedItem();
-            if (reason.getReasonID().equals("0")) {
+            if (reason.getReasonID().equals("-1")) {
                 Toast.makeText(
                         this,
                         getResources().getString(

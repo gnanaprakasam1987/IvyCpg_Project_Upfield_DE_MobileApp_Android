@@ -47,7 +47,7 @@
                 android:layout_weight="3"
                 android:layout_height="match_parent"
                 android:text="@string/product_name"
-                android:gravity="left|center_vertical"/>
+                android:gravity="start|center_vertical"/>
 
             <TextView
                 android:id="@+id/caseTitle"
@@ -104,7 +104,7 @@
             <Button
                 android:id="@+id/btn_save"
                 style="?attr/roundedCustomButtonSmall"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:text="@string/save"
                 android:textAllCaps="false" />

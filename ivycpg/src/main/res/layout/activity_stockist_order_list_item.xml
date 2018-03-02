@@ -23,9 +23,9 @@
                 android:id="@+id/img_arrow"
                 android:layout_width="@dimen/profile_history_20dp"
                 android:layout_height="@dimen/activity_list_icon_size"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/dialog_list_item_left_margin"
+                android:layout_marginEnd="@dimen/dialog_list_item_left_margin"
                 android:src="@drawable/activity_icon_next"
                 android:tint="@color/new_grey" />
 
@@ -34,10 +34,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
+                android:layout_marginStart="@dimen/dialog_list_item_left_margin"
                 android:text="Outlet Name"
-                android:layout_marginRight="@dimen/activity_margin3"
-                android:layout_toLeftOf="@id/img_arrow"
+                android:layout_marginEnd="@dimen/activity_margin3"
+                android:layout_toStartOf="@id/img_arrow"
                 android:textColor="#000000"
                 android:textSize="@dimen/font_medium" />
 

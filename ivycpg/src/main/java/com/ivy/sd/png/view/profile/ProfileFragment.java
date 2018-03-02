@@ -108,7 +108,7 @@ public class ProfileFragment extends IvyBaseFragment {
         }
         outletInfo();
         LoadDataAsync async = new LoadDataAsync();
-        if(async.getStatus() == AsyncTask.Status.PENDING)
+        if (async.getStatus() == AsyncTask.Status.PENDING)
             async.execute();
         updateRetailerStatus();
         return view;
@@ -148,7 +148,7 @@ public class ProfileFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         DownloadAsync downloadAsync = new DownloadAsync();
-        if(downloadAsync.getStatus() == AsyncTask.Status.PENDING)
+        if (downloadAsync.getStatus() == AsyncTask.Status.PENDING)
             downloadAsync.execute();
     }
 
@@ -321,6 +321,7 @@ public class ProfileFragment extends IvyBaseFragment {
         }
 
     }
+
     private void outletInfo() {
 
 
@@ -334,7 +335,7 @@ public class ProfileFragment extends IvyBaseFragment {
             int flag = profileConfig.get(i).isFlag();
             String configCode = profileConfig.get(i).getConfigCode();
 
-            if(flag == 1) {
+            if (flag == 1) {
                 switch (configCode) {
                     case "PROFILE01":
 
@@ -547,7 +548,7 @@ public class ProfileFragment extends IvyBaseFragment {
      */
     private void loadProfileDatas() {
         retailerObj = bmodel.getRetailerMasterBO();
-     //   bmodel.configurationMasterHelper.downloadProfileModuleConfig();
+        //   bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         Vector<ConfigureBO> mTempProfileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
         ArrayList<String> unWantedMenus = new ArrayList<>();
@@ -685,7 +686,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 finalProfileList.add(outletBO);
                 break;
             }
-            case "PROFILE80" : {
+            case "PROFILE80": {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(retailerObj.getTinExpDate());
@@ -1196,7 +1197,7 @@ public class ProfileFragment extends IvyBaseFragment {
 
     }
 
-    private class LoadDataAsync extends  AsyncTask <String, Void, Boolean> {
+    private class LoadDataAsync extends AsyncTask<String, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(String... strings) {

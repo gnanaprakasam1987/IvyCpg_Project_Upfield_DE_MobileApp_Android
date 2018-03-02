@@ -715,18 +715,18 @@ public class ReturnFragment extends IvyBaseFragment {
             } else {
                 holder = (ViewHolder) row.getTag();
 
-                holder.ivClose.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        productMasterBO.getSalesReturnReasonList().remove(getItem(position));
-                        notifyDataSetChanged();
-
-
-                    }
-                });
-
             }
+
+            holder.ivClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    productMasterBO.getSalesReturnReasonList().remove(getItem(position));
+                    notifyDataSetChanged();
+
+
+                }
+            });
 
             holder.reasonBO = salesReturnReasonBO;
 

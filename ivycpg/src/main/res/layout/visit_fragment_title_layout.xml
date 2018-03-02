@@ -167,7 +167,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/card_child_margin"
                     android:gravity="center"
-                    android:text="@string/day"
+                    android:text="@string/route"
                     android:textColor="?attr/colorAccent"
                     android:textSize="@dimen/text_sz_small" />
 

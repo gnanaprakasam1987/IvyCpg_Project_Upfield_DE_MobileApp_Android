@@ -11,7 +11,7 @@
         style="?attr/customListItemPrimary"
         android:layout_width="@dimen/dimen_0dp"
         android:layout_height="wrap_content"
-        android:gravity="left|center"
+        android:gravity="start|center"
         android:text="@string/product_name"
         android:layout_weight=".6" />
 

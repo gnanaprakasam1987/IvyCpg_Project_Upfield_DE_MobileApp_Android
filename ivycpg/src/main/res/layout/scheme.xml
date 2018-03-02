@@ -11,7 +11,7 @@
         android:layout_gravity="center"
         android:background="@color/windowBackground"
         android:gravity="center"
-        android:paddingLeft="@dimen/dimens_4dp"
+        android:paddingStart="@dimen/dimens_4dp"
         android:text="Product Details"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
@@ -60,8 +60,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="2dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="2dp"
                         android:layout_marginTop="2dp"
                         android:orientation="vertical"
                         android:padding="3dp">
@@ -70,7 +70,7 @@
                             android:id="@+id/scheme_spnr"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="3dp"
+                            android:layout_marginEnd="3dp"
                             android:visibility="gone" />
 
                         <LinearLayout
@@ -87,7 +87,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@color/light_grey"
                                 android:paddingBottom="3dp"
-                                android:paddingLeft="3dp"
+                                android:paddingStart="3dp"
                                 android:paddingTop="3dp"
                                 android:text=""
                                 android:textColor="@android:color/black"
@@ -134,7 +134,7 @@
                         android:id="@+id/product_info_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="3dp"
+                        android:paddingStart="3dp"
                         android:text=""
                         android:textColor="@android:color/black"
                         android:textStyle="bold" />

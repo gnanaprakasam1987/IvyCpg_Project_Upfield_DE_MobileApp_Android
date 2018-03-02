@@ -41,15 +41,15 @@
                                 android:orientation="horizontal"
                                 android:background="@color/list_title_bg_color"
                                 android:weightSum="4"
-                                android:paddingLeft="@dimen/list_padding_left_n_right"
-                                android:paddingRight="@dimen/list_padding_left_n_right">
+                                android:paddingStart="@dimen/list_padding_left_n_right"
+                                android:paddingEnd="@dimen/list_padding_left_n_right">
 
                                 <TextView
                                     android:id="@+id/sku"
                                     style="?attr/customListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:gravity="left"
+                                    android:gravity="start"
                                     android:layout_gravity="center_vertical"
                                     android:text="@string/skuname"
                                     android:layout_weight="3"/>

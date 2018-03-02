@@ -57,7 +57,7 @@
                                 style="?attr/customListItemPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/combined_availability"
                                 android:textSize="@dimen/font_small"
@@ -77,8 +77,8 @@
                                 android:id="@+id/ll_is_distributed"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
+                                android:layout_marginStart="@dimen/right_margin"
+                                android:layout_marginEnd="@dimen/right_margin"
                                 android:layout_marginTop="@dimen/target_top_margin"
                                 android:orientation="vertical">
 
@@ -107,8 +107,8 @@
                                 android:id="@+id/ll_is_listed"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
+                                android:layout_marginStart="@dimen/right_margin"
+                                android:layout_marginEnd="@dimen/right_margin"
                                 android:layout_marginTop="@dimen/target_top_margin"
                                 android:orientation="vertical">
 
@@ -134,8 +134,8 @@
                                 android:id="@+id/ll_availability"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
+                                android:layout_marginStart="@dimen/right_margin"
+                                android:layout_marginEnd="@dimen/right_margin"
                                 android:layout_marginTop="@dimen/target_top_margin"
                                 android:orientation="vertical">
 
@@ -164,8 +164,8 @@
                                 android:id="@+id/ll_reason"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="right|center|bottom"
-                                android:layout_marginLeft="@dimen/right_margin"
+                                android:layout_gravity="end|center|bottom"
+                                android:layout_marginStart="@dimen/right_margin"
                                 android:layout_marginTop="@dimen/target_top_margin"
                                 android:orientation="vertical">
 
@@ -175,7 +175,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:background="@android:color/transparent"
-                                    android:gravity="left|center"
+                                    android:gravity="start|center"
                                     android:overlapAnchor="false">
 
 
@@ -202,7 +202,7 @@
                                 style="?attr/customListItemPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/current_stock"
                                 android:textSize="@dimen/font_small"
@@ -217,7 +217,7 @@
                                     android:id="@+id/ll_avail_piece"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="vertical">
 
@@ -235,7 +235,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
 
@@ -243,8 +243,8 @@
                                     android:id="@+id/ll_avail_case"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/right_margin"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginStart="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="vertical">
 
@@ -262,7 +262,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
 
@@ -270,7 +270,7 @@
                                     android:id="@+id/ll_avail_outer"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginStart="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="vertical">
 
@@ -288,7 +288,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
 
@@ -296,8 +296,8 @@
                                     android:id="@+id/ll_face_qty"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/right_margin"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginStart="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="vertical">
 
@@ -316,7 +316,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -337,7 +337,7 @@
                                     android:id="@+id/ll_avg_qty"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="horizontal">
 
@@ -353,8 +353,8 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginLeft="@dimen/dimen_1dp"
-                                        android:layout_marginRight="@dimen/dimen_1dp"
+                                        android:layout_marginStart="@dimen/dimen_1dp"
+                                        android:layout_marginEnd="@dimen/dimen_1dp"
                                         android:maxLines="1"
                                         android:text=":" />
 
@@ -372,7 +372,7 @@
                                     android:id="@+id/ll_avg_rfield1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="horizontal">
 
@@ -388,8 +388,8 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginLeft="@dimen/dimen_1dp"
-                                        android:layout_marginRight="@dimen/dimen_1dp"
+                                        android:layout_marginStart="@dimen/dimen_1dp"
+                                        android:layout_marginEnd="@dimen/dimen_1dp"
                                         android:maxLines="1"
                                         android:text=":" />
 
@@ -407,7 +407,7 @@
                                     android:id="@+id/ll_avg_rfield2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="horizontal">
 
@@ -423,8 +423,8 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginLeft="@dimen/dimen_1dp"
-                                        android:layout_marginRight="@dimen/dimen_1dp"
+                                        android:layout_marginStart="@dimen/dimen_1dp"
+                                        android:layout_marginEnd="@dimen/dimen_1dp"
                                         android:maxLines="1"
                                         android:text=":" />
 
@@ -442,7 +442,7 @@
                                     android:id="@+id/ll_avg_rfield3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="horizontal">
 
@@ -458,8 +458,8 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginLeft="@dimen/dimen_1dp"
-                                        android:layout_marginRight="@dimen/dimen_1dp"
+                                        android:layout_marginStart="@dimen/dimen_1dp"
+                                        android:layout_marginEnd="@dimen/dimen_1dp"
                                         android:maxLines="1"
                                         android:text=":" />
 
@@ -497,7 +497,7 @@
                                 style="?attr/customListItemPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/price_check"
                                 android:textSize="@dimen/font_small"
@@ -513,7 +513,7 @@
                                     android:id="@+id/ll_price_piece"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="vertical">
 
@@ -531,7 +531,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
 
@@ -542,10 +542,10 @@
                                     android:id="@+id/ll_price_case"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/right_margin"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginStart="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:layout_toRightOf="@+id/ll_price_piece"
+                                    android:layout_toEndOf="@+id/ll_price_piece"
                                     android:orientation="vertical">
 
                                     <TextView
@@ -562,7 +562,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
 
@@ -570,9 +570,9 @@
                                     android:id="@+id/ll_price_outer"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginStart="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:layout_toRightOf="@+id/ll_price_case"
+                                    android:layout_toEndOf="@+id/ll_price_case"
                                     android:orientation="vertical">
 
                                     <TextView
@@ -589,7 +589,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
 
@@ -598,7 +598,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/ll_price_piece"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="vertical">
 
@@ -617,7 +617,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
 
                                 </LinearLayout>
@@ -627,10 +627,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/ll_price_case"
-                                    android:layout_marginLeft="@dimen/right_margin"
-                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:layout_marginStart="@dimen/right_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:layout_toRightOf="@+id/ll_price_piece"
+                                    android:layout_toEndOf="@+id/ll_price_piece"
                                     android:orientation="vertical">
 
                                     <TextView
@@ -648,7 +648,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
 
@@ -657,9 +657,9 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/ll_price_outer"
-                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginStart="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:layout_toRightOf="@+id/ll_price_case"
+                                    android:layout_toEndOf="@+id/ll_price_case"
                                     android:orientation="vertical">
 
                                     <TextView
@@ -677,7 +677,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="left"
+                                        android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
 
@@ -685,7 +685,7 @@
                                     android:layout_width="wrap_content"
                                     android:id="@+id/ll_priceRadio_grpLty"
                                     android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
+                                    android:layout_alignParentEnd="true"
                                     android:layout_centerVertical="true"
                                     android:orientation="vertical">
 
@@ -709,9 +709,9 @@
                                             style="?attr/customListItemSecondary"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:layout_marginRight="@dimen/radio_margin"
+                                            android:layout_marginEnd="@dimen/radio_margin"
                                             android:button="@drawable/ic_tick_disable"
-                                            android:paddingLeft="@dimen/plano_rb_padding"
+                                            android:paddingStart="@dimen/plano_rb_padding"
                                             android:text="@string/yes"
                                             android:textSize="@dimen/text_sz_medium" />
 
@@ -720,10 +720,10 @@
                                             style="?attr/customListItemSecondary"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:layout_toRightOf="@id/priceYes"
+                                            android:layout_toEndOf="@id/priceYes"
                                             android:button="@drawable/ic_cross_disable"
-                                            android:paddingLeft="@dimen/plano_rb_padding"
-                                            android:paddingRight="@dimen/plano_rb_padding"
+                                            android:paddingStart="@dimen/plano_rb_padding"
+                                            android:paddingEnd="@dimen/plano_rb_padding"
                                             android:text="@string/no"
                                             android:textSize="@dimen/text_sz_medium" />
 
@@ -754,7 +754,7 @@
                                 style="?attr/customListItemPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/expiry_check"
                                 android:textSize="@dimen/font_small"
@@ -770,14 +770,14 @@
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
                                     android:layout_marginTop="@dimen/target_top_margin">
 
                                     <LinearLayout
                                         android:id="@+id/ll_exp_piece"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginRight="@dimen/right_margin"
+                                        android:layout_marginEnd="@dimen/right_margin"
                                         android:orientation="vertical">
 
                                         <TextView
@@ -794,7 +794,7 @@
                                             android:layout_width="@dimen/discount_editbox_width"
                                             android:layout_height="wrap_content"
                                             android:layout_weight="1"
-                                            android:gravity="left"
+                                            android:gravity="start"
                                             android:text="@string/zero" />
                                     </LinearLayout>
 
@@ -802,8 +802,8 @@
                                         android:id="@+id/ll_exp_case"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginRight="@dimen/right_margin"
-                                        android:layout_toRightOf="@+id/ll_exp_piece"
+                                        android:layout_marginEnd="@dimen/right_margin"
+                                        android:layout_toEndOf="@+id/ll_exp_piece"
                                         android:orientation="vertical">
 
                                         <TextView
@@ -820,7 +820,7 @@
                                             android:layout_width="@dimen/discount_editbox_width"
                                             android:layout_height="wrap_content"
                                             android:layout_weight="1"
-                                            android:gravity="left"
+                                            android:gravity="start"
                                             android:text="@string/zero" />
                                     </LinearLayout>
 
@@ -828,8 +828,8 @@
                                         android:id="@+id/ll_exp_outer"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginLeft="@dimen/right_margin"
-                                        android:layout_toRightOf="@+id/ll_exp_case"
+                                        android:layout_marginStart="@dimen/right_margin"
+                                        android:layout_toEndOf="@+id/ll_exp_case"
                                         android:orientation="vertical">
 
                                         <TextView
@@ -846,7 +846,7 @@
                                             android:layout_width="@dimen/discount_editbox_width"
                                             android:layout_height="wrap_content"
                                             android:layout_weight="1"
-                                            android:gravity="left"
+                                            android:gravity="start"
                                             android:text="@string/zero" />
                                     </LinearLayout>
 

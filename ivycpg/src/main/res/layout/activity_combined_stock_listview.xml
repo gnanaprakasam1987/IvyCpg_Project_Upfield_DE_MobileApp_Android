@@ -6,8 +6,8 @@
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingLeft="@dimen/list_padding_left_n_right"
-    android:paddingRight="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
     <RelativeLayout
@@ -19,9 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/brand_text_margin"
-            android:layout_marginRight="@dimen/profile_history_25dp"
-            android:layout_toLeftOf="@+id/ivAvailable"
+            android:layout_marginStart="@dimen/brand_text_margin"
+            android:layout_marginEnd="@dimen/profile_history_25dp"
+            android:layout_toStartOf="@+id/ivAvailable"
             android:orientation="vertical">
 
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
                 android:layout_marginTop="2dp"
-                android:layout_marginLeft="2dp"
+                android:layout_marginStart="2dp"
                 android:maxLines="1"
                 android:text="@string/barcode" />
         </LinearLayout>
@@ -48,7 +48,7 @@
             android:id="@+id/ivArrow"
             android:layout_width="24dp"
             android:layout_height="32dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_right_arrow"
             android:tint="@color/GRAY" />
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/ivArrow"
+            android:layout_toStartOf="@+id/ivArrow"
             android:src="@drawable/ic_tick_enable" />
 
 

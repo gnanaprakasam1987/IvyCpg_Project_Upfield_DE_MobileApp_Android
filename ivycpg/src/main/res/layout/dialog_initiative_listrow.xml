@@ -11,7 +11,7 @@
         android:layout_width="@dimen/order_stock_list_barcode"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="left|center"
+        android:gravity="start|center"
         android:padding="3dp"
         android:singleLine="true"
         android:text="@string/barcode"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="left|center"
+            android:gravity="start|center"
             android:padding="3dp"
             android:singleLine="true"
             android:text="@string/product_name" />
@@ -38,7 +38,7 @@
             style="?attr/customListItemSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/orderPRODNAME"
             android:padding="2dp"
             android:text="@string/mrp"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/orderPRODNAME"
-            android:layout_toRightOf="@+id/mrp"
+            android:layout_toEndOf="@+id/mrp"
             android:padding="2dp"
             android:text="@string/ou"
             android:visibility="gone" />
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/orderPRODNAME"
-            android:layout_toRightOf="@+id/OU_Type"
+            android:layout_toEndOf="@+id/OU_Type"
             android:padding="2dp"
             android:text="@string/ppq" />
 
@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/orderPRODNAME"
-            android:layout_toRightOf="@+id/ppq"
+            android:layout_toEndOf="@+id/ppq"
             android:padding="2dp"
             android:text="@string/msq"
             android:visibility="gone" />

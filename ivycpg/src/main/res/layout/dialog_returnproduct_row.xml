@@ -3,8 +3,8 @@
     android:id="@+id/orderScreenListRow"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/list_item_height_double_line"
-    android:paddingLeft="@dimen/list_margin"
-    android:paddingRight="@dimen/list_margin"
+    android:paddingStart="@dimen/list_margin"
+    android:paddingEnd="@dimen/list_margin"
     android:gravity="center_vertical">
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:gravity="left|center"
+        android:gravity="start|center"
         android:maxLines="1"
         android:padding="3dp"
         android:text="@string/barcode"
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="left|center"
+            android:gravity="start|center"
             android:maxLines="1"
             android:padding="3dp"
             android:text="@string/product_name" />

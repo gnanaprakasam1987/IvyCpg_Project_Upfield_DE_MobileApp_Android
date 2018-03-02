@@ -51,8 +51,8 @@
                                 style="?attr/customListTitle"
                                 android:layout_width="@dimen/price_product_name"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dimen_5dp"
-                                android:gravity="left"
+                                android:layout_marginStart="@dimen/dimen_5dp"
+                                android:gravity="start"
                                 android:layout_gravity="center"
                                 android:text="@string/product_name" />
 

@@ -27,8 +27,8 @@
                 android:layout_height="@dimen/dimens_60dp"
                 android:layout_gravity="center"
                 android:background="@android:color/white"
-                android:gravity="center|left"
-                android:paddingLeft="@dimen/dimens_4dp"
+                android:gravity="center|start"
+                android:paddingStart="@dimen/dimens_4dp"
                 android:text="productname"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
@@ -53,9 +53,9 @@
                     android:layout_height="@dimen/dimens_50dp"
                     android:layout_gravity="center"
                     android:background="@android:color/white"
-                    android:gravity="center|left"
+                    android:gravity="center|start"
                     android:tag="sku_mixture_title"
-                    android:paddingLeft="@dimen/dimens_4dp"
+                    android:paddingStart="@dimen/dimens_4dp"
                     android:text="SKU Mixture product name"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
@@ -66,8 +66,8 @@
                     android:layout_height="@dimen/dimens_60dp"
                     android:layout_gravity="center"
                     android:background="@android:color/white"
-                    android:gravity="center|left"
-                    android:paddingLeft="@dimen/dimens_4dp"
+                    android:gravity="center|start"
+                    android:paddingStart="@dimen/dimens_4dp"
                     android:orientation="vertical"
                     android:textColor="@android:color/black" />
             </LinearLayout>

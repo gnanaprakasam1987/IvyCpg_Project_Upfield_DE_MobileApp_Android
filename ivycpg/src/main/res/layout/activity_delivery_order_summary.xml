@@ -36,13 +36,13 @@
             android:id="@+id/btn_next"
             style="?attr/roundedCustomButtonSmall"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/card_margin"
-            android:layout_marginRight="@dimen/card_margin"
+            android:layout_marginStart="@dimen/card_margin"
+            android:layout_marginEnd="@dimen/card_margin"
             android:padding="@dimen/padding_rb"
             android:tag="invoicesave"
             android:text="@string/text_invoice"
             android:textAllCaps="false"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true" />
 
     </RelativeLayout>

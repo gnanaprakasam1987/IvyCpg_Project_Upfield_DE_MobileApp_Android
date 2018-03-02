@@ -51,8 +51,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/store_title"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/list_padding_left_n_right"
-                android:paddingRight="@dimen/list_padding_left_n_right">
+                android:paddingStart="@dimen/list_padding_left_n_right"
+                android:paddingEnd="@dimen/list_padding_left_n_right">
 
                 <TextView
                     android:id="@+id/chk_title"
@@ -66,8 +66,8 @@
                     android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                     android:layout_height="40dp"
                     android:text="@string/product_name"
-                    android:layout_gravity="center|left"
-                    android:gravity="center|left" />
+                    android:layout_gravity="center|start"
+                    android:gravity="center|start" />
 
                 <TextView
                     android:id="@+id/tv_oo"
@@ -147,7 +147,7 @@
             android:id="@+id/btn_save"
             style="?attr/roundedCustomButtonSmall"
             android:layout_width="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="@string/save"
             android:textAllCaps="false" />

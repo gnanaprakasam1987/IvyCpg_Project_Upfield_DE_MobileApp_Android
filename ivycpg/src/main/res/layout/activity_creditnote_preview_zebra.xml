@@ -23,7 +23,7 @@
             android:id="@+id/status_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:src="@drawable/redball" />
 
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/status_iv"
+            android:layout_toEndOf="@+id/status_iv"
             android:padding="4dp"
             android:text=""
             android:textColor="@color/RED" />
@@ -41,7 +41,7 @@
             android:id="@+id/printcount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:focusable="true"></Spinner>
     </RelativeLayout>
@@ -50,15 +50,15 @@
         android:id="@+id/et_mac"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/edit_text" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Enter Printer&apos;s MAC address \nex: 00:22:58:3C:B3:02" />
 
     <RelativeLayout
@@ -98,7 +98,7 @@
                     android:layout_width="@dimen/list_product_name_width_init"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:tag="asset_name"
                     android:text="Total Credit Note" />
 
@@ -107,7 +107,7 @@
                     android:layout_width="@dimen/list_product_name_width_init"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:tag="asset_name"
                     android:text="" />
             </LinearLayout>

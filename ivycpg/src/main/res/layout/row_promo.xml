@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/list_padding_left_n_right"
-    android:paddingRight="@dimen/list_padding_left_n_right">
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingEnd="@dimen/list_padding_left_n_right">
     <!--android:weightSum="6"-->
     <LinearLayout
         android:layout_width="0dp"

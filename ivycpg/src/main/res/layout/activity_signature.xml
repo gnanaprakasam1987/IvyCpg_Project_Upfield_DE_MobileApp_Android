@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="contact person number"
-                android:layout_toRightOf="@+id/contact_name"
+                android:layout_toEndOf="@+id/contact_name"
                 android:inputType="number"
                 android:textColor="@color/list_item_values_text_color"
                 android:textSize="@dimen/font_small"
@@ -89,9 +89,9 @@
                     android:id="@+id/textView2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="end"
                     android:layout_weight="2"
-                    android:paddingLeft="10sp"
+                    android:paddingStart="10sp"
                     android:text="@string/your_name"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 

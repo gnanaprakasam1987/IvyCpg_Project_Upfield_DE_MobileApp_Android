@@ -34,8 +34,8 @@
                     android:background="@color/list_title_bg_color"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/list_padding_left_n_right"
-                    android:paddingRight="@dimen/list_padding_left_n_right"
+                    android:paddingStart="@dimen/list_padding_left_n_right"
+                    android:paddingEnd="@dimen/list_padding_left_n_right"
                     android:weightSum="10">
 
                     <TextView
@@ -135,7 +135,7 @@
             <Button
                 android:id="@+id/btn_save"
                 style="?attr/roundedCustomButtonSmall"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:text="@string/save"
                 android:textAllCaps="false" />

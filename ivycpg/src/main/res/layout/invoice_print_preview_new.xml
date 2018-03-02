@@ -13,7 +13,7 @@
         android:id="@+id/status_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:src="@drawable/redball" />
 
@@ -26,7 +26,7 @@
             android:id="@+id/status_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:src="@drawable/redball" />
 
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/status_iv"
+            android:layout_toEndOf="@+id/status_iv"
             android:padding="4dp"
             android:text=""
             android:textColor="@color/RED" />
@@ -44,7 +44,7 @@
             android:id="@+id/printcount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:focusable="true"></Spinner>
 
@@ -53,7 +53,7 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="@string/reconnect"
             android:visibility="gone" />
@@ -62,7 +62,7 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:visibility="gone" />
@@ -72,15 +72,15 @@
         android:id="@+id/et_mac"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/edit_text" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Enter Printer&apos;s MAC address \nex: 00:22:58:3C:B3:02" />
 
     <ScrollView
@@ -137,7 +137,7 @@
                 android:id="@+id/route_name_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:padding="2dp"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_micro_small" />
@@ -146,7 +146,7 @@
                 android:id="@+id/retailer_code_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:padding="2dp"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_micro_small"
@@ -156,7 +156,7 @@
                 android:id="@+id/outlet_name_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:padding="2dp"
                 android:text="@string/outlet_name"
                 android:textColor="@android:color/black"
@@ -166,7 +166,7 @@
                 android:id="@+id/store_name_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:padding="2dp"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_micro_small"
@@ -176,7 +176,7 @@
                 android:id="@+id/retailer_name_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:padding="2dp"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_micro_small"
@@ -186,7 +186,7 @@
                 android:id="@+id/retailer_address_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:padding="2dp"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_micro_small"
@@ -400,7 +400,7 @@
                         android:id="@+id/total_price_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:padding="2dp"
                         android:text="@string/total"
                         android:textColor="@android:color/black"
@@ -416,7 +416,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/vat"
                         android:textColor="@android:color/black" />
 
@@ -424,7 +424,7 @@
                         android:id="@+id/vat_value_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black" />
@@ -440,7 +440,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/discount"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/font_micro_small" />
@@ -449,7 +449,7 @@
                         android:id="@+id/discount_value_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
@@ -466,7 +466,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/bill_value"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/font_micro_small" />
@@ -475,7 +475,7 @@
                         android:id="@+id/bill_value_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
@@ -491,7 +491,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/print_footer1"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/font_micro_small" />
@@ -500,7 +500,7 @@
                         android:id="@+id/footer1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
@@ -516,7 +516,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/print_footer2"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/font_micro_small" />
@@ -525,7 +525,7 @@
                         android:id="@+id/footer2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
@@ -541,7 +541,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/print_footer3"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/font_micro_small" />
@@ -550,7 +550,7 @@
                         android:id="@+id/footer3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
@@ -566,7 +566,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/print_footer4"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/font_micro_small" />
@@ -575,7 +575,7 @@
                         android:id="@+id/footer4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
@@ -585,7 +585,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="@string/signature"
                     android:textColor="@android:color/black"
@@ -596,7 +596,7 @@
                     android:id="@+id/userNameTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="@string/Name"
                     android:textColor="@android:color/black"

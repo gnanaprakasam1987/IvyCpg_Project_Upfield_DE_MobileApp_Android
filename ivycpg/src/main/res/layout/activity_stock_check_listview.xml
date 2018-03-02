@@ -6,8 +6,8 @@
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingLeft="@dimen/list_padding_left_n_right"
-    android:paddingRight="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
     <LinearLayout
@@ -40,8 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/dimen_2dp"
-                android:gravity="left|center"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:gravity="start|center"
                 android:maxLines="1"
                 android:text="@string/product_name" />
 
@@ -50,9 +50,9 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/stock_and_order_listview_productname"
-                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
                 android:maxLines="1"
                 android:text="@string/mrp"
                 android:visibility="gone" />
@@ -63,8 +63,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
-                android:layout_marginRight="@dimen/dimen_2dp"
-                android:layout_toRightOf="@+id/stock_and_order_listview_mrp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_toEndOf="@+id/stock_and_order_listview_mrp"
                 android:maxLines="1"
                 android:text="@string/ou"
                 android:visibility="gone" />
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
-                android:layout_toRightOf="@+id/stock_and_order_listview_ppq"
+                android:layout_toEndOf="@+id/stock_and_order_listview_ppq"
                 android:maxLines="1"
                 android:text="@string/psq"
                 android:visibility="gone" />
@@ -117,7 +117,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                  />
 
@@ -125,7 +125,7 @@
                 android:id="@+id/stock_and_order_listview_shelfouter_qty"
                 style="@style/EditText_ListItem"
                 android:layout_width="0dp"
-                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 />
 
@@ -133,7 +133,7 @@
                 android:id="@+id/stock_and_order_listview_sp_qty"
                 style="@style/EditText_ListItem"
                 android:layout_width="0dp"
-                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="5"
                 />
@@ -144,7 +144,7 @@
             android:id="@+id/stock_check_listview_fc_qty"
             style="@style/EditText_ListItem"
             android:layout_width="0dp"
-            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_marginEnd="@dimen/dimen_2dp"
             android:layout_weight="1"
             android:maxLength="2"
             android:text="@string/zero"

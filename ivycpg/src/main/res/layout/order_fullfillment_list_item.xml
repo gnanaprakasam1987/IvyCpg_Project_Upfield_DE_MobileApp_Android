@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/orderno"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerInParent="true">
 
                 <TextView
@@ -46,8 +46,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_1dp"
-                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
+                    android:layout_marginEnd="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -66,8 +66,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_below="@id/orderno"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:layout_toRightOf="@id/value_group">
+                android:layout_marginStart="@dimen/margin_5px"
+                android:layout_toEndOf="@id/value_group">
 
                 <TextView
                     style="?attr/customListItemSecondary"
@@ -81,8 +81,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_1dp"
-                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
+                    android:layout_marginEnd="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -151,7 +151,7 @@
             android:id="@+id/spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
             android:padding="2dp"
@@ -163,11 +163,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="@dimen/comp_margin"
-            android:layout_toLeftOf="@id/spinner"
+            android:layout_marginStart="@dimen/comp_margin"
+            android:layout_toStartOf="@id/spinner"
             android:layout_weight="1.5"
             android:clickable="true"
-            android:gravity="left|center"
+            android:gravity="start|center"
             android:inputType="none"
             android:maxLength="12"
             android:text="@string/delivery_date_label" />

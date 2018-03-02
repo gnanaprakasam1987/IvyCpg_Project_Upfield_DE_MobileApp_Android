@@ -316,9 +316,13 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                 holder.deleteCB = (CheckBox) row
                         .findViewById(R.id.chk_delete);
                 holder.tvTimeSpent = (TextView) row.findViewById(R.id.txt_timespent);
+                holder.tvUserName = (TextView) row.findViewById(R.id.tvusername);
                 holder.tvMonthName = (TextView) row.findViewById(R.id.txt_monthName);
                 holder.monthHeader = (LinearLayout) row.findViewById(R.id.month_header);
                 holder.topLine = (ImageView) row.findViewById(R.id.top_line);
+
+                holder.tvUserName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
                 if (bmodel.configurationMasterHelper.IS_SHOW_DELETE_OPTION)
                     holder.deleteCB.setVisibility(View.VISIBLE);
                 else
@@ -381,7 +385,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                     holder.tvTimeSpent.setText("");
                     holder.tvTimeSpent.setVisibility(View.GONE);
                 }
-
+            holder.tvUserName.setText(holder.nonFieldBO.getUserName());
             if (position % 2 == 1) {
                 row.setBackgroundColor(getResources().getColor(R.color.white));
             } else {
@@ -419,6 +423,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         LinearLayout llrow;
         CheckBox deleteCB;
         ImageView topLine;
+        TextView tvUserName;
     }
 
     class DeleteSelectedList extends AsyncTask<String, Integer, Boolean> {

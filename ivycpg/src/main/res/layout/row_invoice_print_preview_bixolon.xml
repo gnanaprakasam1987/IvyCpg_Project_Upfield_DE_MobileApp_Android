@@ -73,7 +73,7 @@
             android:id="@+id/vat_tv"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:gravity="end"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small"

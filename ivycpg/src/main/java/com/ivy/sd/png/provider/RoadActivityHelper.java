@@ -231,10 +231,10 @@ public class RoadActivityHelper {
     }
 
     public void saveRoadActivity(String TypeId, String PId, String LocationId,
-                                 String Remarks, Vector<String>ImgName) {
+                                 String Remarks, Vector<String> ImgName) {
 
         try {
-            String imagePath ="";
+            String imagePath = "";
 
             String headerColumns = "Uid ,TypeId, PId, LocationId, Remarks";
             String detailColumns = "Uid,ImgName";

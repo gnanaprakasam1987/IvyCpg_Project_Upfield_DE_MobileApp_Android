@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/product_name"
-        android:layout_marginLeft="@dimen/dimen_12dp"
+        android:layout_marginStart="@dimen/dimen_12dp"
         android:textSize="@dimen/font_micro_small"
         android:layout_marginTop="@dimen/divder_margin"/>
 
@@ -28,7 +28,7 @@
         android:text=""
         android:gravity="center"
         android:layout_below="@+id/PRDNAME"
-        android:layout_marginLeft="@dimen/dimen_12dp"
+        android:layout_marginStart="@dimen/dimen_12dp"
         android:layout_marginBottom="@dimen/icons_top_margin"
        />
             <TextView
@@ -38,7 +38,7 @@
                 android:tag="sih"
                 android:gravity="center"
                 android:text="56656"
-                android:layout_toRightOf="@+id/batch_no"
+                android:layout_toEndOf="@+id/batch_no"
                 android:layout_below="@+id/PRDNAME"
                 style="?attr/customListItemSecondary"
                 android:layout_marginBottom="@dimen/icons_top_margin"/>
@@ -85,7 +85,7 @@
         android:tag="sih_piece"
         android:gravity="center"
         android:text="56656"
-android:layout_marginLeft="@dimen/dimens_10dp"
+android:layout_marginStart="@dimen/dimens_10dp"
         android:textSize="@dimen/font_micro_small" />
    <!-- <TextView
         android:id="@+id/prdweight"

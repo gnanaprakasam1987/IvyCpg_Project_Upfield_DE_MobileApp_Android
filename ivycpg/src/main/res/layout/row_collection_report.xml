@@ -5,8 +5,8 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/dimens_2dp"
     android:paddingBottom="@dimen/dimens_2dp"
-    android:paddingLeft="@dimen/dimens_4dp"
-    android:paddingRight="@dimen/dimens_4dp">
+    android:paddingStart="@dimen/dimens_4dp"
+    android:paddingEnd="@dimen/dimens_4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,8 +19,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
-            android:paddingLeft="3dp"
+            android:gravity="start"
+            android:paddingStart="3dp"
             android:paddingTop="@dimen/text_sz_extra_small"
             android:singleLine="true"
             android:text="Retailer Name"
@@ -48,8 +48,8 @@
                 android:id="@+id/invoice_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingLeft="3dp"
+                android:gravity="start"
+                android:paddingStart="3dp"
                 android:text="@string/invoice_no"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/text_sz_small"/>
@@ -58,8 +58,8 @@
                 android:id="@+id/invNoTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingLeft="3dp"
+                android:gravity="start"
+                android:paddingStart="3dp"
                 android:text="12345"
                 android:textColor="?attr/primarycolor"
                 android:textSize="@dimen/font_small" />
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dimens_20dp">
+            android:paddingStart="@dimen/dimens_20dp">
 
             <TextView
                 android:id="@+id/invoice_amt"
@@ -117,8 +117,8 @@
                 android:id="@+id/invoice_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingLeft="3dp"
+                android:gravity="start"
+                android:paddingStart="3dp"
                 android:text="@string/inv_date"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/text_sz_small"/>
@@ -127,8 +127,8 @@
                 android:id="@+id/invDateTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingLeft="3dp"
+                android:gravity="start"
+                android:paddingStart="3dp"
                 android:text="12345"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_small" />
@@ -147,7 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dimens_20dp">
+            android:paddingStart="@dimen/dimens_20dp">
 
             <TextView
                 android:id="@+id/os_amt"
@@ -171,8 +171,8 @@
         android:id="@+id/img_arrow"
         android:layout_width="@dimen/icon_drop_list"
         android:layout_height="@dimen/icon_drop_list"
-        android:layout_marginRight="@dimen/dimen_14dp"
-        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dimen_14dp"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:src="@drawable/activity_icon_next"/>
 
