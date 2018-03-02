@@ -989,6 +989,110 @@ public class ReportHelper {
         return skubo;
     }
 
+    public Vector<SKUReportBO> downloadSKUReportNew() {
+        SKUReportBO skuObject;
+        Vector<SKUReportBO> skubo = null;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            int mFiltrtLevel = 0;
+            int mChildLevel = 0;
+            int mContentLevel = 0;
+
+            if (bmodel.productHelper.getSequenceValues() != null) {
+                if (bmodel.productHelper.getSequenceValues().size() > 0) {
+                    mChildLevel = bmodel.productHelper.getSequenceValues().size();
+                }
+            }
+
+            if (mChildLevel == 0 ) {
+                Cursor cur = db.selectSQL("SELECT IFNULL(PL1.Sequence,0),IFNULL(PL2.Sequence,0)"
+                        + " FROM ConfigActivityFilter CF"
+                        + " LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter1"
+                        + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  CF.ProductContent"
+                        + " WHERE CF.ActivityCode ="
+                        + bmodel.QT("MENU_STK_ORD"));
+                if (cur != null) {
+                    if (cur.moveToNext()) {
+                        mFiltrtLevel = cur.getInt(0);
+                        mContentLevel = cur.getInt(1);
+                    }
+                    cur.close();
+                }
+            }else{
+                Cursor filterCur = db
+                        .selectSQL("SELECT IFNULL(PL1.Sequence,0), IFNULL(PL2.Sequence,0)"
+                                + " FROM ConfigActivityFilter CF"
+                                + " LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter"
+                                + mChildLevel
+                                + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductContent"
+                                + " WHERE CF.ActivityCode = "
+                                + bmodel.QT("MENU_STK_ORD"));
+
+                if (filterCur != null) {
+                    if (filterCur.moveToNext()) {
+                        mFiltrtLevel = filterCur.getInt(0);
+                        mContentLevel = filterCur.getInt(1);
+                    }
+                    filterCur.close();
+                }
+
+            }
+
+            Cursor c;
+            String sql;
+
+            int loopEnd = mContentLevel - mFiltrtLevel + 1;
+            String parentFilter;
+
+            if (mChildLevel != 0) {
+                parentFilter = "ProductFilter"+mChildLevel;
+            } else {
+                parentFilter = "ProductFilter1";
+            }
+
+            sql = "SELECT P"
+                    + loopEnd
+                    + ".pname,SUM(OD.qty), OD.caseqty, OD.msqqty,P1.pid FROM ProductMaster P1 "
+                    + "INNER JOIN OrderDetail OD ON OD.ProductID = P"
+                    + loopEnd
+                    + ".PID";
+
+
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN ProductMaster P" + i + " ON P" + i
+                        + ".ParentId = P" + (i - 1) + ".PID";
+
+            sql = sql + " WHERE P1.PLid IN (SELECT " + parentFilter + " FROM ConfigActivityFilter"
+                    + " WHERE ActivityCode = "
+                    + bmodel.QT("MENU_STK_ORD")
+                    + ") GROUP BY P"
+                    + loopEnd + ".PID";
+
+            c = db.selectSQL(sql);
+            if (c != null) {
+
+                skubo = new Vector<>();
+                while (c.moveToNext()) {
+                    skuObject = new SKUReportBO();
+                    skuObject.setProdname(c.getString(0));
+                    skuObject.setQty(c.getString(1));
+                    skuObject.setOuqty(c.getString(2));
+                    skuObject.setMsqqty(c.getString(3));
+                    skuObject.setParentID(c.getInt(4));
+                    skubo.add(skuObject);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return skubo;
+    }
+
     public HashMap<String, ArrayList<PaymentBO>> getLstPaymentBObyGroupId() {
         return lstPaymentBObyGroupId;
     }

@@ -66,7 +66,6 @@ public class StandardListMasterConstants {
 	public static final String MENU_ORDER_REPORT = "MENU_ORDER_REPORT";
 	public static final String MENU_PREVIOUS_ORDER_REPORT = "MENU_PREV_ORDER_REPORT";
 	public static final String MENU_DAY_REPORT = "MENU_DAY_REPORT";
-	public static final String MENU_PRDVOL_RPT = "MENU_PRDVOL_RPT";
 	public static final String MENU_INVOICE_REPORT = "MENU_INVOICE_REPORT";
 	public static final String MENU_PND_INVOICE_REPORT = "MENU_PND_INV_RPT";
 	public static final String MENU_SKU_REPORT = "MENU_SKU_REPORT";
@@ -120,7 +119,7 @@ public class StandardListMasterConstants {
 	public static final String PRINT_FILE_ORDER = "PF_ORD_";
 	public static final String PRINT_FILE_PATH = "PrintFile/";
 
-	public static final String MENU_CLOSING_STK_REPORT = "MENU_CLOSING_STK_REPORT";
+	public static final String MENU_CLOSING_STK_RPT = "MENU_CLOSING_STK_RPT";
 
 
 	public static final HashMap<String,String> mActivityCodeByMenuCode=new HashMap<>();

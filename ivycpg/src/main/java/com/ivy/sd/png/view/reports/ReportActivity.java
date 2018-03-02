@@ -62,7 +62,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private DailyReportFragmentNew dayFragment;
     private InvoiceReportFragment invoiceReportFragment;
     private PndInvoiceReportFragment pndInvoiceReportFragment;
-    private SKUReportFragment skuReportFragment;
     private CurrentStockView stockReportFragment;
     private BeginningStockFragment stockreportfragmentnew;
     private CollectionReportFragment collectionReportFragment;
@@ -188,8 +187,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         invoiceReportFragment.setArguments(getIntent().getExtras());
         pndInvoiceReportFragment = new PndInvoiceReportFragment();
         pndInvoiceReportFragment.setArguments(getIntent().getExtras());
-        skuReportFragment = new SKUReportFragment();
-        skuReportFragment.setArguments(getIntent().getExtras());
         stockReportFragment = new CurrentStockView();
         stockReportFragment.setArguments(getIntent().getExtras());
         stockreportfragmentnew = new BeginningStockFragment();
@@ -385,12 +382,14 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.commit();
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SKU_REPORT)) {
-            transaction.replace(R.id.fragment_content, skuReportFragment);
+
+            bmodel.reportHelper.downloadProductReportsWithFiveLevelFilter();
+            transaction.replace(R.id.fragment_content, salesVolumeReportFragment);
             transaction.addToBackStack(null);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT)) {
             bmodel.productHelper
@@ -649,14 +648,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
-        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_PRDVOL_RPT)) {
-            bmodel.reportHelper.downloadProductReportsWithFiveLevelFilter();
-            transaction.replace(R.id.fragment_content, salesVolumeReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            transaction.commit();
-        } else if (config.getConfigCode().equals(
+        }
+        else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
             bmodel.reportHelper.downloadUsers();
             if (bmodel.reportHelper.getLstUsers().size() > 0) {
@@ -711,7 +704,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.commit();
         }
         else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_CLOSING_STK_REPORT)) {
+                StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
 
             transaction.replace(R.id.fragment_content, closingStockReportFragment);
             transaction.addToBackStack(null);

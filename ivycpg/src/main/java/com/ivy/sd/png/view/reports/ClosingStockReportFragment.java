@@ -17,6 +17,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -74,6 +75,34 @@ public class ClosingStockReportFragment extends Fragment {
 
         if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC)
             view.findViewById(R.id.case_qty).setVisibility(View.GONE);
+
+
+        try {
+            ((TextView) view.findViewById(R.id.skucode)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.skucode).getTag()) != null)
+                ((TextView)view.findViewById(R.id.skucode))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.skucode).getTag()));
+
+            ((TextView) view.findViewById(R.id.skuname)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.skuname).getTag()) != null)
+                ((TextView)view.findViewById(R.id.skuname))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.skuname).getTag()));
+
+            ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.piece_qty).getTag()) != null)
+                ((TextView)view.findViewById(R.id.piece_qty))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.piece_qty).getTag()));
+
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+
 
 
         ArrayAdapter<RetailerMasterBO> retailerAdapter = new ArrayAdapter<>(
