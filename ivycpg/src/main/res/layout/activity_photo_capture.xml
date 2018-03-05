@@ -84,8 +84,8 @@
             android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/cardview_marginleftright"
-            android:layout_marginRight="@dimen/cardview_marginleftright"
+            android:layout_marginStart="@dimen/cardview_marginleftright"
+            android:layout_marginEnd="@dimen/cardview_marginleftright"
             card_view:cardCornerRadius="4dp"
             card_view:cardUseCompatPadding="true">
 
@@ -101,8 +101,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/spin_linlay_margin"
-                    android:layout_marginRight="@dimen/spin_linlay_margin"
+                    android:layout_marginStart="@dimen/spin_linlay_margin"
+                    android:layout_marginEnd="@dimen/spin_linlay_margin"
 
                     android:orientation="horizontal">
                     <!--android:layout_marginTop="@dimen/lay_spin_margintop"-->
@@ -171,14 +171,14 @@
 
 
                         android:layout_marginBottom="@dimen/feedbck_edit_margintopbtm"
-                        android:layout_marginLeft="@dimen/feedbck_edit_marginleftright"
-                        android:layout_marginRight="@dimen/feedbck_edit_marginleftright"
+                        android:layout_marginStart="@dimen/feedbck_edit_marginleftright"
+                        android:layout_marginEnd="@dimen/feedbck_edit_marginleftright"
                         android:layout_marginTop="@dimen/feedbck_edit_margintopbtm"
                         android:background="@drawable/feedback_edit_selector"
 
                         android:cursorVisible="true"
 
-                        android:gravity="top|left"
+                        android:gravity="top|start"
                         android:hint="@string/comments"
                         android:imeOptions="actionDone"
 
@@ -213,8 +213,8 @@
                         android:id="@+id/ll_fromdate"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/date_lay_margin"
-                        android:layout_marginRight="@dimen/date_lay_margin"
+                        android:layout_marginStart="@dimen/date_lay_margin"
+                        android:layout_marginEnd="@dimen/date_lay_margin"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal"
@@ -241,8 +241,8 @@
                         android:id="@+id/ll_todate"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/date_lay_margin"
-                        android:layout_marginRight="@dimen/date_lay_margin"
+                        android:layout_marginStart="@dimen/date_lay_margin"
+                        android:layout_marginEnd="@dimen/date_lay_margin"
 
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
@@ -274,8 +274,8 @@
             android:id="@+id/card_view1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/cardview_marginleftright"
-            android:layout_marginRight="@dimen/cardview_marginleftright"
+            android:layout_marginStart="@dimen/cardview_marginleftright"
+            android:layout_marginEnd="@dimen/cardview_marginleftright"
             android:layout_marginTop="@dimen/card_two_margintop"
             android:visibility="gone"
             card_view:cardCornerRadius="4dp"
@@ -473,8 +473,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/activity_margin1"
             android:layout_marginTop="@dimen/activity_margin1"
-            android:paddingLeft="@dimen/savebtn_paddingleftright"
-            android:paddingRight="@dimen/savebtn_paddingleftright"
+            android:paddingStart="@dimen/savebtn_paddingleftright"
+            android:paddingEnd="@dimen/savebtn_paddingleftright"
             android:text="@string/save" />
     </LinearLayout>
 </RelativeLayout>

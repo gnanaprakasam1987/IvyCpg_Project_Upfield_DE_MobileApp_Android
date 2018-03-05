@@ -28,11 +28,12 @@
             android:id="@+id/closeButton"
             android:layout_width="@dimen/info_icon"
             android:layout_height="@dimen/info_icon"
-            android:layout_gravity="right|center"
+            android:layout_gravity="end|center"
             android:layout_margin="@dimen/list_margin"
             android:background="@drawable/icon_close"
             android:backgroundTint="@color/white"
-            android:gravity="right"
+            android:visibility="gone"
+            android:gravity="end"
             android:text="" />
 
     </LinearLayout>
@@ -41,8 +42,8 @@
         android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginLeft="@dimen/list_margin"
-        android:layout_marginRight="@dimen/list_margin"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
         android:layout_marginTop="@dimen/dimen_5dp"
         android:cacheColorHint="@null"
         android:divider="@android:color/transparent"
@@ -55,6 +56,7 @@
         android:id="@+id/ll_close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/dimens_4dp"
         android:orientation="vertical"
 
         android:layout_alignParentBottom="true">
@@ -62,7 +64,7 @@
         <Button
             android:id="@+id/save_btn"
             style="?attr/roundedCustomButtonSmall"
-            android:text="@string/save"
+            android:text="@string/done"
             android:layout_gravity="center_horizontal"
             android:textAllCaps="false" />
     </LinearLayout>

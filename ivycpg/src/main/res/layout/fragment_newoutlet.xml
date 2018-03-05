@@ -20,8 +20,8 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/profile_botton_layout_height"
-        android:layout_marginLeft="@dimen/dimen_12dp"
-        android:layout_marginRight="@dimen/dimen_12dp"
+        android:layout_marginStart="@dimen/dimen_12dp"
+        android:layout_marginEnd="@dimen/dimen_12dp"
         android:layout_marginTop="@dimen/dimen_12dp"
         android:scrollbars="none"></ScrollView>
 
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/reason_btns"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:background="@color/GRAY"
             android:src="@drawable/downloadsuccess" />
 

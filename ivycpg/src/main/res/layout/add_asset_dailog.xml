@@ -25,7 +25,7 @@
             style="?attr/customdialogLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:layout_weight="1"
             android:text="@string/addasset" />
 
@@ -33,7 +33,7 @@
             style="?attr/customdialogLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_weight="1"
             android:text="@string/addassetbrand" />
     </LinearLayout>
@@ -47,8 +47,8 @@
             android:id="@+id/spinner_asset"
             android:layout_width="0dp"
             android:layout_height="@dimen/spinner_height"
-            android:layout_marginRight="@dimen/dimen_10dp"
-            android:layout_toRightOf="@+id/spin_reason1"
+            android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_toEndOf="@+id/spin_reason1"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:overlapAnchor="false" />
@@ -57,8 +57,8 @@
             android:id="@+id/spinner_brand"
             android:layout_width="0dp"
             android:layout_height="@dimen/spinner_height"
-            android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_toRightOf="@+id/spin_reason1"
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_toEndOf="@+id/spin_reason1"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:overlapAnchor="false" />
@@ -74,7 +74,7 @@
             style="?attr/customdialogLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:layout_weight="1"
             android:text="@string/addassetsno" />
 
@@ -82,7 +82,7 @@
             style="?attr/customdialogLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_weight="1"
             android:text="@string/addassetinstall" />
     </LinearLayout>
@@ -98,7 +98,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:layout_weight="1"
             android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
             android:hint="@string/zero"
@@ -111,7 +111,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/servicedate" />

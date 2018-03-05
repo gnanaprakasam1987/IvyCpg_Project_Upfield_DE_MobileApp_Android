@@ -278,7 +278,7 @@ public class RetailerDashboardFragment extends IvyBaseFragment {
         actionBar.setIcon(R.drawable.icon_visit);
 
         //if (!BusinessModel.dashHomeStatic)
-            actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         mViewPager = (ViewPager) view.findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
@@ -421,7 +421,7 @@ public class RetailerDashboardFragment extends IvyBaseFragment {
                     @Override
                     public void onClick(View v) {
                         try {
-                            bmodel.dashBoardHelper.findMinMaxProductLevelRetailerKPI(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID());
+                            bmodel.dashBoardHelper.findMinMaxProductLevelRetailerKPI(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), "");
 
                             if (bmodel.dashBoardHelper.getRetailerKpiSku().size() > 0) {
                                 Intent i = new Intent(getActivity(),

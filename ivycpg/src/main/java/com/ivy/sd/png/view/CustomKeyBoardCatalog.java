@@ -83,7 +83,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
 
         if (total_tv == null) {
             value_keyboard.setVisibility(View.GONE);
-            setKeyboard(pdtBO.getLocations().get(0).getShelfPiece() + "");
+            setKeyboard(((pdtBO.getLocations().get(0).getShelfPiece() != -1) ? pdtBO.getLocations().get(0).getShelfPiece() : 0) + "");
         } else {
             value_keyboard.setText("Value : " + bmodel.formatValue(pdtBO.getTotalamount()));
             //mSelectedTV = tv;

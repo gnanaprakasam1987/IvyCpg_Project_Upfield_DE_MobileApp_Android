@@ -108,6 +108,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
     private int mImagePrintCount = 0;
     private int mDataPrintCount = 0;
+    private int mTotalNumbersPrinted = 0;
 
     private boolean isFromOrder;
     private boolean isFromCollection;
@@ -240,20 +241,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             case R.id.menu_print:
                 if (!isPrintClicked) {
                     isPrintClicked = true;
-                    if (isHomeBtnEnable)
-                        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                    if (bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN
-                            || bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
-                        new Print().execute("1");
-                    } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON) {
-                        doConnectionBixolon();
-                    } else if (bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
-                        doConnectionScrybe();
-                    } else if (bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
-                        new Print().execute("2");
-                    }
-                    else if (bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS)
-                        doMaestroPrintNew();
+                    callPrinter();
                 }
                 break;
             case R.id.menu_share_pdf:
@@ -272,6 +260,26 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         return false;
     }
 
+
+    private void callPrinter(){
+        if (isHomeBtnEnable)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        if (bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN
+                || bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+            new Print().execute("1");
+        } else if (bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON) {
+            doConnectionBixolon();
+        } else if (bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE) {
+            doConnectionScrybe();
+        } else if (bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+            new Print().execute("2");
+        }
+        else if (bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS)
+            doMaestroPrintNew();
+        else if (bmodel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
+            new Print().execute("3");
+        }
+    }
     private class CreatePdf extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
@@ -429,6 +437,10 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 mPrintCountSpinner.setVisibility(View.GONE);
             }
 
+            if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT){
+                mPrintCountSpinner.setVisibility(View.GONE);
+            }
+
             mPrintCountSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
@@ -449,7 +461,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 mDistLogoIV.setImageBitmap(bmp);
             }
 
-            mPreviewTV.setText(bmodel.mCommonPrintHelper.getInvoiceData().toString().replace("#B#", "").replace("print_type", "").replace("print_no", ""));
+            mPreviewTV.setText(bmodel.mCommonPrintHelper.getInvoiceData().toString().replace("#B#", "").replace("print_type", "").replace("print_no", "").replace("print_title", ""));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -506,6 +518,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 doZebraPrintNew(getMacAddressFieldText());
             if (params[0].equals("2"))
                 doLogonPrintNew(getMacAddressFieldText());
+            if (params[0].equals("3"))
+                doInterMecPrint(getMacAddressFieldText());
 
             return true;
         }
@@ -573,6 +587,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     zebraPrinterConnection.write(getDataZebra());
                     mDataPrintCount++;
                     mPrintCount++;
+                    mTotalNumbersPrinted++;
 
                 }
             }
@@ -603,9 +618,34 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                 if (s.contains("print_type")) {
                     if (mPrintCount == 0) {
-                        s = s.replace("print_type", "Original");
+                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
+                            String primaryLabel=(bmodel.labelsMasterHelper.applyLabels("print_type_primary")!=null?bmodel.labelsMasterHelper.applyLabels("print_type_primary"):"Original");
+                            s=s.replace("print_type",primaryLabel);
+                        }else
+                          s = s.replace("print_type", "Original");
                     } else {
+                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
+                            String secondaryLabel=bmodel.labelsMasterHelper.applyLabels("print_type_secondary");
+                            s=s.replace("print_type",(secondaryLabel!=null?secondaryLabel:"Duplicate"));
+                        }else
                         s = s.replace("print_type", "Duplicate");
+                    }
+
+                }
+
+                if (s.contains("print_title")) {
+                    if (mPrintCount == 0) {
+                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
+                            String primaryLabel=(bmodel.labelsMasterHelper.applyLabels("print_title_primary")!=null?bmodel.labelsMasterHelper.applyLabels("print_title_primary"):"Original");
+                            s=s.replace("print_title",primaryLabel);
+                        }else
+                            s = s.replace("print_title", "");
+                    } else {
+                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
+                            String secondaryLabel=bmodel.labelsMasterHelper.applyLabels("print_title_secondary");
+                            s=s.replace("print_title",(secondaryLabel!=null?secondaryLabel:"Duplicate"));
+                        }else
+                            s = s.replace("print_title", "");
                     }
                 }
 
@@ -687,10 +727,39 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 mOutputStream.flush();
                 mDataPrintCount++;
                 mPrintCount++;
+                mTotalNumbersPrinted++;
             }
             mOutputStream.close();
             mBluetoothSocket.close();
 
+        } catch (Exception e) {
+            Commons.printException(e);
+            updateStatus("Connection Failed");
+        }
+    }
+
+    private void doInterMecPrint(String macAddress){
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothDevice mBluetoothDevice = null;
+        BluetoothSocket mBluetoothSocket = null;
+        OutputStream mOutputStream = null;
+        try {
+            if (macAddress.equals(""))
+                updateStatus("Mac address is empty...");
+            mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(macAddress);
+            mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID);
+            mBluetoothSocket.connect();
+            updateStatus("Printing...");
+            for (int i = 0; i < mPrintCountInput; i++) {
+                mOutputStream = mBluetoothSocket.getOutputStream();
+                mOutputStream.write((bmodel.mCommonPrintHelper.getInvoiceData().toString()).getBytes());
+                mOutputStream.flush();
+                mDataPrintCount++;
+                mPrintCount++;
+                mTotalNumbersPrinted++;
+            }
+            mOutputStream.close();
+            mBluetoothSocket.close();
         } catch (Exception e) {
             Commons.printException(e);
             updateStatus("Connection Failed");
@@ -743,56 +812,83 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             commonDialog=null;
         }
 
-        commonDialog =new CommonDialog(getApplicationContext(), this,
-                "", msg,
-                false, getResources().getString(R.string.ok),
-                null, new CommonDialog.positiveOnClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                if (isFromOrder) {
-                    bmodel.productHelper.clearOrderTable();
+        if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT
+                &&isPrintSuccess&&mTotalNumbersPrinted<bmodel.configurationMasterHelper.printCount){
+            msg = getResources().getString(R.string.do_u_want_to_take_one_more_print);
 
-                    if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
-                        bmodel.resetSRPvalues();
+            commonDialog = new CommonDialog(getApplicationContext(), this,
+                    "", msg,
+                    false, getResources().getString(R.string.ok),
+                    getResources().getString(R.string.cancel),
+                    new CommonDialog.positiveOnClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+                    mPrintCountInput=1;mDataPrintCount=0;
+                    callPrinter();
+
+                }}, new CommonDialog.negativeOnClickListener() {
+                    @Override
+                    public void onNegativeButtonClick() {
+                        moveBack();
                     }
-
-                    Intent i;
-                    if (getIntent().getStringExtra("From") == null) {
-                        i = new Intent(
-                                CommonPrintPreviewActivity.this,
-                                HomeScreenTwo.class);
-                        Bundle extras = getIntent().getExtras();
-                        if (extras != null) {
-                            i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                            i.putExtra("CurrentActivityCode", OrderSummary.mCurrentActivityCode);
-                        }
-                    } else {
-                        i = new Intent(CommonPrintPreviewActivity.this, HomeScreenActivity.class);
-                    }
-                    startActivity(i);
-                } else if (isFromCollection) {
-                    bmodel.collectionHelper.downloadCollectionMethods();
-                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
-
-                    Intent intent = new Intent(CommonPrintPreviewActivity.this,
-                            CollectionScreen.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("screentitle", "MENU_COLLECTION");
-                    startActivity(intent);
+                });
+        }
+        else {
+            commonDialog = new CommonDialog(getApplicationContext(), this,
+                    "", msg,
+                    false, getResources().getString(R.string.ok),
+                    null, new CommonDialog.positiveOnClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+                   moveBack();
                 }
-                bmodel.userMasterHelper.downloadDistributionDetails();
-                finish();
-            }
-        }, new CommonDialog.negativeOnClickListener() {
-            @Override
-            public void onNegativeButtonClick() {
-            }
-        });
+            }, new CommonDialog.negativeOnClickListener() {
+                @Override
+                public void onNegativeButtonClick() {
+                }
+            });
+        }
+        commonDialog.setCancelable(false);
         commonDialog.show();
     }
 
+    private void moveBack(){
+        if (isFromOrder) {
+            bmodel.productHelper.clearOrderTable();
+
+            if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+                bmodel.resetSRPvalues();
+            }
+
+            Intent i;
+            if (getIntent().getStringExtra("From") == null) {
+                i = new Intent(
+                        CommonPrintPreviewActivity.this,
+                        HomeScreenTwo.class);
+                Bundle extras = getIntent().getExtras();
+                if (extras != null) {
+                    i.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                    i.putExtra("CurrentActivityCode", OrderSummary.mCurrentActivityCode);
+                }
+            } else {
+                i = new Intent(CommonPrintPreviewActivity.this, HomeScreenActivity.class);
+            }
+            startActivity(i);
+        } else if (isFromCollection) {
+            bmodel.collectionHelper.downloadCollectionMethods();
+            bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                    SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
+
+            Intent intent = new Intent(CommonPrintPreviewActivity.this,
+                    CollectionScreen.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("screentitle", "MENU_COLLECTION");
+            startActivity(intent);
+        }
+        bmodel.userMasterHelper.downloadDistributionDetails();
+        finish();
+    }
 
     /**
      * Bixolon Printer Connection.
@@ -843,6 +939,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                             for (int i = 0; i < mPrintCountInput; i++) {
                                 mDataPrintCount++;
                                 mPrintCount++;
+                                mTotalNumbersPrinted++;
                                 doBixDataPrint(lines);
                             }
 
@@ -1050,6 +1147,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                         aemPrinter.setCarriageReturn();
                         mDataPrintCount++;
                         mPrintCount++;
+                        mTotalNumbersPrinted++;
                     }
 
                     DemoSleeper.sleep(2000 * mDataPrintCount);
@@ -1257,6 +1355,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     bluetoothCommunication.SendData(getDataZebra());
                     mDataPrintCount++;
                     mPrintCount++;
+                    mTotalNumbersPrinted++;
                 } else {
                     updateStatus("Mac address is empty...");
                 }

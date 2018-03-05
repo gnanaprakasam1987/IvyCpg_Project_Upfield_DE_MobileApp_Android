@@ -3,13 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/light_grey"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/titleBar"
@@ -25,7 +25,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <TextView
             android:layout_width="0dp"
@@ -39,24 +39,23 @@
             android:id="@+id/Btn_deliveryDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:text="@string/dummy_txt"
-            android:textColor="@android:color/black" >
-        </Button>
+            android:textColor="@android:color/black"></Button>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
         android:id="@+id/po_lty"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" >
+        android:layout_marginTop="8dp">
 
         <TextView
+            android:id="@+id/txt_po"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/txt_po"
             android:padding="5dp"
             android:text="@string/order_po"
             android:textColor="@android:color/black" />
@@ -65,7 +64,7 @@
             android:id="@+id/edt_po"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="2"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890- %/#!@$&amp;"
             android:maxLength="25"
@@ -76,7 +75,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" 
+        android:layout_height="fill_parent"
         android:layout_weight="1">
 
         <TextView
@@ -92,9 +91,8 @@
             android:id="@+id/edt_remark"
             android:layout_width="0dp"
             android:layout_height="80dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="2"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890., %/#!@$&amp;"
             android:maxLength="250"
             android:singleLine="false"
             android:text=""
@@ -105,14 +103,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
-    <Button
-        android:id="@+id/closeButton"
-        style="?attr/roundedCustomButtonNormal"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="5dp"
-        android:text="@string/ok" >
-    </Button>
+
+        <Button
+            android:id="@+id/closeButton"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:text="@string/ok"></Button>
     </LinearLayout>
 
 </LinearLayout>

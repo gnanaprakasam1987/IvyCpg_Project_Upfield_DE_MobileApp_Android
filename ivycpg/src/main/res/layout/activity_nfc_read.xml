@@ -35,7 +35,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:autoLink="none"
-        android:paddingLeft="@dimen/dimen_8dp"
+        android:paddingStart="@dimen/dimen_8dp"
         android:text="sample"
         android:textColorLink="@color/BLUE"
         android:textSize="@dimen/font_small" />
@@ -53,8 +53,8 @@
         style="?attr/textFieldStyle"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginLeft="@dimen/dimen_8dp"
-        android:layout_marginRight="@dimen/dimen_18dp"
+        android:layout_marginStart="@dimen/dimen_8dp"
+        android:layout_marginEnd="@dimen/dimen_18dp"
         android:background="?textColorPrimary"
         android:visibility="gone" />
 
@@ -78,8 +78,8 @@
             style="?attr/roundedCustomButtonNormal"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/profile_history_20dp"
-            android:layout_marginLeft="@dimen/profile_history_20dp"
-            android:layout_marginRight="@dimen/profile_history_20dp"
+            android:layout_marginStart="@dimen/profile_history_20dp"
+            android:layout_marginEnd="@dimen/profile_history_20dp"
             android:onClick="onClickSubmit"
             android:text="@string/submit"
             android:visibility="visible"
@@ -93,8 +93,8 @@
             style="?attr/roundedCustomButtonNormal"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/profile_history_20dp"
-            android:layout_marginLeft="@dimen/profile_history_20dp"
-            android:layout_marginRight="@dimen/profile_history_20dp"
+            android:layout_marginStart="@dimen/profile_history_20dp"
+            android:layout_marginEnd="@dimen/profile_history_20dp"
             android:onClick="onClickCancel"
             android:text="@string/cancel" />
 

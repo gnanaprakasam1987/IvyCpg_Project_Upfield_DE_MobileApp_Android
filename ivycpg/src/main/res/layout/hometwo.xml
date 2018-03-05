@@ -67,7 +67,7 @@
                         android:layout_width="@dimen/profile_header_img"
                         android:layout_height="@dimen/profile_header_img"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/profile_header_img_marginleft"
+                        android:layout_marginStart="@dimen/profile_header_img_marginleft"
                         android:background="@drawable/circle_blockbg"
                         android:gravity="center"
                         android:orientation="vertical"
@@ -85,7 +85,7 @@
                         android:id="@+id/main.linearlayout.title"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/profile_header_txt_layout_marginleft"
+                        android:layout_marginStart="@dimen/profile_header_txt_layout_marginleft"
                         android:gravity="center_vertical"
                         android:orientation="vertical"
                         >
@@ -139,7 +139,7 @@
                     android:id="@+id/label_activity_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_margin3"
+                    android:layout_marginStart="@dimen/activity_margin3"
                     android:tag="store_activities"
                     android:text="Store activities"
                     android:textColor="#000000"
@@ -148,14 +148,14 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="@dimen/activity_margin3"
-                    android:layout_marginLeft="@dimen/activity_margin2"
+                    android:layout_marginStart="@dimen/activity_margin2"
                     android:background="#000000" />
 
                 <TextView
                     android:id="@+id/activity_done_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_margin2"
+                    android:layout_marginStart="@dimen/activity_margin2"
                     android:textColor="#000000"
                     android:textSize="@dimen/font_large" />
 
@@ -171,8 +171,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/activity_divider_height"
-                android:layout_marginLeft="@dimen/activity_margin3"
-                android:layout_marginRight="@dimen/activity_margin3"
+                android:layout_marginStart="@dimen/activity_margin3"
+                android:layout_marginEnd="@dimen/activity_margin3"
                 android:background="@color/divider_view_color" />
 
             <android.support.v7.widget.RecyclerView
@@ -218,9 +218,9 @@
             android:tag="call_analysis"
             android:text="Call Analysis"
             android:textAllCaps="false"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/footer_padding"/>
+            android:layout_marginEnd="@dimen/footer_padding"/>
 
     </RelativeLayout>
 

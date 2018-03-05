@@ -12,7 +12,7 @@
         android:layout_weight="9.5"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dimen_5dp"
-        android:paddingLeft="@dimen/dimen_5dp"
+        android:paddingStart="@dimen/dimen_5dp"
         android:paddingTop="@dimen/dimen_5dp">
 
         <LinearLayout
@@ -28,16 +28,16 @@
                 android:id="@+id/id_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1.25"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -47,8 +47,8 @@
                         android:id="@+id/order_id_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/inv_no"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size"
@@ -58,8 +58,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -69,8 +69,8 @@
                         android:id="@+id/order_id_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
                         android:text="Dummy Text"
                         android:textColor="?attr/primarycolor"
                         android:textSize="@dimen/font_micro_small" />
@@ -82,16 +82,16 @@
                 android:id="@+id/date_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -101,8 +101,8 @@
                         android:id="@+id/date_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/invoice_date"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
@@ -112,8 +112,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -123,8 +123,8 @@
                         android:id="@+id/date_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
                         android:text=" "
                         android:textColor="@color/history_date_color"
                         android:textSize="@dimen/font_micro_small" />
@@ -137,16 +137,16 @@
                 android:id="@+id/tot_val_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -155,8 +155,8 @@
                         android:id="@+id/tot_val_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/invoiceamt"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
@@ -165,8 +165,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -175,8 +175,8 @@
                         android:id="@+id/tot_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
                         android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/font_micro_small" />
@@ -188,16 +188,16 @@
                 android:id="@+id/total_lines_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="0.75"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -206,8 +206,8 @@
                         android:id="@+id/tot_lines_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/tot_line"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
@@ -216,8 +216,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -226,8 +226,8 @@
                         android:id="@+id/tota_lines_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
                         android:text=" "
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/font_micro_small" />
@@ -248,16 +248,16 @@
                 android:id="@+id/order_id_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -267,8 +267,8 @@
                         android:id="@+id/ord_id_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/order_number"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size"
@@ -278,8 +278,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -289,8 +289,8 @@
                         android:id="@+id/ord_id_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
                         android:textColor="?attr/primarycolor"
                         android:textSize="@dimen/font_micro_small" />
 
@@ -301,16 +301,16 @@
                 android:id="@+id/invoice_qty_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -319,8 +319,8 @@
                         android:id="@+id/invoice_qty_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/overdue"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
@@ -330,8 +330,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -340,8 +340,8 @@
                         android:id="@+id/invoice_qty_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
                         android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/font_micro_small" />
@@ -353,16 +353,16 @@
                 android:id="@+id/del_date_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -371,8 +371,8 @@
                         android:id="@+id/del_date_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/due_date"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
@@ -382,8 +382,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -392,8 +392,8 @@
                         android:id="@+id/del_date_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
                         android:text=" "
                         android:textColor="@color/history_date_color"
                         android:textSize="@dimen/font_micro_small" />
@@ -405,16 +405,16 @@
                 android:id="@+id/invoice_date_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -423,8 +423,8 @@
                         android:id="@+id/invoice_date_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/os_amt"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
@@ -434,9 +434,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
 
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -445,8 +445,8 @@
                         android:id="@+id/invoice_date_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
                         android:text=" "
                         android:textColor="@color/history_date_color"
                         android:textSize="@dimen/font_micro_small" />
@@ -459,16 +459,16 @@
                 android:id="@+id/del_rep_code_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -477,8 +477,8 @@
                         android:id="@+id/del_rep_code_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/status"
                         android:textColor="@color/history_label_color"
                         android:textSize="@dimen/list_item_primary_text_size" />
@@ -488,8 +488,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -498,8 +498,8 @@
                         android:id="@+id/del_rep_code_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
                         android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/font_micro_small" />
@@ -524,7 +524,7 @@
             android:layout_width="@dimen/profile_history_20dp"
             android:layout_height="@dimen/profile_history_25dp"
             android:layout_gravity="center"
-            android:layout_marginRight="@dimen/profile_header_txt_layout_marginbottom"
+            android:layout_marginEnd="@dimen/profile_header_txt_layout_marginbottom"
             android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
             android:background="@drawable/ic_double_right_arrow"
             android:backgroundTint="@color/history_invbtn_color"

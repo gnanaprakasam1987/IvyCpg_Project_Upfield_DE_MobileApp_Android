@@ -22,14 +22,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/card_margin"
-            android:paddingRight="@dimen/card_margin">
+            android:paddingStart="@dimen/card_margin"
+            android:paddingEnd="@dimen/card_margin">
 
             <LinearLayout
                 android:id="@+id/ll_invoie_no"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginEnd="@dimen/right_margin"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:layout_weight="2"
                 android:orientation="vertical">
@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789$&amp;*/-"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:maxLength="25"
                     android:text="@string/zero" />
 
@@ -58,7 +58,7 @@
                 android:id="@+id/ll_lot_no"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginEnd="@dimen/right_margin"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:layout_weight="2"
                 android:orientation="vertical">
@@ -77,7 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789$&amp;*"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:maxLength="25"
                     android:text="@string/zero"
                     android:textColor="@android:color/black" />
@@ -88,7 +88,7 @@
                 android:id="@+id/ll_oldmrp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginEnd="@dimen/right_margin"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -106,7 +106,7 @@
                     style="@style/EditText_ListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:inputType="number"
                     android:keepScreenOn="true"
                     android:maxLength="8"
@@ -121,7 +121,7 @@
                 android:id="@+id/ll_srpedit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginEnd="@dimen/right_margin"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -139,7 +139,7 @@
                     style="@style/EditText_ListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:inputType="number"
                     android:keepScreenOn="true"
                     android:maxLength="10"
@@ -167,7 +167,7 @@
                 android:overlapAnchor="false"
                 android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true" />
 
             <TextView
@@ -185,14 +185,14 @@
             android:layout_below="@+id/ll2"
             android:layout_marginBottom="@dimen/list_margin"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/card_margin"
-            android:paddingRight="@dimen/card_margin">
+            android:paddingStart="@dimen/card_margin"
+            android:paddingEnd="@dimen/card_margin">
 
             <LinearLayout
                 android:id="@+id/ll_piece"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginEnd="@dimen/right_margin"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -211,7 +211,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:digits="0123456789"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:maxLength="4"
                     android:text="@string/zero" />
 
@@ -221,7 +221,7 @@
                 android:id="@+id/ll_case"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginEnd="@dimen/right_margin"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -240,7 +240,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:digits="0123456789"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:maxLength="4"
                     android:text="@string/zero" />
 
@@ -250,7 +250,7 @@
                 android:id="@+id/ll_outer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginEnd="@dimen/right_margin"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -269,7 +269,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:digits="0123456789"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:maxLength="4"
                     android:text="@string/zero" />
 
@@ -279,7 +279,7 @@
                 android:id="@+id/ll_mfd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginEnd="@dimen/right_margin"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:layout_weight="1.5"
                 android:orientation="vertical">
@@ -297,7 +297,7 @@
                     style="@style/datePickerButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left|center"
+                    android:gravity="start|center"
                     android:text="" />
 
             </LinearLayout>
@@ -306,7 +306,7 @@
                 android:id="@+id/ll_exp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/right_margin"
+                android:layout_marginEnd="@dimen/right_margin"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:layout_weight="1.5"
                 android:orientation="vertical">
@@ -324,7 +324,7 @@
                     style="@style/datePickerButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left|center"
+                    android:gravity="start|center"
                     android:text="" />
 
             </LinearLayout>
@@ -336,7 +336,7 @@
             android:id="@+id/ivClose"
             android:layout_width="@dimen/close_icon_size"
             android:layout_height="@dimen/close_icon_size"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:padding="@dimen/close_icon_pading"
             android:scaleType="fitXY"

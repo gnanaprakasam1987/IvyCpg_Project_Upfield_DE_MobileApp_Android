@@ -115,7 +115,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
         editTextPassword = (EditText) findViewById(R.id.EditText022);
         editTextPassword.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-
         Button buttonLogin = (Button) findViewById(R.id.loginButton);
         buttonLogin.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 

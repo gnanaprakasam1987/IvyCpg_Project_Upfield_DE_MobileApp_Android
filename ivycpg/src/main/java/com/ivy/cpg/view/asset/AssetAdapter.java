@@ -83,7 +83,11 @@ public class AssetAdapter extends BaseAdapter {
         reason1.setReasonID(Integer.toString(0));
         reason1.setReasonDesc(context.getResources().getString(R.string.select_reason));
         mAssetReasonList = mAssetPresenter.getAssetReasonList();
-        mAssetReasonList.add(0, reason1);
+
+        if (mAssetReasonList.size() > 0) {
+            if (!mAssetReasonList.get(0).getReasonID().equals("0"))
+                mAssetReasonList.add(0, reason1);
+        }
 
         mAssetReasonSpinAdapter = new ArrayAdapter<>(mContext,
                 R.layout.spinner_bluetext_layout, mAssetReasonList);

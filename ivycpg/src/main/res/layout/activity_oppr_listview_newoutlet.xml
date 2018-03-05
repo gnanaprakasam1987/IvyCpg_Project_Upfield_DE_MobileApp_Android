@@ -29,9 +29,9 @@
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
-                android:layout_marginRight="@dimen/list_margin"
+                android:layout_marginEnd="@dimen/list_margin"
                 android:maxLines="2"
                 android:text="@string/product_name" />
 
@@ -59,7 +59,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:text="@string/zero" />
 
         </LinearLayout>
@@ -85,7 +85,7 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:text="@string/zero" />
 
         </LinearLayout>

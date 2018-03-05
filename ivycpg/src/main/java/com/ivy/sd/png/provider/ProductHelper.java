@@ -658,7 +658,7 @@ public class ProductHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + mSelectedGlobalLevelID + " and PM1.PID =" + mSelectedGlobalProductId;
+            query = query + " WHERE PM1.PLid = " + mSelectedGlobalLevelID + " and PM1.PID =" + mSelectedGlobalProductId + " Order By PM" + mProductLevelId + ".RowId";
 
         } else {
             query = "SELECT DISTINCT PM1.PID, PM1.PName FROM ProductMaster PM1"
@@ -705,7 +705,7 @@ public class ProductHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + mSelectedGlobalLevelID + " AND PM1.PID = " + mSelectedGlobalProductId;
+            query = query + " WHERE PM1.PLid = " + mSelectedGlobalLevelID + " AND PM1.PID = " + mSelectedGlobalProductId + " Order By PM" + filterGap + ".RowId,PM" + mProductLevelId + ".RowId";
 
         } else {
 
@@ -718,7 +718,8 @@ public class ProductHelper {
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
                         + ".ParentId = PM" + (i - 1) + ".PID";
 
-            query = query + " WHERE PM1.PLid = " + mParentLevelId;
+            query = query + " WHERE PM1.PLid = " + mParentLevelId +
+                    " Order By PM" + filterGap + ".RowId,PM1.RowId";
         }
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1529,7 +1530,7 @@ public class ProductHelper {
                         + loopEnd
                         + ".pcode,A"
                         + loopEnd
-                        + ".pname,A" + parentLevelID + ".pid,A"
+                        + ".pname,A" + (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY ? bmodel.configurationMasterHelper.globalSeqId : parentLevelID) + ".pid,A"
                         + loopEnd
                         + ".sih,A"
                         + loopEnd
@@ -2664,16 +2665,28 @@ public class ProductHelper {
             db.openDataBase();
 
             Cursor c1 = db
-                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid WHERE PM.TaggingTypelovID = "
+                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid,ifnull (RM.RetailerID,0) as rid FROM ProductTaggingCriteriaMapping PCM " +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
+                            "LEFT JOIN RetailerMaster RM on RM.accountid=CriteriaId and RM.RetailerID =" + bmodel.getRetailerMasterBO().getRetailerID() +
+                            " AND CriteriaType='ACCOUNT' WHERE PM.TaggingTypelovID = "
                             + " (SELECT ListId FROM StandardListMaster WHERE ListCode = '"
-                            + taggingType + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+                            + taggingType + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")" +
+                            " AND (CriteriaType !='ACCOUNT' or rid !=0)" +
+                            " ORDER BY" +
+                            "  (CASE criteriatype" +
+                            "    WHEN 'RETAILER' THEN 0" +
+                            "    WHEN 'ACCOUNT' THEN 1" +
+                            "    WHEN 'CHANNEL' THEN 2" +
+                            "    WHEN 'DISTRIBUTOR' THEN 3" +
+                            "    WHEN 'LOCATION' THEN 4" +
+                            "    WHEN 'USER' THEN 5" +
+                            "    WHEN 'CLASS' THEN 6 END)");
 
             if (c1 != null) {
                 if (c1.moveToNext()) {
 
                     if (c1.getString(0).equals("RETAILER"))
-                        mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
+                        mappingId = bmodel.getRetailerMasterBO().getRetailerID() + "";
 
                     else if (c1.getString(0).equals("ACCOUNT"))
                         mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
@@ -2727,7 +2740,7 @@ public class ProductHelper {
     public void cloneReasonMaster(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
         try {
             Vector<ProductMasterBO> productMasterBOs = null;
-            if(isFromOrder)
+            if (isFromOrder)
                 productMasterBOs = productMaster;
             else
                 productMasterBOs = mSalesReturnProducts;
@@ -2986,6 +2999,7 @@ public class ProductHelper {
             product.setOrderedPcsQty(0);
             product.setOrderedCaseQty(0);
             product.setOrderedOuterQty(0);
+            product.setFoc(0);
         }
     }
 
@@ -3000,6 +3014,7 @@ public class ProductHelper {
             product.setLocalOrderPieceqty(0);
             product.setLocalOrderCaseqty(0);
             product.setLocalOrderOuterQty(0);
+            product.setFoc(0);
             // clear discount fields
             product.setD1(0);
             product.setD2(0);
@@ -3065,6 +3080,7 @@ public class ProductHelper {
             product.setOrderedPcsQty(0);
             product.setOrderedCaseQty(0);
             product.setOrderedOuterQty(0);
+            product.setFoc(0);
             product.setCheked(false);
         }
     }
@@ -3091,6 +3107,50 @@ public class ProductHelper {
             }
         }
         return true;
+    }
+
+    public boolean isMustSellFilledStockCheck() {
+
+        boolean isSkuFilled = true;
+
+        int siz = getTaggedProducts().size();
+        if (siz == 0)
+            return false;
+        loop:
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO product = getTaggedProducts().get(i);
+
+            int siz1 = product.getLocations().size();
+            for (int j = 0; j < siz1; j++) {
+                if (product.getIsMustSell() == 1
+                        && (product.getLocations().get(j).getShelfPiece() < 0
+                        && product.getLocations().get(j).getShelfCase() < 0
+                        && product.getLocations().get(j).getShelfOuter() < 0
+                        && product.getLocations().get(j).getWHPiece() == 0
+                        && product.getLocations().get(j).getWHCase() == 0
+                        && product.getLocations().get(j).getWHOuter() == 0
+                        && product.getLocations().get(j).getCockTailQty() == 0
+                        && product.getIsListed() == 0
+                        && product.getIsDistributed() == 0
+                        && product.getReasonID().equals("0")
+                        && product.getLocations().get(j).getAvailability() < 0)) {
+                    if (j == siz1 - 1) {
+                        isSkuFilled = false;
+                        break loop;
+                    }
+                } else {
+                    if (product.getLocations().get(j).getAvailability() == 0 && bmodel.configurationMasterHelper.SHOW_STOCK_RSN && product.getReasonID().equals("0")) {
+                        isSkuFilled = false;
+                        break loop;
+                    } else {
+                        isSkuFilled = true;
+                        j = siz1;
+                    }
+                }
+
+            }
+        }
+        return isSkuFilled;
     }
 
     public boolean isCSMustSellFilled() {//For counter Sales

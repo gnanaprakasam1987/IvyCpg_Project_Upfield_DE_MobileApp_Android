@@ -36,9 +36,9 @@
                     style="?attr/customListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/list_margin"
+                    android:layout_marginEnd="@dimen/list_margin"
                     android:layout_weight="1"
                     android:text="@string/product_name" />
 
@@ -57,8 +57,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_below="@+id/stock_and_order_listview_productname"
-                    android:layout_gravity="right|center"
-                    android:gravity="left|center"
+                    android:layout_gravity="end|center"
+                    android:gravity="start|center"
                     android:maxLines="1"
                     android:text="@string/barcode"
                     android:visibility="gone" />
@@ -76,7 +76,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
                     android:text="@string/srp" />
 
@@ -85,7 +85,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
                     android:text="@string/ou" />
 
@@ -94,7 +94,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
                     android:text="@string/mrp" />
 
@@ -103,7 +103,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
                     android:text="@string/msq"
                     android:visibility="gone" />
@@ -113,16 +113,51 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
                     android:text="@string/psq"
                     android:visibility="gone" />
 
                 <LinearLayout
+                    android:id="@+id/llmoq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/moqTitle"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:tag="moq"
+                        android:text="@string/moq" />
+
+                    <TextView
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_1dp"
+                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:maxLines="1"
+                        android:text=":" />
+
+                    <TextView
+                        android:id="@+id/stock_and_order_listview_moq"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/zero" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/llwsih"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/outlet_left_margin"
+                    android:layout_marginStart="@dimen/outlet_left_margin"
                     android:orientation="horizontal">
 
                     <TextView
@@ -138,8 +173,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -156,7 +191,7 @@
                     android:id="@+id/llsihcase"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -172,8 +207,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -190,7 +225,7 @@
                     android:id="@+id/llsihouter"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -206,8 +241,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -224,7 +259,7 @@
                     android:id="@+id/llSihPc"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -240,8 +275,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -258,7 +293,7 @@
                     android:id="@+id/llIo"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -274,8 +309,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -292,7 +327,7 @@
                     android:id="@+id/llCo"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -308,8 +343,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -326,7 +361,7 @@
                     android:id="@+id/llSoc"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -342,8 +377,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -361,7 +396,7 @@
                     android:id="@+id/llRepCase"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -377,8 +412,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -395,7 +430,7 @@
                     android:id="@+id/llRepOu"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -411,8 +446,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -429,7 +464,7 @@
                     android:id="@+id/llRepPc"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -445,8 +480,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -464,7 +499,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:layout_marginStart="@dimen/margin_5px"
                     android:orientation="horizontal">
 
                     <TextView
@@ -480,8 +515,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_1dp"
-                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
                         android:maxLines="1"
                         android:text=":" />
 
@@ -511,8 +546,8 @@
                     android:id="@+id/lleditLaouyt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@+id/lltotwight"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/lltotwight"
                     android:background="@color/white"
                     android:orientation="horizontal"
                     android:weightSum="7">
@@ -559,7 +594,7 @@
                             style="@style/EditText_ListItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="left" />
+                            android:gravity="start" />
 
                     </LinearLayout>
 
@@ -583,7 +618,7 @@
                             style="@style/EditText_ListItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="left" />
+                            android:gravity="start" />
 
                     </LinearLayout>
 
@@ -607,7 +642,7 @@
                             style="@style/EditText_ListItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="left" />
+                            android:gravity="start" />
 
                     </LinearLayout>
 
@@ -632,7 +667,7 @@
                             style="@style/EditText_ListItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:text="@string/zero" />
 
                     </LinearLayout>
@@ -658,9 +693,9 @@
                             style="@style/EditText_ListItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:text="@string/zero"
-                            android:maxLength="8" />
+                            android:gravity="start"
+                            android:maxLength="8"
+                            android:text="@string/zero" />
 
                     </LinearLayout>
 
@@ -672,9 +707,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignBottom="@+id/lleditLaouyt"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignTop="@+id/lleditLaouyt"
-                    android:layout_marginRight="@dimen/list_margin"
+                    android:layout_marginEnd="@dimen/list_margin"
                     android:gravity="top">
 
 
@@ -682,7 +717,7 @@
                         android:id="@+id/llWeight"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:orientation="vertical">
 
                         <TextView
@@ -699,7 +734,7 @@
                             style="?attr/customListItemSecondary"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:gravity="center|right"
+                            android:gravity="center|end"
                             android:text="@string/zero"
                             android:textColor="@color/black_bg1"
                             android:textSize="@dimen/font_micro_small" />
@@ -736,7 +771,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="center|right"
+                    android:gravity="center|end"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
                     android:textSize="@dimen/font_micro_small" />
@@ -762,7 +797,7 @@
                     style="@style/EditText_ListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:text="@string/zero" />
 
             </LinearLayout>
@@ -787,9 +822,9 @@
                     style="@style/EditText_ListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="@string/zero"
-                    android:maxLength="5" />
+                    android:gravity="start"
+                    android:maxLength="5"
+                    android:text="@string/zero" />
 
             </LinearLayout>
 
@@ -797,7 +832,7 @@
                 android:id="@+id/llTotal"
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/list_margin"
+                android:layout_marginEnd="@dimen/list_margin"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -806,7 +841,7 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="end"
                     android:tag="totaltitle"
                     android:text="@string/total" />
 
@@ -816,8 +851,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:gravity="center|right"
+                    android:layout_gravity="end"
+                    android:gravity="center|end"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
                     android:textSize="@dimen/font_micro_small" />

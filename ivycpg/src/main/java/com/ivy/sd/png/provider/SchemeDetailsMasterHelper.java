@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomBO;
@@ -2847,41 +2848,45 @@ public class SchemeDetailsMasterHelper {
         }
         if (mOffInvoiceAppliedSchemeList != null) {
             for (SchemeBO schemeBO : mOffInvoiceAppliedSchemeList) {
-                if (schemeBO.isQuantityTypeSelected()) {
-                    final List<SchemeProductBO> freeProductsList = schemeBO.getFreeProducts();
-                    for (SchemeProductBO freeProductBO : freeProductsList) {
-                        if (freeProductBO.getQuantitySelected() > 0) {
-                            ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+                if (!bmodel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
+                        || OrderHelper.getInstance(context).getValidAccumulationSchemes().contains(String.valueOf(schemeBO.getParentId()))) {
 
-                            if (productBO != null) {
-                                StringBuffer sb = new StringBuffer();
-                                sb.append(orderID + "," + freeProductBO.getSchemeId() + ","
-                                        + freeProductBO.getProductId() + ",");
-                                sb.append(freeProductBO.getQuantitySelected() + ","
-                                        + freeProductBO.getUomID() + ",");
-                                if (freeProductBO.getUomID() == productBO.getCaseUomId()
-                                        && productBO.getCaseUomId() != 0) {
-                                    sb.append(productBO.getCaseSize() + ",");
-                                } else if (freeProductBO.getUomID() == productBO.getOuUomid()
-                                        && productBO.getOuUomid() != 0) {
-                                    sb.append(productBO.getOutersize() + ",");
-                                } else if (freeProductBO.getUomID() == productBO.getPcUomid()
-                                        || freeProductBO.getUomID() == 0) {
-                                    sb.append(1 + ",");
-                                } else {
-                                    sb.append(1 + ",");
+                    if (schemeBO.isQuantityTypeSelected()) {
+                        final List<SchemeProductBO> freeProductsList = schemeBO.getFreeProducts();
+                        for (SchemeProductBO freeProductBO : freeProductsList) {
+                            if (freeProductBO.getQuantitySelected() > 0) {
+                                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+
+                                if (productBO != null) {
+                                    StringBuffer sb = new StringBuffer();
+                                    sb.append(orderID + "," + freeProductBO.getSchemeId() + ","
+                                            + freeProductBO.getProductId() + ",");
+                                    sb.append(freeProductBO.getQuantitySelected() + ","
+                                            + freeProductBO.getUomID() + ",");
+                                    if (freeProductBO.getUomID() == productBO.getCaseUomId()
+                                            && productBO.getCaseUomId() != 0) {
+                                        sb.append(productBO.getCaseSize() + ",");
+                                    } else if (freeProductBO.getUomID() == productBO.getOuUomid()
+                                            && productBO.getOuUomid() != 0) {
+                                        sb.append(productBO.getOutersize() + ",");
+                                    } else if (freeProductBO.getUomID() == productBO.getPcUomid()
+                                            || freeProductBO.getUomID() == 0) {
+                                        sb.append(1 + ",");
+                                    } else {
+                                        sb.append(1 + ",");
+                                    }
+                                    sb.append(0 + "," + freeProductBO.getAccProductParentId());
+                                    sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                                    sb.append("," + bmodel.QT(productBO.getHsnCode()));
+
+                                    db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
+                                            sb.toString());
                                 }
-                                sb.append(0 + "," + freeProductBO.getAccProductParentId());
-                                sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                                sb.append("," + bmodel.QT(productBO.getHsnCode()));
-
-                                db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
-                                        sb.toString());
                             }
                         }
+
+
                     }
-
-
                 }
             }
         }
@@ -4111,12 +4116,12 @@ public class SchemeDetailsMasterHelper {
 
     private void downloadProductIdListByParentId(DBUtil db) {
         StringBuffer sb = new StringBuffer();
-        sb.append("select distinct SBM.productid,SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from SchemeBuyMaster SBM ");
-        sb.append(" inner join SchemeMaster SM on SM.Schemeid=SBM.Schemeid ");
-        sb.append("inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid ");
-        sb.append("left join schemeApplyCountMaster SAC on SM.schemeid=SAC.schemeID ");
+        sb.append("select distinct SBM.productid,SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from SchemeMaster SM ");
+        sb.append("left join schemeApplyCountMaster SAC on SM.Schemeid=SAC.schemeID ");
         sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
         sb.append(" OR SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ")");
+        sb.append(" inner join SchemeBuyMaster SBM on SM.Schemeid=SBM.Schemeid ");
+        sb.append("inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid ");
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
         sb.append(" where SCM.distributorid in(0," + bmodel.getRetailerMasterBO().getDistributorId() + ")");
         sb.append(" and SCM.RetailerId in(0," + bmodel.getRetailerMasterBO().getRetailerID() + ")");
@@ -4479,6 +4484,7 @@ public class SchemeDetailsMasterHelper {
                     ArrayList<SchemeProductBO> freeProductList = new ArrayList<>();
                     SchemeProductBO schemeProductBO;
                     int schemeid = 0;
+                    int parentId = 0;
                     String schemeDesc = "";
                     String freeType = "";
                     SchemeBO schemeBO = null;
@@ -4508,6 +4514,7 @@ public class SchemeDetailsMasterHelper {
                             if (schemeid != 0) {
                                 schemeBO = new SchemeBO();
                                 schemeBO.setSchemeId(schemeid + "");
+                                schemeBO.setParentId(parentId);
                                 schemeBO.setFreeType(freeType);
                                 schemeBO.setBuyType("SV");
                                 schemeBO.setSchemeParentName(schemeDesc);
@@ -4521,9 +4528,11 @@ public class SchemeDetailsMasterHelper {
                                 schemeid = c.getInt(4);
                                 schemeDesc = c.getString(6);
                                 freeType = c.getString(9);
+                                parentId = c.getInt(5);
                             } else {
                                 freeProductList.add(schemeProductBO);
                                 schemeid = c.getInt(4);
+                                parentId = c.getInt(5);
                                 schemeDesc = c.getString(6);
                                 freeType = c.getString(9);
                             }
@@ -4539,6 +4548,7 @@ public class SchemeDetailsMasterHelper {
 
                         schemeBO = new SchemeBO();
                         schemeBO.setSchemeId(schemeid + "");
+                        schemeBO.setParentId(parentId);
                         schemeBO.setFreeType(freeType);
                         schemeBO.setBuyType("SV");
                         schemeBO.setSchemeParentName(schemeDesc);

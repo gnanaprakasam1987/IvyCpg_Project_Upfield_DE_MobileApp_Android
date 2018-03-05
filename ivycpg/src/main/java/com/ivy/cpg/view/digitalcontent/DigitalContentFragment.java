@@ -625,6 +625,11 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         */
                 int loopCount = 0;
                 mImgCount = 0;
+                mAudioCount = 0;
+                mVideoCount = 0;
+                mXlsCount = 0;
+                mPDFCount = 0;
+                mOthersCount = 0;
                 for (int j = 0; j < mImageList.size(); j++) {
                     int mSize = mDigitalContentList.size();
                     if (loopCount < mSize) {
@@ -683,31 +688,31 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             // result is the value returned from doInBackground
 
             progressDialogue.dismiss();
-            if (mDigitalContentList.size() > 0) {
+            //if (mDigitalContentList.size() > 0) {
 
-                if (tabLayout != null) {
-                    tabLayout.removeAllTabs();
-                }
-
-                tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-                tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-                viewPager = (ViewPager) view.findViewById(R.id.pager);
-                adapter = new PagerAdapter
-                        (getChildFragmentManager());
-                if (mImgCount > 0)
-                    adapter.addFragment(new DigitalContentImagesFragment(), getResources().getString(R.string.tab_text_images) + ":" + mImgCount);
-                if (mAudioCount > 0)
-                    adapter.addFragment(new DigitalContentAudioFragment(), getResources().getString(R.string.tab_text_audio) + ":" + mAudioCount);
-                if (mVideoCount > 0)
-                    adapter.addFragment(new DigitalContentVideoFragment(), getResources().getString(R.string.tab_text_video) + ":" + mVideoCount);
-                if (mXlsCount > 0)
-                    adapter.addFragment(new DigitalContentXlsFragment(), getResources().getString(R.string.tab_text_xls) + ":" + mXlsCount);
-                if (mPDFCount > 0)
-                    adapter.addFragment(new DigitalContentPdfFragment(), getResources().getString(R.string.tab_text_pdf) + ":" + mPDFCount);
-                if (mOthersCount > 0)
-                    adapter.addFragment(new DigitalContentOthersFragment(), getResources().getString(R.string.tab_text_others) + ":" + mOthersCount);
-
+            if (tabLayout != null) {
+                tabLayout.removeAllTabs();
             }
+
+            tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+            viewPager = (ViewPager) view.findViewById(R.id.pager);
+            adapter = new PagerAdapter
+                    (getChildFragmentManager());
+            if (mImgCount > 0)
+                adapter.addFragment(new DigitalContentImagesFragment(), getResources().getString(R.string.tab_text_images) + ":" + mImgCount);
+            if (mAudioCount > 0)
+                adapter.addFragment(new DigitalContentAudioFragment(), getResources().getString(R.string.tab_text_audio) + ":" + mAudioCount);
+            if (mVideoCount > 0)
+                adapter.addFragment(new DigitalContentVideoFragment(), getResources().getString(R.string.tab_text_video) + ":" + mVideoCount);
+            if (mXlsCount > 0)
+                adapter.addFragment(new DigitalContentXlsFragment(), getResources().getString(R.string.tab_text_xls) + ":" + mXlsCount);
+            if (mPDFCount > 0)
+                adapter.addFragment(new DigitalContentPdfFragment(), getResources().getString(R.string.tab_text_pdf) + ":" + mPDFCount);
+            if (mOthersCount > 0)
+                adapter.addFragment(new DigitalContentOthersFragment(), getResources().getString(R.string.tab_text_others) + ":" + mOthersCount);
+
+            //}
 
             if (viewPager != null && adapter != null) {
                 viewPager.setAdapter(adapter);

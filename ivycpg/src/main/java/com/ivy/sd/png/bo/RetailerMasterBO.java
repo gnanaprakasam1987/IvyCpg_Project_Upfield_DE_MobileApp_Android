@@ -313,7 +313,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.credit_balance = credit_balance;
     }
 
-
     public String getOrderTypeId() {
         return orderTypeId;
     }

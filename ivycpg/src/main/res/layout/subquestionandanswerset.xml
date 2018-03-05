@@ -33,7 +33,7 @@
                     android:id="@+id/imp"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:paddingLeft="@dimen/dimen_2dp"
+                    android:paddingStart="@dimen/dimen_2dp"
                     android:text="*"
                     android:textColor="@color/RED"
                     android:textSize="@dimen/text_sz_medium"
@@ -43,7 +43,7 @@
                     android:id="@+id/questionno"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:gravity="center"
                     android:textColor="#ffffff"
                     android:textSize="@dimen/text_sz_medium"
@@ -54,8 +54,8 @@
                     android:id="@+id/questionTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="1dp"
-                    android:layout_toRightOf="@+id/questionno"
+                    android:layout_marginStart="1dp"
+                    android:layout_toEndOf="@+id/questionno"
                     android:textColor="@color/DependentBlack"
                     android:textSize="@dimen/text_sz_medium"></TextView>
 
@@ -71,8 +71,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginTop="3dp"
                     android:orientation="horizontal"
                     android:padding="2dp">
@@ -95,8 +95,8 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="1px"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp" />
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp" />
         </LinearLayout>
 
         <RelativeLayout
@@ -111,7 +111,7 @@
                 android:layout_width="@dimen/main_photo_width"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:text="0"
                 android:textSize="@dimen/highlight_normal" />
 
@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/scoreTV"
                 android:gravity="center"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:orientation="vertical">
 
                 <TextView
@@ -148,7 +148,7 @@
                             android:layout_width="0dp"
                             android:layout_height="@dimen/icon_height"
                             android:layout_weight="6"
-                            android:gravity="center|right">
+                            android:gravity="center|end">
                             <RelativeLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
@@ -166,7 +166,7 @@
                                     android:id="@+id/textOne"
                                     android:layout_width="20sp"
                                     android:layout_height="20sp"
-                                    android:layout_alignRight="@id/imgBtn"
+                                    android:layout_alignEnd="@id/imgBtn"
                                     android:layout_alignTop="@id/imgBtn"
                                     android:background="@drawable/badge_circle"
                                     android:gravity="center_horizontal|center_vertical|center"
@@ -182,8 +182,8 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/one_dp_width"
-                            android:layout_marginRight="@dimen/one_dp_width"
+                            android:layout_marginStart="@dimen/one_dp_width"
+                            android:layout_marginEnd="@dimen/one_dp_width"
                             android:visibility="gone"
                             android:layout_weight="1"
                             android:orientation="horizontal">
@@ -200,7 +200,7 @@
                             android:layout_height="@dimen/icon_height"
                             android:layout_weight="6"
                             android:visibility="gone"
-                            android:gravity="center|left">
+                            android:gravity="center|start">
 
                             <ImageView
                                 android:id="@+id/photos"
@@ -220,7 +220,7 @@
             android:id="@+id/sub_mandatory_view"
             android:layout_width="@dimen/dimen_30dp"
             android:layout_height="@dimen/dimen_30dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:visibility="gone">
 
             <com.ivy.sd.png.view.SlantView

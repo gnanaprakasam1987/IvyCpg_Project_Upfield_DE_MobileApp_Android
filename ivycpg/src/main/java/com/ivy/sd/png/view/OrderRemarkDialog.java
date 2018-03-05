@@ -3,6 +3,8 @@ package com.ivy.sd.png.view;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -45,6 +47,22 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
         mEdtRemark = (EditText) findViewById(R.id.edt_remark);
         mBtnDate = (Button) findViewById(R.id.Btn_deliveryDate);
         mBtnClose = (Button) findViewById(R.id.closeButton);
+
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                char[] chars = {'\'', '"', '<', '>'};
+                for (int i = start; i < end; i++) {
+                    if (new String(chars).contains(String.valueOf(source.charAt(i)))) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
+        mEdtRemark.setFilters(new InputFilter[]{filter});
+
 
         bmodel = (BusinessModel) context.getApplicationContext();
         con = context;

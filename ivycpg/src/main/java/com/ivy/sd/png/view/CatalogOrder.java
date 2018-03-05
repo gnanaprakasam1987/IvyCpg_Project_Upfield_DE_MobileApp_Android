@@ -5,9 +5,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,6 +21,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +47,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderSummary;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -71,7 +77,7 @@ import java.util.Vector;
 /**
  * Created by dharmapriya.k on 10/14/2016,11:34 AM.
  */
-public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener {
+public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener,MOQHighlightDialog.savePcsValue {
     private static final String BRAND = "Brand";
     public static final String GENERAL = "General";
     private final String mCommon = "Filt01";
@@ -120,7 +126,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private String strBarCodeSearch = "ALL";
 
 
-
     private Toolbar toolbar;
 
     private Vector<ProductMasterBO> asyncList = new Vector<>();
@@ -154,6 +159,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private TextView totalQtyTV;
     private File appImageFolderPath;
     public Timer orderTimer;
+    private MOQHighlightDialog mMOQHighlightDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1303,6 +1309,35 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private void nextButtonClick() {
         try {
             if (bmodel.hasOrder()) {
+
+                //if this config IS_RFIELD1_ENABLED enabled below code will work
+                //and
+                if (bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
+                    int size = bmodel.productHelper
+                            .getProductMaster().size();
+                    int count = 0;
+                    for (int i = 0; i < size; ++i) {
+                        ProductMasterBO product = bmodel.productHelper
+                                .getProductMaster().get(i);
+
+                        if (product.getOrderedPcsQty() > 0 && !TextUtils.isEmpty(product.getRField1())) {
+                            //converting string Rfield1 value to integra
+                            int res = SDUtil.convertToInt(product.getRField1());
+                            if (product.getOrderedPcsQty() % res != 0)
+                                count++;
+
+                        }
+                    }
+                    if (count > 0) {
+                        new MOQConfigEnabled().execute();
+                        count = 0;
+                        return;
+                    }
+                }
+
+
+
+
                 if (bmodel.getOrderHeaderBO() == null)
                     bmodel.setOrderHeaderBO(new OrderHeader());
 
@@ -1416,6 +1451,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(CatalogOrder.this, SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
+            init.putExtra("ForScheme", screenCode);
             startActivity(init);
             finish();
         } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
@@ -1733,6 +1769,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         updateValue();
     }
 
+    @Override
+    public void saveChanges() {
+        adapter.notifyDataSetChanged();
+    }
+
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
         private CustomKeyBoardCatalog dialogCustomKeyBoard;
@@ -1755,8 +1796,32 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             holder.productObj = productList.get(position);
             holder.catalog_order_listview_productname.setText(holder.productObj.getProductShortName());
             if (holder.ppq != null) {
-                holder.ppq.setText(getResources().getString(R.string.ppq) + ": "
-                        + holder.productObj.getRetailerWiseProductWiseP4Qty() + "");
+                String strPPQ = "";
+                if (bmodel.labelsMasterHelper
+                        .applyLabels("ppq") != null) {
+                    strPPQ = bmodel.labelsMasterHelper
+                            .applyLabels("ppq") + ": "
+                            + holder.productObj.getRetailerWiseProductWiseP4Qty() + "";
+                } else {
+                    strPPQ = getResources().getString(R.string.ppq) + ": "
+                            + holder.productObj.getRetailerWiseProductWiseP4Qty() + "";
+                }
+                holder.ppq.setText(strPPQ);
+            }
+
+
+            if (holder.moq != null) {
+                String strMoqQty = "";
+                if (bmodel.labelsMasterHelper
+                        .applyLabels("moq") != null) {
+                    strMoqQty = bmodel.labelsMasterHelper
+                            .applyLabels("moq") + ": "
+                            + holder.productObj.getRField1() + "";
+                } else {
+                    strMoqQty = getResources().getString(R.string.moq) + ": "
+                            + holder.productObj.getRField1() + "";
+                }
+                holder.moq.setText(strMoqQty);
             }
             if (holder.ssrp != null) {
                 final String price = "Price : " + bmodel.formatValue(holder.productObj.getSrp());
@@ -1792,31 +1857,26 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }
             if (holder.pdt_image != null) {
-                //if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
-                //if (isExternalStorageAvailable()) {
-                /*File prd = new File(Utils.getSdcardPath(getApplicationContext())
-                        + "/" + bmodel.productHelper.getProductImageUrl() + "/" + holder.productObj.getProductCode() + ".jpg");*/
-                //File prd = new File(getImageFilePath(holder.productObj.getProductCode()));
+
+                Uri path;
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(CatalogOrder.this, BuildConfig.APPLICATION_ID + ".provider", new File(
+                            appImageFolderPath
+                                    + "/"
+                                    + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg"));
+                } else {
+                    path = Uri.fromFile(new File(
+                            appImageFolderPath
+                                    + "/"
+                                    + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg"));
+                }
 
                 Glide.with(getApplicationContext())
-                        .load(
-                                        /*Environment.DIRECTORY_DOWNLOADS)
-                                        + "/"
-                                        + bmodel.userMasterHelper.getUserMasterBO()
-                                        .getUserid()
-                                        + DataMembers.DIGITAL_CONTENT*/
-                                appImageFolderPath
-                                        + "/"
-                                        + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg")
+                        .load(path)
                         .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
                         .dontAnimate()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.pdt_image);
-                //}
-
-                /*} else {
-                    holder.pdt_image.setImageResource(R.drawable.no_image_available);
-                }*/
 
                 //set SIH value
                 if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
@@ -1876,7 +1936,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             private ImageView pdt_image;
             private TextView catalog_order_listview_productname, ppq, ssrp,
-                    mrp, total, sih, wsih;
+                    mrp, total, sih, wsih,moq;
             private Button list_view_order_btn, list_view_stock_btn;
             private LinearLayout pdt_details_layout;
             private ProductMasterBO productObj;
@@ -1888,6 +1948,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 pdt_image = (ImageView) v.findViewById(R.id.pdt_image);
                 catalog_order_listview_productname = (TextView) v.findViewById(R.id.catalog_order_listview_productname);
                 ppq = (TextView) v.findViewById(R.id.catalog_order_listview_ppq);
+                moq = (TextView) v.findViewById(R.id.catalog_order_listview_moq);
                 ssrp = (TextView) v.findViewById(R.id.catalog_order_listview_srp);
                 mrp = (TextView) v.findViewById(R.id.catalog_order_listview_mrp);
                 total = (TextView) v.findViewById(R.id.catalog_order_listview_product_value);
@@ -1906,6 +1967,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 list_view_order_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 list_view_stock_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+                moq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                 /*Drawable mDrawable = getApplicationContext().getResources().getDrawable(R.drawable.ic_action_star_01);
@@ -1954,6 +2016,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     mrp.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
                     total.setVisibility(View.GONE);
+
+                if (!bmodel.configurationMasterHelper.IS_MOQ_ENABLED)
+                    moq.setVisibility(View.GONE);
 
                 pdt_details_layout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -2026,6 +2091,33 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     }
                 });
             }
+        }
+    }
+
+    public void numberPressed(View v) {
+        if (mMOQHighlightDialog != null && mMOQHighlightDialog.isVisible()) {
+            mMOQHighlightDialog.numberPressed(v);
+        }
+    }
+
+
+
+    //if Rfield1 enabled show this dialog
+    private class MOQConfigEnabled extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+
+            android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
+            mMOQHighlightDialog = new MOQHighlightDialog();
+            mMOQHighlightDialog.setCancelable(false);
+            mMOQHighlightDialog.show(ft, "Sample Fragment");
         }
     }
 

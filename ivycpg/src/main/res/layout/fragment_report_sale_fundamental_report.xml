@@ -26,8 +26,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/list_title_bg_color"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/dimen_5dp"
-                android:paddingRight="@dimen/dimen_5dp"
+                android:paddingStart="@dimen/dimen_5dp"
+                android:paddingEnd="@dimen/dimen_5dp"
                 android:weightSum="2">
 
                 <!--<TextView-->
@@ -49,7 +49,7 @@
                     android:id="@+id/spinnerChoice"
                     android:layout_width="@dimen/dimens_180dp"
                     android:layout_height="@dimen/reason_spinner_height"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:background="@color/footer_bg"
                     android:gravity="center"
                     android:overlapAnchor="false" />
@@ -68,9 +68,9 @@
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/skuwise_right_margin"
+                    android:layout_marginStart="@dimen/skuwise_right_margin"
                     android:layout_weight="1.4"
-                    android:gravity="left|center"
+                    android:gravity="start|center"
                     android:padding="3dp"
                     android:text="@string/product_name"
                     android:textSize="@dimen/font_micro_small" />
@@ -114,9 +114,9 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/dimens_80dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="@dimen/dimens_2dp"
+            android:layout_alignParentEnd="@dimen/dimens_2dp"
             android:background="@color/footer_bg"
-            android:gravity="center|right"
+            android:gravity="center|end"
             android:visibility="gone">
 
             <Button
@@ -125,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimens_50dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="2dp"
+                android:layout_marginStart="2dp"
                 android:gravity="center"
                 android:text="@string/print"
                 android:visibility="visible" />

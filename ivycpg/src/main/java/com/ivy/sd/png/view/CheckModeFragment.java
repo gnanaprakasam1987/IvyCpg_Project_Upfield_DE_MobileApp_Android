@@ -319,42 +319,47 @@ public class CheckModeFragment extends IvyBaseFragment
             @Override
             public void afterTextChanged(Editable s) {
                 String qty = s.toString();
-                double value = 0;
-                if (!"".equals(qty)) {
-                    value = SDUtil.convertToDouble(qty);
-                }
-                mPaymentBO.setAmount(value);
-                mPaymentBO.setUpdatePayableamt(value);
+                if (bmodel.validDecimalValue(qty, 16, 2)) {
+                    double value = 0;
+                    if (!"".equals(qty)) {
+                        value = SDUtil.convertToDouble(qty);
+                    }
+                    mPaymentBO.setAmount(value);
+                    mPaymentBO.setUpdatePayableamt(value);
 
-                if (value > 0 && isAdvancePaymentAvailabe && !bmodel.collectionHelper.isUseAllAdvancePaymentAmt()) {
-                    if (!qty.contains("."))
-                        qty = qty.length() > 1 ? qty.substring(0,
-                                qty.length() - 1) : "0";
-                    else
-                        qty = "";
+                    if (value > 0 && isAdvancePaymentAvailabe && !bmodel.collectionHelper.isUseAllAdvancePaymentAmt()) {
+                        if (!qty.contains("."))
+                            qty = qty.length() > 1 ? qty.substring(0,
+                                    qty.length() - 1) : "0";
+                        else
+                            qty = "";
 
-                    mCollectAmountET.setText(qty);
-                    Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
-                            Toast.LENGTH_SHORT).show();
-                } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CHEQUE)) {
-                    //updateTotalAmountEntered();
+                        mCollectAmountET.setText(qty);
+                        Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
+                                Toast.LENGTH_SHORT).show();
+                    } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CHEQUE)) {
+                        //updateTotalAmountEntered();
+                    } else {
+                        if (!qty.contains("."))
+                            qty = qty.length() > 1 ? qty.substring(0,
+                                    qty.length() - 1) : "0";
+                        else
+                            qty = "";
+
+                        mCollectAmountET.setText(qty);
+                        Toast.makeText(
+                                getActivity(),
+                                getResources()
+                                        .getString(
+                                                R.string.amount_exeeds_the_balance_please_check),
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                    mCollectAmountET.setSelection(mCollectAmountET.getText().length());
                 } else {
-                    if (!qty.contains("."))
-                        qty = qty.length() > 1 ? qty.substring(0,
-                                qty.length() - 1) : "0";
-                    else
-                        qty = "";
-
-                    mCollectAmountET.setText(qty);
-                    Toast.makeText(
-                            getActivity(),
-                            getResources()
-                                    .getString(
-                                            R.string.amount_exeeds_the_balance_please_check),
-                            Toast.LENGTH_SHORT).show();
+                    mCollectAmountET.setText(qty.length() > 1 ? qty
+                            .substring(0, qty.length() - 1) : "0");
                 }
-
-                mCollectAmountET.setSelection(mCollectAmountET.getText().length());
             }
         });
         mChequeNoET.addTextChangedListener(new TextWatcher() {
@@ -607,10 +612,21 @@ public class CheckModeFragment extends IvyBaseFragment
         } else {
             int id = vw.getId();
             if (id == R.id.calcdel) {
-                int s = SDUtil.convertToInt((String) QUANTITY.getText()
-                        .toString());
-                s = s / 10;
-                QUANTITY.setText(s + "");
+                String val = QUANTITY.getText().toString();
+
+                if (!val.isEmpty()) {
+
+                    val = val.substring(0, val.length() - 1);
+
+                    if (val.length() == 0) {
+                        val = "0";
+                    }
+
+                } else {
+                    val = "0";
+                }
+
+                QUANTITY.setText(val);
             } else if (id == R.id.calcdot) {
                 String s = QUANTITY.getText().toString();
 

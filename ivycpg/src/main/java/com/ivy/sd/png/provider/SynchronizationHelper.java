@@ -1,7 +1,6 @@
 package com.ivy.sd.png.provider;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +16,6 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.widget.Toast;
 
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.StringInputStream;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -65,7 +63,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1132,13 +1129,14 @@ SynchronizationHelper {
 
     public void deleteFiles(String folderPath, String fnamesStarts) {
         File folder = new File(folderPath);
+        if (folder.listFiles() != null) {
+            File files[] = folder.listFiles();
 
-        File files[] = folder.listFiles();
-
-        for (File tempFile : files) {
-            if (tempFile != null) {
-                if (tempFile.getName().startsWith(fnamesStarts))
-                    tempFile.delete();
+            for (File tempFile : files) {
+                if (tempFile != null) {
+                    if (tempFile.getName().startsWith(fnamesStarts))
+                        tempFile.delete();
+                }
             }
         }
     }
@@ -4645,6 +4643,7 @@ SynchronizationHelper {
     }
 
     public boolean validateJointCallUser(int userId, String username, String password) {
+        LoginHelper.getInstance(context).loadPasswordConfiguration(context);
         ArrayList<UserMasterBO> mjoinCallUserList = bmodel.userMasterHelper.getUserMasterBO()
                 .getJoinCallUserList();
         UserMasterBO jointCallUser = new UserMasterBO();

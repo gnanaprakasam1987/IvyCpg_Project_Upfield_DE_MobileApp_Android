@@ -30,10 +30,10 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:padding="4dp"
                 android:text="Scheme Name"
-                android:textColor="@color/black_bg1"/>
+                android:textColor="@color/black_bg1" />
 
             <LinearLayout
                 android:id="@+id/infoLayout"
@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:maxLines="2"
-                        android:paddingLeft="4dp"
+                        android:paddingStart="4dp"
                         android:text="slab_name"/>
 
                     <TextView
@@ -104,8 +104,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/list_margin"
-                        android:layout_toLeftOf="@+id/cb_quantity"
+                        android:layout_marginEnd="@dimen/list_margin"
+                        android:layout_toStartOf="@+id/cb_quantity"
                         android:gravity="center"
                         android:text="Qty" />
 
@@ -113,7 +113,7 @@
                         android:id="@+id/cb_quantity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="top" />
                 </RelativeLayout>
@@ -132,15 +132,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/list_margin"
-                        android:layout_toLeftOf="@+id/btn_show_free_products"
+                        android:layout_marginEnd="@dimen/list_margin"
+                        android:layout_toStartOf="@+id/btn_show_free_products"
                         android:text=""
                         android:visibility="gone" />
 
                     <Button
                         android:id="@+id/btn_show_free_products"
                         style="?attr/roundedCustomButtonSmall"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:text="View"
                         android:textAllCaps="false" />
                 </RelativeLayout>
@@ -167,8 +167,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/list_margin"
-                        android:layout_toLeftOf="@+id/cb_price"
+                        android:layout_marginEnd="@dimen/list_margin"
+                        android:layout_toStartOf="@+id/cb_price"
                         android:gravity="center"
                         android:text="Price" />
 
@@ -176,8 +176,8 @@
                         android:id="@+id/cb_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_gravity="right" />
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="end" />
                 </RelativeLayout>
 
 
@@ -193,7 +193,7 @@
                         style="@style/EditText_ListItem"
                         android:layout_width="@dimen/target_plan_editbox_width"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_margin="4dp"
                         android:maxLength="6"
                         android:padding="4dp"
@@ -204,10 +204,10 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_below="@+id/et_selected_price"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/list_margin" />
+                        android:layout_marginEnd="@dimen/list_margin" />
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -231,8 +231,8 @@
                         android:id="@+id/cb_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_gravity="right" />
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="end" />
 
                     <TextView
                         android:id="@+id/tv_amounttitle"
@@ -240,8 +240,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/list_margin"
-                        android:layout_toLeftOf="@id/cb_amount"
+                        android:layout_marginEnd="@dimen/list_margin"
+                        android:layout_toStartOf="@id/cb_amount"
                         android:gravity="center"
                         android:text="Amount" />
 
@@ -261,7 +261,7 @@
                         style="@style/EditText_ListItem"
                         android:layout_width="@dimen/target_plan_editbox_width"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_margin="4dp"
                         android:maxLength="6"
                         android:padding="4dp"
@@ -272,10 +272,10 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_below="@+id/et_selected_amount"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/list_margin" />
+                        android:layout_marginEnd="@dimen/list_margin" />
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -299,8 +299,8 @@
                         android:id="@+id/cb_percent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_gravity="right" />
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="end" />
 
                     <TextView
                         android:id="@+id/tv_percenttitle"
@@ -308,8 +308,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/list_margin"
-                        android:layout_toLeftOf="@+id/cb_percent"
+                        android:layout_marginEnd="@dimen/list_margin"
+                        android:layout_toStartOf="@+id/cb_percent"
                         android:gravity="center"
                         android:text="Percent" />
 
@@ -327,7 +327,7 @@
                         style="@style/EditText_ListItem"
                         android:layout_width="@dimen/target_plan_editbox_width"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:maxLength="5"
                         android:layout_margin="4dp"
                         android:padding="4dp"
@@ -338,10 +338,10 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_below="@+id/et_selected_percent"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/list_margin" />
+                        android:layout_marginEnd="@dimen/list_margin" />
                 </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>

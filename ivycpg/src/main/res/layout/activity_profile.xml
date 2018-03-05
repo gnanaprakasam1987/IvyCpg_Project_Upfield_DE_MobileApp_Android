@@ -87,7 +87,7 @@
                         android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:orientation="vertical"
-                        android:paddingLeft="@dimen/profile_header_txt_layout_marginleft">
+                        android:paddingStart="@dimen/profile_header_txt_layout_marginleft">
 
                         <TextView
                             android:id="@+id/retailer_name"
@@ -124,16 +124,16 @@
                             android:layout_width="@dimen/dimens_20dp"
                             android:layout_height="@dimen/dimens_20dp"
                             android:layout_marginBottom="@dimen/dimens_20dp"
-                            android:layout_marginLeft="@dimen/dimens_10dp"
-                            android:layout_marginRight="@dimen/dimens_10dp" />
+                            android:layout_marginStart="@dimen/dimens_10dp"
+                            android:layout_marginEnd="@dimen/dimens_10dp" />
 
                         <ImageView
                             android:id="@+id/draw_routeimg_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/dimens_22dp"
-                            android:layout_marginLeft="@dimen/dimens_10dp"
-                            android:layout_marginRight="@dimen/dimens_10dp"
+                            android:layout_marginStart="@dimen/dimens_10dp"
+                            android:layout_marginEnd="@dimen/dimens_10dp"
                             android:clickable="true"
                             android:contentDescription="@null"
                             android:focusable="true"
@@ -218,8 +218,8 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/target_top_margin"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
-                android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/add_plane"
@@ -230,8 +230,8 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/target_top_margin"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
-                android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/non_visit"
@@ -243,8 +243,8 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/target_top_margin"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
-                android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/start_visit"
@@ -256,8 +256,8 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/target_top_margin"
-                android:layout_marginLeft="@dimen/profile_history_20dp"
-                android:layout_marginRight="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/add_plane"

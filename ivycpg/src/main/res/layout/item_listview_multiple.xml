@@ -8,9 +8,9 @@
         android:id="@+id/alertTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/alertCheckbox"
+        android:layout_toStartOf="@+id/alertCheckbox"
         android:text="Item Name"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -18,7 +18,7 @@
         android:id="@+id/alertCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:clickable="false" />
 

@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -31,6 +33,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
     WebView webView;
     BusinessModel bmodel;
     private Toolbar toolbar;
+    HashMap<String, String> reqHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
             setScreenTitle(getIntent().getStringExtra("screentitle"));
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setTitle(null);
         }
         bmodel.reportHelper.downloadWebViewPlanAuthUrl("WEB_VIEW");
         if (!bmodel.reportHelper.getWebViewAuthUrl().equals(""))
@@ -125,11 +129,12 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
         @Override
         protected String doInBackground(String... params) {
-            return bmodel.synchronizationHelper.downloadSessionId(bmodel.reportHelper.getWebViewAuthUrl());
+            return bmodel.synchronizationHelper.downloadSOVisitPlanToken(bmodel.reportHelper.getWebViewAuthUrl());
 
         }
 
 
+        @SuppressLint("NewApi")
         @Override
         protected void onPostExecute(String token) {
             super.onPostExecute(token);
@@ -140,13 +145,14 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
             if (!token.equals("")) {
                 bmodel.reportHelper.downloadWebViewPlanUrl("WEB_VIEW");
                 if (!bmodel.reportHelper.getWebViewPlanUrl().equals("")) {
-
+                    reqHeader = new HashMap<>();
+                    reqHeader.put("SECURITY_TOKEN_KEY", token);
 
                     webView.getSettings().setJavaScriptEnabled(true);
                     webView.getSettings().setDomStorageEnabled(true);
                     webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
                     webView.setWebChromeClient(new WebChromeClient());
-                    webView.loadUrl(bmodel.reportHelper.getWebViewPlanUrl() + "?sessionid=" + token);
+                    webView.loadUrl(bmodel.reportHelper.getWebViewPlanUrl(), reqHeader);
                     webView.setWebViewClient(new WebViewClient());
                 } else {
                     Toast.makeText(WebViewActivity.this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();

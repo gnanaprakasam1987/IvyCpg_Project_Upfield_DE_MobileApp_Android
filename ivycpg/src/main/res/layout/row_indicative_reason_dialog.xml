@@ -10,7 +10,7 @@
         style="?attr/customListItemPrimary"
         android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/dimen_4dp"
+        android:paddingStart="@dimen/dimen_4dp"
          />
     <TextView
         android:id="@+id/io_case"

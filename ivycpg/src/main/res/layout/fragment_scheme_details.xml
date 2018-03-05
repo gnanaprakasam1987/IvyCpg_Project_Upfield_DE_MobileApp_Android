@@ -23,8 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
                 android:layout_marginTop="2dp"
                 android:background="@color/WHITE"
                 android:orientation="vertical"
@@ -35,7 +35,7 @@
                     android:id="@+id/scheme_spnr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
+                    android:layout_marginEnd="3dp"
                     android:visibility="gone" />
 
                 <LinearLayout
@@ -51,7 +51,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:background="@color/WHITE"
-                        android:gravity="center|left"
+                        android:gravity="center|start"
                         android:text=""
                         android:textColor="@android:color/black"
                         android:textStyle="bold" />
@@ -107,7 +107,7 @@
                 android:id="@+id/product_info_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:text=""
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />

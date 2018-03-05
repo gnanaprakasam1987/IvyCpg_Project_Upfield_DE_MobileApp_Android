@@ -58,13 +58,13 @@
                     <HorizontalScrollView
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent"
-                        android:paddingRight="2dp">
+                        android:paddingEnd="2dp">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="left|center"
-                            android:layout_marginLeft="@dimen/dimens_18dp"
+                            android:layout_gravity="start|center"
+                            android:layout_marginStart="@dimen/dimens_18dp"
                             android:orientation="horizontal"
                             android:paddingTop="@dimen/dimens_10dp">
 
@@ -93,7 +93,7 @@
                                     android:id="@+id/chequeRadioButton"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginStart="5dp"
                                     android:gravity="center"
                                     android:tag="@string/cq"
                                     android:text="@string/cheque"
@@ -112,12 +112,13 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/dimens_18dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/dimens_18dp"
                     android:layout_marginTop="@dimen/dimens_4dp">
 
                     <EditText
                         android:id="@+id/collectionAmount"
+                        style="@style/EditTextGravity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -163,14 +164,14 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:gravity="center|left">
+                                android:gravity="center|start">
 
                                 <Button
                                     android:id="@+id/collectionDate"
                                     style="@style/datePickerButton"
                                     android:layout_width="@dimen/dimens_120dp"
                                     android:layout_height="@dimen/cheque_no_height"
-                                    android:layout_gravity="left|center"
+                                    android:layout_gravity="start|center"
                                     android:gravity="center"
                                     android:textColor="?attr/primarycolor" />
                             </LinearLayout>
@@ -200,6 +201,7 @@
 
                                 <EditText
                                     android:id="@+id/collectionchequeNo"
+                                    style="@style/EditTextGravity"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/cheque_no_height"
                                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -238,7 +240,7 @@
                                 android:id="@+id/tv_branch_title"
                                 android:layout_width="@dimen/cheque_no_width"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
+                                android:layout_marginStart="5dp"
                                 android:text="@string/bank_name"
                                 android:textColor="@color/Black"
                                 android:textSize="@dimen/text_sz_small"
@@ -250,7 +252,7 @@
                                 android:layout_height="@dimen/dimens_50dp"
                                 android:layout_gravity="center"
                                 android:background="@android:color/transparent"
-                                android:gravity="center|left" />
+                                android:gravity="center|start" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -264,7 +266,7 @@
                                 android:id="@+id/tv_bank_title"
                                 android:layout_width="@dimen/cheque_no_width"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
+                                android:layout_marginStart="5dp"
                                 android:text="@string/branch_area"
                                 android:textColor="@color/Black"
                                 android:textSize="@dimen/text_sz_small"
@@ -276,7 +278,7 @@
                                 android:layout_height="@dimen/dimens_50dp"
                                 android:layout_gravity="center"
                                 android:background="@android:color/transparent"
-                                android:gravity="center|left" />
+                                android:gravity="center|start" />
 
                         </LinearLayout>
 
@@ -305,6 +307,7 @@
 
                                 <EditText
                                     android:id="@+id/edit_bankname"
+                                    style="@style/EditTextGravity"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/cheque_no_height"
                                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
@@ -330,6 +333,7 @@
 
                                 <EditText
                                     android:id="@+id/edit_branchname"
+                                    style="@style/EditTextGravity"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/cheque_no_height"
                                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
@@ -360,7 +364,7 @@
             android:id="@+id/btnclose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="1dp"
+            android:layout_marginStart="1dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/close"

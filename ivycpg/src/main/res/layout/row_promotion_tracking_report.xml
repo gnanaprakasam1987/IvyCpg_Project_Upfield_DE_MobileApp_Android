@@ -29,7 +29,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/btn_round_corner_padding"
+                android:layout_marginStart="@dimen/btn_round_corner_padding"
                 android:orientation="vertical"
                 android:padding="@dimen/dimen_1dp">
 
@@ -44,7 +44,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/list_margin"
-                        android:gravity="center|left"
+                        android:gravity="center|start"
                         android:maxLines="1"
                         android:text="@string/product_name"
                         android:textColor="@android:color/black"
@@ -82,7 +82,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/target_top_margin"
+                        android:layout_marginStart="@dimen/target_top_margin"
 
                         android:gravity="center_vertical"
                         android:minHeight="@dimen/dimen_40dp"
@@ -106,8 +106,8 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:paddingBottom="2dp"
-                                android:paddingLeft="5dp"
-                                android:paddingRight="5dp"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
                                 android:tag="achieved_day"
                                 android:text="@string/executed"
                                 android:textColor="?primarycolor"
@@ -128,7 +128,7 @@
                                 android:id="@+id/txtisExecuted"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingLeft="5dp"
+                                android:paddingStart="5dp"
                                 android:text="0"
                                 android:textColor="@color/GRAY_TEXT"
                                 android:textSize="@dimen/value_text_size"
@@ -140,14 +140,14 @@
                         android:id="@+id/verticalSeparatorBalance"
                         android:layout_width="0.3dp"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/target_top_margin"
-                        android:layout_marginRight="@dimen/target_top_margin"
+                        android:layout_marginStart="@dimen/target_top_margin"
+                        android:layout_marginEnd="@dimen/target_top_margin"
                         android:background="@color/GRAY" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="3dp"
+                        android:layout_marginStart="3dp"
                         android:gravity="center_vertical"
                         android:minHeight="@dimen/dimen_40dp"
                         android:orientation="vertical">
@@ -170,8 +170,8 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:paddingBottom="2dp"
-                                android:paddingLeft="5dp"
-                                android:paddingRight="5dp"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
                                 android:tag="balance_day"
                                 android:text="@string/hasannouncer"
                                 android:textColor="@color/Orange"
@@ -192,7 +192,7 @@
                                 android:id="@+id/txthasAnnouncer"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingLeft="5dp"
+                                android:paddingStart="5dp"
                                 android:text="0"
                                 android:textColor="@color/GRAY_TEXT"
                                 android:textSize="@dimen/value_text_size"
@@ -204,14 +204,14 @@
                         android:id="@+id/verticalSeparatorBalance1"
                         android:layout_width="0.3dp"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/target_top_margin"
-                        android:layout_marginRight="@dimen/target_top_margin"
+                        android:layout_marginStart="@dimen/target_top_margin"
+                        android:layout_marginEnd="@dimen/target_top_margin"
                         android:background="@color/GRAY" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="3dp"
+                        android:layout_marginStart="3dp"
                         android:gravity="center_vertical"
                         android:minHeight="@dimen/dimen_40dp"
                         android:orientation="vertical">
@@ -234,8 +234,8 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:paddingBottom="2dp"
-                                android:paddingLeft="5dp"
-                                android:paddingRight="5dp"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
                                 android:tag="target_day"
                                 android:text="@string/reason"
                                 android:textColor="?accentcolor"
@@ -256,7 +256,7 @@
                                 android:id="@+id/txtReason"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingLeft="5dp"
+                                android:paddingStart="5dp"
                                 android:text="0"
                                 android:textColor="@color/GRAY_TEXT"
                                 android:textSize="@dimen/value_text_size"
