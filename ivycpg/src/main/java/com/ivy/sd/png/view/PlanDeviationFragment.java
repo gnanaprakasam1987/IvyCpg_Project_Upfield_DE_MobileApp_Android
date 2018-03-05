@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -41,6 +43,8 @@ public class PlanDeviationFragment extends IvyBaseFragment {
     LinearLayout remarkLty;
     private ReasonMaster temp;
     private AlertDialog alertDialog;
+    private ArrayList<NonproductivereasonBO> reasonList = new ArrayList<>();
+
 
     @Nullable
     @Override
@@ -61,6 +65,7 @@ public class PlanDeviationFragment extends IvyBaseFragment {
 
         reason_recycler = (RecyclerView) rootView.findViewById(R.id.reason_recycler);
         saveBtn = (Button) rootView.findViewById(R.id.add_reason);
+        saveBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         reason_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (bmodel.reasonHelper.getReasonPlaneDeviationMaster() != null)
@@ -74,7 +79,12 @@ public class PlanDeviationFragment extends IvyBaseFragment {
             public void onClick(View view) {
                 hideKeyboard();
                 try {
-                    new SavePlaneDeviateReason().execute();
+                    if (reasonList.size() > 0)
+                        new SavePlaneDeviateReason().execute();
+                    else
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.no_data_tosave),
+                                Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
 
@@ -91,13 +101,7 @@ public class PlanDeviationFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                temp = selected_reason;
-                NonproductivereasonBO nonproductive = new NonproductivereasonBO();
-                nonproductive.setReasonid(temp.getReasonID());
-                nonproductive.setReasontype("Field_Plan_Type");
-                nonproductive.setDate(bmodel.userMasterHelper.getUserMasterBO()
-                        .getDownloadDate());
-                bmodel.savePlaneDiveateReason(nonproductive, remarks);
+                bmodel.savePlaneDiveateReason(reasonList, remarks);
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -128,13 +132,11 @@ public class PlanDeviationFragment extends IvyBaseFragment {
     }
 
 
-    private ReasonMaster selected_reason;
     private String remarks = "";
 
     class DeviateReasonAdapter extends RecyclerView.Adapter<DeviateReasonAdapter.ViewHolder> {
 
         private ArrayList<ReasonMaster> items;
-        private int lastCheckedPosition = -1;
 
         public DeviateReasonAdapter(ArrayList<ReasonMaster> items) {
             this.items = items;
@@ -144,28 +146,40 @@ public class PlanDeviationFragment extends IvyBaseFragment {
         @Override
         public DeviateReasonAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.common_reason_popup_recycler_items, parent, false);
+                    .inflate(R.layout.deivation_reason_row, parent, false);
             return new ViewHolder(v);
         }
 
         @Override
         public void onBindViewHolder(final DeviateReasonAdapter.ViewHolder holder, final int position) {
             holder.reasonObj = items.get(position);
-            holder.reason_radio_btn.setText(holder.reasonObj.getReasonDesc());
+            holder.cbReason.setText(holder.reasonObj.getReasonDesc());
 
-            holder.reason_radio_btn.setOnClickListener(new View.OnClickListener() {
+            holder.cbReason.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View view) {
-                    lastCheckedPosition = getItemViewType(position);
-                    selected_reason = holder.reasonObj;
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if (isChecked) {
+                        NonproductivereasonBO nonproductive = new NonproductivereasonBO();
+                        nonproductive.setReasonid(holder.reasonObj.getReasonID());
+                        nonproductive.setReasontype("Field_Plan_Type");
+                        nonproductive.setDate(bmodel.userMasterHelper.getUserMasterBO()
+                                .getDownloadDate());
+                        reasonList.add(nonproductive);
+                    } else {
+                        for (int i = 0; i < reasonList.size(); i++) {
+                            if (reasonList.get(i).getReasonid().equals(holder.reasonObj.getReasonID())) {
+                                reasonList.remove(i);
+                                break;
+                            }
+                        }
+                    }
                     notifyDataSetChanged();
                 }
             });
-            holder.reason_radio_btn.setChecked(position == lastCheckedPosition);
 
-            if (holder.reason_radio_btn.isChecked() && holder.reason_radio_btn.getText().toString().equals("Others")) {
+            if (holder.cbReason.isChecked() && holder.cbReason.getText().toString().equals("Others")) {
                 holder.edt_other_remarks.setVisibility(View.VISIBLE);
-            } else {
+            }  else {
                 hideKeyboard();
                 remarks = "";
                 holder.edt_other_remarks.setText("");
@@ -203,14 +217,14 @@ public class PlanDeviationFragment extends IvyBaseFragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            AppCompatRadioButton reason_radio_btn;
+            CheckBox cbReason;
             ReasonMaster reasonObj;
             EditText edt_other_remarks;
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                reason_radio_btn = (AppCompatRadioButton) itemView.findViewById(R.id.reason_radio_btn);
-                reason_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                cbReason = (CheckBox) itemView.findViewById(R.id.cb_reason);
+                cbReason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 edt_other_remarks = (EditText) itemView.findViewById(R.id.edt_other_remarks);
             }
         }

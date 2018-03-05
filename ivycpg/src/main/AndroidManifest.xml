@@ -653,6 +653,12 @@
             android:name="com.ivy.cpg.view.van.WebViewLoadMgmtActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.ivy.sd.png.view.WebViewApprovalActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.WebViewPlanReqActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.ivy.sd.camera.NativeCameraActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />

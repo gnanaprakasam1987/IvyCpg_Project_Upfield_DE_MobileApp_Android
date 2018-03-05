@@ -140,6 +140,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_EXPENSE = "MENU_EXPENSE";
     private static final String MENU_WVW_PLAN = "MENU_WVW_PLAN";
     private static final String MENU_WEB_VIEW = "MENU_WEB_VIEW";
+    private static final String MENU_WEB_VIEW_APPR = "MENU_WVW_APPR";
+    private static final String MENU_WEB_VIEW_PLAN = "MENU_WVW_PLAN_REQ";
     private static final String MENU_NEWRET_EDT = "MENU_NEWRET_EDT";
     private static final String MENU_TASK_NEW = "MENU_TASK_NEW";
     private static final String MENU_PLANE_MAP = "MENU_PLANE_MAP";
@@ -1350,7 +1352,27 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
-        } else if (menuItem.getConfigCode().equals(MENU_NEWRET_EDT)) {
+        } else if (menuItem.getConfigCode().equals(MENU_WEB_VIEW_PLAN)) {
+
+            if (bmodel.isOnline()) {
+                Intent i = new Intent(getActivity(), WebViewPlanReqActivity.class);
+                i.putExtra("screentitle", menuItem.getMenuName());
+                startActivity(i);
+                getActivity().finish();
+            } else
+                Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
+
+        } else if (menuItem.getConfigCode().equals(MENU_WEB_VIEW_APPR)) {
+
+            if (bmodel.isOnline()) {
+                Intent i = new Intent(getActivity(), WebViewApprovalActivity.class);
+                i.putExtra("screentitle", menuItem.getMenuName());
+                startActivity(i);
+                getActivity().finish();
+            } else
+                Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
+
+        }  else if (menuItem.getConfigCode().equals(MENU_NEWRET_EDT)) {
 //            Intent i = new Intent(getActivity(), NewOutletEdit.class);
 //            i.putExtra("screentitle", menuItem.getMenuName());
 //            i.putExtra("flag", 0);
