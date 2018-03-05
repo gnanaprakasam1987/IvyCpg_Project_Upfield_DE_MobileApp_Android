@@ -364,6 +364,8 @@ public class ConfigurationMasterHelper {
     public boolean COMMON_PRINT_LOGON;
     private static final String CODE_COMMON_PRINT_MAESTROS = "PRINT105";
     public boolean COMMON_PRINT_MAESTROS;
+    private static final String CODE_COMMON_PRINT_INTERMEC = "PRINT106";
+    public boolean COMMON_PRINT_INTERMEC;
 
     private static final String CODE_FIT_SCORE = "FITDASH";
     public boolean IS_FITSCORE_NEEDED;
@@ -1264,6 +1266,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_SALES_RETURN_IN_ORDER;
 
     public int retailerLocAccuracyLvl;
+
+    private static final String CODE_MUST_SELL_STK = "MSLSTK";
+    public boolean IS_MUST_SELL_STK;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2205,6 +2210,8 @@ public class ConfigurationMasterHelper {
         this.IS_ALLOW_CONTINUOUS_PRINT =hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT)!=null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
         this.retailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
         this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
+
+        this.IS_MUST_SELL_STK = hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) : false;
     }
 
     public void loadOrderReportConfiguration() {
@@ -4294,8 +4301,10 @@ public class ConfigurationMasterHelper {
                 SHOW_BIXOLON_TITAN = true;
             else if (CODE_SCRIBE_TITAN.equals(printer))
                 SHOW_SCRIBE_TITAN = true;
-            else if (CODE_COMMON_PRINT_MAESTROS.equals(printer))
-                COMMON_PRINT_MAESTROS = true;
+            else if(CODE_COMMON_PRINT_MAESTROS.equals(printer))
+                COMMON_PRINT_MAESTROS=true;
+            else if(CODE_COMMON_PRINT_INTERMEC.equals(printer))
+                COMMON_PRINT_INTERMEC=true;
 
 
             String printersize = sharedPrefs.getString("PrinterSizePref", "2");
