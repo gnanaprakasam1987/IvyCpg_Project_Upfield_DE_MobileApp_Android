@@ -373,6 +373,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             leftmenuDB.add(con);
 
+            if(con.getConfigCode().equalsIgnoreCase(MENU_DASH)){
+                con.setConfigCode(MENU_DASH_KPI);
+                con.setMenuName("Seller Kpi");
+                leftmenuDB.add(con);
+            }
+
             if (con.getConfigCode().equals(MENU_PRESENCE)) {
                 isMenuAttendCS = true;
             }
@@ -2201,6 +2207,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
 
             leftmenuDB.add(con);
+
+            if(con.getConfigCode().equalsIgnoreCase(MENU_DASH)){
+                con.setConfigCode(MENU_DASH_KPI);
+                con.setMenuName("Seller Kpi");
+                leftmenuDB.add(con);
+            }
 
             if (con.getConfigCode().equals(MENU_PRESENCE)) {
                 isMenuAttendCS = true;

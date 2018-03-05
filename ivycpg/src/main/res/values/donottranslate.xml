@@ -270,5 +270,7 @@
     <string name="this_is_standared_order">This is an Standard order for : </string>
     <string name="supplier_mandatory">Please select Supplier</string>
 
+    <string name="net_price">Net Price</string>
+    <string name="free">Free</string>
 
 </resources>

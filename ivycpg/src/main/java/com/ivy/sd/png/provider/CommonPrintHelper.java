@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -35,6 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
@@ -95,6 +97,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_CODE = "prod_code";
     private static String TAG_PRODUCT_NAME = "prod_name";
     private static String TAG_HSN_CODE = "hsn_code";
+    private static String TAG_DISCOUNTED_PRICE = "discounted_price";
 
     private static String TAG_PRODUCT_PRICE_CASE = "prod_price_case";
     private static String TAG_PRODUCT_PRICE_OUTER = "prod_price_outer";
@@ -114,6 +117,11 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_TAX_PERCENTAGE="prod_line_tax_percentage";
 
     private static String TAG_PRODUCT_TAG_DESC = "prod_tag_desc";
+
+    private static String TAG_PRODUCT_FOC = "prod_foc";
+
+    //Project specific promo type
+    private static String TAG_PRODUCT_PROMO_TYPE = "prod_promo_type";
 
     private int mProductCaseQtyTotal;
     private int mProductPieceQtyTotal;
@@ -835,6 +843,11 @@ public class CommonPrintHelper {
                         }
                     }
                     mProductValue=SDUtil.format(taxPercentage,1,0);
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
+                    mProductValue = getPromoType(context,prod);
+                }
+                else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
+                    mProductValue = String.valueOf(prod.getFoc());
                 }
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -989,6 +1002,20 @@ public class CommonPrintHelper {
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
                                 mProductValue = prod.getProductCode();
                             }
+                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
+                                mProductValue = getPromoType(context,prod);
+                            }
+                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
+                                mProductValue = String.valueOf(prod.getFoc());
+                            }
+                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
+                                int totalQty = prod.getOrderedPcsQty()
+                                        + prod.getOrderedCaseQty()
+                                        * prod.getCaseSize()
+                                        + prod.getOrderedOuterQty()
+                                        * prod.getOutersize();
+                                mProductValue = String.valueOf(prod.getTotalamount()/totalQty);
+                            }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
                                 if (mProductValue.length() > attr.getAttributeLength()) {
@@ -1118,6 +1145,16 @@ public class CommonPrintHelper {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
                                 mProductValue = prod.getProductCode();
+                            }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
+                                mProductValue = context.getResources().getString(R.string.free);
+                            }
+                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
+                                int totalQty = prod.getOrderedPcsQty()
+                                        + prod.getOrderedCaseQty()
+                                        * prod.getCaseSize()
+                                        + prod.getOrderedOuterQty()
+                                        * prod.getOutersize();
+                                mProductValue = String.valueOf(prod.getTotalamount()/totalQty);
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -2039,4 +2076,23 @@ public class CommonPrintHelper {
     public boolean isFromLabelMaster() {
         return isFromLabelMaster;
     }
+
+
+
+    public String getPromoType(Context context,ProductMasterBO productMasterBO){
+
+            double lineValue = (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp())
+                    + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp())
+                    + (productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp());
+
+            if(productMasterBO.getDiscount_order_value()==0){
+                return  context.getResources().getString(R.string.free);
+            }
+            else if(productMasterBO.getDiscount_order_value()<lineValue){
+                return context.getResources().getString(R.string.net_price);
+            }
+            return "";
+
+    }
+
 }

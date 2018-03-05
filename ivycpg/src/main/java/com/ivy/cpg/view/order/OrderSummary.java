@@ -1429,31 +1429,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     return;
                 }
 
-//                if(BModel.configurationMasterHelper.ORD_CREDIT_LIMIT_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
-//                    if(totalOrderValue > BModel.retailerMasterBO.getCreditLimit()){
-//                        Toast.makeText(
-//                                this,
-//                                getResources().getString(
-//                                        R.string.order_value_exceeded_credit_limit),
-//                                Toast.LENGTH_SHORT).show();
-//                        isClick = false;
-//                        return;
-//                    }
-//                }
-
-//                if(BModel.configurationMasterHelper.ORD_OVER_DUE_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
-//                    if(BModel.getRetailerMasterBO().getCreditDays() > 0  && orderHelper.isOverDueAvail(this)){
-//                        Toast.makeText(
-//                                this,
-//                                getResources().getString(
-//                                        R.string.pending_due_found_Order_cannot_be_proceed),
-//                                Toast.LENGTH_SHORT).show();
-//                        isClick = false;
-//                        return;
-//                    }
-//                }
-
-
                 if ((BModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || BModel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !orderHelper.isReasonProvided(mOrderedProductList)) {
 
                     indicativeReasonDialog = new IndicativeOrderReasonDialog(this, BModel);
@@ -1471,6 +1446,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             ConfigurationMasterHelper.outDateFormat));
 
 
+                    // Don't write any code  after this dialog.. because it is just a confirmation dialog
                     orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
                     orderConfirmationDialog.show();
                     Window window = orderConfirmationDialog.getWindow();
@@ -1603,35 +1579,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             orderHelper.invoiceDiscount = Double.toString(enteredDiscAmtOrPercent);
 
-                            if (BModel.configurationMasterHelper.IS_INVOICE) {
-                                build = new AlertDialog.Builder(OrderSummary.this);
 
-                                customProgressDialog(build, getResources().getString(R.string.saving_invoice));
-                                alertDialog = build.create();
-                                alertDialog.show();
-
+                            // Don't write any code  after this dialog.. because it is just a confirmation dialog
                                 orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
                                 orderConfirmationDialog.show();
                                 Window window = orderConfirmationDialog.getWindow();
                                 window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                 orderConfirmationDialog.setCancelable(false);
-                                return;
-                            } else {
-                                build = new AlertDialog.Builder(OrderSummary.this);
-
-                                customProgressDialog(build, getResources().getString(R.string.saving_new_order));
-                                alertDialog = build.create();
-                                alertDialog.show();
-                            }
-                            if (BModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || BModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
-                                orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
 
-                            //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
-                            orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue);
-
-
-                            new MyThread(this, DataMembers.SAVEINVOICE).start();
                         }
                     } else {
                         isClick = false;
