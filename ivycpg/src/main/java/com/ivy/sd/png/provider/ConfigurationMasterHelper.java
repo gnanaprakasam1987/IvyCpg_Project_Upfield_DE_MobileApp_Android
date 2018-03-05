@@ -625,6 +625,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_D2;
     public boolean SHOW_D3;
     public boolean SHOW_DA;
+    public boolean SHOW_DISCOUNTED_PRICE;
     public boolean SHOW_SPL_FILTER;
     public boolean SHOW_COMPETITOR_FILTER;
     public boolean SHOW_SPL_FLIER_NOT_NEEDED = false;
@@ -3183,6 +3184,7 @@ public class ConfigurationMasterHelper {
             SHOW_D2 = false;
             SHOW_D3 = false;
             SHOW_DA = false;
+            SHOW_DISCOUNTED_PRICE=false;
             SHOW_STOCK_PRICECHECK_PCS = false;
             SHOW_STOCK_PRICECHECK_OU = false;
             SHOW_STOCK_PRICECHECK_CS = false;
@@ -3423,6 +3425,8 @@ public class ConfigurationMasterHelper {
                         SHOW_D3 = true;
                     else if (temp.equals("DA"))
                         SHOW_DA = true;
+                    else if (temp.equals("DPRICE"))
+                        SHOW_DISCOUNTED_PRICE = true;
                 }
             }
 
