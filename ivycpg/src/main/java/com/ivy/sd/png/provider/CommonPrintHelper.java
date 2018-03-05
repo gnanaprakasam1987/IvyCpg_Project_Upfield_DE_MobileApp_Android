@@ -2067,7 +2067,7 @@ public class CommonPrintHelper {
                     + (productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp());
 
             if(productMasterBO.getDiscount_order_value()==0){
-                return  context.getResources().getString(R.string.free_product);
+                return  context.getResources().getString(R.string.free);
             }
             else if(productMasterBO.getDiscount_order_value()<lineValue){
                 return context.getResources().getString(R.string.net_price);
