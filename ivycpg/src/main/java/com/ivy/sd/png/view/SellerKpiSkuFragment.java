@@ -252,7 +252,10 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
             holder.targetTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.acheivedTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            holder.psname.setText(holder.productbo.getProductShortName());
+            if (holder.productbo.getProductShortName().equals(""))
+                holder.psname.setText(holder.productbo.getProductName());
+            else
+                holder.psname.setText(holder.productbo.getProductShortName());
 
             holder.psname.setOnClickListener(new View.OnClickListener() {
 

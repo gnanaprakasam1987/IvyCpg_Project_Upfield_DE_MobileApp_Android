@@ -1041,6 +1041,17 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     weekTableRow2.addView(weekNoCheckBox[3]);
 
 
+                    weekNoCheckBox[4] = new AppCompatCheckBox(getActivity());
+                    if (screenwidth > 520) {
+                        weekNoCheckBox[4].setScaleX((float) 1.1);
+                        weekNoCheckBox[4].setScaleY((float) 1.1);
+                        weekNoCheckBox[4].setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.80f));
+                    }
+
+                    weekNoCheckBox[4].setText(getResources().getString(R.string.wk5));
+                    weekTableRow2.addView(weekNoCheckBox[4]);
+
+
                     weekTableLayout.addView(weekTableRow1);
                     weekTableLayout.addView(weekTableRow2);
 
@@ -2762,7 +2773,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            return new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle, this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {

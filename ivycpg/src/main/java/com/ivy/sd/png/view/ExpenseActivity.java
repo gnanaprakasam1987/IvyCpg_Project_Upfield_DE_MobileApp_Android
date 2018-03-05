@@ -227,7 +227,7 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
         int mToMonth = c1.get(Calendar.MONTH);
         int mToDay = c1.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog dpd1 = new DatePickerDialog(mContext,
+        DatePickerDialog dpd1 = new DatePickerDialog(mContext,R.style.DatePickerDialogStyle,
                 new DatePickerDialog.OnDateSetListener() {
 
                     public void onDateSet(DatePicker view, int year,

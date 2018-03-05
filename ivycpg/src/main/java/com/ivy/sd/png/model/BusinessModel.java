@@ -3982,6 +3982,18 @@ public class BusinessModel extends Application {
                 c.close();
             }
 
+
+            c = db.selectSQL("SELECT DISTINCT ProfileImagePath FROM RetailerMaster");
+            if (c != null) {
+                while ((c.moveToNext())) {
+                    getDigitalContentURLS().put(
+                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.PROFILE);
+
+                }
+                c.close();
+            }
+
             db.closeDB();
 
             getDigitalContentURLS().put(
@@ -9068,7 +9080,12 @@ public class BusinessModel extends Application {
      */
     public Uri getUriFromFile(String path) {
         File f = new File(path);
-        return FileProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", f);
+        if (Build.VERSION.SDK_INT >= 24) {
+            return FileProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", f);
+
+        } else {
+            return Uri.fromFile(f);
+        }
 
     }
 
@@ -9239,6 +9256,49 @@ public class BusinessModel extends Application {
         }
         return sale_return_value;
     }
+
+
+    /**
+     * Returns email credentials given
+     *
+     * @return
+     */
+    public HashMap<String, String> downloadEmailAccountCredentials() {
+        HashMap<String, String> mUserCredentials = new HashMap<>();
+        mUserCredentials.put("EMAILID", "");
+        mUserCredentials.put("PASSWORD", "");
+        try {
+            DBUtil db = new DBUtil(getContext(), DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT ListName FROM StandardListMaster where listcode='DELIVERY_EMAIL' and listtype='DELIVERY_MAIL'";
+
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    mUserCredentials.put("EMAILID", c.getString(0));
+                }
+                c.close();
+            }
+
+            s = "SELECT ListName FROM StandardListMaster where listcode='DELIVERY_PWD' and listtype='DELIVERY_MAIL'";
+
+            c = db.selectSQL(s);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    mUserCredentials.put("PASSWORD", c.getString(0));
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+
+        return mUserCredentials;
+    }
+
 
 }
 

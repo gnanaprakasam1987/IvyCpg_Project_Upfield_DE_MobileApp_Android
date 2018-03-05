@@ -1807,7 +1807,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     int yy = calendar.get(Calendar.YEAR);
                     int mm = calendar.get(Calendar.MONTH);
                     int dd = calendar.get(Calendar.DAY_OF_MONTH);
-                    DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                    DatePickerDialog datePicker = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                             /*String date = String.valueOf(dayOfMonth) + "/" + String.valueOf(monthOfYear+1)

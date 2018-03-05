@@ -784,7 +784,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     public void onDateSet(DatePicker view, int year,
@@ -952,7 +952,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mDay = day;
                         mMonth = month - 1;
                         mYear = year;
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1120,7 +1120,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1286,7 +1286,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1453,7 +1453,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1616,7 +1616,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override

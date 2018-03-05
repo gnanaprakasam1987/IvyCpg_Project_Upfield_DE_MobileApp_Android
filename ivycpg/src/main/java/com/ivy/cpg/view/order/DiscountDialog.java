@@ -534,7 +534,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                         * holder.productObj.getCaseSize()
                                         + holder.productObj.getOrderedOuterQty()
                                         * holder.productObj.getOutersize();
-                                holder.discounted_price.setText(tot / totalQty + "");
+                                holder.discounted_price.setText(bmodel.formatValue(tot / totalQty));
                             }
                         } else {
                             holder.d1.removeTextChangedListener(this);
@@ -550,7 +550,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                     * holder.productObj.getCaseSize()
                                     + holder.productObj.getOrderedOuterQty()
                                     * holder.productObj.getOutersize();
-                            holder.discounted_price.setText(tot / totalQty + "");
+                            holder.discounted_price.setText(bmodel.formatValue(tot / totalQty));
 
                             holder.d1.addTextChangedListener(this);
                         }
@@ -606,7 +606,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                         * holder.productObj.getCaseSize()
                                         + holder.productObj.getOrderedOuterQty()
                                         * holder.productObj.getOutersize();
-                                holder.discounted_price.setText(tot / totalQty + "");
+                                holder.discounted_price.setText(bmodel.formatValue(tot / totalQty));
                             } else {
                                 qty = qty.length() > 1 ? qty.substring(0,
                                         qty.length() - 1) : "0";
@@ -629,7 +629,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                     * holder.productObj.getCaseSize()
                                     + holder.productObj.getOrderedOuterQty()
                                     * holder.productObj.getOutersize();
-                            holder.discounted_price.setText(tot / totalQty + "");
+                            holder.discounted_price.setText(bmodel.formatValue(tot / totalQty));
                             holder.da.addTextChangedListener(this);
                         }
                     }

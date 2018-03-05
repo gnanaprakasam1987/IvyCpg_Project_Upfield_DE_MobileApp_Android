@@ -50,6 +50,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     private savePcsValue listner;
     private Button save, closeButton;
     private EditText QUANTITY;
+    private String append = "";
     public InputMethodManager inputManager;
 
     @Override
@@ -60,6 +61,8 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         bmodel.setContext(getActivity());
         listner = (savePcsValue) getActivity();
 
+
+
     }
 
     @Override
@@ -68,7 +71,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         if (getDialog() != null) {
             getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
-
+        getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         getDialog().setCancelable(false);
         this.setCancelable(false);
 
@@ -83,10 +86,10 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     public void onStart() {
         super.onStart();
         getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
 
         lvwplist = (ListView) getView().findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
@@ -123,8 +126,29 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.save_btn) {
+          /*  int size = bmodel.productHelper
+                    .getProductMaster().size();
+            int count = 0;
+            for (int j = 0; j < size; ++j) {
+                ProductMasterBO product = bmodel.productHelper
+                        .getProductMaster().get(j);
+
+                if (product.getOrderedPcsQty() > 0 && !TextUtils.isEmpty(product.getRField1())) {
+                    //converting string Rfield1 value to integra
+                    int res = SDUtil.convertToInt(product.getRField1());
+                    if (product.getOrderedPcsQty() % res != 0)
+                        count++;
+
+                }
+            }
+            if (count == 0) {*/
+                /*for (ProductMasterBO value : productBoRfieldChanges)
+                    updateData(value);*/
+
             listner.saveChanges();
             dismiss();
+          /*  } else
+                Toast.makeText(bmodel, "" + getString(R.string.please_enter_minimum_order_qty), Toast.LENGTH_SHORT).show();*/
         }
         if (i == R.id.closeButton)
             dismiss();
@@ -188,6 +212,8 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                         return true;
                     }
                 });
+
+
                 holder.rField1Txt.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
 
@@ -202,6 +228,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                         int res = SDUtil.convertToInt(product.getRField1());
                         String qty = s.toString();
                         Commons.print("qty" + qty + "res" + res);
+
                         if (!"".equals(qty)) {
                             Commons.print("Value" + SDUtil.convertToInt(qty) % res);
                             holder.productBo.setOrderedPcsQty(SDUtil
@@ -215,7 +242,9 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                             Commons.print("tot" + tot);
                             holder.productBo.setTotalamount(tot);
                         }
-
+                       /* if (SDUtil.convertToInt(qty) % res == 0) {
+                            productBoRfieldChanges.add(holder.productBo);
+                        }*/
                     }
                 });
 
@@ -343,6 +372,9 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         } else
             QUANTITY.setText(append);
     }
+
+
+
 
 }
 

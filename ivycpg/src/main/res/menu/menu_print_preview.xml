@@ -2,6 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ivydist="http://schemas.android.com/apk/res-auto" >
 
+
+    <item
+        android:id="@+id/menu_email_print"
+        android:icon="@drawable/ic_email"
+        android:orderInCategory="100"
+        android:title="@string/share"
+        ivydist:showAsAction="always"/>
     <item
         android:id="@+id/menu_share_pdf"
         android:icon="@drawable/ic_action_share"
