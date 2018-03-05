@@ -273,5 +273,7 @@
     <string name="wk5">wk5</string>
     <string name="send">Send</string>
 
+    <string name="net_price">Net Price</string>
+    <string name="free">Free</string>
 
 </resources>

@@ -2731,6 +2731,7 @@ public class ProductHelper {
 
             return productIds.toString();
         } catch (Exception e) {
+//            e.printStackTrace();
             return "";
         }
     }
