@@ -66,8 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:layout_weight="2"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890- %/#!@$&amp;"
-            android:maxLength="25"
+            android:maxLength="250"
             android:singleLine="false"
             android:text=""
             android:textColor="@android:color/black" />

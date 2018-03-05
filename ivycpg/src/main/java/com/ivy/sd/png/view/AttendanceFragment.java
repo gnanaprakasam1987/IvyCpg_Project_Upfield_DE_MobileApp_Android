@@ -199,7 +199,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
             int mFromMonth = c.get(Calendar.MONTH);
             int mFromDay = c.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+            DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
                     new DatePickerDialog.OnDateSetListener() {
 
                         public void onDateSet(DatePicker view, int year1,
@@ -229,7 +229,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
             int mToMonth = c1.get(Calendar.MONTH);
             int mToDay = c1.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog dpd1 = new DatePickerDialog(getActivity(),
+            DatePickerDialog dpd1 = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
                     new DatePickerDialog.OnDateSetListener() {
 
                         public void onDateSet(DatePicker view, int year,

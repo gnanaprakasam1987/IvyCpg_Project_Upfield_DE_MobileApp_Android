@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.content.FileProvider;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -821,7 +822,12 @@ public class ProfileHelper {
 
     public Uri getUriFromFile(String path) {
         File f = new File(path);
-        return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
+        if (Build.VERSION.SDK_INT >= 24) {
+            return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
+
+        } else {
+            return Uri.fromFile(f);
+        }
     }
 
     public void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {

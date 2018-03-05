@@ -8,8 +8,8 @@ public class MyDatePickerDialog extends DatePickerDialog {
 
     private CharSequence title;
 
-    public MyDatePickerDialog(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
-        super(context, callBack, year, monthOfYear, dayOfMonth);
+    public MyDatePickerDialog(Context context,int resId, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
+        super(context,resId, callBack, year, monthOfYear, dayOfMonth);
     }
 
     public void setPermanentTitle(CharSequence title) {

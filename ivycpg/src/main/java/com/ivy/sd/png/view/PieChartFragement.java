@@ -76,14 +76,14 @@ public class PieChartFragement extends Fragment implements OnChartValueSelectedL
         mChart.setHighlightPerTapEnabled(true);
 
         Legend l = mChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(false);
         l.setTextColor(Color.WHITE);
         l.setXEntrySpace(10f);
         l.setYEntrySpace(0f);
-        l.setYOffset(2f);
-        l.setXOffset(5f);
+        l.setYOffset(0f);
         l.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
@@ -109,7 +109,9 @@ public class PieChartFragement extends Fragment implements OnChartValueSelectedL
             Collections.sort(skuList, achvimentComparator);
             for (int i = 0; i < 5; i++) {
                 double achPercent = (skuList.get(i).getAchieved() / total) * 100;
-                entries.add(new PieEntry((float) achPercent, skuList.get(i).getProductShortName()));
+                entries.add(new PieEntry((float) achPercent, (skuList.get(i).getProductShortName().length() > 0
+                        ? skuList.get(i).getProductShortName()
+                        : skuList.get(i).getProductName())));
             }
             for (int i = 5; i < skuList.size(); i++) {
                 restPercent = restPercent + (skuList.get(i).getAchieved() / total) * 100;
@@ -120,7 +122,9 @@ public class PieChartFragement extends Fragment implements OnChartValueSelectedL
         } else {
             for (int i = 0; i < skuList.size(); i++) {
                 double achPercent = (skuList.get(i).getAchieved() / total) * 100;
-                entries.add(new PieEntry((float) achPercent, skuList.get(i).getProductShortName()));
+                entries.add(new PieEntry((float) achPercent, (skuList.get(i).getProductShortName().length() > 0
+                        ? skuList.get(i).getProductShortName()
+                        : skuList.get(i).getProductName())));
             }
         }
 

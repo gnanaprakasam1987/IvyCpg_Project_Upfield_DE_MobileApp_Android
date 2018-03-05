@@ -206,7 +206,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                         textView_supplier_label.setText(configureBO.getMenuName());
                         mSupplierList = new ArrayList<>();
                         mSupplierList = businessModel.downloadSupplierDetails();
-                        ArrayAdapter<SupplierMasterBO> mSupplierAdapter = new ArrayAdapter<>(context,
+                        final ArrayAdapter<SupplierMasterBO> mSupplierAdapter = new ArrayAdapter<>(context,
                                 R.layout.autocompelete_bluetext_layout, mSupplierList);
                         mSupplierAdapter.setDropDownViewResource(R.layout.autocomplete_bluetext_list_item);
                         autoCompleteTextView_suppliers.setAdapter(mSupplierAdapter);
@@ -223,8 +223,11 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                         autoCompleteTextView_suppliers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-                                businessModel.getRetailerMasterBO().setDistributorId(((SupplierMasterBO) parent.getItemAtPosition(pos)).getSupplierID());
-                                businessModel.getRetailerMasterBO().setDistParentId(((SupplierMasterBO) parent.getItemAtPosition(pos)).getDistParentID());
+                                SupplierMasterBO supplierBo = mSupplierAdapter.getItem(pos);
+                                businessModel.getRetailerMasterBO().setSupplierBO(supplierBo);
+                                businessModel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
+                                businessModel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                businessModel.updateRetailerWiseSupplierType(supplierBo.getSupplierID());
                             }
                         });
 

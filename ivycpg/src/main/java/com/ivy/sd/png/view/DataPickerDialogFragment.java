@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.DatePicker;
 
 import com.ivy.lib.DialogFragment;
+import com.ivy.sd.png.asean.view.R;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +34,7 @@ public class DataPickerDialogFragment extends DialogFragment implements DatePick
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
-        return new DatePickerDialog(getActivity(), this, year, month, day);
+        return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,this, year, month, day);
     }
 
     @Override
