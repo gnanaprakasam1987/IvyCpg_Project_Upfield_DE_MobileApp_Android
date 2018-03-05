@@ -331,13 +331,20 @@ public class PlanningMapFragment extends SupportMapFragment implements
         TextView tv_target = (TextView) rootView.findViewById(R.id.tv_tgt);
         tv_target.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        tv_target.setText(getTotalAchieved());
+        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
+            tv_target.setText(String.valueOf(getStoreVisited()));
+        } else {
+            tv_target.setText(getTotalVisitActual());
+        }
 
         TextView tv_target1 = (TextView) rootView.findViewById(R.id.tv_tgt1);
         tv_target1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        tv_target1.setText(getTotalAchieved());
-
+        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
+            tv_target1.setText(String.valueOf(getStoreVisited()));
+        } else {
+            tv_target1.setText(getTotalVisitActual());
+        }
         TextView lbl_TodayTgt1 = (TextView) rootView.findViewById(R.id.label_TodayTgt1);
         lbl_TodayTgt1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1239,6 +1246,36 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 drawPath(result);
             }
         }
+    }
+
+
+    private String getTotalVisitActual() {
+        String totalActual = "";
+        double value = 0.0;
+
+        for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
+            value += retObj.getVisit_Actual();
+        }
+        totalActual = bmodel.formatValue(value);
+
+        return totalActual;
+    }
+
+    private int getStoreVisited() {
+        int count = 0;
+        try {
+            for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
+                if (retObj.getIsVisited() != null || retObj.getIsDeviated() != null)
+                    if (retObj.getIsVisited().equalsIgnoreCase("Y")
+                            && (retObj.getIsToday() == 1 || retObj.getIsDeviated().equalsIgnoreCase("Y"))) {
+                        count++;
+                    }
+
+            }
+        } catch (Exception e) {
+
+        }
+        return count;
     }
 
 

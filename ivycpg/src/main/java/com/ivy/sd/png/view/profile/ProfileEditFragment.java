@@ -241,7 +241,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
                             if ((lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("")
                                     || Double.parseDouble(longitude) == 0)
-                                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl !=0
+                                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0
                                     && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
                                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                                 return;
@@ -2567,8 +2567,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 }
                 //Dont allow if Fun57 is enabled and mandatory,
                 //Generally check for location and show toast if no location found.
-                if(!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
-                        || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)){
+                if (!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
+                        || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
 
                     Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     return false;
@@ -2814,7 +2814,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
                             profileConfig.add(new ConfigureBO("PROFILE08", "Latitude", lat, 0, 0, 0));
                             profileConfig.add(new ConfigureBO("PROFILE31", "Latitude", longitude, 0, 0, 0));
                         } else {
-                            latlongtextview.setText(lat + "," + longitude);
+                            if (latlongtextview != null)
+                                latlongtextview.setText(lat + "," + longitude);
                         }
                         Toast.makeText(getActivity(), "Location captured successfully.", Toast.LENGTH_LONG).show();
                     }

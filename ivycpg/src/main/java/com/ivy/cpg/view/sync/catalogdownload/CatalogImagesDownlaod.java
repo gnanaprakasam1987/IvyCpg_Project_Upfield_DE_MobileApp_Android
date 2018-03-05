@@ -5,14 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -119,8 +117,6 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 lastDownloadTime);
 
 
-
-
         if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
             //((CardView) findViewById(R.id.catalog_card)).setVisibility(View.VISIBLE);
 
@@ -131,7 +127,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             receiver = new ImageDownloadReceiver();
             registerReceiver(receiver, filter);
             isServiceRunning();
-            tvDownloadStatus.setText("Downloaded " + totalDownloadedCount );
+            tvDownloadStatus.setText("Downloaded " + totalDownloadedCount);
             /*if (totalDownloadedCount == totalDownloadImageCount) {
                 catalogRefresh.setVisibility(View.INVISIBLE);
                 full_download_catalog.setVisibility(View.VISIBLE);
@@ -164,7 +160,6 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             catalogFullDownloadButton.setVisibility(View.VISIBLE);
         }
     }
-
 
 
     private boolean isExternalStorageAvailable() {
@@ -300,7 +295,6 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         }
 
     }
-
 
 
     public class CatalogImagesRefresh extends AsyncTask<String, Void, String> {
@@ -475,9 +469,12 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
 
     private void initializeTransferUtility() {
+        System.setProperty
+                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                 ConfigurationMasterHelper.SECRET_KEY);
         AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
         transferUtility = new TransferUtility(s3, CatalogImagesDownlaod.this);
     }
 
@@ -490,8 +487,6 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         }
         return true;
     }
-
-
 
 
     public class DownloadListener implements TransferListener {

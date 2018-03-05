@@ -141,6 +141,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     //boolean isSemiCircleChartRequired = false;
     Bundle bundle;
     private boolean _hasLoadedOnce = false;
+    private ArrayList<String> categories;
 
     @Nullable
     @Override
@@ -197,6 +198,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private void initializeViews() {
         init();
     }
+
     private ActionBar getActionBar() {
         return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
@@ -209,10 +211,13 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList = (RecyclerView) view.findViewById(R.id.dashboardLv);
         ((TextView) view.findViewById(R.id.textView)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        if (bmodel.dashBoardHelper.getShowDayAndP3MSpinner() != 0) {
-            setpUpSpinner();
+        categories = new ArrayList<>();
+        categories = bmodel.dashBoardHelper.getDashList(isFromHomeScreenTwo);
+        if (categories != null) {
+            setpUpSpinner(categories);
             bmodel.downloadDailyReport();
         }
+
 
         if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
             show_trend_chart = true;
@@ -505,7 +510,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 } else {
                     holder.index.setText(strCalcPercentage);
                 }
-                double balanceValue = SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived());
+                double balanceValue = SDUtil.convertToDouble(dashboardData.getKpiTarget()) - SDUtil.convertToDouble(dashboardData.getKpiAcheived());
                 holder.balance.setText(balanceValue > 0 ? bmodel.formatValue(balanceValue) : "0");
                 holder.kpiFlex1.setText(dashboardData.getKpiFlex());
                 holder.incentive.setText(bmodel.formatValue(SDUtil.convertToDouble(dashboardData.getKpiIncentive() + "")));
@@ -815,8 +820,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 setScreenTitle(getActivity().getIntent().getStringExtra("screentitle"));
         }
         //if (!BusinessModel.dashHomeStatic) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setDisplayShowHomeEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowHomeEnabled(true);
         //}
     }
 
@@ -882,33 +887,28 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     }
 
 
-    private void setpUpSpinner() {
-        dashSpinner = (Spinner) view.findViewById(R.id.dashSpinner);
-        dashSpinner.setVisibility(View.VISIBLE);
-        dashSpinner.setOnItemSelectedListener(this);
-        final int dayAndP3MSpinner = bmodel.dashBoardHelper.getShowDayAndP3MSpinner();
+    private void setpUpSpinner(ArrayList<String> categoriesList) {
+        try {
+            dashSpinner = (Spinner) view.findViewById(R.id.dashSpinner);
+            dashSpinner.setVisibility(View.VISIBLE);
+            dashSpinner.setOnItemSelectedListener(this);
+            final int dayAndP3MSpinner = bmodel.dashBoardHelper.getShowDayAndP3MSpinner();
 
-        List<String> categories = new ArrayList<>();
-        categories.add(MONTH);
-        if (dayAndP3MSpinner == 3) {
-            categories.add(DAY);
-            categories.add(P3M);
-            show_trend_chart = true;
-        } else if (dayAndP3MSpinner == 2) {
-            categories.add(DAY);
-        } else if (dayAndP3MSpinner == 1) {
-            categories.add(P3M);
-            show_trend_chart = true;
+            if (categoriesList.contains(P3M))
+                show_trend_chart = true;
+
+            // Creating adapter for spinner
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, categoriesList);
+
+            dataAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+
+            // attaching data adapter to spinner
+            dashSpinner.setAdapter(dataAdapter);
+            monthSpinner = (Spinner) view.findViewById(R.id.monthSpinner);
+
+        } catch (Exception e) {
+
         }
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, categories);
-
-        dataAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
-
-        // attaching data adapter to spinner
-        dashSpinner.setAdapter(dataAdapter);
-        monthSpinner = (Spinner) view.findViewById(R.id.monthSpinner);
 
 
     }
@@ -1285,8 +1285,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                                         .getCalculatedPercentage());
                             }
 
-                        }
-                        else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_VISIT)) {
+                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_VISIT)) {
                             int visitedcalls = bmodel.getVisitedCallsForTheDayExcludingDeviatedVisits();
                             if (totalcalls == 0) {
                                 dashBoardBO.setKpiAcheived("0");
@@ -1776,11 +1775,16 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                if (bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD)
-                    bmodel.dashBoardHelper.findMinMaxProductLevelSellerKPI(kpiId, kpiTypeLovId, selectedInterval);
+                if (bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD) {
+                    if (!isFromHomeScreenTwo)
+                        bmodel.dashBoardHelper.findMinMaxProductLevelSellerKPI(kpiId, kpiTypeLovId, selectedInterval);
+                    else
+                        bmodel.dashBoardHelper.findMinMaxProductLevelRetailerKPI(kpiId, kpiTypeLovId, selectedInterval);
+
                     //for loaeral
-                else
+                } else {
                     bmodel.dashBoardHelper.downloadLorealSkuDetails(kpiId, kpiTypeLovId, selectedInterval);
+                }
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);

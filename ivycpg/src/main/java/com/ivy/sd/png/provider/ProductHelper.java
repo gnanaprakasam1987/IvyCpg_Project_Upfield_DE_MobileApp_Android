@@ -2665,16 +2665,28 @@ public class ProductHelper {
             db.openDataBase();
 
             Cursor c1 = db
-                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid WHERE PM.TaggingTypelovID = "
+                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid,ifnull (RM.RetailerID,0) as rid FROM ProductTaggingCriteriaMapping PCM " +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
+                            "LEFT JOIN RetailerMaster RM on RM.accountid=CriteriaId and RM.RetailerID =" + bmodel.getRetailerMasterBO().getRetailerID() +
+                            " AND CriteriaType='ACCOUNT' WHERE PM.TaggingTypelovID = "
                             + " (SELECT ListId FROM StandardListMaster WHERE ListCode = '"
-                            + taggingType + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+                            + taggingType + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")" +
+                            " AND (CriteriaType !='ACCOUNT' or rid !=0)" +
+                            " ORDER BY" +
+                            "  (CASE criteriatype" +
+                            "    WHEN 'RETAILER' THEN 0" +
+                            "    WHEN 'ACCOUNT' THEN 1" +
+                            "    WHEN 'CHANNEL' THEN 2" +
+                            "    WHEN 'DISTRIBUTOR' THEN 3" +
+                            "    WHEN 'LOCATION' THEN 4" +
+                            "    WHEN 'USER' THEN 5" +
+                            "    WHEN 'CLASS' THEN 6 END)");
 
             if (c1 != null) {
                 if (c1.moveToNext()) {
 
                     if (c1.getString(0).equals("RETAILER"))
-                        mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
+                        mappingId = bmodel.getRetailerMasterBO().getRetailerID() + "";
 
                     else if (c1.getString(0).equals("ACCOUNT"))
                         mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
@@ -3108,35 +3120,34 @@ public class ProductHelper {
             ProductMasterBO product = getTaggedProducts().get(i);
 
             int siz1 = product.getLocations().size();
-                for (int j = 0; j < siz1; j++) {
-                    if (product.getIsMustSell() == 1
-                            && (product.getLocations().get(j).getShelfPiece() < 0
-                            && product.getLocations().get(j).getShelfCase() < 0
-                            && product.getLocations().get(j).getShelfOuter() < 0
-                            && product.getLocations().get(j).getWHPiece() == 0
-                            && product.getLocations().get(j).getWHCase() == 0
-                            && product.getLocations().get(j).getWHOuter() == 0
-                            && product.getLocations().get(j).getCockTailQty() == 0
-                            && product.getIsListed() == 0
-                            && product.getIsDistributed() == 0
-                            && product.getReasonID().equals("0")
-                            && product.getLocations().get(j).getAvailability() < 0)) {
-                        if (j == siz1 - 1) {
-                            isSkuFilled = false;
-                            break loop;
-                        }
+            for (int j = 0; j < siz1; j++) {
+                if (product.getIsMustSell() == 1
+                        && (product.getLocations().get(j).getShelfPiece() < 0
+                        && product.getLocations().get(j).getShelfCase() < 0
+                        && product.getLocations().get(j).getShelfOuter() < 0
+                        && product.getLocations().get(j).getWHPiece() == 0
+                        && product.getLocations().get(j).getWHCase() == 0
+                        && product.getLocations().get(j).getWHOuter() == 0
+                        && product.getLocations().get(j).getCockTailQty() == 0
+                        && product.getIsListed() == 0
+                        && product.getIsDistributed() == 0
+                        && product.getReasonID().equals("0")
+                        && product.getLocations().get(j).getAvailability() < 0)) {
+                    if (j == siz1 - 1) {
+                        isSkuFilled = false;
+                        break loop;
                     }
-                    else {
-                        if(product.getLocations().get(j).getAvailability() == 0 && bmodel.configurationMasterHelper.SHOW_STOCK_RSN && product.getReasonID().equals("0")) {
-                            isSkuFilled = false;
-                            break loop;
-                        }else {
-                            isSkuFilled = true;
-                            j = siz1;
-                        }
+                } else {
+                    if (product.getLocations().get(j).getAvailability() == 0 && bmodel.configurationMasterHelper.SHOW_STOCK_RSN && product.getReasonID().equals("0")) {
+                        isSkuFilled = false;
+                        break loop;
+                    } else {
+                        isSkuFilled = true;
+                        j = siz1;
                     }
-
                 }
+
+            }
         }
         return isSkuFilled;
     }

@@ -124,7 +124,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
         if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD") ||
                 fromOrderScreen.equalsIgnoreCase("MENU_ORDER") ||
-                fromOrderScreen.equals("MENU_CATALOG_ORDER")) {
+                fromOrderScreen.equalsIgnoreCase("MENU_CATALOG_ORDER")) {
             updateSchemeDetails();
         } else {
             mSchemeDoneList = bmodel.schemeDetailsMasterHelper.getAppliedSchemeList();

@@ -85,11 +85,15 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
         remarks.setWidth(outMetrics.widthPixels);
 
         InputFilter filter = new InputFilter() {
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
-                char[] chars = {'\'', '"', '<', '>'};
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 for (int i = start; i < end; i++) {
-                    if (new String(chars).contains(String.valueOf(source.charAt(i)))) {
+                    String specialChars = "\"'<>";
+
+                    int type = Character.getType(source.charAt(i));
+                    if (type == Character.SURROGATE || type == Character.OTHER_SYMBOL
+                            || specialChars.contains("" + source)
+                            || Character.isWhitespace(0)) {
                         return "";
                     }
                 }
