@@ -270,6 +270,7 @@
     <string name="this_is_standared_order">This is an Standard order for : </string>
     <string name="supplier_mandatory">Please select Supplier</string>
     <string name="invalid_email_address">Invalid EMail Address</string>
+    <string name="wk5">wk5</string>
 
 
 </resources>
