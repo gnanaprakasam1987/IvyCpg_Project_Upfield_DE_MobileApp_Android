@@ -87,6 +87,7 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="ppq"
                 android:layout_marginStart="@dimen/margin_5px"
                 android:maxLines="1"
                 android:text="@string/ou" />
@@ -107,6 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
                 android:maxLines="1"
+                android:tag="msq"
                 android:text="@string/msq"
                 android:visibility="gone" />
 
@@ -117,8 +119,45 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
                 android:maxLines="1"
+                android:tag="psq"
                 android:text="@string/psq"
                 android:visibility="gone" />
+
+
+            <LinearLayout
+                android:id="@+id/llmoq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/moqTitle"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:tag="moq"
+                    android:text="@string/moq" />
+
+                <TextView
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_1dp"
+                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:maxLines="1"
+                    android:text=":" />
+
+                <TextView
+                    android:id="@+id/stock_and_order_listview_moq"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/zero" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/llwsih"

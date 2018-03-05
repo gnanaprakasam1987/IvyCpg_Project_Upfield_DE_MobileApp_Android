@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -18,7 +19,6 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LogReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
-import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.bo.OrderTakenTimeBO;
 import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
@@ -1235,12 +1235,12 @@ public class ReportHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct A.ListName as reasonDesc,srd .* from SalesReturnDetails srd"
-                            +" inner join StandardListMaster A INNER JOIN StandardListMaster B ON"
-                            +" A.ParentId = B.ListId AND"
+                            + " inner join StandardListMaster A INNER JOIN StandardListMaster B ON"
+                            + " A.ParentId = B.ListId AND"
                             + " ( B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_NONSALABLE_REASON_TYPE
                             + "' OR B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_SALABLE_REASON_TYPE + "')"
                             + " AND A.listId = srd.condition WHERE A.ListType = 'REASON' AND"
-                            +" srd.ProductId = " + bmodel.QT(productId) + " AND srd.RetailerId = " + bmodel.QT(retailerId)
+                            + " srd.ProductId = " + bmodel.QT(productId) + " AND srd.RetailerId = " + bmodel.QT(retailerId)
                             + " AND srd.status = 2");
             if (c != null) {
                 while (c.moveToNext()) {
@@ -3428,10 +3428,10 @@ public class ReportHelper {
         }
     }
 
-    public void prepareArchiveFileDownload(String filePath){
+    public void prepareArchiveFileDownload(String filePath) {
         bmodel.setDigitalContentURLS(new HashMap<String, String>());
 
-        boolean isAmazonUpload=false;
+        boolean isAmazonUpload = false;
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -3455,8 +3455,7 @@ public class ReportHelper {
                 }
             }
 
-        }
-        else  {
+        } else {
             c = db
                     .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
             if (c != null) {
@@ -3578,10 +3577,11 @@ public class ReportHelper {
 
     /**
      * Download retailer master for invoice reports
-     * @param context Context
+     *
+     * @param context     Context
      * @param mRetailerId Retailer Id
      */
-    public void downloadRetailerMaster(Context context,int mRetailerId) {
+    public void downloadRetailerMaster(Context context, int mRetailerId) {
         try {
             RetailerMasterBO retailer = new RetailerMasterBO();
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3589,9 +3589,10 @@ public class ReportHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select distinct A.retailerid, RPG.GroupId, A.subchannelid,(select ListCode from StandardListMaster where ListID = A.RpTypeId) as rp_type_code,"
-                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber,A.tinExpDate from retailerMaster A"
+                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber,A.tinExpDate,RBM.BeatID from retailerMaster A"
                             + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID"
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerId = A.RetailerID"
                             + " where A.retailerid=" + mRetailerId);
             if (c != null) {
                 if (c.moveToNext()) {
@@ -3615,6 +3616,7 @@ public class ReportHelper {
                     retailer.setSameZone(c.getInt(14));
                     retailer.setGSTNumber(c.getString(15));
                     retailer.setTinExpDate(c.getString(16));
+                    retailer.setBeatID(c.getInt(17));
 
                 }
                 c.close();

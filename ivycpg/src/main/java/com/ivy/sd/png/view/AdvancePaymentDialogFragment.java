@@ -426,12 +426,14 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                     if (bmodel.isExternalStorageAvailable()) {
 
                         mImageName = "COL_CHQ_"
-                                + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                + "_" + Commons.now(Commons.DATE_TIME)
+                                + bmodel.getRetailerMasterBO().getRetailerID()
+                                + "_" + mChequeNoET.getText().toString()
+                                + "_" + Commons.now(Commons.DATE)
                                 + "_img.jpg";
 
                         fnameStarts = "COL_CHQ_"
                                 + bmodel.getRetailerMasterBO().getRetailerID()
+                                + "_" + mChequeNoET.getText().toString()
                                 + "_" + Commons.now(Commons.DATE);
 
 
@@ -444,13 +446,13 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                             intent.putExtra("quality", 40);
                             mImagePath = bmodel.userMasterHelper.getUserMasterBO
                                     ().getDistributorid()
-                                    + "/"
+                                    + "_"
                                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                    + "/"
+                                    + "_"
                                     + bmodel.userMasterHelper.getUserMasterBO
                                     ().getDownloadDate()
                                     .replace("/", "") + "/";
-                            String path = HomeScreenFragment.photoPath + "/" + mImagePath + mImageName;
+                            String path = HomeScreenFragment.photoPath + "/" + mImageName;
                             intent.putExtra("path", path);
                             startActivityForResult(intent,
                                     bmodel.CAMERA_REQUEST_CODE);
@@ -805,7 +807,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.save_advance_payment), Toast.LENGTH_SHORT).show();
-
+            bmodel.saveModuleCompletion("MENU_COLLECTION");
             // clearing the object's after saved
             if (rcheckedId == 0)
                 clearPaymentObject(StandardListMasterConstants.CASH);

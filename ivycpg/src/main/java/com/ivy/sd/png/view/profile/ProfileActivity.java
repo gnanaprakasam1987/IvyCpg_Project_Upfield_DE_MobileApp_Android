@@ -114,7 +114,7 @@ import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 import static com.ivy.sd.png.asean.view.R.id.tab_layout;
 
 public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearByRetailerDialog.NearByRetailerInterface, MapWrapperLayout.OnDragListener,
-         CommonReasonDialog.AddNonVisitListener, View.OnClickListener {
+        CommonReasonDialog.AddNonVisitListener, View.OnClickListener {
 
     private static final String MENU_VISIT = "Trade Coverage";
     private static final String MENU_PLANNING = "Day Planning";
@@ -262,7 +262,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
             if (mMap != null) {
                 isLatLong = true;
-               // mCustomMapFragment.getMapAsync(this);
+                // mCustomMapFragment.getMapAsync(this);
                 markerList = new ArrayList<>();
             }
         } catch (Exception e) {
@@ -725,44 +725,48 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
      */
     private void loadStoreLocMapView(double retLat, double retLng) {
 
-        LatLng storeLatLng;
+        try {
+            LatLng storeLatLng;
 
-        if (isValidLatLng(retLat, retLng)) {
-            if (retLat != 0 && retLng != 0) {
-                storeLatLng = new LatLng(retLat, retLng);
+            if (isValidLatLng(retLat, retLng)) {
+                if (retLat != 0 && retLng != 0) {
+                    storeLatLng = new LatLng(retLat, retLng);
 
-                if (markerList.size() > 1) {
-                    markerList.clear();
-                    mMap.clear();
+                    if (markerList.size() > 1) {
+                        markerList.clear();
+                        mMap.clear();
+                    }
+                    //For the start location, the color of marker is GREEN and
+                    //for the end location, the color of marker is RED.
+                    markerList.add(storeLatLng);
+                    MarkerOptions options = new MarkerOptions();
+                    options.position(storeLatLng);// Setting the position of the marker
+                    options.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()));
+
+                    if (mMap != null) {
+                        mMap.addMarker(options);
+                    }
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(storeLatLng.latitude, storeLatLng.longitude)).zoom(15f).build();
+
+                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                    if (isdrawRoute) {
+                        drawMapRoute();
+                    }
+                } else {
+                    drawRouteBtn.setVisibility(View.GONE);
                 }
-                //For the start location, the color of marker is GREEN and
-                //for the end location, the color of marker is RED.
-                markerList.add(storeLatLng);
-                MarkerOptions options = new MarkerOptions();
-                options.position(storeLatLng);// Setting the position of the marker
-                options.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()));
 
-                if (mMap != null) {
-                    mMap.addMarker(options);
-                }
-
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(storeLatLng.latitude, storeLatLng.longitude)).zoom(15f).build();
-
-                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-                if (isdrawRoute) {
-                    drawMapRoute();
-                }
-            } else {
-                drawRouteBtn.setVisibility(View.GONE);
+                mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                    public void onMapLoaded() {
+                        mapProgressBar.setVisibility(View.GONE);
+                    }
+                });
             }
+        } catch (Exception e) {
 
-            mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-                public void onMapLoaded() {
-                    mapProgressBar.setVisibility(View.GONE);
-                }
-            });
         }
 
     }

@@ -2848,7 +2848,7 @@ public class SchemeDetailsMasterHelper {
         }
         if (mOffInvoiceAppliedSchemeList != null) {
             for (SchemeBO schemeBO : mOffInvoiceAppliedSchemeList) {
-                if(!bmodel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
+                if (!bmodel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
                         || OrderHelper.getInstance(context).getValidAccumulationSchemes().contains(String.valueOf(schemeBO.getParentId()))) {
 
                     if (schemeBO.isQuantityTypeSelected()) {
@@ -4116,12 +4116,12 @@ public class SchemeDetailsMasterHelper {
 
     private void downloadProductIdListByParentId(DBUtil db) {
         StringBuffer sb = new StringBuffer();
-        sb.append("select distinct SBM.productid,SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from SchemeBuyMaster SBM ");
-        sb.append(" inner join SchemeMaster SM on SM.Schemeid=SBM.Schemeid ");
-        sb.append("inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid ");
-        sb.append("left join schemeApplyCountMaster SAC on SM.schemeid=SAC.schemeID ");
+        sb.append("select distinct SBM.productid,SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from SchemeMaster SM ");
+        sb.append("left join schemeApplyCountMaster SAC on SM.Schemeid=SAC.schemeID ");
         sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
         sb.append(" OR SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ")");
+        sb.append(" inner join SchemeBuyMaster SBM on SM.Schemeid=SBM.Schemeid ");
+        sb.append("inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid ");
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
         sb.append(" where SCM.distributorid in(0," + bmodel.getRetailerMasterBO().getDistributorId() + ")");
         sb.append(" and SCM.RetailerId in(0," + bmodel.getRetailerMasterBO().getRetailerID() + ")");
@@ -4484,7 +4484,7 @@ public class SchemeDetailsMasterHelper {
                     ArrayList<SchemeProductBO> freeProductList = new ArrayList<>();
                     SchemeProductBO schemeProductBO;
                     int schemeid = 0;
-                    int parentId=0;
+                    int parentId = 0;
                     String schemeDesc = "";
                     String freeType = "";
                     SchemeBO schemeBO = null;
@@ -4528,11 +4528,11 @@ public class SchemeDetailsMasterHelper {
                                 schemeid = c.getInt(4);
                                 schemeDesc = c.getString(6);
                                 freeType = c.getString(9);
-                                parentId=c.getInt(5);
+                                parentId = c.getInt(5);
                             } else {
                                 freeProductList.add(schemeProductBO);
                                 schemeid = c.getInt(4);
-                                parentId=c.getInt(5);
+                                parentId = c.getInt(5);
                                 schemeDesc = c.getString(6);
                                 freeType = c.getString(9);
                             }

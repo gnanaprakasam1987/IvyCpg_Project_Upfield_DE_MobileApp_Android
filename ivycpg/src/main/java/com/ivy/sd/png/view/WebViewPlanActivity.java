@@ -93,6 +93,7 @@ public class WebViewPlanActivity extends IvyBaseActivityNoActionBar implements A
 //           // Used to remove the app logo actionbar icon and set title as home
 //          // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
 

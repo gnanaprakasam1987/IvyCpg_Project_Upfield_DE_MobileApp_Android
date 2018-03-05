@@ -38,7 +38,7 @@ public class CommonDialog extends Dialog {
     private Context bContext;
     protected BusinessModel bmodel;
     private boolean imgDisplay;
-    private boolean isMoveNext,isDynamicImageAvail=false;
+    private boolean isMoveNext, isDynamicImageAvail = false;
     private String imageSrc;
 
 
@@ -92,7 +92,7 @@ public class CommonDialog extends Dialog {
 
     //Dialog with Dynamic Image
     public CommonDialog(Context bContext, Context context, String title, String msg,
-                        boolean imgDisplay, String posBtnTxt, String negBtnTxt, boolean isMoveNext,String ImageSrc,
+                        boolean imgDisplay, String posBtnTxt, String negBtnTxt, boolean isMoveNext, String ImageSrc,
                         positiveOnClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
@@ -106,9 +106,9 @@ public class CommonDialog extends Dialog {
         this.negBtnTxt = negBtnTxt;
         this.negClickListener = negClickListener;
         this.isMoveNext = isMoveNext;
-        this.imageSrc =ImageSrc;
-        if(ImageSrc!=null&&(!ImageSrc.equalsIgnoreCase("")))
-            isDynamicImageAvail=true;
+        this.imageSrc = ImageSrc;
+        if (ImageSrc != null && (!ImageSrc.equalsIgnoreCase("")))
+            isDynamicImageAvail = true;
     }
 
 
@@ -124,13 +124,14 @@ public class CommonDialog extends Dialog {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        View view=null;
-        if(isDynamicImageAvail)
-         view = View.inflate(context, R.layout.common_dialog_layout_with_image, null);
+        View view = null;
+        if (isDynamicImageAvail)
+            view = View.inflate(context, R.layout.common_dialog_layout_with_image, null);
         else
             view = View.inflate(context, R.layout.common_dialog_layout, null);
 
         setContentView(view);
+        setCancelable(false);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         TextView txtTitle = (TextView) view.findViewById(R.id.title);
@@ -152,28 +153,27 @@ public class CommonDialog extends Dialog {
             dialog_img.setVisibility(View.VISIBLE);
             msg_text.setGravity(Gravity.CENTER_HORIZONTAL);
         }
-        if(isDynamicImageAvail)
-        {
+        if (isDynamicImageAvail) {
             //Setting the image size - Width & Height dynamically based on the screen size.
             // Width - Match Parent
             // Height - Screen height divide by 2
             DisplayMetrics displayMetrics = new DisplayMetrics();
-            ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
             int width = displayMetrics.widthPixels;
             int height = displayMetrics.heightPixels;
-            Log.e("Widthheight",width + " "+height);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)(height/2.4));
+            Log.e("Widthheight", width + " " + height);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (height / 2.4));
             dialog_img.setLayoutParams(layoutParams);
             msg_text.setGravity(Gravity.CENTER_VERTICAL);
             Glide.with(context).load(imageSrc)
                     .centerCrop()
                     .placeholder(R.drawable.downloadsuccess)
                     .error(R.drawable.no_image_available)
-                    .override(300,300)
+                    .override(300, 300)
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(dialog_img) ;
-            if (txtTitle.getVisibility()==View.GONE)
+                    .into(dialog_img);
+            if (txtTitle.getVisibility() == View.GONE)
                 msg_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         }
 
@@ -210,7 +210,7 @@ public class CommonDialog extends Dialog {
         mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mCancelBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-        if(isMoveNext){
+        if (isMoveNext) {
             TextView text_move_next = (TextView) findViewById(R.id.text_move_next);
             text_move_next.setVisibility(View.VISIBLE);
             text_move_next.setOnClickListener(new View.OnClickListener() {

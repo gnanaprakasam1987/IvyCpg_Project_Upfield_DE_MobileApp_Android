@@ -32,6 +32,7 @@
             android:layout_margin="@dimen/list_margin"
             android:background="@drawable/icon_close"
             android:backgroundTint="@color/white"
+            android:visibility="gone"
             android:gravity="end"
             android:text="" />
 
@@ -55,6 +56,7 @@
         android:id="@+id/ll_close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/dimens_4dp"
         android:orientation="vertical"
 
         android:layout_alignParentBottom="true">
@@ -62,7 +64,7 @@
         <Button
             android:id="@+id/save_btn"
             style="?attr/roundedCustomButtonSmall"
-            android:text="@string/save"
+            android:text="@string/done"
             android:layout_gravity="center_horizontal"
             android:textAllCaps="false" />
     </LinearLayout>

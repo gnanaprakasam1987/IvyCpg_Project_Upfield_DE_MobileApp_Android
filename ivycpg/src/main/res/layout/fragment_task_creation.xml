@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
     <LinearLayout
         android:id="@+id/footer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/closeTask"
@@ -33,26 +33,29 @@
             android:text="@string/save"
             android:visibility="gone" />
     </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/footer">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:padding="8dp"
-            android:text="@string/plan_task"
-            android:visibility="gone" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:padding="8dp"
+                    android:text="@string/plan_task"
+                    android:visibility="gone" />
 
         <EditText
             android:id="@+id/tv"
@@ -62,6 +65,7 @@
             android:layout_margin="5dp"
             android:gravity="start|center"
             android:hint="@string/enter_task_title"
+            android:maxLength="25"
             android:textColor="@android:color/black" />
 
         <EditText
@@ -72,63 +76,63 @@
             android:layout_margin="5dp"
             android:gravity="start|center"
             android:hint="@string/enter_task_description"
+            android:maxLength="250"
             android:maxLines="4"
             android:textColor="@android:color/black" />
 
-        <TextView
-            style="?textFieldStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:text="@string/applyto" />
+                <TextView
+                    style="?textFieldStyle"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/applyto" />
 
-        <RadioGroup
-            android:id="@+id/rg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="horizontal" >
+                <RadioGroup
+                    android:id="@+id/rg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/seller"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/Seller"
-                android:textColor="@android:color/black"/>
+                    <RadioButton
+                        android:id="@+id/seller"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/Seller"
+                        android:textColor="@android:color/black" />
 
-            <RadioButton
-                android:id="@+id/Channelwise"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Channelwise"
-                android:textColor="@android:color/black" />
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/Channelwise"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/Channelwise"
+                        android:textColor="@android:color/black" />
+                </RadioGroup>
 
-        <LinearLayout
-            android:id="@+id/allchannel"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="6dp"
-            android:visibility="gone" >
+                <LinearLayout
+                    android:id="@+id/allchannel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6dp"
+                    android:visibility="gone">
 
-            <CheckBox
-                android:id="@+id/allcheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/all_channel"
-                android:textColor="@android:color/black" />
+                    <CheckBox
+                        android:id="@+id/allcheckbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/all_channel"
+                        android:textColor="@android:color/black" />
 
-            <Spinner
-                android:id="@+id/channel"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" >
-            </Spinner>
+                    <Spinner
+                        android:id="@+id/channel"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"></Spinner>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
 </RelativeLayout>

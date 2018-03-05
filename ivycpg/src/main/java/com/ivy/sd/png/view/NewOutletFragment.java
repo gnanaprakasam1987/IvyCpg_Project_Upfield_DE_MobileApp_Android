@@ -281,9 +281,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             else
                 setScreenTitle(getArguments().getString("screentitle"));
         } catch (Exception e) {
+
+            setScreenTitle(getResources().getString(R.string.new_retailer));
             Commons.printException(e);
         }
-
 
         if (Build.VERSION.SDK_INT >= 14) {
             Point size = new Point();
@@ -627,7 +628,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     /**
      * getActivity() would clear all the resources used of the layout.
-     *
+     * <p>
      * param view
      */
     private void unbindDrawables(View view) {
@@ -3686,6 +3687,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
 
     }
+
     //To create layout for Retailer Attribute
     private LinearLayout addAttributeView(final String MName, int mandatory, int flag) {
         //flag=0 - add common atrributes
@@ -3990,8 +3992,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             boolean isLatLongMenuAvail = false;
             for (int conf = 0; conf < profileConfig.size(); conf++) {
-                if(profileConfig.get(conf).getConfigCode().equalsIgnoreCase("LATLONG") &&
-                       profileConfig.get(conf).getMandatory() == 1) {
+                if (profileConfig.get(conf).getConfigCode().equalsIgnoreCase("LATLONG") &&
+                        profileConfig.get(conf).getMandatory() == 1) {
                     isLatLongMenuAvail = true;
                     break;
                 }
@@ -4002,11 +4004,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                 return true;
-            }else {
+            } else {
                 if (LocationUtil.latitude == 0 || LocationUtil.longitude == 0) {
                     Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
-                }else{
-                    if(!isLatLongMenuAvail && (outlet.getNewOutletlattitude() == 0 || outlet.getNewOutletLongitude() == 0)) {
+                } else {
+                    if (!isLatLongMenuAvail && (outlet.getNewOutletlattitude() == 0 || outlet.getNewOutletLongitude() == 0)) {
                         lattitude = LocationUtil.latitude;
                         longitude = LocationUtil.longitude;
                         outlet.setNewOutletlattitude(lattitude);

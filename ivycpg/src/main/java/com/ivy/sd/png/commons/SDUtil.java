@@ -292,7 +292,8 @@ public class SDUtil {
         int result = 0;
         SimpleDateFormat sf = new SimpleDateFormat(format);
         try {
-            result = sf.parse(firstDate).compareTo(sf.parse(secondDate));
+            if (firstDate != null && secondDate != null)
+                result = sf.parse(firstDate).compareTo(sf.parse(secondDate));
         } catch (ParseException e) {
             e.printStackTrace();
         }

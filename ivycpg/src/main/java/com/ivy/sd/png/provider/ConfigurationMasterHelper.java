@@ -517,6 +517,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_HST_INVDET;
     public boolean SHOW_HST_STARTDATE;
     public boolean SHOW_HST_DUETDATE;
+    public boolean SHOW_HST_PAID_AMOUNT;
+    public boolean SHOW_HST_BAL_AMOUNT;
 
     public boolean SHOW_INV_HST_ORDERID;
     public boolean SHOW_INV_HST_INVOICEDATE;
@@ -2199,7 +2201,7 @@ public class ConfigurationMasterHelper {
         this.IS_SHOW_RID_CONCEDER_AS_DSTID = hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RID_CONCEDER_AS_DSTID) : false;
 
         this.LOAD_COMP_CONFIGS = hashMapHHTModuleConfig.get(CODE_COMPETITOR) != null ? hashMapHHTModuleConfig.get(CODE_COMPETITOR) : false;
-        if(LOAD_COMP_CONFIGS){
+        if (LOAD_COMP_CONFIGS) {
             loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
@@ -2899,6 +2901,8 @@ public class ConfigurationMasterHelper {
             SHOW_HST_INVDET = false;
             SHOW_HST_STARTDATE = false;
             SHOW_HST_DUETDATE = false;
+            SHOW_HST_PAID_AMOUNT = false;
+            SHOW_HST_BAL_AMOUNT = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -2948,6 +2952,12 @@ public class ConfigurationMasterHelper {
                             break;
                         case "DUDT":
                             SHOW_HST_DUETDATE = true;
+                            break;
+                        case "PAMT":
+                            SHOW_HST_PAID_AMOUNT = true;
+                            break;
+                        case "BAMT":
+                            SHOW_HST_BAL_AMOUNT = true;
                             break;
                     }
 
@@ -3171,7 +3181,7 @@ public class ConfigurationMasterHelper {
             SHOW_SHELF_OUTER = false;
             SHOW_ORDER_CASE = false;
             SHOW_ORDER_PCS = false;
-            SHOW_FOC=false;
+            SHOW_FOC = false;
             SHOW_OUTER_CASE = false;
             SHOW_ICO = false;
             SHOW_BARCODE = false;
@@ -4258,7 +4268,7 @@ public class ConfigurationMasterHelper {
             SHOW_BIXOLON_TITAN = false;
             SHOW_SCRIBE_TITAN = false;
             COMMON_PRINT_LOGON = false;
-            COMMON_PRINT_MAESTROS=false;
+            COMMON_PRINT_MAESTROS = false;
 
 
             if (CODE_BIXOLONI.equals(printer))

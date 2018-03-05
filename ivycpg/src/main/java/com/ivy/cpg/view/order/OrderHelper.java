@@ -20,7 +20,6 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -218,7 +217,7 @@ public class OrderHelper {
                         db.deleteSQL("OrderDetail", "OrderID=" + uid, false);
 
                         if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) { //If Sales Return Available for Order
-                            deleteSalesReturnDatas(db,uid);
+                            deleteSalesReturnDatas(db, uid);
                         }
 
                         // if scheme module enable ,delete tha scheme table
@@ -816,7 +815,11 @@ public class OrderHelper {
             StringBuffer sb = new StringBuffer();
             sb.append("Select Distinct OH.OrderID from OrderHeader OH INNER JOIN OrderDetail OD on OH.OrderID = OD.OrderID ");
             sb.append(" where OH.upload='N' and OH.RetailerID =");
-            sb.append(businessModel.QT(retailerId) + " and OH.invoiceStatus = 0 and sid=" + businessModel.getRetailerMasterBO().getDistributorId());
+            sb.append(businessModel.QT(retailerId) + " and OH.invoiceStatus = 0");
+
+            //add distributed condition
+            if (!businessModel.configurationMasterHelper.SHOW_SUPPLIER_SELECTION)
+                sb.append(" and sid=" + businessModel.retailerMasterBO.getDistributorId());
 
             if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                 sb.append(" and is_vansales="
@@ -1003,7 +1006,9 @@ public class OrderHelper {
                         + businessModel.retailerMasterBO.getIsVansales());
             }
 
-            sb.append(" and sid=" + businessModel.retailerMasterBO.getDistributorId());
+            //add distributed id based on this config code
+            if (!businessModel.configurationMasterHelper.SHOW_SUPPLIER_SELECTION)
+                sb.append(" and sid=" + businessModel.retailerMasterBO.getDistributorId());
 
             sb.append(" and OD.orderid not in(select orderid from OrderDeliveryDetail)");
 
@@ -1672,7 +1677,7 @@ public class OrderHelper {
                 batchWiseProductBO = batchWiseBO;
                 orderedPcsQty = batchWiseProductBO.getOrderedPcsQty();
                 orderedCaseQty = batchWiseProductBO.getOrderedCaseQty();
-                foc=batchWiseProductBO.getFoc();
+                foc = batchWiseProductBO.getFoc();
                 orderedOuterQty = batchWiseProductBO.getOrderedOuterQty();
                 batchId = batchWiseProductBO.getBatchid();
                 schemeOrderType = businessModel.productHelper.getmOrderType().get(1);
@@ -1706,7 +1711,7 @@ public class OrderHelper {
                 orderedPcsQty = product.getOrderedPcsQty();
                 orderedCaseQty = product.getOrderedCaseQty();
                 orderedOuterQty = product.getOrderedOuterQty();
-                foc=product.getFoc();
+                foc = product.getFoc();
                 srp = product.getSrp();
                 csrp = product.getCsrp();
                 osrp = product.getOsrp();
@@ -2465,10 +2470,10 @@ public class OrderHelper {
      *
      * @param mOrderedProductList ordered product list
      */
-    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList,double totalOrderValue) {
+    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList, double totalOrderValue) {
 
-        ArrayList<String> mValidSchemes=null;
-        if(businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE) {
+        ArrayList<String> mValidSchemes = null;
+        if (businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE) {
             mValidSchemes = getValidAccumulationSchemes(totalOrderValue);
         }
 
@@ -2480,8 +2485,8 @@ public class OrderHelper {
             if (offInvoiceSchemeList != null) {
                 for (SchemeBO schemeBO : offInvoiceSchemeList) {
                     if (schemeBO.isQuantityTypeSelected()) {
-                        if(!businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
-                                ||mValidSchemes.contains(String.valueOf(schemeBO.getParentId()))) {
+                        if (!businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
+                                || mValidSchemes.contains(String.valueOf(schemeBO.getParentId()))) {
                             updateSchemeFreeProduct(schemeBO, productBO);
                         }
                     }
@@ -2491,8 +2496,8 @@ public class OrderHelper {
 
     }
 
-    private ArrayList<String> getValidAccumulationSchemes(double totalOrderValue){
-        mValidAccumulationSchemes=new ArrayList<>();
+    private ArrayList<String> getValidAccumulationSchemes(double totalOrderValue) {
+        mValidAccumulationSchemes = new ArrayList<>();
         try {
             HashMap<String, Double> mFOCValueBySchemeId = new HashMap<>();
             for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmOffInvoiceAppliedSchemeList()) {
@@ -2533,8 +2538,7 @@ public class OrderHelper {
                 }
 
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
 
@@ -2556,7 +2560,7 @@ public class OrderHelper {
         });
 
         HashMap sortedHashMap = new LinkedHashMap();
-        for (Iterator it = list.iterator(); it.hasNext();) {
+        for (Iterator it = list.iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             sortedHashMap.put(entry.getKey(), entry.getValue());
         }
@@ -2751,20 +2755,20 @@ public class OrderHelper {
         return false;
     }
 
-    public boolean isOverDueAvail(Context mContext){
+    public boolean isOverDueAvail(Context mContext) {
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
         boolean isDuePassed = false;
-        try{
+        try {
             Cursor c = db.selectSQL("select InvoiceDate from InvoiceMaster where Retailerid='" + businessModel.getRetailerMasterBO().getRetailerID() + "' and invNetAmount > paidAmount");
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
 
-                    Date dueDate = DateUtil.addDaystoDate(DateUtil.convertStringToDateObject(c.getString(0),"yyyy/MM/dd"),businessModel.retailerMasterBO.getCreditDays());
-                    Date currDate = DateUtil.convertStringToDateObject(SDUtil.now(4),"yyyy/MM/dd");
-                    Commons.print("Order Helper," + "dueDate " + dueDate + " -- currDate "+currDate);
+                    Date dueDate = DateUtil.addDaystoDate(DateUtil.convertStringToDateObject(c.getString(0), "yyyy/MM/dd"), businessModel.retailerMasterBO.getCreditDays());
+                    Date currDate = DateUtil.convertStringToDateObject(SDUtil.now(4), "yyyy/MM/dd");
+                    Commons.print("Order Helper," + "dueDate " + dueDate + " -- currDate " + currDate);
 
                     if (dueDate.compareTo(currDate) != 0 && currDate.after(dueDate)) {
                         isDuePassed = true;
@@ -2778,7 +2782,7 @@ public class OrderHelper {
 
             return isDuePassed;
 
-        }catch(Exception e){
+        } catch (Exception e) {
             db.closeDB();
             Commons.printException("" + e);
         }
@@ -2812,10 +2816,10 @@ public class OrderHelper {
 
     }
 
-    private void deleteSalesReturnDatas(DBUtil db,String id){
+    private void deleteSalesReturnDatas(DBUtil db, String id) {
 
-        try{
-            Cursor c = db.selectSQL("Select uid from SalesReturnHeader where RefModuleTId = "+id);
+        try {
+            Cursor c = db.selectSQL("Select uid from SalesReturnHeader where RefModuleTId = " + id);
 
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -2829,7 +2833,7 @@ public class OrderHelper {
             }
             c.close();
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

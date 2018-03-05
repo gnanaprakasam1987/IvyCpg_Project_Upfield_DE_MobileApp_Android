@@ -79,6 +79,20 @@
                             tools:text="PPQ : 50" />
 
                         <TextView
+                            android:id="@+id/catalog_order_listview_moq"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="1dp"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:paddingTop="1dp"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/text_sz_small"
+                            tools:text="@string/moq" />
+
+                        <TextView
                             android:id="@+id/catalog_order_listview_sih"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

@@ -388,7 +388,7 @@ public class DashBoardHelper {
         return wholeNumber;
     }
 
-    public void loadRetailerDashBoard(String retailerID , String interval) {
+    public void loadRetailerDashBoard(String retailerID, String interval) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -405,7 +405,7 @@ public class DashBoardHelper {
                     + " LEFT join RetailerKPIScore RKS on RKD.KPIID= RKS.KPIID and RKD.KPIParamLovId = RKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId"
                     + " LEFT join RetailerKPISKUDetail rkdd on rkdd.KPIParamLovId =RKD.KPIParamLovId "
-                    + " where retailerid =" + retailerID + " and interval= '"+ interval +"' "
+                    + " where retailerid =" + retailerID + " and interval= '" + interval + "' "
                     + " AND "
                     + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " between RK.fromdate and RK.todate group by SLM.Listid order by DisplaySeq asc";
@@ -450,7 +450,7 @@ public class DashBoardHelper {
         return retailerKpiSku;
     }
 
-    public void findMinMaxProductLevelRetailerKPI(int kpiID, int kpiTypeLovID) {
+    public void findMinMaxProductLevelRetailerKPI(int kpiID, int kpiTypeLovID, String interval) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
@@ -462,8 +462,8 @@ public class DashBoardHelper {
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
-                        mRetailerKpiMaxLevel = c.getInt(0);
-                        mRetailerKpiMaxSeqLevel = c.getInt(1);
+                        mSellerKpiMaxLevel = c.getInt(0);
+                        mSellerKpiMaxSeqLevel = c.getInt(1);
                     }
                 }
                 c.close();
@@ -475,15 +475,15 @@ public class DashBoardHelper {
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
-                        mRetailerKpiMinLevel = c.getInt(0);
-                        mRetailerKpiMinSeqLevel = c.getInt(1);
+                        mSellerKpiMinLevel = c.getInt(0);
+                        mSellerKpiMinSeqLevel = c.getInt(1);
                     }
                 }
                 c.close();
             }
 
 
-            downloadRetailerKpiSkuDetail(kpiID, kpiTypeLovID, mRetailerKpiMinSeqLevel, mRetailerKpiMaxSeqLevel);
+            downloadRetailerKpiSkuDetail(kpiID, kpiTypeLovID, mSellerKpiMinSeqLevel, mSellerKpiMaxSeqLevel, interval);
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -494,7 +494,7 @@ public class DashBoardHelper {
     }
 
 
-    public void downloadRetailerKpiSkuDetail(int kpiID, int kpiTypeLovID, int parentLevel, int childLevel) {
+    public void downloadRetailerKpiSkuDetail(int kpiID, int kpiTypeLovID, int parentLevel, int childLevel, String interval) {
         SKUWiseTargetBO temp;
         try {
             int loopEnd = childLevel - parentLevel + 1;
@@ -516,7 +516,7 @@ public class DashBoardHelper {
                 Cursor c = db.selectSQL(sb.toString());
 
                 if (c != null) {
-                    retailerKpiSku = new Vector<>();
+                    sellerKpiSku = new Vector<>();
                     while (c.moveToNext()) {
                         temp = new SKUWiseTargetBO();
                         temp.setPid(c.getInt(0));
@@ -540,79 +540,148 @@ public class DashBoardHelper {
                                     .getCalculatedPercentage());
                         }
 
-                        retailerKpiSku.add(temp);
+                        sellerKpiSku.add(temp);
                     }
                     c.close();
+                }
+                if (interval.equalsIgnoreCase("DAY")) {
+                    calculateDayAcheivement(true);
                 }
             } else {
 
                 Commons.print("Loop ENd," + "" + loopEnd);
-                sb.append("SELECT P1.PID, P1.pname, P1.psname, P1.pcode, P1.parentId,p1.plid ,IFNULL(RKSD .kpiid,0), IFNULL(RKSD .Target,0)");
-                sb.append(", IFNULL(RKSD .Achievement,0), ROUND(CASE WHEN (100-((RKSD .Achievement*100)/((RKSD ");
-                sb.append(".Target)*1.0))) < 0 THEN 100 ELSE ((RKSD .Achievement*100)/((RKSD .Target)*1.0)) END ,2) AS acheived");
-                sb.append(",pl.sequence  from ProductMaster p1 INNER JOIN RetailerKPISKUDetail RKSD ON RKSD.pid = p1.pid and RKSD.kpiid=");
-                sb.append(kpiID);
-                sb.append(" and RKSD.KPIParamLovId=");
-                sb.append(kpiTypeLovID);
-                sb.append(" inner join  ProductLevel pl on pl.levelid = p1.plid ");
-
-                for (int i = 2; i <= loopEnd; i++) {
-                    Commons.print("Loop I," + "" + i);
-                    sb.append("UNION ");
-                    sb.append("SELECT P");
-                    sb.append(i);
-                    sb.append(".PID, P");
-                    sb.append(i);
-                    sb.append(".pname, P");
-                    sb.append(i);
-                    sb.append(".psname, P");
-                    sb.append(i);
-                    sb.append(".pcode, P");
-                    sb.append(i);
-                    sb.append(".parentId, p");
-                    sb.append(i);
-                    sb.append(".plid");
-                    sb.append(",IFNULL(RKSD .kpiid,0),SUM(IFNULL(RKSD .Target,0)),SUM(IFNULL(RKSD .Achievement,0)),");
-                    sb.append("ROUND(CASE WHEN (100-((SUM(RKSD .Achievement)*100)/((SUM(RKSD .Target))*1.0))) < ");
-                    sb.append("0 THEN 100 ELSE ((SUM(RKSD .Achievement*100))/((SUM(RKSD .Target))*1.0)) END ,2) AS acheived,pl.sequence from RetailerKPISKUDetail RKSD  ");
-                    sb.append("INNER JOIN ProductMaster p1 ON RKSD.pid = p1.pid and RKSD.kpiid=");
+                if (interval.equalsIgnoreCase("DAY")) {
+                    sb.append("SELECT P1.PID, P1.pname, P1.psname, P1.pcode, P1.parentId,p1.plid ,IFNULL(RKSD .kpiid,0), IFNULL(RKSD .Target,0)");
+                    sb.append(", IFNULL(RKSD .Achievement,0), ROUND(CASE WHEN (100-((RKSD .Achievement*100)/((RKSD ");
+                    sb.append(".Target)*1.0))) < 0 THEN 100 ELSE ((RKSD .Achievement*100)/((RKSD .Target)*1.0)) END ,2) AS acheived");
+                    sb.append(",pl.sequence  from ProductMaster p1 INNER JOIN RetailerKPISKUDetail RKSD ON RKSD.pid = p1.pid and RKSD.kpiid=");
                     sb.append(kpiID);
                     sb.append(" and RKSD.KPIParamLovId=");
                     sb.append(kpiTypeLovID);
-                    for (int j = 2; j <= i; j++) {
-                        sb.append(" INNER JOIN  ProductMaster p");
-                        sb.append(j);
-                        sb.append(" on p");
-                        sb.append((j - 1));
-                        sb.append(".parentid=p");
-                        sb.append(j);
-                        sb.append(".pid ");
+
+                    sb.append(" left join OrderDetail OD on OD.ProductID = RKSD.PiD inner join  ProductLevel pl on pl.levelid = p1.plid " +
+                            "GROUP BY P1.PID, P1.pname, P1.psname, P1.pcode, P1.parentId, p1.plid ");
+                    //sb.append(" inner join  ProductLevel pl on pl.levelid = p1.plid ");
+
+                    for (int i = 2; i <= loopEnd; i++) {
+                        Commons.print("Loop I," + "" + i);
+                        sb.append("UNION ");
+                        sb.append("SELECT P");
+                        sb.append(i);
+                        sb.append(".PID, P");
+                        sb.append(i);
+                        sb.append(".pname, P");
+                        sb.append(i);
+                        sb.append(".psname, P");
+                        sb.append(i);
+                        sb.append(".pcode, P");
+                        sb.append(i);
+                        sb.append(".parentId, p");
+                        sb.append(i);
+                        sb.append(".plid");
+                        sb.append(",IFNULL(RKSD .kpiid,0),SUM(IFNULL(RKSD .Target,0)),SUM(IFNULL(RKSD .Achievement,0)),");
+                        sb.append("ROUND(CASE WHEN (100-((SUM(RKSD .Achievement)*100)/((SUM(RKSD .Target))*1.0))) < ");
+                        sb.append("0 THEN 100 ELSE ((SUM(RKSD .Achievement*100))/((SUM(RKSD .Target))*1.0)) END ,2) AS acheived,pl.sequence from RetailerKPISKUDetail RKSD  ");
+                        sb.append("INNER JOIN ProductMaster p1 ON RKSD.pid = p1.pid and RKSD.kpiid=");
+                        sb.append(kpiID);
+                        sb.append(" and RKSD.KPIParamLovId=");
+                        sb.append(kpiTypeLovID);
+                        for (int j = 2; j <= i; j++) {
+                            sb.append(" INNER JOIN  ProductMaster p");
+                            sb.append(j);
+                            sb.append(" on p");
+                            sb.append((j - 1));
+                            sb.append(".parentid=p");
+                            sb.append(j);
+                            sb.append(".pid ");
+                        }
+
+                        sb.append(" inner join  ProductLevel pl on pl.levelid = p");
+                        sb.append(i);
+                        sb.append(".plid");
+                        sb.append(" GROUP BY P");
+                        sb.append(i);
+                        sb.append(".PID, P");
+                        sb.append(i);
+                        sb.append(".pname, P");
+                        sb.append(i);
+                        sb.append(".psname, P");
+                        sb.append(i);
+                        sb.append(".pcode, P");
+                        sb.append(i);
+                        sb.append(".parentId, p");
+                        sb.append(i);
+                        sb.append(".plid ");
+
+                    }
+                } else {
+                    sb.append("SELECT P1.PID, P1.pname, P1.psname, P1.pcode, P1.parentId,p1.plid ,IFNULL(RKSD .kpiid,0), IFNULL(RKSD .Target,0)");
+                    sb.append(", IFNULL(RKSD .Achievement,0), ROUND(CASE WHEN (100-((RKSD .Achievement*100)/((RKSD ");
+                    sb.append(".Target)*1.0))) < 0 THEN 100 ELSE ((RKSD .Achievement*100)/((RKSD .Target)*1.0)) END ,2) AS acheived");
+                    sb.append(",pl.sequence  from ProductMaster p1 INNER JOIN RetailerKPISKUDetail RKSD ON RKSD.pid = p1.pid and RKSD.kpiid=");
+                    sb.append(kpiID);
+                    sb.append(" and RKSD.KPIParamLovId=");
+                    sb.append(kpiTypeLovID);
+                    sb.append(" inner join  ProductLevel pl on pl.levelid = p1.plid GROUP BY P1.PID, P1.pname, P1.psname, P1.pcode, P1.parentId, p1.plid");
+
+                    for (int i = 2; i <= loopEnd; i++) {
+                        Commons.print("Loop I," + "" + i);
+                        sb.append("UNION ");
+                        sb.append("SELECT P");
+                        sb.append(i);
+                        sb.append(".PID, P");
+                        sb.append(i);
+                        sb.append(".pname, P");
+                        sb.append(i);
+                        sb.append(".psname, P");
+                        sb.append(i);
+                        sb.append(".pcode, P");
+                        sb.append(i);
+                        sb.append(".parentId, p");
+                        sb.append(i);
+                        sb.append(".plid");
+                        sb.append(",IFNULL(RKSD .kpiid,0),SUM(IFNULL(RKSD .Target,0)),SUM(IFNULL(RKSD .Achievement,0)),");
+                        sb.append("ROUND(CASE WHEN (100-((SUM(RKSD .Achievement)*100)/((SUM(RKSD .Target))*1.0))) < ");
+                        sb.append("0 THEN 100 ELSE ((SUM(RKSD .Achievement*100))/((SUM(RKSD .Target))*1.0)) END ,2) AS acheived,pl.sequence from RetailerKPISKUDetail RKSD  ");
+                        sb.append("INNER JOIN ProductMaster p1 ON RKSD.pid = p1.pid and RKSD.kpiid=");
+                        sb.append(kpiID);
+                        sb.append(" and RKSD.KPIParamLovId=");
+                        sb.append(kpiTypeLovID);
+                        for (int j = 2; j <= i; j++) {
+                            sb.append(" INNER JOIN  ProductMaster p");
+                            sb.append(j);
+                            sb.append(" on p");
+                            sb.append((j - 1));
+                            sb.append(".parentid=p");
+                            sb.append(j);
+                            sb.append(".pid ");
+                        }
+
+                        sb.append(" inner join  ProductLevel pl on pl.levelid = p");
+                        sb.append(i);
+                        sb.append(".plid");
+                        sb.append(" GROUP BY P");
+                        sb.append(i);
+                        sb.append(".PID, P");
+                        sb.append(i);
+                        sb.append(".pname, P");
+                        sb.append(i);
+                        sb.append(".psname, P");
+                        sb.append(i);
+                        sb.append(".pcode, P");
+                        sb.append(i);
+                        sb.append(".parentId, p");
+                        sb.append(i);
+                        sb.append(".plid ");
+
                     }
 
-                    sb.append(" inner join  ProductLevel pl on pl.levelid = p");
-                    sb.append(i);
-                    sb.append(".plid");
-                    sb.append(" GROUP BY P");
-                    sb.append(i);
-                    sb.append(".PID, P");
-                    sb.append(i);
-                    sb.append(".pname, P");
-                    sb.append(i);
-                    sb.append(".psname, P");
-                    sb.append(i);
-                    sb.append(".pcode, P");
-                    sb.append(i);
-                    sb.append(".parentId, p");
-                    sb.append(i);
-                    sb.append(".plid ");
-
                 }
-
 
                 Cursor c = db.selectSQL(sb.toString());
 
                 if (c != null) {
-                    retailerKpiSku = new Vector<>();
+                    sellerKpiSku = new Vector<>();
                     while (c.moveToNext()) {
                         temp = new SKUWiseTargetBO();
                         temp.setPid(c.getInt(0));
@@ -636,7 +705,7 @@ public class DashBoardHelper {
                                     .getCalculatedPercentage());
                         }
 
-                        retailerKpiSku.add(temp);
+                        sellerKpiSku.add(temp);
                     }
                     c.close();
                 }
@@ -645,6 +714,38 @@ public class DashBoardHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+
+    // get a interval from DB
+    public ArrayList<String> getDashList(boolean isRetailer) {
+
+        ArrayList<String> dashList = null;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String sql;
+            if (!isRetailer)
+                sql = "select distinct interval from SellerKPI";
+            else
+                sql = "select distinct interval from RetailerKPI";
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                dashList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    dashList.add(c.getString(0));
+                }
+
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return dashList;
     }
 
 
@@ -1234,13 +1335,18 @@ public class DashBoardHelper {
 
     }
 
-    public void calculateDayAcheivement() {
+    public void calculateDayAcheivement(boolean isRetailer) {
         int maxLevel = 0, minLevel = 0;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
         sb.append("select Distinct p.PLid,pl.sequence from productmaster p ");
         sb.append(" inner join Productlevel pl on pl.levelid =p.PLid where P.PID in (select distinct(ProductID) from OrderDetail)");
+
+        if (isRetailer)
+            sb.append("(select distinct(ProductID) from OrderDetail where retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + ")");
+        else
+            sb.append("(select distinct(ProductID) from OrderDetail)");
 
         Cursor c = db.selectSQL(sb.toString());
         if (c != null) {
@@ -1283,6 +1389,10 @@ public class DashBoardHelper {
             sb.append(".ParentId");
 
         }
+
+        if (isRetailer)
+            sb.append(" where OD.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID());
+
         sb.append(" GROUP BY PM");
         sb.append(loopEnd);
         sb.append(".PId");
@@ -1372,7 +1482,7 @@ public class DashBoardHelper {
                     c.close();
                 }
                 if (interval.equals("DAY")) {
-                    calculateDayAcheivement();
+                    calculateDayAcheivement(false);
                 }
 
             } else {
@@ -2374,7 +2484,7 @@ public class DashBoardHelper {
                     c.close();
                 }
                 if (interval.equals("DAY")) {
-                    calculateDayAcheivement();
+                    calculateDayAcheivement(false);
                 }
 
             } else {
@@ -2437,7 +2547,7 @@ public class DashBoardHelper {
                     c.close();
                 }
                 if (interval.equals("DAY")) {
-                    calculateDayAcheivement();
+                    calculateDayAcheivement(false);
                 }
             }
             db.closeDB();

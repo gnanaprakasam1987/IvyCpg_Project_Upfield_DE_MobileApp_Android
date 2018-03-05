@@ -186,7 +186,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 });
             } else {
                 spinnerNoOrderReason.setVisibility(View.GONE);
+                edt_noOrderReason.setVisibility(View.GONE);
             }
+
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_REASON
@@ -466,51 +468,52 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 Commons.printException(ex);
             }
 
-            if (row.findViewById(R.id.ll_second_layout) != null && position < configlist_second.size()) {// Tab view
+            if (configlist_second != null)
+                if (row.findViewById(R.id.ll_second_layout) != null && position < configlist_second.size()) {// Tab view
 
-                row.findViewById(R.id.ll_second_layout).setVisibility(View.VISIBLE);
-                holder.view_separator.setVisibility(View.VISIBLE);
+                    row.findViewById(R.id.ll_second_layout).setVisibility(View.VISIBLE);
+                    holder.view_separator.setVisibility(View.VISIBLE);
 
-                holder.Name_right.setText(configlist_second.get(position).getMenuName());
+                    holder.Name_right.setText(configlist_second.get(position).getMenuName());
 
 
-                try {
-                    if (configlist_second.get(position).getKpiTarget().equals("-1")) {
-                        holder.ll_seekbar_right.setVisibility(View.GONE);
-                        holder.tv_progress_text_right.setVisibility(View.GONE);
+                    try {
+                        if (configlist_second.get(position).getKpiTarget().equals("-1")) {
+                            holder.ll_seekbar_right.setVisibility(View.GONE);
+                            holder.tv_progress_text_right.setVisibility(View.GONE);
 
-                        holder.tv_achieved_value_right.setText(configlist_second.get(position).getMenuNumber());
-                        holder.tv_target_value_right.setVisibility(View.GONE);
+                            holder.tv_achieved_value_right.setText(configlist_second.get(position).getMenuNumber());
+                            holder.tv_target_value_right.setVisibility(View.GONE);
 
-                    } else {
-                        holder.ll_seekbar_right.setVisibility(View.VISIBLE);
-                        holder.tv_progress_text_right.setVisibility(View.VISIBLE);
-                        holder.tv_target_value_right.setVisibility(View.VISIBLE);
+                        } else {
+                            holder.ll_seekbar_right.setVisibility(View.VISIBLE);
+                            holder.tv_progress_text_right.setVisibility(View.VISIBLE);
+                            holder.tv_target_value_right.setVisibility(View.VISIBLE);
 
-                        holder.seekBar_right.setProgress((int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()));
-                        holder.seekBar_right.setMax((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()));
-                        holder.seekBar_right.setEnabled(false);
+                            holder.seekBar_right.setProgress((int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()));
+                            holder.seekBar_right.setMax((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()));
+                            holder.seekBar_right.setEnabled(false);
 
-                        holder.tv_achieved_value_right.setText(bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiAchieved())));
-                        holder.tv_target_value_right.setText("/" + bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiTarget())));
+                            holder.tv_achieved_value_right.setText(bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiAchieved())));
+                            holder.tv_target_value_right.setText("/" + bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiTarget())));
 
-                        if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) > 0) {
-                            int ach = (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved());
-                            int tgt = (int) Double.parseDouble(configlist_second.get(position).getKpiTarget());
-                            int percent = (ach * 100) / tgt;
-                            if (percent > 100) {
-                                percent = 100;
+                            if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) > 0) {
+                                int ach = (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved());
+                                int tgt = (int) Double.parseDouble(configlist_second.get(position).getKpiTarget());
+                                int percent = (ach * 100) / tgt;
+                                if (percent > 100) {
+                                    percent = 100;
+                                }
+                                holder.tv_progress_text_right.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
+                            } else if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()) > 0) {
+                                holder.tv_progress_text_right.setText("100% " + getResources().getString(R.string.percent_of_tot_target_achieved));
                             }
-                            holder.tv_progress_text_right.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
-                        } else if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()) > 0) {
-                            holder.tv_progress_text_right.setText("100% " + getResources().getString(R.string.percent_of_tot_target_achieved));
                         }
+                    } catch (Exception ex) {
+                        Commons.printException(ex);
                     }
-                } catch (Exception ex) {
-                    Commons.printException(ex);
-                }
 
-            }
+                }
 
             TypedArray typearr = CallAnalysisActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             if (position % 2 == 0) {
