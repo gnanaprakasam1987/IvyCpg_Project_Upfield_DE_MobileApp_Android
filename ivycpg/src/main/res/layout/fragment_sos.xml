@@ -154,7 +154,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/footer_bg"
             android:orientation="horizontal"
-            android:gravity="center|right">
+            android:gravity="center|end">
 
             <Button
                 android:id="@+id/btn_save"

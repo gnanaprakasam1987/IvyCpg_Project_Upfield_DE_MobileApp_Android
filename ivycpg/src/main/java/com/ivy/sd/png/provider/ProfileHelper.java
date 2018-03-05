@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.content.FileProvider;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -227,7 +228,8 @@ public class ProfileHelper {
 
             Cursor c = db
                     .selectSQL("SELECT POH.Retailerid,RetailerCode,POH.refid,orderdate,ordervalue,lpc,Flag,POH.PaidAmount," +
-                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid,IM .RField1,IM.RField2,IM.RField3,IM.RField4,IFNULL(POH.volume,'')" +
+                            "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid," +
+                            "IM .RField1,IM.RField2,IM.RField3,IM.RField4,IFNULL(POH.volume,''),(ordervalue-(ifnull(POH.PaidAmount,0))) as balAmount" +
                             " FROM P4OrderHistoryMaster POH left join P4OrderHistoryDetail POD ON POD.refid=POH.refid" +
                             " left join productMaster PM ON PM.pid=POD.productid" +
                             " left join StandardListMaster rm on POH.reasonid =  rm.ListId" +
@@ -291,6 +293,7 @@ public class ProfileHelper {
                         orderHistory.setRF3(c.getString(20));
                         orderHistory.setRF4(c.getString(21));
                         orderHistory.setVolume(c.getString(22));
+                        orderHistory.setBalanceAmount(c.getDouble(23));
                         historyList.add(orderHistory);
                     }
 
@@ -819,7 +822,12 @@ public class ProfileHelper {
 
     public Uri getUriFromFile(String path) {
         File f = new File(path);
-        return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
+        if (Build.VERSION.SDK_INT >= 24) {
+            return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
+
+        } else {
+            return Uri.fromFile(f);
+        }
     }
 
     public void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {
@@ -844,7 +852,7 @@ public class ProfileHelper {
         if (givenLevelId != null && !givenLevelId.equalsIgnoreCase("")) {
 
             int loop = getProductGroupingLevel(givenLevelId);
-            if( loop>0) {
+            if (loop > 0) {
                 StringBuilder finalSql = new StringBuilder("Select   PIM.refid, PIM.InvoiceId, SUM(PIM.InvoiceValue) as InvoiceValue, PIM.lpc, PID.productid, SUM(PID.Qty) as QTY," +
                         "A" + loop
                         + ".psname,"
@@ -885,7 +893,7 @@ public class ProfileHelper {
                         retailerMasterBO.setSalesLpc(lpc);
                         retailerMasterBO.setSalesQty(qty);
                         retailerMasterBO.setSalesProductSName(pname);
-                     //   retailerMasterBO.setSalesProductSName(psname);
+                        //   retailerMasterBO.setSalesProductSName(psname);
                         mSalesCategoryList.add(retailerMasterBO);
                     }
                     c.close();
@@ -898,8 +906,7 @@ public class ProfileHelper {
                     c1.close();
                 }
                 db.closeDB();
-            }
-            else
+            } else
                 Toast.makeText(mContext, "Data not Found", Toast.LENGTH_SHORT).show();
         } else
             Toast.makeText(mContext, "Data not Found", Toast.LENGTH_SHORT).show();

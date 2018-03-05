@@ -648,7 +648,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
+    private boolean isEditMode = false;
+
     private void editOrder() {
+        isEditMode = true;
         discountHelper.clearSchemeFreeProduct(mOrderedProductList);
 
         if (BModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT)
@@ -1047,22 +1050,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
-
-                                        sendMailAndLoadClass = "HomeScreenTwoPRINT_FILE_ORDER";
-                                        if (BModel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
-                                            prepareEmailData();
-
-                                        } else {
-                                            Intent i = new Intent(
-                                                    OrderSummary.this,
-                                                    HomeScreenTwo.class);
-                                            Bundle extras = getIntent().getExtras();
-                                            if (extras != null) {
-                                                i.putExtra("IsMoveNextActivity", BModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                                                i.putExtra("CurrentActivityCode", mCurrentActivityCode);
-                                            }
-                                            startActivity(i);
-                                        }
+                                        printOrder();
 
                                     }
                                 });
@@ -1359,7 +1347,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
 
-                MyDatePickerDialog dialog = new MyDatePickerDialog(this,
+                MyDatePickerDialog dialog = new MyDatePickerDialog(this, R.style.DatePickerDialogStyle,
                         mDeliverDatePickerListener, year, month, day);
                 dialog.setPermanentTitle(getResources().getString(R.string.choose_date));
                 dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
@@ -1426,31 +1414,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     return;
                 }
 
-//                if(BModel.configurationMasterHelper.ORD_CREDIT_LIMIT_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
-//                    if(totalOrderValue > BModel.retailerMasterBO.getCreditLimit()){
-//                        Toast.makeText(
-//                                this,
-//                                getResources().getString(
-//                                        R.string.order_value_exceeded_credit_limit),
-//                                Toast.LENGTH_SHORT).show();
-//                        isClick = false;
-//                        return;
-//                    }
-//                }
-
-//                if(BModel.configurationMasterHelper.ORD_OVER_DUE_CHK && BModel.retailerMasterBO.getRpTypeCode().equals("CREDIT")){
-//                    if(BModel.getRetailerMasterBO().getCreditDays() > 0  && orderHelper.isOverDueAvail(this)){
-//                        Toast.makeText(
-//                                this,
-//                                getResources().getString(
-//                                        R.string.pending_due_found_Order_cannot_be_proceed),
-//                                Toast.LENGTH_SHORT).show();
-//                        isClick = false;
-//                        return;
-//                    }
-//                }
-
-
                 if ((BModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || BModel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !orderHelper.isReasonProvided(mOrderedProductList)) {
 
                     indicativeReasonDialog = new IndicativeOrderReasonDialog(this, BModel);
@@ -1468,6 +1431,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             ConfigurationMasterHelper.outDateFormat));
 
 
+                    // Don't write any code  after this dialog.. because it is just a confirmation dialog
                     orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
                     orderConfirmationDialog.show();
                     Window window = orderConfirmationDialog.getWindow();
@@ -1600,35 +1564,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             orderHelper.invoiceDiscount = Double.toString(enteredDiscAmtOrPercent);
 
-                            if (BModel.configurationMasterHelper.IS_INVOICE) {
-                                build = new AlertDialog.Builder(OrderSummary.this);
 
-                                customProgressDialog(build, getResources().getString(R.string.saving_invoice));
-                                alertDialog = build.create();
-                                alertDialog.show();
-
+                            // Don't write any code  after this dialog.. because it is just a confirmation dialog
                                 orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
                                 orderConfirmationDialog.show();
                                 Window window = orderConfirmationDialog.getWindow();
                                 window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                 orderConfirmationDialog.setCancelable(false);
-                                return;
-                            } else {
-                                build = new AlertDialog.Builder(OrderSummary.this);
-
-                                customProgressDialog(build, getResources().getString(R.string.saving_new_order));
-                                alertDialog = build.create();
-                                alertDialog.show();
-                            }
-                            if (BModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT || BModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
-                                orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
 
-                            //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
-                            orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList,totalOrderValue);
-
-
-                            new MyThread(this, DataMembers.SAVEINVOICE).start();
                         }
                     } else {
                         isClick = false;
@@ -1822,7 +1766,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
-                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList,totalOrderValue);
+                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue);
 
                 new MyThread(this, DataMembers.SAVEINVOICE).start();
             } else {
@@ -2400,8 +2344,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     alertDialog.dismiss();
                     BModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
-                    BModel.productHelper.clearOrderTable();
-                    discountHelper.clearSchemeFreeProduct(mOrderedProductList);
 
                     if ((BModel.configurationMasterHelper.SHOW_ZEBRA_GHANA
                             || BModel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO
@@ -2582,31 +2524,27 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
 
             BModel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
-
             if (BModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 BModel.writeToFile(String.valueOf(BModel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_ORDER + BModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
-                sendMailAndLoadClass = "CommonPrintPreviewActivityPRINT_FILE_ORDER";
 
-                if (BModel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
-                    prepareEmailData();
+                i = new Intent(OrderSummary.this,
+                        CommonPrintPreviewActivity.class);
+                i.putExtra("IsFromOrder", true);
+                i.putExtra("IsUpdatePrintCount", true);
+                i.putExtra("isHomeBtnEnable", true);
+                i.putExtra("sendMailAndLoadClass", "PRINT_FILE_ORDER");
+                startActivity(i);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
 
-                } else {
-                    i = new Intent(OrderSummary.this,
-                            CommonPrintPreviewActivity.class);
-                    i.putExtra("IsFromOrder", true);
-                    i.putExtra("IsUpdatePrintCount", true);
-                    i.putExtra("isHomeBtnEnable", true);
-                    startActivity(i);
-                    overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                    finish();
-                }
             } else {
                 i = new Intent(OrderSummary.this,
                         CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("IsUpdatePrintCount", true);
                 i.putExtra("isHomeBtnEnable", true);
+                i.putExtra("sendMailAndLoadClass", "PRINT_FILE_ORDER");
                 startActivity(i);
                 overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                 finish();
@@ -2672,19 +2610,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             BModel.writeToFile(String.valueOf(BModel.mCommonPrintHelper.getInvoiceData()),
                     StandardListMasterConstants.PRINT_FILE_INVOICE + BModel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
 
-            sendMailAndLoadClass = "CommonPrintPreviewActivityPRINT_FILE_INVOICE";
-            if (BModel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
-                prepareEmailData();
-            } else {
-                Intent i = new Intent(OrderSummary.this,
-                        CommonPrintPreviewActivity.class);
-                i.putExtra("IsFromOrder", true);
-                i.putExtra("IsUpdatePrintCount", true);
-                i.putExtra("isHomeBtnEnable", true);
-                startActivity(i);
-                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                finish();
-            }
+            Intent i = new Intent(OrderSummary.this,
+                    CommonPrintPreviewActivity.class);
+            i.putExtra("IsFromOrder", true);
+            i.putExtra("IsUpdatePrintCount", true);
+            i.putExtra("isHomeBtnEnable", true);
+            i.putExtra("sendMailAndLoadClass", "PRINT_FILE_INVOICE");
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            finish();
 
         } else {
             BModel.showAlert(
@@ -3034,7 +2968,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
             startActivity(i);
 
-        }else if (sendMailAndLoadClass.equals("CommonPrintPreviewActivityPRINT_FILE_ORDER")) {
+        } else if (sendMailAndLoadClass.equals("CommonPrintPreviewActivityPRINT_FILE_ORDER")) {
             i = new Intent(
                     OrderSummary.this,
                     HomeScreenTwo.class);
@@ -3092,6 +3026,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             unregisterReceiver(mReceiver);
         if (mChatService != null) {
             mChatService.stop();
+        }
+        if (!isEditMode) {
+            BModel.productHelper.clearOrderTable();
+            discountHelper.clearSchemeFreeProduct(mOrderedProductList);
         }
         unbindDrawables(findViewById(R.id.root));
     }

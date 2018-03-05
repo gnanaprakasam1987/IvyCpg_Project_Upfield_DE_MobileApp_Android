@@ -373,6 +373,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             leftmenuDB.add(con);
 
+            if(con.getConfigCode().equalsIgnoreCase(MENU_DASH)){
+                con.setConfigCode(MENU_DASH_KPI);
+                con.setMenuName("Seller Kpi");
+                leftmenuDB.add(con);
+            }
+
             if (con.getConfigCode().equals(MENU_PRESENCE)) {
                 isMenuAttendCS = true;
             }
@@ -518,7 +524,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     @Override
     public void onResume() {
         super.onResume();
-
 
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
@@ -963,7 +968,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 vanUnloadStockAdjustmentSubroutine(menuItem.getMenuName());
             }
-        }  else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
+        } else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
             if (isLeave_today) {
                 if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
                     Toast.makeText(getActivity(),
@@ -1327,7 +1332,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             }
 
-        }  else if (menuItem.getConfigCode().equals(MENU_PRESENCE)) {
+        } else if (menuItem.getConfigCode().equals(MENU_PRESENCE)) {
             switchFragment(MENU_PRESENCE, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_IN_OUT)) {
             bmodel.configurationMasterHelper.setTradecoveragetitle(menuItem.getMenuName());
@@ -2202,6 +2207,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
 
             leftmenuDB.add(con);
+
+            if(con.getConfigCode().equalsIgnoreCase(MENU_DASH)){
+                con.setConfigCode(MENU_DASH_KPI);
+                con.setMenuName("Seller Kpi");
+                leftmenuDB.add(con);
+            }
 
             if (con.getConfigCode().equals(MENU_PRESENCE)) {
                 isMenuAttendCS = true;

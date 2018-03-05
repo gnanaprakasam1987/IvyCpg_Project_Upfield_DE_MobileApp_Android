@@ -41,8 +41,8 @@
                         android:background="@color/list_title_bg_color"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingLeft="@dimen/list_padding_left_n_right"
-                        android:paddingRight="@dimen/list_padding_left_n_right">
+                        android:paddingStart="@dimen/list_padding_left_n_right"
+                        android:paddingEnd="@dimen/list_padding_left_n_right">
 
                         <TextView
                             android:id="@+id/tvbrand"
@@ -50,7 +50,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="left|center_vertical"
+                            android:gravity="start|center_vertical"
                             android:tag="brand"
                             android:text="@string/product_name" />
 

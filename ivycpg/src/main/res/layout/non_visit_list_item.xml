@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:paddingBottom="2dp"
-    android:paddingLeft="2dp"
+    android:paddingStart="2dp"
     android:paddingTop="2dp" >
 
     <RelativeLayout
@@ -17,7 +17,7 @@
             android:id="@+id/outlet_iv"
             android:layout_width="@dimen/visit_lst_img_width"
             android:layout_height="@dimen/visit_lst_img_width"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:gravity="center"
             android:src="@drawable/icon_outlet_normal" />
 
@@ -26,7 +26,7 @@
             android:layout_width="@dimen/visit_lst_img_width"
             android:layout_height="@dimen/visit_lst_img_width"
             android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/outlet_iv"
+            android:layout_alignEnd="@+id/outlet_iv"
             android:gravity="center" />
 
         <TextView
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/outlet_iv"
-            android:layout_toRightOf="@+id/outlet_iv"
+            android:layout_toEndOf="@+id/outlet_iv"
             android:singleLine="true"
             android:text="@string/dummy_txt"
             android:textColor="@color/Black"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/outletName_tv"
             android:layout_alignBottom="@+id/outletName_tv"
-            android:layout_toRightOf="@+id/outletName_tv"
+            android:layout_toEndOf="@+id/outletName_tv"
             android:singleLine="true"
             android:text="@string/visit_frequency"
             android:textColor="@color/blue_btn_txt"
@@ -56,10 +56,10 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="@dimen/non_visit_list_item_height_width"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="2dp"
-        android:gravity="center|right"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="2dp"
+        android:gravity="center|end"
         android:orientation="horizontal" >
 
         <ImageView

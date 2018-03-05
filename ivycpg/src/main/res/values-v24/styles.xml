@@ -16,6 +16,18 @@
     </style>
 
 
+    <!-- N Blue theme start -->
+    <style name="DialogStyleNBlue" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyleNBlue</item>
+        <item name="colorAccent">@color/colorAccentNBlue</item>
+        <item name="android:buttonStyle">@style/MyButtonNBlue</item>
+    </style>
+
+    <style name="DialogButtonStyleNBlue" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorAccentNBlue</item>
+    </style>
+    <!-- N Blue theme end -->
+
     <style name="DialogStyleOrange" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="buttonBarButtonStyle">@style/DialogButtonStyleOrange</item>
         <item name="colorAccent">@color/colorAccentOrange</item>

@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
-            android:layout_toRightOf="@+id/ll_value"
+            android:layout_toEndOf="@+id/ll_value"
             android:orientation="vertical">
 
             <TextView
@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
-            android:layout_toRightOf="@+id/ll_lpc"
+            android:layout_toEndOf="@+id/ll_lpc"
             android:orientation="vertical">
 
             <TextView
@@ -98,7 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
-            android:layout_toRightOf="@+id/ll_totqty"
+            android:layout_toEndOf="@+id/ll_totqty"
             android:orientation="vertical">
 
             <TextView
@@ -125,7 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
-            android:layout_toRightOf="@+id/ll_dist"
+            android:layout_toEndOf="@+id/ll_dist"
             android:visibility="gone"
             android:orientation="vertical">
 
@@ -152,7 +152,7 @@
             style="?attr/roundedCustomButtonSmall"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/target_top_margin"
-            android:layout_toLeftOf="@+id/btn_guided_selling_next"
+            android:layout_toStartOf="@+id/btn_guided_selling_next"
             android:text="@string/previous"
             android:textAllCaps="false"
             android:visibility="gone" />
@@ -160,7 +160,7 @@
         <Button
             android:id="@+id/btn_guided_selling_next"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/target_top_margin"
             android:text="@string/next"
@@ -170,7 +170,7 @@
         <Button
             android:id="@+id/btn_next"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/target_top_margin"
             android:text="@string/next"

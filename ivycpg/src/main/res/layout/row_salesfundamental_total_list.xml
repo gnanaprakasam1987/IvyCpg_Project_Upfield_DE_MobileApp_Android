@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/ic_camera_right_margin"
-    android:layout_marginRight="@dimen/ic_camera_right_margin"
+    android:layout_marginStart="@dimen/ic_camera_right_margin"
+    android:layout_marginEnd="@dimen/ic_camera_right_margin"
     android:orientation="horizontal">
 
     <TextView
@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center|left"
+        android:gravity="center|start"
         android:text="@string/total"
         android:textColor="@color/task_title"
         android:textSize="@dimen/font_small" />
@@ -22,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
-        android:gravity="center|left"
+        android:gravity="center|start"
         android:maxLength="4"
         android:text="0"
         android:textSize="@dimen/font_small" />

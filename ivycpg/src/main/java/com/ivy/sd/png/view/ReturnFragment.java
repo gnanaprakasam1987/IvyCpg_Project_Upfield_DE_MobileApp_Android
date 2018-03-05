@@ -117,7 +117,7 @@ public class ReturnFragment extends IvyBaseFragment {
     private void process() {
 
         if (Pid != null) {
-            if(getArguments().getString("from").equals("ORDER"))
+            if (getArguments().getString("from").equals("ORDER"))
                 productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
             else
                 productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
@@ -181,6 +181,7 @@ public class ReturnFragment extends IvyBaseFragment {
         });
 
     }
+
     class validateSalesReturn extends AsyncTask<Integer, Integer, Integer> {
 
         @Override
@@ -867,32 +868,36 @@ public class ReturnFragment extends IvyBaseFragment {
 
         @Override
         public void onClick(View v) {
+            if (mSelectedET == null) {
+                bmodel.showAlert(
+                        getResources().getString(R.string.please_select_item), 0);
+            } else {
+                int i = v.getId();
+                if (i == R.id.calczero || i == R.id.calcone || i == R.id.calctwo || i == R.id.calcthree
+                        || i == R.id.calcfour || i == R.id.calcfive || i == R.id.calcsix
+                        || i == R.id.calcseven || i == R.id.calceight || i == R.id.calcnine) {
+                    eff(((Button) v).getText().toString());
+                } else if (i == R.id.calcdel) {
+                    String s = mSelectedET.getText().toString();
 
-            int i = v.getId();
-            if (i == R.id.calczero || i == R.id.calcone || i == R.id.calctwo || i == R.id.calcthree
-                    || i == R.id.calcfour || i == R.id.calcfive || i == R.id.calcsix
-                    || i == R.id.calcseven || i == R.id.calceight || i == R.id.calcnine) {
-                eff(((Button) v).getText().toString());
-            } else if (i == R.id.calcdel) {
-                String s = mSelectedET.getText().toString();
-
-                if (!(s.length() == 0)) {
-                    s = s.substring(0, s.length() - 1);
-                    if (s.length() == 0)
-                        s = "0";
-                }
-                mSelectedET.setText(s);
-
-            } else if (i == R.id.calcdot) {
-                String s = mSelectedET.getText().toString();
-                String s1 = (String) mSelectedET.getTag();
-                if (s1 != null) {
-                    if (!s.contains(".") && "DOT".equals(s1)) {
-                        String strQty = s + ".";
-                        mSelectedET.setText(strQty);
+                    if (!(s.length() == 0)) {
+                        s = s.substring(0, s.length() - 1);
+                        if (s.length() == 0)
+                            s = "0";
                     }
-                }
+                    mSelectedET.setText(s);
 
+                } else if (i == R.id.calcdot) {
+                    String s = mSelectedET.getText().toString();
+                    String s1 = (String) mSelectedET.getTag();
+                    if (s1 != null) {
+                        if (!s.contains(".") && "DOT".equals(s1)) {
+                            String strQty = s + ".";
+                            mSelectedET.setText(strQty);
+                        }
+                    }
+
+                }
             }
 
         }
@@ -945,7 +950,7 @@ public class ReturnFragment extends IvyBaseFragment {
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {

@@ -57,7 +57,7 @@ public class LoadManagementHelper {
             db.openDataBase();
             db.createDataBase();
 
-            cursor = db.selectSQL("Select Did,Dname,IFNULL(CNumber,''),IFNULL(Address1,''),IFNULL(Address2,''),IFNULL(Address3,''), type from DistributorMaster");
+            cursor = db.selectSQL("Select DISTINCT Did,Dname,IFNULL(CNumber,''),IFNULL(Address1,''),IFNULL(Address2,''),IFNULL(Address3,''), type from DistributorMaster");
             if (cursor != null) {
                 subDepotList = new ArrayList<>();
                 distributorList = new ArrayList<>();

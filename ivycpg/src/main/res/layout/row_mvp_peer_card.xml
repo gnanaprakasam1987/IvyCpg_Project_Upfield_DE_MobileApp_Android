@@ -19,8 +19,8 @@
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_10dp"
-                android:gravity="left"
+                android:layout_marginStart="@dimen/dimen_10dp"
+                android:gravity="start"
                 android:text="Name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@color/Black"
@@ -59,7 +59,7 @@
                     android:id="@+id/tv_ranktitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_marginStart="@dimen/dimen_10dp"
                     android:textColor="@color/Black"
                     android:text="Rank"
                     android:textSize="@dimen/font_small"/>
@@ -69,7 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Black"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_marginStart="@dimen/dimen_10dp"
                     android:text="Name"
                     android:textSize="@dimen/font_small"/>
 
@@ -77,7 +77,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Black"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_marginStart="@dimen/dimen_10dp"
                     android:text="with"
                     android:textSize="@dimen/font_small"/>
 
@@ -87,7 +87,7 @@
                     android:textColor="@color/Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_marginStart="@dimen/dimen_10dp"
                     android:text="Score"
                     android:textSize="@dimen/font_small"/>
 
@@ -96,7 +96,7 @@
                     android:textColor="@color/Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_marginStart="@dimen/dimen_10dp"
                     android:text="Name"
                     android:textSize="@dimen/font_small"/>
             </LinearLayout>

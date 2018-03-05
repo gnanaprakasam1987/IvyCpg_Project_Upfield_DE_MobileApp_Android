@@ -70,7 +70,7 @@
             android:visibility="gone"
             android:layout_gravity="center"
             android:hint="Search Location"
-            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:drawableStart="@android:drawable/ic_menu_search"
             android:padding="@dimen/dimen_10dp"
             android:singleLine="true"
             />
@@ -117,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:id="@+id/locationTxt"
-               android:layout_marginLeft="@dimen/dimen_8dp"
+               android:layout_marginStart="@dimen/dimen_8dp"
                 android:text="Set Selected Location"
                 android:textColor="@color/WHITE"
                 android:textStyle="bold"

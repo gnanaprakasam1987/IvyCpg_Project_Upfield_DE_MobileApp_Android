@@ -11,7 +11,7 @@
         android:layout_width="@dimen/order_stock_list_product_name_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="left|center"
+        android:gravity="start|center"
         android:padding="3dp"
         android:singleLine="true" >
     </TextView>

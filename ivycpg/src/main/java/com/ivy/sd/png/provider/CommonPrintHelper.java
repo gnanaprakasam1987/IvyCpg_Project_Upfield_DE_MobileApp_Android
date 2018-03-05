@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -54,7 +55,6 @@ public class CommonPrintHelper {
     private int mPaperLenghtInChar;
     private int mGlobalPrecision;
 
-    private boolean isFromLabelMaster;
 
     private static String ALIGNMENT_RIGHT = "RIGHT";
     private static String ALIGNMENT_LEFT = "LEFT";
@@ -100,6 +100,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_PRICE_CASE = "prod_price_case";
     private static String TAG_PRODUCT_PRICE_OUTER = "prod_price_outer";
     private static String TAG_PRODUCT_PRICE_PIECE = "prod_price_piece";
+    private static String TAG_DISCOUNTED_PRICE = "prod_discounted_price_piece";
 
     private static String TAG_PRODUCT_MRP = "prod_mrp";
 
@@ -112,9 +113,14 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_LINE_VALUE = "prod_line_value";
     private static String TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX = "prod_line_value_excl_tax";
     private static String TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX = "prod_line_value_incl_tax";
-    private static String TAG_PRODUCT_TAX_PERCENTAGE="prod_line_tax_percentage";
+    private static String TAG_PRODUCT_TAX_PERCENTAGE = "prod_line_tax_percentage";
 
     private static String TAG_PRODUCT_TAG_DESC = "prod_tag_desc";
+
+    private static String TAG_PRODUCT_FOC = "prod_foc";
+
+    //Project specific promo type
+    private static String TAG_PRODUCT_PROMO_TYPE = "prod_promo_type";
 
     private int mProductCaseQtyTotal;
     private int mProductPieceQtyTotal;
@@ -167,6 +173,7 @@ public class CommonPrintHelper {
     public int height_image = 100;
     private double mSchemeValueByAmountType = 0;
     private double netSchemeAmount = 0;
+    private boolean isFromLabelMaster;
 
     private CommonPrintHelper(Context context) {
         this.context = context;
@@ -194,6 +201,9 @@ public class CommonPrintHelper {
     public boolean isLogoEnabled;
 
     private Vector<AttributeListBO> mAttributeList;
+
+    private int firstColumnWidth;
+
 
     /**
      * Read the tag from xml file and prepare print string from objects
@@ -241,7 +251,8 @@ public class CommonPrintHelper {
             int product_header_border_char_length = 0;
             String product_header_border_char = "-";
 
-            int mLengthUptoPName=0;
+            int mLengthUptoPName = 0;
+            firstColumnWidth = 0;
 
             int event = xmlParser.getEventType();
             while (event != XmlPullParser.END_DOCUMENT) {
@@ -323,7 +334,7 @@ public class CommonPrintHelper {
 
 
                             } else {
-                                mAttrValue = getValue(attr_name, attr_text, attr_secondary_text, attr_precision);
+                                mAttrValue = getValue(attr_name, attr_text, attr_secondary_text, attr_precision, product_name_single_line);
 
                                 if (mAttrValue.equals("-1")) {
                                     if (!attr_text.equals(""))
@@ -344,7 +355,11 @@ public class CommonPrintHelper {
                                     && !attr_name.contains("amount_word")) {
                                 if (attr_align.equalsIgnoreCase(ALIGNMENT_LEFT)) {
                                     if (mAttrValue.length() > attr_length) {
-                                        mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
+                                        if (!attr_name.equalsIgnoreCase(TAG_PRODUCT_NAME)
+                                                || (attr_name.equalsIgnoreCase(TAG_PRODUCT_NAME) && product_name_single_line.equalsIgnoreCase("NO"))) {
+                                            mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
+                                        }
+
                                     } else if (mAttrValue.length() < attr_length) {
                                         int diff = attr_length - mAttrValue.length();
 
@@ -390,12 +405,18 @@ public class CommonPrintHelper {
 
 
                             if (group_name != null && group_name.equalsIgnoreCase("product_details")) {
-                                mLengthUptoPName = mLengthUptoPName + attr_length + attr_space;
+                                //mLengthUptoPName = mLengthUptoPName + attr_length + attr_space;
                                 if (product_name_single_line.equalsIgnoreCase("YES")) {
                                     if (attr_name.equalsIgnoreCase(TAG_PRODUCT_NAME)) {
+                                        // If product name is single line, then second line should be printed after the first column of first line
+                                        // So that bottom common labels will be aligned in straight to the first column(Ex:TAG_PRODUCT_LINE_TOTAL_WITH_QTY)..
+                                        if (firstColumnWidth == 0) {
+                                            firstColumnWidth = attr_length + attr_space;
+                                        }
+
                                         sb.append("\n");
                                         char emptySpace = ' ';
-                                        for (int sp = 0; sp < mLengthUptoPName; sp++) {
+                                        for (int sp = 0; sp < firstColumnWidth; sp++) {
                                             sb.append(emptySpace);
                                         }
 
@@ -421,7 +442,8 @@ public class CommonPrintHelper {
                             property_special = property_special == null ? "" : property_special;
                             String pres_str = xmlParser.getAttributeValue(null, "precision_count");
                             mGlobalPrecision = pres_str == null ? -1 : Integer.parseInt(pres_str);
-                            isFromLabelMaster = xmlParser.getAttributeValue(null, "isFromLabel").equalsIgnoreCase("yes") ? true : false;
+                            String isFromLabel = xmlParser.getAttributeValue(null, "isFromLabel");
+                            isFromLabelMaster = (isFromLabel == null ? false : ((isFromLabel.equalsIgnoreCase("yes")) ? true : false));
                         } else if (name.equalsIgnoreCase("logo")) {
                             isLogoEnabled = true;
                         } else if (name.equalsIgnoreCase("newline")) {
@@ -519,7 +541,7 @@ public class CommonPrintHelper {
      * @param label - will be append with value
      * @return
      */
-    private String getValue(String tag, String label, String mSecondaryLabel, int precisionCount) {
+    private String getValue(String tag, String label, String mSecondaryLabel, int precisionCount, String product_name_single_line) {
         String value = "-1";
         if (tag.equalsIgnoreCase(TAG_TITLE)) {
             if (bmodel.getRetailerMasterBO().getRfield2() != null
@@ -616,7 +638,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL)) {
             value = alignWithLabelForSingleLine(label, formatValueInPrint(total_line_value_incl_tax, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL_WITH_QTY)) {
-            value = getTotalWithQty(label);
+            value = getTotalWithQty(label, product_name_single_line);
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE)) {
             value = alignWithLabelForSingleLine(label, formatSalesValueInPrint(total_net_payable, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE_IN_WORDS)) {
@@ -641,14 +663,20 @@ public class CommonPrintHelper {
         return value;
     }
 
-    private String getTotalWithQty(String label) {
+    private String getTotalWithQty(String label, String product_name_single_line) {
         String mProductValue;
         StringBuilder sb = new StringBuilder();
 
+        boolean isLabelPrinted = false;// to check label is printed or not..
+
         for (AttributeListBO attr : mAttributeList) {
             mProductValue = "";
-            if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
+            if (!isLabelPrinted && attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)) {
                 mProductValue = label;
+                isLabelPrinted = true;
+            } else if (!isLabelPrinted && attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
+                mProductValue = label;
+                isLabelPrinted = true;
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_CASE)) {
                 mProductValue = mProductCaseQtyTotal + "";
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_PIECE)) {
@@ -670,15 +698,26 @@ public class CommonPrintHelper {
             }
 
 
-            if (mProductValue.length() > attr.getAttributeLength()) {
-                mProductValue = mProductValue.substring(0, attr.getAttributeLength() - attr.getAttributeSpecialChar().length()) + attr.getAttributeSpecialChar();
-            } else if (mProductValue.length() < attr.getAttributeLength()) {
-                int diff = attr.getAttributeLength() - mProductValue.length();
+            if (!product_name_single_line.equalsIgnoreCase("YES")
+                    || (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE) && !attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME))) {
 
-                if (attr.getAttributePadding().equalsIgnoreCase(ALIGNMENT_RIGHT)) {
-                    mProductValue = doAlign(mProductValue, ALIGNMENT_RIGHT, diff);
-                } else {
-                    mProductValue = doAlign(mProductValue, ALIGNMENT_LEFT, diff);
+                if (mProductValue.length() > attr.getAttributeLength()) {
+                    mProductValue = mProductValue.substring(0, attr.getAttributeLength() - attr.getAttributeSpecialChar().length()) + attr.getAttributeSpecialChar();
+                } else if (mProductValue.length() < attr.getAttributeLength()) {
+                    int diff = attr.getAttributeLength() - mProductValue.length();
+
+                    if (attr.getAttributePadding().equalsIgnoreCase(ALIGNMENT_RIGHT)) {
+                        mProductValue = doAlign(mProductValue, ALIGNMENT_RIGHT, diff);
+                    } else {
+                        mProductValue = doAlign(mProductValue, ALIGNMENT_LEFT, diff);
+                    }
+                }
+
+            } else if (product_name_single_line.equalsIgnoreCase("YES")
+                    && (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE) || attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME))) {
+                // To take first column width exactly
+                if (mProductValue.length() > attr.getAttributeLength()) {
+                    mProductValue = mProductValue.substring(0, attr.getAttributeLength() - attr.getAttributeSpecialChar().length()) + attr.getAttributeSpecialChar();
                 }
             }
 
@@ -702,6 +741,7 @@ public class CommonPrintHelper {
         //Vector<ProductMasterBO> productList = bmodel.productHelper.getProductMaster();
         int productsCount = productList.size();
         mOrderedProductList = new ArrayList<ProductMasterBO>();
+        firstColumnWidth = 0;
 
         ProductMasterBO productBO;
         for (int i = 0; i < productsCount; i++) {
@@ -791,10 +831,9 @@ public class CommonPrintHelper {
                     mProductValue = prod.getDescription() + "";
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
                     mProductValue = prod.getProductCode();
-                }
-                else if(attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAX_PERCENTAGE)){
-                    double taxPercentage=0;
-                    if(bmodel.productHelper.taxHelper.getmTaxListByProductId()!=null) {
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAX_PERCENTAGE)) {
+                    double taxPercentage = 0;
+                    if (bmodel.productHelper.taxHelper.getmTaxListByProductId() != null) {
                         ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getmTaxListByProductId().get(prod.getProductID());
                         if (taxList != null) {
                             for (int index = 0; index < taxList.size(); index++) {
@@ -802,8 +841,20 @@ public class CommonPrintHelper {
                             }
                         }
                     }
-                    mProductValue=SDUtil.format(taxPercentage,1,0);
+                    mProductValue = SDUtil.format(taxPercentage, 1, 0);
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
+                    mProductValue = getPromoType(context, prod);
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
+                    mProductValue = String.valueOf(prod.getFoc());
+                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
+                    int totalQty = prod.getOrderedPcsQty()
+                            + prod.getOrderedCaseQty()
+                            * prod.getCaseSize()
+                            + prod.getOrderedOuterQty()
+                            * prod.getOutersize();
+                    mProductValue = String.valueOf((prod.getTotalamount() - prod.getApplyValue()) / totalQty);
                 }
+
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
                     if (mProductValue.length() > attr.getAttributeLength()) {
@@ -824,12 +875,16 @@ public class CommonPrintHelper {
 
                 //print the text which is next to the product name into next line
                 if (product_name_single_line.equalsIgnoreCase("YES")) {
+                    // If product name is single line, then second line should be printed after the first column of first line
+                    // So that bottom common labels will be aligned in straight to the first column(Ex:TAG_PRODUCT_LINE_TOTAL_WITH_QTY)..
                     mLengthUptoPName = mLengthUptoPName + attr.getAttributeLength() + attr.getAttributeSpace();
-
+                    if (firstColumnWidth == 0) {
+                        firstColumnWidth = attr.getAttributeLength() + attr.getAttributeSpace();
+                    }
                     if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                         sb.append("\n");
                         char emptySpace = ' ';
-                        for (int sp = 0; sp < mLengthUptoPName; sp++) {
+                        for (int sp = 0; sp < firstColumnWidth; sp++) {
                             sb.append(emptySpace);
                         }
                     }
@@ -952,6 +1007,17 @@ public class CommonPrintHelper {
                                 mProductValue = prod.getDescription() + "";
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
                                 mProductValue = prod.getProductCode();
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
+                                mProductValue = getPromoType(context, prod);
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
+                                mProductValue = String.valueOf(prod.getFoc());
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
+                                int totalQty = prod.getOrderedPcsQty()
+                                        + prod.getOrderedCaseQty()
+                                        * prod.getCaseSize()
+                                        + prod.getOrderedOuterQty()
+                                        * prod.getOutersize();
+                                mProductValue = String.valueOf((prod.getTotalamount() - prod.getApplyValue()) / totalQty);
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -1082,6 +1148,15 @@ public class CommonPrintHelper {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
                                 mProductValue = prod.getProductCode();
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
+                                mProductValue = context.getResources().getString(R.string.free);
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
+                                int totalQty = prod.getOrderedPcsQty()
+                                        + prod.getOrderedCaseQty()
+                                        * prod.getCaseSize()
+                                        + prod.getOrderedOuterQty()
+                                        * prod.getOutersize();
+                                mProductValue = String.valueOf((prod.getTotalamount() - prod.getApplyValue()) / totalQty);
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
@@ -1428,7 +1503,7 @@ public class CommonPrintHelper {
                                     } else {
 
                                         //To print child tax..
-                                        if (bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) {
+                                        if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
 
                                             //batch wise product's calculation
                                             if (prodcutBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
@@ -1465,7 +1540,7 @@ public class CommonPrintHelper {
                             }
 
 
-                            if (bmodel.configurationMasterHelper.IS_GST||bmodel.configurationMasterHelper.IS_GST_HSN) {
+                            if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
                                 //Tax can be applied to Free products, so below set of code is used..
                                 if (taxFreeProductList != null) {
                                     for (String productid : taxFreeProductList) {// free products
@@ -1999,8 +2074,24 @@ public class CommonPrintHelper {
     }
 
 
-
     public boolean isFromLabelMaster() {
         return isFromLabelMaster;
     }
+
+
+    public String getPromoType(Context context, ProductMasterBO productMasterBO) {
+
+        double lineValue = (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp())
+                + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp())
+                + (productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp());
+
+        if (productMasterBO.getDiscount_order_value() == 0) {
+            return context.getResources().getString(R.string.free);
+        } else if (productMasterBO.getDiscount_order_value() < lineValue) {
+            return context.getResources().getString(R.string.net_price);
+        }
+        return "";
+
+    }
+
 }

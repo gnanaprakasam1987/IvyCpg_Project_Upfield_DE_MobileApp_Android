@@ -84,7 +84,7 @@
             style="?attr/roundedCustomButtonSmall"
 
             android:layout_gravity="center"
-            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:gravity="center"
             android:text="@string/save"
             android:textAllCaps="false" />
@@ -130,11 +130,11 @@
                     android:id="@+id/closeButton"
                     android:layout_width="@dimen/info_icon"
                     android:layout_height="@dimen/info_icon"
-                    android:layout_gravity="right|center"
+                    android:layout_gravity="end|center"
                     android:layout_margin="@dimen/list_margin"
                     android:background="@drawable/icon_close"
                     android:backgroundTint="@color/white"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:text="" />
 
             </LinearLayout>
@@ -166,7 +166,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_weight="3"
-                        android:gravity="left|center"
+                        android:gravity="start|center"
                         android:text="@string/product_name"
                         android:textSize="@dimen/font_micro_small" />
 
@@ -235,9 +235,9 @@
                                 style="?attr/customListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="@dimen/list_margin"
+                                android:layout_marginStart="@dimen/list_margin"
                                 android:layout_weight="3"
-                                android:gravity="center|left"
+                                android:gravity="center|start"
                                 android:text="@string/product_name" />
 
                             <TextView
@@ -247,7 +247,22 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:text="@string/text_min_max" />
-
+                            <TextView
+                                android:id="@+id/u_price_title"
+                                style="?attr/customListTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:tag="unit_price"
+                                android:text="Price" />
+                            <TextView
+                                android:id="@+id/disc_price_title"
+                                style="?attr/customListTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:tag="discounted_price"
+                                android:text="Discounted Price" />
                             <TextView
                                 android:id="@+id/d1title"
                                 style="?attr/customListTitle"

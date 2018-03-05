@@ -116,9 +116,11 @@ public class ActivationHelper {
             Commons.printInformation("DeviceIMEI " + imeiNumber);
             Commons.printInformation("VersionCode "
                     + bmodel.getApplicationVersionNumber());
+            Commons.printInformation(SynchronizationHelper.VERSION_NAME + bmodel.getApplicationVersionName());
             ksp.addParam("LicenseKey", activationKey);
             ksp.addParam("VersionCode", bmodel.getApplicationVersionNumber());
             ksp.addParam("DeviceIMEI", imeiNumber);
+            ksp.addParam(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             ksp.connectServer(new ResponseListener() {
                 @Override
                 public void onSucess(JSONObject jsonObj) {
@@ -197,6 +199,7 @@ public class ActivationHelper {
                     SOAP_ACTION_SECURITYPOLICY2, NAMESPACE);
             ksp.addParam("DeviceIMEI", imeiNumber);
             ksp.addParam("VersionCode", bmodel.getApplicationVersionNumber());
+            ksp.addParam(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             ksp.connectServer(new ResponseListener() {
                 @Override
                 public void onSucess(JSONObject jsonObj) {

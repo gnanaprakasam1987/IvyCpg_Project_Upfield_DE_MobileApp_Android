@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.15"
         android:buttonTint="?attr/colorAccent"
-        android:gravity="right"
+        android:gravity="end"
         />
 
 </LinearLayout>

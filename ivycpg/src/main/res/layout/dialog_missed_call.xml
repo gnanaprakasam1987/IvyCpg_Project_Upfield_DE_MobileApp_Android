@@ -26,9 +26,9 @@
             android:id="@+id/closeBTN"
             android:layout_width="@dimen/dimen_30dp"
             android:layout_height="@dimen/dimen_30dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dimen_6dp"
+            android:layout_marginEnd="@dimen/dimen_6dp"
             android:drawableTint="@color/white"
             android:background="@drawable/ic_action_circle_close" />
     </RelativeLayout>

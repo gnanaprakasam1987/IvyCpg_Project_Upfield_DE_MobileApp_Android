@@ -2,9 +2,11 @@ package com.ivy.sd.print;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -21,6 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,8 +57,10 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CollectionScreen;
+import com.ivy.sd.png.view.EmailDialog;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -78,13 +83,30 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.activation.CommandMap;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.activation.MailcapCommandMap;
+import javax.mail.BodyPart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
 import mmsl.DeviceUtility.DeviceBluetoothCommunication;
 import mmsl.DeviceUtility.DeviceCallBacks;
 
-public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar implements DeviceCallBacks {
+public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar implements DeviceCallBacks, EmailDialog.onSendButtonClickListnor {
     private TextView mPrinterStatusTV;
     private Spinner mPrintCountSpinner;
     private TextView mPreviewTV;
@@ -123,6 +145,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
     private OrderHelper orderHelper;
     DeviceBluetoothCommunication bluetoothCommunication;
     CommonDialog commonDialog;
+    private String sendMailAndLoadClass;
 
     private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -151,6 +174,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         isHomeBtnEnable = getIntent().getExtras().getBoolean("isHomeBtnEnable", false);
         isFromCollection = getIntent().getExtras().getBoolean("isFromCollection", false);
         isHidePrintBtn = getIntent().getExtras().getBoolean("isHidePrintBtn", false);
+        sendMailAndLoadClass = getIntent().getExtras().getString("sendMailAndLoadClass");
         if (isHomeBtnEnable) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -171,7 +195,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 bluetoothCommunication = new DeviceBluetoothCommunication();
                 bluetoothCommunication.StartConnection(device, this);
                 mPrinterStatusTV.setText("Connected");
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -195,6 +219,10 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
         if (isHidePrintBtn) {
             menu.findItem(R.id.menu_print).setVisible(false);
+        }
+
+        if (!bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
+            menu.findItem(R.id.menu_email_print).setVisible(false);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -256,12 +284,19 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     Commons.printException(ex);
                 }
                 break;
+            case R.id.menu_email_print:
+                try {
+                    prepareEmailData();
+                } catch (Exception e) {
+
+                }
+                break;
         }
         return false;
     }
 
 
-    private void callPrinter(){
+    private void callPrinter() {
         if (isHomeBtnEnable)
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         if (bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA || bmodel.configurationMasterHelper.SHOW_ZEBRA_TITAN
@@ -273,10 +308,13 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             doConnectionScrybe();
         } else if (bmodel.configurationMasterHelper.COMMON_PRINT_LOGON) {
             new Print().execute("2");
-        }
-        else if (bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS)
+        } else if (bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS)
             doMaestroPrintNew();
+        else if (bmodel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
+            new Print().execute("3");
+        }
     }
+
     private class CreatePdf extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
@@ -308,7 +346,13 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     ArrayList<Uri> uriList = new ArrayList<>();
                     File newFile = new File(Environment.getExternalStorageDirectory().getPath() + "/IvyInvoice/"
                             , StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".pdf");
-                    uriList.add(FileProvider.getUriForFile(CommonPrintPreviewActivity.this, BuildConfig.APPLICATION_ID + ".provider", newFile));
+
+                    if (Build.VERSION.SDK_INT >= 24) {
+                        uriList.add(FileProvider.getUriForFile(CommonPrintPreviewActivity.this, BuildConfig.APPLICATION_ID + ".provider", newFile));
+
+                    } else {
+                        uriList.add(Uri.fromFile(newFile));
+                    }
 
                     sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
                     sharingIntent.setType("application/pdf");
@@ -326,6 +370,166 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         }
 
     }
+
+
+    private void prepareEmailData() {
+
+        if (bmodel.mCommonPrintHelper.getInvoiceData().toString().length() > 0) {
+
+            if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
+                android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
+                EmailDialog dialog = new EmailDialog(CommonPrintPreviewActivity.this, bmodel.getRetailerMasterBO().getEmail());
+                dialog.setCancelable(false);
+                dialog.show(ft, "MENU_STK_ORD");
+            }
+        } else {
+            Toast.makeText(bmodel, "No data to store", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setEmailAddress(String value) {
+        new SendMail(this, "Read", "Test", value).execute();
+    }
+
+
+    public class SendMail extends AsyncTask<Void, Void, Boolean> {
+
+        // private final String emailId = "";//Change this field value
+        Session session;
+        Context mContext;
+        ProgressDialog progressDialog;
+        private String subject;
+        private String body;
+        private String additionalEmail;
+
+        public SendMail(Context ctx, String subject, String message, String additionalEmail) {
+            this.mContext = ctx;
+
+            this.subject = subject;
+            this.body = message;
+            this.additionalEmail = additionalEmail;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(mContext, getResources().getString(R.string.sending_email), getResources().getString(R.string.please_wait_some_time), false);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            HashMap<String, String> mUserCredentials = bmodel.downloadEmailAccountCredentials();
+            final String emailId = mUserCredentials.get("EMAILID");
+            final String password = mUserCredentials.get("PASSWORD");
+
+            Properties props = System.getProperties();// new Properties();
+
+            //Configuring properties for GMAIL
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.socketFactory.port", "587");
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.starttls.enable", "true");
+
+            //Creating a new session
+            session = Session.getDefaultInstance(props,
+                    new javax.mail.Authenticator() {
+                        //Authenticating the password
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(emailId, password);
+                        }
+                    });
+
+            try {
+                javax.mail.Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(emailId));
+                if (!TextUtils.isEmpty(bmodel.getRetailerMasterBO().getEmail()) && isValidEmail(bmodel.getRetailerMasterBO().getEmail())) {
+                    if (!additionalEmail.isEmpty() && isValidEmail(additionalEmail)) {
+                        InternetAddress[] recipientAddress = new InternetAddress[2];
+                        recipientAddress[0] = new InternetAddress(bmodel.getRetailerMasterBO().getEmail().trim());
+                        recipientAddress[1] = new InternetAddress(additionalEmail.trim());
+                        message.setRecipients(javax.mail.Message.RecipientType.TO, recipientAddress);
+                    } else if (!additionalEmail.isEmpty() && !isValidEmail(additionalEmail)) {
+                        return false;
+                    } else
+                        message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(bmodel.getRetailerMasterBO().getEmail().trim()));
+
+                } else if (!additionalEmail.isEmpty() && isValidEmail(additionalEmail))
+                    message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(additionalEmail));
+                else {
+                    return false;
+                }
+
+
+                message.setSubject(subject);
+                message.setText(body);
+                //  mm.setContent(message,"text/html; charset=utf-8");
+
+                BodyPart bodyPart = new MimeBodyPart();
+                bodyPart.setText(body);
+                //Attachment
+                DataSource source;
+                if (sendMailAndLoadClass.equalsIgnoreCase("PRINT_FILE_ORDER") ||
+                        sendMailAndLoadClass.equalsIgnoreCase("HomeScreenTwoPRINT_FILE_ORDER")) {
+                    source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
+                            StandardListMasterConstants.PRINT_FILE_ORDER + orderHelper.getOrderId().replaceAll("\'", "") + ".txt");
+                    bodyPart.setDataHandler(new DataHandler(source));
+                    bodyPart.setFileName("OrderDetails" + ".txt");
+                }
+                if (sendMailAndLoadClass.equalsIgnoreCase("PRINT_FILE_INVOICE")) {
+                    source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
+                            StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".txt");
+                    bodyPart.setDataHandler(new DataHandler(source));
+                    bodyPart.setFileName("InvoiceDetails" + ".txt");
+                }
+
+
+                MimeMultipart multiPart = new MimeMultipart();
+                multiPart.addBodyPart(bodyPart);
+                message.setContent(multiPart);
+
+                Thread.currentThread().setContextClassLoader(getClassLoader());
+
+                MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+                mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+                mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+                mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+                mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+                mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822");
+
+                //sending mail
+                Transport.send(message);
+
+            } catch (Exception ex) {
+                Commons.printException(ex);
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isSent) {
+            super.onPostExecute(isSent);
+
+            progressDialog.dismiss();
+
+            if (isSent) {
+                Toast.makeText(CommonPrintPreviewActivity.this, getResources().getString(R.string.email_sent),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(CommonPrintPreviewActivity.this, getResources().getString(R.string.error_in_sending_email),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
 
     public boolean createPdf(String pdfFileName) {
 
@@ -434,7 +638,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 mPrintCountSpinner.setVisibility(View.GONE);
             }
 
-            if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT){
+            if (bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT) {
                 mPrintCountSpinner.setVisibility(View.GONE);
             }
 
@@ -515,6 +719,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 doZebraPrintNew(getMacAddressFieldText());
             if (params[0].equals("2"))
                 doLogonPrintNew(getMacAddressFieldText());
+            if (params[0].equals("3"))
+                doInterMecPrint(getMacAddressFieldText());
 
             return true;
         }
@@ -613,33 +819,33 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                 if (s.contains("print_type")) {
                     if (mPrintCount == 0) {
-                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
-                            String primaryLabel=(bmodel.labelsMasterHelper.applyLabels("print_type_primary")!=null?bmodel.labelsMasterHelper.applyLabels("print_type_primary"):"Original");
-                            s=s.replace("print_type",primaryLabel);
-                        }else
-                          s = s.replace("print_type", "Original");
+                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
+                            String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_type_primary") != null ? bmodel.labelsMasterHelper.applyLabels("print_type_primary") : "Original");
+                            s = s.replace("print_type", primaryLabel);
+                        } else
+                            s = s.replace("print_type", "Original");
                     } else {
-                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
-                            String secondaryLabel=bmodel.labelsMasterHelper.applyLabels("print_type_secondary");
-                            s=s.replace("print_type",(secondaryLabel!=null?secondaryLabel:"Duplicate"));
-                        }else
-                        s = s.replace("print_type", "Duplicate");
+                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
+                            String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_type_secondary");
+                            s = s.replace("print_type", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
+                        } else
+                            s = s.replace("print_type", "Duplicate");
                     }
 
                 }
 
                 if (s.contains("print_title")) {
                     if (mPrintCount == 0) {
-                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
-                            String primaryLabel=(bmodel.labelsMasterHelper.applyLabels("print_title_primary")!=null?bmodel.labelsMasterHelper.applyLabels("print_title_primary"):"Original");
-                            s=s.replace("print_title",primaryLabel);
-                        }else
+                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
+                            String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_title_primary") != null ? bmodel.labelsMasterHelper.applyLabels("print_title_primary") : "Original");
+                            s = s.replace("print_title", primaryLabel);
+                        } else
                             s = s.replace("print_title", "");
                     } else {
-                        if(bmodel.mCommonPrintHelper.isFromLabelMaster()){
-                            String secondaryLabel=bmodel.labelsMasterHelper.applyLabels("print_title_secondary");
-                            s=s.replace("print_title",(secondaryLabel!=null?secondaryLabel:"Duplicate"));
-                        }else
+                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
+                            String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_title_secondary");
+                            s = s.replace("print_title", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
+                        } else
                             s = s.replace("print_title", "");
                     }
                 }
@@ -733,6 +939,34 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         }
     }
 
+    private void doInterMecPrint(String macAddress) {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothDevice mBluetoothDevice = null;
+        BluetoothSocket mBluetoothSocket = null;
+        OutputStream mOutputStream = null;
+        try {
+            if (macAddress.equals(""))
+                updateStatus("Mac address is empty...");
+            mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(macAddress);
+            mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID);
+            mBluetoothSocket.connect();
+            updateStatus("Printing...");
+            for (int i = 0; i < mPrintCountInput; i++) {
+                mOutputStream = mBluetoothSocket.getOutputStream();
+                mOutputStream.write((bmodel.mCommonPrintHelper.getInvoiceData().toString()).getBytes());
+                mOutputStream.flush();
+                mDataPrintCount++;
+                mPrintCount++;
+                mTotalNumbersPrinted++;
+            }
+            mOutputStream.close();
+            mBluetoothSocket.close();
+        } catch (Exception e) {
+            Commons.printException(e);
+            updateStatus("Connection Failed");
+        }
+    }
+
     //logon printer self test gives the reverse mac address
     private String getReverseofMacAddress(String macAddress) {
         String mMAcAddress = "";
@@ -773,14 +1007,14 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             updateStatus("Printer error.");
             msg = "Error";
         }
-        if(commonDialog!=null && commonDialog.isShowing()){
+        if (commonDialog != null && commonDialog.isShowing()) {
             commonDialog.dismiss();
             commonDialog.cancel();
-            commonDialog=null;
+            commonDialog = null;
         }
 
-        if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT
-                &&isPrintSuccess&&mTotalNumbersPrinted<bmodel.configurationMasterHelper.printCount){
+        if (bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT
+                && isPrintSuccess && mTotalNumbersPrinted < bmodel.configurationMasterHelper.printCount) {
             msg = getResources().getString(R.string.do_u_want_to_take_one_more_print);
 
             commonDialog = new CommonDialog(getApplicationContext(), this,
@@ -788,26 +1022,27 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     false, getResources().getString(R.string.ok),
                     getResources().getString(R.string.cancel),
                     new CommonDialog.positiveOnClickListener() {
-                @Override
-                public void onPositiveButtonClick() {
-                    mPrintCountInput=1;mDataPrintCount=0;
-                    callPrinter();
+                        @Override
+                        public void onPositiveButtonClick() {
+                            mPrintCountInput = 1;
+                            mDataPrintCount = 0;
+                            callPrinter();
 
-                }}, new CommonDialog.negativeOnClickListener() {
-                    @Override
-                    public void onNegativeButtonClick() {
-                        moveBack();
-                    }
-                });
-        }
-        else {
+                        }
+                    }, new CommonDialog.negativeOnClickListener() {
+                @Override
+                public void onNegativeButtonClick() {
+                    moveBack();
+                }
+            });
+        } else {
             commonDialog = new CommonDialog(getApplicationContext(), this,
                     "", msg,
                     false, getResources().getString(R.string.ok),
                     null, new CommonDialog.positiveOnClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
-                   moveBack();
+                    moveBack();
                 }
             }, new CommonDialog.negativeOnClickListener() {
                 @Override
@@ -819,7 +1054,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         commonDialog.show();
     }
 
-    private void moveBack(){
+    private void moveBack() {
         if (isFromOrder) {
             bmodel.productHelper.clearOrderTable();
 
@@ -1314,6 +1549,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         protected void onPreExecute() {
             updateStatus("Connecting...");
         }
+
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
@@ -1332,6 +1568,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             }
             return true;
         }
+
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
@@ -1361,172 +1598,232 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
     @Override
     public void onBatteryStatus(byte[] bytes) {
     }
+
     @Override
     public void onNoSmartCardFound() {
     }
+
     @Override
     public void onSmartCardPresent() {
     }
+
     @Override
     public void onFalseFingerDetected() {
     }
+
     @Override
     public void onCancelledCommand() {
     }
+
     @Override
     public void onCorruptDataRecieved() {
     }
+
     @Override
     public void onCorruptDataSent() {
     }
+
     @Override
     public void onInternalFPModuleCommunicationerror() {
     }
+
     @Override
     public void onParameterOutofRange() {
     }
+
     @Override
     public void onFingerPrintTimeout() {
     }
+
     @Override
     public void onWSQCOMLETE(int i) {
     }
+
     @Override
     public void onConnectComplete() {
     }
+
     @Override
     public void onConnectionFailed() {
     }
+
     @Override
     public void onPlaceFinger() {
     }
+
     @Override
     public void onMoveFingerUP() {
     }
+
     @Override
     public void onMoveFingerDown() {
     }
+
     @Override
     public void onMoveFingerRight() {
     }
+
     @Override
     public void onMoveFingerLeft() {
     }
+
     @Override
     public void onPressFingerHard() {
     }
+
     @Override
     public void onLatentFingerHard(String s) {
     }
+
     @Override
     public void onRemoveFinger() {
     }
+
     @Override
     public void onWSQFingerReceived(byte[] bytes) {
     }
+
     @Override
     public void onFingeracquisitioncompeted(String s) {
     }
+
     @Override
     public void onFingerScanStarted(int i) {
     }
+
     @Override
     public void onFingerTooMoist() {
     }
+
     @Override
     public void onNoResponseFromCard() {
     }
+
     @Override
     public void onCardNotSupported() {
     }
+
     @Override
     public void onCommandNotSupported() {
     }
+
     @Override
     public void onInvalidCommand() {
     }
+
     @Override
     public void onErrorOccured() {
     }
+
     @Override
     public void onVerificationSuccessful(int i) {
     }
+
     @Override
     public void onSerialNumber(byte[] bytes) {
     }
+
     @Override
     public void onVersionNumberReceived(byte[] bytes) {
     }
+
     @Override
     public void onVerificationfailed() {
     }
+
     @Override
     public void onFingerImageRecieved(byte[] bytes) {
     }
+
     @Override
     public void onCommandRecievedWhileProcessing() {
     }
+
     @Override
     public void onCommandRecievedWhileAnotherRunning() {
     }
+
     @Override
     public void onCryptographicError() {
     }
+
     @Override
     public void onOperationNotSupported() {
     }
+
     @Override
     public void onTemplateRecieved(byte[] bytes) {
     }
+
     @Override
     public void onNFIQ(int i) {
     }
+
     @Override
     public void onOutofPaper() {
     }
+
     @Override
     public void onPlatenOpen() {
     }
+
     @Override
     public void onHighHeadTemperature() {
     }
+
     @Override
     public void onLowHeadTemperature() {
     }
+
     @Override
     public void onImproperVoltage() {
     }
+
     @Override
     public void onSuccessfulPrintIndication() {
     }
+
     @Override
     public void onSmartCardDataRecieved(byte[] bytes) {
     }
+
     @Override
     public void onCPUSmartCardCommandDataRecieved(byte[] bytes) {
     }
+
     @Override
     public void onMSRDataRecieved(String s) {
     }
+
     @Override
     public void onNoData() {
     }
+
     @Override
     public void onImproveSwipe() {
     }
+
     @Override
     public void onSameFinger() {
     }
+
     @Override
     public void onWriteToSmartCardSuccessful() {
     }
+
     @Override
     public void onErrorReadingSmartCard() {
     }
+
     @Override
     public void onErrorOccuredWhileProccess() {
     }
+
     @Override
     public void onErrorWritingSmartCard() {
+    }
+
+    public boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 }

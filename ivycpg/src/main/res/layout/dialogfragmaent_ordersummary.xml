@@ -37,10 +37,10 @@
                 android:id="@+id/btn_close"
                 android:layout_width="@dimen/info_icon"
                 android:layout_height="@dimen/info_icon"
-                android:layout_gravity="right|center"
+                android:layout_gravity="end|center"
                 android:layout_margin="@dimen/list_margin"
                 android:background="@drawable/icon_close"
-                android:gravity="right"
+                android:gravity="end"
                 android:text="" />
         </LinearLayout>
 
@@ -248,7 +248,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
-            android:layout_toRightOf="@+id/ll_qty"
+            android:layout_toEndOf="@+id/ll_qty"
             android:orientation="vertical">
 
             <TextView
@@ -275,7 +275,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
-            android:layout_toRightOf="@+id/ll_mrp"
+            android:layout_toEndOf="@+id/ll_mrp"
             android:orientation="vertical">
 
             <TextView

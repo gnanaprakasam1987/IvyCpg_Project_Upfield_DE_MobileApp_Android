@@ -30,9 +30,9 @@
             android:id="@+id/okButton"
             android:layout_width="@dimen/profile_header_img_width"
             android:layout_height="@dimen/profile_header_img_height"
-            android:layout_gravity="right|center"
+            android:layout_gravity="end|center"
             android:background="@drawable/ok_tick"
-            android:gravity="right"
+            android:gravity="end"
             android:text=""
             android:layout_margin="@dimen/dimens_4dp"/>
     </LinearLayout>
@@ -57,7 +57,7 @@
                 android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                 android:layout_height="match_parent"
                 android:text="@string/product_name"
-                android:paddingLeft="@dimen/dimen_4dp"/>
+                android:paddingStart="@dimen/dimen_4dp"/>
             <TextView
                 android:id="@+id/io_case_Title"
                 style="?attr/customListItemSecondary"

@@ -72,8 +72,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="10dp"
+                    android:paddingEnd="2dp"
+                    android:paddingStart="10dp"
                     android:text="@string/sales"
                     android:textSize="@dimen/font_small">
                 </TextView>
@@ -82,7 +82,7 @@
                     android:id="@+id/sales_mtdgap"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -92,7 +92,7 @@
                     android:id="@+id/sales_obj"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -102,7 +102,7 @@
                     android:id="@+id/sales_act"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -112,7 +112,7 @@
                     android:id="@+id/sales_index"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -129,8 +129,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="10dp"
+                    android:paddingEnd="2dp"
+                    android:paddingStart="10dp"
                     android:text="@string/calls"
                     android:textSize="@dimen/font_small">
                 </TextView>
@@ -139,7 +139,7 @@
                     android:id="@+id/calls_mtdgap"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -149,7 +149,7 @@
                     android:id="@+id/calls_obj"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -159,7 +159,7 @@
                     android:id="@+id/calls_act"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -169,7 +169,7 @@
                     android:id="@+id/calls_index"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -186,8 +186,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="10dp"
+                    android:paddingEnd="2dp"
+                    android:paddingStart="10dp"
                     android:text="@string/pc"
                     android:textSize="@dimen/font_small">
                 </TextView>
@@ -196,7 +196,7 @@
                     android:id="@+id/pc_mtdgap"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -206,7 +206,7 @@
                     android:id="@+id/pc_obj"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -216,7 +216,7 @@
                     android:id="@+id/pc_act"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -226,7 +226,7 @@
                     android:id="@+id/pc_index"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -243,8 +243,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="10dp"
+                    android:paddingEnd="2dp"
+                    android:paddingStart="10dp"
                     android:text="@string/gs"
                     android:textSize="@dimen/font_small">
                 </TextView>
@@ -253,7 +253,7 @@
                     android:id="@+id/gs_mtdgap"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -263,7 +263,7 @@
                     android:id="@+id/gs_obj"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -273,7 +273,7 @@
                     android:id="@+id/gs_act"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -283,7 +283,7 @@
                     android:id="@+id/gs_index"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -300,8 +300,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="10dp"
+                    android:paddingEnd="2dp"
+                    android:paddingStart="10dp"
                     android:text="@string/focus_dist"
                     android:textSize="@dimen/font_small">
                 </TextView>
@@ -310,7 +310,7 @@
                     android:id="@+id/dist_mtdgap"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -320,7 +320,7 @@
                     android:id="@+id/dist_obj"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -330,7 +330,7 @@
                     android:id="@+id/dist_act"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -340,7 +340,7 @@
                     android:id="@+id/dist_index"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -357,8 +357,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="10dp"
+                    android:paddingEnd="2dp"
+                    android:paddingStart="10dp"
                     android:text="@string/focus_merch"
                     android:textSize="@dimen/font_small">
                 </TextView>
@@ -367,7 +367,7 @@
                     android:id="@+id/merch_mtdgap"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -377,7 +377,7 @@
                     android:id="@+id/merch_obj"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -387,7 +387,7 @@
                     android:id="@+id/merch_act"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -397,7 +397,7 @@
                     android:id="@+id/merch_index"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -414,8 +414,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="10dp"
+                    android:paddingEnd="2dp"
+                    android:paddingStart="10dp"
                     android:text="@string/golden_points"
                     android:textSize="@dimen/font_small">
                 </TextView>
@@ -424,7 +424,7 @@
                     android:id="@+id/godenpoint_mtdgap"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -434,7 +434,7 @@
                     android:id="@+id/goldenpoint_obj"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -444,7 +444,7 @@
                     android:id="@+id/goldenpoint_act"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -454,7 +454,7 @@
                     android:id="@+id/goldenpoint_index"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -471,8 +471,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="10dp"
+                    android:paddingEnd="2dp"
+                    android:paddingStart="10dp"
                     android:text="@string/total_lines"
                     android:textSize="@dimen/font_small">
                 </TextView>
@@ -481,7 +481,7 @@
                     android:id="@+id/totlines_mtdgap"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -491,7 +491,7 @@
                     android:id="@+id/totlines_obj"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -501,7 +501,7 @@
                     android:id="@+id/totlines_act"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -511,7 +511,7 @@
                     android:id="@+id/totlines_index"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -528,8 +528,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
-                    android:paddingRight="2dp"
-                    android:paddingLeft="10dp"
+                    android:paddingEnd="2dp"
+                    android:paddingStart="10dp"
                     android:text="@string/act_stores"
                     android:textSize="@dimen/font_small">
                 </TextView>
@@ -538,7 +538,7 @@
                     android:id="@+id/act_stores_mtdgap"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -548,7 +548,7 @@
                     android:id="@+id/act_stores_obj"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -558,7 +558,7 @@
                     android:id="@+id/act_stores_act"
                     android:layout_width="@dimen/eighteen_characters_width"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">
@@ -568,7 +568,7 @@
                     android:id="@+id/act_stores_index"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:padding="2dp"
                     android:text="0"
                     android:textSize="@dimen/font_small">

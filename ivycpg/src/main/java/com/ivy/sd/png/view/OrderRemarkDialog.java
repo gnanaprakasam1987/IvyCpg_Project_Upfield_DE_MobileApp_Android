@@ -3,6 +3,8 @@ package com.ivy.sd.png.view;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -21,6 +23,7 @@ import com.ivy.sd.png.util.Commons;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.StringTokenizer;
 
 public class OrderRemarkDialog extends Dialog implements OnClickListener {
 
@@ -46,6 +49,26 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
         mBtnDate = (Button) findViewById(R.id.Btn_deliveryDate);
         mBtnClose = (Button) findViewById(R.id.closeButton);
 
+        InputFilter filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    String specialChars = "\"'<>";
+
+                    int type = Character.getType(source.charAt(i));
+                    if (type == Character.SURROGATE || type == Character.OTHER_SYMBOL
+                            || specialChars.contains("" + source)
+                            || Character.isWhitespace(0)) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
+        mEdtRemark.setFilters(new InputFilter[]{filter});
+
+
         bmodel = (BusinessModel) context.getApplicationContext();
         con = context;
         isFrmDelivery = isFromDelivery;
@@ -66,6 +89,15 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
                                 .applyLabels(findViewById(R.id.textView5)
                                         .getTag()));
             ((TextView) findViewById(R.id.textView5)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+            String rField = bmodel.configurationMasterHelper.LOAD_ORDER_SUMMARY_REMARKS_FIELD_STRING;
+            StringTokenizer stringtokenizer = new StringTokenizer(rField, ",");
+            while (stringtokenizer.hasMoreElements()) {
+                String token = stringtokenizer.nextToken();
+                if (token.contains("PO")) {
+                    findViewById(R.id.po_lty).setVisibility(View.VISIBLE);
+                }
+            }
 
             if (isFrmDelivery) {
                 findViewById(R.id.po_lty).setVisibility(View.GONE);
@@ -92,7 +124,7 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
             }
             mEdtPO.setText(bmodel.getOrderHeaderBO().getPO());
         }
-        mEdtRemark.setText(bmodel.getOrderHeaderBO().getRemark());
+        mEdtRemark.setText(bmodel.getOrderHeaderNote());
         mBtnDate.setOnClickListener(this);
         mBtnClose.setOnClickListener(this);
 
@@ -121,7 +153,7 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
                 + "/" + (cday)
                 + "/" + cyear;
 
-        return new DatePickerDialog(con, mDateSetListener, cyear, cmonth, cday);
+        return new DatePickerDialog(con, R.style.DatePickerDialogStyle, mDateSetListener, cyear, cmonth, cday);
 
     }
 

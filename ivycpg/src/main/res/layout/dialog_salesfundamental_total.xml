@@ -55,15 +55,15 @@
                 android:layout_gravity="center_vertical"
                 android:background="@color/GRAY"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/sos_dialog_margin"
-                android:paddingRight="@dimen/sos_dialog_margin">
+                android:paddingStart="@dimen/sos_dialog_margin"
+                android:paddingEnd="@dimen/sos_dialog_margin">
 
                 <TextView
                     android:id="@+id/tvTotal"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center|left"
+                    android:gravity="center|start"
                     android:text="@string/total"
                     android:textColor="@color/GRAY_TEXT"
                     android:textSize="@dimen/font_micro_small" />
@@ -77,7 +77,7 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:gravity="center|left"
+                    android:gravity="center|start"
                     android:inputType="numberDecimal"
                     android:maxLength="6"
                     android:text="0"
@@ -121,7 +121,7 @@
             android:id="@+id/btn_cancel"
             style="?attr/roundedCustomButtonNormalTransparent"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:text="@string/cancel"
             android:textAllCaps="false"
             android:textColor="@android:color/black" />

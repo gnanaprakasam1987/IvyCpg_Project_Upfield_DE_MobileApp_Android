@@ -18,6 +18,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
@@ -265,9 +266,12 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
     }
 
     private void initializeTransferUtility() {
+        System.setProperty
+                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                 ConfigurationMasterHelper.SECRET_KEY);
-        s3 = new AmazonS3Client(myCredentials);
+        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
         transferUtility = new TransferUtility(s3, getActivity().getApplicationContext());
     }
 

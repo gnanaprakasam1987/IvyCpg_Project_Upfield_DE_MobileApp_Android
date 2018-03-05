@@ -42,7 +42,7 @@
                 android:layout_toStartOf="@+id/chart1"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/dimen_20dp"
+                android:paddingStart="@dimen/dimen_20dp"
                 android:weightSum="3">
 
                 <LinearLayout
@@ -55,7 +55,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
                         android:orientation="horizontal">
 
                         <View
@@ -63,7 +63,7 @@
                             android:layout_width="@dimen/qn_text_margin_left"
                             android:layout_height="@dimen/qn_text_margin_left"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/dimen_5dp"
+                            android:layout_marginEnd="@dimen/dimen_5dp"
                             android:background="@color/Orange"
                             android:padding="2dp">
 
@@ -83,7 +83,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="18dp"
+                        android:layout_marginStart="18dp"
                         android:orientation="vertical"
                         android:padding="1dp">
 
@@ -103,7 +103,7 @@
                             android:layout_alignBottom="@+id/target_tv"
                             android:layout_toEndOf="@+id/target_tv"
                             android:layout_toRightOf="@+id/target_tv"
-                            android:paddingRight="20dp"
+                            android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/WHITE"
                             android:textSize="@dimen/font_nano_small"
@@ -122,7 +122,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
                         android:orientation="horizontal">
 
                         <View
@@ -130,7 +130,7 @@
                             android:layout_width="@dimen/qn_text_margin_left"
                             android:layout_height="@dimen/qn_text_margin_left"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/dimen_5dp"
+                            android:layout_marginEnd="@dimen/dimen_5dp"
                             android:background="@color/GREEN"
                             android:padding="2dp">
 
@@ -150,7 +150,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="18dp"
+                        android:layout_marginStart="18dp"
                         android:orientation="vertical"
                         android:padding="1dp">
 
@@ -170,7 +170,7 @@
                             android:layout_alignBottom="@+id/growth_tv"
                             android:layout_toEndOf="@+id/growth_tv"
                             android:layout_toRightOf="@+id/growth_tv"
-                            android:paddingRight="20dp"
+                            android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/WHITE"
                             android:textSize="@dimen/font_nano_small"
@@ -189,7 +189,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
                         android:orientation="horizontal">
 
                         <View
@@ -197,7 +197,7 @@
                             android:layout_width="@dimen/qn_text_margin_left"
                             android:layout_height="@dimen/qn_text_margin_left"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/dimen_5dp"
+                            android:layout_marginEnd="@dimen/dimen_5dp"
                             android:background="#283593"
                             android:padding="2dp">
 
@@ -219,7 +219,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="18dp"
+                        android:layout_marginStart="18dp"
                         android:orientation="vertical"
                         android:padding="1dp">
 
@@ -239,7 +239,7 @@
                             android:layout_alignBottom="@+id/previous_score_TV"
                             android:layout_toEndOf="@+id/previous_score_TV"
                             android:layout_toRightOf="@+id/previous_score_TV"
-                            android:paddingRight="20dp"
+                            android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/WHITE"
                             android:textSize="@dimen/font_nano_small"
@@ -253,9 +253,9 @@
                 android:id="@+id/chart1"
                 android:layout_width="@dimen/web_view_width"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_gravity="center_vertical"
-                android:paddingRight="5dp" />
+                android:paddingEnd="5dp" />
 
         </RelativeLayout>
 
@@ -270,7 +270,7 @@
         android:layout_toEndOf="@+id/target_tv"
         android:layout_toRightOf="@+id/target_tv"
         android:layout_weight="1"
-        android:paddingRight="20dp"
+        android:paddingEnd="20dp"
         android:text=" pts"
         android:textColor="#80FFFFFF"
         android:textSize="@dimen/font_nano_small"

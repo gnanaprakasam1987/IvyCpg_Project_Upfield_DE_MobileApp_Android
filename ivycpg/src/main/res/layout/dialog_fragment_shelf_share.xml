@@ -56,7 +56,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/values_each_margin"
+                        android:layout_marginEnd="@dimen/values_each_margin"
                         android:orientation="vertical">
 
                         <TextView
@@ -73,7 +73,7 @@
                             android:layout_width="match_parent"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:maxLength="2"
                             android:maxLines="1"
                             android:text="0" />
@@ -85,8 +85,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/values_each_margin"
-                        android:layout_toRightOf="@+id/ll1"
+                        android:layout_marginEnd="@dimen/values_each_margin"
+                        android:layout_toEndOf="@+id/ll1"
                         android:orientation="vertical">
 
                         <TextView
@@ -103,7 +103,7 @@
                             android:layout_width="match_parent"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:maxLength="2"
                             android:maxLines="1"
                             android:text="0" />
@@ -114,7 +114,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toRightOf="@+id/ll2"
+                        android:layout_toEndOf="@+id/ll2"
                         android:orientation="vertical">
 
                         <TextView
@@ -131,7 +131,7 @@
                             android:layout_width="match_parent"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
-                            android:gravity="left"
+                            android:gravity="start"
                             android:maxLength="2"
                             android:maxLines="1"
                             android:text="0" />
@@ -141,9 +141,9 @@
                     <Button
                         android:id="@+id/btnCreateShelfShare"
                         style="?attr/roundedCustomButtonSmallTransparent"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/row_top_margin"
+                        android:layout_marginEnd="@dimen/row_top_margin"
                         android:text="@string/btn_create"
                         android:textAllCaps="false"
                         android:textColor="@android:color/black" />
@@ -232,7 +232,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/footer_bg"
-        android:gravity="center|right"
+        android:gravity="center|end"
         android:orientation="horizontal">
 
         <Button

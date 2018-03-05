@@ -28,8 +28,8 @@
                 android:text="@string/asset_name"
                 android:id="@+id/input_movement_assetName"
                 android:textColor="@color/DependentBlack"
-                android:layout_marginLeft="@dimen/dimen_10dp"
-                android:layout_marginRight="@dimen/dimen_10dp"
+                android:layout_marginStart="@dimen/dimen_10dp"
+                android:layout_marginEnd="@dimen/dimen_10dp"
                 android:textSize="@dimen/dimens_18dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -45,8 +45,8 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_10dp"
-                        android:layout_marginRight="@dimen/dimen_10dp"
+                        android:layout_marginStart="@dimen/dimen_10dp"
+                        android:layout_marginEnd="@dimen/dimen_10dp"
                         android:text="@string/serial_no"
                         android:textSize="@dimen/dimens_16dp"
 
@@ -56,8 +56,8 @@
                         android:id="@+id/spinnerMovementReason"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_10dp"
-                        android:layout_marginRight="@dimen/dimen_10dp"
+                        android:layout_marginStart="@dimen/dimen_10dp"
+                        android:layout_marginEnd="@dimen/dimen_10dp"
                         android:background="@android:color/transparent"
 
                         android:layout_weight="1"/>
@@ -86,8 +86,8 @@
             style="?attr/customListItemSecondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:text="Current Retailer Name:"
             android:textSize="@dimen/dimens_16dp"
 
@@ -97,8 +97,8 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_10dp"
-                android:layout_marginRight="@dimen/dimen_10dp"
+                android:layout_marginStart="@dimen/dimen_10dp"
+                android:layout_marginEnd="@dimen/dimen_10dp"
                 android:text="@string/retailer_name"
                 android:textSize="@dimen/dimens_16dp"
 
@@ -117,13 +117,13 @@
                 android:textStyle="normal"
                 android:layout_margin="@dimen/dimen_5dp"
                 android:textSize="@dimen/dimens_16dp"
-                android:paddingLeft="@dimen/dimen_10dp"/>
+                android:paddingStart="@dimen/dimen_10dp"/>
         <Spinner
             android:id="@+id/spinnerMovementOutletName"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:background="@android:color/transparent"
 
             android:layout_weight="1"/>
@@ -148,21 +148,19 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/feedbck_edit_ht"
             android:background="@drawable/feedback_edit_selector"
-            android:gravity="top|left"
+            style="@style/EditTextGravity"
             android:hint="@string/description"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:lines="2"
             android:maxLength="200"
-
             android:maxLines="3"
             android:minLines="2"
             android:padding="@dimen/spin_linlay_margin"
             android:singleLine="false"
             android:textSize="@dimen/dimens_16dp"
-
-            android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_marginRight="@dimen/dimen_10dp"/>
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"/>
     </LinearLayout>
 
     <LinearLayout

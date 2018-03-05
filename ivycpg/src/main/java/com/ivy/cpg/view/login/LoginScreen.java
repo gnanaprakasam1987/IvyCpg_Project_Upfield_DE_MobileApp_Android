@@ -13,12 +13,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -115,7 +117,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
         editTextPassword = (EditText) findViewById(R.id.EditText022);
         editTextPassword.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-
         Button buttonLogin = (Button) findViewById(R.id.loginButton);
         buttonLogin.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
@@ -161,7 +162,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
         registerReceiver(receiver, filter);
 
         loginPresenter.assignServerUrl();
-
     }
 
     @Override
@@ -448,15 +448,31 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                     businessModel.activationHelper.clearAppUrl();
                     businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
                     try {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(FileProvider.getUriForFile(LoginScreen.this, BuildConfig.APPLICATION_ID + ".provider", new File(LoginScreen.this.
-                                getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                + "/" + DataMembers.fileName)), "application/vnd.android.package-archive");
+                        Uri path;
+                        if (Build.VERSION.SDK_INT >= 24) {
+                            path = FileProvider.getUriForFile(LoginScreen.this, BuildConfig.APPLICATION_ID + ".provider", new File(
+                                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                            + "/" + DataMembers.fileName));
+                            Intent sintent = ShareCompat.IntentBuilder.from(LoginScreen.this)
+                                    .setStream(path) // uri from FileProvider
+                                    .getIntent()
+                                    .setAction(Intent.ACTION_VIEW)
+                                    .setDataAndType(path, "application/vnd.android.package-archive")
+                                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                        startActivity(intent);
+                            startActivity(sintent);
+
+                        } else {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+
+                            path = Uri.fromFile(new File(
+                                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                            + "/" + DataMembers.fileName));
+                            intent.setDataAndType(path, "application/vnd.android.package-archive");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
@@ -513,7 +529,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
                     finishActivity();
                     loginPresenter.checkLogin();
-
 
 
                     break;

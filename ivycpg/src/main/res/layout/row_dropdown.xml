@@ -11,8 +11,8 @@
         android:gravity="center_vertical"
         android:imeOptions="actionDone"
         android:paddingBottom="@dimen/list_margin"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:paddingTop="@dimen/list_margin"
         android:text="Medium Text"
         android:textSize="@dimen/spinner_normal" />

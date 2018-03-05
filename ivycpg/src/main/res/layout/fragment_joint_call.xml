@@ -75,7 +75,7 @@
                 <Button
                     android:id="@+id/btn_cancel"
                     style="?attr/roundedCustomButtonNormalTransparent"
-                    android:layout_marginLeft="1dp"
+                    android:layout_marginStart="1dp"
                     android:layout_weight="1"
                     android:onClick="onClick"
                     android:text="@string/cancel"
@@ -84,7 +84,7 @@
                 <Button
                     android:id="@+id/btn_done"
                     style="?attr/roundedCustomButtonNormal"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_marginStart="@dimen/dimen_10dp"
                     android:layout_weight="1"
                     android:onClick="onClick"
                     android:text="@string/login" />

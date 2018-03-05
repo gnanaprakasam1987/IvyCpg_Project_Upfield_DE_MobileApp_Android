@@ -41,7 +41,7 @@
                         style="?attr/customListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="@string/text_return_qty"
                         android:textSize="@dimen/font_small"
@@ -52,7 +52,7 @@
                         style="?attr/customListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:text="@string/zero"
                         android:textSize="@dimen/font_small"
@@ -77,7 +77,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="@string/enter_return_qty"
                         android:textColor="@color/black_bg1"
@@ -92,7 +92,7 @@
                             android:id="@+id/ll_rep_piece"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="@dimen/right_margin"
+                            android:layout_marginEnd="@dimen/right_margin"
                             android:layout_marginTop="@dimen/target_top_margin"
                             android:orientation="vertical">
 
@@ -111,7 +111,7 @@
                                 android:layout_width="@dimen/discount_editbox_width"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/zero" />
                         </LinearLayout>
 
@@ -119,8 +119,8 @@
                             android:id="@+id/ll_avail_case"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/right_margin"
-                            android:layout_marginRight="@dimen/right_margin"
+                            android:layout_marginStart="@dimen/right_margin"
+                            android:layout_marginEnd="@dimen/right_margin"
                             android:layout_marginTop="@dimen/target_top_margin"
                             android:orientation="vertical">
 
@@ -139,7 +139,7 @@
                                 android:layout_width="@dimen/discount_editbox_width"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/zero" />
                         </LinearLayout>
 
@@ -147,7 +147,7 @@
                             android:id="@+id/ll_avail_outer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/right_margin"
+                            android:layout_marginStart="@dimen/right_margin"
                             android:layout_marginTop="@dimen/target_top_margin"
                             android:orientation="vertical">
 
@@ -166,7 +166,7 @@
                                 android:layout_width="@dimen/discount_editbox_width"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:gravity="left"
+                                android:gravity="start"
                                 android:text="@string/zero" />
                         </LinearLayout>
                     </LinearLayout>
@@ -204,7 +204,7 @@
                 <Button
                     android:id="@+id/btn_save"
                     style="?attr/roundedCustomButtonSmall"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_margin="@dimen/target_top_margin"
                     android:gravity="center"
                     android:text="@string/done"

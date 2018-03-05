@@ -56,8 +56,8 @@
                             android:maxLines="2"
                             android:minLines="2"
                             android:paddingBottom="0dp"
-                            android:paddingLeft="1dp"
-                            android:paddingRight="1dp"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/Black"
                             android:textSize="@dimen/text_sz_small"
@@ -71,12 +71,26 @@
                             android:fontFamily="sans-serif"
                             android:gravity="center_vertical"
                             android:paddingBottom="1dp"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
+                            android:paddingTop="1dp"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/text_sz_small"
+                            tools:text="PPQ : 50" />
+
+                        <TextView
+                            android:id="@+id/catalog_order_listview_moq"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="1dp"
                             android:paddingLeft="1dp"
                             android:paddingRight="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/text_sz_small"
-                            tools:text="PPQ : 50" />
+                            tools:text="@string/moq" />
 
                         <TextView
                             android:id="@+id/catalog_order_listview_sih"
@@ -85,8 +99,8 @@
                             android:fontFamily="sans-serif"
                             android:gravity="center_vertical"
                             android:paddingBottom="1dp"
-                            android:paddingLeft="1dp"
-                            android:paddingRight="1dp"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/text_sz_small"
@@ -100,8 +114,8 @@
                             android:fontFamily="sans-serif"
                             android:gravity="center_vertical"
                             android:paddingBottom="1dp"
-                            android:paddingLeft="1dp"
-                            android:paddingRight="1dp"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/text_sz_small"
@@ -113,8 +127,8 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:paddingBottom="1dp"
-                            android:paddingLeft="1dp"
-                            android:paddingRight="1dp"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
                             android:paddingTop="1dp">
 
                             <TextView
@@ -133,7 +147,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif"
-                                android:paddingLeft="2dp"
+                                android:paddingStart="2dp"
                                 android:textColor="@color/GRAY_TEXT"
                                 android:textSize="@dimen/text_sz_small"
                                 tools:text="MRP :" />
@@ -196,7 +210,7 @@
                 android:id="@+id/slant_view"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:visibility="visible">
 
                 <com.ivy.sd.png.view.SlantView

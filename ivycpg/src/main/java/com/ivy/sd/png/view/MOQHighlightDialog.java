@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +49,9 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     private MyAdaper mSchedule;
     private savePcsValue listner;
     private Button save, closeButton;
+    private EditText QUANTITY;
+    private String append = "";
+    public InputMethodManager inputManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,8 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         bmodel.setContext(getActivity());
         listner = (savePcsValue) getActivity();
 
+
+
     }
 
     @Override
@@ -64,7 +71,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         if (getDialog() != null) {
             getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
-
+        getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         getDialog().setCancelable(false);
         this.setCancelable(false);
 
@@ -79,6 +86,10 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     public void onStart() {
         super.onStart();
         getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        inputManager = (InputMethodManager) getActivity().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
 
         lvwplist = (ListView) getView().findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
@@ -115,7 +126,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.save_btn) {
-            int size = bmodel.productHelper
+          /*  int size = bmodel.productHelper
                     .getProductMaster().size();
             int count = 0;
             for (int j = 0; j < size; ++j) {
@@ -130,14 +141,14 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
                 }
             }
-            if (count == 0) {
-                for (ProductMasterBO value : productBoRfieldChanges)
-                    updateData(value);
+            if (count == 0) {*/
+                /*for (ProductMasterBO value : productBoRfieldChanges)
+                    updateData(value);*/
 
-                listner.saveChanges();
-                dismiss();
-            } else
-                Toast.makeText(bmodel, "" + getString(R.string.Please_enter_multiple_of), Toast.LENGTH_SHORT).show();
+            listner.saveChanges();
+            dismiss();
+          /*  } else
+                Toast.makeText(bmodel, "" + getString(R.string.please_enter_minimum_order_qty), Toast.LENGTH_SHORT).show();*/
         }
         if (i == R.id.closeButton)
             dismiss();
@@ -189,16 +200,20 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                 holder.rField1Txt.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
+                        QUANTITY = holder.rField1Txt;
+                        QUANTITY.setTag(holder.productBo);
                         int inType = holder.rField1Txt.getInputType();
-                        holder.rField1Txt.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        holder.rField1Txt.setInputType(InputType.TYPE_NULL);
                         holder.rField1Txt.onTouchEvent(event);
                         holder.rField1Txt.setInputType(inType);
                         holder.rField1Txt.setSelection(holder.rField1Txt.length());
-                        holder.rField1Txt.requestFocus();
-
+                        inputManager.hideSoftInputFromWindow(
+                                QUANTITY.getWindowToken(), 0);
                         return true;
                     }
                 });
+
+
                 holder.rField1Txt.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
 
@@ -214,7 +229,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                         String qty = s.toString();
                         Commons.print("qty" + qty + "res" + res);
 
-                        if (!"".equals(qty) && SDUtil.convertToInt(qty) % res == 0) {
+                        if (!"".equals(qty)) {
                             Commons.print("Value" + SDUtil.convertToInt(qty) % res);
                             holder.productBo.setOrderedPcsQty(SDUtil
                                     .convertToInt(qty));
@@ -227,9 +242,9 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                             Commons.print("tot" + tot);
                             holder.productBo.setTotalamount(tot);
                         }
-                        if (SDUtil.convertToInt(qty) % res == 0) {
+                       /* if (SDUtil.convertToInt(qty) % res == 0) {
                             productBoRfieldChanges.add(holder.productBo);
-                        }
+                        }*/
                     }
                 });
 
@@ -291,6 +306,75 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         void saveChanges();
 
     }
+
+
+    public void numberPressed(View vw) {
+
+
+        if (QUANTITY == null) {
+            Toast.makeText(getActivity(), getResources().getString(R.string.please_select_item), Toast.LENGTH_SHORT).show();
+        } else {
+            int id = vw.getId();
+            if (id == R.id.calcdel) {
+
+                String enterText = (String) QUANTITY.getText().toString();
+                if (enterText.contains(".")) {
+                    String[] splitValue = enterText.split("\\.");
+                    try {
+
+                        int s = SDUtil.convertToInt(splitValue[1]);
+                        if (s == 0) {
+                            s = SDUtil.convertToInt(splitValue[0]);
+                            QUANTITY.setText(s + "");
+                        } else {
+                            s = s / 10;
+
+                            QUANTITY.setText(splitValue[0] + "." + s);
+                        }
+
+
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        QUANTITY.setText(SDUtil.convertToInt(enterText) + "");
+                    }
+
+
+                } else {
+
+                    int s = SDUtil.convertToInt((String) QUANTITY.getText()
+                            .toString());
+                    s = s / 10;
+                    QUANTITY.setText(s + "");
+
+                }
+            } else if (id == R.id.calcdot) {
+                String s = QUANTITY.getText().toString();
+
+                if (s != null) {
+                    if (!s.contains(".")) {
+                        QUANTITY.setText(s + ".");// QUANTITY.append(".");
+                    }
+                }
+
+            } else {
+                Button ed = (Button) getDialog().findViewById(vw.getId());
+                String append = ed.getText().toString();
+                eff(append);
+
+            }
+
+        }
+    }
+
+    public void eff(String append) {
+        String s = (String) QUANTITY.getText().toString();
+        if (!s.equals("0") && !s.equals("0.0")) {
+            QUANTITY.setText(QUANTITY.getText() + append);
+        } else
+            QUANTITY.setText(append);
+    }
+
+
+
 
 }
 

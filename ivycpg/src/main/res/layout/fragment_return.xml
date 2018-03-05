@@ -56,8 +56,8 @@
                     android:layout_width="@dimen/activity_list_icon_size"
                     android:layout_height="@dimen/activity_list_icon_size"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/target_top_margin"
-                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/target_top_margin"
+                    android:layout_marginEnd="@dimen/dimen_1dp"
                     android:background="@drawable/activity_icon_bg_normal"
                     android:backgroundTint="@color/colorPrimary"
                     android:gravity="center">
@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/icon_ll"
+                    android:layout_toEndOf="@+id/icon_ll"
                     android:text="@string/add_another_reason"
                     android:textColor="@color/white"
                     android:textSize="@dimen/greyed_text_size" />
@@ -83,7 +83,7 @@
                 <Button
                     android:id="@+id/btn_save"
                     style="?attr/roundedCustomButtonSmall"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_margin="@dimen/target_top_margin"
                     android:gravity="center"
                     android:text="@string/done"

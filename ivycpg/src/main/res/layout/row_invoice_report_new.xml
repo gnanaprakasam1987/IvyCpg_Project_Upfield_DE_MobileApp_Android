@@ -38,7 +38,7 @@
         android:padding="2dp"
         android:text="@string/product_name"
         android:textSize="@dimen/font_micro_small"
-        android:layout_marginLeft="@dimen/store_margin_top"
+        android:layout_marginStart="@dimen/store_margin_top"
 android:layout_marginTop="@dimen/list_margin"
         android:maxLines="1">
 
@@ -52,7 +52,7 @@ android:layout_marginTop="@dimen/list_margin"
             android:ellipsize="end"
             android:text="@string/dist"
             android:textSize="@dimen/font_micro_small"
-            android:layout_marginLeft="@dimen/store_margin_top"
+            android:layout_marginStart="@dimen/store_margin_top"
             android:layout_below="@+id/PRDNAME"/>
         <TextView
             android:id="@+id/PRDMRP"
@@ -64,7 +64,7 @@ android:layout_marginTop="@dimen/list_margin"
             android:text="@string/mrp"
             android:textSize="@dimen/font_large"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentEnd="true"/>
 
 
     </RelativeLayout>
@@ -105,7 +105,7 @@ android:layout_marginTop="@dimen/list_margin"
         android:padding="2dp"
         android:text="@string/pre_post"
         android:textSize="@dimen/text_sz_small"
-        android:layout_toRightOf="@+id/lpc"
+        android:layout_toEndOf="@+id/lpc"
         android:textStyle="bold"
         android:textColor="@color/kpi_value_text_color"
         android:layout_weight="25"/>
@@ -200,7 +200,7 @@ android:layout_marginTop="@dimen/list_margin"
                 android:padding="2dp"
                 android:text="@string/pre_post"
                 android:textSize="@dimen/font_small"
-                android:layout_toRightOf="@+id/lpc"
+                android:layout_toEndOf="@+id/lpc"
                 android:layout_below="@+id/disttxtview"
                 android:layout_weight="25"/>
             <TextView
@@ -213,7 +213,7 @@ android:layout_marginTop="@dimen/list_margin"
                 android:text="@string/weight"
                 android:maxLines="8"
                 android:textSize="@dimen/font_small"
-                android:layout_toRightOf="@+id/dist_txt"
+                android:layout_toEndOf="@+id/dist_txt"
                 android:layout_below="@+id/tv_weighttxt"
                 android:layout_weight="25"/>
             <TextView
@@ -225,7 +225,7 @@ android:layout_marginTop="@dimen/list_margin"
                 android:padding="2dp"
                 android:text="@string/tax_value"
                 android:textSize="@dimen/font_small"
-                android:layout_toRightOf="@+id/tv_weight"
+                android:layout_toEndOf="@+id/tv_weight"
                 android:layout_below="@+id/tv_tax_valuetxtview"
                 android:layout_weight="25"
                 android:maxLines="5"
@@ -240,7 +240,7 @@ android:layout_marginTop="@dimen/list_margin"
                 android:padding="2dp"
                 android:text="@string/weight"
                 android:textSize="@dimen/font_small"
-                android:layout_toRightOf="@+id/tv_tax_value"
+                android:layout_toEndOf="@+id/tv_tax_value"
                 android:layout_below="@+id/tv_priceoff_valuetxt"
                 android:layout_weight="25"
                 android:maxLines="5"/>

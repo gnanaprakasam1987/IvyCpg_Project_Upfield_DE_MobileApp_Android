@@ -80,6 +80,7 @@ import com.ivy.sd.png.view.CompetitorFilterFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.MustSellReasonDialog;
 import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
@@ -130,6 +131,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private StockCheckPresenterImpl stockCheckPresenter;
     private AlertDialog alertDialog;
     private HashMap<Integer, Integer> mCompetitorSelectedIdByLevelId;
+    private MustSellReasonDialog dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -1510,6 +1512,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     private void onNextButtonClick() {
+        if (businessModel.configurationMasterHelper.IS_MUST_SELL_STK
+                && !businessModel.productHelper.isMustSellFilledStockCheck()) {
+            Toast.makeText(getActivity(), R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
+            return;
+        }
         stockCheckPresenter.saveClosingStock(stockList);
     }
 
@@ -2078,6 +2085,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
         selectTab("ALL");
     }
+
+    private final DialogInterface.OnCancelListener diagDismissListen = new DialogInterface.OnCancelListener() {
+
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            onNextButtonClick();
+        }
+    };
 
 
 }

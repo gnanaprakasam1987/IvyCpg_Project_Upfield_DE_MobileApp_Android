@@ -10,7 +10,7 @@
         style="?customListItemPrimary"
         android:layout_width="@dimen/price_product_name"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_5dp"
+        android:layout_marginStart="@dimen/dimen_5dp"
         android:layout_alignParentTop="true"
         android:textSize="@dimen/font_small" />
 

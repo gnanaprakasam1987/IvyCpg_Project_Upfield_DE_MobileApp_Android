@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
@@ -152,9 +153,13 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         /* List of the files you want to send */
         for (String path : imagePathArray) {
             File file = new File(path);
-            Uri uri = FileProvider.getUriForFile(Gallery.this, BuildConfig.APPLICATION_ID + ".provider", file);
+            if (Build.VERSION.SDK_INT >= 24) {
+                files.add(FileProvider.getUriForFile(Gallery.this, BuildConfig.APPLICATION_ID + ".provider", file));
 
-            files.add(uri);
+            } else {
+                files.add(Uri.fromFile(file));
+            }
+
         }
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);

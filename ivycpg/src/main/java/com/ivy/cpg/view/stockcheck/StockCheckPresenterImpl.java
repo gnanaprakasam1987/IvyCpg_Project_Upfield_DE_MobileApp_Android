@@ -212,7 +212,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             return;
         }
         if (mSelectedIdByLevelId != null && businessModel.isMapEmpty(mSelectedIdByLevelId) == false) {
-            mCompetitorSelectedIdByLevelId=new HashMap<>();
+            mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
         ArrayList<ProductMasterBO> stockList = new ArrayList<>();
         //
@@ -549,7 +549,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     }
                 }
             }
-            mCompetitorSelectedIdByLevelId=new HashMap<>();
+            mCompetitorSelectedIdByLevelId = new HashMap<>();
             stockCheckView.updateListFromFilter(stockList);
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -599,7 +599,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             || ret.getOuterbarcode().toLowerCase().
                             contains(s.toLowerCase())) && ret.getIsSaleable() == 1) {
 
-                        if (generalButton.equals(GENERAL))//No filters selected
+                        if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
                             stockList.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
                             stockList.add(ret);
@@ -610,7 +610,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             .toLowerCase()
                             .contains(
                                     s.toLowerCase()) && ret.getIsSaleable() == 1) {
-                        if (generalButton.equals(GENERAL))//No filters selected
+                        if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
                             stockList.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
                             stockList.add(ret);
@@ -621,7 +621,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             .toLowerCase()
                             .contains(
                                     s.toLowerCase()) && ret.getIsSaleable() == 1)
-                        if (generalButton.equals(GENERAL))//No filters selected
+                        if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
                             stockList.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
                             stockList.add(ret);
@@ -671,7 +671,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
                 if (ret.getIsSaleable() == 1) {
-                    if (generalButton.equals(GENERAL))//No filters selected
+                    if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
                         stockList.add(ret);
                     else if (applyProductAndSpecialFilter(ret))
                         stockList.add(ret);
@@ -701,16 +701,16 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     * */
 
     public void updateCompetitorFilteredProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
-      //  this.mCompetitorSelectedIdByLevelId=mSelectedIdByLevelId;
-        this.mSelectedIdByLevelId=new HashMap<>();// clearing product filter
-      //  this.filtertext = filterText;
+        //  this.mCompetitorSelectedIdByLevelId=mSelectedIdByLevelId;
+        this.mSelectedIdByLevelId = new HashMap<>();// clearing product filter
+        //  this.filtertext = filterText;
 
         ArrayList<ProductMasterBO> stockList = new ArrayList<>();
         Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
         if (parentIdList != null && !parentIdList.isEmpty()) {
-            for(CompetitorFilterLevelBO mParentBO:parentIdList) {
+            for (CompetitorFilterLevelBO mParentBO : parentIdList) {
                 for (ProductMasterBO sku : items) {
-                    if(mParentBO.getProductId()==sku.getCompParentId()) {
+                    if (mParentBO.getProductId() == sku.getCompParentId()) {
                         stockList.add(sku);
                     }
                 }
@@ -725,7 +725,6 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         putValueToFilterMap("");
 
     }
-
 
 
     /**

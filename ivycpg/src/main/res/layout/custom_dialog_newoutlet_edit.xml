@@ -9,9 +9,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SORT BY"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:textSize="@dimen/font_small"
-        android:layout_marginLeft="@dimen/profile_history_20dp"
+        android:layout_marginStart="@dimen/profile_history_20dp"
         android:padding="@dimen/profile_header_txt_layout_marginleft"
         android:textColor="#175fab"
         android:gravity="center"
@@ -24,15 +24,15 @@
         android:layout_height="1dp"
         android:src="@drawable/downloadsuccess"
         android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/profile_history_20dp"
-        android:layout_marginRight="@dimen/profile_history_20dp"
+        android:layout_marginStart="@dimen/profile_history_20dp"
+        android:layout_marginEnd="@dimen/profile_history_20dp"
         android:background="@color/GRAY" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/profile_history_25dp"
-        android:layout_marginRight="@dimen/profile_history_25dp"
+        android:layout_marginStart="@dimen/profile_history_25dp"
+        android:layout_marginEnd="@dimen/profile_history_25dp"
         android:layout_marginTop="@dimen/profile_history_10dp"
         android:layout_marginBottom="@dimen/profile_history_20dp">
 

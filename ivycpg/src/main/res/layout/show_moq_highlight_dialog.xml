@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/dimen_5dp">
 
     <LinearLayout
@@ -19,7 +20,7 @@
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:padding="8dp"
-            android:text="@string/edit_piece"
+            android:text="@string/minimum_order_required"
             android:textColor="@android:color/white"
             android:textSize="@dimen/font_small"
             android:textStyle="bold" />
@@ -33,28 +34,77 @@
             android:background="@drawable/icon_close"
             android:backgroundTint="@color/white"
             android:gravity="right"
+            android:visibility="gone"
             android:text="" />
 
     </LinearLayout>
-
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginLeft="@dimen/list_margin"
-        android:layout_marginRight="@dimen/list_margin"
-        android:layout_marginTop="@dimen/dimen_5dp"
-        android:cacheColorHint="@null"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="2dp"
-        android:fitsSystemWindows="true"
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/list_margin"
+        app:cardBackgroundColor="@android:color/transparent"
         android:layout_below="@+id/LL_titleBar"
-        android:layout_above="@+id/ll_close" />
+        android:layout_above="@+id/ll_close">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_header_height"
+                android:layout_alignParentTop="true"
+                android:background="@color/list_title_bg_color"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:id="@+id/text_productName_title"
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/list_margin"
+                    android:layout_weight="7"
+                    android:gravity="center|left"
+                    android:text="@string/product_name" />
+
+                <TextView
+                    android:id="@+id/text_piece_title"
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:text="@string/piece" />
+            </LinearLayout>
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="@dimen/list_margin"
+                android:layout_marginRight="@dimen/list_margin"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="2dp"
+                android:fitsSystemWindows="true"
+                android:layout_below="@+id/header"
+                />
+            <include
+                android:id="@+id/keypad"
+                layout="@layout/keypad"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
     <LinearLayout
         android:id="@+id/ll_close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/dimens_4dp"
         android:orientation="vertical"
 
         android:layout_alignParentBottom="true">
@@ -62,7 +112,7 @@
         <Button
             android:id="@+id/save_btn"
             style="?attr/roundedCustomButtonSmall"
-            android:text="@string/save"
+            android:text="@string/done"
             android:layout_gravity="center_horizontal"
             android:textAllCaps="false" />
     </LinearLayout>

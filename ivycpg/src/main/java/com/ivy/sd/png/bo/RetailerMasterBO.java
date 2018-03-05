@@ -1,5 +1,6 @@
 package com.ivy.sd.png.bo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -311,7 +312,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public void setCredit_balance(double credit_balance) {
         this.credit_balance = credit_balance;
     }
-
 
     public String getOrderTypeId() {
         return orderTypeId;
@@ -1530,4 +1530,5 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public String getDLNoExpDate() {
         return DLNoExpDate;
     }
+
 }
