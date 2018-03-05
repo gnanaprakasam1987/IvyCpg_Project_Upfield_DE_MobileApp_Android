@@ -96,6 +96,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_capture);
+        checkAndRequestPermissionAtRunTime(2);
 
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);
@@ -252,8 +253,9 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         locationAdapter = new ArrayAdapter<>(this,
                 android.R.layout.select_dialog_singlechoice);
 
-        for (PhotoCaptureLocationBO temp : mPhotoCaptureHelper.getLocations())
-            locationAdapter.add(temp);
+        if (mPhotoCaptureHelper.getLocations() != null)
+            for (PhotoCaptureLocationBO temp : mPhotoCaptureHelper.getLocations())
+                locationAdapter.add(temp);
 
         if (mPhotoCaptureHelper.getPhotoTypeMaster() != null)
             if (mPhotoCaptureHelper.getPhotoTypeMaster().size() > 0) {
@@ -696,6 +698,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
     /**
      * Alert dialog for deleting image
+     *
      * @param imageNameStarts
      */
     private void showFileDeleteAlert(final String imageNameStarts) {

@@ -27,7 +27,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.FragmentActivity;
@@ -214,7 +213,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Vector;
-import java.util.regex.Pattern;
 
 public class BusinessModel extends Application {
 
@@ -1419,10 +1417,10 @@ public class BusinessModel extends Application {
                             "StoreOTPActivated, SkipOTPActivated,RField3,A.RetCreditLimit," +
                             "TaxTypeId,RField4,locationid,LM.LocName,A.VisitDays,A.accountid,A.NfcTagId,A.contractstatuslovid,A.ProfileImagePath,"
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getBranchId() + " as RetDistributorId,")
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId")
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId,")
 
 
-                            + " ,RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
+                            + "RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
 
                             + " , RC1.contactname as pc_name, RC1.ContactName_LName as pc_LName, RC1.ContactNumber as pc_Number,"
                             + " RC1.CPID as pc_CPID, IFNULL(RC1.DOB,'') as pc_DOB, RC1.contact_title as pc_title, RC1.contact_title_lovid as pc_title_lovid"
@@ -8351,19 +8349,24 @@ public class BusinessModel extends Application {
     public void downloadBankDetails() {
         BankMasterBO inv;
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        Cursor c = db.selectSQL("SELECT ListName, ListId FROM StandardListMaster WHERE ListType = 'BANK_TYPE'");
-        if (c != null) {
-            bankMaster = new Vector<BankMasterBO>();
-            while (c.moveToNext()) {
-                inv = new BankMasterBO();
-                inv.setBankName(c.getString(0));
-                inv.setBankId(c.getInt(1));
-                bankMaster.add(inv);
+        try {
+
+            db.openDataBase();
+            Cursor c = db.selectSQL("SELECT ListName, ListId FROM StandardListMaster WHERE ListType = 'BANK_TYPE'");
+            if (c != null) {
+                bankMaster = new Vector<BankMasterBO>();
+                while (c.moveToNext()) {
+                    inv = new BankMasterBO();
+                    inv.setBankName(c.getString(0));
+                    inv.setBankId(c.getInt(1));
+                    bankMaster.add(inv);
+                }
+                c.close();
             }
-            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            db.closeDB();
         }
-        db.closeDB();
     }
 
     public void downloadBranchDetails() {
@@ -8893,9 +8896,10 @@ public class BusinessModel extends Application {
 
 
     public void insertTempOrder() {
+
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             int siz = productHelper.getProductMaster().size();
@@ -8926,8 +8930,9 @@ public class BusinessModel extends Application {
                     db.insertSQL("TempOrderDetail", columns, values);
                 }
             }
+            db.closeDB();
         } catch (Exception ex) {
-
+            db.closeDB();
             Commons.printException(ex);
         }
     }

@@ -166,11 +166,10 @@ public class QuestionBO {
 
     public void setSelectedAnswerID(int answerID) {
         if (selectedAnswerIDs != null && selectedAnswerIDs.size() > 0) {
-            for (int i = 0; i < selectedAnswerIDs.size(); i++) {
-                if (selectedAnswerIDs.get(i) != answerID) {
-                    this.selectedAnswerIDs.add(answerID);
-                }
+            if (!selectedAnswerIDs.contains(answerID)) {
+                this.selectedAnswerIDs.add(answerID);
             }
+
         } else {
             this.selectedAnswerIDs.add(answerID);
         }

@@ -371,10 +371,14 @@ public class ProfileFragment extends IvyBaseFragment {
 
                         break;
                     case "PROFILE04":
-                        if (retailerObj.getAddress2() != null) {
+                        if (retailerObj.getAddress2() != null || addressTxt.getText().toString().length() > 0) {
                             addressTxt.setVisibility(View.VISIBLE);
-                            addressTxt.append(", " + retailerObj
-                                    .getAddress2());
+                            if (addressTxt.getText().toString().length() > 0)
+                                addressTxt.append(", " + retailerObj
+                                        .getAddress2());
+                            else
+                                addressTxt.append(retailerObj
+                                        .getAddress2());
                         } else {
                             addressTxt.setVisibility(View.GONE);
                         }

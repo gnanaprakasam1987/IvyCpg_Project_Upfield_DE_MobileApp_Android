@@ -382,16 +382,23 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 holder.focus_brand_count1 = (TextView) row.findViewById(R.id.focus_brand_count1);
                 holder.text_mustSellCount = (TextView) row.findViewById(R.id.mustsellcount);
                 (row.findViewById(R.id.invoiceview_doted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                holder.focusbrandlabel = (TextView) row.findViewById(R.id.focusbrand_label);
+                holder.mustselllabel = (TextView) row.findViewById(R.id.mustsell_label);
 
                 if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                     holder.tvWeight.setVisibility(View.GONE);
                     holder.label_weight.setVisibility(View.GONE);
                 }
-                if (!businessModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT)
+                if (!businessModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT) {
                     holder.tvFocusBrandCount.setVisibility(View.GONE);
+                    holder.focusbrandlabel.setVisibility(View.GONE);
+                    holder.focus_brand_count1.setVisibility(View.GONE);
+                }
 
-                if (!businessModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT)
+                if (!businessModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT) {
                     holder.tvMustSellCount.setVisibility(View.GONE);
+                    holder.mustselllabel.setVisibility(View.GONE);
+                }
 
                 if (!businessModel.configurationMasterHelper.SHOW_DELIVERY_DATE_IN_ORDER_RPT)
                     holder.text_delivery_date.setVisibility(View.GONE);
@@ -511,7 +518,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         TextView text_retailerName, label_orderNumber;
         TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount;
         TextView text_delivery_date;
-        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell;
+        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel;
 
     }
 

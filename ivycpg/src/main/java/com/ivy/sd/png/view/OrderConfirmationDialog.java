@@ -49,8 +49,10 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
     private LinearLayout layout_shipment, layout_payment, layout_channel, layout_delivery_date, layout_supplier, layout_note, layout_order_value, layout_drug_note;
     private AutoCompleteTextView autoCompleteTextView_suppliers;
 
-    private boolean isMandatory_shipment, isMandatory_payterm, isMandatory_channel;
+    private boolean isMandatory_shipment, isMandatory_payterm, isMandatory_channel, isMandatory_supplier;
     private boolean isInvoice;
+
+    ArrayList<SupplierMasterBO> mSupplierList;
 
 
     private static final String SHIPMENT_TYPE = "SHIPMENT_TYPE";
@@ -191,16 +193,19 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_delivery_label.setText(configureBO.getMenuName());
                     textView_delivery.setText(businessModel.getOrderHeaderBO().getDeliveryDate());
                 } else if (configureBO.getConfigCode().equals(SUPPLIER_SELECTION)) {
-
+                    if (configureBO.getMandatory() == 1) {
+                        findViewById(R.id.supplier_mandatory).setVisibility(View.VISIBLE);
+                        isMandatory_supplier = true;
+                    }
                     String rSalesType = businessModel.getStandardListCode(businessModel.getRetailerMasterBO().getSalesTypeId());
                     if (businessModel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID && rSalesType.equalsIgnoreCase("INDIRECT")) {
-                        layout_supplier.setVisibility(View.INVISIBLE);
+                        layout_supplier.setVisibility(View.GONE);
                     } else {
 
                         layout_supplier.setVisibility(View.VISIBLE);
                         textView_supplier_label.setText(configureBO.getMenuName());
-
-                        ArrayList<SupplierMasterBO> mSupplierList = businessModel.downloadSupplierDetails();
+                        mSupplierList = new ArrayList<>();
+                        mSupplierList = businessModel.downloadSupplierDetails();
                         ArrayAdapter<SupplierMasterBO> mSupplierAdapter = new ArrayAdapter<>(context,
                                 R.layout.autocompelete_bluetext_layout, mSupplierList);
                         mSupplierAdapter.setDropDownViewResource(R.layout.autocomplete_bluetext_list_item);
@@ -239,13 +244,17 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     //
                 } else if (configureBO.getConfigCode().equals(NOTE)) {
                     layout_note.setVisibility(View.VISIBLE);
-                    textView_note_label.setText(configureBO.getMenuName());
+                    textView_note_label.setText(configureBO.getMenuName() + ":-");
+                    textView_note_label.setTextColor(context.getResources().getColor(R.color.black_bg1));
                     if (isExceptionalOrder(mOrderedProductList)) {
-                        textView_note.setText(context.getResources().getString(R.string.this_is_exceptional_order));
+                        textView_note.setText(context.getResources().getString(R.string.this_is_exceptional_order) + " " +
+                                businessModel.getRetailerMasterBO().getRetailerName());
                         textView_note.setTextColor(context.getResources().getColor(R.color.RED));
                     } else {
-                        textView_note.setText("-");
+                        textView_note.setText(context.getResources().getString(R.string.this_is_standared_order) + " " +
+                                businessModel.getRetailerMasterBO().getRetailerName());
                     }
+
 
                 } else if (configureBO.getConfigCode().equals(ORDER_VALUE)) {
                     layout_order_value.setVisibility(View.VISIBLE);
@@ -364,7 +373,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
 
     private boolean isExceptionalOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
         for (ProductMasterBO bo : mOrderedProductList) {
-            if ((bo.getD1() + bo.getD2() + bo.getD3()) >= 100 || bo.getDiscount_order_value() <= 0) {
+            if ((bo.getD1() + bo.getD2() + bo.getD3()) > 0.0 || bo.getDiscount_order_value() <= 0) {
                 return true;
             }
         }
@@ -390,6 +399,18 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     return;
                 }
 
+                String rSalesType = businessModel.getStandardListCode(businessModel.getRetailerMasterBO().getSalesTypeId());
+                if (businessModel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID
+                        && !rSalesType.equalsIgnoreCase("INDIRECT")
+                        && !rSalesType.equals("")) {
+                    if (mSupplierList != null)
+                        if (isMandatory_supplier && getItemIndex(autoCompleteTextView_suppliers.getText().toString(), mSupplierList) == -1) {
+                            Toast.makeText(context, context.getResources().getString(R.string.supplier_mandatory), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                }
+
+
                 if (spinner_shipment.getSelectedItem() != null)
                     businessModel.setRField1(((ReasonMaster) spinner_shipment.getSelectedItem()).getReasonID());
 
@@ -414,5 +435,17 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
         void save(boolean isInvoice);
 
         void dismiss();
+    }
+
+    public int getItemIndex(String supplier, ArrayList<SupplierMasterBO> prodList) {
+        int size = prodList.size();
+
+        for (int i = 0; i < size; i++) {
+            SupplierMasterBO bo = (SupplierMasterBO) prodList.get(i);
+            if (bo.getSupplierName().equals(supplier)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

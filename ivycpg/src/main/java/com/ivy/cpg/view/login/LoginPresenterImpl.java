@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
@@ -376,8 +377,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected void onPostExecute(Integer result) {
+            loginView.dismissAlertDialog();
             if (result == 2) {
-                loginView.dismissAlertDialog();
                 loginView.showAlert(context.getResources().getString(R.string.error_e24), true); // error_24 invalid date time
             } else {
                 proceedToLocalLogin();
@@ -862,9 +863,12 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     public void initializeTransferUtility() {
+        System.setProperty
+                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                 ConfigurationMasterHelper.SECRET_KEY);
         AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
         transferUtility = new TransferUtility(s3, context);
     }
 
