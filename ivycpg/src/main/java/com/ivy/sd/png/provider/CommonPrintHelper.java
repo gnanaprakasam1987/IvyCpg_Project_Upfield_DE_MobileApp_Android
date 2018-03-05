@@ -1136,6 +1136,8 @@ public class CommonPrintHelper {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
                                 mProductValue = prod.getProductCode();
+                            }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
+                                mProductValue = context.getResources().getString(R.string.free);
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {

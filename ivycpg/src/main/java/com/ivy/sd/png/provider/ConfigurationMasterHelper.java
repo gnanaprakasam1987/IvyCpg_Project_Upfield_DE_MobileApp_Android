@@ -811,6 +811,7 @@ public class ConfigurationMasterHelper {
     public int LOCATION_TIMER_PERIOD = 20;
 
     public String LOAD_REMARKS_FIELD_STRING = "";
+    public String LOAD_ORDER_SUMMARY_REMARKS_FIELD_STRING = "";
     public boolean IS_LOAD_STOCK_COMPETITOR = false;
 
     public boolean SHOW_SIH_SPLIT;
@@ -3603,6 +3604,17 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
 
                     LOAD_REMARKS_FIELD_STRING = c.getString(0);
+                }
+            }
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_REVIEW_PO) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+
+                    LOAD_ORDER_SUMMARY_REMARKS_FIELD_STRING = c.getString(0);
                 }
             }
 
