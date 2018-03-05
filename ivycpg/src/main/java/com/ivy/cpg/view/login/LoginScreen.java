@@ -160,7 +160,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
         registerReceiver(receiver, filter);
 
         loginPresenter.assignServerUrl();
-
     }
 
     @Override

@@ -648,7 +648,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
+    private boolean isEditMode = false;
+
     private void editOrder() {
+        isEditMode = true;
         discountHelper.clearSchemeFreeProduct(mOrderedProductList);
 
         if (BModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT)
@@ -1778,7 +1781,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
-                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList,totalOrderValue);
+                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue);
 
                 new MyThread(this, DataMembers.SAVEINVOICE).start();
             } else {
@@ -2990,7 +2993,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
             startActivity(i);
 
-        }else if (sendMailAndLoadClass.equals("CommonPrintPreviewActivityPRINT_FILE_ORDER")) {
+        } else if (sendMailAndLoadClass.equals("CommonPrintPreviewActivityPRINT_FILE_ORDER")) {
             i = new Intent(
                     OrderSummary.this,
                     HomeScreenTwo.class);
@@ -3048,6 +3051,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             unregisterReceiver(mReceiver);
         if (mChatService != null) {
             mChatService.stop();
+        }
+        if (!isEditMode) {
+            BModel.productHelper.clearOrderTable();
+            discountHelper.clearSchemeFreeProduct(mOrderedProductList);
         }
         unbindDrawables(findViewById(R.id.root));
     }

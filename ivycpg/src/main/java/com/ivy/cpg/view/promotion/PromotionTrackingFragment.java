@@ -346,6 +346,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         + "Camera Activity : Canceled");
             }
         }
+        QUANTITY = null;
     }
 
     /**
@@ -412,6 +413,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     @Override
     public void onResume() {
         super.onResume();
+        businessModel = (BusinessModel) getActivity().getApplicationContext();
+        businessModel.setContext(getActivity());
 
     }
 

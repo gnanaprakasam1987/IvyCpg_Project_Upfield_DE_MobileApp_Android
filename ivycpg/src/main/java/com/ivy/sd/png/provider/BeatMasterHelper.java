@@ -90,13 +90,15 @@ public class BeatMasterHelper {
      * Download beatamster and load in verctor
      */
     public void downloadBeats() {
+        DBUtil db = null;
         try {
-            BeatMasterBO beat;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
+            String beatCols = "BeatID,BeatDescription,today,UserId";
+            BeatMasterBO beat;
             db.openDataBase();
 
-            Cursor c = db.selectSQL("SELECT distinct " + DataMembers.tbl_beatMaster_cols
+            Cursor c = db.selectSQL("SELECT distinct " + beatCols
                     + " FROM " + DataMembers.tbl_beatMaster + " WHERE UserId = " +
                     "ifnull((SELECT UserId FROM" + DataMembers.tbl_beatMaster +
                     " WHERE UserId=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "),0)");
@@ -114,6 +116,7 @@ public class BeatMasterHelper {
             }
             db.closeDB();
         } catch (Exception e) {
+            db.closeDB();
             Commons.printException("" + e);
         }
     }

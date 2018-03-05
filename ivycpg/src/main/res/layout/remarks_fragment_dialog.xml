@@ -46,9 +46,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"
                 android:hint="@string/enter_remark_to_set"
-                android:maxLength="50"
+                android:maxLength="250"
                 android:maxLines="1"
                 android:paddingStart="6dp"
                 android:paddingEnd="6dp"
@@ -160,6 +159,7 @@
                 android:tag="@string/remark"
                 android:textSize="@dimen/font_small"></EditText>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/layout_remark_type"
             android:layout_width="match_parent"

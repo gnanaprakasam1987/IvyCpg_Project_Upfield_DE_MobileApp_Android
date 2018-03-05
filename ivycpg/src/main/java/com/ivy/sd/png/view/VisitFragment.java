@@ -1768,11 +1768,17 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     private int getStoreVisited() {
         int count = 0;
-        for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
-            if (retObj.getIsVisited().equalsIgnoreCase("Y")
-                    && (retObj.getIsToday() == 1 || retObj.getIsDeviated().equalsIgnoreCase("Y"))) {
-                count++;
+        try {
+
+            for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
+                if (retObj.getIsVisited() != null || retObj.getIsDeviated() != null)
+                    if (retObj.getIsVisited().equalsIgnoreCase("Y")
+                            && (retObj.getIsToday() == 1 || retObj.getIsDeviated().equalsIgnoreCase("Y"))) {
+                        count++;
+                    }
+
             }
+        } catch (Exception e) {
 
         }
         return count;

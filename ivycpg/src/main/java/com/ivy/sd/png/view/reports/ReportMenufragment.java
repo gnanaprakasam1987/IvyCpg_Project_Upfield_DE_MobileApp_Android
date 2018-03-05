@@ -161,8 +161,6 @@ public class ReportMenufragment extends IvyBaseFragment {
             menuIcons.put(StandardListMasterConstants.MENU_ARCHV_RPT,
                     R.drawable.icon_reports);
 
-            menuIcons.put(StandardListMasterConstants.MENU_PRDVOL_RPT,
-                    R.drawable.icon_reports);
             // Load the HHTTable
             menuDB = bmodel.configurationMasterHelper
                     .downloadNewActivityMenu(StandardListMasterConstants.REPORT_MENU);
@@ -217,14 +215,8 @@ public class ReportMenufragment extends IvyBaseFragment {
             } else {
                 Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SKU_REPORT)) {
-
-            if (bmodel.reportHelper.downloadSKUReport().size() >= 1) {
-                intoreportacti(config);
-            } else {
-                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
-            }
-        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVENTORY_RPT)) {
+        }
+        else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVENTORY_RPT)) {
             intoreportacti(config);
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
             intoreportacti(config);
@@ -251,7 +243,18 @@ public class ReportMenufragment extends IvyBaseFragment {
                 intoreportacti(config);
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
-        } else {
+        }
+        else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
+
+            bmodel.reportHelper.downloadClosingStockRetailers();
+
+            if(bmodel.reportHelper.getRetailerMaster().size() > 0) {
+                intoreportacti(config);
+            } else {
+                Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+            }
+        }
+        else {
             intoreportacti(config);
         }
 

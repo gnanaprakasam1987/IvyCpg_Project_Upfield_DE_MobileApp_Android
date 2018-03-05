@@ -51,6 +51,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
@@ -1947,9 +1948,12 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
     }
 
     private void initializeTransferUtility() {
+        System.setProperty
+                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                 ConfigurationMasterHelper.SECRET_KEY);
         s3 = new AmazonS3Client(myCredentials);
+        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
         transferUtility = new TransferUtility(s3, getActivity());
     }
 
@@ -2440,8 +2444,8 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("LoginId", userName);
                 jsonObj.put("Password", password);
-                jsonObj.put(SynchronizationHelper.VERSION_CODE,
-                        bmodel.getApplicationVersionNumber());
+                jsonObj.put(SynchronizationHelper.VERSION_CODE,bmodel.getApplicationVersionNumber());
+                jsonObj.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
 
                 jsonObj.put("Model", Build.MODEL);
                 jsonObj.put("Platform", "Android");

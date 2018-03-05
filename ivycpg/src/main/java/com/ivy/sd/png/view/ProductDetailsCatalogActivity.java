@@ -3,8 +3,10 @@ package com.ivy.sd.png.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -31,6 +33,7 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
     private Toolbar toolbar;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private ArrayList<String> mProductIdList;
+    private int mTotalScreenWidth = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +50,9 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         setScreenTitle("Product Details");
-
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        mTotalScreenWidth = dm.widthPixels;
         mSelectedIdByLevelId = (HashMap<Integer, Integer>) getIntent().getSerializableExtra("FiveFilter");
         mProductIdList = getIntent().getStringArrayListExtra("ProductIdList");
         ImageView pdt_image_details = (ImageView) findViewById(R.id.pdt_image_details);
@@ -71,20 +76,31 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         sih_detail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         pdt_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        //sih_detail.setText("SIH : " + bmodel.selectedPdt.getSIH());
+        sih_detail.setText("SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()));
         pdt_name.setText(bmodel.selectedPdt.getProductName());
         pdt_name.setText(bmodel.selectedPdt.getProductName());
         pdt_name.setText(bmodel.selectedPdt.getProductName());
         sih_detail.setText((bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP == true ?
-                "SRP : " + bmodel.formatValue(bmodel.selectedPdt.getSrp()) : "") +
+                getResources().getString(R.string.srp_text) + " : " + bmodel.formatValue(bmodel.selectedPdt.getSrp()) : "") +
                 (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP == true ?
                         " MRP : " + bmodel.formatValue(bmodel.selectedPdt.getMRP()) : "") +
                 (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND == true ?
                         " SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()) : ""));
-     /*   FragmentSchemeDialog fragment = new FragmentSchemeDialog();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.frame, fragment);
-        transaction.commit();*/
+
+        if (bmodel.schemeDetailsMasterHelper.getmSchemeList().size() > 0) {
+
+            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
+            bmodel.productHelper.setPdname(bmodel.selectedPdt.getProductShortName());
+            bmodel.productHelper.setProdId(bmodel.selectedPdt.getProductID());
+            bmodel.productHelper.setProductObj(bmodel.selectedPdt);
+            bmodel.productHelper.setFlag(1);
+            bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
+
+            SchemeDetailsFragment fragment = new SchemeDetailsFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.frame, fragment);
+            transaction.commit();
+        }
 
     }
 

@@ -20,7 +20,7 @@ public class OrderHistoryBO {
     private String orderid;
 
     private String invoiceId;
-    private double orderValue, paidAmount;
+    private double orderValue, paidAmount,balanceAmount;
     private int isJointCall;
     private String delieveryStatus;
     private String noorderReason;
@@ -109,6 +109,14 @@ public class OrderHistoryBO {
 
     public void setPaidAmount(double paidAmount) {
         this.paidAmount = paidAmount;
+    }
+
+    public double getBalanceAmount() {
+        return balanceAmount;
+    }
+
+    public void setBalanceAmount(double balanceAmount) {
+        this.balanceAmount = balanceAmount;
     }
 
     public String getProductName() {

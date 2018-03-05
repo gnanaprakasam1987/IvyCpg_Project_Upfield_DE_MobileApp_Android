@@ -400,7 +400,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             mSelectedFilterMap.put("General", "All");
             mSelectedFilterMap.put("Brand", "All");
             mSelectedFilterMap.put("Category", "All");
-            mSelectedIdByLevelId.clear();
+            if (mSelectedFilterMap != null)
+                mSelectedIdByLevelId.clear();
 
             try {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
