@@ -97,6 +97,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_CODE = "prod_code";
     private static String TAG_PRODUCT_NAME = "prod_name";
     private static String TAG_HSN_CODE = "hsn_code";
+    private static String TAG_DISCOUNTED_PRICE = "discounted_price";
 
     private static String TAG_PRODUCT_PRICE_CASE = "prod_price_case";
     private static String TAG_PRODUCT_PRICE_OUTER = "prod_price_outer";
@@ -1007,6 +1008,14 @@ public class CommonPrintHelper {
                             else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
                                 mProductValue = String.valueOf(prod.getFoc());
                             }
+                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
+                                int totalQty = prod.getOrderedPcsQty()
+                                        + prod.getOrderedCaseQty()
+                                        * prod.getCaseSize()
+                                        + prod.getOrderedOuterQty()
+                                        * prod.getOutersize();
+                                mProductValue = String.valueOf(prod.getTotalamount()/totalQty);
+                            }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
                                 if (mProductValue.length() > attr.getAttributeLength()) {
@@ -1138,6 +1147,14 @@ public class CommonPrintHelper {
                                 mProductValue = prod.getProductCode();
                             }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
                                 mProductValue = context.getResources().getString(R.string.free);
+                            }
+                            else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
+                                int totalQty = prod.getOrderedPcsQty()
+                                        + prod.getOrderedCaseQty()
+                                        * prod.getCaseSize()
+                                        + prod.getOrderedOuterQty()
+                                        * prod.getOutersize();
+                                mProductValue = String.valueOf(prod.getTotalamount()/totalQty);
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
