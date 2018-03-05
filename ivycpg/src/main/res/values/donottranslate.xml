@@ -267,5 +267,7 @@
 
     <string name="do_u_want_to_take_one_more_print">Do you want to take one more print?</string>
 
+    <string name="net_price">Net Price</string>
+    <string name="free_product">Free Product</string>
 
 </resources>
