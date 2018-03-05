@@ -98,6 +98,72 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         ((TextView) findViewById(R.id.tvValuetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         totalval.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+        if (true) {//change with proper config later
+            ((TextView) findViewById(R.id.disc_price_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.disc_price_title).getTag()) != null)
+                    ((TextView) findViewById(R.id.disc_price_title))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.disc_price_title)
+                                            .getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+        } else
+            findViewById(R.id.disc_price_title).setVisibility(View.GONE);
+        if (true) {//change with proper config later
+            ((TextView) findViewById(R.id.u_price_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.u_price_title).getTag()) != null)
+                    ((TextView) findViewById(R.id.u_price_title))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.u_price_title)
+                                            .getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+        } else
+            findViewById(R.id.u_price_title).setVisibility(View.GONE);
+
+        if (true) {//change with proper config later
+            ((TextView) findViewById(R.id.disc_price_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.disc_price_title).getTag()) != null)
+                    ((TextView) findViewById(R.id.disc_price_title))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.disc_price_title)
+                                            .getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+        } else
+            findViewById(R.id.disc_price_title).setVisibility(View.GONE);
+        if (true) {//change with proper config later
+            ((TextView) findViewById(R.id.u_price_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.u_price_title).getTag()) != null)
+                    ((TextView) findViewById(R.id.u_price_title))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.u_price_title)
+                                            .getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+        } else
+            findViewById(R.id.u_price_title).setVisibility(View.GONE);
+
         lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
@@ -436,6 +502,10 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                         .findViewById(R.id.outerorderQTYinCase);
                 holder.min_max = (TextView) row
                         .findViewById(R.id.min_max);
+                holder.discounted_price = (TextView) row
+                        .findViewById(R.id.discounted_price);
+                holder.unit_price = (TextView) row
+                        .findViewById(R.id.unit_price);
 
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.caseqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -446,7 +516,16 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.min_max.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-
+                if (true) {//change with proper config later
+                    holder.discounted_price.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                } else {
+                    holder.discounted_price.setVisibility(View.GONE);
+                }
+                if (true) {//change with proper config later
+                    holder.unit_price.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                } else {
+                    holder.unit_price.setVisibility(View.GONE);
+                }
                 if (!bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS)
                     holder.min_max.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_D1)
@@ -486,6 +565,12 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                 double tot = discountcalc(holder.productObj,
                                         sum);
                                 holder.total.setText(bmodel.formatValue(tot));
+                                int totalQty = holder.productObj.getOrderedPcsQty()
+                                        + holder.productObj.getOrderedCaseQty()
+                                        * holder.productObj.getCaseSize()
+                                        + holder.productObj.getOrderedOuterQty()
+                                        * holder.productObj.getOutersize();
+                                holder.discounted_price.setText(tot / totalQty + "");
                             }
                         } else {
                             holder.d1.removeTextChangedListener(this);
@@ -496,6 +581,13 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                             + holder.productObj.getD2()
                                             + holder.productObj.getD1());
                             holder.total.setText(bmodel.formatValue(tot));
+                            int totalQty = holder.productObj.getOrderedPcsQty()
+                                    + holder.productObj.getOrderedCaseQty()
+                                    * holder.productObj.getCaseSize()
+                                    + holder.productObj.getOrderedOuterQty()
+                                    * holder.productObj.getOutersize();
+                            holder.discounted_price.setText(tot / totalQty + "");
+
                             holder.d1.addTextChangedListener(this);
                         }
 
@@ -543,9 +635,15 @@ public class DiscountDialog extends Dialog implements OnClickListener {
 
                             double tot = discountAmountCalc(holder.productObj,
                                     i);
-                            if (tot >= 0)
+                            if (tot >= 0) {
                                 holder.total.setText(bmodel.formatValue(tot));
-                            else {
+                                int totalQty = holder.productObj.getOrderedPcsQty()
+                                        + holder.productObj.getOrderedCaseQty()
+                                        * holder.productObj.getCaseSize()
+                                        + holder.productObj.getOrderedOuterQty()
+                                        * holder.productObj.getOutersize();
+                                holder.discounted_price.setText(tot / totalQty + "");
+                            } else {
                                 qty = qty.length() > 1 ? qty.substring(0,
                                         qty.length() - 1) : "0";
 
@@ -562,6 +660,12 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                             + holder.productObj.getD2()
                                             + holder.productObj.getD1());
                             holder.total.setText(bmodel.formatValue(tot));
+                            int totalQty = holder.productObj.getOrderedPcsQty()
+                                    + holder.productObj.getOrderedCaseQty()
+                                    * holder.productObj.getCaseSize()
+                                    + holder.productObj.getOrderedOuterQty()
+                                    * holder.productObj.getOutersize();
+                            holder.discounted_price.setText(tot / totalQty + "");
                             holder.da.addTextChangedListener(this);
                         }
                     }
@@ -617,6 +721,8 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             holder.pname = holder.productObj.getProductName();
 
             holder.min_max.setText(holder.productObj.getFrom_range() + "/" + holder.productObj.getTo_range());
+            holder.unit_price.setText(bmodel.formatValue(holder.productObj.getSrp())
+                    + "");
 
             holder.caseSize = holder.productObj.getCaseSize();
             holder.stockInHand = holder.productObj.getSIH();
@@ -691,7 +797,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         ProductMasterBO productObj;
         String productId, productCode, pname;
         int caseSize, stockInHand;// product id
-        TextView psname, mrp, caseqty, pieceqty, outerQty, min_max;
+        TextView psname, mrp, caseqty, pieceqty, outerQty, min_max, discounted_price, unit_price;
         EditText d1, da;
         int ref;
         TextView total;
