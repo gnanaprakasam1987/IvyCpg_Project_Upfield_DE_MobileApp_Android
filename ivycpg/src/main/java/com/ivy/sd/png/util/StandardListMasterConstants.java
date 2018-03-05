@@ -66,7 +66,6 @@ public class StandardListMasterConstants {
 	public static final String MENU_ORDER_REPORT = "MENU_ORDER_REPORT";
 	public static final String MENU_PREVIOUS_ORDER_REPORT = "MENU_PREV_ORDER_REPORT";
 	public static final String MENU_DAY_REPORT = "MENU_DAY_REPORT";
-	public static final String MENU_PRDVOL_RPT = "MENU_PRDVOL_RPT";
 	public static final String MENU_INVOICE_REPORT = "MENU_INVOICE_REPORT";
 	public static final String MENU_PND_INVOICE_REPORT = "MENU_PND_INV_RPT";
 	public static final String MENU_SKU_REPORT = "MENU_SKU_REPORT";
@@ -89,6 +88,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_LOG = "MENU_LOG"; // Activity Log
 	public static final String MENU_RTR_RPT = "MENU_RTR_RPT"; // Retailer Report
 	public static final String MENU_WEBVIEW_RPT01 = "MENU_WVW_RPT01";
+	public static final String MENU_WEBVIEW_RPT02 = "MENU_WVW_RPT02";
 	public static final String MENU_CREDIT_NOTE_REPORT = "MENU_CREDIT_RPT";
 	public static final String MENU_ATTENDANCE_REPORT = "MENU_ATTENDANCE_RPT";
 	public static final String MENU_DELIVERY_STOCK_REPORT = "MENU_DELIVERYSTK";
@@ -118,6 +118,8 @@ public class StandardListMasterConstants {
 	public static final String PRINT_FILE_COLLECTION = "PF_COL_";
 	public static final String PRINT_FILE_ORDER = "PF_ORD_";
 	public static final String PRINT_FILE_PATH = "PrintFile/";
+
+	public static final String MENU_CLOSING_STK_RPT = "MENU_CLOSING_STK_RPT";
 
 
 	public static final HashMap<String,String> mActivityCodeByMenuCode=new HashMap<>();
