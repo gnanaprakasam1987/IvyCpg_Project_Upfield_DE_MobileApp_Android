@@ -442,7 +442,8 @@ public class CommonPrintHelper {
                             property_special = property_special == null ? "" : property_special;
                             String pres_str = xmlParser.getAttributeValue(null, "precision_count");
                             mGlobalPrecision = pres_str == null ? -1 : Integer.parseInt(pres_str);
-                            isFromLabelMaster = xmlParser.getAttributeValue(null, "isFromLabel").equalsIgnoreCase("yes") ? true : false;
+                            String isFromLabel = xmlParser.getAttributeValue(null, "isFromLabel");
+                            isFromLabelMaster = (isFromLabel == null ? false : ((isFromLabel.equalsIgnoreCase("yes")) ? true : false));
                         } else if (name.equalsIgnoreCase("logo")) {
                             isLogoEnabled = true;
                         } else if (name.equalsIgnoreCase("newline")) {
@@ -845,7 +846,15 @@ public class CommonPrintHelper {
                     mProductValue = getPromoType(context, prod);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
                     mProductValue = String.valueOf(prod.getFoc());
+                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
+                    int totalQty = prod.getOrderedPcsQty()
+                            + prod.getOrderedCaseQty()
+                            * prod.getCaseSize()
+                            + prod.getOrderedOuterQty()
+                            * prod.getOutersize();
+                    mProductValue = String.valueOf((prod.getTotalamount() - prod.getApplyValue()) / totalQty);
                 }
+
 
                 if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {
                     if (mProductValue.length() > attr.getAttributeLength()) {

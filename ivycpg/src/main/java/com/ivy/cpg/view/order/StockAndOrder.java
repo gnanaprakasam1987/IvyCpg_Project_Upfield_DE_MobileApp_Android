@@ -4494,58 +4494,63 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     public void numberPressed(View vw) {
-        int val;
-        if (QUANTITY == null) {
-            bmodel.showAlert(
-                    getResources().getString(R.string.please_select_item), 0);
+
+        if (mMOQHighlightDialog != null && mMOQHighlightDialog.isVisible()) {
+            mMOQHighlightDialog.numberPressed(vw);
         } else {
-            int id = vw.getId();
-            if (id == R.id.calcdel) {
-
-                int s = SDUtil.convertToInt(QUANTITY.getText()
-                        .toString());
-                s = s / 10;
-                String strS = s + "";
-                QUANTITY.setText(strS);
-                val = s;
-
-
-            } else if (id == R.id.calcdot) {
-                val = SDUtil.convertToInt(append);
-                if (QUANTITY.getTag() != null) {
-                    if (QUANTITY.getId() == R.id.stock_and_order_listview_srpedit) {
-                        Button ed = (Button) findViewById(vw.getId());
-                        append = ed.getText().toString();
-                        eff();
-                        val = SDUtil.convertToInt(append);
-                    }
-
-                }
+            int val;
+            if (QUANTITY == null) {
+                bmodel.showAlert(
+                        getResources().getString(R.string.please_select_item), 0);
             } else {
-                Button ed = (Button) findViewById(vw.getId());
-                append = ed.getText().toString();
-                eff();
-                val = SDUtil.convertToInt(append);
-            }
+                int id = vw.getId();
+                if (id == R.id.calcdel) {
 
-            ProductMasterBO temp = (ProductMasterBO) QUANTITY.getTag();
+                    int s = SDUtil.convertToInt(QUANTITY.getText()
+                            .toString());
+                    s = s / 10;
+                    String strS = s + "";
+                    QUANTITY.setText(strS);
+                    val = s;
 
-            if (val > 0
-                    && temp.isRPS()
-                    && !temp.isSBDAcheivedLocal()
-                    && (temp.getOrderedPcsQty() > 0
-                    || temp.getOrderedCaseQty() > 0 || temp
-                    .getOrderedOuterQty() > 0)) {
-                updateSBDAcheived(temp.getSbdGroupName(), true);
-            } else if (val == 0
-                    && temp.isRPS()
-                    && temp.isSBDAcheivedLocal()
-                    && (temp.getOrderedPcsQty()
-                    + (temp.getOrderedCaseQty() * temp.getCaseSize()) + (temp
-                    .getOrderedOuterQty() * temp.getOutersize())) == 0) {
-                updateSBDAcheived(temp.getSbdGroupName(), false);
+
+                } else if (id == R.id.calcdot) {
+                    val = SDUtil.convertToInt(append);
+                    if (QUANTITY.getTag() != null) {
+                        if (QUANTITY.getId() == R.id.stock_and_order_listview_srpedit) {
+                            Button ed = (Button) findViewById(vw.getId());
+                            append = ed.getText().toString();
+                            eff();
+                            val = SDUtil.convertToInt(append);
+                        }
+
+                    }
+                } else {
+                    Button ed = (Button) findViewById(vw.getId());
+                    append = ed.getText().toString();
+                    eff();
+                    val = SDUtil.convertToInt(append);
+                }
+
+                ProductMasterBO temp = (ProductMasterBO) QUANTITY.getTag();
+
+                if (val > 0
+                        && temp.isRPS()
+                        && !temp.isSBDAcheivedLocal()
+                        && (temp.getOrderedPcsQty() > 0
+                        || temp.getOrderedCaseQty() > 0 || temp
+                        .getOrderedOuterQty() > 0)) {
+                    updateSBDAcheived(temp.getSbdGroupName(), true);
+                } else if (val == 0
+                        && temp.isRPS()
+                        && temp.isSBDAcheivedLocal()
+                        && (temp.getOrderedPcsQty()
+                        + (temp.getOrderedCaseQty() * temp.getCaseSize()) + (temp
+                        .getOrderedOuterQty() * temp.getOutersize())) == 0) {
+                    updateSBDAcheived(temp.getSbdGroupName(), false);
+                }
+                updateValue();
             }
-            updateValue();
         }
 
     }

@@ -3,14 +3,14 @@
     android:id="@+id/orderScreenListRow"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/list_item_height_double_line"
-    android:weightSum="5"
+    android:weightSum="10"
     android:gravity="center_vertical">
 
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/list_margin"
-        android:layout_weight="3"
+        android:layout_marginLeft="@dimen/list_margin"
+        android:layout_weight="7"
         android:gravity="center_vertical">
 
         <TextView
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="start|center"
+            android:gravity="left|center"
             android:maxLines="1"
             android:padding="3dp"
             android:text="@string/product_name" />
@@ -27,9 +27,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_below="@+id/orderPRODNAME"
-            android:gravity="center|start">
+            android:gravity="center|left">
 
             <TextView
                 android:id="@+id/orderQTYinpiece"
@@ -45,40 +45,19 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/llSrpEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
 
-        android:layout_marginStart="@dimen/dimen_10dp"
-        android:layout_alignParentEnd="true"
-        android:orientation="vertical">
+    <EditText
+        android:id="@+id/rField1_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="@dimen/dimen_0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:inputType="number"
+        android:maxLength="5"
+        android:layout_weight="3"/>
 
-        <TextView
-            android:id="@+id/srpeditTitle"
-            style="?attr/customListItemPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="start|center"
-            android:maxLines="1"
-            android:padding="3dp"
-            android:tag="srp"
-            android:text="@string/piece" />
 
-        <EditText
-            android:id="@+id/rField1_qty"
-            style="@style/EditText_ListItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="start|center"
-            android:text="@string/zero"
-            android:inputType="number"
-            android:maxLength="5" />
-
-    </LinearLayout>
 
 
 </LinearLayout>

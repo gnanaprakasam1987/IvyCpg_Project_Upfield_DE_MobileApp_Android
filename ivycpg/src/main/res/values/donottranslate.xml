@@ -275,5 +275,6 @@
 
     <string name="net_price">Net Price</string>
     <string name="free">Free</string>
+    <string name="minimum_order_required">Minimum Order Required</string>
 
 </resources>
