@@ -318,13 +318,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         }
 
         retailerNameTxt.setText(title);
-        if (bmodel.retailerMasterBO.getAddress3() != null && !bmodel.retailerMasterBO.getAddress3().isEmpty()) {
+        if ((bmodel.retailerMasterBO.getAddress3() != null && !bmodel.retailerMasterBO.getAddress3().isEmpty())
+                || (bmodel.configurationMasterHelper.SHOW_SUPPLIER_SELECTION
+                && !bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE
+                && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE)) {
             retailerCodeTxt.setVisibility(View.VISIBLE);
-            retailerCodeTxt.setText(bmodel.retailerMasterBO.getAddress3());
+            if (!bmodel.configurationMasterHelper.SHOW_SUPPLIER_SELECTION)
+                retailerCodeTxt.setText(bmodel.retailerMasterBO.getAddress3());
         } else {
             retailerCodeTxt.setVisibility(View.GONE);
         }
-
         collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
 
@@ -1865,10 +1868,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
 
-                if(bmodel.configurationMasterHelper.IS_SUPPLIER_CREDIT_LIMIT
+                if (bmodel.configurationMasterHelper.IS_SUPPLIER_CREDIT_LIMIT
                         && !bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
-                        && bmodel.getRetailerMasterBO().getSupplierBO() !=null &&
-                        bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit() > 0){
+                        && bmodel.getRetailerMasterBO().getSupplierBO() != null &&
+                        bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit() > 0) {
                     bmodel.getRetailerMasterBO().setCreditLimit(bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit());
                 }
 
@@ -2680,7 +2683,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
                 assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_ASSET);
 
-                if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
+                if (assetTrackingHelper.getAssetTrackingList().size() > 0 || assetTrackingHelper.SHOW_ADD_NEW_ASSET) {
 
                     assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 

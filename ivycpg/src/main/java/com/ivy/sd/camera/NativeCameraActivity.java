@@ -2,12 +2,15 @@ package com.ivy.sd.camera;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.FileProvider;
 import android.widget.Toast;
@@ -41,13 +44,27 @@ public class NativeCameraActivity extends Activity {
         camera_picture_quality = bmodel.configurationMasterHelper.CAMERA_PICTURE_QUALITY;
 
         path = getIntent().getStringExtra("path");
-        if (path!=null && checkCreateDir(path)) {
+        if (path != null && checkCreateDir(path)) {
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
-                    FileProvider.getUriForFile(NativeCameraActivity.this, BuildConfig.APPLICATION_ID + ".provider", new File(path)));
-            startActivityForResult(cameraIntent, CAMERA_REQUEST);
-        }else{
-            Toast.makeText(this,"Image Path Not Found", Toast.LENGTH_LONG).show();
+            if (Build.VERSION.SDK_INT >= 24) {
+
+                // set flag to give temporary permission to external app to use your FileProvider
+                cameraIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
+                        FileProvider.getUriForFile(NativeCameraActivity.this, BuildConfig.APPLICATION_ID + ".provider", new File(path)));
+
+                // validate that the device can open your File!
+                PackageManager pm = this.getPackageManager();
+                if (cameraIntent.resolveActivity(pm) != null) {
+                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                }
+            } else {
+                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(new File(path)));
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            }
+        } else {
+            Toast.makeText(this, "Image Path Not Found", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -55,9 +72,9 @@ public class NativeCameraActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-                compressImage(path, camera_picture_height, camera_picture_width);
-                setResult(SUCCESS);
-                finish();
+            compressImage(path, camera_picture_height, camera_picture_width);
+            setResult(SUCCESS);
+            finish();
         } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_CANCELED) {
             finish();
         }
@@ -140,7 +157,7 @@ public class NativeCameraActivity extends Activity {
         Matrix scaleMatrix = new Matrix();
         scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
 
-        if(scaledBitmap != null) {
+        if (scaledBitmap != null) {
             Canvas canvas = new Canvas(scaledBitmap);
             canvas.setMatrix(scaleMatrix);
             canvas.drawBitmap(bitmap, middleX - bitmap.getWidth() / 2, middleY - bitmap.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
@@ -167,7 +184,7 @@ public class NativeCameraActivity extends Activity {
                 Commons.printException("" + e);
             }
 
-            try{
+            try {
                 FileOutputStream out;
                 try {
                     out = new FileOutputStream(path);
@@ -177,7 +194,7 @@ public class NativeCameraActivity extends Activity {
                     scaledBitmap.recycle();//need to recycle the bitmap to avoid OUTOFMEMORYERROR
                     out.flush();
                     out.close();
-                }catch (FileNotFoundException e){
+                } catch (FileNotFoundException e) {
                     Commons.printException("" + e);
                 }
             } catch (IOException e) {
@@ -225,7 +242,7 @@ public class NativeCameraActivity extends Activity {
                 }
             }
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
         return true;
     }

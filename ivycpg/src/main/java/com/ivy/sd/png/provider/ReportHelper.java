@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -18,7 +19,6 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LogReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
-import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.bo.OrderTakenTimeBO;
 import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
@@ -47,6 +47,7 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -77,6 +78,9 @@ public class ReportHelper {
 
     private ArrayList<RetailerMasterBO> assetRetailerList;
     private ArrayList<AssetTrackingBrandBO> assetBrandList;
+
+    private Vector<RetailerMasterBO> retailerMaster;
+    private HashMap<String,ArrayList<ProductMasterBO>> closingStkReportByRetailId;
 
     private ReportHelper(Context context) {
         this.mContext = context;
@@ -985,6 +989,110 @@ public class ReportHelper {
         return skubo;
     }
 
+    public Vector<SKUReportBO> downloadSKUReportNew() {
+        SKUReportBO skuObject;
+        Vector<SKUReportBO> skubo = null;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            int mFiltrtLevel = 0;
+            int mChildLevel = 0;
+            int mContentLevel = 0;
+
+            if (bmodel.productHelper.getSequenceValues() != null) {
+                if (bmodel.productHelper.getSequenceValues().size() > 0) {
+                    mChildLevel = bmodel.productHelper.getSequenceValues().size();
+                }
+            }
+
+            if (mChildLevel == 0 ) {
+                Cursor cur = db.selectSQL("SELECT IFNULL(PL1.Sequence,0),IFNULL(PL2.Sequence,0)"
+                        + " FROM ConfigActivityFilter CF"
+                        + " LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter1"
+                        + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  CF.ProductContent"
+                        + " WHERE CF.ActivityCode ="
+                        + bmodel.QT("MENU_STK_ORD"));
+                if (cur != null) {
+                    if (cur.moveToNext()) {
+                        mFiltrtLevel = cur.getInt(0);
+                        mContentLevel = cur.getInt(1);
+                    }
+                    cur.close();
+                }
+            }else{
+                Cursor filterCur = db
+                        .selectSQL("SELECT IFNULL(PL1.Sequence,0), IFNULL(PL2.Sequence,0)"
+                                + " FROM ConfigActivityFilter CF"
+                                + " LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter"
+                                + mChildLevel
+                                + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductContent"
+                                + " WHERE CF.ActivityCode = "
+                                + bmodel.QT("MENU_STK_ORD"));
+
+                if (filterCur != null) {
+                    if (filterCur.moveToNext()) {
+                        mFiltrtLevel = filterCur.getInt(0);
+                        mContentLevel = filterCur.getInt(1);
+                    }
+                    filterCur.close();
+                }
+
+            }
+
+            Cursor c;
+            String sql;
+
+            int loopEnd = mContentLevel - mFiltrtLevel + 1;
+            String parentFilter;
+
+            if (mChildLevel != 0) {
+                parentFilter = "ProductFilter"+mChildLevel;
+            } else {
+                parentFilter = "ProductFilter1";
+            }
+
+            sql = "SELECT P"
+                    + loopEnd
+                    + ".pname,SUM(OD.qty), OD.caseqty, OD.msqqty,P1.pid FROM ProductMaster P1 "
+                    + "INNER JOIN OrderDetail OD ON OD.ProductID = P"
+                    + loopEnd
+                    + ".PID";
+
+
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN ProductMaster P" + i + " ON P" + i
+                        + ".ParentId = P" + (i - 1) + ".PID";
+
+            sql = sql + " WHERE P1.PLid IN (SELECT " + parentFilter + " FROM ConfigActivityFilter"
+                    + " WHERE ActivityCode = "
+                    + bmodel.QT("MENU_STK_ORD")
+                    + ") GROUP BY P"
+                    + loopEnd + ".PID";
+
+            c = db.selectSQL(sql);
+            if (c != null) {
+
+                skubo = new Vector<>();
+                while (c.moveToNext()) {
+                    skuObject = new SKUReportBO();
+                    skuObject.setProdname(c.getString(0));
+                    skuObject.setQty(c.getString(1));
+                    skuObject.setOuqty(c.getString(2));
+                    skuObject.setMsqqty(c.getString(3));
+                    skuObject.setParentID(c.getInt(4));
+                    skubo.add(skuObject);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return skubo;
+    }
+
     public HashMap<String, ArrayList<PaymentBO>> getLstPaymentBObyGroupId() {
         return lstPaymentBObyGroupId;
     }
@@ -1235,12 +1343,12 @@ public class ReportHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct A.ListName as reasonDesc,srd .* from SalesReturnDetails srd"
-                            +" inner join StandardListMaster A INNER JOIN StandardListMaster B ON"
-                            +" A.ParentId = B.ListId AND"
+                            + " inner join StandardListMaster A INNER JOIN StandardListMaster B ON"
+                            + " A.ParentId = B.ListId AND"
                             + " ( B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_NONSALABLE_REASON_TYPE
                             + "' OR B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_SALABLE_REASON_TYPE + "')"
                             + " AND A.listId = srd.condition WHERE A.ListType = 'REASON' AND"
-                            +" srd.ProductId = " + bmodel.QT(productId) + " AND srd.RetailerId = " + bmodel.QT(retailerId)
+                            + " srd.ProductId = " + bmodel.QT(productId) + " AND srd.RetailerId = " + bmodel.QT(retailerId)
                             + " AND srd.status = 2");
             if (c != null) {
                 while (c.moveToNext()) {
@@ -3428,10 +3536,10 @@ public class ReportHelper {
         }
     }
 
-    public void prepareArchiveFileDownload(String filePath){
+    public void prepareArchiveFileDownload(String filePath) {
         bmodel.setDigitalContentURLS(new HashMap<String, String>());
 
-        boolean isAmazonUpload=false;
+        boolean isAmazonUpload = false;
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -3455,8 +3563,7 @@ public class ReportHelper {
                 }
             }
 
-        }
-        else  {
+        } else {
             c = db
                     .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
             if (c != null) {
@@ -3578,10 +3685,11 @@ public class ReportHelper {
 
     /**
      * Download retailer master for invoice reports
-     * @param context Context
+     *
+     * @param context     Context
      * @param mRetailerId Retailer Id
      */
-    public void downloadRetailerMaster(Context context,int mRetailerId) {
+    public void downloadRetailerMaster(Context context, int mRetailerId) {
         try {
             RetailerMasterBO retailer = new RetailerMasterBO();
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3589,9 +3697,10 @@ public class ReportHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select distinct A.retailerid, RPG.GroupId, A.subchannelid,(select ListCode from StandardListMaster where ListID = A.RpTypeId) as rp_type_code,"
-                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber,A.tinExpDate from retailerMaster A"
+                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber,A.tinExpDate,RBM.BeatID from retailerMaster A"
                             + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID"
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerId = A.RetailerID"
                             + " where A.retailerid=" + mRetailerId);
             if (c != null) {
                 if (c.moveToNext()) {
@@ -3615,6 +3724,7 @@ public class ReportHelper {
                     retailer.setSameZone(c.getInt(14));
                     retailer.setGSTNumber(c.getString(15));
                     retailer.setTinExpDate(c.getString(16));
+                    retailer.setBeatID(c.getInt(17));
 
                 }
                 c.close();
@@ -3623,6 +3733,97 @@ public class ReportHelper {
             bmodel.setRetailerMasterBO(retailer);
             db.closeDB();
         } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public Vector<RetailerMasterBO> getRetailerMaster() {
+        return retailerMaster;
+    }
+
+    public void setRetailerMaster(Vector<RetailerMasterBO> retailerMaster) {
+        this.retailerMaster = retailerMaster;
+    }
+
+    public void downloadClosingStockRetailers(){
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        try {
+            retailerMaster = new Vector<>();
+
+            RetailerMasterBO temp;
+
+            Cursor cursor = db.selectSQL("select RM.retailerid,RM.RetailerName from ClosingStockDetail SD " +
+                    " INNER JOIN RetailerMaster RM ON RM.RetailerID = SD.RetailerID group by RM.RetailerID");
+
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    temp = new RetailerMasterBO();
+                    temp.setTretailerId(Integer.parseInt(cursor.getString(0)));
+                    temp.setTretailerName(cursor.getString(1));
+                    retailerMaster.add(temp);
+                }
+                cursor.close();
+            }
+
+            db.closeDB();
+        }catch(Exception e){
+            db.closeDB();
+            Commons.printException(e);
+        }
+    }
+
+    public ArrayList<ProductMasterBO> getClosingStkReport(String retailId){
+        if (closingStkReportByRetailId == null)
+            return null;
+        return closingStkReportByRetailId.get(retailId);
+    }
+
+    public void downloadClosingStock(){
+        closingStkReportByRetailId = new HashMap<>();
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+
+        try {
+
+            ArrayList<ProductMasterBO> productMasterBOs;
+
+            Cursor cursor = db.selectSQL("select PM.PName,SH.retailerid,productId,Sum(shelfpqty),Sum(shelfcqty)," +
+                    "Sum(shelfoqty),Facing,PM.pCode,RM.RetailerName,SD.uomqty,SD.ouomqty from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId " +
+                    "INNER JOIN ProductMaster PM ON PM.PID = SD.ProductID INNER JOIN RetailerMaster RM ON RM.RetailerID = SH.RetailerID " +
+                    "group by SH.RetailerID,productId");
+
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ProductMasterBO temp = new ProductMasterBO();
+                    temp.setProductName(cursor.getString(0));
+                    temp.setProductID(cursor.getString(2));
+                    temp.setCsCase(cursor.getInt(4));
+                    temp.setCsPiece(cursor.getInt(3));
+                    temp.setCsOuter(cursor.getInt(5));
+                    temp.setProductCode(cursor.getString(7));
+                    temp.setCaseSize(cursor.getInt(9));
+                    temp.setOutersize(cursor.getInt(10));
+
+                    if (closingStkReportByRetailId.get(cursor.getString(1)) != null) {
+                        ArrayList<ProductMasterBO> productMasterBO1 = closingStkReportByRetailId.get(cursor.getString(1));
+                        productMasterBO1.add(temp);
+
+                    } else {
+                        productMasterBOs = new ArrayList<>();
+                        productMasterBOs.add(temp);
+                        closingStkReportByRetailId.put(cursor.getString(1), productMasterBOs);
+                    }
+                }
+                cursor.close();
+            }
+
+            db.closeDB();
+        }catch(Exception e){
+            db.closeDB();
             Commons.printException(e);
         }
     }

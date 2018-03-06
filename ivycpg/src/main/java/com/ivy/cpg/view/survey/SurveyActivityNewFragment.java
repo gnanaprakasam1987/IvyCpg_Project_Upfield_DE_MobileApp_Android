@@ -1296,10 +1296,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     if (isChecked) {
                         //  subQuestionLL.removeAllViews();
                         if (!mCurrentQuestionBO.getSelectedAnswerIDs()
-                                .contains(obj))
+                                .contains(obj)) {
                             mCurrentQuestionBO.setSelectedAnswerID(buttonView
                                     .getId());
-                        mCurrentQuestionBO.setSelectedAnswer(buttonView.getText().toString());
+                            mCurrentQuestionBO.setSelectedAnswer(buttonView.getText().toString());
+                        }
                         int tempAnsListSize1 = answers.size();
                         for (int i = 0; i < tempAnsListSize1; i++) {
                             if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(answers.get(i).getAnswerID())) {
@@ -1315,14 +1316,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         }
                     } else {
                         subQuestionLL.removeAllViews();
-                        if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
-                                obj)) {
-                            mCurrentQuestionBO.getSelectedAnswerIDs().remove(
-                                    obj);
-                            mCurrentQuestionBO.getSelectedAnswer().remove(buttonView.getText().toString());
-                        }
+
                         for (int i = 0; i < answers.size(); i++) {
-                            if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(answers.get(i).getAnswerID())) {
+                            int ansid = mCurrentQuestionBO.getSelectedAnswerIDs().indexOf(buttonView.getId());
+                            if (mCurrentQuestionBO.getSelectedAnswerIDs().get(ansid).equals(answers.get(i).getAnswerID()) &&
+                                    mCurrentQuestionBO.getSelectedAnswerIDs().get(ansid).equals(buttonView.getId())) {
                                 int tempQuestListSize1 = answers.get(i).getQuestionList().size();
                                 for (int j = 0; j < tempQuestListSize1; j++) {
                                     String s = answers.get(i).getQuestionList().get(j) + "";
@@ -1331,7 +1329,13 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                         generateViews(subQuestionLL, answers.get(i).getQuestionList().get(j), false, qNO, j);
                                     }
                                 }
+                                break;
                             }
+                        }
+
+                        if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(obj)) {
+                            mCurrentQuestionBO.getSelectedAnswerIDs().remove(obj);
+                            mCurrentQuestionBO.getSelectedAnswer().remove(buttonView.getText().toString());
                         }
                     }
                     if (mCurrentQuestionBO.equals(qScore.getTag())) {
@@ -1803,7 +1807,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     int yy = calendar.get(Calendar.YEAR);
                     int mm = calendar.get(Calendar.MONTH);
                     int dd = calendar.get(Calendar.DAY_OF_MONTH);
-                    DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                    DatePickerDialog datePicker = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                             /*String date = String.valueOf(dayOfMonth) + "/" + String.valueOf(monthOfYear+1)

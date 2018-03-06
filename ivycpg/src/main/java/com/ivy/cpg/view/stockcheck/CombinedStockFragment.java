@@ -106,7 +106,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private Vector<ProductMasterBO> items;
     // Adapter used for Load Reason
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
-    private HashMap<Integer, Integer>  mCompetitorSelectedIdByLevelId;
+    private HashMap<Integer, Integer> mCompetitorSelectedIdByLevelId;
 
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
     private InputMethodManager inputManager;
@@ -410,7 +410,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             || ret.getOuterbarcode().toLowerCase().
                             contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
 
-                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                        if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                             mylist.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
                             mylist.add(ret);
@@ -422,7 +422,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             .contains(
                                     mEdt_searchproductName.getText().toString()
                                             .toLowerCase()) && ret.getIsSaleable() == 1) {
-                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                        if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                             mylist.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
                             mylist.add(ret);
@@ -434,7 +434,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             .contains(
                                     mEdt_searchproductName.getText().toString()
                                             .toLowerCase()) && ret.getIsSaleable() == 1)
-                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                        if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                             mylist.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
                             mylist.add(ret);
@@ -482,7 +482,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         try {
 
             if (mSelectedBrandID == -1) {
-                mCompetitorSelectedIdByLevelId=new HashMap<>();
+                mCompetitorSelectedIdByLevelId = new HashMap<>();
             }
             // Close the drawer
             mDrawerLayout.closeDrawers();
@@ -822,7 +822,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
         // Change color if Filter is selected
         try {
-            if (!generalbutton.equals(GENERAL))
+            if (!generalbutton.equalsIgnoreCase(GENERAL))
                 menu.findItem(R.id.menu_spl_filter).setIcon(
                         R.drawable.ic_action_star_select);
 
@@ -859,7 +859,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 menu.findItem(R.id.menu_spl_filter).setVisible(false);
 
 
-                menu.findItem(R.id.menu_scheme).setVisible(false);
+            menu.findItem(R.id.menu_scheme).setVisible(false);
 
             menu.findItem(R.id.menu_apply_so).setVisible(false);
 
@@ -904,7 +904,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 menu.findItem(R.id.menu_competitor_filter).setVisible(true);
             }
 
-            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER &&mCompetitorSelectedIdByLevelId!=null) {
+            if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && mCompetitorSelectedIdByLevelId != null) {
                 for (Integer id : mCompetitorSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_competitor_filter).setIcon(
@@ -1089,8 +1089,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     }
 
 
-
-
     private void onNextButtonClick() {
         if (bmodel.hasStockCheck()) {
             new SaveAsyncTask().execute();
@@ -1244,7 +1242,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             }
         }
         if (!tag.toString().equalsIgnoreCase("All")) {
-            mCompetitorSelectedIdByLevelId=new HashMap<>();
+            mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
         getActivity().supportInvalidateOptionsMenu();
 
@@ -1275,7 +1273,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
 
         if (!tag.toString().equalsIgnoreCase("All")) {
-            mCompetitorSelectedIdByLevelId=new HashMap<>();
+            mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
         getActivity().supportInvalidateOptionsMenu();
 
@@ -1497,7 +1495,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         super.onResume();
 
 
-
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -1587,7 +1584,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
 
         if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
-            mCompetitorSelectedIdByLevelId=new HashMap<>();
+            mCompetitorSelectedIdByLevelId = new HashMap<>();
 
         }
         mylist = new ArrayList<>();
@@ -1818,7 +1815,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
                 if (ret.getIsSaleable() == 1) {
-                    if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                    if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equalsIgnoreCase(BRAND))//No filters selected
                         mylist.add(ret);
                     else if (applyProductAndSpecialFilter(ret))
                         mylist.add(ret);
@@ -1868,8 +1865,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     @Override
     public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
 
-        this.mCompetitorSelectedIdByLevelId=mSelectedIdByLevelId;
-        this.mSelectedIdByLevelId=new HashMap<>();// clearing product filter
+        this.mCompetitorSelectedIdByLevelId = mSelectedIdByLevelId;
+        this.mSelectedIdByLevelId = new HashMap<>();// clearing product filter
 
         mSelectedBrandID = -1;
         generalbutton = GENERAL;
@@ -1879,9 +1876,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
         Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
         if (parentIdList != null && !parentIdList.isEmpty()) {
-            for(CompetitorFilterLevelBO mParentBO:parentIdList) {
+            for (CompetitorFilterLevelBO mParentBO : parentIdList) {
                 for (ProductMasterBO sku : items) {
-                    if(mParentBO.getProductId()==sku.getCompParentId()) {
+                    if (mParentBO.getProductId() == sku.getCompParentId()) {
                         mylist.add(sku);
                     }
                 }

@@ -17,6 +17,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
@@ -51,6 +53,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
@@ -550,7 +553,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             final Calendar minCalemdar = Calendar.getInstance();
             minCalemdar.add(Calendar.DAY_OF_MONTH, -bmodel.configurationMasterHelper.MAXIMUM_BACKDATE_DAYS);
 
-            DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, year, month, day);
+            DatePickerDialog dialog = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
             dialog.getDatePicker().setMinDate(minCalemdar.getTimeInMillis());
 
             return dialog;
@@ -1442,14 +1445,30 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     bmodel.activationHelper.clearAppUrl();
                     bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
                     try {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(getActivity().
-                                getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                + "/" + DataMembers.fileName)), "application/vnd.android.package-archive");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                        startActivity(intent);
+                        Uri path;
+                        if (Build.VERSION.SDK_INT >= 24) {
+                            path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(
+                                    getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                            + "/" + DataMembers.fileName));
+                            Intent sintent = ShareCompat.IntentBuilder.from(getActivity())
+                                    .setStream(path) // uri from FileProvider
+                                    .getIntent()
+                                    .setAction(Intent.ACTION_VIEW)
+                                    .setDataAndType(path, "application/vnd.android.package-archive")
+                                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                            startActivity(sintent);
+
+                        } else {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+
+                            path = Uri.fromFile(new File(
+                                    getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                            + "/" + DataMembers.fileName));
+                            intent.setDataAndType(path, "application/vnd.android.package-archive");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
@@ -1947,9 +1966,12 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
     }
 
     private void initializeTransferUtility() {
+        System.setProperty
+                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                 ConfigurationMasterHelper.SECRET_KEY);
         s3 = new AmazonS3Client(myCredentials);
+        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
         transferUtility = new TransferUtility(s3, getActivity());
     }
 
@@ -2440,8 +2462,8 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("LoginId", userName);
                 jsonObj.put("Password", password);
-                jsonObj.put(SynchronizationHelper.VERSION_CODE,
-                        bmodel.getApplicationVersionNumber());
+                jsonObj.put(SynchronizationHelper.VERSION_CODE,bmodel.getApplicationVersionNumber());
+                jsonObj.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
 
                 jsonObj.put("Model", Build.MODEL);
                 jsonObj.put("Platform", "Android");

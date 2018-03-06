@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -752,7 +753,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 Uri path;
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
-                path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(fileName));
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(fileName));
+                } else {
+                    path = Uri.fromFile(new File(fileName));
+                }
+
                 intent.setDataAndType(path, "image/*");
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

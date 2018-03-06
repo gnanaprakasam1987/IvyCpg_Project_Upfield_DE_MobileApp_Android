@@ -1275,145 +1275,148 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     }
                 });
 
-                TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-                final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
-
-                if (!calledBy.equals(MENU_PLANNING)) {
-                    bmodel.loadProductiveCallsConfig();
-                    if (("Y").equals(retailerObj.isOrdered()) && (!bmodel.PRD_FOR_SKT)) {   // If ProductiveStockCheck is OFF
-                        if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                                && ("N").equals(retailerObj.isInvoiceDone())) {
-                            holder.line_order_without_invoice
-                                    .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
-                        } else {
-                            holder.line_order_without_invoice
-                                    .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
-                        }
-                    } else if (bmodel.PRD_FOR_SKT && retailerObj.isProductive().equalsIgnoreCase("Y")) { // If ProductiveStockCheck is ON and then check for Productive is done or not. This value is updated while saving the stockcheck
-                        holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
-                    } else if (!hasOrderScreen && "Y".equals(retailerObj.getIsVisited())) {
-                        holder.line_order_without_invoice
-                                .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
-                    } else if (("Y").equals(retailerObj.getIsVisited()) || retailerObj.isHasNoVisitReason()) {
-                        holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
-                    } else if (("Y").equals(retailerObj.getIsDeadStore())) {
-                        holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Burgundy));
-                    } else {
-                        holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
-                    }
-
-                    if (("Y").equals(retailerObj.getIsDeadStore())) {
-                        holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_name));
-                        holder.tv_labelTgt1.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
-                        holder.tv_labelTgt2.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
-                    } else {
-                        holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.store_title));
-                        holder.tv_labelTgt1.setTextColor(color);
-                        holder.tv_labelTgt2.setTextColor(color);
-                    }
-
-                } else {
-                    if (retailerObj.getLastVisitStatus() != null) {
-                        switch (retailerObj.getLastVisitStatus()) {
-                            case "P":
-                                holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
-                                break;
-                            case "N":
-                                holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
-                                break;
-                            default:
-                                holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
-                                break;
-                        }
-                    } else {
-                        holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
-                    }
-
-                    holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.store_title));
-                    holder.tv_labelTgt1.setTextColor(color);
-                    holder.tv_labelTgt2.setTextColor(color);
-                }
-
-                if (("Y").equals(retailerObj.getIsDeviated().toUpperCase()))
-                    holder.imgDeviate.setVisibility(View.VISIBLE);
-                else
-                    holder.imgDeviate.setVisibility(View.GONE);
-
-                if (("Y").equals(retailerObj.getIsNew())) {
-                    holder.outletNew.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.outletNew.setVisibility(View.VISIBLE);
-                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
-                } else {
-                    holder.outletNew.setVisibility(View.GONE);
-                }
-
-                if ("1".equals(mRetailerProp.get("RTPRTY01"))
-                        && ("Y").equals(retailerObj.getIsDeadStore())) {
-                    holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_dead_store);
-                    holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
-                } else if ("1".equals(mRetailerProp.get("RTPRTY02"))
-                        && retailerObj.getIsGoldStore() == 1) {
-                    holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
-                    holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
-                } else if ("1".equals(mRetailerProp.get("RTPRTY05"))
-                        && !retailerObj.getRField4().equals("0")) {// QDVP3 Store
-                    holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
-                    holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
-                    if (retailerObj.getRField4() != null) {
-                        try {
-                            if (bmodel.mRetailerHelper.getColorCode(retailerObj.getRField4()).length() > 0)
-                                holder.imgGoldDeadStore.setColorFilter(Color.parseColor(bmodel.mRetailerHelper.getColorCode(retailerObj.getRField4())), PorterDuff.Mode.SRC_ATOP);
-                        } catch (Exception e) {
-                            Commons.printException(e);
-                        }
-                    }
-                } else {
-                    holder.imgGoldDeadStore.setVisibility(View.GONE);
-                }
-
-                if ("1".equals(mRetailerProp.get("RTPRTY03"))
-                        && bmodel.configurationMasterHelper.IS_INVOICE
-                        && retailerObj.isHangingOrder()) {
-                    holder.imgInvoice.setImageResource(R.drawable.ic_dashboard_invoice);
-                    holder.imgInvoice.setVisibility(View.VISIBLE);
-                } else {
-                    holder.imgInvoice.setVisibility(View.GONE);
-                }
-
-                if ("1".equals(mRetailerProp.get("RTPRTY04"))
-                        && retailerObj.getIndicateFlag() == 1) {
-                    holder.imgIndicative.setImageResource(R.drawable.ic_dashboard_indicative);
-                    holder.imgIndicative.setVisibility(View.VISIBLE);
-                } else {
-                    holder.imgIndicative.setVisibility(View.GONE);
-                }
-
-                if ("1".equals(mRetailerProp.get("RTPRTY07"))) {
-                    if (Integer.parseInt(retailerObj.getCredit_invoice_count()) > 0) {
-                        holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
-                        holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
-                    } else if (retailerObj.isBomAchieved()) {
-                        holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
-                        holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.iv_dead_gold_store.setVisibility(View.GONE);
-                    }
-                } else {
-                    holder.iv_dead_gold_store.setVisibility(View.GONE);
-                }
-
-                if ("1".equals(mRetailerProp.get("RTPRTY08"))
-                        && retailerObj.getRField4().equals("1")) {
-                    holder.iv_asset_mapped.setImageResource(R.drawable.ic_action_star_select);
-                    holder.iv_asset_mapped.setVisibility(View.VISIBLE);
-                } else {
-                    holder.iv_asset_mapped.setVisibility(View.GONE);
-                }
 
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+
+
+            TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+            final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
+
+            if (!calledBy.equals(MENU_PLANNING)) {
+                bmodel.loadProductiveCallsConfig();
+                if (("Y").equals(retailerObj.isOrdered()) && (!bmodel.PRD_FOR_SKT)) {   // If ProductiveStockCheck is OFF
+                    if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                            && ("N").equals(retailerObj.isInvoiceDone())) {
+                        holder.line_order_without_invoice
+                                .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
+                    } else {
+                        holder.line_order_without_invoice
+                                .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
+                    }
+                } else if (bmodel.PRD_FOR_SKT && retailerObj.isProductive().equalsIgnoreCase("Y")) { // If ProductiveStockCheck is ON and then check for Productive is done or not. This value is updated while saving the stockcheck
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
+                } else if (!hasOrderScreen && "Y".equals(retailerObj.getIsVisited())) {
+                    holder.line_order_without_invoice
+                            .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
+                } else if (("Y").equals(retailerObj.getIsVisited()) || retailerObj.isHasNoVisitReason()) {
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
+                } else if (("Y").equals(retailerObj.getIsDeadStore())) {
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Burgundy));
+                } else {
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
+                }
+
+                if (("Y").equals(retailerObj.getIsDeadStore())) {
+                    holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_name));
+                    holder.tv_labelTgt1.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                    holder.tv_labelTgt2.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                } else {
+                    holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.store_title));
+                    holder.tv_labelTgt1.setTextColor(color);
+                    holder.tv_labelTgt2.setTextColor(color);
+                }
+
+            } else {
+                if (retailerObj.getLastVisitStatus() != null) {
+                    switch (retailerObj.getLastVisitStatus()) {
+                        case "P":
+                            holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
+                            break;
+                        case "N":
+                            holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
+                            break;
+                        default:
+                            holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
+                            break;
+                    }
+                } else {
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
+                }
+
+                holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.store_title));
+                holder.tv_labelTgt1.setTextColor(color);
+                holder.tv_labelTgt2.setTextColor(color);
+            }
+
+            if (("Y").equals(retailerObj.getIsDeviated().toUpperCase()))
+                holder.imgDeviate.setVisibility(View.VISIBLE);
+            else
+                holder.imgDeviate.setVisibility(View.GONE);
+
+            if (("Y").equals(retailerObj.getIsNew())) {
+                holder.outletNew.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.outletNew.setVisibility(View.VISIBLE);
+                holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
+            } else {
+                holder.outletNew.setVisibility(View.GONE);
+            }
+
+            if ("1".equals(mRetailerProp.get("RTPRTY01"))
+                    && ("Y").equals(retailerObj.getIsDeadStore())) {
+                holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_dead_store);
+                holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
+            } else if ("1".equals(mRetailerProp.get("RTPRTY02"))
+                    && retailerObj.getIsGoldStore() == 1) {
+                holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
+                holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
+            } else if ("1".equals(mRetailerProp.get("RTPRTY05"))
+                    && !retailerObj.getRField4().equals("0")) {// QDVP3 Store
+                holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
+                holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
+                if (retailerObj.getRField4() != null) {
+                    try {
+                        if (bmodel.mRetailerHelper.getColorCode(retailerObj.getRField4()).length() > 0)
+                            holder.imgGoldDeadStore.setColorFilter(Color.parseColor(bmodel.mRetailerHelper.getColorCode(retailerObj.getRField4())), PorterDuff.Mode.SRC_ATOP);
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+            } else {
+                holder.imgGoldDeadStore.setVisibility(View.GONE);
+            }
+
+            if ("1".equals(mRetailerProp.get("RTPRTY03"))
+                    && bmodel.configurationMasterHelper.IS_INVOICE
+                    && retailerObj.isHangingOrder()) {
+                holder.imgInvoice.setImageResource(R.drawable.ic_dashboard_invoice);
+                holder.imgInvoice.setVisibility(View.VISIBLE);
+            } else {
+                holder.imgInvoice.setVisibility(View.GONE);
+            }
+
+            if ("1".equals(mRetailerProp.get("RTPRTY04"))
+                    && retailerObj.getIndicateFlag() == 1) {
+                holder.imgIndicative.setImageResource(R.drawable.ic_dashboard_indicative);
+                holder.imgIndicative.setVisibility(View.VISIBLE);
+            } else {
+                holder.imgIndicative.setVisibility(View.GONE);
+            }
+
+            if ("1".equals(mRetailerProp.get("RTPRTY07"))) {
+                if (Integer.parseInt(retailerObj.getCredit_invoice_count()) > 0) {
+                    holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
+                    holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
+                } else if (retailerObj.isBomAchieved()) {
+                    holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
+                    holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
+                } else {
+                    holder.iv_dead_gold_store.setVisibility(View.GONE);
+                }
+            } else {
+                holder.iv_dead_gold_store.setVisibility(View.GONE);
+            }
+
+            if ("1".equals(mRetailerProp.get("RTPRTY08"))
+                    && retailerObj.getRField4().equals("1")) {
+                holder.iv_asset_mapped.setImageResource(R.drawable.ic_action_star_select);
+                holder.iv_asset_mapped.setVisibility(View.VISIBLE);
+            } else {
+                holder.iv_asset_mapped.setVisibility(View.GONE);
+            }
+
 
             isFirstDone = false;
             isSecondDone = false;
@@ -1768,11 +1771,17 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     private int getStoreVisited() {
         int count = 0;
-        for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
-            if (retObj.getIsVisited().equalsIgnoreCase("Y")
-                    && (retObj.getIsToday() == 1 || retObj.getIsDeviated().equalsIgnoreCase("Y"))) {
-                count++;
+        try {
+
+            for (RetailerMasterBO retObj : bmodel.getRetailerMaster()) {
+                if (retObj.getIsVisited() != null || retObj.getIsDeviated() != null)
+                    if (retObj.getIsVisited().equalsIgnoreCase("Y")
+                            && (retObj.getIsToday() == 1 || retObj.getIsDeviated().equalsIgnoreCase("Y"))) {
+                        count++;
+                    }
+
             }
+        } catch (Exception e) {
 
         }
         return count;

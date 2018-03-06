@@ -84,14 +84,16 @@ public class DynamicReportHelper {
         try {
             db.openDataBase();
             int EntityId = 0;
-            if (dynamicReportHeaderBOs.get(0).getReportType().equalsIgnoreCase(CODE_RETAILER)) {
-                setRep_retailer(true);
-                downloadRetailerList(dynamicReportHeaderBOs.get(0).getReportId());
-            }
+            if (dynamicReportHeaderBOs.size() > 0) {
+                if (dynamicReportHeaderBOs.get(0).getReportType().equalsIgnoreCase(CODE_RETAILER)) {
+                    setRep_retailer(true);
+                    downloadRetailerList(dynamicReportHeaderBOs.get(0).getReportId());
+                }
 
-            if (dynamicReportHeaderBOs.get(0).getReportType().equalsIgnoreCase(CODE_USER)) {
-                EntityId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-                setRep_retailer(false);
+                if (dynamicReportHeaderBOs.get(0).getReportType().equalsIgnoreCase(CODE_USER)) {
+                    EntityId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+                    setRep_retailer(false);
+                }
             }
 
             String sql = "Select ColumnId , Value , RowId from DynamicReportDetail where ReportId = " + dynamicReportHeaderBOs.get(0).getReportId() + " AND EntityId =" + EntityId;

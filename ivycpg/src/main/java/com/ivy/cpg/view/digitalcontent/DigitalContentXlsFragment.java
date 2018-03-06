@@ -4,6 +4,7 @@ package com.ivy.cpg.view.digitalcontent;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -231,12 +232,20 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
                     ((VHItem) holder).mPName.setVisibility(View.GONE);
                 }
 
-                Uri path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(
-                        getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
-                                + mBModel.userMasterHelper.getUserMasterBO().getUserid()
-                                + DataMembers.DIGITAL_CONTENT + "/"
-                                + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName()));
-
+                Uri path;
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(
+                            getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                                    + DataMembers.DIGITAL_CONTENT + "/"
+                                    + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName()));
+                } else {
+                    path = Uri.fromFile(new File(
+                            getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                                    + DataMembers.DIGITAL_CONTENT + "/"
+                                    + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName()));
+                }
                 Glide
                         .with(getContext())
                         .load(path)
@@ -298,17 +307,24 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
      * @param name Excel Name
      */
     private void openExcel(String name) {
+        Uri path;
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                         + mBModel.userMasterHelper.getUserMasterBO().getUserid()
                         + DataMembers.DIGITAL_CONTENT + "/"
                         + DataMembers.DIGITALCONTENT + "/" + name);
         if (file.exists()) {
-            Uri path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(path, "application/vnd.ms-excel");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (Build.VERSION.SDK_INT >= 24) {
+                path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
+                intent.setDataAndType(path, "application/vnd.ms-excel");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                path = Uri.fromFile(file);
+                intent.setDataAndType(path, "application/vnd.ms-excel");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            }
 
             try {
                 startActivity(intent);

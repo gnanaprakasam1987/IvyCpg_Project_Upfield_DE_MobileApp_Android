@@ -4,6 +4,7 @@ package com.ivy.cpg.view.digitalcontent;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -199,8 +200,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                 }
                 mImageList.clear();
 
-                for (int i=0;i<mGroupList.size(); i++)
-                {
+                for (int i = 0; i < mGroupList.size(); i++) {
                     if (group_wise_group.get(mGroupList.get(i)) != null && group_wise_group.get(mGroupList.get(i)).size() != 0) {
                         mImageList.addAll(group_wise_group.get(mGroupList.get(i)));
                     }
@@ -281,12 +281,20 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                     ((VHItem) holder).mProductName.setVisibility(View.GONE);
                 }
 
-                Uri path = Uri.fromFile(new File(
-                        getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
-                                + mBModel.userMasterHelper.getUserMasterBO().getUserid()
-                                + DataMembers.DIGITAL_CONTENT + "/"
-                                + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName()));
-
+                Uri path;
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(
+                            getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                                    + DataMembers.DIGITAL_CONTENT + "/"
+                                    + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName()));
+                } else {
+                    path = Uri.fromFile(new File(
+                            getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                                    + DataMembers.DIGITAL_CONTENT + "/"
+                                    + DataMembers.DIGITALCONTENT + "/" + items.get(position).getFileName()));
+                }
                 Glide.with(getActivity())
                         .load(path)
                         .error(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image_available))
@@ -375,7 +383,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
      * @param name Image name
      */
     private void openImages(String name) {
-        Commons.print("name" + name);
+        Uri path;
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                         + mBModel.userMasterHelper.getUserMasterBO().getUserid()
@@ -384,10 +392,17 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
         Commons.print("image" + file.getAbsolutePath());
         if (file.exists()) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
-            intent.setDataAndType(path, "image/*");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (Build.VERSION.SDK_INT >= 24) {
+                path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
+                intent.setDataAndType(path, "image/*");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                path = Uri.fromFile(file);
+                intent.setDataAndType(path, "image/*");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            }
+
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {

@@ -247,7 +247,22 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:text="@string/text_min_max" />
-
+                            <TextView
+                                android:id="@+id/u_price_title"
+                                style="?attr/customListTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:tag="unit_price"
+                                android:text="Price" />
+                            <TextView
+                                android:id="@+id/disc_price_title"
+                                style="?attr/customListTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:tag="discounted_price"
+                                android:text="Discounted Price" />
                             <TextView
                                 android:id="@+id/d1title"
                                 style="?attr/customListTitle"

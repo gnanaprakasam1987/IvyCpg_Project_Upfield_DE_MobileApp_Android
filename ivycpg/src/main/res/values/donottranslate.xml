@@ -266,6 +266,15 @@
     <string name="un_zip">Unzipping...</string>
 
     <string name="do_u_want_to_take_one_more_print">Do you want to take one more print?</string>
+    <string name="moq">MOQ</string>
+    <string name="this_is_standared_order">This is an Standard order for : </string>
+    <string name="supplier_mandatory">Please select Supplier</string>
+    <string name="invalid_email_address">Invalid EMail Address</string>
+    <string name="wk5">wk5</string>
+    <string name="send">Send</string>
 
+    <string name="net_price">Net Price</string>
+    <string name="free">Free</string>
+    <string name="minimum_order_required">Minimum Order Required</string>
 
 </resources>

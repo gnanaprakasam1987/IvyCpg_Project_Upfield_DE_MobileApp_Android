@@ -62,7 +62,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private DailyReportFragmentNew dayFragment;
     private InvoiceReportFragment invoiceReportFragment;
     private PndInvoiceReportFragment pndInvoiceReportFragment;
-    private SKUReportFragment skuReportFragment;
     private CurrentStockView stockReportFragment;
     private BeginningStockFragment stockreportfragmentnew;
     private CollectionReportFragment collectionReportFragment;
@@ -104,6 +103,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private SellerPerformanceReportFragment mSellerPerformReport;
     private SalesReturnReportFragment salesReturnReport;
     private WebViewArchivalReportFragment webViewArchivalReportFragment;
+    private ClosingStockReportFragment closingStockReportFragment;
 
     private Toolbar toolbar;
 
@@ -187,8 +187,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         invoiceReportFragment.setArguments(getIntent().getExtras());
         pndInvoiceReportFragment = new PndInvoiceReportFragment();
         pndInvoiceReportFragment.setArguments(getIntent().getExtras());
-        skuReportFragment = new SKUReportFragment();
-        skuReportFragment.setArguments(getIntent().getExtras());
         stockReportFragment = new CurrentStockView();
         stockReportFragment.setArguments(getIntent().getExtras());
         stockreportfragmentnew = new BeginningStockFragment();
@@ -231,6 +229,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mSellerPerformReport = new SellerPerformanceReportFragment();
         mOutletPerformanceReportFragmnet = new OutletPerformanceReportFragmnet();
         webViewArchivalReportFragment = new WebViewArchivalReportFragment();
+
+        closingStockReportFragment = new ClosingStockReportFragment();
 
 
         salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
@@ -382,12 +382,14 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.commit();
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SKU_REPORT)) {
-            transaction.replace(R.id.fragment_content, skuReportFragment);
+
+            bmodel.reportHelper.downloadProductReportsWithFiveLevelFilter();
+            transaction.replace(R.id.fragment_content, salesVolumeReportFragment);
             transaction.addToBackStack(null);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT)) {
             bmodel.productHelper
@@ -593,17 +595,17 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             setScreenTitle(config.getMenuName());
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_WEBVIEW_RPT01)) {
-
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_WEBVIEW_RPT01) ||
+                config.getConfigCode().equals(StandardListMasterConstants.MENU_WEBVIEW_RPT02)) {
 
             if (bmodel.isOnline()) {
-                bmodel.reportHelper.downloadWebViewReportUrl(StandardListMasterConstants.MENU_WEBVIEW_RPT01);
+                bmodel.reportHelper.downloadWebViewReportUrl(config.getConfigCode());
                 if (!bmodel.reportHelper.getWebReportUrl().equals("")) {
                     transaction
                             .replace(R.id.fragment_content, sOreportFragment);
                     transaction.addToBackStack(null);
-                    getSupportActionBar().setSubtitle(config.getMenuName());
+                    getSupportActionBar().setDisplayShowTitleEnabled(false);
+                    setScreenTitle(config.getMenuName());
                     transaction.commit();
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
@@ -646,14 +648,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
-        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_PRDVOL_RPT)) {
-            bmodel.reportHelper.downloadProductReportsWithFiveLevelFilter();
-            transaction.replace(R.id.fragment_content, salesVolumeReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            transaction.commit();
-        } else if (config.getConfigCode().equals(
+        }
+        else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
             bmodel.reportHelper.downloadUsers();
             if (bmodel.reportHelper.getLstUsers().size() > 0) {
@@ -706,6 +702,17 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             getSupportActionBar().setSubtitle(config.getMenuName());
             transaction.commit();
+        }
+        else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
+
+            transaction.replace(R.id.fragment_content, closingStockReportFragment);
+            transaction.addToBackStack(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            transaction.commit();
+
         }
         // Commit the transaction
     }
