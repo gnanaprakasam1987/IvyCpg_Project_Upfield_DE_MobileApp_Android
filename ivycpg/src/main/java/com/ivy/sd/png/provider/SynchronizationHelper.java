@@ -2110,7 +2110,6 @@ SynchronizationHelper {
                 db.executeQ("CREATE INDEX index_schemeattrmap ON SchemeAttributeMapping(GroupID)");
                 db.executeQ("CREATE INDEX index_schemefreeproduct ON SchemeFreeProducts(SchemeID)");
                 db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
-                db.executeQ("CREATE INDEX index_schemefreemaster ON SchemeFreeMaster(SchemeID)");
                 db.executeQ("CREATE INDEX index_discountprdmap ON DiscountProductMapping(DiscountId)");
                 db.executeQ("CREATE INDEX index_standardlistmaster ON StandardListMaster(ListId)");
                 db.executeQ("CREATE INDEX index_entityattributemaster ON EntityAttributeMaster(AttributeId)");

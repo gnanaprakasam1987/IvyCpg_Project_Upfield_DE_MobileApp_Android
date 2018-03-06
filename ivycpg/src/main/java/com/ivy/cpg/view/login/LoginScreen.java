@@ -167,6 +167,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
     @Override
     protected void onResume() {
         super.onResume();
+        businessModel = (BusinessModel) getApplicationContext();
+        businessModel.setContext(this);
         loginPresenter.reloadActivity();
     }
 

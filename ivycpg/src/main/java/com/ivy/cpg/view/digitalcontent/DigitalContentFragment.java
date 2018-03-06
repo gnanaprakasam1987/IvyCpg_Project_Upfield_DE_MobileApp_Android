@@ -550,7 +550,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
         mDrawerLayout.closeDrawers();
 
-        if (mParentIdList != null) {
+        if (mParentIdList != null && !mFilterText.equalsIgnoreCase("")) {
             if (mParentIdList.size() > 0) {
                 new LoadAsyncTask(mParentIdList).execute();
             } else {

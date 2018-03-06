@@ -100,11 +100,25 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
+
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/tolllayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_alignParentTop="true">
+
+                <include
+                    android:id="@+id/toolbar"
+                    layout="@layout/material_tool_bar" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/LL_titleBar"

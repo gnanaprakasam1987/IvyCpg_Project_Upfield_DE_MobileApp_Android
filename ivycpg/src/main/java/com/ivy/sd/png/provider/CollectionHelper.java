@@ -1144,6 +1144,7 @@ public class CollectionHelper {
     insertCreditNoteCollection(PaymentBO paymentBO, InvoiceHeaderBO invoiceHeaderBO, CreditNoteListBO creditNoteListBO, DBUtil db, String groupID, String columns, String groupDate, boolean isDisNotApplyForCreditNote) {
         double collectedAmount = 0;
         String printFilePath = "";
+        columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,PrintFilePath";
         if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
             printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + invoiceHeaderBO.getInvoiceDate().replace("/", "") + "/"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" +

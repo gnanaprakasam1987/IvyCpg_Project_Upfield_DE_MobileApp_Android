@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp"
     android:background="@color/windowBackground">
 
     <TextView
@@ -12,10 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:minHeight="@dimen/competitor_heder_width"
+        android:minHeight="@dimen/widht_medium"
+        android:background="?attr/primarycolor"
         android:padding="@dimen/profile_header_txt_layout_marginleft"
         android:text="Would you like to add this store \n in today's plan?"
-        android:textColor="?attr/primarycolor"
+        android:textColor="@color/white"
         android:textSize="@dimen/font_medium" />
 
     <ListView
@@ -23,23 +23,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-    />
+        android:paddingLeft="@dimen/dimens_10dp"
+        android:paddingRight="@dimen/dimens_10dp"
+        />
 
     <LinearLayout
         android:id="@+id/lvBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/lv_colletion_print"
+        android:paddingLeft="@dimen/dimens_10dp"
+        android:paddingRight="@dimen/dimens_10dp"
         android:layout_marginBottom="@dimen/dimen_10dp"
         android:orientation="horizontal"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentRight="true">
 
         <Button
             android:id="@+id/btn_dismiss"
             style="?attr/roundedCustomButtonNormalTransparent"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/profile_history_10dp"
-            android:layout_marginEnd="@dimen/profile_history_20dp"
+            android:layout_marginRight="@dimen/profile_history_20dp"
             android:layout_marginTop="@dimen/profile_history_10dp"
             android:text="@string/no"
             android:textColor="@color/Black"
@@ -50,7 +54,7 @@
             style="?attr/roundedCustomButtonNormal"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/profile_history_10dp"
-            android:layout_marginStart="@dimen/profile_history_20dp"
+            android:layout_marginLeft="@dimen/profile_history_20dp"
             android:layout_marginTop="@dimen/profile_history_10dp"
             android:text="@string/yes"
             android:textSize="@dimen/font_micro_small" />

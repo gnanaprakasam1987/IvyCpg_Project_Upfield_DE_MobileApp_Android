@@ -166,7 +166,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private static String[] days = null;
     private static final String[] daysForUpload = new String[]{"SUN", "MON",
             "TUE", "WED", "THU", "FRI", "SAT"};
-    private static final int NUMBER_OF_WEEKS = 4;
+    private static final int NUMBER_OF_WEEKS = 5;
     private String uID;
     private BusinessModel bmodel;
     private static StringBuffer sb;
@@ -317,7 +317,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 if (bool) {
 
                     if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                        if (lattitude == 0 || longitude == 0 || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
+                        if (lattitude == 0 || longitude == 0 || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
                             Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                             return;
                         }
@@ -2773,7 +2773,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle, this, year, month, day);
+            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -3810,7 +3810,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         spinner = new MaterialSpinner(getActivity());
                         attrbList = new ArrayList<>();
                         attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                                .getString(R.string.select_str) + " " + MName));
+                                .getString(R.string.select_str) + " " + attribName));
                         attrbList.addAll(attribMap.get(attribName));
 
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
@@ -3840,7 +3840,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         spinner = new MaterialSpinner(getActivity());
                         attrbList = new ArrayList<>();
                         attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                                .getString(R.string.select_str) + " " + MName));
+                                .getString(R.string.select_str) + " " + attribName));
 
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
                                 android.R.layout.simple_spinner_item, attrbList);
@@ -4010,8 +4010,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
             }
 
-            if(!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
-                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)){
+            if (!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
+                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
 
                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                 return true;
