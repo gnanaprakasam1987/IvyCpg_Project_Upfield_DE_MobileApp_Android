@@ -107,7 +107,7 @@
                         android:layout_marginEnd="@dimen/list_margin"
                         android:layout_toStartOf="@+id/cb_quantity"
                         android:gravity="center"
-                        android:text="Qty" />
+                        android:text="@string/qty" />
 
                     <CheckBox
                         android:id="@+id/cb_quantity"

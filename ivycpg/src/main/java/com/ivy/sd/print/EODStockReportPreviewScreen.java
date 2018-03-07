@@ -605,7 +605,7 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
 
                 int height;
                 int mHeight = 0;
-                if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+                if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                     mHeight = 120;
                 }
                 int x = 250 + mHeight;
@@ -627,7 +627,7 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
                         + "CENTER\r\n";
                 int heightlenth;
                 int heightspace = 30;
-                if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+                if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                     heightlenth = 90;
                     Printitem += ("T 7 0 30 " + heightlenth + "Unipal General Trading Company\n\r\n");
                     heightlenth = heightlenth + heightspace;
@@ -799,14 +799,17 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
 
                 heightlenth = heightlenth + 20;
                 Printitem += "T 5 0 10 " + heightlenth + " --------------------------------------------------\r\n";
-                x+=30;
+
+                Printitem += "\r\n";
+                x += 50;
+
                 for (StockReportBO stockBO : mDetails) {
                     if (stockBO.getVanLoadQty() > 0 || stockBO.getEmptyBottleQty() > 0 || stockBO.getFreeIssuedQty() > 0
                             || stockBO.getSoldQty() > 0 || stockBO.getReplacementQty() > 0 || stockBO.getReturnQty() > 0) {
 
                         x += 20;
                         Printitem += "T 5 0 5 " + x + " "
-                                + stockBO.getProductName().toLowerCase()
+                                + stockBO.getProductName().toLowerCase().substring(0, 25)
                                 + "\r\n";
                         if (stockBO.getBatchNo() != null && !stockBO.getBatchNo().equals("")) {
 
@@ -1183,7 +1186,7 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "CENTER\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            if(bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+            if(bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                 tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                         + "Unipal General Trading Company" + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");

@@ -109,6 +109,12 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 ((TextView) view.findViewById(R.id.pcsTitle))
                         .setText(bmodel.labelsMasterHelper.applyLabels(view
                                 .findViewById(R.id.pcsTitle).getTag()));
+
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.outerTitle).getTag()) != null)
+                ((TextView) view.findViewById(R.id.outerTitle))
+                        .setText(bmodel.labelsMasterHelper.applyLabels(view
+                                .findViewById(R.id.outerTitle).getTag()));
         } catch (Exception e) {
             Commons.printException("" + e);
         }

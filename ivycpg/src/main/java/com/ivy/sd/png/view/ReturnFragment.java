@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -488,6 +489,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     }
                 });
 
+                holder.invoiceno.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 holder.invoiceno.addTextChangedListener(new TextWatcher() {
 
                     @Override
@@ -950,7 +952,7 @@ public class ReturnFragment extends IvyBaseFragment {
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {

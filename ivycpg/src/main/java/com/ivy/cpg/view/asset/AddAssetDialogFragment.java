@@ -169,7 +169,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
                     // Launch Date Picker Dialog
                     DatePickerDialog dpd = new DatePickerDialog(
-                            getActivity(),
+                            getActivity(),R.style.DatePickerDialogStyle,
                             new DatePickerDialog.OnDateSetListener() {
 
                                 @Override

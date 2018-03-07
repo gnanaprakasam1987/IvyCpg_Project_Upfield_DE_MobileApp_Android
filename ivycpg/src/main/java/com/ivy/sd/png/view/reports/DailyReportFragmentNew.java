@@ -438,6 +438,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             }
         }
 
+
         for (ConfigureBO configureBO : removable_config) {
             mDayList.remove(configureBO);
         }

@@ -152,10 +152,13 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         mBtn_Search = (Button) view.findViewById(R.id.btn_search);
         mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
         mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
+        btn_next = (Button) view.findViewById(R.id.btn_save);
+
 
         mBtn_Search.setOnClickListener(this);
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
+        btn_next.setOnClickListener(this);
         mBtn_clear.setOnEditorActionListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
         lvwplist = (ListView) view.findViewById(R.id.list);
@@ -166,7 +169,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
         lpcText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         totalValueText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-
+        btn_next.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         try {
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.totalTitle).getTag()) != null)
@@ -258,9 +261,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             Commons.printException(e);
         }
 
-        btn_next = (Button) view.findViewById(R.id.btn_save);
-        btn_next.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        btn_next.setOnClickListener(this);
+
 
         mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
     }

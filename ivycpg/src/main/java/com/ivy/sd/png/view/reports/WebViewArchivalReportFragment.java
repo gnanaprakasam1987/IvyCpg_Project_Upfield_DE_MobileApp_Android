@@ -54,6 +54,7 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
 
 
     private String transactionId;
+    private String fileName;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -173,6 +174,7 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
 
         @JavascriptInterface
         public void downloadPrintFile(String filePath,String id) {
+            fileName = filePath;
             transactionId=id;
             bmodel.reportHelper.prepareArchiveFileDownload(filePath);
             if(bmodel.getDigitalContentURLS().size()>0) {
@@ -224,7 +226,12 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
                     Toast.makeText(getActivity(), getResources().getString(R.string.downloaded_successfully), Toast.LENGTH_LONG).show();
 
                     bmodel.invoiceNumber=transactionId;
-                    bmodel.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE+bmodel.invoiceNumber+".txt");
+                    if (fileName.contains(StandardListMasterConstants.PRINT_FILE_COLLECTION))
+                        bmodel.readBuilder(StandardListMasterConstants.PRINT_FILE_COLLECTION + bmodel.invoiceNumber + ".txt");
+                    else if (fileName.contains(StandardListMasterConstants.PRINT_FILE_ORDER))
+                        bmodel.readBuilder(StandardListMasterConstants.PRINT_FILE_ORDER + bmodel.invoiceNumber + ".txt");
+                    else
+                        bmodel.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".txt");
                     Intent intent = new Intent();
                     intent.setClass(getActivity(),
                             CommonPrintPreviewActivity.class);

@@ -854,6 +854,22 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                 }
 
 
+                if (holder.productObj.getPcUomid() == 0 || !holder.productObj.isPieceMapped())
+                    holder.shelfPcsQty.setEnabled(false);
+                else
+                    holder.shelfPcsQty.setEnabled(true);
+
+                if (holder.productObj.getCaseUomId() == 0 || !holder.productObj.isCaseMapped())
+                    holder.shelfCaseQty.setEnabled(false);
+                else
+                    holder.shelfCaseQty.setEnabled(true);
+
+                if (holder.productObj.getOuUomid() == 0 || !holder.productObj.isOuterMapped())
+                    holder.shelfOuterQty.setEnabled(false);
+                else
+                    holder.shelfOuterQty.setEnabled(true);
+
+
             } catch (Exception e) {
                 Commons.printException("" + e);
             }

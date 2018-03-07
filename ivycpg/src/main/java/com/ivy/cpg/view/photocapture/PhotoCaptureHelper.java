@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.content.FileProvider;
 
 import com.ivy.lib.existing.DBUtil;
@@ -451,7 +452,12 @@ public class PhotoCaptureHelper {
      */
     public Uri getUriFromFile(Context mContext, String path) {
         File f = new File(path);
-        return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
+        if (Build.VERSION.SDK_INT >= 24) {
+            return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
+
+        } else {
+            return Uri.fromFile(f);
+        }
 
     }
 

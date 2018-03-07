@@ -639,6 +639,10 @@ public class DiscountHelper {
 
     }
 
+    public ArrayList<StoreWiseDiscountBO> getBillWisePayternDiscountList() {
+        return mBillWisePaytTermDiscountList;
+    }
+
     /**
      * download pay term discount for current retailer
      *

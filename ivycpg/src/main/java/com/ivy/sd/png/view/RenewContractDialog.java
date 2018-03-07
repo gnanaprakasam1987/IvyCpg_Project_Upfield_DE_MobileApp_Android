@@ -184,7 +184,7 @@ public class RenewContractDialog extends DialogFragment {
         int mToMonth = c1.get(Calendar.MONTH);
         int mToDay = c1.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog dpd1 = new DatePickerDialog(getActivity(),
+        DatePickerDialog dpd1 = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
                 new DatePickerDialog.OnDateSetListener() {
 
                     public void onDateSet(DatePicker view, int year,

@@ -362,7 +362,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                 // todayDate = cday + "/" + cmonth + "/" + cyear;
                 nextDate = DateUtil.convertDateObjectToRequestedFormat(c.getTime(),
                         bmodel.configurationMasterHelper.outDateFormat);
-                MyDatePickerDialog d = new MyDatePickerDialog(this,
+                MyDatePickerDialog d = new MyDatePickerDialog(this,R.style.DatePickerDialogStyle,
                         mDateSetListener, cyear, cmonth, cday);
                 d.setPermanentTitle(getResources().getString(R.string.choose_date));
                 return d;

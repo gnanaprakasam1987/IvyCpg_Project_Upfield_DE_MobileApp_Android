@@ -122,6 +122,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/card_margin_top"
                         android:layout_marginTop="@dimen/card_margin_top"
+                        android:tag="sync_digital_content"
                         android:text="@string/with_images"
                         android:textColor="?attr/primarycolor"
                         android:textSize="@dimen/font_micro_small" />

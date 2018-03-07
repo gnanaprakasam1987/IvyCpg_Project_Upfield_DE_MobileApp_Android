@@ -178,7 +178,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     Commons.printException(e);
                 }
             }
-            if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
+            /*if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                 findViewById(R.id.weighttitle).setVisibility(View.GONE);
             } else {
                 try {
@@ -192,7 +192,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
+            }*/
 
 
             mProducts = businessModel.productHelper.getProductMaster();
@@ -847,8 +847,10 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             holder.productShortName.setText(productBO.getProductName());
 
             holder.productName = productBO.getProductFullName();
-            if (productBO.getBatchId() != null && !productBO.getBatchId().equals("null"))
-                holder.tvBatchNo.setText(productBO.getBatchId());
+            if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                if (productBO.getBatchId() != null && !productBO.getBatchId().equals("null"))
+                    holder.tvBatchNo.setText(productBO.getBatchId());
+            }
 
             if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON) {
                 if (productBO.getUomDescription().equals("CASE")) {
@@ -955,13 +957,16 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     holder.text_caseQuantity.setVisibility(View.GONE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    holder.text_PcsQuantity.setVisibility(View.VISIBLE);
+                    holder.text_PcsQuantity.setVisibility(View.GONE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
                     holder.outerQty.setVisibility(View.GONE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                    holder.tvWeight.setVisibility(View.VISIBLE);
+                    holder.tvWeight.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
+                    holder.tvBatchNo.setVisibility(View.GONE);
 
                 row.setTag(holder);
             } else {

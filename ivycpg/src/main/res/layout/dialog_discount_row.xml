@@ -64,6 +64,22 @@
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:text="@string/zero" />
+
+            <TextView
+                android:id="@+id/ppq"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="@string/zero" />
+
+            <TextView
+                android:id="@+id/msq"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="@string/zero" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -75,6 +91,26 @@
         android:gravity="center_horizontal"
         android:padding="2dp"
         android:text="0/0"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_micro_small" />
+    <TextView
+        android:id="@+id/unit_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:padding="2dp"
+        android:text="0"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_micro_small" />
+    <TextView
+        android:id="@+id/discounted_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:padding="2dp"
+        android:text="0"
         android:textColor="@android:color/black"
         android:textSize="@dimen/font_micro_small" />
 

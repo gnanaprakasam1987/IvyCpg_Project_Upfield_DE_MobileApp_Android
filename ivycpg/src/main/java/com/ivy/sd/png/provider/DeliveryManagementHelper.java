@@ -32,33 +32,35 @@ public class DeliveryManagementHelper {
     // delivery management
     private ArrayList<InvoiceHeaderBO> mInvoiceList;
     private ArrayList<ProductMasterBO> mInvoiceDetailsList;
+
     public static DeliveryManagementHelper getInstance(Context context) {
         if (instance == null) {
             instance = new DeliveryManagementHelper(context);
         }
         return instance;
     }
+
     protected DeliveryManagementHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
 
     }
 
-    public void downloadInvoiceDetails(){
+    public void downloadInvoiceDetails() {
         DBUtil db = null;
         try {
-            mInvoiceList=new ArrayList<InvoiceHeaderBO>();
+            mInvoiceList = new ArrayList<InvoiceHeaderBO>();
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            StringBuffer sb=new StringBuffer();
+            StringBuffer sb = new StringBuffer();
             sb.append("select invoiceno,invoicedate,invNetamount,linespercall from invoicemaster ");
-            sb.append(" where retailerid="+bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            sb.append(" where retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             sb.append(" and invoiceno not in(select vh.invoiceid from vandeliveryheader vh)");
-            Cursor c=db.selectSQL(sb.toString());
+            Cursor c = db.selectSQL(sb.toString());
             InvoiceHeaderBO invoiceHeaderBO;
-            if(c.getCount()>0){
-                while(c.moveToNext()){
-                    invoiceHeaderBO=new InvoiceHeaderBO();
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    invoiceHeaderBO = new InvoiceHeaderBO();
                     invoiceHeaderBO.setInvoiceNo(c.getString(0));
                     invoiceHeaderBO.setInvoiceDate(c.getString(1));
                     invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
@@ -68,9 +70,9 @@ public class DeliveryManagementHelper {
                 }
             }
             c.close();
-        }catch (Exception e) {
+        } catch (Exception e) {
             Commons.print(e.getMessage());
-        }finally {
+        } finally {
             db.closeDB();
         }
 
@@ -104,19 +106,20 @@ public class DeliveryManagementHelper {
 
         return invoicedRetailerList;
     }
-    public ArrayList<InvoiceHeaderBO> getInvoiceList(){
-        if(mInvoiceList!=null){
+
+    public ArrayList<InvoiceHeaderBO> getInvoiceList() {
+        if (mInvoiceList != null) {
             return mInvoiceList;
         }
         return new ArrayList<InvoiceHeaderBO>();
 
     }
 
-    public void downloadDeliveryProductDetails(String invoiceno){
+    public void downloadDeliveryProductDetails(String invoiceno) {
         HashMap<Integer, ProductMasterBO> invoicedProducts = new HashMap<>();
-        mInvoiceDetailsList=new ArrayList<ProductMasterBO>();
-        DBUtil db=null;
-        try{
+        mInvoiceDetailsList = new ArrayList<ProductMasterBO>();
+        DBUtil db = null;
+        try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -135,12 +138,12 @@ PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuom
 Inner JOIN ProductMaster PM on PM.PID = id.productid
 left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where invoiceid='123456'  order by productid,id.batchid*/
 
-            Cursor c=db.selectSQL(sb.toString());
-            if(c.getCount()>0){
-                ProductMasterBO invoiceProductBO=null;
-                int productid=0;
-                int batchid=0;
-                while (c.moveToNext()){
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                ProductMasterBO invoiceProductBO = null;
+                int productid = 0;
+                int batchid = 0;
+                while (c.moveToNext()) {
                     productid = c.getInt(c.getColumnIndex("productid"));
                     if (invoicedProducts.get(productid) == null) {
                         invoiceProductBO = new ProductMasterBO();
@@ -152,15 +155,18 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
                     }
                     if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("pieceUomID"))) {
                         invoiceProductBO.setOrderedPcsQty(c.getInt(1));
+                        invoiceProductBO.setPcUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderPieceqty(c.getInt(1));
 
                         //invoiceProductBO.setSrp(c.getFloat(4));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("caseUomId"))) {
                         invoiceProductBO.setOrderedCaseQty(c.getInt(1));
+                        invoiceProductBO.setCaseUomId(c.getInt(2));
                         invoiceProductBO.setLocalOrderCaseqty(c.getInt(1));
                         invoiceProductBO.setCaseSize(c.getInt(c.getColumnIndex("caseSize")));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("outerUomId"))) {
                         invoiceProductBO.setOrderedOuterQty(c.getInt(1));
+                        invoiceProductBO.setOuUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderOuterQty(c.getInt(1));
                         invoiceProductBO.setOutersize(c.getInt(c.getColumnIndex("outerSize")));
                     }
@@ -248,15 +254,15 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
                 /*if(productid!=0)
                     mInvoiceDetailsList.add(invoiceProductBO);*/
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.print(e.getMessage());
-        }finally {
+        } finally {
             db.closeDB();
         }
     }
 
-    public void downloadInvoiceProductDetails(String invoiceno){
-        mInvoiceDetailsList=new ArrayList<ProductMasterBO>();
+    public void downloadInvoiceProductDetails(String invoiceno) {
+        mInvoiceDetailsList = new ArrayList<ProductMasterBO>();
         DBUtil db = null;
         try {
 
@@ -266,16 +272,14 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
             sb.append("select PM.pid,PM.psname,ID.pcsQty,ID.caseQty,ID.OuterQty,ifnull(BM.Batchnum,\"\"),PM.duomQty,PM.douomQty,ID.Qty,PM.piece_uomid,PM.dUomId,PM.dOuomid from InvoiceDetails ID ");
             sb.append("inner join Productmaster PM on PM.pid=ID.productid ");
             sb.append("left join batchmaster BM on ID.productid=BM.pid and ID.batchid=BM.batchid ");
-            sb.append("where ID.invoiceID="+bmodel.QT(invoiceno));
-            Cursor c=db.selectSQL(sb.toString());
-            if(c.getCount()>0){
+            sb.append("where ID.invoiceID=" + bmodel.QT(invoiceno));
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
                 ProductMasterBO productBO;
-                while(c.moveToNext()){
+                while (c.moveToNext()) {
 
 
-
-
-                    productBO=new ProductMasterBO();
+                    productBO = new ProductMasterBO();
                     productBO.setProductID(c.getString(0));
                     productBO.setProductShortName(c.getString(1));
                     productBO.setOrderedPcsQty(c.getInt(2));
@@ -297,14 +301,15 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
                 }
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
-        }finally {
+        } finally {
             db.closeDB();
         }
     }
-    public ArrayList<ProductMasterBO> getmInvoiceDetailsList(){
-        if(mInvoiceDetailsList!=null){
+
+    public ArrayList<ProductMasterBO> getmInvoiceDetailsList() {
+        if (mInvoiceDetailsList != null) {
             return mInvoiceDetailsList;
         }
         return new ArrayList<ProductMasterBO>();
@@ -340,7 +345,7 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
             header.append(uid + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",");
             header.append(bmodel.QT(invoiceHeaderBO.getInvoiceDate()) + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
             header.append(bmodel.QT(status) + "," + bmodel.QT(bmodel.mSelectedRetailerLatitude + "") + "," + bmodel.QT(bmodel.mSelectedRetailerLongitude + "") + ",");
-            header.append(DatabaseUtils.sqlEscapeString( Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")));
+            header.append(DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")));
             header.append("," + bmodel.QT(invoiceno));
             header.append("," + bmodel.QT(SignName));//internal colunm
             header.append("," + bmodel.QT(SignPath));// proofPicture not used... so using same column
@@ -386,7 +391,7 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
             }
 
             // update SIH
-            if(bmodel.configurationMasterHelper.IS_SIH_VALIDATION_ON_DELIVERY) {
+            if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION_ON_DELIVERY) {
                 if (!selectedItem.equals(mContext.getResources().getString(R.string.rejected))) {
                     for (ProductMasterBO productMasterBO : mInvoiceDetailsList) {
                         if (productMasterBO.getInit_pieceqty() > 0 || productMasterBO.getInit_caseqty() > 0 || productMasterBO.getInit_OuterQty() > 0) {
@@ -413,40 +418,40 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
             String headerColumns = "Tid, Date, TimeZone, Value";
             String detailColumns = "Tid, PId, Qty, Price, UomId, UomCount, LineValue";
 
-            Cursor c =null;
+            Cursor c = null;
 
 
-            String tid="";
+            String tid = "";
             for (ProductMasterBO bo : mInvoiceDetailsList) {
-                if(bo.getInit_pieceqty() > 0
+                if (bo.getInit_pieceqty() > 0
                         || bo.getInit_caseqty() > 0
-                        || bo.getInit_OuterQty() > 0){
+                        || bo.getInit_OuterQty() > 0) {
 
 
-                    c=db.selectSQL("select bpid,qty,uomid from bommaster where pid="+bo.getProductID());
-                    if(c!=null){
-                        while (c.moveToNext()){
-                            int qty=c.getInt(1);
-                            int bottleToCollect= 0;
-                            int linevalue=0;
+                    c = db.selectSQL("select bpid,qty,uomid from bommaster where pid=" + bo.getProductID());
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            int qty = c.getInt(1);
+                            int bottleToCollect = 0;
+                            int linevalue = 0;
 
-                            ProductMasterBO emptyProductBO=bmodel.productHelper.getProductMasterBOById(c.getInt(0)+"");
+                            ProductMasterBO emptyProductBO = bmodel.productHelper.getProductMasterBOById(c.getInt(0) + "");
 
-                            if(bo.getInit_pieceqty() > 0&& c.getInt(2)==bo.getPcUomid()){
-                                bottleToCollect+=(qty*bo.getInit_pieceqty());
-                                linevalue+=(qty*emptyProductBO.getBaseprice());
+                            if (bo.getInit_pieceqty() > 0 && c.getInt(2) == bo.getPcUomid()) {
+                                bottleToCollect += (qty * bo.getInit_pieceqty());
+                                linevalue += (qty * emptyProductBO.getBaseprice());
                             }
-                            if(bo.getInit_caseqty() > 0&&c.getInt(2)==bo.getCaseUomId()){
-                                bottleToCollect+=(qty*bo.getInit_caseqty());
-                                linevalue+=(qty*emptyProductBO.getBaseprice());
+                            if (bo.getInit_caseqty() > 0 && c.getInt(2) == bo.getCaseUomId()) {
+                                bottleToCollect += (qty * bo.getInit_caseqty());
+                                linevalue += (qty * emptyProductBO.getBaseprice());
                             }
-                            if(bo.getInit_OuterQty()>0&&c.getInt(2)==bo.getOuUomid()){
-                                bottleToCollect+=(qty*bo.getInit_OuterQty());
-                                linevalue+=(qty*emptyProductBO.getBaseprice());
+                            if (bo.getInit_OuterQty() > 0 && c.getInt(2) == bo.getOuUomid()) {
+                                bottleToCollect += (qty * bo.getInit_OuterQty());
+                                linevalue += (qty * emptyProductBO.getBaseprice());
                             }
 
 
-                            if(bottleToCollect>0) {// If empty product available to collect
+                            if (bottleToCollect > 0) {// If empty product available to collect
 
                                 // adding returned qty to SIH
                                 if (emptyProductBO != null) {
@@ -460,7 +465,7 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
                                     db.updateSQL("update StockInHandMaster set qty=(qty+" + bottleToCollect + ") where pid=" + c.getInt(0));
                                 } else {
                                     db.insertSQL("StockInHandMaster",
-                                            "pid,qty,batchid", c.getInt(0) + "," + (bottleToCollect)+","+(emptyProductBO.getBatchid()!=null?emptyProductBO.getBatchid():"0"));
+                                            "pid,qty,batchid", c.getInt(0) + "," + (bottleToCollect) + "," + (emptyProductBO.getBatchid() != null ? emptyProductBO.getBatchid() : "0"));
                                 }
 
 
@@ -504,20 +509,19 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
         }
     }
 
-    public boolean isProductAvailableinSIHmaster(String productId){
+    public boolean isProductAvailableinSIHmaster(String productId) {
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c=db.selectSQL("select qty from StockInHandMaster where pid="+productId);
-            if(c!=null) {
+            Cursor c = db.selectSQL("select qty from StockInHandMaster where pid=" + productId);
+            if (c != null) {
                 if (c.getCount() > 0) {
                     return true;
                 }
                 c.close();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Commons.print(e.getMessage());
         } finally {
             db.closeDB();
@@ -525,45 +529,46 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
         return false;
     }
 
-    public boolean isDeliveryMgtDone(){
+    public boolean isDeliveryMgtDone() {
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            String query="select count(uid) from VanDeliveryHeader where Retailerid="+bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID());
-            Cursor c=db.selectSQL(query);
-            if(c.getCount()>0){
-                while(c.moveToNext()){
-                    int count=c.getInt(0);
-                    if(count>0) return true;
+            String query = "select count(uid) from VanDeliveryHeader where Retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID());
+            Cursor c = db.selectSQL(query);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int count = c.getInt(0);
+                    if (count > 0) return true;
                 }
             }
             c.close();
             db.closeDB();
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.print(e.getMessage());
         }
         return false;
     }
-    public boolean isDeliveryModuleAvailable(){
-        boolean flag=false;
+
+    public boolean isDeliveryModuleAvailable() {
+        boolean flag = false;
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            String query="select count(*) from HhtMenuMaster where flag=1 and hhtcode='MENU_DELIVERY_MGMT'";
-            Cursor c=db.selectSQL(query);
-            if(c.getCount()>0){
-                while(c.moveToNext()){
-                    int count=c.getInt(0);
-                    if(count==1) {
-                        flag=true;
+            String query = "select count(*) from HhtMenuMaster where flag=1 and hhtcode='MENU_DELIVERY_MGMT'";
+            Cursor c = db.selectSQL(query);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int count = c.getInt(0);
+                    if (count == 1) {
+                        flag = true;
                     }
                 }
             }
-        }catch (Exception e){
-           Commons.print(e.getMessage());
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
         }
         return flag;
     }
@@ -571,46 +576,45 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
     /**
      * Change update flag to N for not delivery invoice,if day close done
      */
-    public void updateNotDeliveryDetails(){
+    public void updateNotDeliveryDetails() {
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            String deliveryheadercolumns="uid,retailerid,invoiceddate,status,latitude,longtitude,utcdate,invoiceid,DeliveryDate";
-            StringBuffer sb=new StringBuffer();
+            String deliveryheadercolumns = "uid,retailerid,invoiceddate,status,latitude,longtitude,utcdate,invoiceid,DeliveryDate";
+            StringBuffer sb = new StringBuffer();
             sb.append("select invoiceno,retailerid,invoicedate from  invoicemaster  where invoiceNo not in");
             sb.append("(select invoiceid from VandeliveryHeader)");
-            Cursor c=db.selectSQL(sb.toString());
-            if(c.getCount()>0){
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
                 StringBuffer header;
-                while(c.moveToNext()){
-                    String invoiceno=c.getString(0);
-                    String retailerid=c.getString(1);
-                    String invoicedate=c.getString(2);
+                while (c.moveToNext()) {
+                    String invoiceno = c.getString(0);
+                    String retailerid = c.getString(1);
+                    String invoicedate = c.getString(2);
 
-                   header=new StringBuffer();
+                    header = new StringBuffer();
                     String uid = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
                             + SDUtil.now(SDUtil.DATE_TIME_ID));
-                    header.append(uid+","+bmodel.QT(retailerid)+",");
-                    header.append(bmodel.QT(invoicedate)+",");
-                    header.append(bmodel.QT("N")+","+bmodel.QT(LocationUtil.latitude+"")+","+bmodel.QT(LocationUtil.longitude+"")+",");
+                    header.append(uid + "," + bmodel.QT(retailerid) + ",");
+                    header.append(bmodel.QT(invoicedate) + ",");
+                    header.append(bmodel.QT("N") + "," + bmodel.QT(LocationUtil.latitude + "") + "," + bmodel.QT(LocationUtil.longitude + "") + ",");
                     header.append(DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")));
-                    header.append(","+bmodel.QT(invoiceno));
-                    header.append(","+bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    header.append("," + bmodel.QT(invoiceno));
+                    header.append("," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
                     db.insertSQL(DataMembers.tbl_van_delivery_header, deliveryheadercolumns, header.toString());
 
                 }
             }
-          //  db.updateSQL(sb.toString());
+            //  db.updateSQL(sb.toString());
 
 
-
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.print(e.getMessage());
 
-        }finally {
-          db.closeDB();
+        } finally {
+            db.closeDB();
         }
 
     }
@@ -619,51 +623,50 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
     ArrayList<ProductMasterBO> mDeliveryStocks;
 
     public ArrayList<ProductMasterBO> getmDeliveryStocks() {
-        if(mDeliveryStocks==null)
-        {
+        if (mDeliveryStocks == null) {
             return new ArrayList<>();
         }
         return mDeliveryStocks;
     }
 
-    HashMap<String,ProductMasterBO> mDeliveryProductsBObyId;
-    public void downloadDeliveryStock(){
+    HashMap<String, ProductMasterBO> mDeliveryProductsBObyId;
+
+    public void downloadDeliveryStock() {
 
         DBUtil db = null;
         try {
-            String retailerIds="";
-            for(RetailerMasterBO retailer:bmodel.getRetailerMaster()){
-                if(retailer.getIsToday()==1||retailer.getIsDeviated().equalsIgnoreCase("Y")) {
-                    if(retailerIds.length()>1)
-                        retailerIds+=","+retailer.getRetailerID();
+            String retailerIds = "";
+            for (RetailerMasterBO retailer : bmodel.getRetailerMaster()) {
+                if (retailer.getIsToday() == 1 || retailer.getIsDeviated().equalsIgnoreCase("Y")) {
+                    if (retailerIds.length() > 1)
+                        retailerIds += "," + retailer.getRetailerID();
                     else
-                        retailerIds+=retailer.getRetailerID();
+                        retailerIds += retailer.getRetailerID();
                 }
             }
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql="select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid"
-                    +",uomid as orderedUomId,qty as orderedQty from InvoiceDetailUOMWise ID"
-                    +" Left join ProductMaster pm on pm.pid=ID.productid"
-                    +" where invoiceid in(select invoiceno from invoicemaster where retailerid in ("+retailerIds+"))";
+            String sql = "select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid"
+                    + ",uomid as orderedUomId,qty as orderedQty from InvoiceDetailUOMWise ID"
+                    + " Left join ProductMaster pm on pm.pid=ID.productid"
+                    + " where invoiceid in(select invoiceno from invoicemaster where retailerid in (" + retailerIds + "))";
 
-            Cursor c=db.selectSQL(sql);
-            if(c.getCount()>0) {
-                mDeliveryProductsBObyId=new HashMap<>();
-                mDeliveryStocks=new ArrayList<>();
+            Cursor c = db.selectSQL(sql);
+            if (c.getCount() > 0) {
+                mDeliveryProductsBObyId = new HashMap<>();
+                mDeliveryStocks = new ArrayList<>();
                 ProductMasterBO bo;
                 while (c.moveToNext()) {
-                    if(mDeliveryProductsBObyId.get(c.getString(0))!=null){
-                        ProductMasterBO productMasterBO=mDeliveryProductsBObyId.get(c.getString(0));
-                        if(productMasterBO.getPcUomid()==c.getInt(6))
-                            productMasterBO.setOrderedPcsQty((productMasterBO.getOrderedPcsQty()+c.getInt(7)));
-                        if(productMasterBO.getCaseUomId()==c.getInt(6))
-                            productMasterBO.setOrderedCaseQty((productMasterBO.getOrderedCaseQty()+c.getInt(7)));
-                        if(productMasterBO.getOuUomid()==c.getInt(6))
-                            productMasterBO.setOrderedOuterQty((productMasterBO.getOrderedOuterQty()+c.getInt(7)));
-                    }
-                    else {
+                    if (mDeliveryProductsBObyId.get(c.getString(0)) != null) {
+                        ProductMasterBO productMasterBO = mDeliveryProductsBObyId.get(c.getString(0));
+                        if (productMasterBO.getPcUomid() == c.getInt(6))
+                            productMasterBO.setOrderedPcsQty((productMasterBO.getOrderedPcsQty() + c.getInt(7)));
+                        if (productMasterBO.getCaseUomId() == c.getInt(6))
+                            productMasterBO.setOrderedCaseQty((productMasterBO.getOrderedCaseQty() + c.getInt(7)));
+                        if (productMasterBO.getOuUomid() == c.getInt(6))
+                            productMasterBO.setOrderedOuterQty((productMasterBO.getOrderedOuterQty() + c.getInt(7)));
+                    } else {
                         bo = new ProductMasterBO();
                         bo.setProductID(c.getString(0));
                         bo.setProductName(c.getString(1));
@@ -686,12 +689,10 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
 
                 }
             }
-        }
-        catch (Exception ex){
-           Commons.printException(ex);
-        }
-        finally {
-            mDeliveryProductsBObyId=null;
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        } finally {
+            mDeliveryProductsBObyId = null;
             db.closeDB();
         }
     }
@@ -713,7 +714,8 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
         this.userPassword = userPassword;
     }
 
-    private String userName,userPassword;
+    private String userName, userPassword;
+
     public void downloadEmailAccountCredentials() {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -724,17 +726,17 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
             Cursor c = db.selectSQL(s);
             if (c != null) {
                 if (c.moveToNext()) {
-                    userName=c.getString(0);
+                    userName = c.getString(0);
                 }
                 c.close();
             }
 
-             s = "SELECT ListName FROM StandardListMaster where listcode='DELIVERY_PWD' and listtype='DELIVERY_MAIL'";
+            s = "SELECT ListName FROM StandardListMaster where listcode='DELIVERY_PWD' and listtype='DELIVERY_MAIL'";
 
-             c = db.selectSQL(s);
+            c = db.selectSQL(s);
             if (c != null) {
                 if (c.moveToNext()) {
-                    userPassword=c.getString(0);
+                    userPassword = c.getString(0);
                 }
                 c.close();
             }

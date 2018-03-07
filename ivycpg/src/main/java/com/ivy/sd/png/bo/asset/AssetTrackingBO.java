@@ -6,7 +6,7 @@ public class AssetTrackingBO {
     private int audit = 2;
     private int competitorQty;
     private int executorQty;
-    private String reason1ID;
+    private String reason1ID = "0";
     private String reasonDesc;
     private String conditionID = "0";
     private String mInstallDate;
@@ -14,7 +14,7 @@ public class AssetTrackingBO {
     private String mPOSM;
     private String mBrand;
     private String mNewInstallDate;
-    private String mSNO, mReasonId, mRemarks, mToRetailerId;
+    private String mSNO, mReasonId = "0", mRemarks = "", mToRetailerId;
     private String mPOSMName;
     private String mFlag;
     private String mSBDId;

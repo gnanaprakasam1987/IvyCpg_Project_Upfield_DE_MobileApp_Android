@@ -1359,7 +1359,7 @@ public class AssetTrackingHelper {
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-            String assetHeaderColumns = "uid,Date,RetailerId,remark,TypeLovid,tgtTotal,achTotal,refid";
+            String assetHeaderColumns = "uid,Date,RetailerId,remark,TypeLovid,tgtTotal,achTotal,refid,distributorid";
             StringBuilder assetHeaderValues = new StringBuilder();
             assetHeaderValues.append(id);
             assetHeaderValues.append(",");
@@ -1628,6 +1628,8 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(totalActualQty);
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(refId));
+            assetHeaderValues.append(",");
+            assetHeaderValues.append(QT(mBusinessModel.retailerMasterBO.getDistributorId() + ""));
 
             if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 if (MENU_ASSET.equals(moduleName)) {

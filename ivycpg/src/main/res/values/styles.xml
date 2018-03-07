@@ -96,6 +96,21 @@
         <item name="android:buttonStyle">@style/MyButtonBlue</item>
     </style>
 
+
+    <!-- To apply for date picker dialogs theme accent color set in positive button and
+negative button and neutral button -->
+    <style name="DatePickerDialogStyle" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- Color palette -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="buttonBarPositiveButtonStyle">@color/colorAccent</item>
+        <item name="buttonBarNegativeButtonStyle">@color/colorAccent</item>
+        <item name="buttonBarNeutralButtonStyle">@color/colorAccent</item>
+    </style>
+
     <style name="AppTabLayout.Blue" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@color/colorAccent</item>
         <item name="tabIndicatorHeight">@dimen/tab_indicator_height</item>

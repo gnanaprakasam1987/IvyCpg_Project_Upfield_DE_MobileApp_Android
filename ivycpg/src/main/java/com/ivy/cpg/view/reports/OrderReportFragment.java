@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
@@ -626,7 +627,12 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                         for (String distributorName : businessModel.reportHelper
                                 .getmOrderDetailsByDistributorName().keySet()) {
                             File newFile = new File(getActivity().getExternalFilesDir(null) + "", "OrderReport_" + distributorName + ".xls");
-                            uriList.add(FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", newFile));
+                            if (Build.VERSION.SDK_INT >= 24) {
+                                uriList.add(FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", newFile));
+
+                            } else {
+                                uriList.add(Uri.fromFile(newFile));
+                            }
                         }
 
                         sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);

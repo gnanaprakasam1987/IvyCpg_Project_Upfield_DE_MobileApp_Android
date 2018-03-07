@@ -113,7 +113,9 @@ public class HalfPieChartFragement extends Fragment implements OnChartValueSelec
             Collections.sort(skuList, achvimentComparator);
             for (int i = 0; i < 5; i++) {
                 double achPercent = (skuList.get(i).getAchieved() / total) * 100;
-                entries.add(new PieEntry((float) achPercent, skuList.get(i).getProductShortName()));
+                entries.add(new PieEntry((float) achPercent, (skuList.get(i).getProductShortName().length() > 0
+                        ? skuList.get(i).getProductShortName()
+                        : skuList.get(i).getProductName())));
             }
             for (int i = 5; i < skuList.size(); i++) {
                 restPercent = restPercent + (skuList.get(i).getAchieved() / total) * 100;
@@ -124,7 +126,9 @@ public class HalfPieChartFragement extends Fragment implements OnChartValueSelec
         } else {
             for (int i = 0; i < skuList.size(); i++) {
                 double achPercent = (skuList.get(i).getAchieved() / total) * 100;
-                entries.add(new PieEntry((float) achPercent, skuList.get(i).getProductShortName()));
+                entries.add(new PieEntry((float) achPercent, (skuList.get(i).getProductShortName().length() > 0
+                        ? skuList.get(i).getProductShortName()
+                        : skuList.get(i).getProductName())));
             }
         }
 
@@ -228,6 +232,7 @@ public class HalfPieChartFragement extends Fragment implements OnChartValueSelec
         }
 
     };
+
     private void moveOffScreen() {
 
         Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -235,10 +240,10 @@ public class HalfPieChartFragement extends Fragment implements OnChartValueSelec
         display.getSize(size);
         int height = size.y;
 
-        int offset = (int)(height * 0.20); /* percent to move */
+        int offset = (int) (height * 0.20); /* percent to move */
 
         RelativeLayout.LayoutParams rlParams =
-                (RelativeLayout.LayoutParams)mChart.getLayoutParams();
+                (RelativeLayout.LayoutParams) mChart.getLayoutParams();
         rlParams.setMargins(0, 0, 0, -offset);
         mChart.setLayoutParams(rlParams);
     }

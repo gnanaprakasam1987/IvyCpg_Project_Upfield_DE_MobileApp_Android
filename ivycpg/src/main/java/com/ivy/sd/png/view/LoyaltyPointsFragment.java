@@ -336,10 +336,15 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                                 + DataMembers.LOYALTY_POINTS + "/" + imageName);
 
 
-                final Uri uri = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
+                final Uri path;
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
+                } else {
+                    path = Uri.fromFile(file);
+                }
 
                 Glide.with(getActivity())
-                        .load(uri)
+                        .load(path)
                         .error(R.drawable.no_photo)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .fitCenter()
@@ -347,7 +352,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                             @Override
                             public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
 
-                                Commons.print("Glide failed loading image " + uri);
+                                Commons.print("Glide failed loading image " + path);
                                 return false;
                             }
 

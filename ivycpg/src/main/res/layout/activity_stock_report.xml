@@ -146,6 +146,7 @@
                     android:textStyle="bold"
                     android:layout_weight="1"
                     android:layout_gravity="center"
+                    android:tag="item_outer"
                     android:gravity="center"
                     android:layout_height="match_parent"
                     android:text="@string/item_outer" />
