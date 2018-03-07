@@ -1807,7 +1807,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     int yy = calendar.get(Calendar.YEAR);
                     int mm = calendar.get(Calendar.MONTH);
                     int dd = calendar.get(Calendar.DAY_OF_MONTH);
-                    DatePickerDialog datePicker = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle, new DatePickerDialog.OnDateSetListener() {
+                    DatePickerDialog datePicker = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                             /*String date = String.valueOf(dayOfMonth) + "/" + String.valueOf(monthOfYear+1)
@@ -1948,6 +1948,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         } else {
             menu.findItem(R.id.menu_select).setVisible(false);
         }
+        if (mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
+                || mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
+                || mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS"))
+            menu.findItem(R.id.menu_fivefilter).setVisible(false);
+
         if (drawerOpen || navDrawerOpen)
             menu.clear();
     }
@@ -2074,6 +2079,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), mMenuCode)) {
                         bmodel.saveModuleCompletion(mMenuCode);
+                        if (!mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
+                                && !mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
+                                && !mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS")) {
+                            startActivity(new Intent(getActivity(),
+                                    HomeScreenTwo.class));
+                        }
                         getActivity().finish();
                     }
                 }

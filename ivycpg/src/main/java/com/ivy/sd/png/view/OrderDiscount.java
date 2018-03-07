@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
     private double totalOrderValue;
     private String screenCode = "MENU_STK_ORD";
     private Toolbar toolbar;
+    RelativeLayout toolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,8 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
+        toolbarTitle = (RelativeLayout) findViewById(R.id.tolllayout);
+        toolbarTitle.setVisibility(View.VISIBLE);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         Bundle extras = getIntent().getExtras();
         if (savedInstanceState == null) {
@@ -73,16 +77,18 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
             setSupportActionBar(toolbar);
 
         getSupportActionBar().setTitle(
-                getResources().getString(R.string.discount));
-        getSupportActionBar().setIcon(R.drawable.icon_order);
+               null);
+        getSupportActionBar().setIcon(null);
         // Used to on / off the back arrow icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Used to remove the app logo actionbar icon and set title as home
         // (title support click)
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         // Used to hide the app logo icon from actionbar
         // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
+        setScreenTitle(getResources().getString(R.string.discount));
         totalval = (TextView) findViewById(R.id.totalValue);
         productName = (TextView) findViewById(R.id.productName2);
         productName.setOnTouchListener(new OnTouchListener() {
@@ -100,11 +106,11 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
 
         // On/Off order case and pcs
         if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-            findViewById(R.id.caseTitle).setVisibility(View.GONE);
+            findViewById(R.id.dummycaseTitle).setVisibility(View.GONE);
         if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-            findViewById(R.id.pcsTitle).setVisibility(View.GONE);
+            findViewById(R.id.dummypcsTitle).setVisibility(View.GONE);
         if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-            findViewById(R.id.outercaseTitle).setVisibility(View.GONE);
+            findViewById(R.id.dummyoutercaseTitle).setVisibility(View.GONE);
 
         findViewById(R.id.LL_titleBar).setVisibility(View.GONE);
 
@@ -424,7 +430,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
 
             holder.mrp.setText("Price: "
                     + bmodel.formatValue(holder.productObj.getSrp()) + "");
-            holder.p4qty.setText("P.PQ: "
+            holder.p4qty.setText("PPQ: "
                     + holder.productObj.getRetailerWiseProductWiseP4Qty());
 
             holder.outerQty
@@ -581,6 +587,11 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_product_filter).setVisible(false);
+        menu.findItem(R.id.menu_spl_filter).setVisible(false);
+        menu.findItem(R.id.menu_fivefilter).setVisible(false);
+        menu.findItem(R.id.menu_barcode).setVisible(false);
+        menu.findItem(R.id.menu_loc_filter).setVisible(false);
+        menu.findItem(R.id.menu_remarks).setVisible(false);
         menu.findItem(R.id.menu_spl_filter).setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }

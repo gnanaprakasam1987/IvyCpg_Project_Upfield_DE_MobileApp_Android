@@ -929,8 +929,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
 
         // Apply bill wise pay term discount
-        final double billWisePayTermDiscount = discountHelper.calculateBillWisePayTermDiscount(totalOrderValue);
-        totalOrderValue = totalOrderValue - billWisePayTermDiscount;
+        // Apply bill wise payterm discount
+        if (discountHelper.getBillWisePayternDiscountList() != null
+                && discountHelper.getBillWisePayternDiscountList().size() > 0) {
+            final double billWisePayTermDiscount = discountHelper.calculateBillWisePayTermDiscount(totalOrderValue);
+            totalOrderValue = totalOrderValue - billWisePayTermDiscount;
+        }
 
         // To open the dialog back while resuming
         if (!isDiscountDialog() && BModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT && discountDialog != null && discountDialog.isShowing()) {
@@ -1566,11 +1570,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
                             // Don't write any code  after this dialog.. because it is just a confirmation dialog
-                                orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
-                                orderConfirmationDialog.show();
-                                Window window = orderConfirmationDialog.getWindow();
-                                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                orderConfirmationDialog.setCancelable(false);
+                            orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
+                            orderConfirmationDialog.show();
+                            Window window = orderConfirmationDialog.getWindow();
+                            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            orderConfirmationDialog.setCancelable(false);
 
 
                         }

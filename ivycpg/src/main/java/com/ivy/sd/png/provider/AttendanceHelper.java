@@ -211,12 +211,12 @@ public class AttendanceHelper {
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID) + "";
 
-            String columns = "Tid,DateIn,Atd_ID,ReasonID,Timezone,FromDate,ToDate,TimeIn,timespent,status";
+            String columns = "Tid,DateIn,Atd_ID,ReasonID,Timezone,FromDate,ToDate,TimeIn,timespent,status,userid";
             String values = bmodel.QT(tid) + "," + bmodel.QT(date) + ","
                     + atdID + ", " + reasonid + ","
                     + bmodel.QT(bmodel.getTimeZone()) + ","
                     + bmodel.QT(fromDate) + "," + bmodel.QT(toDate) + ","
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME)) + ",'0:0'," + (atdCode != null && atdCode.equals("LEAVE") ? "'S'" : "'0'");
+                    + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME)) + ",'0:0'," + (atdCode != null && atdCode.equals("LEAVE") ? "'S'" : "'R'" + "," + bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
             db.insertSQL("AttendanceDetail", columns, values);
             db.closeDB();

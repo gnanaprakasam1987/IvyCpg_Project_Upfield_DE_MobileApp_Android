@@ -32,7 +32,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
     private Button back;
     private ListView listView;
-    private TextView  text_total, totalLines, tv_lbl_total_lines;
+    private TextView text_total, totalLines, tv_lbl_total_lines;
 
     private BusinessModel businessModel;
     private OrderReportBO obj;
@@ -103,7 +103,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             }
 
             text_total = (TextView) findViewById(R.id.txttotal);
-            String value=getResources().getString(R.string.order_report)
+            String value = getResources().getString(R.string.order_report)
                     + obj.getRetailerName();
             outletName.setText(value);
 
@@ -198,7 +198,6 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
     }
 
 
-
     int pos;
 
     class MyAdapter extends ArrayAdapter<OrderReportBO> {
@@ -211,13 +210,13 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         }
 
         @NonNull
-        public View getView(int position, View convertView,@NonNull ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             pos = position;
             businessModel = (BusinessModel) getApplicationContext();
 
             businessModel.setContext(OrderReportDetail.this);
-            OrderReportBO orderReportBO =  items
+            OrderReportBO orderReportBO = items
                     .get(pos);
             View row = convertView;
             businessModel = (BusinessModel) getApplicationContext();
@@ -249,10 +248,12 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                     holder.text_value.setVisibility(View.GONE);
                 }
+                if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
+                    holder.text_batchId.setVisibility(View.GONE);
 
                 row.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
-                     //   productName.setText(holder.productName);
+                        //   productName.setText(holder.productName);
 
                     }
                 });
@@ -272,18 +273,19 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             holder.text_quantity.setText(String.valueOf(orderReportBO.getPQty()));
             holder.text_value.setText(businessModel.formatValue((orderReportBO.getTot())));
             holder.outerQty.setText(String.valueOf(orderReportBO.getOuterOrderedCaseQty()));
-            if (orderReportBO.getBatchNo() != null && !orderReportBO.getBatchNo().equals("null")) {
-                String value="Batch No : " + orderReportBO.getBatchNo();
-                holder.text_batchId.setText(value);
+            if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                if (orderReportBO.getBatchNo() != null && !orderReportBO.getBatchNo().equals("null")) {
+                    String value = "Batch No : " + orderReportBO.getBatchNo();
+                    holder.text_batchId.setText(value);
+                } else holder.text_batchId.setText("");
             }
-            else holder.text_batchId.setText("");
 
             holder.productShortName.setTextColor(holder.outerQty.getTextColors());
             if (orderReportBO.getIsCrown() == 1)
                 holder.productShortName.setTextColor(Color.BLUE);
             else if (orderReportBO.getIsBottleReturn() == 1)
                 holder.productShortName.setTextColor(Color.GREEN);
-            String weight="WGT :"+orderReportBO.getTotalQty() * orderReportBO.getWeight();
+            String weight = "WGT :" + orderReportBO.getTotalQty() * orderReportBO.getWeight();
             holder.tvWeight.setText(weight);
             holder.tvWeight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
@@ -295,7 +297,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
     class ViewHolder {
         String productName;
         TextView productShortName;
-        TextView text_value, text_quantity , text_caseQuantity, outerQty, text_batchId, tvWeight;
+        TextView text_value, text_quantity, text_caseQuantity, outerQty, text_batchId, tvWeight;
     }
 
     public void onClick(View comp) {

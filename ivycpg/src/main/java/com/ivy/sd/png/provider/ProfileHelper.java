@@ -372,13 +372,13 @@ public class ProfileHelper {
         try {
             for (OrderHistoryBO pbo : ((tabName.equals("orderHistory")) ? parent_orderHistoryLIst : parent_invoiceHistoryLIst)) {
                 if (pbo.getOrderid().equals(payBOTemp.getOrderid()))
-                    return true;
+                    return false;
             }
         } catch (Exception e) {
             Commons.printException(e + "");
             return false;
         }
-        return false;
+        return true;
     }
 
     public Vector<OrderHistoryBO> getParentOrderHistory() {

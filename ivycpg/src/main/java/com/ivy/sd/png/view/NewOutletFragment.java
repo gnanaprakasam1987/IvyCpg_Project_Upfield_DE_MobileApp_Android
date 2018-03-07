@@ -166,7 +166,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private static String[] days = null;
     private static final String[] daysForUpload = new String[]{"SUN", "MON",
             "TUE", "WED", "THU", "FRI", "SAT"};
-    private static final int NUMBER_OF_WEEKS = 4;
+    private static final int NUMBER_OF_WEEKS = 5;
     private String uID;
     private BusinessModel bmodel;
     private static StringBuffer sb;
@@ -317,7 +317,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 if (bool) {
 
                     if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                        if (lattitude == 0 || longitude == 0 || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
+                        if (lattitude == 0 || longitude == 0 || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
                             Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                             return;
                         }
@@ -2026,7 +2026,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("CONTACTPERSON1")) {
             edittextinputLayout = new TextInputLayout(getActivity());
             edittextinputLayout2 = new TextInputLayout(getActivity());
-            edittextinputLayout4 = new TextInputLayout(getActivity());
 
 
             if (mandatory == 1) {
@@ -2041,27 +2040,31 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
             }
 
-            editText[mNumber + 50 + 5] = new AppCompatEditText(getActivity());
-            editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-            editText[mNumber + 50 + 5].setHint("Titile");
-            editText[mNumber + 50 + 5].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber + 50 + 5].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-            if (inputFilters != null && inputFilters.size() > 0) {
-                InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                stockArr = inputFilters.toArray(stockArr);
-                editText[mNumber + 50 + 5].setFilters(stockArr);
-                if (inputFilters.size() == 2)
-                    editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            }
-
-            edittextinputLayout4.addView(editText[mNumber + 50 + 5], params3new);
 
             if (isContactTitle) {
+                edittextinputLayout4 = new TextInputLayout(getActivity());
                 contactTitleSpinner1 = new MaterialSpinner(getActivity());
                 contactTitleSpinner1.setId(mNumber);
                 contactTitleSpinner1.setFloatingLabelText(MName);
                 contactTitleSpinner1.setAdapter(contactTitleAdapter);
+
+
+                editText[mNumber + 50 + 5] = new AppCompatEditText(getActivity());
+                editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                editText[mNumber + 50 + 5].setHint("Titile");
+                editText[mNumber + 50 + 5].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+                editText[mNumber + 50 + 5].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                if (inputFilters != null && inputFilters.size() > 0) {
+                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
+                    stockArr = inputFilters.toArray(stockArr);
+                    editText[mNumber + 50 + 5].setFilters(stockArr);
+                    if (inputFilters.size() == 2)
+                        editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                }
+
+                edittextinputLayout4.addView(editText[mNumber + 50 + 5], params3new);
+
 
                 final int title_id = mNumber + 50 + 5;
 
@@ -2157,7 +2160,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             edittextinputLayout = new TextInputLayout(getActivity());
             edittextinputLayout2 = new TextInputLayout(getActivity());
-            edittextinputLayout3 = new TextInputLayout(getActivity());
+
 
             if (mandatory == 1) {
                 TextView mn_textview = new TextView(getActivity());
@@ -2173,6 +2176,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
 
             if (isContactTitle) {
+                edittextinputLayout3 = new TextInputLayout(getActivity());
                 contactTitleSpinner2 = new MaterialSpinner(getActivity());
                 contactTitleSpinner2.setId(mNumber);
                 contactTitleSpinner2.setFloatingLabelText(MName);
@@ -2773,7 +2777,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle, this, year, month, day);
+            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -3810,7 +3814,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         spinner = new MaterialSpinner(getActivity());
                         attrbList = new ArrayList<>();
                         attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                                .getString(R.string.select_str) + " " + MName));
+                                .getString(R.string.select_str) + " " + attribName));
                         attrbList.addAll(attribMap.get(attribName));
 
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
@@ -3840,7 +3844,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         spinner = new MaterialSpinner(getActivity());
                         attrbList = new ArrayList<>();
                         attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                                .getString(R.string.select_str) + " " + MName));
+                                .getString(R.string.select_str) + " " + attribName));
 
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
                                 android.R.layout.simple_spinner_item, attrbList);
@@ -4010,8 +4014,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
             }
 
-            if(!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
-                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl!=0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)){
+            if (!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
+                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
 
                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                 return true;

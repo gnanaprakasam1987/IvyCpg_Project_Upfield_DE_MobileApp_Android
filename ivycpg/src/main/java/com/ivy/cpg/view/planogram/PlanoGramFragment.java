@@ -564,6 +564,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 public void onDismiss(DialogInterface dialog) {
                     if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), menuCode)) {
                         mBModel.saveModuleCompletion(menuCode);
+                        startActivity(new Intent(getActivity(),
+                                HomeScreenTwo.class));
                         getActivity().finish();
                     }
                 }

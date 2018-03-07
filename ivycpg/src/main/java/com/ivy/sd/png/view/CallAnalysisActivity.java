@@ -186,9 +186,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 });
             } else {
                 spinnerNoOrderReason.setVisibility(View.GONE);
-                edt_noOrderReason.setVisibility(View.GONE);
+                if (bmodel.configurationMasterHelper.SHOW_NO_ORDER_EDITTEXT)
+                    edt_noOrderReason.setVisibility(View.GONE);
+                if (bmodel.configurationMasterHelper.SHOW_NO_ORDER_CAPTURE_PHOTO)
+                    mNoOrderCameraBTN.setVisibility(View.GONE);
             }
-
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_REASON
