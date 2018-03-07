@@ -2026,7 +2026,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("CONTACTPERSON1")) {
             edittextinputLayout = new TextInputLayout(getActivity());
             edittextinputLayout2 = new TextInputLayout(getActivity());
-            edittextinputLayout4 = new TextInputLayout(getActivity());
 
 
             if (mandatory == 1) {
@@ -2041,27 +2040,31 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
             }
 
-            editText[mNumber + 50 + 5] = new AppCompatEditText(getActivity());
-            editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-            editText[mNumber + 50 + 5].setHint("Titile");
-            editText[mNumber + 50 + 5].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber + 50 + 5].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-            if (inputFilters != null && inputFilters.size() > 0) {
-                InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                stockArr = inputFilters.toArray(stockArr);
-                editText[mNumber + 50 + 5].setFilters(stockArr);
-                if (inputFilters.size() == 2)
-                    editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            }
-
-            edittextinputLayout4.addView(editText[mNumber + 50 + 5], params3new);
 
             if (isContactTitle) {
+                edittextinputLayout4 = new TextInputLayout(getActivity());
                 contactTitleSpinner1 = new MaterialSpinner(getActivity());
                 contactTitleSpinner1.setId(mNumber);
                 contactTitleSpinner1.setFloatingLabelText(MName);
                 contactTitleSpinner1.setAdapter(contactTitleAdapter);
+
+
+                editText[mNumber + 50 + 5] = new AppCompatEditText(getActivity());
+                editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                editText[mNumber + 50 + 5].setHint("Titile");
+                editText[mNumber + 50 + 5].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+                editText[mNumber + 50 + 5].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                if (inputFilters != null && inputFilters.size() > 0) {
+                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
+                    stockArr = inputFilters.toArray(stockArr);
+                    editText[mNumber + 50 + 5].setFilters(stockArr);
+                    if (inputFilters.size() == 2)
+                        editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                }
+
+                edittextinputLayout4.addView(editText[mNumber + 50 + 5], params3new);
+
 
                 final int title_id = mNumber + 50 + 5;
 
@@ -2157,7 +2160,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             edittextinputLayout = new TextInputLayout(getActivity());
             edittextinputLayout2 = new TextInputLayout(getActivity());
-            edittextinputLayout3 = new TextInputLayout(getActivity());
+
 
             if (mandatory == 1) {
                 TextView mn_textview = new TextView(getActivity());
@@ -2173,6 +2176,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
 
             if (isContactTitle) {
+                edittextinputLayout3 = new TextInputLayout(getActivity());
                 contactTitleSpinner2 = new MaterialSpinner(getActivity());
                 contactTitleSpinner2.setId(mNumber);
                 contactTitleSpinner2.setFloatingLabelText(MName);
