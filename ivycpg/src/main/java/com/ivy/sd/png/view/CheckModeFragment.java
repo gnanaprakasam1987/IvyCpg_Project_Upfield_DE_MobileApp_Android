@@ -280,7 +280,10 @@ public class CheckModeFragment extends IvyBaseFragment
 
                     }
                 } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.pls_select_chequeno), Toast.LENGTH_SHORT).show();
+                    if ("".equals(mChequeNoET.getText().toString()))
+                        Toast.makeText(getActivity(), getResources().getString(R.string.pls_select_chequeno), Toast.LENGTH_SHORT).show();
+                    else if (mPaymentBO.getAmount() == 0)
+                        Toast.makeText(getActivity(), getResources().getString(R.string.alert_amount), Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -197,6 +197,17 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         withPhotosCheckBox.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         selectedRetailerDownloadCheckBox.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.withPhotos).getTag()) != null)
+                ((TextView) view.findViewById(R.id.withPhotos))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.withPhotos)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
 
         if (bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES) {
             withPhotosCheckBox.setVisibility(View.VISIBLE);
@@ -1148,6 +1159,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                         startSync(UPLOAD_ALL);
 
                 }
+                break;
 
             case 1:
                 if (resultCode == Activity.RESULT_OK) {
@@ -1182,11 +1194,13 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     isClicked = false;
                 }
+                break;
 
             case SynchronizationHelper.DISTRIBUTOR_SELECTION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     new InitiateDistributorDownload().execute();
                 }
+                break;
         }
     }
 
@@ -2462,8 +2476,8 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("LoginId", userName);
                 jsonObj.put("Password", password);
-                jsonObj.put(SynchronizationHelper.VERSION_CODE,bmodel.getApplicationVersionNumber());
-                jsonObj.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
+                jsonObj.put(SynchronizationHelper.VERSION_CODE, bmodel.getApplicationVersionNumber());
+                jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
 
                 jsonObj.put("Model", Build.MODEL);
                 jsonObj.put("Platform", "Android");

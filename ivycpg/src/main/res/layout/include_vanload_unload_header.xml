@@ -48,6 +48,7 @@
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_gravity="center"
         android:gravity="center"
+        android:tag="item_outer"
         android:layout_weight="1"
         android:layout_height="match_parent"
         android:text="@string/item_outer" >

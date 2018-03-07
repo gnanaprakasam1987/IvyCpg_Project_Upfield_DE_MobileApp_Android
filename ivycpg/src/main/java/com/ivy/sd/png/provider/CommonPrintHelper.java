@@ -846,7 +846,7 @@ public class CommonPrintHelper {
                     mProductValue = getPromoType(context, prod);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
                     mProductValue = String.valueOf(prod.getFoc());
-                }else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
                     int totalQty = prod.getOrderedPcsQty()
                             + prod.getOrderedCaseQty()
                             * prod.getCaseSize()
@@ -1654,7 +1654,7 @@ public class CommonPrintHelper {
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax = Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
+                    mTotalIncludeTax = Double.parseDouble(bmodel.formatValueBasedOnConfig(mTotalIncludeTax));
 
                     double taxValue;
                     double taxTotal = 0;
@@ -1675,7 +1675,7 @@ public class CommonPrintHelper {
                     }
 
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax = Double.parseDouble(bmodel.formatValue(mTotalIncludeTax));
+                    mTotalIncludeTax = Double.parseDouble(SDUtil.format(mTotalIncludeTax, 2, 0));
 
                     double mTotalExcludeTaxAmount = mTotalIncludeTax / (1 + taxTotal / 100);
 
@@ -2009,6 +2009,8 @@ public class CommonPrintHelper {
                     tempVal = value + "";
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
+                    if (fractionalStr.length() == 1)
+                        fractionalStr = fractionalStr + "0";
 
                     int integerValue = (int) value;
                     int fractionValue = Integer.parseInt(fractionalStr);

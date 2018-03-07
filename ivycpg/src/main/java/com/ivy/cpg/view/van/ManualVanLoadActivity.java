@@ -291,8 +291,20 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
 
-            if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+            if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
                 findViewById(R.id.outeritemcasetitle).setVisibility(View.GONE);
+            } else {
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                            R.id.outeritemcasetitle).getTag()) != null)
+                        ((TextView) findViewById(R.id.outeritemcasetitle))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(findViewById(
+                                                R.id.outeritemcasetitle).getTag()));
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+            }
 
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(

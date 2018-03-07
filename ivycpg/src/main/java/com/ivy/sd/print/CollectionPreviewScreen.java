@@ -112,7 +112,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             tv_vatNo = (TextView) findViewById(R.id.tv_vat_no);
             tv_adr1 = (TextView) findViewById(R.id.tv_distadd1);
             tv_adr2 = (TextView) findViewById(R.id.tv_distadd2);
-            if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+            if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                 tv_distributor.setText("Unipal General Trading Company");
                 tv_vatNo.setText("VAT No  : 562414227");
                 tv_adr1.setText("Ramallah - Industrial zone, Tel: +972 2 2981060");
@@ -647,7 +647,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                 String Printitem = "! 0 200 200 " + height + " 1\r\n"
                         + "CENTER\r\n";
 
-                if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+                if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                     Printitem += "T 5 1 10 60 "
                             + ""
                             + "Unipal General Trading Company" + "\r\n";
@@ -1499,7 +1499,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "CENTER\r\n");
             tempsb.append("SETBOLD 1 \r\n");
 
-            if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+            if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                 tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                         + "Unipal General Trading Company" + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");

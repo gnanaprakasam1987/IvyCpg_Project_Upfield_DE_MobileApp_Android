@@ -189,6 +189,17 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
             findViewById(R.id.outeritemcasetitle).setVisibility(View.GONE);
             outerLayout.setVisibility(View.GONE);
+        }else {
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.outeritemcasetitle).getTag()) != null)
+                    ((TextView) findViewById(R.id.outeritemcasetitle))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.outeritemcasetitle).getTag()));
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
         }
 
         setActionBarTitle(i.getStringExtra("screentitle"));

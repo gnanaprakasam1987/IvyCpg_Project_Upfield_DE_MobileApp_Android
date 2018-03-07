@@ -522,11 +522,11 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
             holder.tvDueDate.setText(holder.invoiceHeaderBO.getDueDate());
 
-            double osamount = holder.invoiceHeaderBO.getBalance() + holder.invoiceHeaderBO.getRemainingDiscountAmt();
+            double osamount = holder.invoiceHeaderBO.getBalance() + Double.parseDouble(bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
             if (osamount <= 0)
                 holder.tvOSAmt.setText("0");
             else
-                holder.tvOSAmt.setText(bmodel.formatValue(osamount));
+                holder.tvOSAmt.setText(bmodel.formatValueBasedOnConfig(osamount));
 
             if (holder.invoiceHeaderBO.isChkBoxChecked()) {
                 holder.imgInvSelected.setVisibility(View.VISIBLE);
