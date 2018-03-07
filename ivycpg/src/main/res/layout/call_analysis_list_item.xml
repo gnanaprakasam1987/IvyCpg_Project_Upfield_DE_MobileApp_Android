@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingStart="@dimen/dimen_8dp"
     android:paddingEnd="@dimen/dimen_8dp"
+    android:paddingStart="@dimen/dimen_8dp"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
 
     <TextView
-        style="?attr/customListItemPrimary"
         android:id="@+id/menunametxt"
+        style="?attr/customListItemPrimary"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:gravity="center"
@@ -22,8 +23,10 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/tv_menuvalue_lty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true">
 
@@ -49,9 +52,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tv_menuvalue_lty"
             android:layout_centerVertical="true"
             android:textColor="@color/kpi_value_text_color"
-            android:textSize="@dimen/font_nano_small"></TextView>
+            android:textSize="@dimen/font_nano_small"
+            tools:ignore="UnknownId"></TextView>
     </RelativeLayout>
 
     <LinearLayout

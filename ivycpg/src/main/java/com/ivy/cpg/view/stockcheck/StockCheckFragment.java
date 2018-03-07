@@ -1435,6 +1435,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 public void onDismiss(DialogInterface dialog) {
                     if (businessModel.reasonHelper.isNpReasonPhotoAvaiable(businessModel.retailerMasterBO.getRetailerID(), "MENU_STOCK")) {
                         businessModel.saveModuleCompletion("MENU_STOCK");
+                        startActivity(new Intent(getActivity(),
+                                HomeScreenTwo.class));
                         getActivity().finish();
                     }
                 }

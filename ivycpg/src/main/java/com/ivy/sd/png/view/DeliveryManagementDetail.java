@@ -163,13 +163,11 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     mProductDetailsLV.setVisibility(View.GONE);
                     mTitleLL.setVisibility(View.GONE);
                     mKeyPadLL.setVisibility(View.GONE);
+                    chk_title.setVisibility(View.GONE);
+                    mProductDetailsLV.setAdapter(myAdapter);
 
                 } else {
-                    if (mSelectedItem.equals(getResources().getString(R.string.fullfilled)))
-                        chk_title.setVisibility(View.GONE);
-                    else
-                        chk_title.setVisibility(View.VISIBLE);
-
+                    chk_title.setVisibility(View.VISIBLE);
                     mProductDetailsLV.setVisibility(View.VISIBLE);
                     mTitleLL.setVisibility(View.VISIBLE);
                     mKeyPadLL.setVisibility(View.VISIBLE);
@@ -273,7 +271,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 if (!bmodel.configurationMasterHelper.IS_SIH_VALIDATION_ON_DELIVERY)
                     holder.sih.setVisibility(View.GONE);
 
-                if (mSelectedItem.equals(getResources().getString(R.string.fullfilled)))
+                if (mSelectedItem.equals(getResources().getString(R.string.rejected)))
                     holder.deliveryCB.setVisibility(View.GONE);
 
                 holder.deliveryCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -499,6 +497,20 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     holder.outerET.setText(holder.productBO.getInit_OuterQty() + "");
                     QUANTITY = null;
                 }
+            }
+
+
+            if (mSelectedItem.equals(getResources().getString(R.string.fullfilled))) {
+                holder.deliveryCB.setChecked(true);
+                holder.deliveryCB.setEnabled(false);
+            } else if (mSelectedItem.equals(getResources().getString(R.string.partially_fullfilled))) {
+                holder.deliveryCB.setEnabled(true);
+                if (holder.productBO.isCheked())
+                    holder.deliveryCB.setChecked(true);
+                else
+                    holder.deliveryCB.setChecked(false);
+            } else {
+                holder.deliveryCB.setVisibility(View.GONE);
             }
 
             if (mOutOfStockProducts != null && mOutOfStockProducts.contains(holder.productBO.getProductID()))

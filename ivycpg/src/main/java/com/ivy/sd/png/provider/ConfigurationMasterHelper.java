@@ -2214,7 +2214,7 @@ public class ConfigurationMasterHelper {
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
 
-        this.IS_ALLOW_CONTINUOUS_PRINT =hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT)!=null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
+        this.IS_ALLOW_CONTINUOUS_PRINT = hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
         this.retailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
         this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
 
@@ -3199,7 +3199,7 @@ public class ConfigurationMasterHelper {
             SHOW_D2 = false;
             SHOW_D3 = false;
             SHOW_DA = false;
-            SHOW_DISCOUNTED_PRICE=false;
+            SHOW_DISCOUNTED_PRICE = false;
             SHOW_STOCK_PRICECHECK_PCS = false;
             SHOW_STOCK_PRICECHECK_OU = false;
             SHOW_STOCK_PRICECHECK_CS = false;
@@ -3794,6 +3794,18 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
 
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_STORE_WISE_DISCOUNT_DIALOG) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    BILL_WISE_DISCOUNT = c.getInt(0);
+                }
+            }
+            c.close();
+
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -3930,15 +3942,6 @@ public class ConfigurationMasterHelper {
 
             }
         }
-        sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                + " where hhtCode=" + bmodel.QT(CODE_STORE_WISE_DISCOUNT_DIALOG) + " and Flag=1";
-        c = db.selectSQL(sql);
-        if (c.getCount() > 0) {
-            if (c.moveToFirst()) {
-                BILL_WISE_DISCOUNT = c.getInt(0);
-            }
-        }
-
 
         c.close();
         db.closeDB();
@@ -4322,10 +4325,10 @@ public class ConfigurationMasterHelper {
                 SHOW_BIXOLON_TITAN = true;
             else if (CODE_SCRIBE_TITAN.equals(printer))
                 SHOW_SCRIBE_TITAN = true;
-            else if(CODE_COMMON_PRINT_MAESTROS.equals(printer))
-                COMMON_PRINT_MAESTROS=true;
-            else if(CODE_COMMON_PRINT_INTERMEC.equals(printer))
-                COMMON_PRINT_INTERMEC=true;
+            else if (CODE_COMMON_PRINT_MAESTROS.equals(printer))
+                COMMON_PRINT_MAESTROS = true;
+            else if (CODE_COMMON_PRINT_INTERMEC.equals(printer))
+                COMMON_PRINT_INTERMEC = true;
 
 
             String printersize = sharedPrefs.getString("PrinterSizePref", "2");
@@ -4659,7 +4662,7 @@ public class ConfigurationMasterHelper {
                     codeValue = c.getString(0);
                 }
             }
-            if (codeValue != null) {
+            if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
                 for (String temp : codeSplit) {
                     if (temp.equals("SIGN"))

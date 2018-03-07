@@ -18,11 +18,10 @@
 
             <TextView
                 android:id="@+id/week_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_5dp"
-                android:layout_marginStart="@dimen/dimen_5dp"
-                android:layout_marginTop="@dimen/dimens_10dp"
+                android:layout_marginTop="@dimen/dimens_6dp"
                 android:layout_toRightOf="@+id/brandSpinner"
                 android:layout_toEndOf="@+id/brandSpinner"
                 android:text="@string/select_week"
@@ -130,13 +129,12 @@
 
             <TextView
                 android:id="@+id/day_title"
-                android:layout_width="@dimen/select_week_width"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginLeft="@dimen/margin_week_layout"
-                android:layout_marginStart="@dimen/margin_week_layout"
-                android:layout_marginTop="@dimen/dimens_10dp"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/dimens_6dp"
                 android:text="@string/select_day"
                 android:textColor="?attr/selectWeekBackground"
                 android:textSize="@dimen/font_small" />

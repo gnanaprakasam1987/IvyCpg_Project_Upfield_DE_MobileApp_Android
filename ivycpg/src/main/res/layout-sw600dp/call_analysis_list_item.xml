@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingStart="@dimen/list_padding_left_n_right"
     android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
     <LinearLayout
@@ -28,8 +28,10 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:id="@+id/tv_menuvalue_lty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true">
 
@@ -55,6 +57,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_menuvalue_lty"
                 android:layout_centerVertical="true"
                 android:textColor="@color/kpi_value_text_color"
                 android:textSize="@dimen/text_sz_small"></TextView>
@@ -85,7 +89,7 @@
         android:layout_width="@dimen/dimen_1dp"
         android:layout_height="match_parent"
         android:background="@color/GRAY"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll_second_layout"
@@ -94,7 +98,7 @@
         android:layout_margin="@dimen/dimen_10dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/menunametxt_two"
@@ -109,8 +113,10 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:id="@+id/tv_menuvalue_lty2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true">
 
@@ -135,6 +141,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_menuvalue_lty2"
                 android:layout_centerVertical="true"
                 android:textColor="@color/kpi_value_text_color"
                 android:textSize="@dimen/text_sz_small"></TextView>
