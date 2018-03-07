@@ -226,7 +226,28 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
     @Override
     public void onClick(View v) {
         if (R.id.btn_ok == v.getId()) {
-            getDialog().dismiss();
+            boolean isflag = true;
+            for (NearExpiryDateBO nearExpiryDateBO : mSKUBO.getLocations().get(mNearExpiryHelper.mSelectedLocationIndex)
+                    .getNearexpiryDate()) {
+                if (!nearExpiryDateBO.getNearexpPC().equals("0")
+                        || !nearExpiryDateBO.getNearexpCA().equals("0")
+                        || !nearExpiryDateBO.getNearexpOU().equals("0")) {
+
+                    if (nearExpiryDateBO.getDate().equals("")) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.select_date),
+                                Toast.LENGTH_SHORT).show();
+                        isflag = false;
+                        break;
+
+                    }
+                } else {
+                    if (!nearExpiryDateBO.getDate().equals(""))
+                        nearExpiryDateBO.setDate("");
+                }
+            }
+            if (isflag)
+                getDialog().dismiss();
         }
     }
 
@@ -282,12 +303,20 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
         try {
             formatter = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
             selectDate = formatter.parse(selectedDay);
-            selectDate1 = formatter.parse(datec1);
-            selectDate2 = formatter.parse(datec2);
-            selectDate3 = formatter.parse(datec3);
-            selectDate4 = formatter.parse(datec4);
-            selectDate5 = formatter.parse(datec5);
-            selectDate6 = formatter.parse(datec6);
+
+            if (!datec1.equals(""))
+                selectDate1 = formatter.parse(datec1);
+            if (!datec2.equals(""))
+                selectDate2 = formatter.parse(datec2);
+            if (!datec3.equals(""))
+                selectDate3 = formatter.parse(datec3);
+            if (!datec4.equals(""))
+                selectDate4 = formatter.parse(datec4);
+            if (!datec5.equals(""))
+                selectDate5 = formatter.parse(datec5);
+            if (!datec6.equals(""))
+                selectDate6 = formatter.parse(datec6);
+
             String tday = formatter.format(todayDate);
             todayDate = formatter.parse(tday);
             maxDate = formatter.parse(maxDayString);
@@ -298,54 +327,81 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
         selectday.setTime(selectDate);
         today.setTime(todayDate);
         maxday.setTime(maxDate);
-        day1.setTime(selectDate1);
-        day2.setTime(selectDate2);
-        day3.setTime(selectDate3);
-        day4.setTime(selectDate4);
-        day5.setTime(selectDate5);
-        day6.setTime(selectDate6);
+
+        if (selectDate1 != null)
+            day1.setTime(selectDate1);
+        if (selectDate2 != null)
+            day2.setTime(selectDate2);
+        if (selectDate3 != null)
+            day3.setTime(selectDate3);
+        if (selectDate4 != null)
+            day4.setTime(selectDate4);
+        if (selectDate5 != null)
+            day5.setTime(selectDate5);
+        if (selectDate6 != null)
+            day6.setTime(selectDate6);
+
+        int m1 = -1;
+        int m2 = -1;
+        int m3 = -1;
+        int m4 = -1;
+        int m5 = -1;
+        int m6 = -1;
 
         long t = today.getTimeInMillis();
         long m = maxday.getTimeInMillis();
         long s = selectday.getTimeInMillis();
-        long d1 = day1.getTimeInMillis();
-        long d2 = day2.getTimeInMillis();
-        long d3 = day3.getTimeInMillis();
-        long d4 = day4.getTimeInMillis();
-        long d5 = day5.getTimeInMillis();
-        long d6 = day6.getTimeInMillis();
+        int sMonth = selectDate.getMonth();
+
+        if (selectDate1 != null)
+            m1 = selectDate1.getMonth();
+
+        if (selectDate2 != null)
+            m2 = selectDate2.getMonth();
+
+        if (selectDate3 != null)
+            m3 = selectDate3.getMonth();
+
+        if (selectDate4 != null)
+            m4 = selectDate4.getMonth();
+
+        if (selectDate5 != null)
+            m5 = selectDate5.getMonth();
+
+        if (selectDate6 != null)
+            m6 = selectDate6.getMonth();
 
         if (t <= s && s <= m) {
 
-            if ("date1".equals(date) &&
-                    (d2 != s) && (d3 != s) && (d4 != s) && (d5 != s)
-                    && (d6 != s)) {
+            if ("date1".equals(date) && (m2 != sMonth) && (m3 != sMonth)
+                    && (m4 != sMonth) && (m5 != sMonth)
+                    && (m6 != sMonth)) {
                 return true;
             }
 
-            if ("date2".equals(date) &&
-                    (d1 != s) && (d3 != s) && (d4 != s) && (d5 != s)
-                    && (d6 != s)) {
+            if ("date2".equals(date) && (m1 != sMonth) && (m3 != sMonth)
+                    && (m4 != sMonth) && (m5 != sMonth)
+                    && (m6 != sMonth)) {
                 return true;
             }
-            if ("date3".equals(date) &&
-                    (d1 != s) && (d2 != s) && (d4 != s) && (d5 != s)
-                    && (d6 != s)) {
+            if ("date3".equals(date) && (m1 != sMonth) && (m2 != sMonth)
+                    && (m4 != sMonth) && (m5 != sMonth)
+                    && (m6 != sMonth)) {
                 return true;
             }
-            if ("date4".equals(date) &&
-                    (d1 != s) && (d2 != s) && (d3 != s) && (d5 != s)
-                    && (d6 != s)) {
+            if ("date4".equals(date) && (m1 != sMonth) && (m2 != sMonth)
+                    && (m3 != sMonth) && (m5 != sMonth)
+                    && (m6 != sMonth)) {
                 return true;
             }
-            if ("date5".equals(date) &&
-                    (d1 != s) && (d2 != s) && (d3 != s) && (d4 != s)
-                    && (d6 != s)) {
+            if ("date5".equals(date) && (m1 != sMonth) && (m2 != sMonth)
+                    && (m3 != sMonth) && (m3 != sMonth)
+                    && (m6 != sMonth)) {
                 return true;
             }
-            if ("date6".equals(date) &&
-                    (d1 != s) && (d2 != s) && (d3 != s) && (d4 != s)
-                    && (d5 != s)) {
+            if ("date6".equals(date) && (m1 != sMonth) && (m2 != sMonth)
+                    && (m3 != sMonth) && (m4 != sMonth)
+                    && (m5 != sMonth)) {
                 return true;
             }
         }
@@ -771,7 +827,15 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        String boDate = date1.getText().toString();
+                        Calendar c = Calendar.getInstance();
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy",
+                                Locale.ENGLISH);
+
+                        String boDate;
+                        if (date1.getText().toString().equals(""))
+                            boDate = df.format(c.getTime());
+                        else
+                            boDate = date1.getText().toString();
 
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
@@ -784,7 +848,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     public void onDateSet(DatePicker view, int year,
@@ -940,7 +1004,15 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        String boDate = date2.getText().toString();
+                        Calendar c = Calendar.getInstance();
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy",
+                                Locale.ENGLISH);
+                        String boDate;
+                        if (date2.getText().toString().equals(""))
+                            boDate = df.format(c.getTime());
+                        else
+                            boDate = date2.getText().toString();
+
 
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
@@ -952,7 +1024,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mDay = day;
                         mMonth = month - 1;
                         mYear = year;
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1107,7 +1179,14 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        String boDate = date3.getText().toString();
+                        Calendar c = Calendar.getInstance();
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy",
+                                Locale.ENGLISH);
+                        String boDate;
+                        if (date3.getText().toString().equals(""))
+                            boDate = df.format(c.getTime());
+                        else
+                            boDate = date3.getText().toString();
 
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
@@ -1120,7 +1199,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1273,8 +1352,14 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        String boDate = date4.getText().toString();
-
+                        Calendar c = Calendar.getInstance();
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy",
+                                Locale.ENGLISH);
+                        String boDate;
+                        if (date4.getText().toString().equals(""))
+                            boDate = df.format(c.getTime());
+                        else
+                            boDate = date4.getText().toString();
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
@@ -1286,7 +1371,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1440,7 +1525,14 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        String boDate = date5.getText().toString();
+                        Calendar c = Calendar.getInstance();
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy",
+                                Locale.ENGLISH);
+                        String boDate;
+                        if (date5.getText().toString().equals(""))
+                            boDate = df.format(c.getTime());
+                        else
+                            boDate = date5.getText().toString();
 
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
@@ -1453,7 +1545,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1603,7 +1695,14 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        String boDate = date6.getText().toString();
+                        Calendar c = Calendar.getInstance();
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy",
+                                Locale.ENGLISH);
+                        String boDate;
+                        if (date6.getText().toString().equals(""))
+                            boDate = df.format(c.getTime());
+                        else
+                            boDate = date6.getText().toString();
 
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
@@ -1616,7 +1715,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
