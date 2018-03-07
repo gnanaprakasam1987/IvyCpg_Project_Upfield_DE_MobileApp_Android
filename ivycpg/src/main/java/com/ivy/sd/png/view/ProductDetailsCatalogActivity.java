@@ -49,7 +49,7 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        setScreenTitle("Product Details");
+        setScreenTitle(getResources().getString(R.string.Product_details));
         DisplayMetrics dm = new DisplayMetrics();
         getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
         mTotalScreenWidth = dm.widthPixels;

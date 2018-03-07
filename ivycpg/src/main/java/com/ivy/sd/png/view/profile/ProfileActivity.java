@@ -326,7 +326,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 tabLayout.addTab(tabLayout.newTab()
                         .setText(profile_title));
             } else {
-                profile_title = "Profile";
+                profile_title = getResources().getString(R.string.profile);
                 tabLayout.addTab(tabLayout.newTab().setText(profile_title));
             }
         } catch (Exception ex) {

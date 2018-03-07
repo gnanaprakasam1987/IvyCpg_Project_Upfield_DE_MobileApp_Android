@@ -19,6 +19,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 @SuppressLint("UseSparseArrays")
@@ -38,6 +39,7 @@ public class AssetTrackingHelper {
     private ArrayList<ReasonMaster> mAssetConditionList = new ArrayList<>();
     private ArrayList<ReasonMaster> mPOSMReasonList = new ArrayList<>();
     private ArrayList<ReasonMaster> mPOSMConditionList = new ArrayList<>();
+    private HashMap<String, String> mUniqueSerialNo;
 
     public int mSelectedAssetID = 0;
     public String mSelectedImageName = "";
@@ -396,6 +398,7 @@ public class AssetTrackingHelper {
             type = MERCH_INIT;
 
         mAssetTrackingList = new ArrayList<>();
+        mUniqueSerialNo = new HashMap<>();
 
         AssetTrackingBO assetTrackingBO;
         StringBuilder sb = new StringBuilder();
@@ -467,7 +470,22 @@ public class AssetTrackingHelper {
                 }
 
             }
-            if (mAssetTrackingList != null) {
+
+            //load serial no's into hash map for uniqueness
+
+            if (MENU_ASSET.equals(moduleName)) {
+                String sb1 = "select SerialNO from POSMCriteriaMapping where " +
+                        "TypeLovId=(select listid from StandardListMaster where ListCode=" + mBusinessModel.QT(type) + ")";
+                c = db.selectSQL(sb1);
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        if (c.getString(0) != null)
+                            mUniqueSerialNo.put(c.getString(0), c.getString(0));
+                    }
+                }
+            }
+
+            if (mAssetTrackingList != null && mAllAssetTrackingList.size() > 0) {
                 for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
@@ -730,6 +748,16 @@ public class AssetTrackingHelper {
 
                 }
             }
+
+            //download exsisiting asset serial no from transaction table
+            String sb1 = "select serialNum from AssetAddDelete";
+            c = db.selectSQL(sb1);
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    mUniqueSerialNo.put(c.getString(0), c.getString(0));
+                }
+            }
+
             c.close();
             db.closeDB();
 
@@ -1015,6 +1043,18 @@ public class AssetTrackingHelper {
         return new ArrayList<>();
     }
 
+    //check serial no is available are not in hash map for uniqueness
+    public boolean getUniqueSerialNo(String serialNo) {
+        if (mUniqueSerialNo == null || mUniqueSerialNo.size() == 0)
+            return false;
+        else {
+            if (mUniqueSerialNo.get(serialNo) == null)
+                return false;
+            else
+                return true;
+        }
+    }
+
 
     /**
      * Method return reason name arrayList
@@ -1081,6 +1121,10 @@ public class AssetTrackingHelper {
      */
     public void saveAssetAddAndDeleteDetails(Context mContext, String moduleName) {
         String type = "";
+
+        if (mUniqueSerialNo == null)
+            mUniqueSerialNo = new HashMap<>();
+
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
         else if (MENU_POSM.equals(moduleName))
@@ -1114,6 +1158,9 @@ public class AssetTrackingHelper {
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addAssetColumns,
                     assetAddAndDeleteValues);
+
+            //add serial no for uniqueness
+            mUniqueSerialNo.put(assets.getSNO(), assets.getSNO());
 
             db.closeDB();
 
@@ -1236,6 +1283,10 @@ public class AssetTrackingHelper {
                     + QT(mSno), false);
 
             db.closeDB();
+
+            //removed deleted serial no from hash map
+            if (mUniqueSerialNo.get(mSno) != null)
+                mUniqueSerialNo.remove(mSno);
 
         } catch (Exception e) {
             Commons.printException("" + e);

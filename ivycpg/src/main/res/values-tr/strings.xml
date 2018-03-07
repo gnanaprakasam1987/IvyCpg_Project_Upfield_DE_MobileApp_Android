@@ -136,7 +136,7 @@
     <string name="item">Ürün</string>
     <string name="vat">KDV:</string>
     <string name="vatt">(+) KDV</string>
-    <string name="discount">İskonto</string>
+    <string name="discount">Ek İskonto</string>
     <string name="bill_value">Fatura Tutarı</string>
     <string name="signature">İmza</string>
     <string name="calculator">Hesap Makinesi</string>
@@ -163,7 +163,7 @@
     <string name="prod_code">Ürün Kodu</string>
     <string name="submit">Oluştur</string>
     <string name="hvp3m">HVP3M</string>
-    <string name="sync">Eşleştirme</string>
+    <string name="sync">Senkronizasyon</string>
     <string name="start_sync">Senkronizasyona Başla</string>
     <string name="with_images">Fotoğrafla birlikte</string>
     <string name="close_the_day">Günü Kapat</string>
@@ -331,7 +331,7 @@
     <string name="select_no_order_reason">Sipariş Alınmama Sebebi Seçin</string>
     <string name="select_reason">Gerekçe seç</string>
     <string name="order_created_successfully">Sipariş başarıyla oluşturuldu</string>
-    <string name="done">Yapıldı</string>
+    <string name="done">TAMAM</string>
     <string name="lbl_continue">Devam</string>
     <string name="brand">Ürün Ailesi</string>
     <string name="please_finish_mandatory_modules">Lütfen mecburi modülleri tamamlayın.</string>
@@ -1101,7 +1101,7 @@
     <string name="are_you_sure_you_want_to_logout">Çıkış yapmak istediğine emin misin?</string>
     <string name="vaload_heder_text">Select quality for each batch</string>
     <string name="total_items">Toplam iade edilen ürünler “%1$d”</string>
-    <string name="srp_text">TL</string>
+    <string name="srp_text">Fiyat</string>
     <string name="loading_no">Yükleme No.</string>
     <string name="dateend">Bitiş Tarihi</string>
     <string name="deleted_sucessfully">Başarıyla silindi</string>
@@ -1115,6 +1115,17 @@
     <string name="old_order_volume">Önceki Tutar</string>
     <!-- Order summary success dialog message -->
     <string name="delivery_date_is">Teslimat Tarihi </string>
+
+    <string name="Would_you_like_to_add_this_store_in_today_plan">Mağaza bugünün ziyaret planına eklensin mi?</string>
+    <string name="reason_for_visit">Ziyaret Sebebi</string>
+    <string name="enter_remarks">Lütfen notunuzu belirtin</string>
+    <string name="other_reason">Diğer</string>
+    <string name="remark_hint">Not</string>
+    <string name="catalog_images_download">Katalog Görsellerini İndir</string>
+    <string name="enter_your_password">Şifrenizi Girin</string>
+    <string name="enter_valid_password">Lütfen geçerli bir şifre giriniz</string>
+    <string name="profile">PROFİL</string>
+    <string name="view">Görüntüle</string>
 
     <string-array name="task_tab_header">
         <item>TÜMÜ</item>
