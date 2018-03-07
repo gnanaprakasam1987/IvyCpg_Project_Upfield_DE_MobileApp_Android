@@ -237,8 +237,10 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         super.onResume();
         isClicked = false;
 
-        mScreenTitle = mBModel.labelsMasterHelper
-                .applyLabels((Object) "menu_dgt");
+        if (mBModel.labelsMasterHelper
+                .applyLabels((Object) "menu_dgt") != null)
+            mScreenTitle = mBModel.labelsMasterHelper
+                    .applyLabels((Object) "menu_dgt");
 
         if (getActionBar() != null) {
             getActionBar().setDisplayShowTitleEnabled(false);

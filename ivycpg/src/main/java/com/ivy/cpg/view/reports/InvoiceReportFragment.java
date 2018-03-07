@@ -482,8 +482,11 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
                     businessModel.productHelper.updateBillWiseDiscountInObj(mInvoiceId);
 
-
                     orderHelper.setOrderId(inv.getOrderID());
+                    //load currency data
+                    if (businessModel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
+                        businessModel.downloadCurrencyConfig();
+                    }
                 }
 
 

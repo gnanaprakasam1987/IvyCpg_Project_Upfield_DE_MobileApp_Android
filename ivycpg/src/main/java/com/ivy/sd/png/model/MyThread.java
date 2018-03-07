@@ -286,7 +286,7 @@ public class MyThread extends Thread {
 
             // Set Order Taken/ executed flag
             bmodel.setIsOrderMerch();
-            bmodel.setOrderMerchInDB();
+            bmodel.setOrderMerchInDB("Y");
             bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
 
             // If initiative is enabled then , claculate and update the values
@@ -350,6 +350,9 @@ public class MyThread extends Thread {
                 bmodel.getRetailerMasterBO().setOrdered("N");
             }
 
+            bmodel.setOrderMerchInDB("N");
+            bmodel.getRetailerMasterBO().setIsOrderMerch("N");
+
             // bmodel.initiativeHelper.storeInitiativePrecentageInDB("0",0);
             // bmodel.initiativeHelper.setInitiativePrecentInBO("0");
             // bmodel.getRetailerMasterBO().setInitiativePercent("0");
@@ -391,7 +394,7 @@ public class MyThread extends Thread {
             orderHelper.deleteStockAndOrder(ctx);
 
             orderHelper.deleteOrder(ctx, bmodel.getRetailerMasterBO().getRetailerID());
-
+            bmodel.deleteModuleCompletion("MENU_STK_ORD");
             // Calculate and set Distribution percent
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                 String percent = bmodel.getSBDDistributionPrecentNewPhilip();
@@ -534,7 +537,7 @@ public class MyThread extends Thread {
 
             // Set Order Taken/ executed flag
             bmodel.setIsOrderMerch();
-            bmodel.setOrderMerchInDB();
+            bmodel.setOrderMerchInDB("Y");
             bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
 
             if (bmodel.configurationMasterHelper.IS_INVOICE) {

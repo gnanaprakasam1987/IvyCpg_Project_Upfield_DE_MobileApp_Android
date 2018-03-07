@@ -221,6 +221,7 @@
                                     android:layout_gravity="center"
                                     android:layout_weight="1"
                                     android:gravity="center"
+                                    android:tag="item_outer"
                                     android:text="@string/item_outer"
                                     android:textStyle="bold"
                                     android:visibility="gone" />
