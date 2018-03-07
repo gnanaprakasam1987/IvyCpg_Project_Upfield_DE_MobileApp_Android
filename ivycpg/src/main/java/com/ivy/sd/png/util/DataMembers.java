@@ -488,6 +488,8 @@ public class DataMembers {
     private static final String tbl_activity_jointcall_cols = "menucode,uid,supervisorid";
 
     public static final String tbl_DistributorMaster = "DistributorMaster";
+    public static final String tbl_IncentiveDashboard = "IncentiveDashboard";
+
 
     public static final String tbl_distributor_closingstock_header = "DistStockCheckHeader";
     public static final String tbl_distributor_closingstock_detail = "DistStockCheckDetails";
