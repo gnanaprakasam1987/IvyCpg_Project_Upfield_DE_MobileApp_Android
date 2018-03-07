@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:weightSum="6">
+
+        <TextView
+            android:id="@+id/tv_factor"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.40"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/font_small" />
+
+
+        <TextView
+            android:id="@+id/tv_target"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/tv_achived"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/tv_achper"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.60"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/tv_payout_earned"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/tv_max_possible"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/font_small" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

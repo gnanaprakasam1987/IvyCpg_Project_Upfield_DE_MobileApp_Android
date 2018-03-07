@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DashBoardBO;
+import com.ivy.sd.png.bo.IncentiveDashboardBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.PriorityBo;
 import com.ivy.sd.png.bo.RetailerKPIBO;
@@ -42,6 +43,17 @@ public class DashBoardHelper {
     private Context mContext;
     private BusinessModel bmodel;
     private static DashBoardHelper instance = null;
+    private ArrayList<IncentiveDashboardBO> incentiveList;
+    private ArrayList<String> incentiveType;
+    private ArrayList<String> incentiveGroups;
+
+    public ArrayList<IncentiveDashboardBO> getIncentiveList() {
+        return incentiveList;
+    }
+
+    public void setIncentiveList(ArrayList<IncentiveDashboardBO> incentiveList) {
+        this.incentiveList = incentiveList;
+    }
 
     private List<DashBoardBO> dashChartDataList;
     private ArrayList<DashBoardBO> dashListViewList;
@@ -3051,6 +3063,7 @@ public class DashBoardHelper {
                                     .getCalculatedPercentage());
                         }
 
+
                         sellerKpiSku.add(temp);
                     }
                     c.close();
@@ -3063,6 +3076,81 @@ public class DashBoardHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    public void downloadIncentiveList() {
+        incentiveList = new ArrayList<>();
+        incentiveGroups = new ArrayList<>();
+        incentiveType = new ArrayList<>();
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "SELECT * FROM " + DataMembers.tbl_IncentiveDashboard;
+
+            Cursor c = db.selectSQL(sql);
+
+            IncentiveDashboardBO con;
+            if (c != null) {
+                while (c.moveToNext()) {
+                    con = new IncentiveDashboardBO();//DId,DName,CNumber,Address1,Address2,Address3,Type,TinNo
+                    con.setTgt(c.getString(c.getColumnIndex("tgt")));
+                    con.setPayout(c.getString(c.getColumnIndex("payout")));
+                    con.setMaxpayout(c.getString(c.getColumnIndex("maxpayout")));
+                    con.setInctype(c.getString(c.getColumnIndex("inctype")));
+                    con.setGroups(c.getString(c.getColumnIndex("groups")));
+                    con.setFactor(c.getString(c.getColumnIndex("factor")));
+                    con.setAchper(c.getString(c.getColumnIndex("achper")));
+                    con.setAch(c.getString(c.getColumnIndex("ach")));
+
+                    incentiveList.add(con);
+                }
+            }
+
+
+            sql = "SELECT distinct inctype FROM " + DataMembers.tbl_IncentiveDashboard;
+
+            c = db.selectSQL(sql);
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    incentiveType.add(c.getString(0));
+                }
+            }
+
+            sql = "SELECT distinct groups FROM " + DataMembers.tbl_IncentiveDashboard;
+
+            c = db.selectSQL(sql);
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    incentiveGroups.add(c.getString(0));
+                }
+            }
+
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.print("" + e);
+        }
+    }
+
+    public ArrayList<String> getIncentiveType() {
+        return incentiveType;
+    }
+
+    public void setIncentiveType(ArrayList<String> incentiveType) {
+        this.incentiveType = incentiveType;
+    }
+
+    public ArrayList<String> getIncentiveGroups() {
+        return incentiveGroups;
+    }
+
+    public void setIncentiveGroups(ArrayList<String> incentiveGroups) {
+        this.incentiveGroups = incentiveGroups;
     }
 
     private int getParentId(int contentLevel, int parentLevel, int parentID) {
