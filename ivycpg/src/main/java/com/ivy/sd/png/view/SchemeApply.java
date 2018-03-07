@@ -106,6 +106,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         try {
             if (bmodel.labelsMasterHelper.applyLabels("scheme_view") != null)
                 schemeViewTxt = bmodel.labelsMasterHelper.applyLabels("scheme_view");
+            else schemeViewTxt=getResources().getString(R.string.view);
         } catch (Exception e) {
             Commons.printException(e);
         }

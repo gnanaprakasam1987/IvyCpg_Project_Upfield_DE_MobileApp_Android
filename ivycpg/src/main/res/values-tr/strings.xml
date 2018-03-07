@@ -331,7 +331,7 @@
     <string name="select_no_order_reason">Sipariş Alınmama Sebebi Seçin</string>
     <string name="select_reason">Gerekçe seç</string>
     <string name="order_created_successfully">Sipariş başarıyla oluşturuldu</string>
-    <string name="done">Yapıldı</string>
+    <string name="done">TAMAM</string>
     <string name="lbl_continue">Devam</string>
     <string name="brand">Ürün Ailesi</string>
     <string name="please_finish_mandatory_modules">Lütfen mecburi modülleri tamamlayın.</string>
