@@ -4182,14 +4182,14 @@ public class BusinessModel extends Application {
         }
     }
 
-    void setOrderMerchInDB() {
+    void setOrderMerchInDB(String flag) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             db.executeQ("update " + DataMembers.tbl_retailerMaster
-                    + " set isOrderMerch=" + QT("Y") + " where retailerid="
+                    + " set isOrderMerch=" + QT(flag) + " where retailerid="
                     + QT(getRetailerMasterBO().getRetailerID()));
             db.closeDB();
         } catch (Exception e) {
@@ -5081,7 +5081,7 @@ public class BusinessModel extends Application {
         }
     }
 
-    boolean hasStockInOrder() {
+    public boolean hasStockInOrder() {
         int siz = productHelper.getProductMaster().size();
         if (siz == 0)
             return false;

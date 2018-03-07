@@ -515,7 +515,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             bmodel.mCommonPrintHelper.setInvoiceData(new StringBuilder(appendString));
             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bmodel.writeToFile(appendString,
-                        StandardListMasterConstants.PRINT_FILE_COLLECTION + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", ""),"/IvyDist/");
+                        StandardListMasterConstants.PRINT_FILE_COLLECTION + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", ""), "/IvyDist/");
             }
             return "";
         }
@@ -641,7 +641,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
         mPaymentBO.setAmount(mTotalCreditNoteValue);
 
-        if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CASH)) {
+        if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CASH)) {
             mPaymentBO.setAmount(mTotalCreditNoteValue);
         } else {
             mTotalCreditNoteValue = bmodel.collectionHelper.getBalanceAmountWithOutCreditNote(mPaymentList, false);
@@ -719,7 +719,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             if (paymentList.size() > 0) {
                 int center = 0;
                 String tempStr;
-                if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+                if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                     tempStr = "Unipal General Trading Company";
                     if (tempStr.length() < 48) {
                         center = (48 - tempStr.length()) / 2;
@@ -853,7 +853,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(doPrintAddSpace(0, 9));
                 sb.append(doPrintFormatingLeft("Type", 10));
                 sb.append(doPrintFormatingLeft("Date", 12));
-                sb.append(doPrintFormatingLeft("Chq Num", 9));
+                sb.append(doPrintFormatingLeft("Chq Num", 8));
                 sb.append(doPrintFormatingLeft(String.format("%10s", "Total"), 13));
                 sb.append(LineFeed(1));
 
@@ -893,10 +893,14 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                     sb.append(doPrintFormatingLeft(tempStr, 10));
                     sb.append(doPrintFormatingLeft(payBO.getChequeDate() + "", 12));
 
+
                     if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE) && !payBO.getCashMode().equals(StandardListMasterConstants.ADVANCE_PAYMENT))
                         tempStr = "" + payBO.getChequeNumber();
                     else {
-                        tempStr = "" + payBO.getReferenceNumber();
+                        if (payBO.getReferenceNumber().contains("AP"))
+                            tempStr = "" + (payBO.getReferenceNumber().replace(" ", ""));
+                        else
+                            tempStr = "" + payBO.getReferenceNumber();
                     }
                     sb.append(doPrintFormatingLeft(tempStr, 9));
                     sb.append(doPrintFormatingLeft(String.format("%10s", bmodel.formatValueBasedOnConfig(payBO.getAmount())), 12));

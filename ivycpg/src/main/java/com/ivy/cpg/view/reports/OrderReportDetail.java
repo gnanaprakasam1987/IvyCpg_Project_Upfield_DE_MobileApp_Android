@@ -77,6 +77,13 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                             .setText(businessModel.labelsMasterHelper
                                     .applyLabels(findViewById(R.id.outid)
                                             .getTag()));
+
+                if (businessModel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.outercqty).getTag()) != null)
+                    ((TextView) findViewById(R.id.outercqty))
+                            .setText(businessModel.labelsMasterHelper
+                                    .applyLabels(findViewById(R.id.outercqty)
+                                            .getTag()));
             } catch (Exception e) {
                 Commons.printException(e);
             }

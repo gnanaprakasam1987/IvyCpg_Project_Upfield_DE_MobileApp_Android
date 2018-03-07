@@ -1144,6 +1144,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             BModel.synchronizationHelper.deleteFiles(
                                                     PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
 
+                                        if (!BModel.hasStockInOrder())
+                                            BModel.deleteModuleCompletion("MENU_STK_ORD");
                                         // clear scheme free products
                                         discountHelper.clearSchemeFreeProduct(mOrderedProductList);
 
@@ -1176,6 +1178,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         if (BModel.getOrderHeaderBO().getSignatureName() != null)
                                             BModel.synchronizationHelper.deleteFiles(
                                                     PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
+
                                         discountHelper.clearSchemeFreeProduct(mOrderedProductList);
 
                                         new MyThread(OrderSummary.this,
@@ -1208,6 +1211,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
+                                        BModel.deleteModuleCompletion("MENU_STK_ORD");
                                         new MyThread(OrderSummary.this,
                                                 DataMembers.DELETE_ORDER).start();
                                     }

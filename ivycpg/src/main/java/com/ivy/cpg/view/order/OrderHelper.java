@@ -269,7 +269,7 @@ public class OrderHelper {
 
             String printFilePath = "";
             if (businessModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
-                printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + SDUtil.now(SDUtil.DATE_GLOBAL).replace("/", "") + "/"
+                printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + businessModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
                         + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" +
                         StandardListMasterConstants.PRINT_FILE_ORDER + businessModel.invoiceNumber + ".txt";
             }
@@ -775,7 +775,7 @@ public class OrderHelper {
         sb.append(productBo.getCaseUomId() + ","
                 + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) + ","
                 + productBo.getMSQty() + ",");
-        sb.append(businessModel.formatValueBasedOnConfig(line_total_price) + ","
+        sb.append(line_total_price + ","
                 + DatabaseUtils.sqlEscapeString(productBo.getProductName()) + ","
                 + DatabaseUtils.sqlEscapeString(productBo.getProductShortName()) + ",");
         sb.append(DatabaseUtils.sqlEscapeString(productBo.getProductCode())
@@ -1380,7 +1380,7 @@ public class OrderHelper {
 
             String printFilePath = "";
             if (businessModel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
-                printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + SDUtil.now(SDUtil.DATE_GLOBAL).replace("/", "") + "/"
+                printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + businessModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
                         + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" +
                         StandardListMasterConstants.PRINT_FILE_INVOICE + businessModel.invoiceNumber + ".txt";
 
@@ -1403,10 +1403,13 @@ public class OrderHelper {
             sb.append(businessModel.getOrderHeaderBO().getDiscount() + ",");
             sb.append(businessModel.formatValueBasedOnConfig(orderValue) + ",");
             double discountedAmount;
+
+            orderValue = Double.parseDouble(businessModel.formatValueBasedOnConfig(orderValue));
             if (businessModel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                 if (discountPercentage > 0) {
 
                     double remainingAmount = (orderValue * discountPercentage) / 100;
+                    remainingAmount = Double.parseDouble(businessModel.formatValueBasedOnConfig(remainingAmount));
 
                     discountedAmount = orderValue
                             - remainingAmount;

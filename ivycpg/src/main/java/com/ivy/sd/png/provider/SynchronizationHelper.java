@@ -2417,7 +2417,7 @@ SynchronizationHelper {
             jsonObj.put("Model", Build.MODEL);
             jsonObj.put("VersionCode",
                     bmodel.getApplicationVersionNumber());
-            jsonObj.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
+            jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
                     bmodel.activationHelper.getIMEINumber());
             jsonObj.put("RegistrationId", bmodel.regid);
@@ -2471,7 +2471,7 @@ SynchronizationHelper {
             jsonObj.put("Model", Build.MODEL);
             jsonObj.put("VersionCode",
                     bmodel.getApplicationVersionNumber());
-            jsonObj.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
+            jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
                     bmodel.activationHelper.getIMEINumber());
             jsonObj.put("RegistrationId", bmodel.regid);
@@ -3437,7 +3437,7 @@ SynchronizationHelper {
                         bmodel.activationHelper.getIMEINumber());
                 jsonFormatter.addParameter("VersionCode",
                         bmodel.getApplicationVersionNumber());
-                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
                 jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
                 if (isDayClosed()) {
@@ -3807,19 +3807,29 @@ SynchronizationHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+            String query;
             Set<String> keys = DataMembers.uploadColumnWithOutRetailer.keySet();
             for (String tableName : keys) {
-                String query = "update " + tableName
+                query = "update " + tableName
                         + " set upload='Y' where upload='N'";
                 db.updateSQL(query);
             }
             keys = DataMembers.uploadColumnWithRetailer.keySet();
             for (String tableName : keys) {
-                String query = "update "
-                        + tableName
-                        + " set upload='Y' where upload='N' and RetailerID in ("
-                        + getRetailerIds().toString()
-                        + ")";
+                if (tableName.equalsIgnoreCase("NearByRetailers") || tableName.equalsIgnoreCase("RetailerPotential")
+                        || tableName.equalsIgnoreCase("RrtNearByEditRequest")) {
+                    query = "update "
+                            + tableName
+                            + " set upload='Y' where upload='N' and rid in ("
+                            + getRetailerIds().toString()
+                            + ")";
+                } else {
+                    query = "update "
+                            + tableName
+                            + " set upload='Y' where upload='N' and RetailerID in ("
+                            + getRetailerIds().toString()
+                            + ")";
+                }
                 db.updateSQL(query);
             }
 
@@ -3899,7 +3909,7 @@ SynchronizationHelper {
                         bmodel.activationHelper.getIMEINumber());
                 jsonFormatter.addParameter("VersionCode",
                         bmodel.getApplicationVersionNumber());
-                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
                 jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
                 jsonFormatter.addParameter("MobileDate",
@@ -4028,7 +4038,7 @@ SynchronizationHelper {
                         bmodel.activationHelper.getIMEINumber());
                 jsonFormatter.addParameter("VersionCode",
                         bmodel.getApplicationVersionNumber());
-                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
                 jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
                 if (isDayClosed()) {
@@ -4551,7 +4561,7 @@ SynchronizationHelper {
                     .getUserMasterBO().getLoginName());
             jsonFormatter.addParameter("VersionCode",
                     bmodel.getApplicationVersionNumber());
-            jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
+            jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonFormatter.addParameter("DistributorId", bmodel.userMasterHelper
                     .getUserMasterBO().getDistributorid());
             jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper

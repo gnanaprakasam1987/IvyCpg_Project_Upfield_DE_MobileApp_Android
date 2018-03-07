@@ -1622,6 +1622,14 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                         }
                     }
                 }
+            } else {
+                if (mFilterText.equals("")) {
+                    for (ProductMasterBO sku : items) {
+                        if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                            mylist.add(sku);
+                        fiveFilter_productIDs.add(sku.getProductID());
+                    }
+                }
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {// Only competitor products
             if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
@@ -1656,6 +1664,14 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                         }
                     }
                 }
+            } else {
+                if (mFilterText.equals("")) {
+                    for (ProductMasterBO sku : items) {
+                        if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                            mylist.add(sku);
+                        fiveFilter_productIDs.add(sku.getProductID());
+                    }
+                }
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {//Both Own and Competitor products
             if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
@@ -1688,6 +1704,14 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                                 mylist.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
+                    }
+                }
+            } else {
+                if (mFilterText.equals("")) {
+                    for (ProductMasterBO sku : items) {
+                        if (sku.getIsSaleable() == 1)
+                            mylist.add(sku);
+                        fiveFilter_productIDs.add(sku.getProductID());
                     }
                 }
             }

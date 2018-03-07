@@ -1938,26 +1938,26 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     // mandatory checked individualy for attribute..
                     selectedAttributeLevel = new ArrayList<>();
                     boolean isAdded = true;
+                    if (mAttributeParentList != null)
+                        for (NewOutletAttributeBO attributeBO : mAttributeParentList) {
+                            if (bmodel.newOutletAttributeHelper.getmCommonAttributeList().contains(attributeBO.getAttrId())) {
 
-                    for (NewOutletAttributeBO attributeBO : mAttributeParentList) {
-                        if (bmodel.newOutletAttributeHelper.getmCommonAttributeList().contains(attributeBO.getAttrId())) {
-
-                            NewOutletAttributeBO tempBO = selectedAttribList.get(attributeBO.getAttrId());
-                            if (attributeBO.getIsMandatory() == 1) {
-                                if (tempBO != null && tempBO.getAttrId() != -1) {
-                                    selectedAttributeLevel.add(tempBO);
+                                NewOutletAttributeBO tempBO = selectedAttribList.get(attributeBO.getAttrId());
+                                if (attributeBO.getIsMandatory() == 1) {
+                                    if (tempBO != null && tempBO.getAttrId() != -1) {
+                                        selectedAttributeLevel.add(tempBO);
+                                    } else {
+                                        isAdded = false;
+                                        Toast.makeText(getActivity(), getResources().getString(R.string.attribute) + " " + attributeBO.getAttrName() + " is Mandatory",
+                                                Toast.LENGTH_SHORT).show();
+                                        break;
+                                    }
                                 } else {
-                                    isAdded = false;
-                                    Toast.makeText(getActivity(), getResources().getString(R.string.attribute) + " " + attributeBO.getAttrName() + " is Mandatory",
-                                            Toast.LENGTH_SHORT).show();
-                                    break;
+                                    if (tempBO != null && tempBO.getAttrId() != -1)
+                                        selectedAttributeLevel.add(tempBO);
                                 }
-                            } else {
-                                if (tempBO != null && tempBO.getAttrId() != -1)
-                                    selectedAttributeLevel.add(tempBO);
                             }
                         }
-                    }
 
                     if (issubChannel && isAdded) {
                         if (bmodel.newOutletAttributeHelper.getmAttributeBOListByLocationID() != null)

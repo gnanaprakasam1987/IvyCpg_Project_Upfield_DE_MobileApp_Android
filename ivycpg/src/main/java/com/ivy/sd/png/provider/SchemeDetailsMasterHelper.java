@@ -1723,6 +1723,7 @@ public class SchemeDetailsMasterHelper {
 
                     if (quantity > 0) {
                         int balanceQty = 0;
+                        int balanceQtyInPeices = 0;
                         if (schemeProductBO.getUomID() != 0) {
                             if (schemeProductBO.getUomID() == productMasterBO
                                     .getCaseUomId()) {
@@ -1735,6 +1736,8 @@ public class SchemeDetailsMasterHelper {
                                     balanceQty = ((quantity / productMasterBO
                                             .getCaseSize()) % (int) schemeProductBO
                                             .getTobuyQty());
+                                    balanceQtyInPeices = balanceQty * productMasterBO
+                                            .getCaseSize() + (quantity % productMasterBO.getCaseSize());
 
                                 }
 
@@ -1749,6 +1752,8 @@ public class SchemeDetailsMasterHelper {
                                     balanceQty = ((quantity / productMasterBO
                                             .getOutersize()) % (int) schemeProductBO
                                             .getTobuyQty());
+                                    balanceQtyInPeices = balanceQty * productMasterBO
+                                            .getOutersize() + (quantity % productMasterBO.getOutersize());
 
                                 }
 
@@ -1757,20 +1762,22 @@ public class SchemeDetailsMasterHelper {
                                         / (int) schemeProductBO.getTobuyQty();
                                 balanceQty = quantity
                                         % (int) schemeProductBO.getTobuyQty();
+                                balanceQtyInPeices = balanceQty;
                             }
                         } else {
                             count = quantity / (int) schemeProductBO.getTobuyQty();
                             balanceQty = quantity
                                     % (int) schemeProductBO.getTobuyQty();
+                            balanceQtyInPeices = balanceQty;
 
                         }
 
 
                         if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
                                 !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productMasterBO.getProductID())) {
-                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()), (int) (quantity - balanceQty));
+                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()), (int) (quantity - balanceQtyInPeices));
                         } else {
-                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()), (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productMasterBO.getProductID()) + ((int) (quantity - balanceQty))));
+                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()), (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productMasterBO.getProductID()) + ((int) (quantity - balanceQtyInPeices))));
                         }
 
                         if (balanceQty >= schemeProductBO.getBuyQty()) {
@@ -2107,7 +2114,8 @@ public class SchemeDetailsMasterHelper {
 
                     int qty = 0;
                     double tempToQty = 0;
-                    tempToQty = selectedtoBuyQty;
+                    int appliedeQty = 0;
+                    tempToQty = selectedtoBuyQty * count;
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
                         ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                         if (productBO != null) {
@@ -2115,7 +2123,64 @@ public class SchemeDetailsMasterHelper {
 
                                 qty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
 
-                                if (qty > 0) {
+                                if (schemeProductBO.getUomID() == productBO.getOuUomid()) {
+                                    if (productBO.getOutersize() != 0) {
+                                        appliedeQty = qty / productBO.getOutersize();
+                                        if (tempToQty > appliedeQty)
+                                            tempToQty = tempToQty - appliedeQty;
+                                        else {
+                                            appliedeQty = (int) tempToQty;
+                                            tempToQty = 0;
+                                        }
+
+                                        if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                                !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
+                                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), appliedeQty * productBO.getOutersize());
+                                        } else {
+                                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
+                                                    (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + appliedeQty * productBO.getOutersize()));
+                                        }
+
+
+                                    }
+
+                                } else if (schemeProductBO.getUomID() == productBO.getCaseUomId()) {
+                                    if (productBO.getCaseSize() != 0) {
+                                        appliedeQty = qty / productBO.getCaseSize();
+                                        if (tempToQty > appliedeQty)
+                                            tempToQty = tempToQty - appliedeQty;
+                                        else {
+                                            appliedeQty = (int) tempToQty;
+                                            tempToQty = 0;
+                                        }
+                                        if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                                !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
+                                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), appliedeQty * productBO.getCaseSize());
+                                        } else {
+                                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
+                                                    (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + appliedeQty * productBO.getCaseSize()));
+                                        }
+                                    }
+
+                                } else {
+                                    if (tempToQty > qty)
+                                        tempToQty = tempToQty - qty;
+                                    else {
+                                        qty = (int) tempToQty;
+                                        tempToQty = 0;
+                                    }
+
+                                    if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
+                                            !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), qty);
+                                    } else {
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
+                                                (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + qty));
+                                    }
+                                }
+
+
+                              /*  if (qty > 0) {
 
                                     if (tempToQty >= qty) {
                                         tempToQty -= qty;
@@ -2139,7 +2204,7 @@ public class SchemeDetailsMasterHelper {
                                     }
 
 
-                                }
+                                }*/
 
                             }
                         }
@@ -2189,6 +2254,7 @@ public class SchemeDetailsMasterHelper {
         double selectedtoBuyQty = 0;
 
         double balancePercent = 0;
+        double appliedSchemeValue = 0;
 
         for (SchemeProductBO schemeProductBO : schemeProductList) {
             if (schemeProductBO.getGroupName().equals(groupName)
@@ -2260,6 +2326,7 @@ public class SchemeDetailsMasterHelper {
         if (totalvalue != 0) {
             if (selectedFromBuyQty > 0 && selectedtoBuyQty > 0) {
                 int balanceCount = (int) totalvalue % (int) selectedtoBuyQty;
+                appliedSchemeValue = totalvalue - balanceCount;
                 int count = (int) totalvalue / (int) selectedtoBuyQty;
 
                 if (balanceCount > selectedFromBuyQty)
@@ -2308,10 +2375,10 @@ public class SchemeDetailsMasterHelper {
                                 } else {
                                     if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
                                             !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productBO.getProductID())) {
-                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) tempToQty);
+                                        mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()), (int) appliedSchemeValue);
                                     } else {
                                         mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productBO.getProductID()),
-                                                (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + ((int) tempToQty)));
+                                                (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productBO.getProductID()) + ((int) appliedSchemeValue)));
                                     }
                                     break;
                                 }

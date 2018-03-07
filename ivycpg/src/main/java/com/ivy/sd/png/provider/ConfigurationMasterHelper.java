@@ -1274,6 +1274,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MUST_SELL_STK = "MSLSTK";
     public boolean IS_MUST_SELL_STK;
 
+    //unipal specific
+    public boolean SHOW_PRINT_HEADERS;
+    private static final String CODE_SHOW_PRINT_HEADERS = "PRINT_HEADER";
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2219,6 +2223,8 @@ public class ConfigurationMasterHelper {
         this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
 
         this.IS_MUST_SELL_STK = hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) : false;
+
+        this.SHOW_PRINT_HEADERS = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) : false;
     }
 
     public void loadOrderReportConfiguration() {
