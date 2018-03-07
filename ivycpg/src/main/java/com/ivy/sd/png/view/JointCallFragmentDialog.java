@@ -62,14 +62,14 @@ public class JointCallFragmentDialog extends DialogFragment {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 if (mPasswordET.getText().toString().equals("")) {
-                    Toast.makeText(getActivity(), "Please enter password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.enter_password), Toast.LENGTH_SHORT).show();
                 } else {
                     if (isJointUserLoginValidation()) {
                         mJoinUserBo.setIsJointCall(1);
                         mJoinDialogInterface.updateJoinList();
                         dismiss();
                     } else {
-                        Toast.makeText(getActivity(), "Please enter valid password", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),  getResources().getString(R.string.enter_valid_password), Toast.LENGTH_SHORT).show();
                     }
                 }
             }

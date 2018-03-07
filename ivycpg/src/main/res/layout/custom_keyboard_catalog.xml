@@ -312,7 +312,7 @@
             android:layout_height="@dimen/can_ok_btn_h"
             android:layout_weight="1"
             android:background="@drawable/ripple_effect_keyboard"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textColor="@color/Black" />
 
         <Button
@@ -322,7 +322,7 @@
             android:layout_marginStart="1dp"
             android:layout_weight="1"
             android:background="@drawable/ripple_effect_keyboard"
-            android:text="Ok"
+            android:text="@string/ok"
             android:textColor="@color/Black" />
 
     </LinearLayout>
