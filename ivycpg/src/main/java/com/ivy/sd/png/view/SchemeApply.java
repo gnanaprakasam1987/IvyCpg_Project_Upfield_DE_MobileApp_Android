@@ -394,6 +394,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.qtyRL = (RelativeLayout) view
                         .findViewById(R.id.qtyLayout);
                 holder.upArrow = (Button) view.findViewById(R.id.uparrow);
+                holder.tv_label_qtytitle = (TextView) view.findViewById(R.id.tv_qtytitle);
 
                 //typeface
                 holder.productNameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -408,6 +409,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.priceET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.amountET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.percentET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tv_label_qtytitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 ((TextView) view.findViewById(R.id.tv_qtytitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 ((TextView) view.findViewById(R.id.tv_pricetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -964,6 +966,10 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         + " Max: "
                         + SDUtil.roundIt(
                         schemeProductBO.getMaxPrecentCalculated(), 2));
+
+                holder.tv_label_qtytitle.setText(schemeProductBO.getUomDescription() + " "
+                        + getResources().getString(R.string.qty));
+
                 // set visibility for qty,percent,amount and price calculation
                 if (schemeProductBO.getQuantityMaxiumCalculated() == 0
                         && schemeProductBO.getQuantityActualCalculated() == 0) {
@@ -1247,7 +1253,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         // Info
         private TextView productNameTV;
         private TextView schemeTV;
-        private TextView orderQuantityTV;
+        private TextView orderQuantityTV,tv_label_qtytitle;;
         // Range
         private TextView quantityRangeTV, percentRangeTV;
         private TextView priceRangeTV, amountRangeTV;

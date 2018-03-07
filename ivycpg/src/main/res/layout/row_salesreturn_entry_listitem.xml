@@ -201,6 +201,7 @@
                     android:id="@+id/tv_piece_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:tag="item_sr_piece"
                     android:text="@string/avail_pcs"
                     android:textColor="@color/GRAY_TEXT"
                     android:textSize="@dimen/greyed_text_size" />
@@ -230,6 +231,7 @@
                     android:id="@+id/tv_case_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:tag="item_sr_case"
                     android:text="@string/avail_cases"
                     android:textColor="@color/GRAY_TEXT"
                     android:textSize="@dimen/greyed_text_size" />
@@ -259,6 +261,7 @@
                     android:id="@+id/tv_outer_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:tag="item_sr_outer"
                     android:text="@string/avail_outer"
                     android:textColor="@color/GRAY_TEXT"
                     android:textSize="@dimen/greyed_text_size" />

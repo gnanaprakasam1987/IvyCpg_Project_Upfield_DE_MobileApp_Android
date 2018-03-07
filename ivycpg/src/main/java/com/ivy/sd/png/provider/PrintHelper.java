@@ -234,7 +234,7 @@ public class PrintHelper {
                     String Printitem = "! 0 200 200 " + height + " 1\r\n"
                             + "CENTER\r\n";
 
-                    if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+                    if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                         Printitem += "T 5 1 10 60 "
                                 + ""
                                 + "Unipal General Trading Company" + "\r\n";
@@ -505,7 +505,7 @@ public class PrintHelper {
                     String Printitem = "! 0 200 200 " + height + " 1\r\n"
                             + "CENTER\r\n";
 
-                    if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+                    if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                         Printitem += "T 5 1 10 60 "
                                 + ""
                                 + "Unipal General Trading Company" + "\r\n";
@@ -617,10 +617,10 @@ public class PrintHelper {
 
 
                     x += 20;
-                    Printitem += "T 5 0 80 " + x + " Mode" + "\r\n";
-                    Printitem += "T 5 0 180 " + x + " Date" + "\r\n";
-                    Printitem += "T 5 0 310 " + x + " Chq Num" + "\r\n";
-                    Printitem += "T 5 0 450 " + x + " Total" + "\r\n";
+                    Printitem += "T 5 0 20 " + x + " Mode" + "\r\n";
+                    Printitem += "T 5 0 120 " + x + " Date" + "\r\n";
+                    Printitem += "T 5 0 240 " + x + " Chq Num" + "\r\n";
+                    Printitem += "T 5 0 370 " + x + " Total" + "\r\n";
 
                     x += 20;
                     Printitem += "T 5 0 10 " + x + " --------------------------------------------------\r\n";
@@ -637,42 +637,42 @@ public class PrintHelper {
                             x += 30;
                             if (payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)) {
                                 if (payBO.getReferenceNumber().startsWith("AP")) {
-                                    Printitem += "T 5 0 80 " + x + " "
+                                    Printitem += "T 5 0 20 " + x + " "
                                             + mContext.getResources().getString(R.string.advance_payment) + "\r\n";
                                 } else {
-                                    Printitem += "T 5 0 80 " + x + " "
+                                    Printitem += "T 5 0 20 " + x + " "
                                             + mContext.getResources().getString(R.string.credit_note) + "\r\n";
                                 }
                             } else {
                                 if (payBO.getCashMode().equals(StandardListMasterConstants.CASH)) {
-                                    Printitem += "T 5 0 80 " + x + " "
+                                    Printitem += "T 5 0 20 " + x + " "
                                             + mContext.getResources().getString(R.string.cash) + "\r\n";
                                 } else if (payBO.getCashMode().equals(StandardListMasterConstants.CHEQUE)) {
-                                    Printitem += "T 5 0 80 " + x + " "
+                                    Printitem += "T 5 0 20 " + x + " "
                                             + mContext.getResources().getString(R.string.cheque) + "\r\n";
                                 } else if (payBO.getCashMode().equals(StandardListMasterConstants.DEMAND_DRAFT)) {
-                                    Printitem += "T 5 0 80 " + x + " "
+                                    Printitem += "T 5 0 20 " + x + " "
                                             + "DD" + "\r\n";
                                 } else if (payBO.getCashMode().equals(StandardListMasterConstants.RTGS)) {
-                                    Printitem += "T 5 0 80 " + x + " "
+                                    Printitem += "T 5 0 20 " + x + " "
                                             + mContext.getResources().getString(R.string.rtgs) + "\r\n";
                                 } else if (payBO.getCashMode().equals(StandardListMasterConstants.MOBILE_PAYMENT)) {
-                                    Printitem += "T 5 0 80 " + x + " "
+                                    Printitem += "T 5 0 20 " + x + " "
                                             + "Mob.Pay" + "\r\n";
                                 }
                             }
 
 
-                            Printitem += "T 5 0 180 " + x + " "
+                            Printitem += "T 5 0 120 " + x + " "
                                     + payBO.getChequeDate()
                                     + "\r\n";
 
                             if (!payBO.getCashMode().equals(StandardListMasterConstants.CASH))
-                                Printitem += "T 5 0 310 " + x + " "
+                                Printitem += "T 5 0 240 " + x + " "
                                         + payBO.getChequeNumber() + "\r\n";
 
 
-                            Printitem += "T 5 0 450 " + x + " "
+                            Printitem += "T 5 0 370 " + x + " "
                                     + bmodel.formatValue(payBO.getAmount())
                                     + "\r\n";
 
@@ -690,10 +690,10 @@ public class PrintHelper {
                     x += 30;
 
 
-                    Printitem += "T 5 0 390 " + x + "Total " + "\r\n";
+                    Printitem += "T 5 0 300 " + x + "Total " + "\r\n";
 
                     Printitem += "RIGHT \r\n";
-                    Printitem += "T 5 0 460 " + x + " "
+                    Printitem += "T 5 0 370 " + x + " "
                             + bmodel.formatValue(total) + "\r\n";
 
                     x += 30;
@@ -2470,7 +2470,7 @@ public class PrintHelper {
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "CENTER\r\n");
             tempsb.append("SETBOLD 1 \r\n");
 
-            if (bmodel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL) {
+            if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
                 tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                         + "Unipal General Trading Company" + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");

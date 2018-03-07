@@ -621,9 +621,12 @@ public class CollectionHelper {
                         totalRemaingDisc = Double.parseDouble(SDUtil.format(totalRemaingDisc,
                                 0,
                                 0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+                    } else {
+                        totalRemaingDisc = Double.parseDouble(bmodel.formatValueBasedOnConfig(totalRemaingDisc));
                     }
                     discountedAmount = totalBalanceWithDisc - totalRemaingDisc;
 
+                    discountedAmount = Double.parseDouble(bmodel.formatValueBasedOnConfig(discountedAmount));
 
                     updateQuery = "update invoicemaster set discountedAmount=invnetAmount-(paidAmount+"
                             + (totalDisc + totalRemaingDisc) + ")"
@@ -633,7 +636,7 @@ public class CollectionHelper {
                             + bmodel.QT(invoiceHeaderBO.getInvoiceNo());
 
                     db.executeQ(updateQuery);
-                    invoiceHeaderBO.setBalance(Double.parseDouble(SDUtil.roundIt(discountedAmount, 2)));
+                    invoiceHeaderBO.setBalance(discountedAmount);
                 } else {
 
                     updateQuery = "update invoicemaster set discountedAmount="
@@ -1029,7 +1032,7 @@ public class CollectionHelper {
         String printFilePath = "";
         if (paymentBO.getUpdatePayableamt() > 0) {
             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
-                printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + invoiceHeaderBO.getInvoiceDate().replace("/", "") + "/"
+                printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
                         + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" +
                         StandardListMasterConstants.PRINT_FILE_COLLECTION + groupID.replaceAll("\'", "") + ".txt";
             }
@@ -1095,7 +1098,7 @@ public class CollectionHelper {
                         + bmodel.QT(invoiceHeaderBO.getInvoiceAmount() + "") + "," + invoiceHeaderBO.getBalance()
                         + "," + bmodel.QT(modeID) + ","
                         + bmodel.QT(chequeNumber) + ","
-                        + bmodel.QT(collectedAmount + "") + ","
+                        + bmodel.QT(bmodel.formatValueBasedOnConfig(collectedAmount)) + ","
                         + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
                         + bmodel.QT(bmodel.getRetailerMasterBO().getBeatID() + "") + ","
                         + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + "") + ","
@@ -1146,7 +1149,7 @@ public class CollectionHelper {
         String printFilePath = "";
         columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,PrintFilePath";
         if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
-            printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + invoiceHeaderBO.getInvoiceDate().replace("/", "") + "/"
+            printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" +
                     StandardListMasterConstants.PRINT_FILE_COLLECTION + groupID.replaceAll("\'", "") + ".txt";
             ;
@@ -1511,7 +1514,7 @@ public class CollectionHelper {
                     }
 
                     updateQuery = "update invoicemaster set discountedAmount="
-                            + discountedAmount
+                            + bmodel.formatValueBasedOnConfig(discountedAmount)
                             + ",invoiceAmount="
                             + invoiceAmount
                             + " where invoiceNo="
@@ -1526,7 +1529,7 @@ public class CollectionHelper {
                                     precison);
 
                     updateQuery = "update invoicemaster set discountedAmount="
-                            + discountedAmount + ",invoiceAmount="
+                            + bmodel.formatValueBasedOnConfig(discountedAmount) + ",invoiceAmount="
                             + invoiceAmount + " where invoiceNo="
                             + bmodel.QT(invoiceHeaderBO.getInvoiceNo())
                             + " and upload='Y'";
@@ -1539,7 +1542,7 @@ public class CollectionHelper {
                         precison);
 
                 updateQuery = "update invoicemaster set discountedAmount="
-                        + discountedAmount + ",invoiceAmount=" + invoiceAmount
+                        + bmodel.formatValueBasedOnConfig(discountedAmount) + ",invoiceAmount=" + invoiceAmount
                         + " where invoiceNo="
                         + bmodel.QT(invoiceHeaderBO.getInvoiceNo())
                         + " and upload='Y'";

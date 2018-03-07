@@ -268,6 +268,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CREDIT_NOTE_CREATION = "SR03";
     private static final String CODE_MULTIPLE_JOINCALL = "JOINTCALL01";
     private static final String CODE_ALLOW_SURVEY = "JOINTCALL02";
+    private static final String CODE_JOINT_CALL_LEVELS = "JOINTCALL03";
     private static final String CODE_SIH_VALIDATION = "ORDB42";
     private static final String CODE_SHOW_SELLER_DIALOG = "PREVAN01";
     private static final String CODE_SHOW_VALIDATE_CREDIT_DAYS = "CREDITDAY01";
@@ -477,6 +478,7 @@ public class ConfigurationMasterHelper {
     /**
      * Configuration not set in DB *
      */
+    public String userLevel = "";
     public boolean IS_CUMULATIVE_AND;
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
@@ -1272,6 +1274,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MUST_SELL_STK = "MSLSTK";
     public boolean IS_MUST_SELL_STK;
 
+    //unipal specific
+    public boolean SHOW_PRINT_HEADERS;
+    private static final String CODE_SHOW_PRINT_HEADERS = "PRINT_HEADER";
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -1793,6 +1799,9 @@ public class ConfigurationMasterHelper {
         this.ISAMAZON_IMGUPLOAD = hashMapHHTModuleConfig.get(CODE_AMAZONIMGUPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_AMAZONIMGUPLOAD) : false;
         this.IS_MULTIPLE_JOINCALL = hashMapHHTModuleConfig.get(CODE_MULTIPLE_JOINCALL) != null ? hashMapHHTModuleConfig.get(CODE_MULTIPLE_JOINCALL) : false;
         this.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL = hashMapHHTModuleConfig.get(CODE_ALLOW_SURVEY) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_SURVEY) : false;
+        if (hashMapHHTModuleConfig.get(CODE_JOINT_CALL_LEVELS) != null) {
+            getUserLevel(CODE_JOINT_CALL_LEVELS);
+        }
         this.SHOW_STK_ACHIEVED_WIHTOUT_HISTORY = hashMapHHTModuleConfig.get(CODE_STK_ACHIEVED_WITHOUT_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_STK_ACHIEVED_WITHOUT_HISTORY) : false;
         this.SHOW_ATTENDANCE = hashMapHHTModuleConfig.get(SHOW_ATTENDANCE_MOD) != null ? hashMapHHTModuleConfig.get(SHOW_ATTENDANCE_MOD) : false;
         this.TAX_SHOW_INVOICE = hashMapHHTModuleConfig.get(SHOW_TAX_INVOICE) != null ? hashMapHHTModuleConfig.get(SHOW_TAX_INVOICE) : false;
@@ -2214,6 +2223,8 @@ public class ConfigurationMasterHelper {
         this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
 
         this.IS_MUST_SELL_STK = hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) : false;
+
+        this.SHOW_PRINT_HEADERS = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) : false;
     }
 
     public void loadOrderReportConfiguration() {
@@ -5278,5 +5289,40 @@ public class ConfigurationMasterHelper {
             Commons.printException(e + "");
         }
         return defaultfilter;
+    }
+
+    private void getUserLevel(String hhtCode) {
+
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            String codeValue = null;
+            StringBuilder userLevels = new StringBuilder();
+
+            Cursor c = db.selectSQL("select RField from HhtModuleMaster where hhtCode='" + hhtCode + "'");
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+
+            if (codeValue != null) {
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    if (!userLevels.toString().equals(""))
+                        userLevels.append(",");
+                    userLevels.append(bmodel.QT(temp));
+                }
+                userLevel = userLevels.toString();
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+
     }
 }

@@ -121,6 +121,7 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
     }
 
     public void updaterProgressMsg(String msg) {
-        messagetv.setText(msg);
+        if (messagetv != null)
+            messagetv.setText(msg);
     }
 }

@@ -623,6 +623,6 @@ public class CollectionReportFragment extends Fragment {
                     }
                 }
             }
-        totalColl = totalCash + totalCheque + totalDD + totalRTGS + total_mob_payment + totalCn;
+        totalColl = totalCash + totalCheque + totalDD + totalRTGS + total_mob_payment;
     }
 }
