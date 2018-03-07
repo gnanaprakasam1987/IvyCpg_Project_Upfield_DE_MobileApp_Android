@@ -1,6 +1,5 @@
 package com.ivy.sd.png.view;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -22,7 +21,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -35,10 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -90,7 +85,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener, PlanningMapFragment.DataPulling {
+public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener, PlanningMapFragment.DataPulling, ChannelSelectionDialogFragment.ChannelSelectionListener {
     private BusinessModel bmodel;
 
     //used to save the photo
@@ -104,7 +99,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_VISIT_CONSTANT = "Trade Coverage";
 
     private Intent stockpropintent;
-    private About dialogFragment;
     private Intent vanUnloadStockAdjustmentIntent = null;
     private Intent planningIntent;
 
@@ -193,6 +187,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final int CAMERA_REQUEST_CODE = 1;
     private String imageFileName;
     private ListView listView;
+    private ChannelSelectionDialogFragment dialogFragment;
 
 
     @Nullable
@@ -373,7 +368,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             leftmenuDB.add(con);
 
-            if(con.getConfigCode().equalsIgnoreCase(MENU_DASH)){
+            if (con.getConfigCode().equalsIgnoreCase(MENU_DASH)) {
                 con.setConfigCode(MENU_DASH_KPI);
                 con.setMenuName("Seller Kpi");
                 leftmenuDB.add(con);
@@ -731,7 +726,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 mChannelList = bmodel.newOutletHelper.getChannelList();
                 if (mChannelList != null && mChannelList.size() > 0) {
                     FragmentManager fm = getActivity().getSupportFragmentManager();
-                    ChannelSelectionDialogFragment dialogFragment = new ChannelSelectionDialogFragment();
+                    dialogFragment = new ChannelSelectionDialogFragment(mChannelList);
+                    dialogFragment.setChannelSelectionListener(this);
                     Bundle bundle = new Bundle();
                     bundle.putString("title", bmodel.newOutletHelper.getLevelame());
                     bundle.putString("screentitle", menuItem.getMenuName());
@@ -1484,7 +1480,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_NON_FIELD);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
-                && mNewOutletFragment.isVisible()) {
+                && mNewOutletFragment.isVisible()
+                && !bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
             return;
         } else if (mPlanningFragment != null && (fragmentName.equals(MENU_PLANNING))
                 && mPlanningFragment.isVisible()) {
@@ -2208,7 +2205,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             leftmenuDB.add(con);
 
-            if(con.getConfigCode().equalsIgnoreCase(MENU_DASH)){
+            if (con.getConfigCode().equalsIgnoreCase(MENU_DASH)) {
                 con.setConfigCode(MENU_DASH_KPI);
                 con.setMenuName("Seller Kpi");
                 leftmenuDB.add(con);
@@ -2223,6 +2220,18 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         if (showDefaultScreen) {
             showDefaultScreen();
         }
+    }
+
+    @Override
+    public void loadNewOutLet(int position, String menuName) {
+        ChannelBO channelBO = mChannelList.get(position);
+        bmodel.newOutletHelper.setmSelectedChannelid(channelBO.getChannelId());
+        bmodel.newOutletHelper.setmSelectedChannelname(channelBO.getChannelName());
+        bmodel.newOutletHelper.loadNewOutletConfiguration(channelBO.getChannelId());
+        bmodel.newOutletHelper.loadRetailerType();
+        bmodel.newOutletHelper.downloadLinkRetailer();
+        switchFragment(MENU_NEW_RETAILER, menuName);
+        dialogFragment.dismiss();
     }
 
     private class LoadRoadActivityData extends
@@ -2451,83 +2460,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         return false;
     }
 
-    @SuppressLint("ValidFragment")
-    public class ChannelSelectionDialogFragment extends DialogFragment {
-        private String mTitle = "";
-        private String mMenuName = "";
-
-        private TextView mTitleTV;
-        private Button mOkBtn, mDismisBtn;
-        private ListView mChannelLV;
-
-
-        public ChannelSelectionDialogFragment() {
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            mTitle = getArguments().getString("title");
-            mMenuName = getArguments().getString("screentitle");
-
-
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.custom_dialog_fragment, container, false);
-
-            return rootView;
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            getDialog().setTitle(mTitle);
-            mTitleTV = (TextView) getView().findViewById(R.id.title);
-            mTitleTV.setVisibility(View.GONE);
-            mOkBtn = (Button) getView().findViewById(R.id.btn_ok);
-            mOkBtn.setVisibility(View.GONE);
-            mDismisBtn = (Button) getView().findViewById(R.id.btn_dismiss);
-            mChannelLV = (ListView) getView().findViewById(R.id.lv_colletion_print);
-
-            ArrayAdapter<ChannelBO> adapter = new ArrayAdapter<ChannelBO>(getActivity(), android.R.layout.simple_list_item_single_choice, mChannelList);
-            mChannelLV.setAdapter(adapter);
-            mChannelLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ChannelBO channelBO = mChannelList.get(position);
-                    bmodel.newOutletHelper.setmSelectedChannelid(channelBO.getChannelId());
-                    bmodel.newOutletHelper.setmSelectedChannelname(channelBO.getChannelName());
-                    bmodel.newOutletHelper.loadNewOutletConfiguration(channelBO.getChannelId());
-                    bmodel.newOutletHelper.loadRetailerType();
-                    bmodel.newOutletHelper.downloadLinkRetailer();
-                    switchFragment(MENU_NEW_RETAILER, mMenuName);
-                    getDialog().dismiss();
-
-
-                }
-            });
-            mOkBtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-            mDismisBtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getDialog().dismiss();
-
-
-                }
-            });
-
-
-        }
-
-
-    }
 
     private class DeleteTables extends
             AsyncTask<Integer, Integer, Integer> {

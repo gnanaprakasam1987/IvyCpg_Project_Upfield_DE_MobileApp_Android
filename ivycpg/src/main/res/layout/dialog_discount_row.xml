@@ -64,6 +64,22 @@
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:text="@string/zero" />
+
+            <TextView
+                android:id="@+id/ppq"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="@string/zero" />
+
+            <TextView
+                android:id="@+id/msq"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:text="@string/zero" />
         </LinearLayout>
     </RelativeLayout>
 

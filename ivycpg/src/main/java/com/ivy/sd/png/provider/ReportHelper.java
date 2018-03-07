@@ -47,7 +47,6 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -80,7 +79,7 @@ public class ReportHelper {
     private ArrayList<AssetTrackingBrandBO> assetBrandList;
 
     private Vector<RetailerMasterBO> retailerMaster;
-    private HashMap<String,ArrayList<ProductMasterBO>> closingStkReportByRetailId;
+    private HashMap<String, ArrayList<ProductMasterBO>> closingStkReportByRetailId;
 
     private ReportHelper(Context context) {
         this.mContext = context;
@@ -1007,7 +1006,7 @@ public class ReportHelper {
                 }
             }
 
-            if (mChildLevel == 0 ) {
+            if (mChildLevel == 0) {
                 Cursor cur = db.selectSQL("SELECT IFNULL(PL1.Sequence,0),IFNULL(PL2.Sequence,0)"
                         + " FROM ConfigActivityFilter CF"
                         + " LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter1"
@@ -1021,7 +1020,7 @@ public class ReportHelper {
                     }
                     cur.close();
                 }
-            }else{
+            } else {
                 Cursor filterCur = db
                         .selectSQL("SELECT IFNULL(PL1.Sequence,0), IFNULL(PL2.Sequence,0)"
                                 + " FROM ConfigActivityFilter CF"
@@ -1048,7 +1047,7 @@ public class ReportHelper {
             String parentFilter;
 
             if (mChildLevel != 0) {
-                parentFilter = "ProductFilter"+mChildLevel;
+                parentFilter = "ProductFilter" + mChildLevel;
             } else {
                 parentFilter = "ProductFilter1";
             }
@@ -3697,10 +3696,13 @@ public class ReportHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select distinct A.retailerid, RPG.GroupId, A.subchannelid,(select ListCode from StandardListMaster where ListID = A.RpTypeId) as rp_type_code,"
-                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2,A.isSameZone,A.GSTNumber,A.tinExpDate,RBM.BeatID from retailerMaster A"
+                            + " A.RetailerCode, A.RetailerName, RA.Address1, A.tinnumber, A.Rfield3, RA.Address2, RA.Address3, A.TaxTypeId, A.locationid,A.Rfield2," +
+                            "A.isSameZone,A.GSTNumber,A.tinExpDate,RBM.BeatID,A.accountid,IM.sid,RPP.ProductId from retailerMaster A"
                             + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID"
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerId = A.RetailerID"
+                            + " LEFT JOIN InvoiceMaster IM ON IM.Retailerid=A.RetailerID"
+                            + " LEFT JOIN RetailerPriorityProducts RPP ON IM.Retailerid=A.RetailerID"
                             + " where A.retailerid=" + mRetailerId);
             if (c != null) {
                 if (c.moveToNext()) {
@@ -3725,6 +3727,9 @@ public class ReportHelper {
                     retailer.setGSTNumber(c.getString(15));
                     retailer.setTinExpDate(c.getString(16));
                     retailer.setBeatID(c.getInt(17));
+                    retailer.setAccountid(c.getInt(18));
+                    retailer.setDistributorId(c.getInt(19));
+                    retailer.setPrioriryProductId(c.getInt(20));
 
                 }
                 c.close();
@@ -3745,7 +3750,7 @@ public class ReportHelper {
         this.retailerMaster = retailerMaster;
     }
 
-    public void downloadClosingStockRetailers(){
+    public void downloadClosingStockRetailers() {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
@@ -3768,19 +3773,19 @@ public class ReportHelper {
             }
 
             db.closeDB();
-        }catch(Exception e){
+        } catch (Exception e) {
             db.closeDB();
             Commons.printException(e);
         }
     }
 
-    public ArrayList<ProductMasterBO> getClosingStkReport(String retailId){
+    public ArrayList<ProductMasterBO> getClosingStkReport(String retailId) {
         if (closingStkReportByRetailId == null)
             return null;
         return closingStkReportByRetailId.get(retailId);
     }
 
-    public void downloadClosingStock(){
+    public void downloadClosingStock() {
         closingStkReportByRetailId = new HashMap<>();
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -3822,7 +3827,7 @@ public class ReportHelper {
             }
 
             db.closeDB();
-        }catch(Exception e){
+        } catch (Exception e) {
             db.closeDB();
             Commons.printException(e);
         }
