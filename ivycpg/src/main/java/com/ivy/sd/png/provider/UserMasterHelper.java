@@ -171,9 +171,15 @@ public class UserMasterHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            Cursor c = db.selectSQL("select " + DataMembers.tbl_userMaster_cols
-                    + " from Usermaster where isDeviceUser=0 AND relationship !='CHILD'");
+            StringBuilder sb = new StringBuilder();
 
+            sb.append("select " + DataMembers.tbl_userMaster_cols + " from Usermaster where isDeviceUser=0 AND ");
+            if (bmodel.configurationMasterHelper.userLevel != null && bmodel.configurationMasterHelper.userLevel.length() > 0)
+                sb.append("userLevel in (" + bmodel.configurationMasterHelper.userLevel + ")");
+            else
+                sb.append("relationship !='CHILD'");
+
+            Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
                 while (c.moveToNext()) {
                     userBO = new UserMasterBO();
