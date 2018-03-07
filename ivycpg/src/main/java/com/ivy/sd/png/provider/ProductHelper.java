@@ -564,7 +564,7 @@ public class ProductHelper {
         Calendar c = Calendar.getInstance();
         bo = new NearExpiryDateBO();
         String dateF = df.format(c.getTime());
-        bo.setDate(dateF);
+        bo.setDate("");
         bo.setDateID(0);
         dateList.add(bo);
 
@@ -572,7 +572,7 @@ public class ProductHelper {
             c.add(Calendar.MONTH, 1);
             dateF = df.format(c.getTime());
             bo = new NearExpiryDateBO();
-            bo.setDate(dateF);
+            bo.setDate("");
             bo.setDateID(i);
             dateList.add(bo);
         }

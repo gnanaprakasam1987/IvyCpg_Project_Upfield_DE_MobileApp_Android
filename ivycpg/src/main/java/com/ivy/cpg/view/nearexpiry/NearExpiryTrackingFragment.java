@@ -72,8 +72,10 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     private boolean isAlertShowed;
     private NearExpiryDialogueFragment dialog;
     private boolean isFromChild;
+    private ArrayList<ProductMasterBO> clearList = null;
 
     NearExpiryTrackingHelper mNearExpiryHelper;
+
     public NearExpiryDialogueFragment getDialog() {
         return dialog;
     }
@@ -153,6 +155,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 getActivity().supportInvalidateOptionsMenu();
             }
         };
+
+        clearList = new ArrayList<>();
 
         if (getView() != null) {
             lvwplist = (ListView) getView().findViewById(R.id.list);
@@ -597,6 +601,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         }
     }
 
+    String lastPid = "";
+
     private void checkDataForColor(String pid) {
 
         for (ProductMasterBO skubo : mBModel.productHelper.getProductMaster()) {
@@ -625,6 +631,11 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         skubo.getLocations()
                                 .get(mNearExpiryHelper.mSelectedLocationIndex)
                                 .setHasData(true);
+
+                        if (!lastPid.equals(skubo.getProductID())) {
+                            clearList.add(skubo);
+                            lastPid = skubo.getProductID();
+                        }
                         break;
                     } else {
                         skubo.getLocations()
@@ -682,7 +693,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 Commons.printException("" + e);
             }
             if (result == Boolean.TRUE) {
-
+                clearObjects();
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                         "", getResources().getString(R.string.saved_successfully),
                         false, getActivity().getResources().getString(R.string.ok),
@@ -711,6 +722,47 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
         }
 
+    }
+
+    //clear the list after save data into db to avoid duplicate records
+    private void clearObjects() {
+        if (clearList != null) {
+            for (ProductMasterBO skubo : clearList) {
+
+                for (int j = 0; j < skubo.getLocations().size(); j++) {
+
+                    for (int k = 0; k < (skubo.getLocations()
+                            .get(j).getNearexpiryDate().size()); k++) {
+
+                        if (!"0"
+                                .equals(skubo.getLocations().get(j)
+                                        .getNearexpiryDate()
+                                        .get(k).getNearexpPC()) || !"0"
+                                .equals(skubo.getLocations().get(j)
+                                        .getNearexpiryDate()
+                                        .get(k).getNearexpCA()) || !"0"
+                                .equals(skubo.getLocations().get(j)
+                                        .getNearexpiryDate()
+                                        .get(k).getNearexpOU())) {
+
+                            skubo.getLocations().get(j)
+                                    .getNearexpiryDate()
+                                    .get(k).setDate("");
+                            skubo.getLocations().get(j)
+                                    .getNearexpiryDate()
+                                    .get(k).setNearexpPC("0");
+                            skubo.getLocations().get(j)
+                                    .getNearexpiryDate()
+                                    .get(k).setNearexpCA("0");
+                            skubo.getLocations().get(j)
+                                    .getNearexpiryDate()
+                                    .get(k).setNearexpOU("0");
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
     public void updateBrandText(String mFilterText, int mBid) {
@@ -923,6 +975,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (clearList != null)
+            clearList = null;
         mNearExpiryHelper.clear();
         System.gc();
     }

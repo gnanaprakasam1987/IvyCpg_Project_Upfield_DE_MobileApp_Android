@@ -20,26 +20,26 @@ public class NearExpiryTrackingHelper {
     private final BusinessModel mBModel;
     private static NearExpiryTrackingHelper instance = null;
 
-	private final String mTrackingHeader = "NearExpiry_Tracking_Header";
-	private final String mTrackingDetail = "NearExpiry_Tracking_Detail";
+    private final String mTrackingHeader = "NearExpiry_Tracking_Header";
+    private final String mTrackingDetail = "NearExpiry_Tracking_Detail";
 
-	public int mSelectedLocationIndex = 0;
-	public String mSelectedLocationName = "";
-	private int k = 0;
+    public int mSelectedLocationIndex = 0;
+    public String mSelectedLocationName = "";
+    private int k = 0;
 
     public String mSelectedActivityName = "";
 
 
-	private NearExpiryTrackingHelper(Context context) {
+    private NearExpiryTrackingHelper(Context context) {
         this.mBModel = (BusinessModel) context.getApplicationContext();
     }
 
-	public static NearExpiryTrackingHelper getInstance(Context context) {
-		if (instance == null) {
-			instance = new NearExpiryTrackingHelper(context);
-		}
-		return instance;
-	}
+    public static NearExpiryTrackingHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new NearExpiryTrackingHelper(context);
+        }
+        return instance;
+    }
 
     public void clear() {
         instance = null;
@@ -48,132 +48,133 @@ public class NearExpiryTrackingHelper {
     public void loadLastVisitSKUTracking(Context mContext) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
-			db.openDataBase();
+            db.openDataBase();
 
-			String sql1 = "SELECT ProductId, LocId,expdate, UOMId, Qty,isOwn"
-					+ " FROM LastVisitNearExpiry"
+            String sql1 = "SELECT ProductId, LocId,expdate, UOMId, Qty,isOwn"
+                    + " FROM LastVisitNearExpiry"
                     + " WHERE retailerid = " + mBModel.getRetailerMasterBO().getRetailerID();
             Cursor orderDetailCursor = db.selectSQL(sql1);
             if (orderDetailCursor != null) {
-				int curLocId = 0;
-				boolean isLocChanged;
+                int curLocId = 0;
+                boolean isLocChanged;
 
-				String curDateString = "";
-				boolean isDateChanged;
+                String curDateString = "";
+                boolean isDateChanged;
 
-				while (orderDetailCursor.moveToNext()) {
-					String pid = orderDetailCursor.getString(0);
-					int locationId = orderDetailCursor.getInt(1);
-					String date = orderDetailCursor.getString(2);
-					int uomId = orderDetailCursor.getInt(3);
-					String uomQty = orderDetailCursor.getString(4);
+                while (orderDetailCursor.moveToNext()) {
+                    String pid = orderDetailCursor.getString(0);
+                    int locationId = orderDetailCursor.getInt(1);
+                    String date = orderDetailCursor.getString(2);
+                    int uomId = orderDetailCursor.getInt(3);
+                    String uomQty = orderDetailCursor.getString(4);
 
-					isLocChanged = false;
-					isDateChanged = false;
+                    isLocChanged = false;
+                    isDateChanged = false;
 
-					if (curLocId != locationId) {
-						curLocId = locationId;
-						isLocChanged = true;
+                    if (curLocId != locationId) {
+                        curLocId = locationId;
+                        isLocChanged = true;
 
-						curDateString = date;
+                        curDateString = date;
 
-					} else if (!curDateString.equals(date)) {
-							curDateString = date;
-							isDateChanged = true;
-						}
+                    } else if (!curDateString.equals(date)) {
+                        curDateString = date;
+                        isDateChanged = true;
+                    }
 
 
-					setSKUTrackingDetails(pid, locationId,
-							uomId, uomQty, date, isLocChanged,
-							isDateChanged,false);
-				}
-				orderDetailCursor.close();
-			}
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(""+e);
-			db.closeDB();
-		}
-	}
+                    setSKUTrackingDetails(pid, locationId,
+                            uomId, uomQty, date, isLocChanged,
+                            isDateChanged, false);
+                }
+                orderDetailCursor.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
 
     public boolean hasAlreadySKUTrackingDone(Context mContext) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			String sql = "select tid from "
-					+ mTrackingHeader + " where RetailerID="
+            db.createDataBase();
+            db.openDataBase();
+            String sql = "select tid from "
+                    + mTrackingHeader + " where RetailerID="
                     + mBModel.getRetailerMasterBO().getRetailerID();
             sql += " AND date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-            sql+=" and upload= 'N'";
-			Cursor orderHeaderCursor = db.selectSQL(sql);
-			if (orderHeaderCursor.getCount() > 0) {
-				orderHeaderCursor.close();
-				db.closeDB();
-				return true;
-			} else {
-				orderHeaderCursor.close();
-				db.closeDB();
-				return false;
-			}
-		} catch (Exception e) {
-			Commons.printException("hasAlreadySKUTrackinDone", e);
-			return false;
-		}
-	}
-	/**
-	 * Load SKU from Detail Table
-	 */
+            sql += " and upload= 'N'";
+            Cursor orderHeaderCursor = db.selectSQL(sql);
+            if (orderHeaderCursor.getCount() > 0) {
+                orderHeaderCursor.close();
+                db.closeDB();
+                return true;
+            } else {
+                orderHeaderCursor.close();
+                db.closeDB();
+                return false;
+            }
+        } catch (Exception e) {
+            Commons.printException("hasAlreadySKUTrackinDone", e);
+            return false;
+        }
+    }
+
+    /**
+     * Load SKU from Detail Table
+     */
     public void loadSKUTracking(Context mContext, boolean isTaggedProduct) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
-			db.openDataBase();
-			k = -1;
-			String tid;
+            db.openDataBase();
+            k = -1;
+            String tid;
 
-            String sb = "SELECT Tid FROM " + mTrackingHeader+ " WHERE retailerid = "
+            String sb = "SELECT Tid FROM " + mTrackingHeader + " WHERE retailerid = "
                     + mBModel.getRetailerMasterBO().getRetailerID()
                     + " and (upload='N' OR refid!=0)";
             // Get Tid From Header
 
 
-			Cursor orderHeaderCursor = db.selectSQL(sb);
-			tid = "";
-			if (orderHeaderCursor != null && orderHeaderCursor.moveToNext()) {
-					tid = orderHeaderCursor.getString(0);
-					orderHeaderCursor.close();
-			}
+            Cursor orderHeaderCursor = db.selectSQL(sb);
+            tid = "";
+            if (orderHeaderCursor != null && orderHeaderCursor.moveToNext()) {
+                tid = orderHeaderCursor.getString(0);
+                orderHeaderCursor.close();
+            }
 
-			String sql1 = "SELECT PId, LocId,expdate, UOMId, UOMQty,IFNULL(Audit,'2'),isOwn"
-					+ " FROM "
-					+ mTrackingDetail
-					+ " WHERE Tid = "
-					+ QT(tid) + " order by pid, locid, expdate";
-			Cursor orderDetailCursor = db.selectSQL(sql1);
-			if (orderDetailCursor != null) {
-
-
-
-				int curLocId = 0;
-				boolean isLocChanged;
-
-				String curDateString = "";
-				boolean isDateChanged;
-
-				while (orderDetailCursor.moveToNext()) {
-					String pid = orderDetailCursor.getString(0);
-					int locationId = orderDetailCursor.getInt(1);
-					String date = orderDetailCursor.getString(2);
-					int uomId = orderDetailCursor.getInt(3);
-					String uomQty = orderDetailCursor.getString(4);
+            String sql1 = "SELECT PId, LocId,expdate, UOMId, UOMQty,IFNULL(Audit,'2'),isOwn"
+                    + " FROM "
+                    + mTrackingDetail
+                    + " WHERE Tid = "
+                    + QT(tid) + " order by pid, locid, expdate";
+            Cursor orderDetailCursor = db.selectSQL(sql1);
+            if (orderDetailCursor != null) {
 
 
-					isLocChanged = false;
-					isDateChanged = false;
+                int curLocId = 0;
+                boolean isLocChanged;
+                String lastPid = "";
 
-					if (curLocId != locationId) {
-						curLocId = locationId;
+                String curDateString = "";
+                boolean isDateChanged;
+
+                while (orderDetailCursor.moveToNext()) {
+                    String pid = orderDetailCursor.getString(0);
+                    int locationId = orderDetailCursor.getInt(1);
+                    String date = orderDetailCursor.getString(2);
+                    int uomId = orderDetailCursor.getInt(3);
+                    String uomQty = orderDetailCursor.getString(4);
+
+
+                    isLocChanged = false;
+                    isDateChanged = false;
+
+					/*if (curLocId != locationId) {
+                        curLocId = locationId;
 						isLocChanged = true;
 
 						curDateString = date;
@@ -181,94 +182,100 @@ public class NearExpiryTrackingHelper {
 					} else if (!curDateString.equals(date)) {
 							curDateString = date;
 							isDateChanged = true;
-					}
+					}*/
 
+                    if (curLocId != locationId || !lastPid.equals(pid)) {
+                        curLocId = locationId;
+                        lastPid = pid;
+                        k = 0;
+                    }
 
-					setSKUTrackingDetails(pid, locationId,
-							uomId, uomQty, date, isLocChanged,
-							isDateChanged,isTaggedProduct);
-				}
-				orderDetailCursor.close();
-			}
+                    setSKUTrackingDetails(pid, locationId,
+                            uomId, uomQty, date, isLocChanged,
+                            isDateChanged, isTaggedProduct);
+                }
+                orderDetailCursor.close();
+            }
 
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(""+e);
-			db.closeDB();
-		}
-	}
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
 
-	/**
-	 * Set the Tracking Detail
-	 *
-	 * @param pid
-	 * @param --availabilty
-	 * @param locationId
-	 * @param uomId
-	 * @param uomQty
-	 */
-	private void setSKUTrackingDetails(String pid, int locationId,
-									   int uomId, String uomQty, String date,
-									   boolean isLocChanged, boolean isDateChanged,boolean isTaggedProduct) {
-		ProductMasterBO productBO;
+    /**
+     * Set the Tracking Detail
+     *
+     * @param pid
+     * @param --availabilty
+     * @param locationId
+     * @param uomId
+     * @param uomQty
+     */
+    private void setSKUTrackingDetails(String pid, int locationId,
+                                       int uomId, String uomQty, String date,
+                                       boolean isLocChanged, boolean isDateChanged, boolean isTaggedProduct) {
+        ProductMasterBO productBO;
 
-		 if(isTaggedProduct) {
-             productBO = mBModel.productHelper.getTaggedProductBOById(pid);
-         } else {
-             productBO = mBModel.productHelper.getProductMasterBOById(pid);
-         }
-        if(productBO!=null){
-				for (int j = 0; j < productBO.getLocations().size(); j++) {
-					if (productBO.getLocations().get(j).getLocationId() == locationId) {
+        if (isTaggedProduct) {
+            productBO = mBModel.productHelper.getTaggedProductBOById(pid);
+        } else {
+            productBO = mBModel.productHelper.getProductMasterBOById(pid);
+        }
+        if (productBO != null) {
+            for (int j = 0; j < productBO.getLocations().size(); j++) {
+                if (productBO.getLocations().get(j).getLocationId() == locationId) {
 
-						if (isLocChanged) {
+						/*if (isLocChanged) {
 							k = 0;
 						}
 
 						if (isDateChanged) {
 							k++;
 						}
+*/
+                    productBO.getLocations().get(j).getNearexpiryDate()
+                            .get(k).setDate(changeMonthNoToName(date));
 
-						productBO.getLocations().get(j).getNearexpiryDate()
-								.get(k).setDate(changeMonthNoToName(date));
+                    if (productBO.getPcUomid() == uomId)
+                        productBO.getLocations().get(j).getNearexpiryDate()
+                                .get(k).setNearexpPC(uomQty);
+                    if (productBO.getOuUomid() == uomId)
+                        productBO.getLocations().get(j).getNearexpiryDate()
+                                .get(k).setNearexpOU(uomQty);
+                    if (productBO.getCaseUomId() == uomId)
+                        productBO.getLocations().get(j).getNearexpiryDate()
+                                .get(k).setNearexpCA(uomQty);
+                    k++;
 
-						if (productBO.getPcUomid() == uomId)
-							productBO.getLocations().get(j).getNearexpiryDate()
-									.get(k).setNearexpPC(uomQty);
-						if (productBO.getOuUomid() == uomId)
-							productBO.getLocations().get(j).getNearexpiryDate()
-									.get(k).setNearexpOU(uomQty);
-						if (productBO.getCaseUomId() == uomId)
-							productBO.getLocations().get(j).getNearexpiryDate()
-									.get(k).setNearexpCA(uomQty);
-
-						return;
-					}
-				}
-			}
+                    return;
+                }
+            }
+        }
 
 
-	}
+    }
 
-	/**
-	 * Save Tracking Detail in Detail Table
-	 */
+    /**
+     * Save Tracking Detail in Detail Table
+     */
     public void saveSKUTracking(Context mContext) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
-			db.openDataBase();
+            db.openDataBase();
 
-			String tid;
-			String sql;
-			Cursor headerCursor;
-			String refId = "0";
+            String tid;
+            String sql;
+            Cursor headerCursor;
+            String refId = "0";
 
-			String headerColumns = "Tid, RetailerId, Date, TimeZone, RefId";
-			String detailColumns = "Tid, PId,LocId, UOMId, UOMQty,expdate,retailerid,audit";
+            String headerColumns = "Tid, RetailerId, Date, TimeZone, RefId";
+            String detailColumns = "Tid, PId,LocId, UOMId, UOMQty,expdate,retailerid,audit";
 
 
-			String values;
-			boolean isData;
+            String values;
+            boolean isData;
 
 
             tid = mBModel.userMasterHelper.getUserMasterBO().getUserid()
@@ -277,286 +284,286 @@ public class NearExpiryTrackingHelper {
                     + ""
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-			// delete transaction if exist
-			sql = "SELECT Tid, RefId FROM "
-					+ mTrackingHeader
-					+ " WHERE RetailerId = "
+            // delete transaction if exist
+            sql = "SELECT Tid, RefId FROM "
+                    + mTrackingHeader
+                    + " WHERE RetailerId = "
                     + mBModel.getRetailerMasterBO().getRetailerID();
             sql += " and (upload='N' OR refid!=0)";
 
 
-			headerCursor = db.selectSQL(sql);
+            headerCursor = db.selectSQL(sql);
 
-			if (headerCursor.getCount() > 0) {
-				headerCursor.moveToNext();
-				db.deleteSQL(mTrackingHeader,
-						"Tid=" + QT(headerCursor.getString(0)), false);
-				db.deleteSQL(mTrackingDetail,
-						"Tid=" + QT(headerCursor.getString(0)), false);
-				refId = headerCursor.getString(1);
-				headerCursor.close();
-			}
+            if (headerCursor.getCount() > 0) {
+                headerCursor.moveToNext();
+                db.deleteSQL(mTrackingHeader,
+                        "Tid=" + QT(headerCursor.getString(0)), false);
+                db.deleteSQL(mTrackingDetail,
+                        "Tid=" + QT(headerCursor.getString(0)), false);
+                refId = headerCursor.getString(1);
+                headerCursor.close();
+            }
 
-			// Saving Transaction Detail
-			isData = false;
+            // Saving Transaction Detail
+            isData = false;
             for (ProductMasterBO skubo : mBModel.productHelper.getProductMaster()) {
 
-				for (int j = 0; j < skubo.getLocations().size(); j++) {
+                for (int j = 0; j < skubo.getLocations().size(); j++) {
 
-					for (int k = 0; k < (skubo.getLocations()
-							.get(j).getNearexpiryDate().size()); k++) {
+                    for (int k = 0; k < (skubo.getLocations()
+                            .get(j).getNearexpiryDate().size()); k++) {
 
-						if (!"0"
-								.equals(skubo.getLocations().get(j)
-										.getNearexpiryDate()
-										.get(k).getNearexpPC())||skubo.getLocations()
+                        if (!"0"
+                                .equals(skubo.getLocations().get(j)
+                                        .getNearexpiryDate()
+                                        .get(k).getNearexpPC()) || skubo.getLocations()
                                 .get(mSelectedLocationIndex).getAudit() != 2) {
 
-							values = QT(tid)
-									+ ","
-									+ skubo.getProductID()
-									+ ","
-									+ skubo.getLocations()
-									.get(j)
-									.getLocationId()
-									+ ","
-									+ skubo.getPcUomid()
-									+ ","
-									+ skubo.getLocations()
-									.get(j)
-									.getNearexpiryDate()
-									.get(k)
-									.getNearexpPC()
-									+ ","
-									+ QT(changeMonthNameToNoyyyymmdd(skubo
-									.getLocations()
-									.get(j)
-									.getNearexpiryDate()
-									.get(k).getDate()))
-									+ ","
+                            values = QT(tid)
+                                    + ","
+                                    + skubo.getProductID()
+                                    + ","
+                                    + skubo.getLocations()
+                                    .get(j)
+                                    .getLocationId()
+                                    + ","
+                                    + skubo.getPcUomid()
+                                    + ","
+                                    + skubo.getLocations()
+                                    .get(j)
+                                    .getNearexpiryDate()
+                                    .get(k)
+                                    .getNearexpPC()
+                                    + ","
+                                    + QT(changeMonthNameToNoyyyymmdd(skubo
+                                    .getLocations()
+                                    .get(j)
+                                    .getNearexpiryDate()
+                                    .get(k).getDate()))
+                                    + ","
                                     + mBModel.getRetailerMasterBO()
                                     .getRetailerID()
                                     + ","
-									+ skubo.getLocations()
-									.get(j).getAudit();
+                                    + skubo.getLocations()
+                                    .get(j).getAudit();
 
-							db.insertSQL(mTrackingDetail,
-									detailColumns, values);
-							isData = true;
-						}
-						if (!"0"
-								.equals(skubo.getLocations().get(j)
-										.getNearexpiryDate()
-										.get(k).getNearexpOU())||skubo.getLocations()
+                            db.insertSQL(mTrackingDetail,
+                                    detailColumns, values);
+                            isData = true;
+                        }
+                        if (!"0"
+                                .equals(skubo.getLocations().get(j)
+                                        .getNearexpiryDate()
+                                        .get(k).getNearexpOU()) || skubo.getLocations()
                                 .get(mSelectedLocationIndex).getAudit() != 2) {
                             values = QT(tid)
                                     + ","
-									+ skubo.getProductID()
-									+ ","
-									+ skubo.getLocations()
-									.get(j)
-									.getLocationId()
-									+ ","
-									+ skubo.getOuUomid()
-									+ ","
-									+ skubo.getLocations()
-									.get(j)
-									.getNearexpiryDate()
-									.get(k)
-									.getNearexpOU()
-									+ ","
-									+ QT(changeMonthNameToNoyyyymmdd(skubo
-									.getLocations()
-									.get(j)
-									.getNearexpiryDate()
-									.get(k).getDate()))
-									+ ","
+                                    + skubo.getProductID()
+                                    + ","
+                                    + skubo.getLocations()
+                                    .get(j)
+                                    .getLocationId()
+                                    + ","
+                                    + skubo.getOuUomid()
+                                    + ","
+                                    + skubo.getLocations()
+                                    .get(j)
+                                    .getNearexpiryDate()
+                                    .get(k)
+                                    .getNearexpOU()
+                                    + ","
+                                    + QT(changeMonthNameToNoyyyymmdd(skubo
+                                    .getLocations()
+                                    .get(j)
+                                    .getNearexpiryDate()
+                                    .get(k).getDate()))
+                                    + ","
                                     + mBModel.getRetailerMasterBO()
                                     .getRetailerID()
                                     + ","
-									+ skubo.getLocations()
-									.get(j).getAudit();
+                                    + skubo.getLocations()
+                                    .get(j).getAudit();
 
-							db.insertSQL(mTrackingDetail,
-									detailColumns, values);
-							isData = true;
-						}
-						if ( !"0"
-								.equals(skubo.getLocations().get(j)
-										.getNearexpiryDate()
-										.get(k).getNearexpCA())||skubo.getLocations()
+                            db.insertSQL(mTrackingDetail,
+                                    detailColumns, values);
+                            isData = true;
+                        }
+                        if (!"0"
+                                .equals(skubo.getLocations().get(j)
+                                        .getNearexpiryDate()
+                                        .get(k).getNearexpCA()) || skubo.getLocations()
                                 .get(mSelectedLocationIndex).getAudit() != 2) {
                             values = QT(tid)
                                     + ","
-									+ skubo.getProductID()
-									+ ","
-									+ skubo.getLocations()
-									.get(j)
-									.getLocationId()
-									+ ","
-									+ skubo.getCaseUomId()
-									+ ","
-									+ skubo.getLocations()
-									.get(j)
-									.getNearexpiryDate()
-									.get(k)
-									.getNearexpCA()
-									+ ","
-									+ QT(changeMonthNameToNoyyyymmdd(skubo
-									.getLocations()
-									.get(j)
-									.getNearexpiryDate()
-									.get(k).getDate()))
-									+ ","
+                                    + skubo.getProductID()
+                                    + ","
+                                    + skubo.getLocations()
+                                    .get(j)
+                                    .getLocationId()
+                                    + ","
+                                    + skubo.getCaseUomId()
+                                    + ","
+                                    + skubo.getLocations()
+                                    .get(j)
+                                    .getNearexpiryDate()
+                                    .get(k)
+                                    .getNearexpCA()
+                                    + ","
+                                    + QT(changeMonthNameToNoyyyymmdd(skubo
+                                    .getLocations()
+                                    .get(j)
+                                    .getNearexpiryDate()
+                                    .get(k).getDate()))
+                                    + ","
                                     + mBModel.getRetailerMasterBO()
                                     .getRetailerID()
                                     + ","
-									+ skubo.getLocations()
-									.get(j).getAudit();
-							db.insertSQL(mTrackingDetail,
-									detailColumns, values);
-							isData = true;
-						}
-					}
+                                    + skubo.getLocations()
+                                    .get(j).getAudit();
+                            db.insertSQL(mTrackingDetail,
+                                    detailColumns, values);
+                            isData = true;
+                        }
+                    }
 
-				}
-			}
+                }
+            }
 
-			// Saving Transaction Header if There is Any Detail
-			if (isData) {
-				values = QT(tid)
-						+ ","
+            // Saving Transaction Header if There is Any Detail
+            if (isData) {
+                values = QT(tid)
+                        + ","
                         + mBModel.getRetailerMasterBO().getRetailerID()
                         + ","
                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                         + QT(mBModel.getTimeZone()) + "," + QT(refId);
 
-				db.insertSQL(mTrackingHeader, headerColumns, values);
-			}
+                db.insertSQL(mTrackingHeader, headerColumns, values);
+            }
 
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(""+e);
-			db.closeDB();
-		}
-	}
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
 
-	public boolean checkDataToSave() {
+    public boolean checkDataToSave() {
 
         for (ProductMasterBO skubo : mBModel.productHelper.getProductMaster()) {
             for (int j = 0; j < skubo.getLocations().size(); j++) {
                 for (int k = 0; k < (skubo.getLocations().get(j)
-						.getNearexpiryDate().size()); k++) {
-					if (!"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
-							.get(k).getNearexpPC())
-							|| !"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
-							.get(k).getNearexpOU())
-							|| !"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
-							.get(k).getNearexpCA())
-							||skubo.getLocations()
+                        .getNearexpiryDate().size()); k++) {
+                    if (!"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
+                            .get(k).getNearexpPC())
+                            || !"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
+                            .get(k).getNearexpOU())
+                            || !"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
+                            .get(k).getNearexpCA())
+                            || skubo.getLocations()
                             .get(mSelectedLocationIndex).getAudit() != 2)
                         return true;
                 }
-			}
-		}
-		return false;
-	}
+            }
+        }
+        return false;
+    }
 
-	public String dateformat(int year, int monthOfYear, int dayOfMonth) {
-		String month;
-		String day;
+    public String dateformat(int year, int monthOfYear, int dayOfMonth) {
+        String month;
+        String day;
 
-		if (monthOfYear + 1 < 9)
-			month = "0" + (monthOfYear + 1);
-		else
-			month = Integer.toString(monthOfYear + 1);
+        if (monthOfYear + 1 < 9)
+            month = "0" + (monthOfYear + 1);
+        else
+            month = Integer.toString(monthOfYear + 1);
 
-		if (dayOfMonth < 10)
-			day = "0" + dayOfMonth;
-		else
-			day = Integer.toString(dayOfMonth);
+        if (dayOfMonth < 10)
+            day = "0" + dayOfMonth;
+        else
+            day = Integer.toString(dayOfMonth);
 
-		return year + "/" + month + "/" + day;
+        return year + "/" + month + "/" + day;
 
-	}
+    }
 
-	public String changeMonthNameToNoyyyymmdd(String date) {
+    public String changeMonthNameToNoyyyymmdd(String date) {
 
-		if (null != date && !"".equals(date))
-				try {
-					String[] dat = date.split(" ");
+        if (null != date && !"".equals(date))
+            try {
+                String[] dat = date.split(" ");
 
-					SimpleDateFormat cf = new SimpleDateFormat("dd/MMM/yyyy",
-							Locale.ENGLISH);
-					Date dt = cf.parse(dat[0]);
-					SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd",
-							Locale.ENGLISH);
-					return sf.format(dt);
-				} catch (Exception e) {
-					Commons.printException(""+e);
-				}
+                SimpleDateFormat cf = new SimpleDateFormat("dd/MMM/yyyy",
+                        Locale.ENGLISH);
+                Date dt = cf.parse(dat[0]);
+                SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd",
+                        Locale.ENGLISH);
+                return sf.format(dt);
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
 
-		return "";
-	}
+        return "";
+    }
 
-	public String changeMonthNoToName(String date) {
+    public String changeMonthNoToName(String date) {
 
-		if (null != date && !"".equals(date))
-				try {
-					String[] dat = date.split(" ");
+        if (null != date && !"".equals(date))
+            try {
+                String[] dat = date.split(" ");
 
-					SimpleDateFormat cf = new SimpleDateFormat("yyyy/MM/dd",
-							Locale.ENGLISH);
-					Date dt = cf.parse(dat[0]);
-					SimpleDateFormat sf = new SimpleDateFormat("dd/MMM/yyyy",
-							Locale.ENGLISH);
-					return sf.format(dt);
-				} catch (Exception e) {
-					Commons.printException(""+e);
-				}
+                SimpleDateFormat cf = new SimpleDateFormat("yyyy/MM/dd",
+                        Locale.ENGLISH);
+                Date dt = cf.parse(dat[0]);
+                SimpleDateFormat sf = new SimpleDateFormat("dd/MMM/yyyy",
+                        Locale.ENGLISH);
+                return sf.format(dt);
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
 
-		return "";
-	}
+        return "";
+    }
 
-	public String changeDate(String date) {
+    public String changeDate(String date) {
 
-		if (null != date && !"".equals(date))
-				try {
-					String[] dat = date.split(" ");
+        if (null != date && !"".equals(date))
+            try {
+                String[] dat = date.split(" ");
 
-					SimpleDateFormat cf = new SimpleDateFormat("yyyy/MM/dd",
-							Locale.ENGLISH);
-					Date dt = cf.parse(dat[0]);
-					SimpleDateFormat sf = new SimpleDateFormat("MM/dd/yyyy",
-							Locale.ENGLISH);
-					return sf.format(dt);
-				} catch (Exception e) {
-					Commons.printException(""+e);
-				}
+                SimpleDateFormat cf = new SimpleDateFormat("yyyy/MM/dd",
+                        Locale.ENGLISH);
+                Date dt = cf.parse(dat[0]);
+                SimpleDateFormat sf = new SimpleDateFormat("MM/dd/yyyy",
+                        Locale.ENGLISH);
+                return sf.format(dt);
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
 
-		return "";
-	}
+        return "";
+    }
 
-	public String changeMonthNameToNommddyyyy(String date) {
+    public String changeMonthNameToNommddyyyy(String date) {
 
-		if (null != date && !"".equals(date))
-				try {
-					String[] dat = date.split(" ");
+        if (null != date && !"".equals(date))
+            try {
+                String[] dat = date.split(" ");
 
-					SimpleDateFormat cf = new SimpleDateFormat("dd/MMM/yyyy",
-							Locale.ENGLISH);
-					Date dt = cf.parse(dat[0]);
-					SimpleDateFormat sf = new SimpleDateFormat("MM/dd/yyyy",
-							Locale.ENGLISH);
-					return sf.format(dt);
-				} catch (Exception e) {
-					Commons.printException(""+e);
-				}
+                SimpleDateFormat cf = new SimpleDateFormat("dd/MMM/yyyy",
+                        Locale.ENGLISH);
+                Date dt = cf.parse(dat[0]);
+                SimpleDateFormat sf = new SimpleDateFormat("MM/dd/yyyy",
+                        Locale.ENGLISH);
+                return sf.format(dt);
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
 
-		return "";
-	}
+        return "";
+    }
 
-	private String QT(String data) {
-		return "'" + data + "'";
-	}
+    private String QT(String data) {
+        return "'" + data + "'";
+    }
 }
