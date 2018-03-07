@@ -1125,6 +1125,7 @@
     <string name="enter_your_password">Şifrenizi Girin</string>
     <string name="enter_valid_password">Lütfen geçerli bir şifre giriniz</string>
     <string name="profile">PROFİL</string>
+    <string name="view">Görüntüle</string>
 
     <string-array name="task_tab_header">
         <item>TÜMÜ</item>
