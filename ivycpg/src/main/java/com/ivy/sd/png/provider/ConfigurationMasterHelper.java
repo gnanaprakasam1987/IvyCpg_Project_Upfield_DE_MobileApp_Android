@@ -4462,12 +4462,15 @@ public class ConfigurationMasterHelper {
 
         String code = "";
         try {
+            String language = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
+
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             String sql = "select MName from " + DataMembers.tbl_HhtMenuMaster
                     + " where hhtCode=" + bmodel.QT("MENU_JOINT_CALL")
-                    + " and flag=1";
+                    + " and flag=1 and lang="+bmodel.QT(language);
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
