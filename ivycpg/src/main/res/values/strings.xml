@@ -1136,6 +1136,17 @@
 
     <string name="location_accuration_mis_match">Location accuracy not good, Choose Location</string>
 
+    <string name="Would_you_like_to_add_this_store_in_today_plan">Would you like to add this store in today’s plan?</string>
+    <string name="reason_for_visit">Reason for visit</string>
+    <string name="enter_remarks">Kindly provide remarks</string>
+    <string name="other_reason">Others</string>
+    <string name="remark_hint">Remarks</string>
+    <string name="catalog_images_download">Download Catalog Images</string>
+    <string name="enter_your_password">Enter your Password</string>
+    <string name="enter_valid_password">Please enter valid password</string>
+    <string name="profile">Profile</string>
+    <string name="view">View</string>
+
 
     <string-array name="task_tab_header">
         <item>All</item>

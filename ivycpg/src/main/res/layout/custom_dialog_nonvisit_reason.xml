@@ -13,7 +13,7 @@
         android:gravity="center"
         android:minHeight="@dimen/competitor_heder_width"
         android:padding="@dimen/profile_header_txt_layout_marginleft"
-        android:text="Would you like to add this store \n in today's plan?"
+        android:text="@string/Would_you_like_to_add_this_store_in_today_plan"
         android:textColor="?attr/primarycolor"
         android:textSize="@dimen/font_small" />
 
@@ -36,7 +36,7 @@
         android:layout_marginTop="@dimen/profile_header_txt_layout_marginleft"
         android:gravity="start"
         android:padding="@dimen/profile_header_txt_layout_marginleft"
-        android:text="Reason for visit"
+        android:text="@string/reason_for_visit"
         android:textColor="?attr/colorAccent"
         android:textSize="@dimen/font_micro_small"
         android:textStyle="bold" />
