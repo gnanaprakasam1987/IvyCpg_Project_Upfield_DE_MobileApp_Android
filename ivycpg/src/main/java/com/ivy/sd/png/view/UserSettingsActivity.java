@@ -368,21 +368,14 @@ public class UserSettingsActivity extends PreferenceActivity {
     private Dialog clearSyncDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getResources().getString(R.string.switch_user));
-        builder.setMessage(getResources().getString(R.string.data_to_upload) + getResources().getString(R.string.proceed));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.data_to_upload));
+        builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                clearPreferences();
+                dialog.cancel();
             }
         });
-        builder.setNegativeButton(getResources().getString(R.string.no),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
         bmodel.applyAlertDialogTheme(builder);
         return null;
     }
