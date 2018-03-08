@@ -1515,7 +1515,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private void onNextButtonClick() {
         if (businessModel.configurationMasterHelper.IS_MUST_SELL_STK
-                && !businessModel.productHelper.isMustSellFilledStockCheck()) {
+                && !businessModel.productHelper.isMustSellFilledStockCheck(true)) {
             Toast.makeText(getActivity(), R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
             return;
         }

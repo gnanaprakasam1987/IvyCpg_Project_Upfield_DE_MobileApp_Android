@@ -3109,42 +3109,51 @@ public class ProductHelper {
         return true;
     }
 
-    public boolean isMustSellFilledStockCheck() {
+    public boolean isMustSellFilledStockCheck(boolean isTaggedProducts) {
 
         boolean isSkuFilled = true;
 
-        int siz = getTaggedProducts().size();
+        Vector<ProductMasterBO> productList;
+        if(isTaggedProducts){
+            productList=getTaggedProducts();
+        }
+        else {
+            productList=getProductMaster();
+        }
+
+        int siz =productList.size();
         if (siz == 0)
             return false;
         loop:
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = getTaggedProducts().get(i);
+            ProductMasterBO product = productList.get(i);
 
             int siz1 = product.getLocations().size();
             for (int j = 0; j < siz1; j++) {
-                if (product.getIsMustSell() == 1
-                        && (product.getLocations().get(j).getShelfPiece() < 0
-                        && product.getLocations().get(j).getShelfCase() < 0
-                        && product.getLocations().get(j).getShelfOuter() < 0
-                        && product.getLocations().get(j).getWHPiece() == 0
-                        && product.getLocations().get(j).getWHCase() == 0
-                        && product.getLocations().get(j).getWHOuter() == 0
-                        && product.getLocations().get(j).getCockTailQty() == 0
-                        && product.getIsListed() == 0
-                        && product.getIsDistributed() == 0
-                        && product.getReasonID().equals("0")
-                        && product.getLocations().get(j).getAvailability() < 0)) {
-                    if (j == siz1 - 1) {
-                        isSkuFilled = false;
-                        break loop;
-                    }
-                } else {
-                    if (product.getLocations().get(j).getAvailability() == 0 && bmodel.configurationMasterHelper.SHOW_STOCK_RSN && product.getReasonID().equals("0")) {
-                        isSkuFilled = false;
-                        break loop;
+                if (product.getIsMustSell() == 1) {
+                    if ((product.getLocations().get(j).getShelfPiece() < 0
+                            && product.getLocations().get(j).getShelfCase() < 0
+                            && product.getLocations().get(j).getShelfOuter() < 0
+                            && product.getLocations().get(j).getWHPiece() == 0
+                            && product.getLocations().get(j).getWHCase() == 0
+                            && product.getLocations().get(j).getWHOuter() == 0
+                            && product.getLocations().get(j).getCockTailQty() == 0
+                            && product.getIsListed() == 0
+                            && product.getIsDistributed() == 0
+                            && product.getReasonID().equals("0")
+                            && product.getLocations().get(j).getAvailability() < 0)) {
+                        if (j == siz1 - 1) {
+                            isSkuFilled = false;
+                            break loop;
+                        }
                     } else {
-                        isSkuFilled = true;
-                        j = siz1;
+                        if (product.getLocations().get(j).getAvailability() == 0 && bmodel.configurationMasterHelper.SHOW_STOCK_RSN && product.getReasonID().equals("0")) {
+                            isSkuFilled = false;
+                            break loop;
+                        } else {
+                            isSkuFilled = true;
+                            j = siz1;
+                        }
                     }
                 }
 

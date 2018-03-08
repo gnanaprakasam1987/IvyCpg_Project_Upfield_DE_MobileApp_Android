@@ -185,37 +185,43 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
 
                     } else if (token.contains("RF2")) {
                         textInputLayout3.setVisibility(View.VISIBLE);
-                    } else if (token.contains("REMD")) {
-                        layout_remark_type.setVisibility(View.VISIBLE);
-                        layout_remark.setVisibility(View.GONE);
+                    }
+                    else if (token.contains("REM")) {
+                        if(token.equalsIgnoreCase("REMD")){
 
-                        bmodel.reasonHelper.downloadRemarksType();
-                        spinnerAdapter = new ArrayAdapter<>(getActivity(),
-                                R.layout.spinner_bluetext_layout);
-                        spinnerAdapter.add(new ReasonMaster(0 + "", getResources().getString(R.string.select_remarks_type)));
-                        int count = 0, selectedPos = -1;
-                        for (ReasonMaster temp : bmodel.reasonHelper
-                                .getRemarksType()) {
-                            if (temp.getReasonDesc().equals(bmodel.getRemarkType()))
-                                selectedPos = count + 1;
-                            spinnerAdapter.add(temp);
-                            count++;
+                            layout_remark_type.setVisibility(View.VISIBLE);
+
+                            bmodel.reasonHelper.downloadRemarksType();
+                            spinnerAdapter = new ArrayAdapter<>(getActivity(),
+                                    R.layout.spinner_bluetext_layout);
+                            spinnerAdapter.add(new ReasonMaster(0 + "", getResources().getString(R.string.select_remarks_type)));
+                            int count = 0, selectedPos = -1;
+                            for (ReasonMaster temp : bmodel.reasonHelper
+                                    .getRemarksType()) {
+                                if (temp.getReasonDesc().equals(bmodel.getRemarkType()))
+                                    selectedPos = count + 1;
+                                spinnerAdapter.add(temp);
+                                count++;
+                            }
+                            spinnerAdapter
+                                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                            spinner_remark_type.setAdapter(spinnerAdapter);
+                            spinner_remark_type.setSelection(selectedPos);
+                            spinner_remark_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                                }
+                            });
                         }
-                        spinnerAdapter
-                                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-                        spinner_remark_type.setAdapter(spinnerAdapter);
-                        spinner_remark_type.setSelection(selectedPos);
-                        spinner_remark_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            }
+                        else {
+                            layout_remark.setVisibility(View.VISIBLE);
 
-                            @Override
-                            public void onNothingSelected(AdapterView<?> adapterView) {
-
-                            }
-                        });
-
+                        }
                     }
                 }
                 if (bmodel.getOrderHeaderNote() != null) {
