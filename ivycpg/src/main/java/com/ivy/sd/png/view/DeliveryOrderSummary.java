@@ -104,6 +104,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
     AlertDialog alertDialog;
 
     private class Save extends AsyncTask<String, Void, String> {
+        private boolean isSaved;
+
         protected void onPreExecute() {
             AlertDialog.Builder builder = new AlertDialog.Builder(DeliveryOrderSummary.this);
 
@@ -121,12 +123,14 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
                 if (!isPartialOrder) {
                     // bmodel.saveDeliveryOrderInvoice();
-                    orderHelper.saveOrder(DeliveryOrderSummary.this);
-                    orderHelper.saveInvoice(DeliveryOrderSummary.this);
+                    isSaved = orderHelper.saveOrder(DeliveryOrderSummary.this);
+                    if (isSaved)
+                        orderHelper.saveInvoice(DeliveryOrderSummary.this);
                 }
-                orderHelper.insertDeliveryOrderRecord(DeliveryOrderSummary.this, isPartialOrder);
-                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_DELIVERY_ORDER);
-
+                if (isSaved) {
+                    orderHelper.insertDeliveryOrderRecord(DeliveryOrderSummary.this, isPartialOrder);
+                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_DELIVERY_ORDER);
+                }
 
             } catch (Exception ex) {
                 Commons.printException(ex);
@@ -139,23 +143,27 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             alertDialog.dismiss();
-            Toast.makeText(DeliveryOrderSummary.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
-            if (!isPartialOrder) {
-                bmodel.mCommonPrintHelper.xmlRead("invoice", false, mylist, null);
+            if (isSaved) {
+                Toast.makeText(DeliveryOrderSummary.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
+                if (!isPartialOrder) {
+                    bmodel.mCommonPrintHelper.xmlRead("invoice", false, mylist, null);
 
-                Intent i = new Intent(DeliveryOrderSummary.this, CommonPrintPreviewActivity.class);
-                i.putExtra("IsFromOrder", true);
-                i.putExtra("IsUpdatePrintCount", true);
-                i.putExtra("isHomeBtnEnable", true);
-                i.putExtra("isHidePrintBtn",true);
-                startActivity(i);
-                finish();
+                    Intent i = new Intent(DeliveryOrderSummary.this, CommonPrintPreviewActivity.class);
+                    i.putExtra("IsFromOrder", true);
+                    i.putExtra("IsUpdatePrintCount", true);
+                    i.putExtra("isHomeBtnEnable", true);
+                    i.putExtra("isHidePrintBtn", true);
+                    startActivity(i);
+                    finish();
+                } else {
+
+                    startActivity(new Intent(DeliveryOrderSummary.this, HomeScreenTwo.class));
+                    finish();
+                }
+                bmodel.productHelper.clearOrderTable();
             } else {
-
-                startActivity(new Intent(DeliveryOrderSummary.this, HomeScreenTwo.class));
-                finish();
+                Toast.makeText(DeliveryOrderSummary.this, getResources().getString(R.string.order_save_falied), Toast.LENGTH_LONG).show();
             }
-            bmodel.productHelper.clearOrderTable();
 
         }
 

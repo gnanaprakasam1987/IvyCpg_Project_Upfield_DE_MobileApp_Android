@@ -175,8 +175,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MUST_SELL_SKIP = "MSL_SKIP";
     private static final String CODE_PRODUCT_SCHEME_DIALOG = "ORDB21";
     private static final String CODE_DISCOUNT_EDITVIEW = "ORDB25";
-    private static final String CODE_SHOW_STK_ORD_SRP = "ORDB24";
-    private static final String CODE_SHOW_STK_ORD_SRP_SEC = "ORDB26";
+    private static final String CODE_SHOW_STK_ORD_SRP = "ORDB26";
     private static final String CODE_SHOW_SPL_FILTER = "ORDB27";
     private static final String CODE_SHOW_COMPETITOR_FILTER = "FUN62";
     public static String COMPETITOR_FILTER_LEVELS;
@@ -466,9 +465,11 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ALLOW_CONTINUOUS_PRINT = "FUN67";
     public boolean IS_ALLOW_CONTINUOUS_PRINT;
 
-
     private static final String CODE_PRINT_DELIVERY = "DLRYPRINT";
     public boolean IS_DELIVERY_PRINT;
+
+    private static final String CODE_FOCUS_PACK_NOT_DONE = "ORDB71";
+    public boolean IS_FOCUS_PACK_NOT_DONE;
 
 
     /**
@@ -593,6 +594,14 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_REPLACED_QTY_OU;
     public boolean SHOW_STOCK_AVGDAYS;
 
+    // Outer & case conversion
+    public boolean CONVERT_STOCK_SIH_PS;
+    public boolean CONVERT_STOCK_SIH_CS;
+    public boolean CONVERT_STOCK_SIH_OU;
+    public boolean CONVERT_EOD_SIH_PS;
+    public boolean CONVERT_EOD_SIH_CS;
+    public boolean CONVERT_EOD_SIH_OU;
+
     // Added in 32 version
     public boolean IS_WSIH; // ORDB16
     public boolean SHOW_HIGHLIGHT_FOR_OOS; // ORDB15
@@ -623,7 +632,9 @@ public class ConfigurationMasterHelper {
     public boolean IS_SCHEME_CHECK;
     public boolean IS_SCHEME_CHECK_DISABLED;
     public boolean SHOW_STK_ORD_SRP = true;
-    public boolean SHOW_STK_ORD_SRP_SEC;
+    public boolean SHOW_CASE_SRP;
+    public boolean SHOW_PC_SRP;
+    public boolean SHOW_OUTER_SRP;
     public boolean SHOW_STK_ORD_SRP_EDT;
     public boolean SHOW_D1;
     public boolean SHOW_D2;
@@ -1727,13 +1738,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_CALC = hashMapHHTModuleConfig.get(CODE_CALCULATOR) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATOR) : false;
         this.IS_SCHEME_EDITABLE = hashMapHHTModuleConfig.get(CODE_SCHEME_EDITABLE) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_EDITABLE) : false;
         this.IS_MUST_SELL = hashMapHHTModuleConfig.get(CODE_MUST_SELL) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL) : false;
-        if (hashMapHHTModuleOrder.get(CODE_SHOW_STK_ORD_SRP) != null) {
-            if (hashMapHHTModuleOrder.get(CODE_SHOW_STK_ORD_SRP) == 0)
-                SHOW_STK_ORD_SRP = true;
-            if (hashMapHHTModuleOrder.get(CODE_SHOW_STK_ORD_SRP) == 1)
-                SHOW_STK_ORD_SRP_EDT = true;
-        }
-        this.SHOW_STK_ORD_SRP_SEC = hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP_SEC) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP_SEC) : false;
+        this.SHOW_STK_ORD_SRP = hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP) : false;
         this.SHOW_MVP_DRAWER = hashMapHHTModuleConfig.get(CODE_SHOW_MVP_DRAWER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MVP_DRAWER) : false;
         this.SHOW_REMARKS_STK_ORD = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_ORD) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_ORD) : false;
         this.SHOW_REMARKS_STK_CHK = hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_CHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REMARKS_STK_CHK) : false;
@@ -2194,6 +2199,7 @@ public class ConfigurationMasterHelper {
         this.IS_REMOVE_TAX_ON_SRP = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_SRP) : false;
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
         this.IS_SHOW_ONLY_SERVER_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) : false;
+        this.IS_FOCUS_PACK_NOT_DONE = hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) != null ? hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG) != null) {
             if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG)) {
@@ -3254,6 +3260,10 @@ public class ConfigurationMasterHelper {
             IS_STK_ORD_BS = false;
             SHOW_SALES_RETURN_IN_ORDER = false;
 
+            SHOW_CASE_SRP = false;
+            SHOW_PC_SRP = false;
+            SHOW_OUTER_SRP = false;
+
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -3381,6 +3391,8 @@ public class ConfigurationMasterHelper {
                         SHOW_INDICATIVE_ORDER = true;
                     else if (temp.equals("CO"))
                         SHOW_CLEANED_ORDER = true;
+                    else if (temp.equals("SRPEDT"))
+                        SHOW_STK_ORD_SRP_EDT = true;
 
 
                 }
@@ -3811,6 +3823,24 @@ public class ConfigurationMasterHelper {
             }
             c.close();
 
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster +
+                    " where hhtcode=" + bmodel.QT(CODE_SHOW_STK_ORD_SRP) + " and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    String value = c.getString(0);
+                    if (value.equalsIgnoreCase("PS")) {
+                        SHOW_PC_SRP = true;
+                    }
+                    else if (value.equalsIgnoreCase("CS")) {
+                        SHOW_CASE_SRP = true;
+                    }
+                    else if (value.equalsIgnoreCase("OU")) {
+                        SHOW_OUTER_SRP = true;
+                    }
+                }
+                c.close();
+            }
 
             db.closeDB();
         } catch (Exception e) {
@@ -5324,5 +5354,83 @@ public class ConfigurationMasterHelper {
             db.closeDB();
         }
 
+    }
+
+    /* This method is used in End of The stock and StockView to calculate piece based
+    on the Outer and case size*/
+
+    public void loadStockUOMConfiguration() {
+
+        CONVERT_STOCK_SIH_PS = false;
+        CONVERT_STOCK_SIH_CS = false;
+        CONVERT_STOCK_SIH_OU = false;
+
+        try {
+            String codeValue = null;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='SIHINUOM' ";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+            if (codeValue != null) {
+
+                if (codeValue.equals("PS"))
+                    CONVERT_STOCK_SIH_PS = true;
+                else if (codeValue.equals("CS"))
+                    CONVERT_STOCK_SIH_CS = true;
+                else if (codeValue.equals("OU"))
+                    CONVERT_STOCK_SIH_OU = true;
+
+
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    /* This method is used in End of The stock and StockView to calculate piece based
+       on the Outer and case size*/
+    public void loadEODUOMConfiguration() {
+
+        CONVERT_EOD_SIH_PS = false;
+        CONVERT_EOD_SIH_CS = false;
+        CONVERT_EOD_SIH_OU = false;
+
+        try {
+            String codeValue = null;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='EODSIHINUOM' ";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+            if (codeValue != null) {
+
+                if (codeValue.equals("PS"))
+                    CONVERT_EOD_SIH_PS = true;
+                else if (codeValue.equals("CS"))
+                    CONVERT_EOD_SIH_CS = true;
+                else if (codeValue.equals("OU"))
+                    CONVERT_EOD_SIH_OU = true;
+
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 }
