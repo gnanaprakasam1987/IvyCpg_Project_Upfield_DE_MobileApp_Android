@@ -287,7 +287,8 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
             // NOTIFY_VALID_URL = 12;
 
             //	progressDialogue.dismiss();
-            alertDialog.dismiss();
+            if (alertDialog != null)
+                alertDialog.dismiss();
             switch (status) {
                 case ActivationHelper.NOTIFY_SUCESSFULLY_ACTIVATED:
                     //progressDialogue.dismiss();

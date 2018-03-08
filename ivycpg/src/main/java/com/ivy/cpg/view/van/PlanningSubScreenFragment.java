@@ -234,7 +234,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
             }
 
         } else if (menuItem.getConfigCode().equals(menuStockView)) {
-
+            bmodel.configurationMasterHelper.loadStockUOMConfiguration();
             stockViewIntent = new Intent(getActivity(),
                     StockViewActivity.class);
             stockViewIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/cb_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="35435 45"
+        android:textSize="@dimen/font_small"
+        android:textColor="@color/FullBlack"
+        android:buttonTint="?attr/colorAccent"
+        android:padding="12dp" />
+
+    <EditText
+        android:id="@+id/edt_other_remarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cursorVisible="false"
+        android:textColor="@color/Black"
+        android:textSize="@dimen/list_item_primary_text_size"
+        android:visibility="gone"
+        tools:text="rg tgerg dfgdfgdf g"
+        android:hint="@string/remark_hint"
+        android:padding="12dp"
+        android:layout_marginLeft="12dp" />
+</LinearLayout>

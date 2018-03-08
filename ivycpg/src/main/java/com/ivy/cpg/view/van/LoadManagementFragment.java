@@ -345,7 +345,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 break;
             case MENU_STOCK_VIEW:
-
+                bmodel.configurationMasterHelper
+                        .loadStockUOMConfiguration();
                 stockViewIntent = new Intent(getActivity(),
                         StockViewActivity.class);
                 stockViewIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

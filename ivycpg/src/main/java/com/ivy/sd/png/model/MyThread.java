@@ -239,79 +239,83 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             // Save Order
-            orderHelper.saveOrder(ctx);
-            bmodel.updateSbdDistStockinRetailerMaster();
+            if (orderHelper.saveOrder(ctx)) {
+                bmodel.updateSbdDistStockinRetailerMaster();
 
-            // Save Discount
+                // Save Discount
 //            bmodel.saveInvoiceDiscountDetails();
 
-            bmodel.setOrderHeaderBO(null);
+                bmodel.setOrderHeaderBO(null);
 
-            // Upadte isVisited Flag
-            if (bmodel.mSelectedModule != 1) {
-                bmodel.updateIsVisitedFlag();
-            }
-            // Update review plan in DB
-            bmodel.setReviewPlanInDB();
-
-            // If Stock and order is enabled , then save stock too.
-            if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
-                    && bmodel.hasStockInOrder()) {
-                bmodel.saveClosingStock(true);
-
-                if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
-                    // save price check
-                    PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
-                    if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                        priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
-
-                    // save near expiry
-                    bmodel.saveNearExpiry();
+                // Upadte isVisited Flag
+                if (bmodel.mSelectedModule != 1) {
+                    bmodel.updateIsVisitedFlag();
                 }
-            }
+                // Update review plan in DB
+                bmodel.setReviewPlanInDB();
 
-            // Calculate and set Distribution percent
-            if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                String percent = bmodel.getSBDDistributionPrecentNewPhilip();
-                bmodel.sbdMerchandisingHelper
-                        .setSBDDistributionPercent(percent);
-                bmodel.setDistributionPercent(percent);
-                bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
-            }
+                // If Stock and order is enabled , then save stock too.
+                if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
+                        && bmodel.hasStockInOrder()) {
+                    bmodel.saveClosingStock(true);
 
-            // Set Order Flag
-            bmodel.setIsOrdered("Y");
-            bmodel.setOrderedInDB("Y");
-            bmodel.getRetailerMasterBO().setOrdered("Y");
+                    if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+                        // save price check
+                        PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
+                        if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
+                            priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
-            // Set Order Taken/ executed flag
-            bmodel.setIsOrderMerch();
-            bmodel.setOrderMerchInDB("Y");
-            bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
-
-            // If initiative is enabled then , claculate and update the values
-            // in DB
-            if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
-                bmodel.initiativeHelper.loadInitiativeStatus(true,
-                        bmodel.retailerMasterBO.getRetailerID(), false, false,
-                        bmodel.getRetailerMasterBO().getSubchannelid());
-                bmodel.initiativeHelper
-                        .updateInitAchievedPercentInRetailerMaster();
-            }
-
-            // Clear all the temp values
-            OrderSummary frm = (OrderSummary) ctx;
-            // bmodel.productHelper.clearOrderTable();
-
-            // Backup the database
-            if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
-                if (!bmodel.synchronizationHelper.backUpDB()) {
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_DATABASE_NOT_SAVED);
+                        // save near expiry
+                        bmodel.saveNearExpiry();
+                    }
                 }
-            }
 
-            frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
+                // Calculate and set Distribution percent
+                if (!bmodel.configurationMasterHelper.IS_INVOICE) {
+                    String percent = bmodel.getSBDDistributionPrecentNewPhilip();
+                    bmodel.sbdMerchandisingHelper
+                            .setSBDDistributionPercent(percent);
+                    bmodel.setDistributionPercent(percent);
+                    bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
+                }
+
+                // Set Order Flag
+                bmodel.setIsOrdered("Y");
+                bmodel.setOrderedInDB("Y");
+                bmodel.getRetailerMasterBO().setOrdered("Y");
+
+                // Set Order Taken/ executed flag
+                bmodel.setIsOrderMerch();
+                bmodel.setOrderMerchInDB("Y");
+                bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
+
+                // If initiative is enabled then , claculate and update the values
+                // in DB
+                if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
+                    bmodel.initiativeHelper.loadInitiativeStatus(true,
+                            bmodel.retailerMasterBO.getRetailerID(), false, false,
+                            bmodel.getRetailerMasterBO().getSubchannelid());
+                    bmodel.initiativeHelper
+                            .updateInitAchievedPercentInRetailerMaster();
+                }
+
+                // Clear all the temp values
+                OrderSummary frm = (OrderSummary) ctx;
+                // bmodel.productHelper.clearOrderTable();
+
+                // Backup the database
+                if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
+                    if (!bmodel.synchronizationHelper.backUpDB()) {
+                        frm.getHandler().sendEmptyMessage(
+                                DataMembers.NOTIFY_DATABASE_NOT_SAVED);
+                    }
+                }
+
+                frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
+            } else {
+                OrderSummary frm = (OrderSummary) ctx;
+                frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_NOT_SAVED);
+            }
         } else if (opt == DataMembers.SAVEORDERPARTIALLY) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
@@ -477,142 +481,143 @@ public class MyThread extends Thread {
 
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
+            if (orderHelper.saveOrder(ctx)) {
 
-            orderHelper.saveOrder(ctx);
+                bmodel.setOrderHeaderNote("");
 
-            bmodel.setOrderHeaderNote("");
+                // Upadte isVisited Flag
+                bmodel.updateIsVisitedFlag();
 
-            // Upadte isVisited Flag
-            bmodel.updateIsVisitedFlag();
+                // Update review plan in DB
+                bmodel.setReviewPlanInDB();
 
-            // Update review plan in DB
-            bmodel.setReviewPlanInDB();
+                if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
+                        && bmodel.hasStockInOrder()) {
+                    bmodel.saveClosingStock(true);
 
-            if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
-                    && bmodel.hasStockInOrder()) {
-                bmodel.saveClosingStock(true);
+                    if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+                        // save price check
+                        PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
+                        if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
+                            priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
-                if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
-                    // save price check
-                    PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
-                    if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                        priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
-
-                    // save near expiry
-                    bmodel.saveNearExpiry();
+                        // save near expiry
+                        bmodel.saveNearExpiry();
+                    }
                 }
-            }
 
-            if (bmodel.configurationMasterHelper.IS_INVOICE) {
-                // update stockinhandmaster all record upload=N
-                //bmodel.updateStockinHandMaster();
+                if (bmodel.configurationMasterHelper.IS_INVOICE) {
+                    // update stockinhandmaster all record upload=N
+                    //bmodel.updateStockinHandMaster();
 
 
-                orderHelper.saveInvoice(ctx);
-            }
+                    orderHelper.saveInvoice(ctx);
+                }
 
-            bmodel.setRField1("");
-            bmodel.setRField2("");
-            bmodel.setRField3("");
+                bmodel.setRField1("");
+                bmodel.setRField2("");
+                bmodel.setRField3("");
 
-            // If Bottle Return Credit Limit Enabled , then substract the bottle
-            // return value in Bottle Return CreditLimit in Retailer Master
-            if (bmodel.configurationMasterHelper.SHOW_BOTTLE_CREDITLIMIT)
-                bmodel.updateBottleCreditLimitAmount();
+                // If Bottle Return Credit Limit Enabled , then substract the bottle
+                // return value in Bottle Return CreditLimit in Retailer Master
+                if (bmodel.configurationMasterHelper.SHOW_BOTTLE_CREDITLIMIT)
+                    bmodel.updateBottleCreditLimitAmount();
 
-            // Save Discount
+                // Save Discount
 //            bmodel.saveInvoiceDiscountDetails();
 
-            bmodel.setOrderHeaderBO(null);
+                bmodel.setOrderHeaderBO(null);
 
-            // Calculate and set Distribution percent
-            String percent = bmodel.getSBDDistributionPrecentNewPhilip();
-            bmodel.sbdMerchandisingHelper.setSBDDistributionPercent(percent);
-            bmodel.setDistributionPercent(percent);
-            bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
+                // Calculate and set Distribution percent
+                String percent = bmodel.getSBDDistributionPrecentNewPhilip();
+                bmodel.sbdMerchandisingHelper.setSBDDistributionPercent(percent);
+                bmodel.setDistributionPercent(percent);
+                bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
 
-            bmodel.setIsOrdered("Y");
-            bmodel.setOrderedInDB("Y");
-            bmodel.getRetailerMasterBO().setOrdered("Y");
+                bmodel.setIsOrdered("Y");
+                bmodel.setOrderedInDB("Y");
+                bmodel.getRetailerMasterBO().setOrdered("Y");
 
-            // Set Order Taken/ executed flag
-            bmodel.setIsOrderMerch();
-            bmodel.setOrderMerchInDB("Y");
-            bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
+                // Set Order Taken/ executed flag
+                bmodel.setIsOrderMerch();
+                bmodel.setOrderMerchInDB("Y");
+                bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
 
-            if (bmodel.configurationMasterHelper.IS_INVOICE) {
-                bmodel.setIsInvoiceDone();
-                bmodel.setInvoiceDoneInDB();
-                bmodel.getRetailerMasterBO().setInvoiceDone("Y");
-            }
+                if (bmodel.configurationMasterHelper.IS_INVOICE) {
+                    bmodel.setIsInvoiceDone();
+                    bmodel.setInvoiceDoneInDB();
+                    bmodel.getRetailerMasterBO().setInvoiceDone("Y");
+                }
 
-            if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
-                bmodel.initiativeHelper.loadInitiativeStatus(true,
-                        bmodel.retailerMasterBO.getRetailerID(), false, false,
-                        bmodel.getRetailerMasterBO().getSubchannelid());
-                bmodel.initiativeHelper
-                        .updateInitAchievedPercentInRetailerMaster();
-            }
-            // When Configuration Enabled the data inserted in to the Payment
-            if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
-                bmodel.collectionHelper.collectionBeforeInvoice();
+                if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
+                    bmodel.initiativeHelper.loadInitiativeStatus(true,
+                            bmodel.retailerMasterBO.getRetailerID(), false, false,
+                            bmodel.getRetailerMasterBO().getSubchannelid());
+                    bmodel.initiativeHelper
+                            .updateInitAchievedPercentInRetailerMaster();
+                }
+                // When Configuration Enabled the data inserted in to the Payment
+                if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
+                    bmodel.collectionHelper.collectionBeforeInvoice();
 
-            Commons.print("Class Simple Name :"
-                    + ctx.getClass().getSimpleName());
-            if (ctx.getClass().getSimpleName()
-                    .equalsIgnoreCase("BixolonIIPrint")) {
-                BixolonIIPrint frm = (BixolonIIPrint) ctx;
-                frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
-            } else if (ctx.getClass().getSimpleName()
-                    .equalsIgnoreCase("BixolonIPrint")) {
-                BixolonIPrint frm = (BixolonIPrint) ctx;
-                frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
-            } else if (ctx.getClass().getSimpleName()
-                    .equalsIgnoreCase("InvoicePrintZebraNew")) {
-                InvoicePrintZebraNew frm = (InvoicePrintZebraNew) ctx;
-                frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
-            } else if (ctx.getClass().getSimpleName().equals("BatchAllocation")) {
-                BatchAllocation frm = (BatchAllocation) ctx;
-                frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
+                Commons.print("Class Simple Name :"
+                        + ctx.getClass().getSimpleName());
+                if (ctx.getClass().getSimpleName()
+                        .equalsIgnoreCase("BixolonIIPrint")) {
+                    BixolonIIPrint frm = (BixolonIIPrint) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
+                } else if (ctx.getClass().getSimpleName()
+                        .equalsIgnoreCase("BixolonIPrint")) {
+                    BixolonIPrint frm = (BixolonIPrint) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
+                } else if (ctx.getClass().getSimpleName()
+                        .equalsIgnoreCase("InvoicePrintZebraNew")) {
+                    InvoicePrintZebraNew frm = (InvoicePrintZebraNew) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
+                } else if (ctx.getClass().getSimpleName().equals("BatchAllocation")) {
+                    BatchAllocation frm = (BatchAllocation) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
 
-            } else if (ctx.getClass().getSimpleName()
-                    .equalsIgnoreCase("PrintPreviewScreen")) {
-                PrintPreviewScreen frm = (PrintPreviewScreen) ctx;
-                frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
-            } else if (ctx.getClass().getSimpleName()
-                    .equalsIgnoreCase("BtPrint4Ivy")) {
-                BtPrint4Ivy frm = (BtPrint4Ivy) ctx;
-                frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
-            } else if (ctx.getClass().getSimpleName()
-                    .equalsIgnoreCase("PrintPreviewScreenDiageo")) {
-                PrintPreviewScreenDiageo frm = (PrintPreviewScreenDiageo) ctx;
-                frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
-            } else if (ctx.getClass().getSimpleName()
-                    .equalsIgnoreCase("PrintPreviewScreenTitan")) {
-                PrintPreviewScreenTitan frm = (PrintPreviewScreenTitan) ctx;
-                frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
-            } else if (ctx.getClass().getSimpleName()
-                    .equalsIgnoreCase("GhanaPrintPreviewActivity")) {
-                GhanaPrintPreviewActivity frm = (GhanaPrintPreviewActivity) ctx;
-                frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
+                } else if (ctx.getClass().getSimpleName()
+                        .equalsIgnoreCase("PrintPreviewScreen")) {
+                    PrintPreviewScreen frm = (PrintPreviewScreen) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
+                } else if (ctx.getClass().getSimpleName()
+                        .equalsIgnoreCase("BtPrint4Ivy")) {
+                    BtPrint4Ivy frm = (BtPrint4Ivy) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
+                } else if (ctx.getClass().getSimpleName()
+                        .equalsIgnoreCase("PrintPreviewScreenDiageo")) {
+                    PrintPreviewScreenDiageo frm = (PrintPreviewScreenDiageo) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
+                } else if (ctx.getClass().getSimpleName()
+                        .equalsIgnoreCase("PrintPreviewScreenTitan")) {
+                    PrintPreviewScreenTitan frm = (PrintPreviewScreenTitan) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
+                } else if (ctx.getClass().getSimpleName()
+                        .equalsIgnoreCase("GhanaPrintPreviewActivity")) {
+                    GhanaPrintPreviewActivity frm = (GhanaPrintPreviewActivity) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
+                } else {
+                    OrderSummary frm = (OrderSummary) ctx;
+                    frm.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_INVOICE_SAVED);
+                }
             } else {
                 OrderSummary frm = (OrderSummary) ctx;
                 frm.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_INVOICE_SAVED);
+                        DataMembers.NOTIFY_ORDER_NOT_SAVED);
             }
-            // Data loaded into BO will be cleared only after print preview
-            // bmodel.clearOrderTable();
-            // OrderSummary frm = (OrderSummary) ctx;
-            // frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_INVOICE_SAVED);
+
         } else if (opt == DataMembers.SYNCSIHUPLOAD) {
             HomeScreenActivity fragment = (HomeScreenActivity) ctx;
             bmodel = (BusinessModel) ctx.getApplicationContext();
@@ -670,8 +675,8 @@ public class MyThread extends Thread {
                 int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_SIH_UPLOAD);
 
                 if (bool == 2) {
-                        fragment.getHandler().sendEmptyMessage(
-                                DataMembers.NOTIFY_COUNTER_SIH_UPLOADED);
+                    fragment.getHandler().sendEmptyMessage(
+                            DataMembers.NOTIFY_COUNTER_SIH_UPLOADED);
                 } else if (bool == -1) {
                     fragment.getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);

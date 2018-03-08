@@ -29,7 +29,6 @@ public class DataMembers {
 
     public static String fileName = "sd_png_asean_android.apk";
 
-    public static String zip_Down_URL = "Product/CatalogImages.zip";
     public static final int MESSAGE_UNZIPPED = 10113;
 
     public static final String DIGITAL_CONTENT = "TRAN";
@@ -152,6 +151,7 @@ public class DataMembers {
     public static final int NOTIFY_INVOICE_SAVED = -7;
     public static final int NOTIFY_ORDER_DELETED = -8;
     public static final int NOTIFY_DATABASE_NOT_SAVED = -9;
+    public static final int NOTIFY_ORDER_NOT_SAVED = -11;
 
     public static final int NOTIFY_EXPORT_SUCCESS = 69;
     public static final int NOTIFY_EXPORT_FAILURE = 70;
@@ -238,12 +238,6 @@ public class DataMembers {
     public static final int SDCARD_NOT_AVAILABLE = 1007;
     public static final int MESSAGE_DOWNLOAD_COMPLETE_DC = 1008;
     public static final int MESSAGE_ENCOUNTERED_ERROR_DC = 1009;
-
-    /*Catolog Order*/
-    public static final int MESSAGE_ENCOUNTERED_ERROR_CATALOG = 1010;
-    public static final int MESSAGE_UPDATE_PROGRESS_CATALOG = 1011;
-    public static final int MESSAGE_DOWNLOAD_COMPLETE_CATALOG = 10112;
-
 
     public static final String tbl_beatMaster = "BeatMaster";
     public static final String tbl_beatMaster_cols = "BeatID,BeatDescription,today";

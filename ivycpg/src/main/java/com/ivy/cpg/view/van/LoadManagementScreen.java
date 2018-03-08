@@ -271,7 +271,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
                 break;
             case MENU_STOCK_VIEW:
-
+                mBModel.configurationMasterHelper.loadStockUOMConfiguration();
                 stockViewIntent = new Intent(LoadManagementScreen.this,
                         StockViewActivity.class);
                 stockViewIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
