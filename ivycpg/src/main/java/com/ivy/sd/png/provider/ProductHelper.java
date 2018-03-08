@@ -564,7 +564,7 @@ public class ProductHelper {
         Calendar c = Calendar.getInstance();
         bo = new NearExpiryDateBO();
         String dateF = df.format(c.getTime());
-        bo.setDate(dateF);
+        bo.setDate("");
         bo.setDateID(0);
         dateList.add(bo);
 
@@ -572,7 +572,7 @@ public class ProductHelper {
             c.add(Calendar.MONTH, 1);
             dateF = df.format(c.getTime());
             bo = new NearExpiryDateBO();
-            bo.setDate(dateF);
+            bo.setDate("");
             bo.setDateID(i);
             dateList.add(bo);
         }
@@ -5721,18 +5721,13 @@ public class ProductHelper {
                 getAlCompetitorTaggedProducts(loopEnd);
             } else {
 
-                String sql;
-                sql = "SELECT A1.CPID, A1.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,A1.CPCode,PM.pid,A" + loopEnd
-                        + ".CPID as parentId FROM CompetitorProductMaster A1";
-                for (int i = 2; i <= loopEnd; i++)
-                    sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
-                            + ".CPID = A" + (i - 1) + ".CPTid";
                 Cursor cur = db
-                        .selectSQL(sql
-                                + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = A1.CPID"
+                        .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID "
+                                + " FROM CompetitorProductMaster CP"
+                                + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = CP.CPID"
                                 + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
                                 + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
-                                " group by A1.CPID");
+                                "group by CP.CPID");
 
                 if (cur != null) {
 
@@ -5752,7 +5747,7 @@ public class ProductHelper {
                         product.setPcUomid(cur.getInt(5));
                         product.setProductCode(cur.getString(6));
                         product.setOwnPID(cur.getString(7));
-                        product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
+                        product.setCompanyId(cur.getInt(8));
 
                         // for level skiping
                         ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());

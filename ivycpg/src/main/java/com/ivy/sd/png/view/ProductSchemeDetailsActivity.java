@@ -124,10 +124,10 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
                 if (bmodel.labelsMasterHelper.applyLabels("product_details_tab") != null)
                     productDetailsTab.setText(bmodel.labelsMasterHelper.applyLabels("product_details_tab"));
                 else
-                    productDetailsTab.setText("Product Details");
+                    productDetailsTab.setText(getResources().getString(R.string.Product_details));
             } catch (Exception e) {
                 Commons.printException(e);
-                productDetailsTab.setText("Product Details");
+                productDetailsTab.setText(getResources().getString(R.string.Product_details));
             }
             tabLayout.addTab(productDetailsTab);
         }

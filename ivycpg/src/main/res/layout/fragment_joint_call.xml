@@ -28,7 +28,7 @@
                 android:gravity="center"
                 android:minHeight="@dimen/competitor_heder_width"
                 android:padding="@dimen/profile_header_txt_layout_marginleft"
-                android:text="Enter your password"
+                android:text="@string/enter_password"
                 android:textColor="#175fab"
                 android:textSize="@dimen/font_medium" />
         </LinearLayout>

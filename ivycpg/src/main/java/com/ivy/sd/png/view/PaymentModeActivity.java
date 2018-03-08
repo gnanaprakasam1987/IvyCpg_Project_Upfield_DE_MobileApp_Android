@@ -155,9 +155,11 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
             }
         }
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment, mFragmentList.get(selectedPosition));
-        ft.commit();
+        if (!isFinishing()) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment, mFragmentList.get(selectedPosition));
+            ft.commit();
+        }
         super.onResume();
     }
 

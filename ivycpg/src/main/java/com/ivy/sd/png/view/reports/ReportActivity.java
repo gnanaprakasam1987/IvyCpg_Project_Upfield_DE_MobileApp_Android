@@ -438,6 +438,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_EOD_STOCK_REPORT)) {
             bmodel.configurationMasterHelper.loadEODColumnConfiguration();
+            bmodel.configurationMasterHelper.loadEODUOMConfiguration();
             transaction.replace(R.id.fragment_content, mEODStockReportFragment);
             transaction.addToBackStack(null);
             getSupportActionBar().setDisplayShowTitleEnabled(false);

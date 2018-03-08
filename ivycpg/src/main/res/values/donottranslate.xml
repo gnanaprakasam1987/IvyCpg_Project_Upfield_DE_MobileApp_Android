@@ -143,7 +143,7 @@
     <string name="error_in_creating_pdf">Error in creating pdf.</string>
     <string name="preparing_pdf">Preparing Pdf file</string>
 
-    <string name="catalog_images_download">Download Catalog Images</string>
+
     <string name="downloading">Downloading.. Catalog Images</string>
     <string name="docRefNo">DocRefNo</string>
     <string name="contact_name">Contact Name</string>
@@ -165,9 +165,8 @@
     <string name="please_select_a_Distributor_to_download">Please select a distributor to download.</string>
 
     <!-- Extra reason type -->
-    <string name="other_reason">Others</string>
-    <string name="remark_hint">Remarks</string>
-    <string name="enter_remarks">Kindly provide remarks</string>
+
+
     <string name="invoice_creation">Creation</string>
 
     <string name="reason_duplicated">Reason should not be duplicated.</string>
@@ -276,5 +275,24 @@
     <string name="net_price">Net Price</string>
     <string name="free">Free</string>
     <string name="minimum_order_required">Minimum Order Required</string>
+
+    <!--Incentive Dashboard-->
+    <string name="total_payout_earned">Total Payout Earned</string>
+    <string name="max_possible_payout">Max Possible Payout</string>
+    <string name="total_payout">Total Payout</string>
+    <string name="regular_incentive">REGULAR INCENTIVE</string>
+    <string name="regular_incentive_small">Regular Incentive</string>
+    <string name="top_up_incentive">TOP UP INCENTIVE</string>
+    <string name="top_up_incentive_small">Top Up Incentive</string>
+    <string name="factor_InscDash">Factor</string>
+    <string name="achived">Achived</string>
+    <string name="ach">Ach(%)</string>
+    <string name="payout_earned">Payout Earned</string>
+    <string name="max_possible">Max Possible Payout</string>
+    <string name="Rs">\u20B9</string>
+
+    <string name="order_save_falied">Order Save Failed !</string>
+    <string name="order_not_placed_focus_pack">Order not placed for Focus pack.</string>
+
 
 </resources>

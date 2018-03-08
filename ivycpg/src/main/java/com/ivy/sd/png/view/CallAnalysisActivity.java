@@ -1173,6 +1173,33 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA38")) {
                     isCloseCallAsMenu = true;
+                } else if (callanalysismenu.get(i).getConfigCode().equals("CallA39")) {
+                    String totalVolume = "";
+                    if (bmodel.configurationMasterHelper.IS_INVOICE)
+                        totalVolume = bmodel.productHelper
+                                .getOrderDetailVolume("InvoiceMaster",
+                                        "InvoiceDetails", "OD.Qty",
+                                        "OH.InvoiceNo = OD.InvoiceID ");
+                    else
+                        totalVolume = bmodel.productHelper
+                                .getOrderDetailVolume("OrderHeader",
+                                        "OrderDetail", "OD.Qty",
+                                        "OH.OrderID = OD.OrderID");
+
+                    con.setMenuName(callanalysismenu.get(i).getMenuName());
+                    con.setMenuNumber(totalVolume + "");
+
+                } else if (callanalysismenu.get(i).getConfigCode().equals("CallA40")) {
+
+                    String salesReturnVolume = "";
+
+                    salesReturnVolume = bmodel.productHelper
+                            .getOrderDetailVolume("SalesReturnHeader",
+                                    "SalesReturnDetails", "OD.totalQty",
+                                    "OH.uid = OD.uid");
+
+                    con.setMenuName(callanalysismenu.get(i).getMenuName());
+                    con.setMenuNumber(salesReturnVolume + "");
                 }
 
                 if (!callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA36")
@@ -1323,6 +1350,12 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             + getResources().getString(R.string.is_not_done) + "\n");
                 }
 
+            }
+        }
+        //focus pack not ordered
+        if (bmodel.configurationMasterHelper.IS_FOCUS_PACK_NOT_DONE) {
+            if (bmodel.getTotalFocusBrandLines() < 1) {
+                sb.append(getResources().getString(R.string.order_not_placed_focus_pack) + "\n");
             }
         }
 
