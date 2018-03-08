@@ -58,6 +58,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
     AssetTrackingHelper assetTrackingHelper;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -169,7 +170,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
                     // Launch Date Picker Dialog
                     DatePickerDialog dpd = new DatePickerDialog(
-                            getActivity(),R.style.DatePickerDialogStyle,
+                            getActivity(), R.style.DatePickerDialogStyle,
                             new DatePickerDialog.OnDateSetListener() {
 
                                 @Override
@@ -285,7 +286,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
                         && !mSNO.getText().toString().equals("")) {
                     if (!assetTrackingHelper
-                            .isExistingRetailerSno(getContext().getApplicationContext(), mSNO.getText()
+                            .getUniqueSerialNo(mSNO.getText()
                                     .toString())) {
                         setAddAssetDetails();
                         mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);

@@ -276,5 +276,21 @@
     <string name="free">Free</string>
     <string name="minimum_order_required">Minimum Order Required</string>
 
+    <!--Incentive Dashboard-->
+    <string name="total_payout_earned">Total Payout Earned</string>
+    <string name="max_possible_payout">Max Possible Payout</string>
+    <string name="total_payout">Total Payout</string>
+    <string name="regular_incentive">REGULAR INCENTIVE</string>
+    <string name="regular_incentive_small">Regular Incentive</string>
+    <string name="top_up_incentive">TOP UP INCENTIVE</string>
+    <string name="top_up_incentive_small">Top Up Incentive</string>
+    <string name="factor_InscDash">Factor</string>
+    <string name="achived">Achived</string>
+    <string name="ach">Ach(%)</string>
+    <string name="payout_earned">Payout Earned</string>
+    <string name="max_possible">Max Possible Payout</string>
+    <string name="Rs">\u20B9</string>
+
+
 
 </resources>
