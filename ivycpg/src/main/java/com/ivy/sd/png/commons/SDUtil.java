@@ -342,4 +342,12 @@ public class SDUtil {
         return base64String;
     }
 
+    /* This method will round the float or Decimal value using
+     * Math.round */
+    public static double mathRoundoff(double value)
+    {
+        double roundOff = Math.round(value * 100.0) / 100.0;
+        return roundOff;
+    }
+
 }

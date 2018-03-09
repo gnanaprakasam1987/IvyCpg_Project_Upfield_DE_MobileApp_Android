@@ -123,10 +123,13 @@ public class OrderHelper {
      *
      * @param mContext current context
      */
-    public void saveOrder(Context mContext) {
+    public boolean saveOrder(Context mContext) {
+        DBUtil db = null;
+        int isVanSales = 1;
+        String uid = null;
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -138,7 +141,7 @@ public class OrderHelper {
 
             String timeStampId = "";
             int flag = 0; // flag for joint call
-            int isVanSales = 1;
+            isVanSales = 1;
             int indicativeFlag = 0;
 
             if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
@@ -167,7 +170,7 @@ public class OrderHelper {
 
             String id = businessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
-            String uid = businessModel.QT(id);
+            uid = businessModel.QT(id);
 
             if (!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID()) && businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
                 businessModel.insertSeqNumber("ORD");
@@ -177,72 +180,7 @@ public class OrderHelper {
 
             // Deleting existing order
             if (hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())) {
-
-                StringBuffer sb = new StringBuffer();
-                sb.append("select OrderID from OrderHeader where RetailerID=");
-                sb.append(businessModel.getRetailerMasterBO().getRetailerID());
-                sb.append(" and upload='N'and invoicestatus = 0");
-                if (businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
-                    sb.append(" and OrderID=" + businessModel.QT(selectedOrderId));
-                }
-                if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                    sb.append(" and is_vansales=" + isVanSales);
-                }
-                sb.append(" and orderid not in(select orderid from OrderDeliveryDetail)");
-
-                Cursor orderDetailCursor = db.selectSQL(sb.toString());
-                if (orderDetailCursor.getCount() > 0) {
-
-                    if (orderDetailCursor.getCount() > 1) {
-                        orderDetailCursor.close();
-
-                        sb = new StringBuffer();
-                        sb.append("select OrderID from OrderHeader where RetailerID=");
-                        sb.append(businessModel.getRetailerMasterBO().getRetailerID());
-                        sb.append(" and upload='N' and invoicestatus = 0");
-                        if (businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
-                            sb.append(" and OrderID=" + businessModel.QT(selectedOrderId));
-                        }
-                        if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                            sb.append(" and is_vansales=" + isVanSales);
-                        }
-                        orderDetailCursor = db.selectSQL(sb.toString());
-
-                    }
-                    if (orderDetailCursor.getCount() > 0) {
-                        orderDetailCursor.moveToNext();
-                        uid = businessModel.QT(orderDetailCursor.getString(0));
-
-                        db.deleteSQL("OrderHeader", "OrderID=" + uid, false);
-                        db.deleteSQL("OrderDetail", "OrderID=" + uid, false);
-
-                        if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) { //If Sales Return Available for Order
-                            deleteSalesReturnDatas(db, uid);
-                        }
-
-                        // if scheme module enable ,delete tha scheme table
-                        if (businessModel.configurationMasterHelper.IS_SCHEME_ON) {
-                            db.deleteSQL(DataMembers.tbl_scheme_details,
-                                    "OrderID=" + uid, false);
-                            db.deleteSQL(DataMembers.tbl_SchemeFreeProductDetail,
-                                    "OrderID=" + uid, false);
-                        }
-
-                        db.deleteSQL("OrderDiscountDetail", "OrderID=" + uid,
-                                false);
-                        db.deleteSQL("InvoiceDiscountDetail", "OrderID=" + uid,
-                                false);
-                        db.deleteSQL("InvoiceTaxDetails", "OrderID=" + uid,
-                                false);
-
-                        // If Product Return Module Enabled, then deleting corresponding return transactions
-                        if (businessModel.configurationMasterHelper.SHOW_PRODUCTRETURN
-                                && businessModel.configurationMasterHelper.IS_SIH_VALIDATION)
-                            db.deleteSQL(DataMembers.tbl_orderReturnDetails,
-                                    "OrderID=" + uid, false);
-                    }
-                }
-                orderDetailCursor.close();
+                uid = deleteOrderTransactions(db, isVanSales, uid);
             }
 
             // It can be used to show in OrderSummary alert
@@ -652,8 +590,10 @@ public class OrderHelper {
 
         } catch (Exception e) {
             Commons.printException(e);
+            deleteOrderTransactions(db, isVanSales, uid);
+            return false;
         }
-
+        return true;
     }
 
     private void updateCreditNoteprintList() {
@@ -2840,5 +2780,76 @@ public class OrderHelper {
             e.printStackTrace();
         }
 
+    }
+
+
+    private String deleteOrderTransactions(DBUtil db, int isVanSales, String uid) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("select OrderID from OrderHeader where RetailerID=");
+        sb.append(businessModel.getRetailerMasterBO().getRetailerID());
+        sb.append(" and upload='N'and invoicestatus = 0");
+        if (businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
+            sb.append(" and OrderID=" + businessModel.QT(selectedOrderId));
+        }
+        if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            sb.append(" and is_vansales=" + isVanSales);
+        }
+        sb.append(" and orderid not in(select orderid from OrderDeliveryDetail)");
+
+        Cursor orderDetailCursor = db.selectSQL(sb.toString());
+        if (orderDetailCursor.getCount() > 0) {
+
+            if (orderDetailCursor.getCount() > 1) {
+                orderDetailCursor.close();
+
+                sb = new StringBuffer();
+                sb.append("select OrderID from OrderHeader where RetailerID=");
+                sb.append(businessModel.getRetailerMasterBO().getRetailerID());
+                sb.append(" and upload='N' and invoicestatus = 0");
+                if (businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
+                    sb.append(" and OrderID=" + businessModel.QT(selectedOrderId));
+                }
+                if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    sb.append(" and is_vansales=" + isVanSales);
+                }
+                orderDetailCursor = db.selectSQL(sb.toString());
+
+            }
+            if (orderDetailCursor.getCount() > 0) {
+                orderDetailCursor.moveToNext();
+                uid = businessModel.QT(orderDetailCursor.getString(0));
+
+                db.deleteSQL("OrderHeader", "OrderID=" + uid, false);
+                db.deleteSQL("OrderDetail", "OrderID=" + uid, false);
+
+                if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) { //If Sales Return Available for Order
+                    deleteSalesReturnDatas(db, uid);
+                }
+
+                // if scheme module enable ,delete tha scheme table
+                if (businessModel.configurationMasterHelper.IS_SCHEME_ON) {
+                    db.deleteSQL(DataMembers.tbl_scheme_details,
+                            "OrderID=" + uid, false);
+                    db.deleteSQL(DataMembers.tbl_SchemeFreeProductDetail,
+                            "OrderID=" + uid, false);
+                }
+
+                db.deleteSQL("OrderDiscountDetail", "OrderID=" + uid,
+                        false);
+                db.deleteSQL("InvoiceDiscountDetail", "OrderID=" + uid,
+                        false);
+                db.deleteSQL("InvoiceTaxDetails", "OrderID=" + uid,
+                        false);
+
+                // If Product Return Module Enabled, then deleting corresponding return transactions
+                if (businessModel.configurationMasterHelper.SHOW_PRODUCTRETURN
+                        && businessModel.configurationMasterHelper.IS_SIH_VALIDATION)
+                    db.deleteSQL(DataMembers.tbl_orderReturnDetails,
+                            "OrderID=" + uid, false);
+            }
+        }
+        orderDetailCursor.close();
+
+        return uid;
     }
 }

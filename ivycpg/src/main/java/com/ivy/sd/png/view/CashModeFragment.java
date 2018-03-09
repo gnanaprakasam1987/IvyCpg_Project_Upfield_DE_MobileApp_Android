@@ -176,26 +176,14 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
             @Override
             public void afterTextChanged(Editable s) {
                 String qty = s.toString();
-                double value = 0;
-                if (!"".equals(qty)) {
-                    value = SDUtil.convertToDouble(qty);
-                }
-                mPaymentBO.setAmount(value);
-                mPaymentBO.setUpdatePayableamt(value);
-                if (value > 0 && isAdvancePaymentAvailable && !bmodel.collectionHelper.isUseAllAdvancePaymentAmt()) {
-                    if (!qty.contains("."))
-                        qty = qty.length() > 1 ? qty.substring(0,
-                                qty.length() - 1) : "0";
-                    else
-                        qty = "";
-
-                    mCollectAmtET.setText(qty);
-                    Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
-                            Toast.LENGTH_SHORT).show();
-                } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CASH)) {
-                    //updateTotalAmountEntered();
-                } else {
-                    if (value > 0) {
+                if (bmodel.validDecimalValue(qty, 16, 2)) {
+                    double value = 0;
+                    if (!"".equals(qty)) {
+                        value = SDUtil.convertToDouble(qty);
+                    }
+                    mPaymentBO.setAmount(value);
+                    mPaymentBO.setUpdatePayableamt(value);
+                    if (value > 0 && isAdvancePaymentAvailable && !bmodel.collectionHelper.isUseAllAdvancePaymentAmt()) {
                         if (!qty.contains("."))
                             qty = qty.length() > 1 ? qty.substring(0,
                                     qty.length() - 1) : "0";
@@ -203,15 +191,32 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                             qty = "";
 
                         mCollectAmtET.setText(qty);
-                        Toast.makeText(
-                                getActivity(),
-                                getResources()
-                                        .getString(R.string.amount_exeeds_the_balance_please_check),
+                        Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                                 Toast.LENGTH_SHORT).show();
+                    } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CASH)) {
+                        //updateTotalAmountEntered();
+                    } else {
+                        if (value > 0) {
+                            if (!qty.contains("."))
+                                qty = qty.length() > 1 ? qty.substring(0,
+                                        qty.length() - 1) : "0";
+                            else
+                                qty = "";
 
+                            mCollectAmtET.setText(qty);
+                            Toast.makeText(
+                                    getActivity(),
+                                    getResources()
+                                            .getString(R.string.amount_exeeds_the_balance_please_check),
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
                     }
+                    mCollectAmtET.setSelection(mCollectAmtET.getText().length());
+                } else {
+                    mCollectAmtET.setText(qty.length() > 1 ? qty
+                            .substring(0, qty.length() - 1) : "0");
                 }
-                mCollectAmtET.setSelection(mCollectAmtET.getText().length());
             }
         });
         /*mCollectAmtET.setOnClickListener(new View.OnClickListener() {
@@ -348,10 +353,21 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
         } else {
             int id = vw.getId();
             if (id == R.id.calcdel) {
-                int s = SDUtil.convertToInt((String) QUANTITY.getText()
-                        .toString());
-                s = s / 10;
-                QUANTITY.setText(s + "");
+                String val = QUANTITY.getText().toString();
+
+                if (!val.isEmpty()) {
+
+                    val = val.substring(0, val.length() - 1);
+
+                    if (val.length() == 0) {
+                        val = "0";
+                    }
+
+                } else {
+                    val = "0";
+                }
+
+                QUANTITY.setText(val);
             } else if (id == R.id.calcdot) {
                 String s = QUANTITY.getText().toString();
 

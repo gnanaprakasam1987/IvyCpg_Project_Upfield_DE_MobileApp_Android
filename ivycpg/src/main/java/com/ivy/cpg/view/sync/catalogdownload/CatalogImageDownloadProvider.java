@@ -69,9 +69,9 @@ public class CatalogImageDownloadProvider {
                 TransferUtility transferUtility = Util.getTransferUtility(businessModel);
 
                 // Create location file path to store the downloaded file
-                File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + "CatalogImages.zip");
+                File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
                 // Prepare download URL path.
-                String downloadURL = DataMembers.img_Down_URL + "Product/CatalogImages.zip";
+                String downloadURL = DataMembers.img_Down_URL + "Product/"+ CatalogDownloadConstants.FILE_NAME;
 
                 // Initiate the download
                 TransferObserver observer = transferUtility.download(DataMembers.S3_BUCKET, downloadURL, file);

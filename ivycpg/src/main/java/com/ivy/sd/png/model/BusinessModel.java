@@ -2186,7 +2186,10 @@ public class BusinessModel extends Application {
 
         boolean bool = false;
         RetailerMasterBO retailer;
-        int siz = retailerMaster.size();
+        int siz = 0;
+
+        if (retailerMaster != null)
+            siz = retailerMaster.size();
 
         if (siz == 0)
             return bool;
@@ -9010,7 +9013,7 @@ public class BusinessModel extends Application {
      * This method will called to planeDeviateReason
      * reason.
      */
-    public void savePlaneDiveateReason(NonproductivereasonBO outlet, String remarks) {
+    public void savePlaneDiveateReason(ArrayList<NonproductivereasonBO> reasonBoList, String remarks) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -9048,12 +9051,17 @@ public class BusinessModel extends Application {
 
             String columns = "UID,UserId,Date,ReasonID,Remarks,DistributorID";
 
-            values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
-                    + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
-                    + "," + QT(remarks) +
-                    "," + getRetailerMasterBO().getDistributorId();
+            for (NonproductivereasonBO reasnBo : reasonBoList) {
 
-            db.insertSQL("NonFieldActivity", columns, values);
+                values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
+                        + QT(reasnBo.getDate()) + "," + QT(reasnBo.getReasonid())
+                        + "," + QT(remarks) +
+                        "," + getRetailerMasterBO().getDistributorId();
+
+                db.insertSQL("NonFieldActivity", columns, values);
+
+            }
+
 
             db.closeDB();
         } catch (Exception e) {

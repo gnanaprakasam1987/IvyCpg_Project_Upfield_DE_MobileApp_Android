@@ -1608,7 +1608,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
             channel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     ChannelBO tempBo = (ChannelBO) parent.getSelectedItem();
-                    loadsubchannel(tempBo.getChannelId());
+                    if (subchannel != null)
+                        loadsubchannel(tempBo.getChannelId());
                 }
 
                 public void onNothingSelected(AdapterView<?> arg0) {

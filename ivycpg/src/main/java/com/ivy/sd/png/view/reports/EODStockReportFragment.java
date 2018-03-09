@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
 
@@ -51,7 +52,70 @@ public class EODStockReportFragment extends Fragment {
         if (bmodel.configurationMasterHelper.SHOW_STOCK_FREE_ISSUED)
             view.findViewById(R.id.ll_free_issued).setVisibility(View.VISIBLE);
 
-        if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+        if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS ||
+                bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS ||
+                bmodel.configurationMasterHelper.CONVERT_EOD_SIH_OU) {
+
+            if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS) {
+                view.findViewById(R.id.loading_stock_pc_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_return_pc_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_free_issued_pc_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_replacement_pc_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_sih_pc_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_empty_pc_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_sold_stock_pc_title).setVisibility(View.VISIBLE);
+            } else {
+                view.findViewById(R.id.loading_stock_pc_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_return_pc_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_free_issued_pc_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_replacement_pc_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_sih_pc_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_empty_pc_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_sold_stock_pc_title).setVisibility(View.GONE);
+            }
+
+            if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS) {
+                view.findViewById(R.id.loading_stock_cs_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_return_cs_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_free_issued_cs_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_replacement_cs_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_sih_cs_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_empty_cs_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_sold_stock_cs_title).setVisibility(View.VISIBLE);
+
+
+            } else {
+                view.findViewById(R.id.loading_stock_cs_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_return_cs_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_free_issued_cs_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_replacement_cs_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_sih_cs_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_empty_cs_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_sold_stock_cs_title).setVisibility(View.GONE);
+
+            }
+
+            if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_OU) {
+                view.findViewById(R.id.loading_stock_ou_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_return_ou_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_sold_stock_ou_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_replacement_ou_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_sih_ou_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_empty_ou_title).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.tv_sold_stock_ou_title).setVisibility(View.VISIBLE);
+
+            } else {
+                view.findViewById(R.id.loading_stock_ou_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_return_ou_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_sold_stock_ou_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_replacement_ou_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_sih_ou_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_empty_ou_title).setVisibility(View.GONE);
+                view.findViewById(R.id.tv_sold_stock_ou_title).setVisibility(View.GONE);
+
+            }
+
+        } else if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
             if (bmodel.configurationMasterHelper.SHOW_EOD_OP) {
                 view.findViewById(R.id.loading_stock_pc_title).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.tv_return_pc_title).setVisibility(View.VISIBLE);
@@ -474,7 +538,58 @@ public class EODStockReportFragment extends Fragment {
                 holder.mBatchNum.setVisibility(View.GONE);
 
 
-            if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+            if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS ||
+                    bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS ||
+                    bmodel.configurationMasterHelper.CONVERT_EOD_SIH_OU) {
+
+                if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_OU) {
+                    if (holder.mSKUBO.getOuterSize() != 0) {
+                        holder.mLoadStock.setText(SDUtil.mathRoundoff((double) holder.mSKUBO.getVanLoadQty() / holder.mSKUBO.getOuterSize()) + "");
+                        holder.mSoldStock.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getSoldQty() / holder.mSKUBO.getOuterSize())) + "");
+                        holder.mFreeIssued.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getFreeIssuedQty() / holder.mSKUBO.getOuterSize())) + "");
+                        holder.mSIH.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getSih() / holder.mSKUBO.getOuterSize())) + "");
+                        holder.mEmpty.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getEmptyBottleQty() / holder.mSKUBO.getOuterSize())) + "");
+                        holder.mReplacementTV.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getReplacementQty() / holder.mSKUBO.getOuterSize())) + "");
+                        holder.tv_return.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getReturnQty() / holder.mSKUBO.getOuterSize())) + "");
+                    } else {
+                        holder.mLoadStock.setText(holder.mSKUBO.getVanLoadQty() + "");
+                        holder.mSoldStock.setText(holder.mSKUBO.getSoldQty() + "");
+                        holder.mFreeIssued.setText(holder.mSKUBO.getFreeIssuedQty() + "");
+                        holder.mSIH.setText(holder.mSKUBO.getSih() + "");
+                        holder.mEmpty.setText(holder.mSKUBO.getEmptyBottleQty() + "");
+                        holder.mReplacementTV.setText(holder.mSKUBO.getReplacementQty() + "");
+                        holder.tv_return.setText(holder.mSKUBO.getReturnQty() + "");
+                    }
+                } else if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS) {
+                    if (holder.mSKUBO.getCaseSize() != 0) {
+                        holder.mLoadStock.setText(SDUtil.mathRoundoff((double) holder.mSKUBO.getVanLoadQty() / holder.mSKUBO.getCaseSize()) + "");
+                        holder.mSoldStock.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getSoldQty() / holder.mSKUBO.getCaseSize())) + "");
+                        holder.mFreeIssued.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getFreeIssuedQty() / holder.mSKUBO.getCaseSize())) + "");
+                        holder.mSIH.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getSih() / holder.mSKUBO.getCaseSize())) + "");
+                        holder.mEmpty.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getEmptyBottleQty() / holder.mSKUBO.getCaseSize())) + "");
+                        holder.mReplacementTV.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getReplacementQty() / holder.mSKUBO.getCaseSize())) + "");
+                        holder.tv_return.setText(SDUtil.mathRoundoff(((double) holder.mSKUBO.getReturnQty() / holder.mSKUBO.getCaseSize())) + "");
+                    } else {
+                        holder.mLoadStock.setText(holder.mSKUBO.getVanLoadQty() + "");
+                        holder.mSoldStock.setText(holder.mSKUBO.getSoldQty() + "");
+                        holder.mFreeIssued.setText(holder.mSKUBO.getFreeIssuedQty() + "");
+                        holder.mSIH.setText(holder.mSKUBO.getSih() + "");
+                        holder.mEmpty.setText(holder.mSKUBO.getEmptyBottleQty() + "");
+                        holder.mReplacementTV.setText(holder.mSKUBO.getReplacementQty() + "");
+                        holder.tv_return.setText(holder.mSKUBO.getReturnQty() + "");
+                    }
+
+                } else if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS) {
+
+                    holder.mLoadStock.setText(holder.mSKUBO.getVanLoadQty() + "");
+                    holder.mSoldStock.setText(holder.mSKUBO.getSoldQty() + "");
+                    holder.mFreeIssued.setText(holder.mSKUBO.getFreeIssuedQty() + "");
+                    holder.mSIH.setText(holder.mSKUBO.getSih() + "");
+                    holder.mEmpty.setText(holder.mSKUBO.getEmptyBottleQty() + "");
+                    holder.mReplacementTV.setText(holder.mSKUBO.getReplacementQty() + "");
+                    holder.tv_return.setText(holder.mSKUBO.getReturnQty() + "");
+                }
+            } else if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
 
                 holder.mSIH_cs.setText(holder.mSKUBO.getSih_cs() + "");
                 holder.mEmpty_cs.setText(holder.mSKUBO.getEmptyBottleQty_cs() + "");

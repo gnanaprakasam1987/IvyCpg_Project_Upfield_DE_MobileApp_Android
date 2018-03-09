@@ -183,38 +183,43 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             public void afterTextChanged(Editable s) {
                 String qty = s.toString();
                 double value = 0;
-                if (!qty.equals("")) {
-                    value = SDUtil.convertToDouble(qty);
-                }
+                if (bmodel.validDecimalValue(qty, 16, 2)) {
+                    if (!qty.equals("")) {
+                        value = SDUtil.convertToDouble(qty);
+                    }
 
-                if (mTotalCreditNoteValue >= value) {
-                    if (tempCreditNoteValue > 0 && tempCreditNoteValue != value) {
-                        mPaymentBO.setAmount(tempCreditNoteValue);
-                        currentCollectionValue = tempCreditNoteValue;
+                    if (mTotalCreditNoteValue >= value) {
+                        if (tempCreditNoteValue > 0 && tempCreditNoteValue != value) {
+                            mPaymentBO.setAmount(tempCreditNoteValue);
+                            currentCollectionValue = tempCreditNoteValue;
 
-                        tempCreditNoteValue = Double.parseDouble(SDUtil.format(tempCreditNoteValue,
-                                bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                                0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+                            tempCreditNoteValue = Double.parseDouble(SDUtil.format(tempCreditNoteValue,
+                                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                                    0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
-                        String strCreditNote = tempCreditNoteValue + "";
-                        mEnterCreditNoteAmtET.setText(strCreditNote);
-                        if (isFragmentAlreadyCreated)
-                            tempCreditNoteValue = 0;
+                            String strCreditNote = tempCreditNoteValue + "";
+                            mEnterCreditNoteAmtET.setText(strCreditNote);
+                            if (isFragmentAlreadyCreated)
+                                tempCreditNoteValue = 0;
+                        } else {
+                            mPaymentBO.setAmount(value);
+                            currentCollectionValue = value;
+                        }
                     } else {
-                        mPaymentBO.setAmount(value);
-                        currentCollectionValue = value;
+                        qty = qty.length() > 1 ? qty.substring(0,
+                                qty.length() - 1) : "0";
+
+                        mEnterCreditNoteAmtET.setText(qty);
+                        Toast.makeText(
+                                getActivity(),
+                                getResources()
+                                        .getString(
+                                                R.string.amount_exeeds_the_balance_please_check),
+                                Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    qty = qty.length() > 1 ? qty.substring(0,
-                            qty.length() - 1) : "0";
-
-                    mEnterCreditNoteAmtET.setText(qty);
-                    Toast.makeText(
-                            getActivity(),
-                            getResources()
-                                    .getString(
-                                            R.string.amount_exeeds_the_balance_please_check),
-                            Toast.LENGTH_SHORT).show();
+                    mEnterCreditNoteAmtET.setText(qty.length() > 1 ? qty
+                            .substring(0, qty.length() - 1) : "0");
                 }
             }
         });
@@ -427,10 +432,21 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         } else {
             int id = vw.getId();
             if (id == R.id.calcdel) {
-                int s = SDUtil.convertToInt((String) QUANTITY.getText()
-                        .toString());
-                s = s / 10;
-                QUANTITY.setText(s + "");
+                String val = QUANTITY.getText().toString();
+
+                if (!val.isEmpty()) {
+
+                    val = val.substring(0, val.length() - 1);
+
+                    if (val.length() == 0) {
+                        val = "0";
+                    }
+
+                } else {
+                    val = "0";
+                }
+
+                QUANTITY.setText(val);
             } else if (id == R.id.calcdot) {
                 String s = QUANTITY.getText().toString();
 

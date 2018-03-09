@@ -245,7 +245,8 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
     }
 
     public void updaterProgressMsg(String msg) {
-        messagetv.setText(msg);
+        if (messagetv != null)
+            messagetv.setText(msg);
     }
 
 
