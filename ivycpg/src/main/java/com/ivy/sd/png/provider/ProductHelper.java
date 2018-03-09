@@ -7484,6 +7484,26 @@ public class ProductHelper {
         return null;
     }
 
+    public float getSalesReturnValue() {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        float total = 0;
+        Cursor c = db
+                .selectSQL("select ifnull(sum(returnvalue),0) from SalesReturnHeader where retailerid="
+                        + QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
+        if (c != null) {
+            if (c.getCount() > 0) {
+                c.moveToNext();
+                total = c.getFloat(0);
+            }
+            c.close();
+        }
+        db.closeDB();
+        return total;
+    }
+
 }
 
 
