@@ -290,9 +290,11 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         }
 
         if (!promotionHelper.SHOW_PROMO_QTY) {
+            card_keyboard.setVisibility(View.GONE);
             getView().findViewById(R.id.tvPromoQty).setVisibility(View.GONE);
 
         } else {
+            card_keyboard.setVisibility(View.VISIBLE);
             try {
                 if (businessModel.labelsMasterHelper.applyLabels(getView().findViewById(
                         R.id.tvPromoQty).getTag()) != null) {
@@ -811,10 +813,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
                 if (promotionHelper.SHOW_PROMO_QTY) {
                     holder.etPromoQty.setVisibility(View.VISIBLE);
-                    card_keyboard.setVisibility(View.VISIBLE);
                 } else {
                     holder.etPromoQty.setVisibility(View.GONE);
-                    card_keyboard.setVisibility(View.GONE);
                 }
                 if (promotionHelper.SHOW_PROMO_ANNOUNCER) {
                     holder.rbAnnounced.setVisibility(View.VISIBLE);

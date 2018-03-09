@@ -224,14 +224,12 @@ public class ProfileEditFragment extends IvyBaseFragment {
         }
         // }
 
-        bmodel.newOutletHelper.loadContactTitle();
-        bmodel.newOutletHelper.loadContactStatus();
-        bmodel.newOutletHelper.downloadLinkRetailer();
+
         new DownloadAsync().execute();
         //  bmodel.configurationMasterHelper.downloadProfileModuleConfig();
         // get previous changes from retailerEdit  Header and Detail table
-        bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
-        createTabViewForProfileForEdit();
+
+
         saveTxtBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -3582,12 +3580,16 @@ public class ProfileEditFragment extends IvyBaseFragment {
     }
 
 
-    private class DownloadAsync extends
-            AsyncTask<Integer, Integer, Boolean> {
-
+    private class DownloadAsync extends AsyncTask<Integer, Integer, Boolean> {
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
 
         protected void onPreExecute() {
+            builder = new AlertDialog.Builder(getActivity());
 
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
         }
 
         protected void onProgressUpdate(Integer... progress) {
@@ -3596,15 +3598,20 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
         @Override
         protected Boolean doInBackground(Integer... params) {
+            bmodel.newOutletHelper.loadContactTitle();
+            bmodel.newOutletHelper.loadContactStatus();
+            bmodel.newOutletHelper.downloadLinkRetailer();
             updateLocationMasterList();
             bmodel.mRetailerHelper.loadContractData();
             channelMaster = bmodel.channelMasterHelper.getChannelMaster();
+            bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
 
             return true;
         }
 
         protected void onPostExecute(Boolean result) {
-
+            alertDialog.dismiss();
+            createTabViewForProfileForEdit();
         }
     }
 
