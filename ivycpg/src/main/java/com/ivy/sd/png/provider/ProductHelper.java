@@ -4491,12 +4491,16 @@ public class ProductHelper {
         }
         String query = "";
         if (mChildLevel == 0) {
-            query = "SELECT PM.ParentId, PM.PID, PM.PName, PM.suggestqty, PM.psname, PM.dUomQty,"
+            query = "SELECT PM.ParentId, PM.PID, PM.PName,"
+                    + " (select qty from ProductSuggestedQuantity PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs,"
+                    + " PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
                     + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" // + ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse"
                     + sql3
                     + sql1
+                    + " ,(select qty from ProductSuggestedQuantity PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
+                    + " (select qty from ProductSuggestedQuantity PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
                     + " FROM ProductMaster PM"
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + sql2
@@ -4525,10 +4529,12 @@ public class ProductHelper {
                     + loopEnd
                     + ".PID, PM"
                     + loopEnd
-                    + ".PName, PM"
+                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
                     + loopEnd
-                    + ".suggestqty,"
-                    + " PM"
+                    + ".piece_uomid and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugpcs, PM"
                     + loopEnd
                     + ".psname, PM"
                     + loopEnd
@@ -4566,7 +4572,22 @@ public class ProductHelper {
                     + ".dUomId, PM" + loopEnd + ".dOuomid," + " PM" + loopEnd
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
-                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse" */ + sql3 + sql1
+                    + ".msqQty, PM" + loopEnd + ".issalable" + sql3 + sql1
+                    + " ,PM"
+                    + loopEnd
+                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + loopEnd
+                    + ".dUomId and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugcs,PM"
+                    + loopEnd
+                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + loopEnd
+                    + ".dOuomid and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugou "
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -4597,7 +4618,9 @@ public class ProductHelper {
                 bo.setParentid(c.getInt(0));
                 bo.setProductid(c.getInt(1));
                 bo.setProductname(c.getString(2));
-                bo.setSuggestqty(c.getInt(3));
+                bo.setSuggestqty(c.getInt(c.getColumnIndex("sugpcs")) +
+                        (c.getInt(c.getColumnIndex("sugcs")) * c.getInt(5)) +
+                        (c.getInt(c.getColumnIndex("sugou")) * c.getInt(12)));
                 bo.setProductshortname(c.getString(4));
                 bo.setCaseSize(c.getInt(5));
                 bo.setSih(c.getInt(6));
@@ -4752,12 +4775,16 @@ public class ProductHelper {
         }
         String query = "";
         if (mParentLevel == 0 && mChildLevel == 0) {
-            query = "SELECT  PM.ParentId, PM.PID, PM.PName, PM.suggestqty, PM.psname, PM.dUomQty,"
+            query = "SELECT  PM.ParentId, PM.PID, PM.PName,"
+                    + " (select qty from ProductSuggestedQuantity PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs, "
+                    + " PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
                     + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" //+ ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse "
                     + sql3
                     + sql1
+                    + " ,(select qty from ProductSuggestedQuantity PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
+                    + " (select qty from ProductSuggestedQuantity PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
                     + " FROM ProductMaster PM"
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + sql2
@@ -4780,10 +4807,12 @@ public class ProductHelper {
                     + loopEnd
                     + ".PID, PM"
                     + loopEnd
-                    + ".PName, PM"
+                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
                     + loopEnd
-                    + ".suggestqty,"
-                    + " PM"
+                    + ".piece_uomid and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugpcs, PM"
                     + loopEnd
                     + ".psname, PM"
                     + loopEnd
@@ -4822,6 +4851,21 @@ public class ProductHelper {
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
                     + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse " */ + sql3 + sql1
+                    + " ,PM"
+                    + loopEnd
+                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + loopEnd
+                    + ".dUomId and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugcs,PM"
+                    + loopEnd
+                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + loopEnd
+                    + ".dOuomid and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugou "
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -4857,7 +4901,9 @@ public class ProductHelper {
                 bo.setParentid(c.getInt(0));
                 bo.setProductid(c.getInt(1));
                 bo.setProductname(c.getString(2));
-                bo.setSuggestqty(c.getInt(3));
+                bo.setSuggestqty(c.getInt(c.getColumnIndex("sugpcs")) +
+                        (c.getInt(c.getColumnIndex("sugcs")) * c.getInt(5)) +
+                        (c.getInt(c.getColumnIndex("sugou")) * c.getInt(12)));
                 bo.setProductshortname(c.getString(4));
                 bo.setCaseSize(c.getInt(5));
                 bo.setSih(c.getInt(6));
