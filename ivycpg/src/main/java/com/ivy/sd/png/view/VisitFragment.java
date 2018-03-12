@@ -777,6 +777,18 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 } else {
                     retailer.add(bmodel.getRetailerMaster().get(i));
                 }
+            } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
+                if (filter != null) {
+                    if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                            .toLowerCase()).contains(filter.toLowerCase()) ||
+                            (bmodel.getRetailerMaster().get(i)
+                                    .getRetailerCode().toLowerCase())
+                                    .contains(filter.toLowerCase())) {
+                        retailer.add(bmodel.getRetailerMaster().get(i));
+                    }
+                } else {
+                    retailer.add(bmodel.getRetailerMaster().get(i));
+                }
             }
         }
 

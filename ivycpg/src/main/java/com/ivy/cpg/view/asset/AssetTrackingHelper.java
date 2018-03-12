@@ -485,7 +485,7 @@ public class AssetTrackingHelper {
                 }
             }
 
-            if (mAssetTrackingList != null && mAllAssetTrackingList.size() > 0) {
+            if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
                 for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
@@ -528,7 +528,7 @@ public class AssetTrackingHelper {
                 }
 
             }
-            if (mAllAssetTrackingList != null) {
+            if (mAllAssetTrackingList != null && mAllAssetTrackingList.size() > 0) {
                 for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAllAssetTrackingList.size());
                     for (AssetTrackingBO assetBO : mAllAssetTrackingList) {

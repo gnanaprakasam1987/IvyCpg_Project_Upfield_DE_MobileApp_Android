@@ -111,3 +111,13 @@
 # Following line should be commented for crashlytics to work
 # -printmapping mapping.txt
 
+#added for to allow mail sending
+-keep class javax.** {*;}
+-keep class com.sun.** {*;}
+-keep class myjava.** {*;}
+-keep class org.apache.harmony.** {*;}
+-keep public class Mail {*;}
+-dontwarn java.awt.**
+-dontwarn java.beans.Beans
+-dontwarn javax.security.**
+-keep class com.sun.mail.handlers.** {*;}
