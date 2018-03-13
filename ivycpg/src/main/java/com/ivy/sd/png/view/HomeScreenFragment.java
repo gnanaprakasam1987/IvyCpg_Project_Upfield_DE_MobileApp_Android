@@ -971,9 +971,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
-                bmodel.distributorMasterHelper.downloadDistributorsList();
-
                 switchFragment(MENU_DASH_INC, menuItem.getMenuName());
             }
 
