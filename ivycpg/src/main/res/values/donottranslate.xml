@@ -294,8 +294,7 @@
     <string name="order_save_falied">Order Save Failed !</string>
     <string name="order_not_placed_focus_pack">Order not placed for Focus pack.</string>
 
-//
-
+    <!--Offline Planning-->
     <string name="mon">Mon</string>
     <string name="tue">Tue</string>
     <string name="wed">Wed</string>
@@ -303,4 +302,6 @@
     <string name="fri">Fri</string>
     <string name="sat">Sat</string>
     <string name="sun">Sun</string>
+    <string name="monthView">Month View</string>
+
 </resources>
