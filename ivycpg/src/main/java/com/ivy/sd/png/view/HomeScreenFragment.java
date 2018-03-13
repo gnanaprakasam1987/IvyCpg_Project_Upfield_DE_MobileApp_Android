@@ -140,6 +140,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_NEWRET_EDT = "MENU_NEWRET_EDT";
     private static final String MENU_TASK_NEW = "MENU_TASK_NEW";
     private static final String MENU_PLANE_MAP = "MENU_PLANE_MAP";
+
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_GROOM_CS = "MENU_GROOM_CS";
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
@@ -147,6 +148,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     //Deleiver MAnagement
     private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET";
+    //Offline Planning
+    private static final String MENU_OFLNE_PLAN = "MENU_OFLNE_PLAN";
 
     private String roadTitle;
     private boolean isClicked;
@@ -255,6 +258,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_GROOM_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_JOINT_ACK, R.drawable.ic_survey_icon);
+        menuIcons.put(MENU_OFLNE_PLAN, R.drawable.ic_expense_icon);
         menuIcons.put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
 
         // Load the HHTMenuTable
@@ -450,6 +454,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_DAY)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_INC)
+                            || configureBO.getConfigCode().equalsIgnoreCase(MENU_OFLNE_PLAN)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DIGITIAL_SELLER)) {
                         gotoNextActivity(configureBO);
                         break;
@@ -972,6 +977,29 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 switchFragment(MENU_DASH_INC, menuItem.getMenuName());
             }
 
+        } else if (menuItem.getConfigCode().equals(MENU_OFLNE_PLAN)) {
+            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    "yyyy/MM/dd") > 0)
+                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (isLeave_today) {
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.mark_attendance),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.leaveToday),
+                            Toast.LENGTH_SHORT).show();
+            } else {
+
+                switchFragment(MENU_OFLNE_PLAN, menuItem.getMenuName());
+            }
+
         } else if (menuItem.getConfigCode().equals(MENU_STOCK_ADJUSTMENT)) {
 
             if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
@@ -1403,7 +1431,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
-        }  else if (menuItem.getConfigCode().equals(MENU_NEWRET_EDT)) {
+        } else if (menuItem.getConfigCode().equals(MENU_NEWRET_EDT)) {
 //            Intent i = new Intent(getActivity(), NewOutletEdit.class);
 //            i.putExtra("screentitle", menuItem.getMenuName());
 //            i.putExtra("flag", 0);
@@ -1426,6 +1454,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             switchFragment(MENU_NON_FIELD, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_DELMGMT_RET)) {
             switchFragment(MENU_DELMGMT_RET, menuItem.getMenuName());
+        } else if (menuItem.getConfigCode().equals(MENU_OFLNE_PLAN)) {
+            Intent i = new Intent(getActivity(), OfflinePlanningActivity.class);
+            i.putExtra("screentitle", menuItem.getMenuName());
+            startActivity(i);
+            getActivity().finish();
         }
 
           /*else if (menuItem.getConfigCode().equals(MENU_COLLECTION_PRINT)) {
@@ -1473,6 +1506,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_DASH_DAY);
         IncentiveDashboardFragment incentiveDashboardFragment = (IncentiveDashboardFragment) fm
                 .findFragmentByTag(MENU_DASH_INC);
+        OfferPlanningFragment offerPlanningFragment = (OfferPlanningFragment) fm
+                .findFragmentByTag(MENU_OFLNE_PLAN);
 
         JoinCallFragment mJointCallFragment = (JoinCallFragment) fm
                 .findFragmentByTag(MENU_JOINT_CALL);
@@ -1560,6 +1595,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         } else if (incentiveDashboardFragment != null && (fragmentName.equals(MENU_DASH_INC)) &&
                 incentiveDashboardFragment.isVisible()) {
+            return;
+        } else if (offerPlanningFragment != null && (fragmentName.equals(MENU_OFLNE_PLAN)) &&
+                offerPlanningFragment.isVisible()) {
             return;
         } else if (mJointCallFragment != null && (fragmentName.equals(MENU_JOINT_CALL))
                 && mJointCallFragment.isVisible()) {
@@ -1796,7 +1834,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DASH_INC);
                 break;
-
+            case MENU_OFLNE_PLAN:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                fragment = new IncentiveDashboardFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_OFLNE_PLAN);
+                break;
             case MENU_JOINT_CALL:
                 bmodel.configurationMasterHelper.setJointCallTitle(menuName);
                 bndl = new Bundle();

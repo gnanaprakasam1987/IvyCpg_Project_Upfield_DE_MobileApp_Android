@@ -294,5 +294,13 @@
     <string name="order_save_falied">Order Save Failed !</string>
     <string name="order_not_placed_focus_pack">Order not placed for Focus pack.</string>
 
+//
 
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
 </resources>
