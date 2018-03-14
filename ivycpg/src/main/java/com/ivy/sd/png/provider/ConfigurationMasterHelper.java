@@ -1289,7 +1289,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_PRINT_HEADERS;
     private static final String CODE_SHOW_PRINT_HEADERS = "PRINT_HEADER";
 
-    private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR13";
+    private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
     public boolean IS_ORD_SR_VALUE_VALIDATE;
 
     private ConfigurationMasterHelper(Context context) {
