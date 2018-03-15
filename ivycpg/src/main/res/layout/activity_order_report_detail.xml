@@ -74,7 +74,7 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="@dimen/screen_title_height"
-                        android:background="@color/black_bg1"
+                        android:background="?customLayoutBackground"
                         android:orientation="horizontal"
                         android:weightSum="10">
                         <LinearLayout
@@ -186,7 +186,7 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/resetbox_header_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/black_bg1"
+        android:background="?customLayoutBackground"
         android:orientation="vertical"
         android:stretchColumns="*">
 
@@ -206,7 +206,7 @@
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:text="@string/tot_line"
-                android:textColor="@color/GREEN"
+                android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/text_sz_small"
                 android:textStyle="bold" />
 
@@ -237,7 +237,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:text="@string/total_value"
-                android:textColor="@color/GREEN"
+                android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/text_sz_small"
                 android:layout_toEndOf="@+id/view1"
                 android:layout_marginStart="@dimen/store_margin_top"

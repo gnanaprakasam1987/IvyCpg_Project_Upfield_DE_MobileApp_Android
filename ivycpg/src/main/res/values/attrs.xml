@@ -47,6 +47,7 @@
         <attr name="roundedCustomButtonNormalGrey" format="reference" />
         <attr name="roundedCustomButtonNormal" format="reference" />
         <attr name="roundedCustomButtonNormalTransparent" format="reference" />
+        <attr name="roundedCustomDashboardButton" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="MyCustomSpinner">
@@ -75,5 +76,17 @@
         <attr name="customListItemValue" format="reference" />
         <attr name="customListTitleBlack" format="reference" />
         <attr name="customdialogLabel" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="customLayout">
+        <attr name="customLayoutBackground" format="reference" />
+        <attr name="tradeCoverageBackgroundOne" format="reference"/>
+        <attr name="tradeCoverageBackgroundTwo" format="reference"/>
+        <attr name="tradeCoverageBackgroundThree" format="reference"/>
+        <attr name="dashboardSpinnerBackground" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="cardViewLayout">
+        <attr name="cardViewLayoutStyle" format="reference" />
     </declare-styleable>
 </resources>

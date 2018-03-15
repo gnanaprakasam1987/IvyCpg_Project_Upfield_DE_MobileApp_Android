@@ -13,7 +13,7 @@
             android:id="@+id/dashboard_fragment"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spinner_layout_bg_height"
-            android:background="?primarycolor" />
+            android:background="?customLayoutBackground" />
 
         <LinearLayout
             android:id="@+id/spinnerLayout"
@@ -23,7 +23,7 @@
             android:layout_marginStart="@dimen/dash_margin"
             android:layout_marginEnd="@dimen/dash_margin"
             android:layout_marginTop="@dimen/dash_margin"
-            android:background="@drawable/curved_black_bg"
+            android:background="?customLayoutBackground"
             android:orientation="horizontal">
 
             <TextView
@@ -42,7 +42,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/drop_down_black"
+                android:background="?customLayoutBackground"
                 android:dropDownSelector="@color/light_grey"
                 android:gravity="center"
                 android:overlapAnchor="false" />
@@ -52,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/drop_down_black"
+                android:background="?customLayoutBackground"
                 android:dropDownSelector="@color/light_grey"
                 android:gravity="center"
                 android:overlapAnchor="false" />

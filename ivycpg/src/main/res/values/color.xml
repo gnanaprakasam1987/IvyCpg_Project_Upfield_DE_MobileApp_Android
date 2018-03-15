@@ -91,8 +91,9 @@
     <color name="colorPrimaryNBlue">#283593</color>
     <color name="colorPrimaryDarkNBlue">#00136f</color>
     <color name="textColorPrimaryNBlue">#3f51b5</color>
-    <color name="colorAccentNBlue">#83c341</color>
-    <color name="textColorSecondaryNBlue">#5c6bc0</color>
+    <color name="colorAccentNBlue">#94b4e8</color>
+    <color name="textColorSecondaryNBlue">#4da6ff</color>
+    <color name="footerBackgroundColor">#283593</color>
 
     <!-- RED THEME -->
 
@@ -165,6 +166,10 @@
     <color name="black_bg1">#121212</color>
     <color name="black_bg2">#1f1f1f</color>
     <color name="black_bg3">#2e2e2e</color>
+
+    <color name="blue_bg1">#004d99</color>
+    <color name="blue_bg2">#0059b3</color>
+    <color name="blue_bg3">#0066cc</color>
     <color name="font_green">#83c341</color>
     <color name="font_inactive">#ffffff</color>
     <color name="new_grey">#c6c6c6</color>

@@ -68,6 +68,13 @@
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
+        <item name="customLayoutBackground">@android:color/black</item>
+        <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
+        <item name="cardViewLayoutStyle">@color/store_title</item>
+        <item name="tradeCoverageBackgroundOne">@color/black_bg1</item>
+        <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
+        <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
+        <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
         <!--CustomTextViews-->
 
     </style>
@@ -195,9 +202,18 @@ negative button and neutral button -->
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
+        <item name="customLayoutBackground">@color/footerBackgroundColor</item>
+        <item name="roundedCustomDashboardButton">@drawable/dot_circle_nblue</item>
+        <item name="cardViewLayoutStyle">@color/footerBackgroundColor</item>
+        <item name="tradeCoverageBackgroundOne">@color/blue_bg1</item>
+        <item name="tradeCoverageBackgroundTwo">@color/blue_bg2</item>
+        <item name="tradeCoverageBackgroundThree">@color/blue_bg3</item>
+        <item name="dashboardSpinnerBackground">@drawable/curved_blue_bg</item>
+
         <!--CustomTextViews-->
 
     </style>
+
 
     <style name="MyButtonNBlue" parent="Base.Widget.AppCompat.Button">
         <item name="android:background">@drawable/ripple_nblue</item>
@@ -314,6 +330,14 @@ negative button and neutral button -->
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
+        <item name="customLayoutBackground">@android:color/black</item>
+        <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
+        <item name="cardViewLayoutStyle">@color/store_title</item>
+
+        <item name="tradeCoverageBackgroundOne">@color/black_bg1</item>
+        <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
+        <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
+        <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
         <!--CustomTextViews-->
 
     </style>
@@ -428,6 +452,14 @@ negative button and neutral button -->
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
+        <item name="customLayoutBackground">@android:color/black</item>
+        <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
+        <item name="cardViewLayoutStyle">@color/store_title</item>
+
+        <item name="tradeCoverageBackgroundOne">@color/black_bg1</item>
+        <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
+        <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
+        <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
         <!--CustomTextViews-->
 
     </style>
@@ -542,6 +574,14 @@ negative button and neutral button -->
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
+        <item name="customLayoutBackground">@android:color/black</item>
+        <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
+        <item name="cardViewLayoutStyle">@color/store_title</item>
+
+        <item name="tradeCoverageBackgroundOne">@color/black_bg1</item>
+        <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
+        <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
+        <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
         <!--CustomTextViews-->
 
     </style>
@@ -655,6 +695,14 @@ negative button and neutral button -->
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
+        <item name="customLayoutBackground">@android:color/black</item>
+        <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
+        <item name="cardViewLayoutStyle">@color/store_title</item>
+
+        <item name="tradeCoverageBackgroundOne">@color/black_bg1</item>
+        <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
+        <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
+        <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
         <!--CustomTextViews-->
 
     </style>
