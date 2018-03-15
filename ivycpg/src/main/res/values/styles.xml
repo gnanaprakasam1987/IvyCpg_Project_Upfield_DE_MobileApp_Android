@@ -75,6 +75,9 @@
         <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
         <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
         <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
+        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
+        <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
+        <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
 
     </style>
@@ -209,6 +212,9 @@ negative button and neutral button -->
         <item name="tradeCoverageBackgroundTwo">@color/blue_bg2</item>
         <item name="tradeCoverageBackgroundThree">@color/blue_bg3</item>
         <item name="dashboardSpinnerBackground">@drawable/curved_blue_bg</item>
+        <item name="homescreenbackground">@drawable/burger_menu_nblue_bg</item>
+        <item name="mtdDashboardBackground">@drawable/curved_nblue_bg</item>
+        <item name="dashboardSpinnerSelector">@color/footerBackgroundColor</item>
 
         <!--CustomTextViews-->
 
@@ -338,6 +344,9 @@ negative button and neutral button -->
         <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
         <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
         <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
+        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
+        <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
+        <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
 
     </style>
@@ -460,6 +469,9 @@ negative button and neutral button -->
         <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
         <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
         <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
+        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
+        <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
+        <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
 
     </style>
@@ -582,6 +594,9 @@ negative button and neutral button -->
         <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
         <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
         <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
+        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
+        <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
+        <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
 
     </style>
@@ -703,6 +718,9 @@ negative button and neutral button -->
         <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
         <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
         <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
+        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
+        <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
+        <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
 
     </style>

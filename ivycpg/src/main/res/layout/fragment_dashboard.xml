@@ -23,7 +23,7 @@
             android:layout_marginStart="@dimen/dash_margin"
             android:layout_marginEnd="@dimen/dash_margin"
             android:layout_marginTop="@dimen/dash_margin"
-            android:background="?customLayoutBackground"
+            android:background="?mtdDashboardBackground"
             android:orientation="horizontal">
 
             <TextView
@@ -42,8 +42,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="?customLayoutBackground"
-                android:dropDownSelector="@color/light_grey"
+                android:background="?mtdDashboardBackground"
+                android:dropDownSelector="?dashboardSpinnerSelector"
                 android:gravity="center"
                 android:overlapAnchor="false" />
 
@@ -52,8 +52,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="?customLayoutBackground"
-                android:dropDownSelector="@color/light_grey"
+                android:background="?mtdDashboardBackground"
+                android:dropDownSelector="?dashboardSpinnerSelector"
                 android:gravity="center"
                 android:overlapAnchor="false" />
         </LinearLayout>
