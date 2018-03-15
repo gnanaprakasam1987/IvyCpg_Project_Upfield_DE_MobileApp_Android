@@ -48,7 +48,10 @@ public class OfflinePlanHelper {
 
         try {
 
-            String sql = "SELECT PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence FROM DatewisePlan";
+            String sql = "SELECT PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence," +
+                    "(CASE WHEN EntityType = 'RETAILER' THEN IFNULL((SELECT RetailerName from RetailerMaster where RetailerID = EntityId),'')" +
+                    " WHEN EntityType = 'ROUTE' THEN IFNULL((SELECT ListName from StandardListMaster where ListId = EntityId),'')" +
+                    " ELSE '' END) as Name FROM DatewisePlan";
 
             db.openDataBase();
 
@@ -61,14 +64,16 @@ public class OfflinePlanHelper {
                 while (c.moveToNext()) {
                     dateWisePlanBO = new OfflineDateWisePlanBO();
 
-                    dateWisePlanBO.setPlanId(c.getInt(1));
-                    dateWisePlanBO.setDistributorId(c.getInt(2));
-                    dateWisePlanBO.setUserId(c.getInt(3));
-                    dateWisePlanBO.setDate(c.getString(4));
-                    dateWisePlanBO.setEntityId(c.getInt(5));
-                    dateWisePlanBO.setEntityType(c.getString(6));
-                    dateWisePlanBO.setStatus(c.getString(7));
-                    dateWisePlanBO.setSequence(c.getInt(8));
+                    dateWisePlanBO.setPlanId(c.getInt(0));
+                    dateWisePlanBO.setDistributorId(c.getInt(1));
+                    dateWisePlanBO.setUserId(c.getInt(2));
+                    dateWisePlanBO.setDate(c.getString(3));
+                    dateWisePlanBO.setEntityId(c.getInt(4));
+                    dateWisePlanBO.setEntityType(c.getString(5));
+                    dateWisePlanBO.setStatus(c.getString(6));
+                    dateWisePlanBO.setSequence(c.getInt(7));
+                    dateWisePlanBO.setName(c.getString(c.getColumnIndex("Name")));
+
                     if (mHashMapData.get(dateWisePlanBO.getDate()) == null) {
                         if (!c.getString(c.getColumnIndex("Status")).equals("D")) {
                             ArrayList<OfflineDateWisePlanBO> plannedList = new ArrayList<>();
