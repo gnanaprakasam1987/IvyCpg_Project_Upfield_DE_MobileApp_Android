@@ -717,8 +717,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     }
                     startVistitRetailers = new ArrayList<>();
                     startVistitRetailers.add(bmodel.getRetailerMaster().get(i));
-
-
                 }
             }
         }

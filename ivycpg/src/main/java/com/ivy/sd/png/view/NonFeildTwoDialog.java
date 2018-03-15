@@ -81,7 +81,7 @@ public class NonFeildTwoDialog extends DialogFragment implements View.OnClickLis
         spinnerAdapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        bmodel.mAttendanceHelper.downNonFieldReasons();
+        bmodel.mAttendanceHelper.downNonFieldReasons(true);
         for (NonFieldBO nonField : bmodel.mAttendanceHelper
                 .getNonFieldReasonList()) {
             Commons.print("sdfsa" + nonField.getReason());

@@ -5,46 +5,46 @@ package com.ivy.sd.png.bo;
  */
 
 public class OfflineDateWisePlanBO {
-    private Integer PlanId, DistributorId, UserId, EntityId, Sequence;
-    private String EntityType, Status, upload, Date;
+    private int PlanId, DistributorId, UserId, EntityId, Sequence;
+    private String EntityType, Status, upload, Date,Name;
 
-    public Integer getPlanId() {
+    public int getPlanId() {
         return PlanId;
     }
 
-    public void setPlanId(Integer planId) {
+    public void setPlanId(int planId) {
         PlanId = planId;
     }
 
-    public Integer getDistributorId() {
+    public int getDistributorId() {
         return DistributorId;
     }
 
-    public void setDistributorId(Integer distributorId) {
+    public void setDistributorId(int distributorId) {
         DistributorId = distributorId;
     }
 
-    public Integer getUserId() {
+    public int getUserId() {
         return UserId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(int userId) {
         UserId = userId;
     }
 
-    public Integer getEntityId() {
+    public int getEntityId() {
         return EntityId;
     }
 
-    public void setEntityId(Integer entityId) {
+    public void setEntityId(int entityId) {
         EntityId = entityId;
     }
 
-    public Integer getSequence() {
+    public int getSequence() {
         return Sequence;
     }
 
-    public void setSequence(Integer sequence) {
+    public void setSequence(int sequence) {
         Sequence = sequence;
     }
 
@@ -78,5 +78,13 @@ public class OfflineDateWisePlanBO {
 
     public void setDate(String date) {
         Date = date;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
     }
 }

@@ -303,5 +303,12 @@
     <string name="sat">Sat</string>
     <string name="sun">Sun</string>
     <string name="monthView">Month View</string>
+    <string name="unplannedDay">UnPlanned Day</string>
+    <string name="noPlan">No Plans available</string>
+    <string name="do_you_want_delete_plan">Do you want to delete the plan?</string>
+    <string name="plan_deleted">Plan Deleted Successfully</string>
+    <string name="retailerExists">Outlet Already Exists</string>
+    <string name="pastAndCurrentDays">Plan can not be done for past days and current day</string>
+    <string name="endOfPeriod">End of Plan Period</string>
 
 </resources>
