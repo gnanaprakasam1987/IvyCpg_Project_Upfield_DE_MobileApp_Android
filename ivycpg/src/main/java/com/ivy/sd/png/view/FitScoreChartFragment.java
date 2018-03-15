@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.FitScoreChartBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
@@ -155,31 +156,31 @@ public class FitScoreChartFragment extends Fragment {
 
         if (mDashboardList.getTarget() != null && !mDashboardList.getTarget().equals("0")) {
             ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-            float temp_ach = Float.parseFloat(mDashboardList.getAchieved()) - Float.parseFloat(mDashboardList.getTarget());
+            float temp_ach = SDUtil.convertToFloat(mDashboardList.getAchieved()) - SDUtil.convertToFloat(mDashboardList.getTarget());
             if (temp_ach > 0) {
-                int round = Math.round(Float.parseFloat(mDashboardList.getAchieved()) /
-                        (Float.parseFloat(mDashboardList.getTarget())) * 100);
+                int round = Math.round(SDUtil.convertToFloat(mDashboardList.getAchieved()) /
+                        (SDUtil.convertToFloat(mDashboardList.getTarget())) * 100);
                 if (round % 100 == 0) {
                     round = round + 1;
                 }
                 int rounded = ((round + 99) / 100) * 100;
-                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getTarget()), "100%"));
+                entries.add(new PieEntry(SDUtil.convertToFloat(mDashboardList.getTarget()), "100%"));
 
-                int bonus = Math.round(Float.parseFloat(mDashboardList.getAchieved()) /
-                        (Float.parseFloat(mDashboardList.getTarget())) * 100);
+                int bonus = Math.round(SDUtil.convertToFloat(mDashboardList.getAchieved()) /
+                        (SDUtil.convertToFloat(mDashboardList.getTarget())) * 100);
                 entries.add(new PieEntry(temp_ach, bonus + "%"));
 
-                if (temp_ach > Float.parseFloat(mDashboardList.getTarget())) {
-                    entries.add(new PieEntry(Float.parseFloat(mDashboardList.getAchieved()) - temp_ach, (rounded) + "%"));
+                if (temp_ach > SDUtil.convertToFloat(mDashboardList.getTarget())) {
+                    entries.add(new PieEntry(SDUtil.convertToFloat(mDashboardList.getAchieved()) - temp_ach, (rounded) + "%"));
                 } else {
-                    entries.add(new PieEntry(Float.parseFloat(mDashboardList.getTarget()) - temp_ach, (rounded) + "%"));
+                    entries.add(new PieEntry(SDUtil.convertToFloat(mDashboardList.getTarget()) - temp_ach, (rounded) + "%"));
                 }
             } else {
-                int bonus = Math.round(Float.parseFloat(mDashboardList.getAchieved()) /
-                        (Float.parseFloat(mDashboardList.getTarget())) * 100);
-                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getAchieved()), bonus + "%"));
-                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getTarget()) -
-                        Float.parseFloat(mDashboardList.getAchieved()), "100%"));
+                int bonus = Math.round(SDUtil.convertToFloat(mDashboardList.getAchieved()) /
+                        (SDUtil.convertToFloat(mDashboardList.getTarget())) * 100);
+                entries.add(new PieEntry(SDUtil.convertToFloat(mDashboardList.getAchieved()), bonus + "%"));
+                entries.add(new PieEntry(SDUtil.convertToFloat(mDashboardList.getTarget()) -
+                        SDUtil.convertToFloat(mDashboardList.getAchieved()), "100%"));
             }
 
 

@@ -422,7 +422,7 @@ public class DashboardFragment extends IvyBaseFragment {
                     dashBoardBO.setAcheived(visitedcalls);
 
                     if (dashBoardBO.getTarget() > 0) {
-                        dashBoardBO.setCalculatedPercentage(Float.parseFloat(SDUtil.roundIt((dashBoardBO.getAcheived() / dashBoardBO.getTarget() * 100), 2)));
+                        dashBoardBO.setCalculatedPercentage(SDUtil.convertToFloat(SDUtil.roundIt((dashBoardBO.getAcheived() / dashBoardBO.getTarget() * 100), 2)));
                         if (dashBoardBO.getCalculatedPercentage() >= 100) {
                             dashBoardBO.setConvTargetPercentage(0);
                             dashBoardBO.setConvAcheivedPercentage(100);
@@ -446,7 +446,7 @@ public class DashboardFragment extends IvyBaseFragment {
                     dashBoardBO.setAcheived(productivecalls);
 
                     if (dashBoardBO.getTarget() > 0) {
-                        dashBoardBO.setCalculatedPercentage(Float.parseFloat(SDUtil.roundIt(((dashBoardBO.getAcheived() / dashBoardBO.getTarget()) * 100), 2)));
+                        dashBoardBO.setCalculatedPercentage(SDUtil.convertToFloat(SDUtil.roundIt(((dashBoardBO.getAcheived() / dashBoardBO.getTarget()) * 100), 2)));
                         if (dashBoardBO.getCalculatedPercentage() >= 100) {
                             dashBoardBO.setConvTargetPercentage(0);
                             dashBoardBO.setConvAcheivedPercentage(100);

@@ -2155,7 +2155,7 @@ public class ReportHelper {
                     if (String.valueOf(achievement).equals("0") || String.valueOf(achievement).equals("NaN"))
                         brandPerformanceReport.setTarget_achievement(0);
                     else
-                        brandPerformanceReport.setTarget_achievement(Float.parseFloat(SDUtil.roundIt(achievement, 2)));
+                        brandPerformanceReport.setTarget_achievement(SDUtil.convertToFloat(SDUtil.roundIt(achievement, 2)));
 
                     brandperformancelist.add(brandPerformanceReport);
                 }

@@ -25,7 +25,7 @@
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:text="@string/avg_lines"
-                android:textColor="@color/GREEN"
+                android:textColor="?attr/accentcolor"
                 android:textSize="@dimen/text_sz_small"
                 android:textStyle="bold"
                 android:visibility="gone" />
@@ -69,7 +69,7 @@
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:text="@string/tot_line"
-                android:textColor="@color/GREEN"
+                android:textColor="?attr/accentcolor"
                 android:textSize="@dimen/text_sz_small"
                 android:textStyle="bold"
 
@@ -82,8 +82,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:text=""
-                android:textColor="@color/GREEN"
-                android:textSize="@dimen/text_sz_small"
+                android:textColor="@color/white"
+
                 android:textStyle="bold"
                 android:visibility="gone" />
 

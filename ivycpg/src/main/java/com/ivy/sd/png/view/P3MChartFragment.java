@@ -23,6 +23,7 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DashBoardBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -125,7 +126,7 @@ public class P3MChartFragment extends Fragment implements OnChartValueSelectedLi
 
         for (int i = 0; i < computedList.size(); i++) {
             try {
-                achivedValues.add(new Entry(i, Float.parseFloat("" + computedList.get(i).getConvAcheivedPercentage()), computedList.get(i).getText()));
+                achivedValues.add(new Entry(i, SDUtil.convertToFloat("" + computedList.get(i).getConvAcheivedPercentage()), computedList.get(i).getText()));
             } catch (Exception e) {
                 Commons.printException(e);
             }
