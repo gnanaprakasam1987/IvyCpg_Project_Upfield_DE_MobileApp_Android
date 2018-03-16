@@ -1289,6 +1289,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_PRINT_HEADERS;
     private static final String CODE_SHOW_PRINT_HEADERS = "PRINT_HEADER";
 
+    private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
+    public boolean IS_ORD_SR_VALUE_VALIDATE;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2231,6 +2234,8 @@ public class ConfigurationMasterHelper {
         this.IS_MUST_SELL_STK = hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL_STK) : false;
 
         this.SHOW_PRINT_HEADERS = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) : false;
+
+        this.IS_ORD_SR_VALUE_VALIDATE = hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) != null ? hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) : false;
     }
 
     public void loadOrderReportConfiguration() {
