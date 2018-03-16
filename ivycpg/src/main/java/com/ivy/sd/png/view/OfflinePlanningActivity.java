@@ -21,7 +21,6 @@ import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
@@ -64,6 +63,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
+/**
+ * Created by mansoor.k on 3/14/2018.
+ */
 
 public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
@@ -72,7 +74,9 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
     private SearchView mSearchRetailer;
     private InputMethodManager imm;
     private Vector<RetailerMasterBO> retailerList = new Vector<>();
+    private Vector<NonFieldBO> nonFieldList = new Vector<>();
     private RetailerAdapter retailerAdapter;
+    private NonFieldAdapter nonFieldAdapter;
     private ImageView imBack, imPrev, imNext;
     private List<CalenderBO> mCalenderAllList;
     private static final SimpleDateFormat dateFormatGeneral = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
@@ -93,6 +97,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
     private DayWishPlanningAdapter dayWishPlanningAdapter;
     LinearLayout layoutCalendar, layoutDayWise;
     private RsdHolder mRsdholder;
+    private boolean isRetaieler = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +126,6 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         initializeViews();
         setValues();
         new LoadCalendar().execute();
-
 
     }
 
@@ -176,8 +180,13 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
         if (bmodel.mAttendanceHelper
                 .getNonFieldReasonList().size() > 0) {
-            lvNonField.setAdapter(new NonFieldAdapter(bmodel.mAttendanceHelper
-                    .getNonFieldReasonList()));
+            nonFieldList = new Vector<>();
+            for (NonFieldBO nonFieldBO : bmodel.mAttendanceHelper
+                    .getNonFieldReasonList())
+                nonFieldList.add(nonFieldBO);
+
+            nonFieldAdapter = new NonFieldAdapter(nonFieldList);
+            lvNonField.setAdapter(nonFieldAdapter);
 
         } else {
             lvNonField.setVisibility(View.GONE);
@@ -282,14 +291,29 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         layoutCalendar.setVisibility(View.VISIBLE);
 
         lvRetailer.setOnDragListener(myDragEventListener);
-        final String SOURCELIST_TAG = "listRsd";
 
-        lvRetailer.setTag(SOURCELIST_TAG);
+        lvRetailer.setTag("listRsd");
         lvRetailer.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View v,
                                            int position, long arg3) {
+                isRetaieler = true;
+                startDrag(v, position);
+                return true;
+            }
+
+        });
+
+        lvNonField.setOnDragListener(myDragEventListener);
+
+        lvNonField.setTag("listRsd");
+        lvNonField.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View v,
+                                           int position, long arg3) {
+                isRetaieler = false;
                 startDrag(v, position);
                 return true;
             }
@@ -418,24 +442,24 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup viewGroup) {
-            final RetailerViewHolder holder;
+            final RsdHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(OfflinePlanningActivity.this);
                 convertView = (View) inflater.inflate(
                         R.layout.row_offline_list_layout, null);
 
-                holder = new RetailerViewHolder();
-                holder.tvRetailerName = convertView.findViewById(R.id.tv_rsd);
+                holder = new RsdHolder();
+                holder.tvName = convertView.findViewById(R.id.tv_rsd);
 
-                holder.tvRetailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tvName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 convertView.setTag(holder);
             } else {
-                holder = (RetailerViewHolder) convertView.getTag();
+                holder = (RsdHolder) convertView.getTag();
             }
 
             holder.retailerMasterBO = (RetailerMasterBO) items.get(position);
-            holder.tvRetailerName.setText(holder.retailerMasterBO.getRetailerName());
+            holder.tvName.setText(holder.retailerMasterBO.getRetailerName());
             return convertView;
         }
 
@@ -479,18 +503,10 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
     }
 
 
-    static class RetailerViewHolder {
-
-        TextView tvRetailerName;
-        RetailerMasterBO retailerMasterBO;
-
-    }
-
-
     class NonFieldAdapter extends ArrayAdapter<NonFieldBO> {
-        private ArrayList<NonFieldBO> items;
+        private Vector<NonFieldBO> items;
 
-        public NonFieldAdapter(ArrayList<NonFieldBO> items) {
+        public NonFieldAdapter(Vector<NonFieldBO> items) {
             super(OfflinePlanningActivity.this, R.layout.row_offline_list_layout);
             this.items = items;
         }
@@ -512,34 +528,26 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup viewGroup) {
-            final NonFieldViewHolder holder;
+            final RsdHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(OfflinePlanningActivity.this);
                 convertView = (View) inflater.inflate(
                         R.layout.row_offline_list_layout, null);
 
-                holder = new NonFieldViewHolder();
-                holder.tvNonFieldName = convertView.findViewById(R.id.tv_rsd);
+                holder = new RsdHolder();
+                holder.tvName = convertView.findViewById(R.id.tv_rsd);
 
-                holder.tvNonFieldName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tvName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 convertView.setTag(holder);
             } else {
-                holder = (NonFieldViewHolder) convertView.getTag();
+                holder = (RsdHolder) convertView.getTag();
             }
 
             holder.nonFieldBO = (NonFieldBO) items.get(position);
-            holder.tvNonFieldName.setText(holder.nonFieldBO.getReason());
+            holder.tvName.setText(holder.nonFieldBO.getReason());
             return convertView;
         }
-    }
-
-
-    static class NonFieldViewHolder {
-
-        TextView tvNonFieldName;
-        NonFieldBO nonFieldBO;
-
     }
 
     private void updateCalendar() {
@@ -724,15 +732,9 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
             }
         };
 
-        mCalendar.post(new Runnable() {
-            @Override
-            public void run() {
-                int w = mCalendar.getMeasuredWidth();
-                int h = mCalendar.getMeasuredHeight();
-                mCalendar.setAdapter(madapter);
-                mCalendar.startLayoutAnimation();
-            }
-        });
+        mCalendar.setAdapter(madapter);
+        mCalendar.startLayoutAnimation();
+
 
     }
 
@@ -900,8 +902,10 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                 try {
                                     String dateStr = holder.calBO.getCal_date();
                                     dayWishSelectedDate = dateStr;
-                                    //ArrayList<DateWisePlanBO> mDayWiseList = callSchedulingHelper.downloadDayWisePlannedRetailer(dateStr);
                                     ArrayList<OfflineDateWisePlanBO> mDayWiseList = new ArrayList<>();
+                                    if (mHashMapData.get(dateStr) != null)
+                                        mDayWiseList = mHashMapData.get(dateStr);
+
                                     int size = mDayWiseList.size();
 
                                     if ((size == 0 && dateFormatGeneral.parse(holder.calBO.getCal_date()).after(new Date())) || size != 0) {
@@ -1076,28 +1080,47 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                     if (holder.isValid) {
 
                                         OfflineDateWisePlanBO rsd = new OfflineDateWisePlanBO();
-                                        rsd.setEntityId(mRsdholder.rsdBO.getEntityId());
-                                        rsd.setName(mRsdholder.rsdBO.getName());
-                                        String dateStr = holder.calBO.getCal_date();
+                                        if (isRetaieler) {
+                                            rsd.setEntityId(SDUtil.convertToInt(mRsdholder.retailerMasterBO.getRetailerID()));
+                                            rsd.setName(mRsdholder.retailerMasterBO.getRetailerName());
+                                        } else {
+                                            rsd.setEntityId(mRsdholder.nonFieldBO.getReasonID());
+                                            rsd.setName(mRsdholder.nonFieldBO.getReason());
+                                        }
 
+                                        String dateStr = holder.calBO.getCal_date();
                                         ArrayList<OfflineDateWisePlanBO> mData;
 
                                         if (mHashMapData.get(dateStr) != null) {
                                             mData = mHashMapData.get(dateStr);
-                                            if (!mData.contains(mRsdholder.rsdBO)) {
-                                                // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
+                                            if (isRetaieler) {
+                                                if (!mData.contains(mRsdholder.retailerMasterBO)) {
+                                                    // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
+                                                } else {
+                                                    hoverDate = "";
+                                                    madapter.notifyDataSetChanged();
+                                                    Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                                    return false;
+                                                }
                                             } else {
-                                                hoverDate = "";
-                                                madapter.notifyDataSetChanged();
-                                                Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
-                                                return false;
+                                                if (!mData.contains(mRsdholder.nonFieldBO)) {
+                                                    // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
+                                                } else {
+                                                    hoverDate = "";
+                                                    madapter.notifyDataSetChanged();
+                                                    Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                                    return false;
+                                                }
                                             }
                                         } else {
                                             //showCallTypeDialog(dateStr, mRsdholder.rsdBO);
                                         }
 
                                         setMonthTV();
-                                        retailerAdapter.notifyDataSetChanged();
+                                        if (isRetaieler)
+                                            retailerAdapter.notifyDataSetChanged();
+                                        else
+                                            nonFieldAdapter.notifyDataSetChanged();
                                         madapter.notifyDataSetChanged();
 
                                         return true;
@@ -1115,28 +1138,47 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                             if ((!dateFormatGeneral.parse(dayWishSelectedDate).before(new Date())) &&
                                     (!dateFormatGeneral.parse(dayWishSelectedDate).equals(new Date()))) {
                                 OfflineDateWisePlanBO rsd = new OfflineDateWisePlanBO();
-                                rsd.setEntityId(mRsdholder.rsdBO.getEntityId());
-                                rsd.setName(mRsdholder.rsdBO.getName());
+                                if (isRetaieler) {
+                                    rsd.setEntityId(SDUtil.convertToInt(mRsdholder.retailerMasterBO.getRetailerID()));
+                                    rsd.setName(mRsdholder.retailerMasterBO.getRetailerName());
+                                } else {
+                                    rsd.setEntityId(mRsdholder.nonFieldBO.getReasonID());
+                                    rsd.setName(mRsdholder.nonFieldBO.getReason());
+                                }
                                 String dateStr = dayWishSelectedDate;
 
                                 ArrayList<OfflineDateWisePlanBO> mData;
 
                                 if (mHashMapData.get(dateStr) != null) {
                                     mData = mHashMapData.get(dateStr);
-                                    if (!mData.contains(mRsdholder.rsdBO)) {
-                                        // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
+                                    if (isRetaieler) {
+                                        if (!mData.contains(mRsdholder.retailerMasterBO)) {
+                                            // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
+                                        } else {
+                                            hoverDate = "";
+                                            madapter.notifyDataSetChanged();
+                                            Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                            return false;
+                                        }
                                     } else {
-                                        hoverDate = "";
-                                        madapter.notifyDataSetChanged();
-                                        Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
-                                        return false;
+                                        if (!mData.contains(mRsdholder.nonFieldBO)) {
+                                            // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
+                                        } else {
+                                            hoverDate = "";
+                                            madapter.notifyDataSetChanged();
+                                            Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                            return false;
+                                        }
                                     }
                                 } else {
                                     //showCallTypeDialog(dateStr, mRsdholder.rsdBO);
                                 }
 
                                 setMonthTV();
-                                retailerAdapter.notifyDataSetChanged();
+                                if (isRetaieler)
+                                    retailerAdapter.notifyDataSetChanged();
+                                else
+                                    nonFieldAdapter.notifyDataSetChanged();
                                 madapter.notifyDataSetChanged();
                                 return true;
                             } else {
@@ -1306,34 +1348,54 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         mRsdholder = (RsdHolder) v.getTag();
 
         String[] clipDescription = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-        ClipData dragData = new ClipData(mRsdholder.rsd.getText(), clipDescription, item);
+        ClipData dragData;
+        if (isRetaieler)
+            dragData = new ClipData(mRsdholder.retailerMasterBO.getRetailerName(), clipDescription, item);
+        else
+            dragData = new ClipData(mRsdholder.nonFieldBO.getReason(), clipDescription, item);
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         assert inflater != null;
         View vg = inflater.inflate(R.layout.drag_pjp_rsd_view, null);
-        TextView tv = (TextView) vg.findViewById(R.id.tv_rsd);
-        tv.setText(mRsdholder.rsdBO.getName());
+        TextView tv = vg.findViewById(R.id.tv_rsd);
+        if (isRetaieler)
+            tv.setText(mRsdholder.retailerMasterBO.getRetailerName());
+        else
+            tv.setText(mRsdholder.nonFieldBO.getReason());
+
         vg.refreshDrawableState();
 
         View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            v.startDragAndDrop(dragData, // ClipData
-                    myShadow, // View.DragShadowBuilder
-                    retailerList.get(position).toString(), // Object myLocalState
-                    0); // flags
+            if (isRetaieler)
+                v.startDragAndDrop(dragData, // ClipData
+                        myShadow, // View.DragShadowBuilder
+                        retailerList.get(position).toString(), // Object myLocalState
+                        0); // flags
+            else
+                v.startDragAndDrop(dragData, // ClipData
+                        myShadow, // View.DragShadowBuilder
+                        nonFieldList.get(position).toString(), // Object myLocalState
+                        0); // flags
         } else {
-            v.startDrag(dragData, // ClipData
-                    myShadow, // View.DragShadowBuilder
-                    retailerList.get(position).toString(), // Object myLocalState
-                    0); // flags
+            if (isRetaieler)
+                v.startDrag(dragData, // ClipData
+                        myShadow, // View.DragShadowBuilder
+                        retailerList.get(position).toString(), // Object myLocalState
+                        0); // flags
+            else
+                v.startDrag(dragData, // ClipData
+                        myShadow, // View.DragShadowBuilder
+                        nonFieldList.get(position).toString(), // Object myLocalState
+                        0); // flags
         }
 
     }
 
     public class RsdHolder {
-        OfflineDateWisePlanBO rsdBO;
-        TextView rsd, tvCallPlan, tvAddr1, tvAddr2;
-        ImageView IMInfo;
+        RetailerMasterBO retailerMasterBO;
+        NonFieldBO nonFieldBO;
+        TextView tvName;
     }
 
 }
