@@ -339,15 +339,6 @@
                             android:textColor="@color/WHITE"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/tv_campaign"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="@string/text_current_month"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/font_small" />
 
                     </LinearLayout>
 
@@ -400,30 +391,6 @@
                             android:dividerHeight="1dp"
                             android:padding="2dp" />
 
-                        <LinearLayout
-                            android:id="@+id/footer_1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:orientation="vertical">
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/dimen_1dp"
-                                android:layout_marginBottom="@dimen/dimen_5dp"
-                                android:background="@color/GRAY" />
-
-                            <TextView
-                                android:id="@+id/txt_footerPlannedCount"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="5dp"
-                                android:layout_marginRight="5dp"
-                                android:padding="@dimen/dimen_5dp"
-                                android:text="@string/total"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                                android:textColor="@color/FullBlack" />
-                        </LinearLayout>
 
                     </RelativeLayout>
 
