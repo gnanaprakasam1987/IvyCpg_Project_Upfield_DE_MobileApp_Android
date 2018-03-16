@@ -657,6 +657,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         int siz = bmodel.getRetailerMaster().size();
         retailer = new ArrayList<>();
+        startVistitRetailers = new ArrayList<>();
         ArrayList<RetailerMasterBO> retailerWIthSequence = new ArrayList<>();
         ArrayList<RetailerMasterBO> retailerWithoutSequence = new ArrayList<>();
 
@@ -715,8 +716,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     } else {
                         retailerWithoutSequence.add(bmodel.getRetailerMaster().get(i));
                     }
-                    startVistitRetailers = new ArrayList<>();
-                    startVistitRetailers.add(bmodel.getRetailerMaster().get(i));
+
+
 
 
                 }
@@ -727,7 +728,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         Collections.sort(retailerWithoutSequence, RetailerMasterBO.RetailerNameComparator);
         retailer.addAll(retailerWIthSequence);
         retailer.addAll(retailerWithoutSequence);
-
+        startVistitRetailers.addAll(retailerWIthSequence);
 
         /* Add today'sdeviated retailers. **/
         for (int i = 0; i < siz; i++) {
