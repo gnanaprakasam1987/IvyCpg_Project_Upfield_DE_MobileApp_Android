@@ -70,7 +70,7 @@
                 android:id="@+id/list_rsd"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.94"
+                android:layout_weight="0.92"
                 android:cacheColorHint="@android:color/transparent"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="1dp"
@@ -93,8 +93,8 @@
                 android:id="@+id/list_nfd"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_alignParentTop="true"
-                android:layout_weight="0.94"
+                android:layout_weight="0.92"
+                android:cacheColorHint="@android:color/transparent"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="1dp"
                 android:padding="2dp" />
@@ -192,87 +192,87 @@
 
                     <TextView
                         android:id="@+id/txt_mon"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/mon"
                         android:textAllCaps="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/blue_btn_txt"
-                        android:textStyle="bold" />
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/txt_tue"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/tue"
                         android:textAllCaps="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/blue_btn_txt"
-                        android:textStyle="bold" />
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/txt_wed"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/wed"
                         android:textAllCaps="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/blue_btn_txt"
-                        android:textStyle="bold" />
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/txt_thu"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/thu"
                         android:textAllCaps="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/blue_btn_txt"
-                        android:textStyle="bold" />
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/txt_fri"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/fri"
                         android:textAllCaps="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/blue_btn_txt"
-                        android:textStyle="bold" />
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/txt_sat"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/sat"
                         android:textAllCaps="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/blue_btn_txt"
-                        android:textStyle="bold" />
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/font_small" />
 
                     <TextView
                         android:id="@+id/txt_sun"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/sun"
                         android:textAllCaps="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/blue_btn_txt"
-                        android:textStyle="bold" />
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/font_small" />
                 </LinearLayout>
 
                 <GridView
@@ -382,15 +382,13 @@
                         <ListView
                             android:id="@+id/list_daywise"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_above="@+id/footer_1"
+                            android:layout_height="match_parent"
                             android:layout_alignParentTop="true"
                             android:background="@color/white"
                             android:cacheColorHint="@android:color/transparent"
                             android:divider="@color/GRAY"
                             android:dividerHeight="1dp"
                             android:padding="2dp" />
-
 
                     </RelativeLayout>
 

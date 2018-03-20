@@ -231,7 +231,7 @@ public class AttendanceHelper {
     /**
      * Down load Non fiels Reasons
      */
-    public void downNonFieldReasons(boolean isNone) {
+    public void downNonFieldReasons() {
         try {
             reasonBOByreasonID = new HashMap<Integer, NonFieldBO>();
             nonFieldReasonList.clear();
@@ -242,16 +242,14 @@ public class AttendanceHelper {
             setNonFieldReasonList(new ArrayList<NonFieldBO>());
             if (c != null) {
                 NonFieldBO reasonBO;
-                if(isNone) {
-                    reasonBO = new NonFieldBO();
-                    reasonBO.setReasonID(0);
-                    reasonBO.setCode("NONE");
-                    reasonBO.setReason(context.getString(R.string.none));
-                    reasonBO.setIsRequired(0);
-                    reasonBO.setpLevelId(0);
-                    reasonBOByreasonID.put(reasonBO.getReasonID(), reasonBO);
-                    getNonFieldReasonList().add(reasonBO);
-                }
+                reasonBO = new NonFieldBO();
+                reasonBO.setReasonID(0);
+                reasonBO.setCode("NONE");
+                reasonBO.setReason(context.getString(R.string.none));
+                reasonBO.setIsRequired(0);
+                reasonBO.setpLevelId(0);
+                reasonBOByreasonID.put(reasonBO.getReasonID(), reasonBO);
+                getNonFieldReasonList().add(reasonBO);
                 while (c.moveToNext()) {
                     reasonBO = new NonFieldBO();
                     reasonBO.setReasonID(c.getInt(0));

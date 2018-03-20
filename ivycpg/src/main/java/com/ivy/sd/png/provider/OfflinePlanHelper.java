@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DateWisePlanBO;
+import com.ivy.sd.png.bo.NonFieldBO;
 import com.ivy.sd.png.bo.OfflineDateWisePlanBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -12,6 +13,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * Created by rahul.j on 3/14/2018.
@@ -51,7 +53,7 @@ public class OfflinePlanHelper {
             String sql = "SELECT PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence," +
                     "(CASE WHEN EntityType = 'RETAILER' THEN IFNULL((SELECT RetailerName from RetailerMaster where RetailerID = EntityId),'')" +
                     " WHEN EntityType = 'ROUTE' THEN IFNULL((SELECT ListName from StandardListMaster where ListId = EntityId),'')" +
-                    " ELSE '' END) as Name FROM DatewisePlan";
+                    " ELSE '' END) as Name FROM " + DataMembers.tbl_date_wise_plan + " Where status != 'D' ";
 
             db.openDataBase();
 
@@ -112,5 +114,85 @@ public class OfflinePlanHelper {
 
     public ArrayList<OfflineDateWisePlanBO> getCallSchedulingList() {
         return offlineList;
+    }
+
+    public void savePlan(Context mContext, OfflineDateWisePlanBO offlineDateWisePlanBO) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+
+            String values = offlineDateWisePlanBO.getPlanId() + ","
+                    + offlineDateWisePlanBO.getDistributorId() + ","
+                    + offlineDateWisePlanBO.getUserId() + ","
+                    + QT(offlineDateWisePlanBO.getDate()) + ","
+                    + offlineDateWisePlanBO.getEntityId() + ","
+                    + QT(offlineDateWisePlanBO.getEntityType()) + ","
+                    + QT(offlineDateWisePlanBO.getStatus()) + ","
+                    + offlineDateWisePlanBO.getSequence();
+
+            db.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
+
+    public void updatePlan(Context mContext, OfflineDateWisePlanBO offlineDateWisePlanBO) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+
+            if (offlineDateWisePlanBO.getPlanId() > 0) {
+                db.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                        + " SET status = 'D' "
+                        + " , upload = 'N'"
+                        + " WHERE " + " PlanId =" + offlineDateWisePlanBO.getPlanId() + " and EntityType = " + QT(offlineDateWisePlanBO.getEntityType()));
+            } else {
+                db.deleteSQL(DataMembers.tbl_date_wise_plan, "EntityId=" + offlineDateWisePlanBO.getEntityId() +
+                        " and Date = " + QT(offlineDateWisePlanBO.getDate()) + " and EntityType = " + QT(offlineDateWisePlanBO.getEntityType()), false);
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
+
+    public String QT(String data) {
+        return "'" + data + "'";
+    }
+
+    public Vector<NonFieldBO> downLoadNonFieldList() {
+        Vector<NonFieldBO> nonFieldList = new Vector<>();
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("SELECT ListId,ListCode,ListName,isRequired,ParentId from StandardListMaster where ListType='FIELD_PLAN_TYPE'");
+            if (c != null) {
+                NonFieldBO reasonBO = new NonFieldBO();
+                while (c.moveToNext()) {
+                    reasonBO = new NonFieldBO();
+                    reasonBO.setReasonID(c.getInt(0));
+                    reasonBO.setCode(c.getString(1));
+                    reasonBO.setReason(c.getString(2));
+                    reasonBO.setIsRequired(c.getInt(3));
+                    reasonBO.setpLevelId(c.getInt(4));
+                    nonFieldList.add(reasonBO);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Non Field Work Loading Exception", e);
+        }
+
+        return nonFieldList;
+
     }
 }

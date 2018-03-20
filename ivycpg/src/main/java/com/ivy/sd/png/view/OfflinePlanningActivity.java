@@ -98,6 +98,9 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
     LinearLayout layoutCalendar, layoutDayWise;
     private RsdHolder mRsdholder;
     private boolean isRetaieler = false;
+    private static String mEntityRetailer = "RETAILER";
+    private static String mEntityRoute = "ROUTE";
+    private static String mEntityDistributor = "DISTRIBUTOR";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,25 +171,35 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         tvMonthName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         tvDMonthName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         tvDayDate.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        tvBackToMonthView.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
     }
 
     private void setValues() {
+
         if (bmodel.getRetailerMaster().size() > 0) {
             retailerList = bmodel.getRetailerMaster();
+
+            if (bmodel.configurationMasterHelper.IS_LOAD_ONLY_SUBD) {
+                Vector<RetailerMasterBO> temp = new Vector<>();
+                for (RetailerMasterBO retailerMasterBO : retailerList) {
+                    if (retailerMasterBO.getSubdId() != 0)
+                        temp.add(retailerMasterBO);
+                }
+                retailerList.clear();
+                retailerList.addAll(temp);
+            }
+
             Collections.sort(retailerList, RetailerMasterBO.RetailerNameComparator);
             retailerAdapter = new RetailerAdapter(retailerList);
             lvRetailer.setAdapter(retailerAdapter);
         }
 
-        if (bmodel.mAttendanceHelper
-                .getNonFieldReasonList().size() > 0) {
-            nonFieldList = new Vector<>();
-            for (NonFieldBO nonFieldBO : bmodel.mAttendanceHelper
-                    .getNonFieldReasonList())
-                nonFieldList.add(nonFieldBO);
-
-            nonFieldAdapter = new NonFieldAdapter(nonFieldList);
-            lvNonField.setAdapter(nonFieldAdapter);
+        if (bmodel.configurationMasterHelper.IS_LOAD_NON_FIELD) {
+            nonFieldList = offlinePlanHelper.downLoadNonFieldList();
+            if (nonFieldList.size() > 0) {
+                nonFieldAdapter = new NonFieldAdapter(nonFieldList);
+                lvNonField.setAdapter(nonFieldAdapter);
+            }
 
         } else {
             lvNonField.setVisibility(View.GONE);
@@ -232,7 +245,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         searchAutoComplete.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.WHITE, null));
         searchAutoComplete.setTextColor(ResourcesCompat.getColor(getResources(), R.color.WHITE, null));
 
-        ImageView closeButton = (ImageView) mSearchRetailer.findViewById(R.id.search_close_btn);
+        ImageView closeButton = mSearchRetailer.findViewById(R.id.search_close_btn);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1094,26 +1107,88 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                         if (mHashMapData.get(dateStr) != null) {
                                             mData = mHashMapData.get(dateStr);
                                             if (isRetaieler) {
-                                                if (!mData.contains(mRsdholder.retailerMasterBO)) {
-                                                    // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
-                                                } else {
+                                                boolean isAvailable = false;
+                                                boolean isRoutePlanned = false;
+                                                for (OfflineDateWisePlanBO ofBo : mData) {
+                                                    if (ofBo.getEntityType().equals(mEntityRetailer) || ofBo.getEntityType().equals(mEntityDistributor)) {
+                                                        if (ofBo.getEntityId() == SDUtil.convertToInt(mRsdholder.retailerMasterBO.getRetailerID())) {
+                                                            isAvailable = true;
+                                                        }
+                                                    }
+                                                    if (ofBo.getEntityType().equals(mEntityRoute)) {
+                                                        isRoutePlanned = true;
+
+                                                    }
+                                                }
+
+                                                if (bmodel.configurationMasterHelper.IS_PLAN_RETIALER_NON_FIELD) {
+                                                    if (!isAvailable) {
+                                                        addPlan(dateStr, mRsdholder.retailerMasterBO);
+                                                    } else {
+                                                        hoverDate = "";
+                                                        madapter.notifyDataSetChanged();
+                                                        Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                                        return false;
+                                                    }
+                                                } else if (isRoutePlanned) {
                                                     hoverDate = "";
                                                     madapter.notifyDataSetChanged();
-                                                    Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(OfflinePlanningActivity.this, getString(R.string.notAllowtoPlanOutlet), Toast.LENGTH_SHORT).show();
                                                     return false;
+                                                } else if (!isRoutePlanned) {
+                                                    if (!isAvailable) {
+                                                        addPlan(dateStr, mRsdholder.retailerMasterBO);
+                                                    } else {
+                                                        hoverDate = "";
+                                                        madapter.notifyDataSetChanged();
+                                                        Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                                        return false;
+                                                    }
                                                 }
                                             } else {
-                                                if (!mData.contains(mRsdholder.nonFieldBO)) {
-                                                    // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
-                                                } else {
+                                                boolean isAvailable = false;
+                                                boolean isRetailerPlanned = false;
+                                                for (OfflineDateWisePlanBO ofBo : mData) {
+                                                    if (ofBo.getEntityType().equals(mEntityRoute)) {
+                                                        if (ofBo.getEntityId() == mRsdholder.nonFieldBO.getReasonID()) {
+                                                            isAvailable = true;
+                                                        }
+                                                    }
+                                                    if (ofBo.getEntityType().equals(mEntityRetailer) || ofBo.getEntityType().equals(mEntityDistributor)) {
+                                                        isRetailerPlanned = true;
+                                                    }
+
+                                                }
+                                                if (bmodel.configurationMasterHelper.IS_PLAN_RETIALER_NON_FIELD) {
+                                                    if (!isAvailable) {
+                                                        addPlan(dateStr, mRsdholder.nonFieldBO);
+                                                    } else {
+                                                        hoverDate = "";
+                                                        madapter.notifyDataSetChanged();
+                                                        Toast.makeText(OfflinePlanningActivity.this, getString(R.string.nonFieldExists), Toast.LENGTH_SHORT).show();
+                                                        return false;
+                                                    }
+                                                } else if (isRetailerPlanned) {
                                                     hoverDate = "";
                                                     madapter.notifyDataSetChanged();
-                                                    Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(OfflinePlanningActivity.this, getString(R.string.notAllowtoPlannonField), Toast.LENGTH_SHORT).show();
                                                     return false;
+                                                } else if (!isRetailerPlanned) {
+                                                    if (!isAvailable) {
+                                                        addPlan(dateStr, mRsdholder.nonFieldBO);
+                                                    } else {
+                                                        hoverDate = "";
+                                                        madapter.notifyDataSetChanged();
+                                                        Toast.makeText(OfflinePlanningActivity.this, getString(R.string.nonFieldExists), Toast.LENGTH_SHORT).show();
+                                                        return false;
+                                                    }
                                                 }
                                             }
                                         } else {
-                                            //showCallTypeDialog(dateStr, mRsdholder.rsdBO);
+                                            if (isRetaieler)
+                                                addPlan(dateStr, mRsdholder.retailerMasterBO);
+                                            else
+                                                addPlan(dateStr, mRsdholder.nonFieldBO);
                                         }
 
                                         setMonthTV();
@@ -1152,26 +1227,93 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                 if (mHashMapData.get(dateStr) != null) {
                                     mData = mHashMapData.get(dateStr);
                                     if (isRetaieler) {
-                                        if (!mData.contains(mRsdholder.retailerMasterBO)) {
-                                            // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
-                                        } else {
+                                        boolean isAvailable = false;
+                                        boolean isRoutePlanned = false;
+                                        for (OfflineDateWisePlanBO ofBo : mData) {
+                                            if (ofBo.getEntityType().equals(mEntityRetailer) || ofBo.getEntityType().equals(mEntityDistributor)) {
+                                                if (ofBo.getEntityId() == SDUtil.convertToInt(mRsdholder.retailerMasterBO.getRetailerID())) {
+                                                    isAvailable = true;
+                                                }
+                                            }
+                                            if (ofBo.getEntityType().equals(mEntityRoute)) {
+                                                isRoutePlanned = true;
+                                            }
+                                        }
+
+                                        if (bmodel.configurationMasterHelper.IS_PLAN_RETIALER_NON_FIELD) {
+                                            if (!isAvailable) {
+                                                addPlan(dateStr, mRsdholder.retailerMasterBO);
+                                            } else {
+                                                hoverDate = "";
+                                                madapter.notifyDataSetChanged();
+                                                dayWishPlanningAdapter.notifyDataSetChanged();
+                                                Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                                return false;
+                                            }
+                                        } else if (isRoutePlanned) {
                                             hoverDate = "";
                                             madapter.notifyDataSetChanged();
-                                            Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                            dayWishPlanningAdapter.notifyDataSetChanged();
+                                            Toast.makeText(OfflinePlanningActivity.this, getString(R.string.notAllowtoPlanOutlet), Toast.LENGTH_SHORT).show();
                                             return false;
+                                        } else if (!isRoutePlanned) {
+                                            if (!isAvailable) {
+                                                addPlan(dateStr, mRsdholder.retailerMasterBO);
+                                            } else {
+                                                hoverDate = "";
+                                                madapter.notifyDataSetChanged();
+                                                dayWishPlanningAdapter.notifyDataSetChanged();
+                                                Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                                return false;
+                                            }
                                         }
                                     } else {
-                                        if (!mData.contains(mRsdholder.nonFieldBO)) {
-                                            // showCallTypeDialog(dateStr, mRsdholder.rsdBO);
-                                        } else {
+                                        boolean isAvailable = false;
+                                        boolean isRetailerPlanned = false;
+                                        for (OfflineDateWisePlanBO ofBo : mData) {
+                                            if (ofBo.getEntityType().equals(mEntityRoute)) {
+                                                if (ofBo.getEntityId() == mRsdholder.nonFieldBO.getReasonID()) {
+                                                    isAvailable = true;
+                                                }
+                                            }
+                                            if (ofBo.getEntityType().equals(mEntityRetailer) || ofBo.getEntityType().equals(mEntityDistributor)) {
+                                                isRetailerPlanned = true;
+                                            }
+
+                                        }
+                                        if (bmodel.configurationMasterHelper.IS_PLAN_RETIALER_NON_FIELD) {
+                                            if (!isAvailable) {
+                                                addPlan(dateStr, mRsdholder.nonFieldBO);
+                                            } else {
+                                                hoverDate = "";
+                                                madapter.notifyDataSetChanged();
+                                                dayWishPlanningAdapter.notifyDataSetChanged();
+                                                Toast.makeText(OfflinePlanningActivity.this, getString(R.string.nonFieldExists), Toast.LENGTH_SHORT).show();
+                                                return false;
+                                            }
+                                        } else if (isRetailerPlanned) {
                                             hoverDate = "";
                                             madapter.notifyDataSetChanged();
-                                            Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
+                                            dayWishPlanningAdapter.notifyDataSetChanged();
+                                            Toast.makeText(OfflinePlanningActivity.this, getString(R.string.notAllowtoPlannonField), Toast.LENGTH_SHORT).show();
                                             return false;
+                                        } else if (!isRetailerPlanned) {
+                                            if (!isAvailable) {
+                                                addPlan(dateStr, mRsdholder.nonFieldBO);
+                                            } else {
+                                                hoverDate = "";
+                                                madapter.notifyDataSetChanged();
+                                                dayWishPlanningAdapter.notifyDataSetChanged();
+                                                Toast.makeText(OfflinePlanningActivity.this, getString(R.string.nonFieldExists), Toast.LENGTH_SHORT).show();
+                                                return false;
+                                            }
                                         }
                                     }
                                 } else {
-                                    //showCallTypeDialog(dateStr, mRsdholder.rsdBO);
+                                    if (isRetaieler)
+                                        addPlan(dateStr, mRsdholder.retailerMasterBO);
+                                    else
+                                        addPlan(dateStr, mRsdholder.nonFieldBO);
                                 }
 
                                 setMonthTV();
@@ -1180,6 +1322,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                 else
                                     nonFieldAdapter.notifyDataSetChanged();
                                 madapter.notifyDataSetChanged();
+                                dayWishPlanningAdapter.notifyDataSetChanged();
                                 return true;
                             } else {
                                 Toast.makeText(getApplicationContext(), getString(R.string.pastAndCurrentDays), Toast.LENGTH_LONG).show();
@@ -1203,12 +1346,88 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
+    private void addPlan(String date, RetailerMasterBO retailerMasterBO) {
+        OfflineDateWisePlanBO offlineDateWisePlanBO = new OfflineDateWisePlanBO();
+
+        offlineDateWisePlanBO.setPlanId(0);
+        offlineDateWisePlanBO.setDate(date);
+        offlineDateWisePlanBO.setDistributorId(retailerMasterBO.getDistributorId());
+        offlineDateWisePlanBO.setUserId(bmodel.userMasterHelper.getUserMasterBO().getUserid());
+        offlineDateWisePlanBO.setEntityId(SDUtil.convertToInt(retailerMasterBO.getRetailerID()));
+        if (retailerMasterBO.getSubdId() == 0)
+            offlineDateWisePlanBO.setEntityType(mEntityRetailer);
+        else
+            offlineDateWisePlanBO.setEntityType(mEntityDistributor);
+        offlineDateWisePlanBO.setStatus("I");
+        offlineDateWisePlanBO.setSequence(0);
+        offlineDateWisePlanBO.setName(retailerMasterBO.getRetailerName());
+        ArrayList<OfflineDateWisePlanBO> mData = new ArrayList<>();
+        if (mHashMapData != null) {
+            if (mHashMapData.get(date) != null) {
+                mData = mHashMapData.get(date);
+                if (!mData.contains(offlineDateWisePlanBO)) {
+                    mData.add(offlineDateWisePlanBO);
+
+                } else {
+                    mData.remove(offlineDateWisePlanBO);
+                    mData.add(offlineDateWisePlanBO);
+                }
+            } else {
+                mData.add(offlineDateWisePlanBO);
+            }
+        } else {
+            mHashMapData = new HashMap<>();
+            mData.add(offlineDateWisePlanBO);
+        }
+        mHashMapData.put(date, mData);
+        offlinePlanHelper.setmHashMapData(mHashMapData);
+        offlinePlanHelper.savePlan(this, offlineDateWisePlanBO);
+
+    }
+
+    private void addPlan(String date, NonFieldBO nonFieldBO) {
+        OfflineDateWisePlanBO offlineDateWisePlanBO = new OfflineDateWisePlanBO();
+
+        offlineDateWisePlanBO.setPlanId(0);
+        offlineDateWisePlanBO.setDate(date);
+        offlineDateWisePlanBO.setDistributorId(0);
+        offlineDateWisePlanBO.setUserId(bmodel.userMasterHelper.getUserMasterBO().getUserid());
+        offlineDateWisePlanBO.setEntityId(nonFieldBO.getReasonID());
+        offlineDateWisePlanBO.setEntityType(mEntityRoute);
+        offlineDateWisePlanBO.setStatus("I");
+        offlineDateWisePlanBO.setSequence(0);
+        offlineDateWisePlanBO.setName(nonFieldBO.getReason());
+        ArrayList<OfflineDateWisePlanBO> mData = new ArrayList<>();
+
+        if (mHashMapData != null) {
+            if (mHashMapData.get(date) != null) {
+                mData = mHashMapData.get(date);
+                if (!mData.contains(offlineDateWisePlanBO)) {
+                    mData.add(offlineDateWisePlanBO);
+
+                } else {
+                    mData.remove(offlineDateWisePlanBO);
+                    mData.add(offlineDateWisePlanBO);
+                }
+            } else {
+                mData.add(offlineDateWisePlanBO);
+            }
+        } else {
+            mHashMapData = new HashMap<>();
+            mData.add(offlineDateWisePlanBO);
+        }
+        mHashMapData.put(date, mData);
+        offlinePlanHelper.setmHashMapData(mHashMapData);
+        offlinePlanHelper.savePlan(this, offlineDateWisePlanBO);
+
+
+    }
 
     class DayWishPlanningAdapter extends BaseAdapter {
 
         private final ArrayList<OfflineDateWisePlanBO> mDataList;
         private String selectedDate = "";
-        private static final String CALL_TYPE = "Call Type : ";
+        private static final String CALL_TYPE = "Plan Type : ";
 
         private DayWishPlanningAdapter(ArrayList<OfflineDateWisePlanBO> mDataList, String selectedDate) {
             this.mDataList = mDataList;
@@ -1238,18 +1457,10 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                 LayoutInflater inflater = LayoutInflater.from(getBaseContext());
                 convertView = inflater.inflate(R.layout.list_item_daywise_planning, parent, false);
 
-                holder.TVRetailerName = (TextView) convertView.findViewById(R.id.txt_retailerName);
-                holder.TVCallType = (TextView) convertView.findViewById(R.id.txt_calltype);
-                holder.TVNotes = (TextView) convertView.findViewById(R.id.txt_notes);
-                holder.IVEdit = (ImageView) convertView.findViewById(R.id.iv_edit);
-                holder.IVDelete = (ImageView) convertView.findViewById(R.id.iv_delete);
+                holder.TVRetailerName = convertView.findViewById(R.id.txt_retailerName);
+                holder.IVDelete = convertView.findViewById(R.id.iv_delete);
+                holder.IvEntityType = convertView.findViewById(R.id.ivEntityType);
 
-             /*   holder.IVEdit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showCallTypeDialog(selectedDate, mDataList.get(position));
-                    }
-                });*/
 
                 holder.IVDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1264,18 +1475,18 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                     public void onClick(DialogInterface dialog, int which) {
                                         ArrayList<OfflineDateWisePlanBO> mData;
                                         mHashMapData = offlinePlanHelper.getmHashMapData();
-                                        OfflineDateWisePlanBO callSchedulingPlanBO = holder.dayWiseRetailer;
-                                        callSchedulingPlanBO.setStatus("D");
+                                        OfflineDateWisePlanBO offlineDateWisePlanBO = holder.dayWiseRetailer;
+                                        offlineDateWisePlanBO.setStatus("D");
 
                                         if (mHashMapData != null) {
                                             if (mHashMapData.get(selectedDate) != null) {
                                                 mData = mHashMapData.get(selectedDate);
-                                                if (mData.contains(callSchedulingPlanBO)) {
-                                                    mData.remove(callSchedulingPlanBO);
+                                                if (mData.contains(offlineDateWisePlanBO)) {
+                                                    mData.remove(offlineDateWisePlanBO);
                                                     mHashMapData.put(selectedDate, mData);
                                                     offlinePlanHelper.setmHashMapData(mHashMapData);
-                                                    // offlinePlanHelper.savePlannedRetailer(callSchedulingPlanBO);
-                                                    mDataList.remove(position);
+                                                    offlinePlanHelper.updatePlan(OfflinePlanningActivity.this, offlineDateWisePlanBO);
+                                                    //mDataList.remove(position);
                                                     dayWishPlanningAdapter.notifyDataSetChanged();
                                                     madapter.notifyDataSetChanged();
                                                     Toast.makeText(OfflinePlanningActivity.this, getString(R.string.plan_deleted), Toast.LENGTH_SHORT).show();
@@ -1294,7 +1505,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
                             }
                         });
-                        builder.show();
+                        bmodel.applyAlertDialogTheme(builder);
                     }
                 });
                 convertView.setOnDragListener(myDragEventListener);
@@ -1304,26 +1515,20 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
             }
             holder.dayWiseRetailer = mDataList.get(position);
             holder.TVRetailerName.setText(holder.dayWiseRetailer.getName());
-
             holder.TVRetailerName.setTextColor(getResources().getColor(android.R.color.black));
 
-            holder.TVCallType.setText(String.format("%s%s", CALL_TYPE, holder.dayWiseRetailer.getEntityType()));
-            //holder.TVNotes.setText(holder.dayWiseRetailer.getCallTypeNotes());
+            if (holder.dayWiseRetailer.getEntityType().equalsIgnoreCase(mEntityDistributor) ||
+                    holder.dayWiseRetailer.getEntityType().equalsIgnoreCase(mEntityRetailer))
+                holder.IvEntityType.setImageDrawable(getResources().getDrawable(R.drawable.ic_store_ofplan));
+
+            else if (holder.dayWiseRetailer.getEntityType().equalsIgnoreCase(mEntityRoute))
+                holder.IvEntityType.setImageDrawable(getResources().getDrawable(R.drawable.ic_non_field));
 
             try {
                 if ((dateFormatGeneral.parse(selectedDate).before(new Date())) ||
                         (dateFormatGeneral.parse(selectedDate).equals(new Date()))) {
                     holder.IVDelete.setVisibility(View.GONE);
-                    holder.IVEdit.setVisibility(View.GONE);
-                }/* else {
-                    if (!bmodel.configurationMasterHelper.IS_EDIT_PLANNING_RESTRICTED) {
-                        holder.IVDelete.setVisibility(View.VISIBLE);
-                        holder.IVEdit.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.IVDelete.setVisibility(View.GONE);
-                        holder.IVEdit.setVisibility(View.GONE);
-                    }
-                }*/
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -1336,14 +1541,21 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
     // dayWise List Holder
     class MyViewHolder {
-        TextView TVRetailerName, TVCallType, TVNotes;
-        ImageView IVEdit, IVDelete;
+        TextView TVRetailerName;
+        ImageView IVDelete, IvEntityType;
         OfflineDateWisePlanBO dayWiseRetailer;
     }
 
     private void startDrag(View v, int position) {
-        ClipData.Item item = new ClipData.Item(retailerList.get(position)
-                .toString());
+        ClipData.Item item;
+
+        if (isRetaieler)
+            item = new ClipData.Item(retailerList.get(position)
+                    .toString());
+        else
+            item = new ClipData.Item(nonFieldList.get(position)
+                    .toString());
+
 
         mRsdholder = (RsdHolder) v.getTag();
 

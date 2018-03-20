@@ -308,6 +308,9 @@
     <string name="do_you_want_delete_plan">Do you want to delete the plan?</string>
     <string name="plan_deleted">Plan Deleted Successfully</string>
     <string name="retailerExists">Outlet Already Exists</string>
+    <string name="notAllowtoPlanOutlet">Not allowed to plan Outlet!</string>
+    <string name="notAllowtoPlannonField">Not allowed to plan Non Field!</string>
+    <string name="nonFieldExists">NonField Already Exists</string>
     <string name="pastAndCurrentDays">Plan can not be done for past days and current day</string>
     <string name="endOfPeriod">End of Plan Period</string>
 

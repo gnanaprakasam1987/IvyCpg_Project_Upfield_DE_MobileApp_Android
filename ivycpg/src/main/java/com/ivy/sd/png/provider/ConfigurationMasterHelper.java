@@ -471,6 +471,13 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FOCUS_PACK_NOT_DONE = "ORDB71";
     public boolean IS_FOCUS_PACK_NOT_DONE;
 
+    private static final String CODE_LOAD_SUBD_ONLY = "OFPLAN01";
+    public boolean IS_LOAD_ONLY_SUBD;
+    private static final String CODE_LOAD_NON_FIELD = "OFPLAN02";
+    public boolean IS_LOAD_NON_FIELD;
+    private static final String CODE_PLAN_RETAILER_ON_NONFILED = "OFPLAN03";
+    public boolean IS_PLAN_RETIALER_NON_FIELD;
+
 
     /**
      * RoadActivity config *
@@ -2200,6 +2207,9 @@ public class ConfigurationMasterHelper {
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
         this.IS_SHOW_ONLY_SERVER_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) : false;
         this.IS_FOCUS_PACK_NOT_DONE = hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) != null ? hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) : false;
+        this.IS_LOAD_ONLY_SUBD = hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) : false;
+        this.IS_LOAD_NON_FIELD = hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) : false;
+        this.IS_PLAN_RETIALER_NON_FIELD = hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) != null ? hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG) != null) {
             if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG)) {
@@ -3831,11 +3841,9 @@ public class ConfigurationMasterHelper {
                     String value = c.getString(0);
                     if (value.equalsIgnoreCase("PS")) {
                         SHOW_PC_SRP = true;
-                    }
-                    else if (value.equalsIgnoreCase("CS")) {
+                    } else if (value.equalsIgnoreCase("CS")) {
                         SHOW_CASE_SRP = true;
-                    }
-                    else if (value.equalsIgnoreCase("OU")) {
+                    } else if (value.equalsIgnoreCase("OU")) {
                         SHOW_OUTER_SRP = true;
                     }
                 }
@@ -4500,7 +4508,7 @@ public class ConfigurationMasterHelper {
             db.openDataBase();
             String sql = "select MName from " + DataMembers.tbl_HhtMenuMaster
                     + " where hhtCode=" + bmodel.QT("MENU_JOINT_CALL")
-                    + " and flag=1 and lang="+bmodel.QT(language);
+                    + " and flag=1 and lang=" + bmodel.QT(language);
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {

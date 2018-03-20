@@ -6,7 +6,7 @@ package com.ivy.sd.png.bo;
 
 public class OfflineDateWisePlanBO {
     private int PlanId, DistributorId, UserId, EntityId, Sequence;
-    private String EntityType, Status, upload, Date,Name;
+    private String EntityType, Status, Date,Name;
 
     public int getPlanId() {
         return PlanId;
@@ -62,14 +62,6 @@ public class OfflineDateWisePlanBO {
 
     public void setStatus(String status) {
         Status = status;
-    }
-
-    public String getUpload() {
-        return upload;
-    }
-
-    public void setUpload(String upload) {
-        this.upload = upload;
     }
 
     public String getDate() {

@@ -691,7 +691,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
         } else if (menuItem.getConfigCode().equals(MENU_ATTENDANCE)) {
-            bmodel.mAttendanceHelper.downNonFieldReasons(true);
+            bmodel.mAttendanceHelper.downNonFieldReasons();
             bmodel.mAttendanceHelper.downLeaveTypes();
             bmodel.mAttendanceHelper.dynamicRadioButtton();
             bmodel.configurationMasterHelper.setTradecoveragetitle(menuItem
@@ -992,7 +992,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.mAttendanceHelper.downNonFieldReasons(false);
                 Intent i = new Intent(getContext(), OfflinePlanningActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.putExtra("screentitle", "" + "Call Planning");
