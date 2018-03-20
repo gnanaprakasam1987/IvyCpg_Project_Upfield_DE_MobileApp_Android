@@ -3301,7 +3301,6 @@ public class ProductHelper {
                     .getOutersize());
             if (qty > 0) {
                 if (productBO.getSIH() < qty) {
-
                     return false;
                 }
             }

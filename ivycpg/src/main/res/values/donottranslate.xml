@@ -294,5 +294,8 @@
     <string name="order_save_falied">Order Save Failed !</string>
     <string name="order_not_placed_focus_pack">Order not placed for Focus pack.</string>
 
+    <string name="order_delivery_approve">Proceed to approve the order</string>
+    <string name="ordered_value_exceeds_sih_value_please_edit_the_order">Ordered value exceeds SIH value.Please edit the order</string>
+
 
 </resources>

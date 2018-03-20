@@ -5,7 +5,6 @@
     android:versionCode="1260"
     android:versionName="2.127.0.1178">
 
-
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -91,7 +90,6 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/MVPTheme.Blue">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -220,6 +218,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -230,6 +229,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -240,6 +240,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -425,7 +426,7 @@
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnSummery"
             android:exported="false"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.van.LoadManagementScreen"
             android:exported="false"
@@ -627,7 +628,6 @@
         <activity
             android:name="com.ivy.cpg.view.planogram.CounterPlanogramActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.png.view.TLAttendanceActivity"
             android:screenOrientation="portrait" />
@@ -715,7 +715,6 @@
         <activity
             android:name="com.ivy.sd.png.view.profile.HistoryDetailActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.survey.DragDropPictureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -779,6 +778,8 @@
         <activity
             android:name="com.ivy.sd.png.view.reports.SalesReturnValidationReport"
             android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity" />
+        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"></activity>
     </application>
 
 </manifest>

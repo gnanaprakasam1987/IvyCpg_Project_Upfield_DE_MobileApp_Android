@@ -2852,4 +2852,508 @@ public class OrderHelper {
 
         return uid;
     }
+
+    // Download Order Header and Order details received from server
+
+    ArrayList<OrderHeader> orderHeaders = new ArrayList<>();
+
+    public ArrayList<OrderHeader> getOrderHeaders() {
+        return orderHeaders;
+    }
+
+    public void setOrderHeaders(ArrayList<OrderHeader> orderHeaders) {
+        this.orderHeaders = orderHeaders;
+    }
+
+    public ArrayList<OrderHeader> downloadOrderDeliveryHeader(Context mContext){
+
+        ArrayList<OrderHeader> ordHeadBO = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("select OD.OrderID,OrderValue,LinesPerCall,OrderDate,invoicestatus from "
+                    + DataMembers.tbl_orderHeader + " OD ");
+
+            sb.append(" where OD.upload='X' and OD.RetailerID="
+                    + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()));
+
+            sb.append(" and OD.orderid not in(select orderid from OrderDeliveryDetail)");
+
+            Cursor orderHeaderCursor = db.selectSQL(sb.toString());
+            if (orderHeaderCursor != null) {
+                while (orderHeaderCursor.moveToNext()) {
+
+                    OrderHeader orderHeader = new OrderHeader();
+
+                    orderHeader.setOrderid(orderHeaderCursor.getString(0));
+                    orderHeader.setOrderValue(orderHeaderCursor.getDouble(1));
+                    orderHeader.setLinesPerCall(orderHeaderCursor.getInt(2));
+                    orderHeader.setOrderDate(orderHeaderCursor.getString(3));
+                    orderHeader.setInvoiceStatus(orderHeaderCursor.getInt(4));
+
+                    ordHeadBO.add(orderHeader);
+                }
+                orderHeaderCursor.close();
+            }
+            db.closeDB();
+
+            setOrderHeaders(ordHeadBO);
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return ordHeadBO;
+    }
+
+    public void downloadOrderDeliveryDetail(Context mContext,String orderId){
+        try{
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql1 = "select productId,caseqty,pieceqty,  Rate, D1, D2, D3,"
+                    + "uomcount,DA,totalamount,outerQty,dOuomQty,batchid,weight from "
+                    + DataMembers.tbl_orderDetails
+                    + " where orderId="
+                    + businessModel.QT(orderId) + " order by rowid";
+
+
+            Cursor orderDetailCursor = db.selectSQL(sql1);
+            if (orderDetailCursor != null) {
+                String productId;
+                while (orderDetailCursor.moveToNext()) {
+
+                    int caseQty = orderDetailCursor.getInt(1);
+                    int pieceQty = orderDetailCursor.getInt(2);
+                    int outerQty = orderDetailCursor.getInt(10);
+                    int outerSize = orderDetailCursor.getInt(11);
+                    String batchId = orderDetailCursor.getString(12);
+                    float weight = orderDetailCursor.getFloat(13);
+                    float srp = orderDetailCursor.getFloat(3);
+
+                    productId = orderDetailCursor.getString(0);
+                    setOrderDeliveryProductDetails(productId, caseQty, pieceQty,
+                            outerQty, srp, orderDetailCursor.getDouble(4));
+                }
+
+                orderDetailCursor.close();
+
+                loadSalesReturnData(orderId,db);
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+    }
+
+    private void setOrderDeliveryProductDetails(String productId, int caseQty, int pieceQty,
+                                   int outerQty, float srp, double pricePerPiece) {
+        ProductMasterBO product;
+        int siz = businessModel.productHelper.getProductMaster().size();
+        if (siz == 0)
+            return;
+
+        if (productId == null)
+            return;
+
+        for (int i = 0; i < siz; ++i) {
+            product = businessModel.productHelper.getProductMaster().get(i);
+
+            if (product.getProductID().equals(productId)) {
+                product.setSchemeProducts(null);
+                product.setOrderedPcsQty(pieceQty);
+                product.setOrderedCaseQty(caseQty);
+                product.setOrderedOuterQty(outerQty);
+                product.setOrderPricePiece(pricePerPiece);
+                product.setSrp(srp);
+
+                product.setCheked(true);
+
+                businessModel.productHelper.getProductMaster().setElementAt(product, i);
+
+                return;
+            }
+        }
+    }
+
+    private void loadSalesReturnData(String orderId,DBUtil db) {
+        businessModel.reasonHelper.downloadSalesReturnReason();
+        if (businessModel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
+            businessModel.productHelper.cloneReasonMaster(true);
+        }
+
+        try {
+            String uId ="" ;
+            //previously stored status fetched from DB and set to obj
+            String sb = "select SI.productid,SI.Condition,SI.Pqty,SI.Cqty,SI.outerqty,SH.uid" +
+                    " from SalesReturnDetails SI inner join SalesReturnHeader SH ON SH.uid=SI.uid " +
+                    "where SH.Retailerid=" + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) + " and SH.upload='X' and SH.RefModuleTId = '"+orderId+"' and SH.distributorid=" + businessModel.getRetailerMasterBO().getDistributorId();
+            Cursor c = db.selectSQL(sb);
+            if (c != null && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int productid = c.getInt(0);
+                    String condition = c.getString(1);
+                    int pqty = c.getInt(2);
+                    int cqty = c.getInt(3);
+                    int oqty = c.getInt(4);
+                    setSalesReturnObject(productid, condition, pqty, cqty, oqty);
+
+                    uId = c.getString(5);
+                }
+            }
+            if (c != null) {
+                c.close();
+            }
+
+            loadSalesReplacementData(db,uId);
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+    }
+
+    private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty) {
+
+        ProductMasterBO productBO;
+
+        productBO = businessModel.productHelper.getProductMasterBOById(Integer.toString(pid));
+
+        if (productBO != null) {
+            for (SalesReturnReasonBO bo : businessModel.reasonHelper.getReasonSalesReturnMaster()) {
+                if (bo.getReasonID().equals(condition)) {
+                    SalesReturnReasonBO reasonBo = new SalesReturnReasonBO();
+                    reasonBo.setReasonDesc(bo.getReasonDesc());
+                    reasonBo.setReasonID(bo.getReasonID());
+                    reasonBo.setCaseSize(productBO.getCaseSize());
+                    reasonBo.setOuterSize(productBO.getOutersize());
+                    reasonBo.setProductShortName(productBO.getProductShortName());
+                    reasonBo.setOldMrp(productBO.getMRP());
+                    reasonBo.setSrpedit(productBO.getSrp());
+                    reasonBo.setPieceQty(pqty);
+                    reasonBo.setCaseQty(cqty);
+                    reasonBo.setOuterQty(oqty);
+                    productBO.getSalesReturnReasonList().add(reasonBo);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void loadSalesReplacementData(DBUtil db,String productId) {
+        String sb = "select pid,batchid,uomid,qty from SalesReturnReplacementDetails " +
+                " where Retailerid=" + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
+                " and upload='X' and uid = "+businessModel.QT(productId);
+        Cursor c = db.selectSQL(sb);
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String pid = c.getString(0);
+                ProductMasterBO productBO;
+                productBO = businessModel.productHelper.getProductMasterBOById(pid);
+                if (productBO != null) {
+                    int uomid = c.getInt(2);
+                    if (uomid == productBO.getPcUomid()) {
+                        productBO.setRepPieceQty(c.getInt(3));
+                    } else if (uomid == productBO.getCaseUomId()) {
+                        productBO.setRepCaseQty(c.getInt(3));
+                    } else if (uomid == productBO.getOuUomid()) {
+                        productBO.setRepOuterQty(c.getInt(3));
+                    }
+                }
+            }
+        }
+        c.close();
+    }
+
+    public void clearSalesReturnTable() { //true -> Stock and Order --- false -> SalesReturn
+        ProductMasterBO product;
+        Vector<ProductMasterBO> productMaster ;
+
+        productMaster = businessModel.productHelper.getProductMaster();
+
+        int siz = productMaster.size();
+        for (int i = 0; i < siz; ++i) {
+            product = productMaster.get(i);
+
+            product.setRepPieceQty(0);
+            product.setRepCaseQty(0);
+            product.setRepOuterQty(0);
+            product.setSelectedSalesReturnPosition(0);
+
+            if (product.getSalesReturnReasonList() != null && product.getSalesReturnReasonList().size() != 0) {
+                for (SalesReturnReasonBO bo : product
+                        .getSalesReturnReasonList()) {
+                    if (bo.getCaseQty() > 0 || bo.getPieceQty() > 0 || bo.getOuterQty() > 0) {
+                        bo.setCaseQty(0);
+                        bo.setPieceQty(0);
+                        bo.setOuterQty(0);
+                        bo.setSrpedit(0);
+                        bo.setMfgDate("");
+                        bo.setExpDate("");
+                        bo.setOldMrp(0);
+                        bo.setLotNumber("");
+                        bo.setInvoiceno("");
+
+                    }
+                }
+            }
+        }
+    }
+
+    public Vector<ProductMasterBO> getOrderedProductBos(){
+        Vector<ProductMasterBO> productMasterBOS = new Vector<>();
+
+        for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
+            if(product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 || product.getOrderedOuterQty() > 0 || checkSalesReturnAvail(product))
+                productMasterBOS.add(product);
+        }
+
+        return productMasterBOS;
+    }
+
+    private boolean checkSalesReturnAvail(ProductMasterBO productMasterBO){
+
+        for (SalesReturnReasonBO obj : productMasterBO.getSalesReturnReasonList())
+            if(obj.getCaseQty() > 0 || obj.getPieceQty() > 0 || obj.getOuterQty() > 0)
+                return true;
+
+        return false;
+    }
+
+    private ArrayList<SchemeProductBO> schemeProductBOS;
+
+    public ArrayList<SchemeProductBO> getSchemeProductBOS() {
+        return schemeProductBOS;
+    }
+
+    private void setSchemeProductBOS(ArrayList<SchemeProductBO> schemeProductBOS) {
+        this.schemeProductBOS = schemeProductBOS;
+    }
+
+    public void downloadOrderedFreeProducts(Context context,String id) {
+
+        schemeProductBOS = new ArrayList<>();
+
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            SchemeProductBO schemeProductBO;
+
+            Cursor c = db
+                    .selectSQL("select schemeid,FreeProductID,FreeQty,UomID,pm.PName from schemeFreeProductDetail " +
+                            " Inner Join ProductMaster pm ON pm.PID = FreeProductID "
+                            + "where orderID="
+                            + businessModel.QT(id)
+                            + " and upload='X' order by schemeid");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+
+                    schemeProductBO = new SchemeProductBO();
+
+                    schemeProductBO.setProductId(c.getString(1));
+                    schemeProductBO.setQuantitySelected(c.getInt(2));
+                    schemeProductBO.setProductName(c.getString(4));
+                    schemeProductBO.setUomID(c.getInt(3));
+
+                    schemeProductBOS.add(schemeProductBO);
+                }
+            }
+            c.close();
+
+            db.closeDB();
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        setSchemeProductBOS(schemeProductBOS);
+    }
+
+    private String orderDeliveryDiscountAmount;
+    private String orderDeliveryTaxAmount;
+    private String orderDeliveryTotalValue;
+
+    public String getOrderDeliveryDiscountAmount() {
+        return orderDeliveryDiscountAmount;
+    }
+
+    private void setOrderDeliveryDiscountAmount(String orderDeliveryDiscountAmount) {
+        this.orderDeliveryDiscountAmount = orderDeliveryDiscountAmount;
+    }
+
+    public String getOrderDeliveryTaxAmount() {
+        return orderDeliveryTaxAmount;
+    }
+
+    private void setOrderDeliveryTaxAmount(String orderDeliveryTaxAmount) {
+        this.orderDeliveryTaxAmount = orderDeliveryTaxAmount;
+    }
+
+    public String getOrderDeliveryTotalValue() {
+        return orderDeliveryTotalValue;
+    }
+
+    private void setOrderDeliveryTotalValue(String orderDeliveryTotalValue) {
+        this.orderDeliveryTotalValue = orderDeliveryTotalValue;
+    }
+
+    public void downloadOrderDeliveryAmountDetail(Context context,String id) {
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select sum(taxValue) from OrderTaxDetails " +
+                    "where orderid=" + businessModel.QT(id));
+            if (c.getCount() > 0 && c.moveToNext()) {
+                setOrderDeliveryTaxAmount(c.getString(0));
+            }
+            c.close();
+
+            Cursor orderHeader = db.selectSQL("select OrderValue,discount from OrderHeader " +
+                    "where orderid=" + businessModel.QT(id));
+            if (orderHeader.getCount() > 0 && orderHeader.moveToNext()) {
+                setOrderDeliveryDiscountAmount(orderHeader.getString(1));
+                setOrderDeliveryTotalValue(orderHeader.getString(0));
+            }
+            orderHeader.close();
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public boolean isSIHAvailable() {
+        for (ProductMasterBO productBO : getOrderedProductBos()) {
+            int qty = productBO.getOrderedPcsQty()
+                    + (productBO.getOrderedCaseQty() * productBO.getCaseSize())
+                    + (productBO.getOrderedOuterQty() * productBO
+                    .getOutersize() + productBO.getRepPieceQty() );
+
+            qty = qty + productBO.getRepCaseQty() + productBO.getRepPieceQty()
+                    +productBO.getRepOuterQty();
+
+            qty = qty + getSchemeFreeProdCount(productBO);
+
+            if (qty > 0) {
+                if (productBO.getSIH() < qty) {
+                    return false;
+                }
+            }
+
+        }
+        return true;
+
+    }
+
+    private void updateOrderDeliverySIH(DBUtil db){
+
+        try {
+            for (ProductMasterBO productBO : getOrderedProductBos()) {
+                int qty = productBO.getOrderedPcsQty()
+                        + (productBO.getOrderedCaseQty() * productBO.getCaseSize())
+                        + (productBO.getOrderedOuterQty() * productBO
+                        .getOutersize() + productBO.getRepPieceQty());
+
+                qty = qty + productBO.getRepCaseQty() + productBO.getRepPieceQty()
+                        + productBO.getRepOuterQty();
+
+                qty = qty + getSchemeFreeProdCount(productBO);
+
+                if (qty > 0) {
+
+                    int totalSIH = productBO.getSIH() - qty;
+
+                    ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(productBO.getProductID());
+                    productMasterBO.setSIH(totalSIH);
+                    db.updateSQL("update stockinhandmaster set qty = " +
+                            totalSIH + " where pid=" + productBO.getProductID() + " and batchid= 0");
+                }
+            }
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+    }
+
+    private int getSchemeFreeProdCount(ProductMasterBO productMasterBO){
+
+        int qty = 0;
+        if(getSchemeProductBOS() == null || schemeProductBOS.size() == 0)
+            return qty;
+
+        for(SchemeProductBO schemeProductBO : getSchemeProductBOS()){
+            if(schemeProductBO.getProductId().equals(productMasterBO.getProductID())){
+                qty = productMasterBO.getFreePieceQty()
+                        + (productMasterBO.getFreeCaseQty() * productMasterBO.getCaseSize())
+                        + (productMasterBO.getFreeOuterQty() * productMasterBO.getOutersize());
+            }
+        }
+
+        return qty;
+    }
+
+    public void updateTableValues(Context context,String orderId){
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String invoiceId;
+            // Normally Generating Invoice ID
+            invoiceId = businessModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+            String invoiceDetailQry = "Insert into InvoiceDetails " +
+                    " (ProductID,retailerid,uomid,Qty,Rate,uomCount,pcsQty,CaseQty,d1,d2,d3,DA,outerQty," +
+                    " dOuomQty,dOuomid,batchid,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight,invoiceID) " +
+                    " select ProductID,retailerid,uomid,Qty,Rate,uomcount,pieceqty,caseQty,d1,d2,d3,DA,outerQty," +
+                    " dOuomQty,dOuomid,BatchId,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight,"+businessModel.QT(invoiceId) +
+                    " from OrderDetail where OrderId = "+businessModel.QT(orderId);
+            db.executeQ(invoiceDetailQry);
+
+            String invoiceDiscountQry = "Insert into InvoiceDiscountDetail (OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +
+                    " RetailerId,DiscountId,isCompanyGiven,invoiceID) select OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +
+                    " RetailerId,DiscountId,isCompanyGiven,"+invoiceId+" from OrderDiscountDetail where OrderId = "+businessModel.QT(orderId);
+
+            db.executeQ(invoiceDiscountQry);
+
+            String invoiceTaxDetailQry = "Insert into InvoiceTaxDetails (RetailerId,pid,taxRate,taxType,taxValue,OrderId,GroupId," +
+                    "IsFreeProduct,invoiceID) select RetailerId,pid,taxRate,taxType,taxValue,OrderId,GroupId,IsFreeProduct,"+businessModel.QT(invoiceId)+
+                    " From OrderTaxDetails where  OrderId = "+businessModel.QT(orderId);
+
+            db.executeQ(invoiceTaxDetailQry);
+
+            db.updateSQL("update OrderHeader set invoicestatus = 1 where orderId = "+businessModel.QT(orderId));
+            db.updateSQL("update SalesReturnHeader set invoiceid = "+businessModel.QT(invoiceId)+" where RefModuleTId = "+businessModel.QT(orderId));
+            db.updateSQL("update SchemeFreeProductDetail set InvoiceID = "+businessModel.QT(invoiceId)+" where orderId = "+businessModel.QT(orderId));
+            db.updateSQL("update SalesReturnDetails set invoiceno = "+businessModel.QT(invoiceId)+" where uid = (select uid from SalesReturnHeader where RefModuleTId = "+businessModel.QT(orderId)+")");
+
+            updateOrderDeliverySIH(db);
+
+            for(int i = 0;i<getOrderHeaders().size();i++){
+                OrderHeader orderHeader = getOrderHeaders().get(i);
+                if(orderHeader.getOrderid().equalsIgnoreCase(orderId)){
+                    orderHeader.setInvoiceStatus(1);
+                    break;
+                }
+            }
+
+            db.closeDB();
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+    }
 }

@@ -22,8 +22,24 @@ public class OrderHeader {
 	private boolean isSignCaptured;
 	private float totalWeight;
 	private double discountValue;
+	private String orderDate;
+	private int invoiceStatus;
 
+	public int getInvoiceStatus() {
+		return invoiceStatus;
+	}
 
+	public void setInvoiceStatus(int invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
+
+	public String getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
 
 	public double getDiscountValue() {
 		return discountValue;
