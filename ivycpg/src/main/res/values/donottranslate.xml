@@ -294,5 +294,7 @@
     <string name="order_save_falied">Order Save Failed !</string>
     <string name="order_not_placed_focus_pack">Order not placed for Focus pack.</string>
 
+    <string name="upload">Upload</string>
+
 
 </resources>

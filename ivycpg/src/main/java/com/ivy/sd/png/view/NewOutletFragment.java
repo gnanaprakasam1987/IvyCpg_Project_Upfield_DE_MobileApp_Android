@@ -69,6 +69,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.maplib.BaiduMapDialogue;
@@ -4717,7 +4718,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         protected Boolean doInBackground(String... params) {
 
             if (bmodel.isOnline()) {
-                String rid = bmodel.synchronizationHelper.uploadNewOutlet(getHandler());
+                UploadHelper mUploadHelper=UploadHelper.getInstance(getActivity());
+                String rid = mUploadHelper.uploadNewOutlet(getHandler());
 
                 if (rid.equals("-1")) {
                     getHandler().sendEmptyMessage(

@@ -4,12 +4,15 @@ package com.ivy.sd.png.view;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.CardView;
@@ -18,10 +21,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telecom.Call;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,7 +42,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.services.s3.UploadObjectObserver;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.sync.SyncContractor;
+import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.cpg.view.sync.UploadPresenterImpl;
+import com.ivy.cpg.view.van.VanUnLoadModuleHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -43,19 +55,24 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.ScreenOrientation;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
-public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener {
+public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener,SyncContractor.SyncView {
 
     private BusinessModel bmodel;
     private ImageView mGoldStoreIV;
@@ -95,6 +112,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     protected TextView TVMenuName, TVMenuValue;
     protected boolean isCloseCallAsMenu = false;
 
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
+    private ProgressDialog progressDialog;
+    private VanUnLoadModuleHelper mVanUnloadHelper;
+    private UploadHelper mUploadHelper;
+    private UploadPresenterImpl presenter;
+    private DisplayMetrics displaymetrics;
+    SharedPreferences mLastSyncSharedPref;
+    private static int REQUEST_CODE_RETAILER_WISE_UPLOAD=100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +149,12 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getIntent().getStringExtra("screentitle"));
         }
+
+        mLastSyncSharedPref = getSharedPreferences("lastSync", Context.MODE_PRIVATE);
+
+        mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(this);
+        mUploadHelper=UploadHelper.getInstance(this);
+        presenter =new UploadPresenterImpl(this,bmodel,this,mUploadHelper,mVanUnloadHelper);
 
         mTime = (TextView) findViewById(R.id.edt_time_taken);
 
@@ -1286,7 +1319,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         }
     }
 
-    private void showCollectionReasonOrDialog() {
+      private void showCollectionReasonOrDialog() {
         if (collectionReasonFlag) {
             ReasonMaster collectioReasonBO = (ReasonMaster) spinnerNooCollectionReason
                     .getSelectedItem();
@@ -1451,15 +1484,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         return false;
     }
 
-    private boolean isMandatory() {
-        menuDB = bmodel.configurationMasterHelper.getActivityMenu();
-
-        for (ConfigureBO config : menuDB) {
-            if (config.getMandatory() == 1 && !config.isDone())
-                return true;
-        }
-        return false;
-    }
 
     protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -1488,7 +1512,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                                                         int whichButton) {
 
                                     }
-                                });
+                                })
+                        .setNeutralButton(getResources().getString(R.string.upload),new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                                presenter.isFromCallAnalysis=true;
+                                presenter.validateAndUpload();
+
+                            }
+                        });
+
                 bmodel.applyAlertDialogTheme(builder);
                 break;
 
@@ -1692,13 +1725,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     public Handler getHandler() {
         return handler;
     }
-
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            bmodel = (BusinessModel) getApplicationContext();
-            mTime.setText(msg.obj + "");
-        }
-    };
 
 
     /**
@@ -1908,7 +1934,23 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 bmodel.reasonHelper.saveImage(mImageName, mImagePath);
 
             }
-        } else {
+        }
+        else if(requestCode==REQUEST_CODE_RETAILER_WISE_UPLOAD){
+            if (resultCode == Activity.RESULT_OK) {
+                presenter.prepareSelectedRetailerIds();
+                if (presenter.getVisitedRetailerId() != null
+                        && presenter.getVisitedRetailerId().toString().length() > 0) {
+                    presenter.upload();
+                } else {
+                    bmodel.showAlert(
+                            getResources()
+                                    .getString(R.string.no_unsubmitted_orders), 0);
+                }
+
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+            }
+        }
+        else {
             Commons.print(bmodel.mSelectedActivityName
                     + "Camers Activity : Canceled");
             isPhotoTaken = false;
@@ -1922,4 +1964,343 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+
+
+    //////
+
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            bmodel = (BusinessModel) getApplicationContext();
+           // isClicked = false;
+            SyncDownloadStatusDialog sdsd;
+            switch (msg.what) {
+
+                case DataMembers.NOTIFY_UPDATE:
+                    builder = new AlertDialog.Builder(CallAnalysisActivity.this);
+                    setMessageInProgressDialog(builder, msg.obj.toString());
+                    alertDialog.show();
+
+                    break;
+
+                case DataMembers.NOTIFY_NOT_USEREXIST:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.password_does_not_match), 0);
+                    break;
+
+                case DataMembers.NOTIFY_NO_INTERNET:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources()
+                                    .getString(R.string.no_network_connection), 0);
+                    break;
+
+                case DataMembers.NOTIFY_CONNECTION_PROBLEM:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources()
+                                    .getString(R.string.no_network_connection), 0);
+                    break;
+
+                case DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL:
+                    //isClicked = false;
+                    alertDialog.dismiss();
+                    bmodel.showAlert(getResources().getString(R.string.sessionout_loginagain), 0);
+                    break;
+
+
+                case DataMembers.MESSAGE_ENCOUNTERED_ERROR_DC:
+                    // obj will contain a string representing the error message
+                    dismissCurrentProgressDialog();
+                    if (msg.obj != null && msg.obj instanceof String) {
+                        String errorMessage = (String) msg.obj;
+                        dismissCurrentProgressDialog();
+                        displayMessage(errorMessage);
+                    }
+                    startActivity(new Intent(CallAnalysisActivity.this, HomeScreenActivity.class));
+                    CallAnalysisActivity.this.finish();
+                    break;
+
+                case DataMembers.NOTIFY_SIH_UPLOADED:
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+                case DataMembers.NOTIFY_SIH_UPLOAD_ERROR:
+                    Commons.print("SIH ," + "Error");
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    break;
+
+                case DataMembers.NOTIFY_STOCKAPLY_UPLOADED:
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+                case DataMembers.NOTIFY_STOCKAPLY_UPLOAD_ERROR:
+                    Commons.print("Stock Apply Upload," + "Error");
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    break;
+                case DataMembers.NOTIFY_COUNTER_SIH_UPLOADED:
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+                case DataMembers.NOTIFY_COUNTER_STOCK_APPLY_UPLOADED:
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+                case DataMembers.NOTIFY_CS_REJECTED_VARIANCE_UPLOADED:
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+                case DataMembers.NOTIFY_LP_UPLOADED:
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+                case DataMembers.NOTIFY_LP_UPLOAD_ERROR:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    break;
+
+                case DataMembers.NOTIFY_UPLOADED:
+                    if (!bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES
+                            && (presenter.getImageFilesCount()>0 || presenter.getTextFilesCount() > 0)) {
+
+                        builder = new AlertDialog.Builder(CallAnalysisActivity.this);
+                        setMessageInProgressDialog(builder, getResources().getString(
+                                R.string.image_uploading));
+                        alertDialog.show();
+                        presenter.uploadImages();
+
+
+                    } else {
+                        alertDialog.dismiss();
+                        updateLastSync();
+
+                        displaymetrics = new DisplayMetrics();
+                        CallAnalysisActivity.this.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                        sdsd = new SyncDownloadStatusDialog(CallAnalysisActivity.this, getResources().getString(
+                                R.string.data_upload_completed_sucessfully), displaymetrics);
+                        sdsd.show();
+                    }
+                    break;
+                case DataMembers.NOTIFY_UPLOAD_ERROR:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    break;
+                case DataMembers.NOTIFY_UPLOADED_IMAGE:
+                    if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT)
+                        presenter.loadRetailerSelectionScreen();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.images_sucessfully_uploaded), 0);
+                    break;
+                case DataMembers.NOTIFY_UPLOAD_ERROR_IMAGE:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.images_upload_failed_please_try_again),
+                            0);
+                    break;
+
+
+                case DataMembers.NOTIFY_WEB_UPLOAD_ERROR:
+
+                    alertDialog.dismiss();
+                    bmodel.showAlert((String) msg.obj, 0);
+                    break;
+                case DataMembers.NOTIFY_WEB_UPLOAD_SUCCESS:
+
+                    bmodel.photocount = 0;
+                    alertDialog.dismiss();
+                    //bmodel.showAlert(getResources().getString(R.string.successfully_uploaded), 0);
+                    displaymetrics = new DisplayMetrics();
+                    CallAnalysisActivity.this.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                    sdsd = new SyncDownloadStatusDialog(CallAnalysisActivity.this, getResources().getString(
+                            R.string.successfully_uploaded), displaymetrics);
+                    sdsd.show();
+                    break;
+
+
+
+                default:
+                    break;
+            }
+        }
+    };
+
+    private void setMessageInProgressDialog(AlertDialog.Builder builder, String message) {
+        LayoutInflater inflater = (LayoutInflater) CallAnalysisActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.custom_alert_dialog,
+                (ViewGroup) CallAnalysisActivity.this.findViewById(R.id.layout_root));
+        TextView messagetv = (TextView) layout.findViewById(R.id.text);
+        messagetv.setText(message);
+        builder.setView(layout);
+        builder.setCancelable(false);
+    }
+
+
+    /**
+     * If there is a progress dialog, dismiss it and set progressDialog to null.
+     */
+    public void dismissCurrentProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.hide();
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+    }
+
+    /**
+     * Displays a message to the user, in the form of a Toast.
+     *
+     * @param message Message to be displayed.
+     */
+    public void displayMessage(String message) {
+        if (message != null) {
+            Toast.makeText(CallAnalysisActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateLastSync() {
+        SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
+        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
+                SDUtil.now(SDUtil.DATE_GLOBAL),
+                ConfigurationMasterHelper.outDateFormat));
+        edt.putString("time", SDUtil.now(SDUtil.TIME));
+        edt.apply();
+    }
+
+    //
+    @Override
+    public void showAttendanceNotCompletedToast() {
+        bmodel.showAlert(
+                getResources()
+                        .getString(R.string.attendance_activity_not_completed), 0);
+    }
+
+    @Override
+    public void showNoInternetToast() {
+        bmodel.showAlert(
+                getResources()
+                        .getString(R.string.no_network_connection), 0);
+    }
+
+    @Override
+    public void showOrderExistWithoutInvoice() {
+        bmodel.showAlert(
+                getResources().getString(
+                        R.string.order_exist_without_invoice),
+                0);
+    }
+
+    @Override
+    public void showNoDataExist() {
+        Toast.makeText(this,
+                getResources().getString(R.string.no_data_exists),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressLoading() {
+
+        if(alertDialog!=null){
+            alertDialog.dismiss();
+        }
+        builder = new AlertDialog.Builder(this);
+        customProgressDialog(builder, getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void showProgressUploading() {
+        if(alertDialog!=null){
+            alertDialog.dismiss();
+        }
+        builder = new AlertDialog.Builder(this);
+        customProgressDialog(builder, getResources().getString(R.string.uploading_data));
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void cancelProgress() {
+        if(alertDialog!=null){
+            alertDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showRetailerSelectionScreen(List<SyncRetailerBO> isVisitedRetailerList) {
+        Intent intent = new Intent(this, SyncRetailerSelectActivity.class);
+        SyncVisitedRetailer catObj = new SyncVisitedRetailer(isVisitedRetailerList);
+        Bundle bun = new Bundle();
+        bun.putParcelable("list", catObj);
+        intent.putExtras(bun);
+        startActivityForResult(intent, REQUEST_CODE_RETAILER_WISE_UPLOAD);
+    }
+
+    @Override
+    public void showAlertImageUploadRecommended() {
+        showAlertOkCancel(
+                getResources()
+                        .getString(
+                                R.string.image_upload_recommended),
+                3);
+    }
+
+    @Override
+    public void showAlertNoUnSubmittedOrder() {
+        bmodel.showAlert(
+                getResources().getString(
+                        R.string.no_unsubmitted_orders),
+                0);
+    }
+
+    public void showAlertOkCancel(String msg, int id) {
+        final int idd = id;
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                this);
+        builder.setCancelable(false);
+        builder.setMessage(msg);
+        builder.setPositiveButton(getResources().getString(R.string.yes),
+                new android.content.DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (idd == 0) {
+                            presenter.dayCloseAndUpload();
+                        } else if (idd == 3) {
+                           // isClicked = false;
+                           // withPhotosCheckBox.setChecked(true);
+                            presenter.updateIsWithImageStatus(true);
+                            presenter.upload();
+                        }
+                    }
+
+                });
+        builder.setNegativeButton(getResources().getString(R.string.no),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                       // isClicked = false;
+                        if (idd == 3) {
+                            presenter.upload();
+                        }
+                    }
+                });
+
+
+        bmodel.applyAlertDialogTheme(builder);
+    }
+
+
 }
