@@ -163,7 +163,7 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
             }
 
             holder.creditNoteListBO = mCreditNoteList.get(position);
-            holder.refNoTxt.setText(holder.creditNoteListBO.getRefno());
+            holder.refNoTxt.setText(holder.creditNoteListBO.getId());
             String strCreditAmt = bmodel.formatValue(holder.creditNoteListBO
                     .getAmount()) + "";
             holder.crdNoteAmtTxt.setText(strCreditAmt);

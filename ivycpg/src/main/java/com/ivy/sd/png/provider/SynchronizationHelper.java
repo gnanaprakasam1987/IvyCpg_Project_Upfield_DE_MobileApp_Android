@@ -4948,6 +4948,10 @@ SynchronizationHelper {
             Commons.printException(e);
 
         }
+        if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), date.split(" ")[0].toString(),
+                "yyyy/MM/dd")) == 1)
+            date = bmodel.userMasterHelper.getUserMasterBO().getDownloadDate() + " " + "23:59:00";
+
         return date;
     }
 
