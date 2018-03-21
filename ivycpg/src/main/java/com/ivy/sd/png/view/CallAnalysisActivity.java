@@ -1556,7 +1556,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         .setCancelable(false)
                         .setTitle(
                                 getResources().getString(
-                                        R.string.are_you_sure_you_want_to_upload))
+                                        R.string.are_you_sure_you_want_to_submit))
                         .setMessage(getResources().getString(R.string.submitted_orders_not_allowed_to_edit))
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
