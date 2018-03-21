@@ -225,20 +225,25 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
             if(from.equalsIgnoreCase("Approve")) {
 
-                if (orderHelper.isSIHAvailable()) {
+                if (orderHelper.isSIHAvailable(false)) {
 
                     CommonDialog dialog = new CommonDialog(getApplicationContext(), OrderDeliveryActivity.this, "", getResources().getString(R.string.order_delivery_approve), false,
-                            getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
+                            getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
 
-                            orderHelper.updateTableValues(OrderDeliveryActivity.this,orderId);
+                            orderHelper.updateTableValues(OrderDeliveryActivity.this, orderId,false);
                             Toast.makeText(
                                     OrderDeliveryActivity.this,
                                     "Approved",
                                     Toast.LENGTH_SHORT).show();
 
                             myAdapter.notifyDataSetChanged();
+
+                        }
+                    }, new CommonDialog.negativeOnClickListener() {
+                        @Override
+                        public void onNegativeButtonClick() {
 
                         }
                     });

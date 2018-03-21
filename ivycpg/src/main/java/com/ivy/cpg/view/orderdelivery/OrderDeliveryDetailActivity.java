@@ -424,8 +424,9 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             }
         }
         else {
-            int totalReplaceQty = productMasterBO.getRepCaseQty()+productMasterBO.getRepPieceQty()
-                    +productMasterBO.getRepOuterQty();
+            int totalReplaceQty = (productMasterBO.getRepCaseQty()*productMasterBO.getCaseSize())
+                    +productMasterBO.getRepPieceQty()
+                    +(productMasterBO.getRepOuterQty()*productMasterBO.getOutersize());
             ((TextView) view.findViewById(R.id.sales_replace_qty)).setText(String.valueOf(totalReplaceQty));
             ((TextView) view.findViewById(R.id.sales_replace_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.sales_replace_qty)).setTextColor(Color.parseColor("#000000"));
@@ -707,6 +708,10 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             holder.caseQty.setText(String.valueOf(productList.get(position).getOrderedCaseQty()));
             holder.outerQty.setText(String.valueOf(productList.get(position).getOrderedOuterQty()));
 
+            holder.pieceQty.setTag(String.valueOf(productList.get(position).getOrderedPcsQty()));
+            holder.caseQty.setTag(String.valueOf(productList.get(position).getOrderedCaseQty()*productList.get(position).getCaseSize()));
+            holder.outerQty.setTag(String.valueOf(productList.get(position).getOrderedOuterQty()*productList.get(position).getOutersize()));
+
             holder.sihQty.setText(String.valueOf(productList.get(position).getSIH()));
 
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
@@ -719,8 +724,9 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                 holder.srQty.setText(strTotal);
             }
 
-            int totalReplaceQty = productList.get(position).getRepCaseQty()+productList.get(position).getRepPieceQty()
-                    +productList.get(position).getRepOuterQty();
+            int totalReplaceQty =  (productList.get(position).getRepCaseQty() * productList.get(position).getCaseSize())
+                                    +productList.get(position).getRepPieceQty()
+                                    +(productList.get(position).getRepOuterQty() * productList.get(position).getOutersize());
 
             holder.srpQty.setText(String.valueOf(totalReplaceQty));
 
@@ -753,10 +759,17 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     String qty = s.toString();
                     float totalQty = (productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize())
                             + (SDUtil.convertToInt(qty))
-                            + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
+                            + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize())
+                            + productList.get(position).getRepPieceQty()
+                            + (productList.get(position).getRepCaseQty()*productList.get(position).getCaseSize())
+                            + (productList.get(position).getRepOuterQty()*productList.get(position).getOutersize());
 
+                    int storedPieceQty = 0 ;
+                    if(holder.pieceQty.getTag()!=null && !holder.pieceQty.getTag().toString().equals(""))
+                        storedPieceQty = Integer.valueOf(holder.pieceQty.getTag().toString());
 
-                    if (totalQty <= productList.get(position).getSIH()) {
+                    if (totalQty <= productList.get(position).getSIH() &&
+                            SDUtil.convertToInt(qty) <= storedPieceQty ) {
                         if (!"".equals(qty)) {
                             productList.get(position).setOrderedPcsQty(SDUtil
                                     .convertToInt(qty));
@@ -768,13 +781,24 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                         productList.get(position).setTotalamount(tot);
                     } else {
                         if (!"0".equals(qty)) {
-                            Toast.makeText(
-                                    OrderDeliveryDetailActivity.this,
-                                    String.format(
-                                            getResources().getString(
-                                                    R.string.exceed),
-                                            productList.get(position).getSIH()),
-                                    Toast.LENGTH_SHORT).show();
+                            if (totalQty > productList.get(position).getSIH()) {
+                                Toast.makeText(
+                                        OrderDeliveryDetailActivity.this,
+                                        String.format(
+                                                getResources().getString(
+                                                        R.string.exceed),
+                                                productList.get(position).getSIH()),
+                                        Toast.LENGTH_SHORT).show();
+                            }else if(SDUtil.convertToInt(qty) > storedPieceQty){
+                                Toast.makeText(
+                                        OrderDeliveryDetailActivity.this,
+                                        String.format(
+                                                getResources().getString(
+                                                        R.string.exceed_ordered_value),
+                                                storedPieceQty),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
                             //Delete the last entered number and reset the qty
                             qty = qty.length() > 1 ? qty.substring(0,
                                     qty.length() - 1) : "0";
@@ -794,256 +818,216 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                           int before, int count) {
                 }
             });
-            if (bmodel.configurationMasterHelper.SHOW_CUSTOM_KEYBOARD_NEW) {
 
-                holder.pieceQty.setFocusable(false);
+            holder.pieceQty.setFocusable(true);
+            holder.pieceQty.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
 
-                holder.pieceQty.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                    QUANTITY = holder.pieceQty;
+                    int inType = holder.pieceQty.getInputType();
+                    holder.pieceQty.setInputType(InputType.TYPE_NULL);
+                    holder.pieceQty.onTouchEvent(event);
+                    holder.pieceQty.setInputType(inType);
+                    holder.pieceQty.selectAll();
+                    holder.pieceQty.requestFocus();
+                    inputManager.hideSoftInputFromWindow(
+                            holder.pieceQty.getWindowToken(), 0);
+                    return true;
+                }
+                });
 
-                        if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
-                            dialogCustomKeyBoard = new CustomKeyBoard(OrderDeliveryDetailActivity.this, holder.pieceQty);
-                            dialogCustomKeyBoard.show();
-                            dialogCustomKeyBoard.setCancelable(false);
 
-                            //Grab the window of the dialog, and change the width
-                            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                            Window window = dialogCustomKeyBoard.getWindow();
-                            lp.copyFrom(window.getAttributes());
-                            lp.width = (int) getResources().getDimension(R.dimen.custom_keyboard_width);
-                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                            window.setAttributes(lp);
+
+            holder.caseQty.addTextChangedListener(new TextWatcher() {
+                @SuppressLint("StringFormatInvalid")
+                public void afterTextChanged(Editable s) {
+                    if (productList.get(position).getCaseSize() == 0) {
+                        holder.caseQty.removeTextChangedListener(this);
+                        holder.caseQty.setText("0");
+                        holder.caseQty.addTextChangedListener(this);
+                        return;
+                    }
+
+                    String qty = s.toString();
+
+                    float totalQty = (SDUtil.convertToInt(qty) * productList.get(position).getCaseSize())
+                            + (productList.get(position).getOrderedPcsQty())
+                            + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize())
+                            + productList.get(position).getRepPieceQty()
+                            + (productList.get(position).getRepCaseQty()*productList.get(position).getCaseSize())
+                            + (productList.get(position).getRepOuterQty()*productList.get(position).getOutersize());
+
+                    int storedcaseQty = 0 ;
+                    if(holder.caseQty.getTag()!=null && !holder.caseQty.getTag().toString().equals(""))
+                        storedcaseQty = Integer.valueOf(holder.caseQty.getTag().toString());
+
+                    if (totalQty <= productList.get(position).getSIH() &&
+                            (SDUtil.convertToInt(qty) * productList.get(position).getCaseSize()) <= storedcaseQty) {
+                        if (!"".equals(qty)) {
+                            productList.get(position).setOrderedCaseQty(SDUtil
+                                    .convertToInt(qty));
+                        }
+
+                        double tot = (productList.get(position).getOrderedCaseQty() * productList.get(position).getCsrp())
+                                + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
+                                + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
+                        productList.get(position).setTotalamount(tot);
+                    } else {
+                        if (!"0".equals(qty)) {
+                            if (totalQty > productList.get(position).getSIH()) {
+                                Toast.makeText(
+                                        OrderDeliveryDetailActivity.this,
+                                        String.format(
+                                                getResources().getString(
+                                                        R.string.exceed),
+                                                productList.get(position).getSIH()),
+                                        Toast.LENGTH_SHORT).show();
+                            }else if((SDUtil.convertToInt(qty) * productList.get(position).getCaseSize()) > storedcaseQty){
+                                Toast.makeText(
+                                        OrderDeliveryDetailActivity.this,
+                                        String.format(
+                                                getResources().getString(
+                                                        R.string.exceed_ordered_value),
+                                                storedcaseQty/productList.get(position).getCaseSize()),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                            //Delete the last entered number and reset the qty
+                            qty = qty.length() > 1 ? qty.substring(0,
+                                    qty.length() - 1) : "0";
+
+                            holder.caseQty.setText(qty);
+                            productList.get(position).setOrderedCaseQty(SDUtil
+                                    .convertToInt(qty));
                         }
                     }
-                });
-            } else {
-                holder.pieceQty.setFocusable(true);
+                }
 
-                holder.pieceQty.setOnTouchListener(new View.OnTouchListener() {
-                    public boolean onTouch(View v, MotionEvent event) {
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+                }
 
-                        QUANTITY = holder.pieceQty;
-                        QUANTITY.setTag(productList.get(position));
-                        int inType = holder.pieceQty.getInputType();
-                        holder.pieceQty.setInputType(InputType.TYPE_NULL);
-                        holder.pieceQty.onTouchEvent(event);
-                        holder.pieceQty.setInputType(inType);
-                        holder.pieceQty.selectAll();
-                        holder.pieceQty.requestFocus();
-                        inputManager.hideSoftInputFromWindow(
-                                holder.pieceQty.getWindowToken(), 0);
-                        return true;
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+                }
+            });
+
+
+            holder.caseQty.setFocusable(true);
+            holder.caseQty.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    QUANTITY = holder.caseQty;
+                    int inType = holder.caseQty.getInputType();
+                    holder.caseQty.setInputType(InputType.TYPE_NULL);
+                    holder.caseQty.onTouchEvent(event);
+                    holder.caseQty.setInputType(inType);
+                    holder.caseQty.selectAll();
+                    holder.caseQty.requestFocus();
+                    inputManager.hideSoftInputFromWindow(
+                            holder.caseQty.getWindowToken(), 0);
+                    return true;
+                }
+            });
+
+            holder.outerQty.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+                    if (productList.get(position).getOuUomid() == 0) {
+                        holder.outerQty.removeTextChangedListener(this);
+                        holder.outerQty.setText("0");
+                        holder.outerQty.addTextChangedListener(this);
+                        return;
                     }
-                });
+                    String qty = s.toString();
 
-            }
-
-//            holder.caseQty.addTextChangedListener(new TextWatcher() {
-//                @SuppressLint("StringFormatInvalid")
-//                public void afterTextChanged(Editable s) {
-//                    if (productList.get(position).getCaseSize() == 0) {
-//                        holder.caseQty.removeTextChangedListener(this);
-//                        holder.caseQty.setText("0");
-//                        holder.caseQty.addTextChangedListener(this);
-//                        return;
-//                    }
-//
-//                    String qty = s.toString();
-//
-//                    float totalQty = (SDUtil.convertToInt(qty) * productList.get(position).getCaseSize())
-//                            + (productList.get(position).getOrderedPcsQty())
-//                            + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
-//
-//                    if (totalQty <= productList.get(position).getSIH()) {
-//                        if (!"".equals(qty)) {
-//                            productList.get(position).setOrderedCaseQty(SDUtil
-//                                    .convertToInt(qty));
-//                        }
-//
-//                        double tot = (productList.get(position).getOrderedCaseQty() * productList.get(position).getCsrp())
-//                                + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
-//                                + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
-//                        productList.get(position).setTotalamount(tot);
-//                    } else {
-//                        if (!"0".equals(qty)) {
-//                            Toast.makeText(
-//                                    OrderDeliveryDetailActivity.this,
-//                                    String.format(
-//                                            getResources().getString(
-//                                                    R.string.exceed),
-//                                            productList.get(position).getSIH()),
-//                                    Toast.LENGTH_SHORT).show();
-//
-//                            //Delete the last entered number and reset the qty
-//                            qty = qty.length() > 1 ? qty.substring(0,
-//                                    qty.length() - 1) : "0";
-//
-//                            holder.caseQty.setText(qty);
-//
-//                            productList.get(position).setOrderedCaseQty(SDUtil
-//                                    .convertToInt(qty));
-//                        }
-//                    }
-//
-//                }
-//
-//                public void beforeTextChanged(CharSequence s, int start,
-//                                              int count, int after) {
-//                }
-//
-//                public void onTextChanged(CharSequence s, int start,
-//                                          int before, int count) {
-//                }
-//            });
-//
-//            if (bmodel.configurationMasterHelper.SHOW_CUSTOM_KEYBOARD_NEW) {
-//
-//                holder.caseQty.setFocusable(false);
-//
-//                holder.caseQty.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                    if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
-//                        dialogCustomKeyBoard = new CustomKeyBoard(OrderDeliveryDetailActivity.this, holder.caseQty);
-//                        dialogCustomKeyBoard.show();
-//                        dialogCustomKeyBoard.setCancelable(false);
-//
-//                        //Grab the window of the dialog, and change the width
-//                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-//                        Window window = dialogCustomKeyBoard.getWindow();
-//                        lp.copyFrom(window.getAttributes());
-//                        lp.width = (int) getResources().getDimension(R.dimen.custom_keyboard_width);
-//                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//                        window.setAttributes(lp);
-//                    }
-//                    }
-//                });
-//            } else {
-//                holder.caseQty.setFocusable(true);
-//
-//                holder.caseQty.setOnTouchListener(new View.OnTouchListener() {
-//                    public boolean onTouch(View v, MotionEvent event) {
-//
-//                        QUANTITY = holder.caseQty;
-//                        QUANTITY.setTag(productList.get(position));
-//                        int inType = holder.caseQty.getInputType();
-//                        holder.caseQty.setInputType(InputType.TYPE_NULL);
-//                        holder.caseQty.onTouchEvent(event);
-//                        holder.caseQty.setInputType(inType);
-//                        holder.caseQty.selectAll();
-//                        holder.caseQty.requestFocus();
-//                        inputManager.hideSoftInputFromWindow(
-//                                holder.caseQty.getWindowToken(), 0);
-//                        return true;
-//                    }
-//                });
-//            }
-//
-//            holder.outerQty.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void onTextChanged(CharSequence s, int start,
-//                                          int before, int count) {
-//                    if (productList.get(position).getOuUomid() == 0) {
-//                        holder.outerQty.removeTextChangedListener(this);
-//                        holder.outerQty.setText("0");
-//                        holder.outerQty.addTextChangedListener(this);
-//                        return;
-//                    }
-//                    String qty = s.toString();
-//
-//                    float totalQty = (SDUtil.convertToInt(qty) * productList.get(position).getOutersize())
-//                            + (productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize())
-//                            + +(productList.get(position).getOrderedPcsQty());
-//
-//                    if (totalQty <= productList.get(position).getSIH()) {
-//                        if (!"".equals(qty)) {
-//                            productList.get(position).setOrderedOuterQty(SDUtil
-//                                    .convertToInt(qty));
-//                        }
-//
-//                        double tot = (productList.get(position).getOrderedCaseQty() * productList.get(position).getCsrp())
-//                                + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
-//                                + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
-//                        productList.get(position).setTotalamount(tot);
-//                    } else {
-//                        if (!"0".equals(qty)) {
-//                            Toast.makeText(
-//                                    OrderDeliveryDetailActivity.this,
-//                                    String.format(
-//                                            getResources().getString(
-//                                                    R.string.exceed),
-//                                            productList.get(position).getSIH()),
-//                                    Toast.LENGTH_SHORT).show();
-//
-//                            qty = qty.length() > 1 ? qty.substring(0,
-//                                    qty.length() - 1) : "0";
-//
-//                            productList.get(position).setOrderedOuterQty(SDUtil
-//                                    .convertToInt(qty));
-//
-//                            holder.outerQty.setText(qty);
-//                        }
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                }
-//
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start,
-//                                              int count, int after) {
-//                }
-//
-//            });
-//            if (bmodel.configurationMasterHelper.SHOW_CUSTOM_KEYBOARD_NEW) {
-//
-//                holder.outerQty.setFocusable(false);
-//
-//                holder.outerQty.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
-//                            dialogCustomKeyBoard = new CustomKeyBoard(OrderDeliveryDetailActivity.this, holder.outerQty);
-//                            dialogCustomKeyBoard.show();
-//                            dialogCustomKeyBoard.setCancelable(false);
-//
-//                            //Grab the window of the dialog, and change the width
-//                            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-//                            Window window = dialogCustomKeyBoard.getWindow();
-//                            lp.copyFrom(window.getAttributes());
-//                            lp.width = (int) getResources().getDimension(R.dimen.custom_keyboard_width);
-//                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//                            window.setAttributes(lp);
-//                        }
-//                    }
-//                });
-//            } else {
-//                holder.outerQty.setFocusable(true);
-//
-//                holder.outerQty.setOnTouchListener(new View.OnTouchListener() {
-//                    public boolean onTouch(View v, MotionEvent event) {
-//
-//                        QUANTITY = holder.outerQty;
-//                        QUANTITY.setTag(productList.get(position));
-//                        int inType = holder.outerQty.getInputType();
-//                        holder.outerQty.setInputType(InputType.TYPE_NULL);
-//                        holder.outerQty.onTouchEvent(event);
-//                        holder.outerQty.setInputType(inType);
-//                        holder.outerQty.selectAll();
-//                        holder.outerQty.requestFocus();
-//                        inputManager.hideSoftInputFromWindow(
-//                                holder.outerQty.getWindowToken(), 0);
-//                        return true;
-//                    }
-//                });
-//            }
+                    float totalQty = (SDUtil.convertToInt(qty) * productList.get(position).getOutersize())
+                            + (productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize())
+                            + (productList.get(position).getOrderedPcsQty())
+                            + productList.get(position).getRepPieceQty()
+                            + (productList.get(position).getRepCaseQty()*productList.get(position).getCaseSize())
+                            + (productList.get(position).getRepOuterQty()*productList.get(position).getOutersize());
 
 
+                    int storedouterQty = 0 ;
+                    if(holder.outerQty.getTag()!=null && !holder.outerQty.getTag().toString().equals(""))
+                        storedouterQty = Integer.valueOf(holder.outerQty.getTag().toString());
+
+                    if (totalQty <= productList.get(position).getSIH() &&
+                            (SDUtil.convertToInt(qty) * productList.get(position).getOutersize()) <= storedouterQty) {
+                        if (!"".equals(qty)) {
+                            productList.get(position).setOrderedOuterQty(SDUtil
+                                    .convertToInt(qty));
+                        }
+
+                        double tot = (productList.get(position).getOrderedCaseQty() * productList.get(position).getCsrp())
+                                + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
+                                + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
+                        productList.get(position).setTotalamount(tot);
+                    } else {
+                        if (!"0".equals(qty)) {
+                            if (totalQty > productList.get(position).getSIH()) {
+                                Toast.makeText(
+                                        OrderDeliveryDetailActivity.this,
+                                        String.format(
+                                                getResources().getString(
+                                                        R.string.exceed),
+                                                productList.get(position).getSIH()),
+                                        Toast.LENGTH_SHORT).show();
+                            }else if((SDUtil.convertToInt(qty) * productList.get(position).getOutersize()) > storedouterQty){
+                                Toast.makeText(
+                                        OrderDeliveryDetailActivity.this,
+                                        String.format(
+                                                getResources().getString(
+                                                        R.string.exceed_ordered_value),
+                                                storedouterQty/productList.get(position).getOutersize()),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                            qty = qty.length() > 1 ? qty.substring(0,
+                                    qty.length() - 1) : "0";
+
+                            productList.get(position).setOrderedOuterQty(SDUtil
+                                    .convertToInt(qty));
+
+                            holder.outerQty.setText(qty);
+                        }
+                    }
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+                }
+
+            });
+
+            holder.outerQty.setFocusable(true);
+            holder.outerQty.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    QUANTITY = holder.outerQty;
+                    int inType = holder.outerQty.getInputType();
+                    holder.outerQty.setInputType(InputType.TYPE_NULL);
+                    holder.outerQty.onTouchEvent(event);
+                    holder.outerQty.setInputType(inType);
+                    holder.outerQty.selectAll();
+                    holder.outerQty.requestFocus();
+                    inputManager.hideSoftInputFromWindow(
+                            holder.outerQty.getWindowToken(), 0);
+                    return true;
+                }
+            });
+        }
+
+        public int getItemViewType(int position) {
+            return position;
         }
 
         @Override
@@ -1072,6 +1056,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             Commons.printException(e);
         }
     }
+
     private void eff() {
         String s = QUANTITY.getText().toString();
         if (!"0".equals(s) && !"0.0".equals(s)) {

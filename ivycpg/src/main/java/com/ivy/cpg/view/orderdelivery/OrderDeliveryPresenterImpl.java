@@ -36,7 +36,8 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     @Override
     public void getProductData(String from) {
 
-        productList.addAll(orderHelper.getOrderedProductBos());
+        orderHelper.downloadOrderedProducts();
+        productList = orderHelper.getOrderedProductMasterBOS();
 
         if(from.equalsIgnoreCase("Edit")){
             orderDeliveryView.updateProductEditValues(productList);
@@ -58,21 +59,27 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     }
 
     @Override
-    public void saveOrderDeliveryDetail(boolean isEdit,final String orderId) {
-        if (orderHelper.isSIHAvailable()) {
+    public void saveOrderDeliveryDetail(final boolean isEdit, final String orderId) {
+        if (orderHelper.isSIHAvailable(isEdit)) {
 
-            CommonDialog dialog = new CommonDialog(context, context, "", context.getResources().getString(R.string.order_delivery_approve), false,
-                    context.getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
+            final CommonDialog dialog = new CommonDialog(context.getApplicationContext(), context, "", context.getResources().getString(R.string.order_delivery_approve), false,
+                    context.getResources().getString(R.string.ok),context.getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
 
-                    orderHelper.updateTableValues(context,orderId);
+                    orderHelper.updateTableValues(context,orderId,isEdit);
                     Toast.makeText(
                             context,
                             "Approved",
                             Toast.LENGTH_SHORT).show();
 
                     orderDeliveryView.updateSaveStatus(true);
+
+                }
+
+            }, new CommonDialog.negativeOnClickListener(){
+                @Override
+                public void onNegativeButtonClick() {
 
                 }
             });
