@@ -1512,15 +1512,17 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                                                         int whichButton) {
 
                                     }
-                                })
-                        .setNeutralButton(getResources().getString(R.string.submit),new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                                showDialog(2);
+                                });
+                 if(bmodel.configurationMasterHelper.IS_SYNC_FROM_CALL_ANALYSIS) {
+                     builder.setNeutralButton(getResources().getString(R.string.submit), new DialogInterface.OnClickListener() {
+                         public void onClick(DialogInterface dialog,
+                                             int whichButton) {
+                             showDialog(2);
 
 
-                            }
-                        });
+                         }
+                     });
+                 }
 
                 bmodel.applyAlertDialogTheme(builder);
                 break;
