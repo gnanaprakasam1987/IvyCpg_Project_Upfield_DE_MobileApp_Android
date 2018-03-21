@@ -107,53 +107,55 @@ public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnC
             int lastGroupId = 0;
             View cardView = null, productView;
             LinearLayout ll_product_layout = null;
-            for (SOSBO bo : lstSOS) {
+            if (lstSOS != null) {
+                for (SOSBO bo : lstSOS) {
 
-                if (lastGroupId != bo.getGroupId()) {
+                    if (lastGroupId != bo.getGroupId()) {
 
-                    cardView = inflater.inflate(R.layout.layout_sos_group_item, null);
-                    TextView tv_groupName = (TextView) cardView.findViewById(R.id.tv_groupName);
-                    tv_groupName.setText(bo.getGroupName());
-                    ll_content.addView(cardView);
+                        cardView = inflater.inflate(R.layout.layout_sos_group_item, null);
+                        TextView tv_groupName = (TextView) cardView.findViewById(R.id.tv_groupName);
+                        tv_groupName.setText(bo.getGroupName());
+                        ll_content.addView(cardView);
 
-                }
-
-                if (cardView != null) {
-                    ll_product_layout = (LinearLayout) cardView.findViewById(R.id.ll_products);
-                }
-
-                productView = inflater.inflate(R.layout.layout_sos_group_list_item, null);
-
-                TextView tv_prod_name = (TextView) productView.findViewById(R.id.tv_productname);
-                tv_prod_name.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_prod_name.setText(bo.getProductName());
-
-                final EditText edt_availability = (EditText) productView.findViewById(R.id.edt_availability);
-                edt_availability.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                edt_availability.setTag(bo.getGroupId() + "" + bo.getProductID());
-                edt_availability.setText(bo.getAvailability() + "");
-
-                edt_availability.setOnTouchListener(new View.OnTouchListener() {
-
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-
-
-                        QUANTITY = edt_availability;
-                        edt_availability.onTouchEvent(event);
-                        edt_availability.selectAll();
-                        edt_availability.requestFocus();
-                        inputManager.hideSoftInputFromWindow(
-                                edt_availability
-                                        .getWindowToken(), 0);
-                        return true;
                     }
-                });
+
+                    if (cardView != null) {
+                        ll_product_layout = (LinearLayout) cardView.findViewById(R.id.ll_products);
+                    }
+
+                    productView = inflater.inflate(R.layout.layout_sos_group_list_item, null);
+
+                    TextView tv_prod_name = (TextView) productView.findViewById(R.id.tv_productname);
+                    tv_prod_name.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    tv_prod_name.setText(bo.getProductName());
+
+                    final EditText edt_availability = (EditText) productView.findViewById(R.id.edt_availability);
+                    edt_availability.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    edt_availability.setTag(bo.getGroupId() + "" + bo.getProductID());
+                    edt_availability.setText(bo.getAvailability() + "");
+
+                    edt_availability.setOnTouchListener(new View.OnTouchListener() {
+
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
 
 
-                ll_product_layout.addView(productView);
+                            QUANTITY = edt_availability;
+                            edt_availability.onTouchEvent(event);
+                            edt_availability.selectAll();
+                            edt_availability.requestFocus();
+                            inputManager.hideSoftInputFromWindow(
+                                    edt_availability
+                                            .getWindowToken(), 0);
+                            return true;
+                        }
+                    });
 
-                lastGroupId = bo.getGroupId();
+
+                    ll_product_layout.addView(productView);
+
+                    lastGroupId = bo.getGroupId();
+                }
             }
         } catch (Exception ex) {
             Commons.printException(ex);

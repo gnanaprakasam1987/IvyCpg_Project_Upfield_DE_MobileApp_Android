@@ -199,7 +199,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             clk1.setVisibility(View.VISIBLE);
             timevaluestart.setVisibility(View.GONE);
             timevalue.setVisibility(View.GONE);
-            tripStarting.setText("0.0");
+            tripStarting.setText("");
             tripStarting.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -237,7 +237,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             enddatetime_layout.setVisibility(View.VISIBLE);
             endtimevalue.setVisibility(View.GONE);
             tripEnding.setEnabled(true);
-            tripEnding.setText("0.0");
+            tripEnding.setText("");
             tripEnding.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {

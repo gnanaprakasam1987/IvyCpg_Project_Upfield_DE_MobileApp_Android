@@ -1358,13 +1358,24 @@ public class SchemeDetailsMasterHelper {
                     i++;
 
                     if (!bmodel.configurationMasterHelper.IS_SIH_VALIDATION || isSihAvailableForFreeProducts) {
-
+                        int freeQuantity = 0;
+                        int count = 0;
                         for (SchemeProductBO schemePdtBO : freeProducts) {
 
                             if (freeGroupName.equals(schemePdtBO.getGroupName())) {
 
-                                int freeQuantity = schemePdtBO
-                                        .getQuantityActualCalculated();
+                                if (schemePdtBO.getGroupBuyType().equals(ANY_LOGIC)) {//check any logic condition
+                                    if (count == 0) {
+                                        freeQuantity = schemePdtBO
+                                                .getQuantityActualCalculated();
+                                    }
+
+                                } else {
+                                    freeQuantity = schemePdtBO
+                                            .getQuantityActualCalculated();
+
+                                }
+                                count++;
 
                                 int stock = 0;
                                 productMasterBO = bmodel.productHelper
@@ -1405,14 +1416,20 @@ public class SchemeDetailsMasterHelper {
                                         schemePdtBO
                                                 .setQuantitySelected(freeQuantity);
                                     }
+
+                                    if (schemePdtBO.getGroupBuyType().equals(ANY_LOGIC)) {// child
+                                        // ANY
+                                        // logic
+                                        if (freeQuantity == 0)
+                                            break;
+                                    }
                                 } else {
                                     schemePdtBO.setQuantitySelected(freeQuantity);
-                                }
-
-                                if (schemePdtBO.getGroupBuyType().equals(ANY_LOGIC)) { // child
-                                    // ANY
-                                    // logic
-                                    break;
+                                    if (schemePdtBO.getGroupBuyType().equals(ANY_LOGIC)) { // child
+                                        // ANY
+                                        // logic
+                                        break;
+                                    }
                                 }
 
                             }
@@ -4509,6 +4526,9 @@ public class SchemeDetailsMasterHelper {
                         freeProductQty = freeProductQty * schemeBO.getApplyCount();
                         if (stock < freeProductQty) {
                             flag = false;
+                        } else {// to check for any logic
+                            if (!schemeProductBO.getGroupBuyType().equals(AND_LOGIC))
+                                flag = true;
                         }
                         if (schemeProductBO.getGroupBuyType().equals(ANY_LOGIC) || schemeProductBO.getGroupBuyType().equals(ONLY_LOGIC)) {
                             if (flag) return true;
