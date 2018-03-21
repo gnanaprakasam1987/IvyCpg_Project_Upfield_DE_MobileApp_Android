@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="2dp"
+
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:background="@color/WHITE"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/ll_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_2dp"
+        android:layout_marginStart="@dimen/dimen_2dp"
+        android:padding="@dimen/dimen_5dp">
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:padding="@dimen/dimen_5dp"
+            android:text="@string/app_name"
+            android:textStyle="bold"
+            android:textColor="@color/blue_btn_txt"
+            android:textSize="@dimen/font_micro_small" />
+
+        <ImageView
+            android:id="@+id/plan_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/tv_count"
+            android:layout_toStartOf="@+id/tv_count"
+            android:src="@drawable/ic_group_add_black_24dp" />
+
+        <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/plan_icon"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dimen_5dp"
+            android:layout_marginRight="@dimen/dimen_5dp"
+            android:gravity="bottom"
+            android:paddingLeft="@dimen/dimen_5dp"
+            android:paddingStart="@dimen/dimen_5dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/font_small"
+            android:textStyle="normal"
+            tools:text="2" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>
+

@@ -148,6 +148,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     //Deleiver MAnagement
     private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET";
 
+    //Subd
+    private static final String MENU_SUBD = "MENU_SUBD";
+
+
     private String roadTitle;
     private boolean isClicked;
     public static boolean isLeave_today;
@@ -227,6 +231,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_PLANNING, R.drawable.ic_vector_planning);
         menuIcons.put(MENU_MVP, R.drawable.ic_mvp_icon);
         menuIcons.put(MENU_VISIT, R.drawable.ic_vector_tradecoverage);
+        menuIcons.put(MENU_SUBD, R.drawable.ic_vector_gallery);
         menuIcons.put(MENU_LOAD_MANAGEMENT, R.drawable.ic_load_mgmt_icon);
         menuIcons.put(MENU_NEW_RETAILER, R.drawable.ic_new_retailer_icon);
         menuIcons.put(MENU_LOAD_REQUEST, R.drawable.ic_stock_proposal_icon);
@@ -647,9 +652,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         showDialog(1);
                     return;
                 }
-
             }
-
 
             if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
                             .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -685,6 +688,70 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                     switchFragment(MENU_VISIT, menuItem.getMenuName());
                 }
+            }
+        } else if (menuItem.getConfigCode().equals(MENU_SUBD)) {
+            if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
+                boolean bool = bmodel.locationUtil.isGPSProviderEnabled();
+                if (!bool) {
+                    Integer resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
+                    if (resultCode == ConnectionResult.SUCCESS)
+                        bmodel.requestLocation(getActivity());
+                    else
+                        showDialog(1);
+                    return;
+                }
+            }
+
+            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    "yyyy/MM/dd") > 0)
+                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (bmodel.synchronizationHelper.isDayClosed()) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.day_closed),
+                        Toast.LENGTH_SHORT).show();
+            } else if (isLeave_today) {
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.mark_attendance),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.leaveToday),
+                            Toast.LENGTH_SHORT).show();
+            } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
+                Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                if (bmodel.getRetailerMaster().size() > 0) {
+                    Vector<RetailerMasterBO> subDMaster = new Vector<>();
+                    for (RetailerMasterBO retailerMasterBO : bmodel.getRetailerMaster()) {
+                        if (retailerMasterBO.getSubDId() != 0)
+                            subDMaster.add(retailerMasterBO);
+                    }
+                    if (subDMaster.size() > 0) {
+                        bmodel.setSubDMaster(subDMaster);
+                        if (!isClicked) {
+                            isClicked = false;
+                            bmodel.distributorMasterHelper.downloadDistributorsList();
+                            bmodel.configurationMasterHelper
+                                    .setTradecoveragetitle(menuItem.getMenuName());
+
+                            switchFragment(MENU_SUBD, menuItem.getMenuName());
+                        }
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "No Subd Available", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "No Retailer Available", Toast.LENGTH_LONG).show();
+                }
+
             }
         } else if (menuItem.getConfigCode().equals(MENU_ATTENDANCE)) {
             bmodel.mAttendanceHelper.downNonFieldReasons();
@@ -768,12 +835,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else {
 
                 switchFragment(MENU_REPORT, menuItem.getMenuName());
-//                Intent reportintent = new Intent(getActivity(),
-//                        ReportMenuActivity.class);
-//                reportintent.putExtra("screentitle", menuItem.getMenuName());
-//                bmodel.productHelper.downloadProductFilter("MENU_STK_ORD");
-//                reportintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivity(reportintent);
             }
         } else if (menuItem.getConfigCode().equals(MENU_LOAD_MANAGEMENT)) {
 
@@ -822,12 +883,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else {
                 switchFragment(MENU_PLANNING_SUB, menuItem.getMenuName());
 
-//                Intent i = new Intent(getActivity(), PlanningSubScreen.class);
-//                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                bmodel.configurationMasterHelper
-//                        .setLoadplanningsubttitle(menuItem.getMenuName());
-//                startActivity(i);
-//                getActivity().finish();
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_SYNC)) {
@@ -1403,7 +1458,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
-        }  else if (menuItem.getConfigCode().equals(MENU_NEWRET_EDT)) {
+        } else if (menuItem.getConfigCode().equals(MENU_NEWRET_EDT)) {
 //            Intent i = new Intent(getActivity(), NewOutletEdit.class);
 //            i.putExtra("screentitle", menuItem.getMenuName());
 //            i.putExtra("flag", 0);
@@ -1452,6 +1507,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         VisitFragment mVisitFragment = (VisitFragment) fm
                 .findFragmentByTag(MENU_VISIT);
+
+        SubDFragment mSubDFragment = (SubDFragment) fm
+                .findFragmentByTag(MENU_SUBD);
 
         VisitFragment mPlanningFragment = (VisitFragment) fm
                 .findFragmentByTag(MENU_PLANNING);
@@ -1541,6 +1599,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             return;
         } else if (mVisitFragment != null && (fragmentName.equals(MENU_VISIT))
                 && mVisitFragment.isVisible()) {
+            return;
+        } else if (mSubDFragment != null && (fragmentName.equals(MENU_SUBD))
+                && mSubDFragment.isVisible()) {
             return;
         } else if (mSyncFragment != null && (fragmentName.equals(MENU_SYNC))
                 && mSyncFragment.isVisible()) {
@@ -1639,6 +1700,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mNewOutletFragment);
         if (mVisitFragment != null)
             ft.remove(mVisitFragment);
+        if (mSubDFragment != null)
+            ft.remove(mSubDFragment);
         if (mPlanningFragment != null)
             ft.remove(mPlanningFragment);
         if (mSyncFragment != null)
@@ -1736,6 +1799,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ((VisitFragment) fragment).setMapViewListener(this);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_VISIT);
+                break;
+
+            case MENU_SUBD:
+                fragment = new SubDFragment();
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_SUBD);
                 break;
             case MENU_PLANNING:
                 bndl = new Bundle();
@@ -1994,6 +2063,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     }
 
+
     public void onTabRemoved() {
 
         android.support.v4.app.FragmentManager fm = getFragmentManager();
@@ -2003,6 +2073,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         VisitFragment mVisitFragment = (VisitFragment) fm
                 .findFragmentByTag(MENU_VISIT);
+
+        SubDFragment mSubDFragment = (SubDFragment) fm
+                .findFragmentByTag(MENU_SUBD);
 
         VisitFragment mPlanningFragment = (VisitFragment) fm
                 .findFragmentByTag(MENU_PLANNING);
@@ -2074,6 +2147,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
         if (mVisitFragment != null) {
             ft.detach(mVisitFragment);
+        }
+        if (mSubDFragment != null) {
+            ft.detach(mSubDFragment);
         }
         if (mSyncFragment != null) {
             ft.detach(mSyncFragment);
@@ -2181,7 +2257,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
 
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -190,6 +190,18 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private boolean isOrderWithoutInvoice;
     private int salesTypeId = 0;
     private String profileImagePath;
+    private int subDId;
+
+
+    public int getSubDId() {
+        return subDId;
+    }
+
+    public void setSubDId(int subDId) {
+        this.subDId = subDId;
+    }
+
+
 
     private String GSTNumber = "-";
 
