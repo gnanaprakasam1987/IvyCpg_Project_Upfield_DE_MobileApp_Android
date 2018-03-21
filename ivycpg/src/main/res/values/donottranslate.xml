@@ -295,6 +295,8 @@
     <string name="order_not_placed_focus_pack">Order not placed for Focus pack.</string>
 
     <string name="upload">Upload</string>
+    <string name="are_you_sure_you_want_to_upload">Are you sure you want to upload?</string>
+    <string name="submitted_orders_not_allowed_to_edit">Submitted orders will not be allowed to edit.</string>
 
 
 </resources>

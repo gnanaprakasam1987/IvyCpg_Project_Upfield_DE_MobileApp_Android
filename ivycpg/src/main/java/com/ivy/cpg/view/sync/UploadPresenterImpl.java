@@ -273,10 +273,6 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         return mBModel.synchronizationHelper.countTextFiles();
     }
 
-    @Override
-    public void setVisitedRetailerIds(StringBuilder ids) {
-        mUploadHelper.setVisitedRetailerIds(ids);
-    }
 
     @Override
     public StringBuilder getVisitedRetailerId() {

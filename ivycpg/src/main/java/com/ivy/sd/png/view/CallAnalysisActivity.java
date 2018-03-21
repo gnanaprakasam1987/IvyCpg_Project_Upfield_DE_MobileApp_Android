@@ -1513,11 +1513,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
                                     }
                                 })
-                        .setNeutralButton(getResources().getString(R.string.upload),new DialogInterface.OnClickListener() {
+                        .setNeutralButton(getResources().getString(R.string.submit),new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
-                                presenter.isFromCallAnalysis=true;
-                                presenter.validateAndUpload();
+                                showDialog(2);
+
 
                             }
                         });
@@ -1547,6 +1547,31 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder1);
+                break;
+            case 2:
+                AlertDialog.Builder builder_sync = new AlertDialog.Builder(CallAnalysisActivity.this)
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(
+                                getResources().getString(
+                                        R.string.are_you_sure_you_want_to_upload))
+                        .setMessage(getResources().getString(R.string.submitted_orders_not_allowed_to_edit))
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        presenter.isFromCallAnalysis=true;
+                                        presenter.validateAndUpload();
+                                    }
+                                })
+                  .setNegativeButton(getResources().getString(R.string.cancel),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton) {
+
+                        }
+                    });
+                bmodel.applyAlertDialogTheme(builder_sync);
                 break;
 
         }
