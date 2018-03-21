@@ -371,8 +371,13 @@ public class ProfileHelper {
     private boolean isHistoryBOAvailable(OrderHistoryBO payBOTemp, String tabName) {
         try {
             for (OrderHistoryBO pbo : ((tabName.equals("orderHistory")) ? parent_orderHistoryLIst : parent_invoiceHistoryLIst)) {
-                if (pbo.getOrderid().equals(payBOTemp.getOrderid()))
-                    return false;
+                if (tabName.equals("orderHistory")) {
+                    if (pbo.getOrderid().equals(payBOTemp.getOrderid()))
+                        return false;
+                } else {
+                    if (pbo.getInvoiceId().equals(payBOTemp.getInvoiceId()))
+                        return false;
+                }
             }
         } catch (Exception e) {
             Commons.printException(e + "");
