@@ -140,7 +140,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         ) {
             public void onDrawerClosed(View view) {
                 if (actionBar != null)
-                    setScreenTitle(mBModel.mSelectedActivityName);
+                    setScreenTitle(assetTrackingHelper.mSelectedActivityName);
 
                 getActivity().supportInvalidateOptionsMenu();
             }

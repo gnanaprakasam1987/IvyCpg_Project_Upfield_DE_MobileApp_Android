@@ -2777,12 +2777,12 @@ public class ProductHelper {
         // Not a SBD or Initative SKU
         if ((!isSBD) && isInitiative != 1) {
 
-            if (ap3m == 0 && (closingStock == 0 || closingStock == -1)) {// Never distributed
+            if (ap3m == 0 && (closingStock == 0 || closingStock <= -1)) {// Never distributed
                 so = 0;
             } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
                 so = ((float) ap3m * (1.0 + getBuffer()));
             } else { // Normal condition
-                if (closingStock == -1)
+                if (closingStock <= -1)
                     so = ap3m;
                 else
                     so = ap3m - closingStock;
@@ -2795,7 +2795,10 @@ public class ProductHelper {
             } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
                 so = ((float) ap3m * (1.0 + getBuffer()));
             } else { // Normal condition
-                so = ap3m - closingStock;
+                if (closingStock <= -1)
+                    so = ap3m;
+                else
+                    so = ap3m - closingStock;
             }
         } else if ((!isSBD) && isInitiative == 1) { // initiative but not SBD
             if (ap3m == 0 && closingStock == 0) {// Never distributed
@@ -2803,7 +2806,10 @@ public class ProductHelper {
             } else if (ap3m > 0 && closingStock == 0) {// OutofStock condition
                 so = ((float) ap3m * (1.0 + getBuffer()));
             } else { // Normal condition
-                so = ap3m - closingStock;
+                if (closingStock <= -1)
+                    so = ap3m;
+                else
+                    so = ap3m - closingStock;
             }
             so = so > initiativeDropSize ? so : initiativeDropSize;
         } else if ((isSBD) && isInitiative == 1) {
@@ -2812,7 +2818,10 @@ public class ProductHelper {
             } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
                 so = ((float) ap3m * (1.0 + getBuffer()));
             } else { // Normal condition
-                so = ap3m - closingStock;
+                if (closingStock <= -1)
+                    so = ap3m;
+                else
+                    so = ap3m - closingStock;
             }
             so = so > initiativeDropSize ? so : initiativeDropSize;
         }
@@ -7528,6 +7537,26 @@ public class ProductHelper {
             return productShortName;
         }
         return null;
+    }
+
+    public float getSalesReturnValue() {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        float total = 0;
+        Cursor c = db
+                .selectSQL("select ifnull(sum(returnvalue),0) from SalesReturnHeader where retailerid="
+                        + QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
+        if (c != null) {
+            if (c.getCount() > 0) {
+                c.moveToNext();
+                total = c.getFloat(0);
+            }
+            c.close();
+        }
+        db.closeDB();
+        return total;
     }
 
 }

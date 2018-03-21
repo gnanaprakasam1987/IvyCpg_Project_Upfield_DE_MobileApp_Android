@@ -1535,7 +1535,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             }
         }
 
-        if (bmodel.configurationMasterHelper.SHOW_RET_SKIP_VALIDATION) {
+        if (bmodel.configurationMasterHelper.SHOW_RET_SKIP_VALIDATION
+                && !bmodel.retailerMasterBO.getIsDeviated().equalsIgnoreCase("Y")
+                && bmodel.getVisitretailerMaster().size() > 0) {
             if (!validateSequenceSkip(bmodel.getRetailerMasterBO()))
                 return;
         }
