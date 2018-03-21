@@ -32,6 +32,7 @@
         <TextView
             style="?attr/customdialogLabel"
             android:layout_width="0dp"
+            android:id="@+id/brand_spinner_txt"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_weight="1"

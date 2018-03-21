@@ -357,6 +357,24 @@ public class MyThread extends Thread {
             bmodel.setOrderMerchInDB("N");
             bmodel.getRetailerMasterBO().setIsOrderMerch("N");
 
+
+
+
+            if (bmodel.getRemarkType().length() > 0)
+                bmodel.setRemarkType("");
+
+            if (bmodel.getOrderHeaderNote().length() > 0)
+                bmodel.setOrderHeaderNote("");
+
+            if (bmodel.getRField1().length() > 0)
+
+                bmodel.setRField1("");
+            if (bmodel.getRField2().length() > 0)
+                bmodel.setRField2("");
+
+            if (bmodel.getRField2().length() > 0)
+                bmodel.setRField2("");
+
             // bmodel.initiativeHelper.storeInitiativePrecentageInDB("0",0);
             // bmodel.initiativeHelper.setInitiativePrecentInBO("0");
             // bmodel.getRetailerMasterBO().setInitiativePercent("0");
@@ -413,6 +431,25 @@ public class MyThread extends Thread {
                 bmodel.setOrderedInDB("N");
                 bmodel.getRetailerMasterBO().setOrdered("N");
             }
+
+
+            bmodel.setOrderMerchInDB("N");
+            bmodel.getRetailerMasterBO().setIsOrderMerch("N");
+
+            if (bmodel.getRemarkType().length() > 0)
+                bmodel.setRemarkType("");
+
+            if (bmodel.getOrderHeaderNote().length() > 0)
+                bmodel.setOrderHeaderNote("");
+
+            if (bmodel.getRField1().length() > 0)
+
+                bmodel.setRField1("");
+            if (bmodel.getRField2().length() > 0)
+                bmodel.setRField2("");
+
+            if (bmodel.getRField2().length() > 0)
+                bmodel.setRField2("");
 
             // bmodel.initiativeHelper.storeInitiativePrecentageInDB("0",0);
             // bmodel.initiativeHelper.setInitiativePrecentInBO("0");
