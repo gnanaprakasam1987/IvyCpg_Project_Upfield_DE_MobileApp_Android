@@ -143,7 +143,7 @@ public class SchemeDetailsMasterHelper {
     public void downloadValidSchemeGroups(DBUtil db) {
 
         StringBuilder sb = new StringBuilder();
-
+        mGroupIDList.clear();
         ArrayList<String> retailerAttributes = bmodel.getAttributeParentListForCurrentRetailer();
 
         sb.append("select Distinct schemeid,groupid,EA1.AttributeName as ParentName,EA.ParentID from SchemeAttributeMapping  SAM" +
@@ -162,8 +162,8 @@ public class SchemeDetailsMasterHelper {
                     if (lastSchemeId != c.getInt(0) || lastGroupId != c.getInt(1)) {
 
                         if (isGroupSatisfied) {
-                            if (!mGroupIDList.contains(c.getString(1) + c.getString(0))) {
-                                mGroupIDList.add(c.getString(1) + c.getString(0));
+                            if (!mGroupIDList.contains(lastGroupId+"" + lastSchemeId)) {
+                                mGroupIDList.add(lastGroupId+"" + lastSchemeId);
                             }
                         }
 
