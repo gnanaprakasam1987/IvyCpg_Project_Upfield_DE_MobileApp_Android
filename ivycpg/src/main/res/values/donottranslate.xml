@@ -314,4 +314,11 @@
     <string name="pastAndCurrentDays">Plan can not be done for past days and current day</string>
     <string name="endOfPeriod">End of Plan Period</string>
 
+    <string name="replace_quantity_should_not_exceed_return_quantity">Replace quantity should not exceed Return quantity</string>
+    <string name="please_enter_mrp_value">Please enter MRP Value</string>
+    <string name="please_complete_order_taking_activity_to_perform_sales_return_activity">Please complete order taking activity to perform sales return activity</string>
+    <string name="sales_return_value_should_not_exceed_order_value">Sales Return Value should not exceed Order Value. Your Order Value is %s RS</string>
+    <string name="order_value_cannot_be_lesser_than_the_sales_return_value">Order Value cannot be lesser than the Sales Return Value, Please re-edit the Order.</string>
+
+
 </resources>

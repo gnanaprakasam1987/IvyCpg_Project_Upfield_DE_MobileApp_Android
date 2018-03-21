@@ -640,6 +640,19 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                     return;
                 }
             }
+
+            double totalOrderValue = bmodel.getOrderValue() ;
+            if(bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+                    !bmodel.configurationMasterHelper.IS_INVOICE &&
+                    totalvalue >= totalOrderValue){
+                Toast.makeText(getActivity(),
+                        getResources().getString(
+                                R.string.sales_return_value_should_not_exceed_order_value ,
+                                String.valueOf(totalOrderValue)),
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
             salesReturnHelper.setLpcValue((String) lpcText.getText());
             salesReturnHelper.setReturnValue(totalvalue);
 
