@@ -4501,15 +4501,15 @@ public class ProductHelper {
         String query = "";
         if (mChildLevel == 0) {
             query = "SELECT PM.ParentId, PM.PID, PM.PName,"
-                    + " (select qty from ProductSuggestedQuantity PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs,"
+                    + " (select qty from StockProposalSuggestedQty PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs,"
                     + " PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
                     + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" // + ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse"
                     + sql3
                     + sql1
-                    + " ,(select qty from ProductSuggestedQuantity PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
-                    + " (select qty from ProductSuggestedQuantity PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
+                    + " ,(select qty from StockProposalSuggestedQty PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
+                    + " (select qty from StockProposalSuggestedQty PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
                     + " FROM ProductMaster PM"
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + sql2
@@ -4538,7 +4538,7 @@ public class ProductHelper {
                     + loopEnd
                     + ".PID, PM"
                     + loopEnd
-                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + ".PName, (select qty from StockProposalSuggestedQty PSQ where uomid =PM"
                     + loopEnd
                     + ".piece_uomid and PSQ.PID =PM"
                     + loopEnd
@@ -4584,14 +4584,14 @@ public class ProductHelper {
                     + ".msqQty, PM" + loopEnd + ".issalable" + sql3 + sql1
                     + " ,PM"
                     + loopEnd
-                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + ".PName, (select qty from StockProposalSuggestedQty PSQ where uomid =PM"
                     + loopEnd
                     + ".dUomId and PSQ.PID =PM"
                     + loopEnd
                     + ".PID) as"
                     + " sugcs,PM"
                     + loopEnd
-                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + ".PName, (select qty from StockProposalSuggestedQty PSQ where uomid =PM"
                     + loopEnd
                     + ".dOuomid and PSQ.PID =PM"
                     + loopEnd
@@ -4785,15 +4785,15 @@ public class ProductHelper {
         String query = "";
         if (mParentLevel == 0 && mChildLevel == 0) {
             query = "SELECT  PM.ParentId, PM.PID, PM.PName,"
-                    + " (select qty from ProductSuggestedQuantity PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs, "
+                    + " (select qty from StockProposalSuggestedQty PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs, "
                     + " PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
                     + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" //+ ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse "
                     + sql3
                     + sql1
-                    + " ,(select qty from ProductSuggestedQuantity PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
-                    + " (select qty from ProductSuggestedQuantity PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
+                    + " ,(select qty from StockProposalSuggestedQty PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
+                    + " (select qty from StockProposalSuggestedQty PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
                     + " FROM ProductMaster PM"
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + sql2
@@ -4816,7 +4816,7 @@ public class ProductHelper {
                     + loopEnd
                     + ".PID, PM"
                     + loopEnd
-                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + ".PName, (select qty from StockProposalSuggestedQty PSQ where uomid =PM"
                     + loopEnd
                     + ".piece_uomid and PSQ.PID =PM"
                     + loopEnd
@@ -4862,14 +4862,14 @@ public class ProductHelper {
                     + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse " */ + sql3 + sql1
                     + " ,PM"
                     + loopEnd
-                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + ".PName, (select qty from StockProposalSuggestedQty PSQ where uomid =PM"
                     + loopEnd
                     + ".dUomId and PSQ.PID =PM"
                     + loopEnd
                     + ".PID) as"
                     + " sugcs,PM"
                     + loopEnd
-                    + ".PName, (select qty from ProductSuggestedQuantity PSQ where uomid =PM"
+                    + ".PName, (select qty from StockProposalSuggestedQty PSQ where uomid =PM"
                     + loopEnd
                     + ".dOuomid and PSQ.PID =PM"
                     + loopEnd
