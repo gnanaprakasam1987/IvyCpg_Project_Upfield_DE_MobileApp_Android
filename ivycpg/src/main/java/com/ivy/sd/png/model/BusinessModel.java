@@ -230,6 +230,7 @@ public class BusinessModel extends Application {
     public RetailerMasterBO retailerMasterBO;
     public String deleteSpliteOrderID;
     public Vector<RetailerMasterBO> retailerMaster;
+    public Vector<RetailerMasterBO> subDMaster;
     public ArrayList<RetailerMasterBO> visitretailerMaster;
     private Vector<BankMasterBO> bankMaster;
     private Vector<BranchMasterBO> bankBranch;
@@ -1464,6 +1465,9 @@ public class BusinessModel extends Application {
                     retailer.setRetailerID(retID);
                     retailer.setRetailerCode(c.getString(c.getColumnIndex("RetailerCode")));
                     retailer.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
+
+                    retailer.setSubDId(c.getInt(c.getColumnIndex("SubDId")));
+
                     retailer.setBeatID(c.getInt(c.getColumnIndex("beatid")));
                     retailer.setCreditLimit(c.getFloat(c.getColumnIndex("creditlimit")));
                     retailer.setTinnumber(c.getString(c.getColumnIndex("tinnumber")));
@@ -1524,6 +1528,7 @@ public class BusinessModel extends Application {
                     retailer.setInitiative_target(c.getInt(c.getColumnIndex("init_target")));
                     retailer.setRfield2(c.getString(c.getColumnIndex("RField2")));
                     retailer.setIsPresentation(c.getString(c.getColumnIndex("isPresentation")));
+
 
                     retailer.setGpsDistance(c.getInt(c.getColumnIndex("GPS_DIST")));
                     retailer.setOtpActivatedDate(c.getString(c.getColumnIndex("StoreOTPActivated")));
@@ -9308,7 +9313,15 @@ public class BusinessModel extends Application {
         return mUserCredentials;
     }
 
+    public Vector<RetailerMasterBO> getSubDMaster() {
+        if (subDMaster == null)
+            return new Vector<RetailerMasterBO>();
+        return subDMaster;
+    }
 
+    public void setSubDMaster(Vector<RetailerMasterBO> subDMaster) {
+        this.subDMaster = subDMaster;
+    }
 }
 
 
