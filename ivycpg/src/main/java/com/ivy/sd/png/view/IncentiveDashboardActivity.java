@@ -32,8 +32,7 @@ public class IncentiveDashboardActivity extends IvyBaseActivityNoActionBar {
         }
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.sessionout_loginagain),
+            Toast.makeText(this, getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             finish();
         }

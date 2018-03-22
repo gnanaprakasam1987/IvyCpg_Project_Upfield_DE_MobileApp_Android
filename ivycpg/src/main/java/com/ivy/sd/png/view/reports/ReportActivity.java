@@ -649,8 +649,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
             bmodel.reportHelper.downloadUsers();
             if (bmodel.reportHelper.getLstUsers().size() > 0) {
@@ -703,8 +702,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             getSupportActionBar().setSubtitle(config.getMenuName());
             transaction.commit();
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
 
             transaction.replace(R.id.fragment_content, closingStockReportFragment);

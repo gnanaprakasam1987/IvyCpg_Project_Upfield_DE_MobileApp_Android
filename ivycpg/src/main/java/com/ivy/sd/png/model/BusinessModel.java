@@ -1429,7 +1429,7 @@ public class BusinessModel extends Application {
 
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate"
+                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,A.SubDId"
 
                             + " FROM RetailerMaster A"
 
@@ -1618,6 +1618,7 @@ public class BusinessModel extends Application {
                     retailer.setIsSEZzone(c.getInt(c.getColumnIndex("InSEZ")));
                     retailer.setDLNo(c.getString(c.getColumnIndex("DLNo")));
                     retailer.setDLNoExpDate(c.getString(c.getColumnIndex("DLNoExpDate")));
+                    retailer.setSubdId(c.getInt(c.getColumnIndex("SubDId")));
 
 
                     retailer.setIsToday(0);
