@@ -320,5 +320,9 @@
     <string name="sales_return_value_should_not_exceed_order_value">Sales Return Value should not exceed Order Value. Your Order Value is %s RS</string>
     <string name="order_value_cannot_be_lesser_than_the_sales_return_value">Order Value cannot be lesser than the Sales Return Value, Please re-edit the Order.</string>
 
+    <string name="upload">Upload</string>
+    <string name="are_you_sure_you_want_to_submit">Are you sure you want to submit?</string>
+    <string name="submitted_orders_not_allowed_to_edit">Submitted transactions will not be allowed to edit.</string>
+
 
 </resources>
