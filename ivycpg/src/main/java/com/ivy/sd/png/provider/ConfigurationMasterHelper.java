@@ -33,6 +33,7 @@ public class ConfigurationMasterHelper {
     public static final String MENU_ORDER = "MENU_ORDER";
     public static final String MENU_STOCK = "MENU_STOCK";
     public static final String MENU_ACTIVITY = "ACT_MENU";
+    public static final String MENU_SUBD = "SUBD_MENU";
     public static final String MENU_COUNTER = "MENU_COUNTER";
     public static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     public static final String MENU_STORECHECK = "MENU_STORECHECK";
@@ -929,6 +930,9 @@ public class ConfigurationMasterHelper {
     private String loadmanagementtitle;
     private String loadplanningsubttitle;
     private String tradecoveragetitle;
+    private String subdtitle;
+
+
     private String batchAllocationtitle;
     private String signatureTitle;
     private String jointCallTitle;
@@ -3836,11 +3840,9 @@ public class ConfigurationMasterHelper {
                     String value = c.getString(0);
                     if (value.equalsIgnoreCase("PS")) {
                         SHOW_PC_SRP = true;
-                    }
-                    else if (value.equalsIgnoreCase("CS")) {
+                    } else if (value.equalsIgnoreCase("CS")) {
                         SHOW_CASE_SRP = true;
-                    }
-                    else if (value.equalsIgnoreCase("OU")) {
+                    } else if (value.equalsIgnoreCase("OU")) {
                         SHOW_OUTER_SRP = true;
                     }
                 }
@@ -4218,6 +4220,14 @@ public class ConfigurationMasterHelper {
         this.tradecoveragetitle = tradecoveragetitle;
     }
 
+    public String getSubdtitle() {
+        return subdtitle;
+    }
+
+    public void setSubdtitle(String subdtitle) {
+        this.subdtitle = subdtitle;
+    }
+
     public String getBatchAllocationtitle() {
         return batchAllocationtitle;
     }
@@ -4505,7 +4515,7 @@ public class ConfigurationMasterHelper {
             db.openDataBase();
             String sql = "select MName from " + DataMembers.tbl_HhtMenuMaster
                     + " where hhtCode=" + bmodel.QT("MENU_JOINT_CALL")
-                    + " and flag=1 and lang="+bmodel.QT(language);
+                    + " and flag=1 and lang=" + bmodel.QT(language);
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {

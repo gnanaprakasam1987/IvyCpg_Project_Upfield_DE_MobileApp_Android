@@ -740,12 +740,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             isClicked = false;
                             bmodel.distributorMasterHelper.downloadDistributorsList();
                             bmodel.configurationMasterHelper
-                                    .setTradecoveragetitle(menuItem.getMenuName());
+                                    .setSubdtitle(menuItem.getMenuName());
 
                             switchFragment(MENU_SUBD, menuItem.getMenuName());
                         }
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getActivity(), "No Subd Available", Toast.LENGTH_LONG).show();
                     }
                 } else {

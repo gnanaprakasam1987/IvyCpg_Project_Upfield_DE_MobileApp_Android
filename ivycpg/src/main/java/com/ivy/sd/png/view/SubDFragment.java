@@ -70,6 +70,8 @@ public class SubDFragment extends IvyBaseFragment {
         retailer = bmodel.getSubDMaster();
         lvSubDId = (ListView) view.findViewById(R.id.lv_subdid);
 
+        setScreenTitle(bmodel.configurationMasterHelper.getSubdtitle());
+
         lvSubDId.setDivider(null);
         lvSubDId.setDividerHeight(0);
         adapter = new RetailerSelectionAdapter(retailer);
