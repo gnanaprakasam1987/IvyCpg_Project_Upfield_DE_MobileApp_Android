@@ -99,8 +99,8 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
     private RsdHolder mRsdholder;
     private boolean isRetaieler = false;
     private static String mEntityRetailer = "RETAILER";
-    private static String mEntityRoute = "ROUTE";
-    private static String mEntityDistributor = "DISTRIBUTOR";
+    private static String mEntityNFA = "NFA";
+    private static String mEntityDistributor = "DIST";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -463,8 +463,10 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
                 holder = new RsdHolder();
                 holder.tvName = convertView.findViewById(R.id.tv_rsd);
+                holder.ivEntityType = convertView.findViewById(R.id.ivEntityType);
 
                 holder.tvName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.ivEntityType.setImageDrawable(getResources().getDrawable(R.drawable.ic_store_ofplan));
 
                 convertView.setTag(holder);
             } else {
@@ -549,9 +551,10 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
                 holder = new RsdHolder();
                 holder.tvName = convertView.findViewById(R.id.tv_rsd);
+                holder.ivEntityType = convertView.findViewById(R.id.ivEntityType);
 
                 holder.tvName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
+                holder.ivEntityType.setImageDrawable(getResources().getDrawable(R.drawable.ic_non_field));
                 convertView.setTag(holder);
             } else {
                 holder = (RsdHolder) convertView.getTag();
@@ -1070,7 +1073,6 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                             }
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
                     }
                     v.invalidate();
                     return true;
@@ -1115,7 +1117,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                                             isAvailable = true;
                                                         }
                                                     }
-                                                    if (ofBo.getEntityType().equals(mEntityRoute)) {
+                                                    if (ofBo.getEntityType().equals(mEntityNFA)) {
                                                         isRoutePlanned = true;
 
                                                     }
@@ -1149,7 +1151,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                                 boolean isAvailable = false;
                                                 boolean isRetailerPlanned = false;
                                                 for (OfflineDateWisePlanBO ofBo : mData) {
-                                                    if (ofBo.getEntityType().equals(mEntityRoute)) {
+                                                    if (ofBo.getEntityType().equals(mEntityNFA)) {
                                                         if (ofBo.getEntityId() == mRsdholder.nonFieldBO.getReasonID()) {
                                                             isAvailable = true;
                                                         }
@@ -1235,7 +1237,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                                     isAvailable = true;
                                                 }
                                             }
-                                            if (ofBo.getEntityType().equals(mEntityRoute)) {
+                                            if (ofBo.getEntityType().equals(mEntityNFA)) {
                                                 isRoutePlanned = true;
                                             }
                                         }
@@ -1271,7 +1273,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                         boolean isAvailable = false;
                                         boolean isRetailerPlanned = false;
                                         for (OfflineDateWisePlanBO ofBo : mData) {
-                                            if (ofBo.getEntityType().equals(mEntityRoute)) {
+                                            if (ofBo.getEntityType().equals(mEntityNFA)) {
                                                 if (ofBo.getEntityId() == mRsdholder.nonFieldBO.getReasonID()) {
                                                     isAvailable = true;
                                                 }
@@ -1353,11 +1355,14 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         offlineDateWisePlanBO.setDate(date);
         offlineDateWisePlanBO.setDistributorId(retailerMasterBO.getDistributorId());
         offlineDateWisePlanBO.setUserId(bmodel.userMasterHelper.getUserMasterBO().getUserid());
-        offlineDateWisePlanBO.setEntityId(SDUtil.convertToInt(retailerMasterBO.getRetailerID()));
-        if (retailerMasterBO.getSubdId() == 0)
+
+        if (retailerMasterBO.getSubdId() == 0) {
             offlineDateWisePlanBO.setEntityType(mEntityRetailer);
-        else
+            offlineDateWisePlanBO.setEntityId(SDUtil.convertToInt(retailerMasterBO.getRetailerID()));
+        } else {
             offlineDateWisePlanBO.setEntityType(mEntityDistributor);
+            offlineDateWisePlanBO.setEntityId(retailerMasterBO.getSubdId());
+        }
         offlineDateWisePlanBO.setStatus("I");
         offlineDateWisePlanBO.setSequence(0);
         offlineDateWisePlanBO.setName(retailerMasterBO.getRetailerName());
@@ -1393,7 +1398,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         offlineDateWisePlanBO.setDistributorId(0);
         offlineDateWisePlanBO.setUserId(bmodel.userMasterHelper.getUserMasterBO().getUserid());
         offlineDateWisePlanBO.setEntityId(nonFieldBO.getReasonID());
-        offlineDateWisePlanBO.setEntityType(mEntityRoute);
+        offlineDateWisePlanBO.setEntityType(mEntityNFA);
         offlineDateWisePlanBO.setStatus("I");
         offlineDateWisePlanBO.setSequence(0);
         offlineDateWisePlanBO.setName(nonFieldBO.getReason());
@@ -1521,7 +1526,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                     holder.dayWiseRetailer.getEntityType().equalsIgnoreCase(mEntityRetailer))
                 holder.IvEntityType.setImageDrawable(getResources().getDrawable(R.drawable.ic_store_ofplan));
 
-            else if (holder.dayWiseRetailer.getEntityType().equalsIgnoreCase(mEntityRoute))
+            else if (holder.dayWiseRetailer.getEntityType().equalsIgnoreCase(mEntityNFA))
                 holder.IvEntityType.setImageDrawable(getResources().getDrawable(R.drawable.ic_non_field));
 
             try {
@@ -1608,6 +1613,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         RetailerMasterBO retailerMasterBO;
         NonFieldBO nonFieldBO;
         TextView tvName;
+        ImageView ivEntityType;
     }
 
 }

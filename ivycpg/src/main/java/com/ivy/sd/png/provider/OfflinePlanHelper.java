@@ -52,7 +52,8 @@ public class OfflinePlanHelper {
 
             String sql = "SELECT PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence," +
                     "(CASE WHEN EntityType = 'RETAILER' THEN IFNULL((SELECT RetailerName from RetailerMaster where RetailerID = EntityId),'')" +
-                    " WHEN EntityType = 'ROUTE' THEN IFNULL((SELECT ListName from StandardListMaster where ListId = EntityId),'')" +
+                    " WHEN EntityType = 'DIST' THEN IFNULL((SELECT RetailerName from RetailerMaster where SubDId = EntityId),'')" +
+                    " WHEN EntityType = 'NFA' THEN IFNULL((SELECT ListName from StandardListMaster where ListId = EntityId),'')" +
                     " ELSE '' END) as Name FROM " + DataMembers.tbl_date_wise_plan + " Where status != 'D' ";
 
             db.openDataBase();
