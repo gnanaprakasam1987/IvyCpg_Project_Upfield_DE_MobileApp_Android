@@ -2,9 +2,7 @@ package com.ivy.cpg.view.orderdelivery;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +18,6 @@ import android.widget.Toast;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHeader;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -30,7 +27,6 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
@@ -39,7 +35,6 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
     OrderHelper orderHelper;
     ArrayList<OrderHeader> orderHeaders;
     private MyAdapter myAdapter;
-    private String orderId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,29 +48,22 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null) {
-
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle("Order Delivery");
-//            // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//           // Used to remove the app logo actionbar icon and set title as home
-//          // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
         orderHelper = OrderHelper.getInstance(this);
 
-
         orderHelper.downloadOrderDeliveryHeader(this);
         orderHeaders = orderHelper.getOrderHeaders();
-
 
         recyclerView = findViewById(R.id.order_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
     }
 
     @Override
@@ -105,7 +93,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView orderId,orderDate,orderValue,orderLine;
+            private TextView orderId,orderDate,orderValue,orderLine,invoiceGeneratedText;
             private Button orderAccept,orderEdit;
 
             public MyViewHolder(View view) {
@@ -115,6 +103,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 orderDate = view.findViewById(R.id.order_delivery_listview_orderdate);
                 orderValue = view.findViewById(R.id.order_delivery_listview_ordervalue);
                 orderLine = view.findViewById(R.id.order_delivery_listview_orderlines);
+                invoiceGeneratedText = view.findViewById(R.id.invoice_generated_text);
 
                 orderAccept = view.findViewById(R.id.accept_btn);
                 orderEdit = view.findViewById(R.id.edit_btn);
@@ -154,7 +143,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),"ViewDetail").execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),"ViewDetail",orderHeaders.get(position).getInvoiceStatus()).execute();
 
                 }
             });
@@ -171,7 +160,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),"Edit").execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),"Edit",orderHeaders.get(position).getInvoiceStatus()).execute();
                 }
             });
 
@@ -187,10 +176,14 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),"Approve").execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),"Approve",orderHeaders.get(position).getInvoiceStatus()).execute();
 
                 }
             });
+
+            if(orderHeaders.get(position).getInvoiceStatus() == 1){
+                holder.invoiceGeneratedText.setVisibility(View.VISIBLE);
+            }
 
         }
 
@@ -200,14 +193,16 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
-    private class downloadOrderDeliveryDetail extends AsyncTask<Void,Void,Void>{
+    class downloadOrderDeliveryDetail extends AsyncTask<Void,Void,Void>{
 
         private String orderId;
         private String from;
+        private int invoiceStatus;
 
-        private downloadOrderDeliveryDetail(String orderId,String from){
+        private downloadOrderDeliveryDetail(String orderId,String from,int invoiceStatus){
             this.orderId = orderId;
             this.from = from;
+            this.invoiceStatus = invoiceStatus;
         }
 
         @Override
@@ -215,8 +210,9 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
             bmodel.productHelper.clearOrderTable();
             orderHelper.clearSalesReturnTable();
             orderHelper.downloadOrderDeliveryDetail(OrderDeliveryActivity.this,orderId);
-            orderHelper.downloadOrderedFreeProducts(OrderDeliveryActivity.this,orderId);
+            orderHelper.downloadSchemeFreeProducts(OrderDeliveryActivity.this,orderId);
             orderHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this,orderId);
+            orderHelper.downloadOrderedProducts();
             return null;
         }
 
@@ -262,6 +258,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 Intent intent = new Intent(OrderDeliveryActivity.this, OrderDeliveryDetailActivity.class);
                 intent.putExtra("From", from);
                 intent.putExtra("OrderId",orderId);
+                intent.putExtra("InvoiceStatus",invoiceStatus);
                 startActivity(intent);
             }
         }

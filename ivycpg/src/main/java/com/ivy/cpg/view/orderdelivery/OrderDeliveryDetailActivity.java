@@ -16,8 +16,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +32,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.CustomKeyBoard;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -48,6 +45,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private InputMethodManager inputManager;
     private EditText QUANTITY;
     private String append = "";
+    private int invoiceStatus = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +68,9 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+
+        invoiceStatus = getIntent().getExtras().getInt("InvoiceStatus");
+
         initializeViews();
 
         orderDeliveryPresenter = new OrderDeliveryPresenterImpl(this,bmodel);
@@ -91,6 +92,9 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         llContent = findViewById(R.id.ll_content);
+
+        if(invoiceStatus == 1)
+            findViewById(R.id.accept_btn).setVisibility(View.GONE);
 
         findViewById(R.id.accept_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +120,6 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             finish();
         }
     }
-
 
     @Override
     public void updateProductViewValues(Vector<ProductMasterBO> productList) {
@@ -157,119 +160,6 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         }
 
 
-    }
-
-    @Override
-    public void updateProductEditValues(Vector<ProductMasterBO> productList) {
-        findViewById(R.id.scroll_view).setVisibility(View.GONE);
-        findViewById(R.id.card_view).setVisibility(View.VISIBLE);
-        findViewById(R.id.keypad).setVisibility(View.VISIBLE);
-        initializeEditViewHeader();
-        MyAdapter myAdapter = new MyAdapter(productList);
-        recyclerView.setAdapter(myAdapter);
-        myAdapter.notifyDataSetChanged();
-    }
-
-    private void initializeEditViewHeader(){
-
-        ((TextView)findViewById(R.id.prod_name)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-            (findViewById(R.id.piece_qty)).setVisibility(View.GONE);
-        else {
-            try {
-                ((TextView) findViewById(R.id.piece_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.piece_qty).getTag()) != null)
-                    ((TextView) findViewById(R.id.piece_qty))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.piece_qty).getTag()));
-            } catch (Exception e) {
-                Commons.printException(e + "");
-            }
-        }
-
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-            ( findViewById(R.id.case_qty)).setVisibility(View.GONE);
-        else {
-            try {
-                ((TextView) findViewById(R.id.case_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.case_qty).getTag()) != null)
-                    ((TextView) findViewById(R.id.case_qty))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.case_qty).getTag()));
-            } catch (Exception e) {
-                Commons.printException(e + "");
-            }
-        }
-
-        if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-            (findViewById(R.id.outer_qty)).setVisibility(View.GONE);
-        else {
-            try {
-                ((TextView) findViewById(R.id.outer_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.outer_qty).getTag()) != null)
-                    ((TextView) findViewById(R.id.outer_qty))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.outer_qty).getTag()));
-            } catch (Exception e) {
-                Commons.printException(e + "");
-            }
-        }
-
-        if (!bmodel.configurationMasterHelper.IS_STOCK_IN_HAND)
-            (findViewById(R.id.sih_qty)).setVisibility(View.GONE);
-        else {
-            try {
-                ((TextView) findViewById(R.id.sih_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.sih_qty).getTag()) != null)
-                    ((TextView) findViewById(R.id.sih_qty))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.sih_qty).getTag()));
-            } catch (Exception e) {
-                Commons.printException(e + "");
-            }
-        }
-
-        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
-            (findViewById(R.id.sales_return_qty)).setVisibility(View.GONE);
-        else {
-            try {
-                ((TextView) findViewById(R.id.sales_return_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.sales_return_qty).getTag()) != null)
-                    ((TextView) findViewById(R.id.sales_return_qty))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.sales_return_qty).getTag()));
-            } catch (Exception e) {
-                Commons.printException(e + "");
-            }
-        }
-
-        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
-            (findViewById(R.id.sales_replace_qty)).setVisibility(View.GONE);
-        else {
-            try {
-                ((TextView) findViewById(R.id.sales_replace_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.sales_replace_qty).getTag()) != null)
-                    ((TextView) findViewById(R.id.sales_replace_qty))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.sales_replace_qty).getTag()));
-            } catch (Exception e) {
-                Commons.printException(e + "");
-            }
-        }
     }
 
     private void setProductView(View view,boolean isHeader, ConfigurationMasterHelper.FontType fontType,ProductMasterBO productMasterBO){
@@ -575,11 +465,122 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             finish();
     }
 
+    @Override
+    public void updateProductEditValues(Vector<ProductMasterBO> productList) {
+        findViewById(R.id.scroll_view).setVisibility(View.GONE);
+        findViewById(R.id.card_view).setVisibility(View.VISIBLE);
+        findViewById(R.id.keypad).setVisibility(View.VISIBLE);
+        initializeEditViewHeader();
+        MyAdapter myAdapter = new MyAdapter(productList);
+        recyclerView.setAdapter(myAdapter);
+        myAdapter.notifyDataSetChanged();
+    }
+
+    private void initializeEditViewHeader(){
+
+        ((TextView)findViewById(R.id.prod_name)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+
+        if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+            (findViewById(R.id.piece_qty)).setVisibility(View.GONE);
+        else {
+            try {
+                ((TextView) findViewById(R.id.piece_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.piece_qty).getTag()) != null)
+                    ((TextView) findViewById(R.id.piece_qty))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.piece_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
+
+        if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+            ( findViewById(R.id.case_qty)).setVisibility(View.GONE);
+        else {
+            try {
+                ((TextView) findViewById(R.id.case_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.case_qty).getTag()) != null)
+                    ((TextView) findViewById(R.id.case_qty))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.case_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
+
+        if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+            (findViewById(R.id.outer_qty)).setVisibility(View.GONE);
+        else {
+            try {
+                ((TextView) findViewById(R.id.outer_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.outer_qty).getTag()) != null)
+                    ((TextView) findViewById(R.id.outer_qty))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.outer_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
+
+        if (!bmodel.configurationMasterHelper.IS_STOCK_IN_HAND)
+            (findViewById(R.id.sih_qty)).setVisibility(View.GONE);
+        else {
+            try {
+                ((TextView) findViewById(R.id.sih_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.sih_qty).getTag()) != null)
+                    ((TextView) findViewById(R.id.sih_qty))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.sih_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
+
+        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+            (findViewById(R.id.sales_return_qty)).setVisibility(View.GONE);
+        else {
+            try {
+                ((TextView) findViewById(R.id.sales_return_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.sales_return_qty).getTag()) != null)
+                    ((TextView) findViewById(R.id.sales_return_qty))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.sales_return_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
+
+        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+            (findViewById(R.id.sales_replace_qty)).setVisibility(View.GONE);
+        else {
+            try {
+                ((TextView) findViewById(R.id.sales_replace_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.sales_replace_qty).getTag()) != null)
+                    ((TextView) findViewById(R.id.sales_replace_qty))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.sales_replace_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
+    }
 
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         private Vector<ProductMasterBO> productList;
-        private CustomKeyBoard dialogCustomKeyBoard;
 
         MyAdapter(Vector<ProductMasterBO> productList){
             this.productList = productList;
@@ -1087,7 +1088,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             } else if (id == R.id.calcdot) {
                 val = SDUtil.convertToInt(append);
             } else {
-                Button ed = (Button) findViewById(vw.getId());
+                Button ed = findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
                 val = SDUtil.convertToInt(append);
