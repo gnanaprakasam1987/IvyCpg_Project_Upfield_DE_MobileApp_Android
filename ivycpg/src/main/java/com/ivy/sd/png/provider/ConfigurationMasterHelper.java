@@ -343,6 +343,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_IS_ADHOC = "RTRS11";
     public boolean IS_ADHOC = false;
 
+    private static final String CODE_IS_SYNC_FROM_CALL_ANALYSIS = "FUN68";
+    public boolean IS_SYNC_FROM_CALL_ANALYSIS = false;
+
     private static final String CODE_SHOW_FOCUSBRAND_COUNT_IN_REPORT = "ORDB52";
     public boolean IS_FOCUSBRAND_COUNT_IN_REPORT = false;
     private static final String CODE_SHOW_MUSTSELL_COUNT_IN_REPORT = "ORDB53";
@@ -2246,6 +2249,8 @@ public class ConfigurationMasterHelper {
         this.SHOW_PRINT_HEADERS = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) : false;
 
         this.IS_ORD_SR_VALUE_VALIDATE = hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) != null ? hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) : false;
+
+        this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
     }
 
     public void loadOrderReportConfiguration() {
