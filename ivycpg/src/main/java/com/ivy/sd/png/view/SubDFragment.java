@@ -123,7 +123,7 @@ public class SubDFragment extends IvyBaseFragment {
                 holder.cardViewItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        bmodel.setRetailerMasterBO(retailerObj);
+                        bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
                         loadHomeScreenTwo(retailerObj);
                     }
                 });
@@ -132,12 +132,15 @@ public class SubDFragment extends IvyBaseFragment {
                 holder = (RetailerSelectionAdapter.ViewHolder) convertView.getTag();
             }
 
+            holder.retailerObjectHolder = retailerObj;
+
             String tvText = items.get(position).getRetailerName();
             holder.retailertNameTextView.setText(tvText);
             return convertView;
         }
 
         class ViewHolder {
+            private RetailerMasterBO retailerObjectHolder;
             private TextView retailertNameTextView;
             private CardView cardViewItem;
 
@@ -155,9 +158,7 @@ public class SubDFragment extends IvyBaseFragment {
                     Toast.LENGTH_SHORT).show();
 
         } else {
-            if (bmodel.timer == null) {
-                bmodel.timer = new TimerCount();
-            }
+
             new DownloadProductsAndPrice().execute();
         }
     }

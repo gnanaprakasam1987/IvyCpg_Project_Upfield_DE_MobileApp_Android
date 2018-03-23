@@ -19,6 +19,7 @@ import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.ReAllocationActivity;
+import com.ivy.sd.png.view.SubDStockOrderActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
@@ -314,6 +315,49 @@ public class MyThread extends Thread {
                 frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
             } else {
                 OrderSummary frm = (OrderSummary) ctx;
+                frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_NOT_SAVED);
+            }
+        } else if (opt == DataMembers.SAVESUBDORDER) {
+            bmodel = (BusinessModel) ctx.getApplicationContext();
+            bmodel.setContext(ctx);
+
+            // Save Order
+            if (orderHelper.saveOrder(ctx)) {
+                bmodel.updateSbdDistStockinRetailerMaster();
+
+                bmodel.setOrderHeaderBO(null);
+
+                // Upadte isVisited Flag
+                if (bmodel.mSelectedModule != 1) {
+                    bmodel.updateIsVisitedFlag();
+                }
+
+                // Update review plan in DB
+                bmodel.setReviewPlanInDB();
+
+                // Set Order Flag
+                bmodel.setIsOrdered("Y");
+                bmodel.setOrderedInDB("Y");
+                bmodel.getRetailerMasterBO().setOrdered("Y");
+
+                // Set Order Taken/ executed flag
+                bmodel.setIsOrderMerch();
+                bmodel.setOrderMerchInDB("Y");
+                bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
+
+                // Clear all the temp values
+                SubDStockOrderActivity frm = (SubDStockOrderActivity) ctx;
+
+                // Backup the database
+                if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
+                    if (!bmodel.synchronizationHelper.backUpDB()) {
+                        frm.getHandler().sendEmptyMessage(
+                                DataMembers.NOTIFY_DATABASE_NOT_SAVED);
+                    }
+                }
+                frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
+            } else {
+                SubDStockOrderActivity frm = (SubDStockOrderActivity) ctx;
                 frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_NOT_SAVED);
             }
         } else if (opt == DataMembers.SAVEORDERPARTIALLY) {
