@@ -427,7 +427,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                     /** Load the screen **/
                     Intent intent;
                     intent = new Intent(SubDHomeActivity.this,
-                            StockCheckActivity.class);
+                            SubDStockCheckActivity.class);
                     intent.putExtra("CurrentActivityCode", menu.getConfigCode());
 //                    if (isFromChild)
 //                        intent.putExtra("isFromChild", isFromChild);
@@ -770,7 +770,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                                     menu);
 
                     Intent intent = new Intent(SubDHomeActivity.this,
-                            StockAndOrder.class);
+                            SubDStockCheckActivity.class);
                     startActivity(intent);
                     overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                     finish();
@@ -802,7 +802,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
 //                                    StockAndOrder.class);
                 Intent intent;
                 intent = new Intent(SubDHomeActivity.this,
-                        StockAndOrder.class);
+                        SubDStockCheckActivity.class);
 
                 startActivity(intent);
                 finish();
@@ -854,7 +854,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                         //      setImagefromCamera(mProductID, mTypeID);
                         if (menuCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
                             Intent i = new Intent(SubDHomeActivity.this,
-                                    StockAndOrder.class);
+                                    SubDStockCheckActivity.class);
                             i.putExtra("OrderFlag", "Nothing");
                             i.putExtra("ScreenCode",
                                     ConfigurationMasterHelper.MENU_ORDER);
@@ -864,7 +864,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                         } else {
 
                             Intent intent = new Intent(SubDHomeActivity.this,
-                                    StockAndOrder.class);
+                                    SubDStockCheckActivity.class);
                             startActivity(intent);
                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                             finish();
