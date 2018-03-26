@@ -358,7 +358,7 @@ public class SalesReturnHelper {
     /**
      * Save sales return details and update SIH.
      */
-    public void saveSalesReturn(Context mContext,String orderId,String module) {
+    public void saveSalesReturn(Context mContext, String orderId, String module) {
         try {
             ProductMasterBO product;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -416,16 +416,16 @@ public class SalesReturnHelper {
                     + QT(getSignaturePath()) + ","
                     + QT(getSignatureName());
 
-            if(!orderId.equals(""))
-                values = values+ ","+orderId+ ","+QT(module);
+            if (!orderId.equals(""))
+                values = values + "," + orderId + "," + QT(module);
             else
-                values = values+ ","+QT("")+ ","+QT("");
+                values = values + "," + QT("") + "," + QT("");
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
             // insert sales replacement and decrease the stock in hand.
             if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
-                saveReplacementDetails(db, getSalesReturnID(),module);
+                saveReplacementDetails(db, getSalesReturnID(), module);
             }
 
             columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode";
@@ -575,7 +575,7 @@ public class SalesReturnHelper {
 
             // If credit note is generated, then tax appyled details should get saved.
             if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
-                saveSalesReturnTaxAndCreditNoteDetail(db, getSalesReturnID(),module,bmodel.retailerMasterBO.getRpTypeCode());
+                saveSalesReturnTaxAndCreditNoteDetail(db, getSalesReturnID(), module, bmodel.retailerMasterBO.getRpTypeCode());
 
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
@@ -778,17 +778,17 @@ public class SalesReturnHelper {
      * Load sales return transaction data into object.
      * If replacement is enbaled the replacement will also get loaded into memory.
      */
-    public void loadSalesReturnData(Context mContext,String module) {
+    public void loadSalesReturnData(Context mContext, String module) {
         DBUtil db = null;
         try {
-            String uId ="" ;
+            String uId = "";
             db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             //previously stored status fetched from DB and set to obj
             String sb = "select SI.productid,SI.batchid,SI.Condition,SI.Pqty,SI.Cqty,SI.oldmrp,SI.mfgdate,SI.expdate,SI.outerqty,Si.invoiceno," +
                     "SI.srpedited,SI.reason_type,SI.LotNumber,SI.status,SH.uid from SalesReturnDetails SI inner join SalesReturnHeader SH ON SH.uid=SI.uid " +
-                    "where SH.Retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and SH.upload='N' and SH.RefModule = '"+module+"' and SH.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId();
+                    "where SH.Retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and SH.upload='N' and SH.RefModule = '" + module + "' and SH.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId();
             Cursor c = db.selectSQL(sb);
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -810,7 +810,7 @@ public class SalesReturnHelper {
                     if ("null".equals(lotNo)) {
                         lotNo = "";
                     }
-                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13),module);
+                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13), module);
                     Commons.print("inside sales return data load");
 
                     uId = c.getString(14);
@@ -820,7 +820,7 @@ public class SalesReturnHelper {
                 c.close();
             }
             if (SHOW_STOCK_REPLACE_PCS || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_OUTER)
-                loadSalesReplacementData(db,module,uId);
+                loadSalesReplacementData(db, module, uId);
         } catch (Exception e) {
             Commons.printException(e + "");
         } finally {
@@ -830,10 +830,10 @@ public class SalesReturnHelper {
         }
     }
 
-    private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo, String status,String module) {
+    private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo, String status, String module) {
 
         ProductMasterBO productBO;
-        if(module.equals("ORDER"))
+        if (module.equals("ORDER"))
             productBO = bmodel.productHelper.getProductMasterBOById(Integer.toString(pid));
         else
             productBO = bmodel.productHelper.getSalesReturnProductBOById(Integer.toString(pid));
@@ -871,9 +871,9 @@ public class SalesReturnHelper {
      */
     public void clearSalesReturnTable(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
         ProductMasterBO product;
-        Vector<ProductMasterBO> productMaster ;
+        Vector<ProductMasterBO> productMaster;
 
-        if(isFromOrder)
+        if (isFromOrder)
             productMaster = bmodel.productHelper.getProductMaster();
         else
             productMaster = bmodel.productHelper.getSalesReturnProducts();
@@ -910,8 +910,8 @@ public class SalesReturnHelper {
     // set new to add data from db
     public void removeSalesReturnTable(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
         ProductMasterBO product;
-        Vector<ProductMasterBO> productMaster ;
-        if(isFromOrder)
+        Vector<ProductMasterBO> productMaster;
+        if (isFromOrder)
             productMaster = bmodel.productHelper.getProductMaster();
         else
             productMaster = bmodel.productHelper.getSalesReturnProducts();
@@ -995,13 +995,13 @@ public class SalesReturnHelper {
         return total;
     }
 
-    private void saveReplacementDetails(DBUtil db, String uid,String module) {
+    private void saveReplacementDetails(DBUtil db, String uid, String module) {
         String clumns = "uid,returnpid,batchid,uomid,uomCount,returnQty,Retailerid,pid,price,value,qty";
         final Vector<ProductMasterBO> productMaster;
-        if(module.equals("ORDER"))
-            productMaster= bmodel.productHelper.getProductMaster();
+        if (module.equals("ORDER"))
+            productMaster = bmodel.productHelper.getProductMaster();
         else
-            productMaster= bmodel.productHelper.getSalesReturnProducts();
+            productMaster = bmodel.productHelper.getSalesReturnProducts();
         StringBuffer sb;
         double totalReplacementValue = 0.0;
 
@@ -1189,7 +1189,7 @@ public class SalesReturnHelper {
      * @param db  db
      * @param uid uid
      */
-    private void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid,String module,String code) {
+    private void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid, String module, String code) {
 
         String columns = "uid,Retailerid,taxRate,taxType,applyLevelId,taxValue,pid";
         setTotalValue(getTotalCreditNoteWithOutTAX(db));
@@ -1230,16 +1230,15 @@ public class SalesReturnHelper {
 
             //Credit note will be generated only for van seller with type CREDIT from ORDER Module
             //Credit note will be generated from SalesReturn Module too
-            boolean checkType=false;
-            if( ((module.equals("ORDER") && code.equals(CREDIT_TYPE)) &&
+            boolean checkType = false;
+            if (((module.equals("ORDER") && code.equals(CREDIT_TYPE)) &&
                     ((bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 1) || bmodel.configurationMasterHelper.IS_INVOICE))
                     ) {
                 // from order module
                 checkType = true;
-            }
-            else if(module.equals("")){
+            } else if (module.equals("")) {
                 //From sales return  module
-                checkType=true;
+                checkType = true;
             }
 
 
@@ -1290,16 +1289,16 @@ public class SalesReturnHelper {
      *
      * @param db connection
      */
-    private void loadSalesReplacementData(DBUtil db,String module,String productId) {
+    private void loadSalesReplacementData(DBUtil db, String module, String productId) {
         String sb = "select pid,batchid,uomid,qty from SalesReturnReplacementDetails " +
                 " where Retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
-                " and upload='N' and uid = "+bmodel.QT(productId);
+                " and upload='N' and uid = " + bmodel.QT(productId);
         Cursor c = db.selectSQL(sb);
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
                 String pid = c.getString(0);
                 ProductMasterBO productBO;
-                if(module.equals("ORDER"))
+                if (module.equals("ORDER"))
                     productBO = bmodel.productHelper.getProductMasterBOById(pid);
                 else
                     productBO = bmodel.productHelper.getSalesReturnProductBOById(pid);

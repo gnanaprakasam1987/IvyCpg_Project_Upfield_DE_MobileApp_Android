@@ -132,6 +132,7 @@ public class DataMembers {
     public static final int SAVENEWOUTLET = 123;
     public static final int NOTIFY_UPLOAD_CLOSINGSTOCK = 1007;
     public static final int SAVEINVOICE = 1008;
+    public static final int SAVESUBDORDER = 1013;
     public static final int NOTIFY_USEREXIST = 0;
     public static final int NOTIFY_NOT_USEREXIST = 1;
     public static final int NOTIFY_UPDATE = 2;

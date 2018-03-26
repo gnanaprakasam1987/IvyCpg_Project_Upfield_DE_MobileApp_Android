@@ -780,6 +780,21 @@
             android:name="com.ivy.sd.png.view.reports.SalesReturnValidationReport"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.ivy.sd.png.view.SubDHomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.SubDStockCheckActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.sd.png.view.SubDStockOrderActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+
+
+        <activity
             android:name="com.ivy.sd.png.view.OfflinePlanningActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="landscape"
