@@ -1,24 +1,19 @@
 package com.ivy.sd.png.provider;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.os.StatFs;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.widget.Toast;
 
-import com.amazonaws.util.StringInputStream;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
@@ -55,7 +50,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
-import com.ivy.sd.png.view.SynchronizationFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,7 +84,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
@@ -1103,7 +1096,7 @@ SynchronizationHelper {
                     "union select count(uid) from AttendanceTimeDetails where upload='N'" +
                     "union select count(UID) from NonFieldActivity where upload='N'" +
                     "union select count(Tid) from DisplaySchemeEnrollmentHeader where upload='N'" +
-                    "union select count(Tid) from DisplaySchemeTrackingHeader where upload='N'"+
+                    "union select count(Tid) from DisplaySchemeTrackingHeader where upload='N'" +
                     "union select count(PlanId) from DatewisePlan where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
@@ -1170,7 +1163,6 @@ SynchronizationHelper {
         }
         return isVisitedRetailerList;
     }
-
 
 
     public RequestQueue getRequestQueue() {
@@ -3238,18 +3230,6 @@ SynchronizationHelper {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     public int validateSalesReturn(ProductMasterBO productMasterBO) {
         responceMessage = 2;
         try {
@@ -3665,6 +3645,7 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
+            //delete data in LastVisitSurvey table
             String sql = "select AH.retailerId,AH.surveyId,qid,answerId,answer,score,isExcluded from AnswerDetail AD INNER JOIN AnswerHeader AH ON AD.uid=AH.uid where AH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
@@ -3672,14 +3653,21 @@ SynchronizationHelper {
                     sql = "Select surveyId from LastVisitSurvey where retailerid=" + cur.getString(0) + " and surveyId=" + cur.getString(1) + " and qid=" + cur.getString(2);
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
-                        db.updateSQL("update LastVisitSurvey set answerId=" + cur.getString(3) + ",answer=" + bmodel.QT(cur.getString(4)) + ",score=" + cur.getString(5) + ",isExcluded=" + cur.getString(6) + " where retailerid=" + cur.getString(0) + " and surveyId=" + cur.getString(1) + " and qid=" + cur.getString(2));
+                        db.executeQ("delete from LastVisitSurvey where retailerid=" + cur.getString(0) + " and surveyId=" + cur.getString(1) + " and qid=" + cur.getString(2));
                         cur1.close();
-                    } else {
-                        db.insertSQL("LastVisitSurvey", "retailerId,surveyId,qid,answerId,answer,score,isExcluded", cur.getString(0) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(3) + ",'" + cur.getString(4) + "'," + cur.getString(5) + "," + cur.getString(6));
-
                     }
                 }
                 cur.close();
+            }
+
+            // re insert  transaction data from AnswerDetail records into LastVisitSurvey
+            String sql2 = "select AH.retailerId,AH.surveyId,qid,answerId,answer,score,isExcluded,isSubQuest from AnswerDetail AD INNER JOIN AnswerHeader AH ON AD.uid=AH.uid where AH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            Cursor cur2 = db.selectSQL(sql2);
+            if (cur2 != null) {
+                while (cur2.moveToNext()) {
+                    db.insertSQL("LastVisitSurvey", "retailerId,surveyId,qid,answerId,answer,score,isExcluded,isSubQuest", cur2.getString(0) + "," + cur2.getString(1) + "," + cur2.getString(2) + "," + cur2.getString(3) + ",'" + cur2.getString(4) + "'," + cur2.getString(5) + "," + cur2.getString(6) + "," + cur2.getString(7));
+                }
+                cur2.close();
             }
 
             db.closeDB();
@@ -3778,7 +3766,6 @@ SynchronizationHelper {
         }
         return sb.toString();
     }
-
 
 
     public boolean validateUser(String username, String password) {
@@ -4112,7 +4099,6 @@ SynchronizationHelper {
     };
 
 
-
     public boolean isSaleDrafted() {
         DBUtil db = null;
         boolean check = true;
@@ -4154,7 +4140,6 @@ SynchronizationHelper {
         return docsFolder;
 
     }
-
 
 
 }

@@ -389,7 +389,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
     @Override
     public void setEmailAddress(String value) {
-        new SendMail(this, "Read", "Test", value).execute();
+        new SendMail(this, orderHelper.getOrderId() != null && !orderHelper.getOrderId().equals("") ? "OrderId-" + orderHelper.getOrderId() + " Retailer-" + bmodel.getRetailerMasterBO().getRetailerName() : "Read", "Test", value).execute();
     }
 
 

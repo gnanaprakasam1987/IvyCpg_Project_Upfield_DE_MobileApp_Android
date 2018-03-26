@@ -7519,20 +7519,17 @@ public class ProductHelper {
         ArrayList<String> productShortName = new ArrayList<>();
         if (bmodel.productHelper.getBomMaster() != null) {
             for (BomMasterBO id : bmodel.productHelper.getBomMaster()) {
-
-                if (id.getPid().equalsIgnoreCase(productId)) {
-
-                    mBpids.add(id.getBomBO().get(0).getbPid());
-                }
+                if (id.getPid().equalsIgnoreCase(productId))
+                    for (BomBO bom : id.getBomBO()) {
+                        mBpids.add(bom.getbPid());
+                    }
             }
         }
         if (mBpids.size() > 0) {
-            for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
-
-                for (int i = 0; i < mBpids.size(); i++)
-                    if (mBpids.get(i).equalsIgnoreCase(bo.getProductID()))
-                        productShortName.add(bo.getProductShortName());
-
+            for (int i = 0; i < mBpids.size(); i++) {
+                ProductMasterBO bo = bmodel.productHelper.getProductMasterBOById(mBpids.get(i));
+                if (bo != null)
+                    productShortName.add(bo.getProductShortName());
             }
             return productShortName;
         }

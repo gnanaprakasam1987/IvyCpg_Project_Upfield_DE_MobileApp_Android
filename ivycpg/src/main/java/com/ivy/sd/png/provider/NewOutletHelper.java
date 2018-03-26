@@ -1891,6 +1891,15 @@ public class NewOutletHelper {
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
                     + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID";
 
+            //converting big decimal value while Exponential value occur
+            String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
+                    ? (SDUtil.truncateDecimal(outlet.getNewOutletlattitude(), -1) + "")
+                    : (outlet.getNewOutletlattitude() + "");
+
+            String longitude = (outlet.getNewOutletLongitude() + "").contains("E")
+                    ? (SDUtil.truncateDecimal(outlet.getNewOutletLongitude(), -1) + "")
+                    : (outlet.getNewOutletLongitude() + "");
+
             if (outlet.getmAddressByTag() != null) {
                 for (String addressType : outlet.getmAddressByTag().keySet()) {
                     AddressBO addressBO = outlet.getmAddressByTag().get(addressType);
@@ -1900,8 +1909,8 @@ public class NewOutletHelper {
                             + "," + QT(addressBO.getAddress3())
                             + "," + QT(addressBO.getPhone())
                             + "," + QT(addressBO.getCity())
-                            + "," + QT(outlet.getNewOutletlattitude() + "")
-                            + "," + QT(outlet.getNewOutletLongitude() + "")
+                            + "," + QT(lattitude)
+                            + "," + QT(longitude)
                             + "," + QT(addressBO.getEmail())
                             + "," + QT(addressBO.getFax())
                             + "," + QT(addressBO.getPincode())
@@ -1921,8 +1930,8 @@ public class NewOutletHelper {
                         + "," + QT(outlet.getAddress3())
                         + "," + QT(outlet.getPhone())
                         + "," + QT(outlet.getCity())
-                        + "," + QT(outlet.getNewOutletlattitude() + "")
-                        + "," + QT(outlet.getNewOutletLongitude() + "")
+                        + "," + QT(lattitude)
+                        + "," + QT(longitude)
                         + "," + QT(getNewoutlet().getEmail())
                         + "," + QT(getNewoutlet().getFax())
                         + "," + QT(getNewoutlet().getPincode())
