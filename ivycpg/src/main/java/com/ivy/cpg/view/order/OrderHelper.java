@@ -1,13 +1,17 @@
 package com.ivy.cpg.view.order;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.os.AsyncTask;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHeader;
@@ -23,6 +27,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.TaxHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -3460,6 +3465,25 @@ public class OrderHelper {
                     }
                 }
 
+                if (businessModel.configurationMasterHelper.SHOW_TAX) {
+                    if(businessModel.productHelper.taxHelper.getmTaxListByProductId()!=null
+                            && businessModel.productHelper.taxHelper.getmTaxListByProductId().size() > 0)
+                        saveProductLeveltax(orderId, db,totalOrderValue,invoiceId);
+                }
+
+                if (businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
+                    businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
+
+                    totalOrderValue = Double.parseDouble(SDUtil.format(totalOrderValue,
+                            businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                            0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+
+                    final double totalTaxValue = applyBillWiseTax(totalOrderValue);
+
+                    if (businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
+                        totalOrderValue = totalOrderValue + totalTaxValue;
+
+                }
                 int linesPerCall = 0;
                 Cursor c = db.selectSQL("Select count(invoiceid) from InvoiceDetails where invoiceId = "+businessModel.QT(invoiceId));
                 if(c.getCount() > 0 && c.moveToNext())
@@ -3477,12 +3501,6 @@ public class OrderHelper {
 
 
                 db.executeQ(invoiceHeaderQry);
-
-                if (businessModel.configurationMasterHelper.SHOW_TAX) {
-                    if(businessModel.productHelper.taxHelper.getmTaxListByProductId()!=null
-                            && businessModel.productHelper.taxHelper.getmTaxListByProductId().size() > 0)
-                        saveProductLeveltax(orderId, db,totalOrderValue);
-                }
 
 //                db.updateSQL("update SchemeFreeProductDetail set InvoiceID = "+businessModel.QT(invoiceId)+",upload='Z' where orderId = "+businessModel.QT(orderId));
 
@@ -3524,7 +3542,19 @@ public class OrderHelper {
 
             db.updateSQL("update OrderHeader set invoicestatus = 1 where orderId = "+businessModel.QT(orderId));
             db.updateSQL("update SalesReturnHeader set invoiceid = "+businessModel.QT(invoiceId)+" where RefModuleTId = "+businessModel.QT(orderId));
-            db.updateSQL("update SalesReturnDetails set invoiceno = "+businessModel.QT(invoiceId)+" where uid = (select uid from SalesReturnHeader where RefModuleTId = "+businessModel.QT(orderId)+")");
+
+            String uid = "";
+            Cursor c = db.selectSQL("select uid from SalesReturnHeader where RefModuleTId = "+businessModel.QT(orderId));
+            if(c.getCount() > 0 && c.moveToNext())
+                uid = c.getString(0);
+
+            db.updateSQL("update SalesReturnDetails set invoiceno = "+businessModel.QT(invoiceId)+" where uid = "+businessModel.QT(uid));
+
+            if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || businessModel.configurationMasterHelper.TAX_SHOW_INVOICE){
+                SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(context);
+                salesReturnHelper.setSalesReturnID(businessModel.QT(uid));
+                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, businessModel.QT(uid),"ORDER",businessModel.retailerMasterBO.getRpTypeCode());
+            }
 
             updateOrderDeliverySIH(db,isEdit);
 
@@ -3543,12 +3573,12 @@ public class OrderHelper {
         }
     }
 
-    public void saveProductLeveltax(String orderId, DBUtil db,double totalOrderValue) {
+    private void saveProductLeveltax(String orderId, DBUtil db,double totalOrderValue,String invoiceId) {
 
         for (ProductMasterBO bo : getOrderedProductMasterBOS()) {
 
             if (businessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null
-                    || businessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()).size() != 0) {
+                    && businessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()).size() != 0) {
                 if (bo.getOrderedPcsQty() > 0
                         || bo.getOrderedCaseQty() > 0
                         || bo.getOrderedOuterQty() > 0) {
@@ -3566,29 +3596,27 @@ public class OrderHelper {
                                     if (taxBO.getMinValue() <= remainingValue
                                             && taxBO.getMaxValue() >= remainingValue) {
                                         insertProductLevelTax(orderId, db,
-                                                bo, taxBO);
+                                                bo, taxBO,invoiceId);
                                     }
 
                                 } else if (taxBO.getApplyRange() == 0) {
                                     insertProductLevelTax(orderId, db,
-                                            bo, taxBO);
+                                            bo, taxBO,invoiceId);
                                 }
                             } else {
                                 insertProductLevelTax(orderId, db,
-                                        bo, taxBO);
+                                        bo, taxBO,invoiceId);
                             }
-
                         }
                     }
-
                 }
             }
         }
     }
 
     private void insertProductLevelTax(String orderId, DBUtil db,
-                                       ProductMasterBO productBO, TaxBO taxBO) {
-        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct";
+                                       ProductMasterBO productBO, TaxBO taxBO,String invoiceId) {
+        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,invoiceid";
         StringBuffer values = new StringBuffer();
 
         double taxvalue = productBO.getTaxValue() * taxBO.getTaxRate() / 100;
@@ -3596,7 +3624,163 @@ public class OrderHelper {
                 + taxBO.getTaxRate() + ",");
         values.append(taxBO.getTaxType() + "," + taxvalue
                 + "," + businessModel.getRetailerMasterBO().getRetailerID());
-        values.append("," + taxBO.getGroupId() + ",0");
+        values.append("," + taxBO.getGroupId() + ",0" +","+businessModel.QT(invoiceId));
         db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
+
+    private double applyBillWiseTax(double totalOrderValue) {
+        double totalExclusiveOrderAmount = Double.parseDouble(SDUtil.format(totalOrderValue,
+                businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        double totalTaxValue = 0.0;
+        if (!businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
+            double totalTaxRate = 0;
+            for (TaxBO taxBO : businessModel.productHelper.taxHelper.getBillTaxList()) {
+                totalTaxRate = totalTaxRate + taxBO.getTaxRate();
+            }
+
+            totalExclusiveOrderAmount = totalOrderValue / (1 + (totalTaxRate / 100));
+        }
+
+
+        for (TaxBO taxBO : businessModel.productHelper.taxHelper.getBillTaxList()) {
+            double taxValue = totalExclusiveOrderAmount * (taxBO.getTaxRate() / 100);
+            totalTaxValue = totalTaxValue + taxValue;
+            taxBO.setTotalTaxAmount(taxValue);
+        }
+        return totalTaxValue;
+    }
+
+    public double getProductTotalValue() {
+        double totalvalue = 0;
+        float taxValue = businessModel.productHelper.taxHelper.includeProductWiseTax(getOrderedProductMasterBOS());
+        for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
+            ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
+            if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
+                    || prodBo.getOrderedOuterQty() != 0) {
+                double temp = (prodBo.getOrderedPcsQty() * prodBo.getSrp())
+                        + (prodBo.getOrderedCaseQty() * prodBo.getCsrp())
+                        + prodBo.getOrderedOuterQty() * prodBo.getOsrp();
+                totalvalue = totalvalue + temp;
+
+//                prodBo.setDiscount_order_value(temp);
+//
+//                taxValue = taxValue + getTaxAmount(prodBo);
+            }
+        }
+
+        setOrderDeliveryTotalValue(String.valueOf(totalvalue));
+        setOrderDeliveryTaxAmount(String.valueOf(totalvalue+taxValue));
+
+        return totalvalue;
+    }
+
+    private float getTaxAmount(ProductMasterBO productBo) {
+
+        ProductMasterBO productMasterBO = productBo;
+
+        float taxAmount = 0;
+        if(businessModel.productHelper.taxHelper.getmTaxListByProductId()!=null &&
+                businessModel.productHelper.taxHelper.getmTaxListByProductId().size() > 0) {
+            try {
+                if (businessModel.productHelper.taxHelper.getmTaxListByProductId().get(productMasterBO.getProductID()) != null) {
+                    for (TaxBO taxBO : businessModel.productHelper.taxHelper.getmTaxListByProductId().get(productMasterBO.getProductID())) {
+                        if (taxBO.getParentType().equals("0")) {
+                            taxAmount += SDUtil.truncateDecimal(productMasterBO.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Commons.printException(ex);
+            }
+        }
+
+        productMasterBO.setDiscount_order_value(productMasterBO.getDiscount_order_value()+taxAmount);
+
+        return taxAmount;
+    }
+
+
+    class downloadOrderDeliveryDetail extends AsyncTask<Void,Void,Void> {
+
+        private String orderId;
+        private String from;
+        private int invoiceStatus;
+        private Context context;
+
+        private downloadOrderDeliveryDetail(String orderId,String from,int invoiceStatus, Context context){
+            this.orderId = orderId;
+            this.from = from;
+            this.invoiceStatus = invoiceStatus;
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            businessModel.productHelper.clearOrderTable();
+            clearSalesReturnTable();
+            downloadOrderDeliveryDetail(context,orderId);
+            downloadSchemeFreeProducts(context,orderId);
+            downloadOrderDeliveryAmountDetail(context,orderId);
+            downloadOrderedProducts();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            if(from.equalsIgnoreCase("Approve")) {
+
+                if (isSIHAvailable(false)) {
+
+                    CommonDialog dialog = new CommonDialog(context.getApplicationContext(), context, "", context.getResources().getString(R.string.order_delivery_approve), false,
+                            context.getResources().getString(R.string.ok), context.getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        @Override
+                        public void onPositiveButtonClick() {
+
+                            new UpdateOrderDeliveryTable(orderId,context).execute();
+
+                        }
+                    }, new CommonDialog.negativeOnClickListener() {
+                        @Override
+                        public void onNegativeButtonClick() {
+
+                        }
+                    });
+                    dialog.show();
+                    dialog.setCancelable(false);
+                } else {
+                    //Todo -- display toast based on condition
+                }
+
+            }
+
+            else {
+                //Todo --- Move to next activity
+            }
+        }
+    }
+
+    class UpdateOrderDeliveryTable extends AsyncTask<Void,Void,Void>{
+
+        private String orderId;
+        private Context context;
+
+        private UpdateOrderDeliveryTable(String orderId, Context context){
+            this.orderId = orderId;
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            updateTableValues(context, orderId,false);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            // Todo -- display toast or update view based on result
+        }
+    }
+
 }

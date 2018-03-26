@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Vector;
 
 /**
  * Created by mansoor on 18/1/18.
@@ -41,6 +42,7 @@ public interface TaxInterface {
     HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct();
     ArrayList<TaxBO> getBillTaxList();
     LinkedHashMap<Integer, HashSet<Double>> getTaxPercentagerListByGroupId();
+    float includeProductWiseTax(Vector<ProductMasterBO> productMasterBOS);
 
 
     //Project specific: Tax should be removed for scheme calculation.

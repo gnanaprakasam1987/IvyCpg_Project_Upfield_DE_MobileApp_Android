@@ -46,6 +46,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private EditText QUANTITY;
     private String append = "";
     private int invoiceStatus = 0;
+    private boolean isEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,12 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             orderDeliveryPresenter.getSchemeData();
         }
 
-        orderDeliveryPresenter.getAmountDetails();
+        if(getIntent().getExtras().getString("From").equals("Edit"))
+            isEdit = true;
+        else
+            isEdit = false;
+
+        orderDeliveryPresenter.getAmountDetails(isEdit);
     }
 
     private void initializeViews(){
@@ -100,7 +106,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             @Override
             public void onClick(View view) {
                 orderDeliveryPresenter.saveOrderDeliveryDetail(
-                        getIntent().getExtras().getString("From").equalsIgnoreCase("Edit")?true:false,
+                        isEdit,
                         getIntent().getExtras().getString("OrderId")
                 );
             }
@@ -439,24 +445,36 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         ((TextView)findViewById(R.id.discount_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView)findViewById(R.id.tax_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView)findViewById(R.id.order_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
+        ((TextView)findViewById(R.id.ord_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         TextView discount_value = findViewById(R.id.discount_value);
         TextView taxValue = findViewById(R.id.tax_value);
         TextView orderValue = findViewById(R.id.order_value);
+        TextView orderBaseValue = findViewById(R.id.ord_value);
+
+        if(isEdit) {
+            discount_value.setVisibility(View.GONE);
+            (findViewById(R.id.discount_value_title)).setVisibility(View.GONE);
+        }
 
         discount_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         taxValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         orderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        orderBaseValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         discount_value.setTextColor(Color.parseColor("#000000"));
         taxValue.setTextColor(Color.parseColor("#000000"));
         orderValue.setTextColor(Color.parseColor("#000000"));
+        orderBaseValue.setTextColor(Color.parseColor("#000000"));
 
-        discount_value.setText(discountAmt == null || discountAmt.equals("") ?"0":discountAmt);
-        taxValue.setText(taxAmt == null || taxAmt.equals("") ?"0":taxAmt);
-        orderValue.setText(orderVal == null || orderVal.equals("") ?"0":orderVal);
+        double discountVal = SDUtil.convertToDouble(discountAmt);
+        double totalTaxVal = SDUtil.convertToDouble(taxAmt) - SDUtil.convertToDouble(orderVal);
+        double orderTaxIncludeVal = SDUtil.convertToDouble(taxAmt);
 
+        orderBaseValue.setText(String.valueOf(SDUtil.convertToDouble(orderVal) - discountVal));
+        discount_value.setText(String.valueOf(discountVal));
+        taxValue.setText(String.valueOf(totalTaxVal<0?0:bmodel.formatValueBasedOnConfig(totalTaxVal)));
+        orderValue.setText(String.valueOf(orderTaxIncludeVal<=0?SDUtil.convertToDouble(orderVal):bmodel.formatValueBasedOnConfig(orderTaxIncludeVal)));
     }
 
     @Override
@@ -471,6 +489,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         findViewById(R.id.card_view).setVisibility(View.VISIBLE);
         findViewById(R.id.keypad).setVisibility(View.VISIBLE);
         initializeEditViewHeader();
+        orderDeliveryPresenter.getAmountDetails(isEdit);
         MyAdapter myAdapter = new MyAdapter(productList);
         recyclerView.setAdapter(myAdapter);
         myAdapter.notifyDataSetChanged();
@@ -709,9 +728,14 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             holder.caseQty.setText(String.valueOf(productList.get(position).getOrderedCaseQty()));
             holder.outerQty.setText(String.valueOf(productList.get(position).getOrderedOuterQty()));
 
-            holder.pieceQty.setTag(String.valueOf(productList.get(position).getOrderedPcsQty()));
-            holder.caseQty.setTag(String.valueOf(productList.get(position).getOrderedCaseQty()*productList.get(position).getCaseSize()));
-            holder.outerQty.setTag(String.valueOf(productList.get(position).getOrderedOuterQty()*productList.get(position).getOutersize()));
+            int totalOrderedQty = productList.get(position).getOrderedPcsQty() +
+                    productList.get(position).getOrderedCaseQty()*productList.get(position).getCaseSize()+
+                    productList.get(position).getOrderedOuterQty()*productList.get(position).getOutersize();
+
+
+            holder.pieceQty.setTag(String.valueOf(totalOrderedQty));
+            holder.caseQty.setTag(String.valueOf(totalOrderedQty));
+            holder.outerQty.setTag(String.valueOf(totalOrderedQty));
 
             holder.sihQty.setText(String.valueOf(productList.get(position).getSIH()));
 
@@ -769,8 +793,12 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     if(holder.pieceQty.getTag()!=null && !holder.pieceQty.getTag().toString().equals(""))
                         storedPieceQty = Integer.valueOf(holder.pieceQty.getTag().toString());
 
+                    int currentOrderedQty = (productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize())
+                            + (SDUtil.convertToInt(qty))
+                            + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
+
                     if (totalQty <= productList.get(position).getSIH() &&
-                            SDUtil.convertToInt(qty) <= storedPieceQty ) {
+                            currentOrderedQty <= storedPieceQty ) {
                         if (!"".equals(qty)) {
                             productList.get(position).setOrderedPcsQty(SDUtil
                                     .convertToInt(qty));
@@ -780,6 +808,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
 
                         productList.get(position).setTotalamount(tot);
+                        orderDeliveryPresenter.getAmountDetails(isEdit);
                     } else {
                         if (!"0".equals(qty)) {
                             if (totalQty > productList.get(position).getSIH()) {
@@ -790,13 +819,12 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                                         R.string.exceed),
                                                 productList.get(position).getSIH()),
                                         Toast.LENGTH_SHORT).show();
-                            }else if(SDUtil.convertToInt(qty) > storedPieceQty){
+                            }else if(currentOrderedQty > storedPieceQty){
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
                                         String.format(
                                                 getResources().getString(
-                                                        R.string.exceed_ordered_value),
-                                                storedPieceQty),
+                                                        R.string.exceed_ordered_value)),
                                         Toast.LENGTH_SHORT).show();
                             }
 
@@ -805,6 +833,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                     qty.length() - 1) : "0";
                             productList.get(position).setOrderedPcsQty(SDUtil
                                     .convertToInt(qty));
+                            orderDeliveryPresenter.getAmountDetails(isEdit);
                             holder.pieceQty.setText(qty);
                         }
                     }
@@ -862,8 +891,12 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     if(holder.caseQty.getTag()!=null && !holder.caseQty.getTag().toString().equals(""))
                         storedcaseQty = Integer.valueOf(holder.caseQty.getTag().toString());
 
+                    int currentOrderedQty = (SDUtil.convertToInt(qty) * productList.get(position).getCaseSize())
+                            + (productList.get(position).getOrderedPcsQty())
+                            + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
+
                     if (totalQty <= productList.get(position).getSIH() &&
-                            (SDUtil.convertToInt(qty) * productList.get(position).getCaseSize()) <= storedcaseQty) {
+                            currentOrderedQty <= storedcaseQty) {
                         if (!"".equals(qty)) {
                             productList.get(position).setOrderedCaseQty(SDUtil
                                     .convertToInt(qty));
@@ -873,6 +906,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
                         productList.get(position).setTotalamount(tot);
+                        orderDeliveryPresenter.getAmountDetails(isEdit);
                     } else {
                         if (!"0".equals(qty)) {
                             if (totalQty > productList.get(position).getSIH()) {
@@ -883,13 +917,12 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                                         R.string.exceed),
                                                 productList.get(position).getSIH()),
                                         Toast.LENGTH_SHORT).show();
-                            }else if((SDUtil.convertToInt(qty) * productList.get(position).getCaseSize()) > storedcaseQty){
+                            }else if(currentOrderedQty > storedcaseQty){
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
                                         String.format(
                                                 getResources().getString(
-                                                        R.string.exceed_ordered_value),
-                                                storedcaseQty/productList.get(position).getCaseSize()),
+                                                        R.string.exceed_ordered_value)),
                                         Toast.LENGTH_SHORT).show();
                             }
 
@@ -900,6 +933,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             holder.caseQty.setText(qty);
                             productList.get(position).setOrderedCaseQty(SDUtil
                                     .convertToInt(qty));
+                            orderDeliveryPresenter.getAmountDetails(isEdit);
                         }
                     }
                 }
@@ -955,8 +989,12 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     if(holder.outerQty.getTag()!=null && !holder.outerQty.getTag().toString().equals(""))
                         storedouterQty = Integer.valueOf(holder.outerQty.getTag().toString());
 
+                    int currentOrderedQty = (SDUtil.convertToInt(qty) * productList.get(position).getOutersize())
+                            + (productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize())
+                            + (productList.get(position).getOrderedPcsQty());
+
                     if (totalQty <= productList.get(position).getSIH() &&
-                            (SDUtil.convertToInt(qty) * productList.get(position).getOutersize()) <= storedouterQty) {
+                            currentOrderedQty <= storedouterQty) {
                         if (!"".equals(qty)) {
                             productList.get(position).setOrderedOuterQty(SDUtil
                                     .convertToInt(qty));
@@ -966,6 +1004,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
                         productList.get(position).setTotalamount(tot);
+                        orderDeliveryPresenter.getAmountDetails(isEdit);
                     } else {
                         if (!"0".equals(qty)) {
                             if (totalQty > productList.get(position).getSIH()) {
@@ -976,13 +1015,12 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                                         R.string.exceed),
                                                 productList.get(position).getSIH()),
                                         Toast.LENGTH_SHORT).show();
-                            }else if((SDUtil.convertToInt(qty) * productList.get(position).getOutersize()) > storedouterQty){
+                            }else if(currentOrderedQty > storedouterQty){
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
                                         String.format(
                                                 getResources().getString(
-                                                        R.string.exceed_ordered_value),
-                                                storedouterQty/productList.get(position).getOutersize()),
+                                                        R.string.exceed_ordered_value)),
                                         Toast.LENGTH_SHORT).show();
                             }
 
@@ -991,6 +1029,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
                             productList.get(position).setOrderedOuterQty(SDUtil
                                     .convertToInt(qty));
+                            orderDeliveryPresenter.getAmountDetails(isEdit);
 
                             holder.outerQty.setText(qty);
                         }

@@ -51,9 +51,10 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     }
 
     @Override
-    public void getAmountDetails() {
+    public void getAmountDetails(boolean isEdit) {
+        orderHelper.getProductTotalValue();
         orderDeliveryView.updateAmountDetails(orderHelper.getOrderDeliveryTotalValue(),
-                orderHelper.getOrderDeliveryDiscountAmount(),orderHelper.getOrderDeliveryTaxAmount());
+                isEdit?"0":orderHelper.getOrderDeliveryDiscountAmount(),orderHelper.getOrderDeliveryTaxAmount());
     }
 
     @Override

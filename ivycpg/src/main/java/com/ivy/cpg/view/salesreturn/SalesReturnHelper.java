@@ -1189,7 +1189,7 @@ public class SalesReturnHelper {
      * @param db  db
      * @param uid uid
      */
-    private void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid,String module,String code) {
+    public void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid,String module,String code) {
 
         String columns = "uid,Retailerid,taxRate,taxType,applyLevelId,taxValue,pid";
         setTotalValue(getTotalCreditNoteWithOutTAX(db));

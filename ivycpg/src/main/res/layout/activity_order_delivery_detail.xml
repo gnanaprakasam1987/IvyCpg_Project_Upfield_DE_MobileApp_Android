@@ -28,7 +28,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/survey_card_margin"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="right"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/ord_value_title"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:layout_marginEnd="3dp"
+                android:gravity="center_vertical|right"
+                android:singleLine="true"
+                android:text="@string/order_value"
+                android:textColor="@color/Black"
+                android:layout_weight="0.7"/>
+
+            <TextView
+                android:id="@+id/ord_value"
+                style="?attr/customListItemValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:layout_marginEnd="3dp"
+                android:gravity="right|center_vertical"
+                android:singleLine="true"
+                android:text="0.0"
+                android:textColor="@color/Black"
+                android:layout_weight="0.3"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,7 +140,7 @@
             android:orientation="horizontal"
             android:layout_gravity="right"
             android:weightSum="1"
-            android:layout_marginBottom="@dimen/dimen_20dp">
+            android:layout_marginBottom="@dimen/dimen_5dp">
 
             <TextView
                 android:id="@+id/order_value_title"
@@ -139,17 +175,17 @@
             layout="@layout/keypad"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:layout_marginBottom="@dimen/dimen_5dp"/>
 
         <Button
             android:id="@+id/accept_btn"
             style="?attr/roundedCustomButtonNormal"
             android:layout_height="31dp"
             android:layout_gravity="right"
-            android:layout_marginBottom="@dimen/activity_margin1"
             android:layout_marginLeft="@dimen/dimen_5dp"
             android:layout_marginStart="@dimen/dimen_5dp"
-            android:layout_marginTop="@dimen/activity_margin1"
+            android:layout_marginBottom="@dimen/dimen_2dp"
             android:text="Approve"
             android:textAllCaps="false"/>
 

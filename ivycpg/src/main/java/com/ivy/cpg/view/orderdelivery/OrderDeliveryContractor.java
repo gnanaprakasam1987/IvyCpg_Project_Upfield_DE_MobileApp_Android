@@ -13,7 +13,7 @@ public interface OrderDeliveryContractor {
         void setView(OrderDeliveryView orderDeliveryView);
         void getProductData(String from);
         void getSchemeData();
-        void getAmountDetails();
+        void getAmountDetails(boolean isEdit);
         void saveOrderDeliveryDetail(boolean isEdit,String orderId);
     }
 
