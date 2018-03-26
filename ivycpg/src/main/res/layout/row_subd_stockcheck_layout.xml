@@ -195,7 +195,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:tag="totaltitle"
+                        android:tag="total_stock"
                         android:text="@string/total" />
 
 

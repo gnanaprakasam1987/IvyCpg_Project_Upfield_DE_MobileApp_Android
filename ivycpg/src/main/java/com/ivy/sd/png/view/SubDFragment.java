@@ -74,8 +74,15 @@ public class SubDFragment extends IvyBaseFragment {
 
         lvSubDId.setDivider(null);
         lvSubDId.setDividerHeight(0);
-        adapter = new RetailerSelectionAdapter(retailer);
-        lvSubDId.setAdapter(adapter);
+        if (retailer.size() > 0) {
+            if (retailer.size() == 1) {
+                bmodel.setRetailerMasterBO(retailer.get(0));
+                loadHomeScreenTwo(retailer.get(0));
+            } else {
+                adapter = new RetailerSelectionAdapter(retailer);
+                lvSubDId.setAdapter(adapter);
+            }
+        }
         return view;
     }
 

@@ -1,20 +1,134 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.ivy.sd.png.view.SubDHomeActivity">
+    android:fitsSystemWindows="true">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/activity_list"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/MyAppbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapse_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/profile_collopsing_layout_height"
+            app:contentScrim="?attr/primarycolor"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.9"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+                <ImageView
+                    android:id="@+id/retProfileImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent" />
+            </FrameLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <FrameLayout
+                android:id="@+id/main_framelayout_title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/profile_header_frame_layout_height"
+                android:layout_gravity="bottom"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.3"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+                <LinearLayout
+                    android:id="@+id/retailer_name_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/img_layout"
+                        android:layout_width="@dimen/profile_header_img"
+                        android:layout_height="@dimen/profile_header_img"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/profile_header_img_marginleft"
+                        android:background="@drawable/circle_blockbg"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="29dp"
+                            android:layout_height="@dimen/profile_header_img_height"
+                            android:layout_gravity="center"
+                            android:background="@drawable/store" />
+                    </LinearLayout>
 
 
-</LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/main.linearlayout.title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/profile_header_txt_layout_marginleft"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/retailer_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="bottom"
+                            android:text="Apollo Healthcare"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/highlight_small" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/list_margin"
+            android:descendantFocusability="blocksDescendants"
+            android:orientation="vertical">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/activity_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.design.widget.CoordinatorLayout>

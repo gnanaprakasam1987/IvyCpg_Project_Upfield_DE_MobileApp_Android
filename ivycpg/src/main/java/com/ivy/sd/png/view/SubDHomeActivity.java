@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -77,21 +79,20 @@ import java.util.Vector;
 
 public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
 
-    public static final String MENU_STOCK = "MENU_STOCK";
-    private static final String MENU_STK_ORD = "MENU_STK_ORD";
+    public static final String MENU_SUBD_STOCK = "MENU_SUBD_STOCK";
+    private static final String MENU_SUBD_ORD = "MENU_SUBD_ORD";
     private RecyclerView activityView;
     private Vector<ConfigureBO> menuDB = new Vector<>();
     private Vector<ConfigureBO> mTempMenuList = new Vector<>();
     private Toolbar toolbar;
     private Vector<ConfigureBO> menuWithSequence;
     BusinessModel bmodel;
-    private int selecteditem = 0;
     private boolean isCreated;
-    private ArrayAdapter<Integer> indicativeOrderAdapter;
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
     private SubDHomeActivity.ActivityAdapter mActivityAdapter;
     private HashMap<String, String> menuCodeList = new HashMap<>();
     String menuCode = "";
+    private TextView tvRetailerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,17 +102,21 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
 
-        activityView = (RecyclerView) findViewById(R.id.activity_list);
+        activityView = findViewById(R.id.activity_list);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayUseLogoEnabled(false);
-            setScreenTitle(bmodel.getRetailerMasterBO().getRetailerName());
+            toolbar.setTitle(bmodel.getRetailerMasterBO().getRetailerName());
         }
+
+        tvRetailerName = findViewById(R.id.retailer_name);
+        tvRetailerName.setText(bmodel.getRetailerMasterBO().getRetailerName());
+        tvRetailerName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setElevation(0);
@@ -132,7 +137,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
 
         mTempMenuList = new Vector<>(menuDB);
 
-        activityView = (RecyclerView) findViewById(R.id.activity_list);
+        activityView = findViewById(R.id.activity_list);
         activityView.setHasFixedSize(true);
         activityView.setNestedScrollingEnabled(false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -157,6 +162,17 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                 }
             }
         }
+
+
+        CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapse_toolbar);
+
+        toolbar.setTitle("");
+        collapsingToolbar.setTitleEnabled(false);
+
+        collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
+        collapsingToolbar.setCollapsedTitleTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        collapsingToolbar.setExpandedTitleColor(Color.WHITE);
+        collapsingToolbar.setExpandedTitleTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
     }
 
@@ -184,8 +200,8 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void prepareMenuIcons() {
-        menuIcons.put(MENU_STOCK, R.drawable.activity_icon_stock_check);
-        menuIcons.put(MENU_STK_ORD, R.drawable.activity_icon_order_taking);
+        menuIcons.put(MENU_SUBD_STOCK, R.drawable.activity_icon_stock_check);
+        menuIcons.put(MENU_SUBD_ORD, R.drawable.activity_icon_order_taking);
 
     }
 
@@ -310,12 +326,12 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
     private void gotoNextActivity(ConfigureBO menu, int hasLink) {
 
 
-        if (menu.getConfigCode().equals(MENU_STOCK) && hasLink == 1) {
+        if (menu.getConfigCode().equals(MENU_SUBD_STOCK) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
 
-                bmodel.productHelper.downloadTaggedProducts(MENU_STOCK);
+                bmodel.productHelper.downloadTaggedProducts(MENU_SUBD_STOCK);
 
                 /** Download location to load in the filter. **/
                 bmodel.productHelper.downloadInStoreLocations();
@@ -325,7 +341,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                     if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                         bmodel.productHelper.downloadCompetitorFiveFilterLevels();
                     }
-                    bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
+                    bmodel.productHelper.downloadCompetitorProducts(MENU_SUBD_STOCK);
                     bmodel.productHelper.downloadCompetitorTaggedProducts(menu.getConfigCode());
                 }
 
@@ -356,7 +372,6 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                     Intent intent;
                     intent = new Intent(SubDHomeActivity.this,
                             SubDStockCheckActivity.class);
-                    intent.putExtra("CurrentActivityCode", menu.getConfigCode());
 
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     startActivity(intent);
@@ -378,7 +393,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                 isCreated = false;
             }
 
-        } else if (menu.getConfigCode().equals(MENU_STK_ORD) && hasLink == 1) {
+        } else if (menu.getConfigCode().equals(MENU_SUBD_ORD) && hasLink == 1) {
 
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
@@ -499,7 +514,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                 bmodel.collectionHelper.loadCreditNote();
             }
 
-            bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STK_ORD), 1);
+            bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SUBD_ORD), 1);
 
 
             if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
