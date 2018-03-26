@@ -187,6 +187,8 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                             TextView lbl_order_value = (TextView) detailView.findViewById(R.id.lbl_order_value);
                             TextView tv_order_value = (TextView) detailView.findViewById(R.id.tv_order_value);
                             TextView tv_sequence = (TextView) detailView.findViewById(R.id.tv_sequence);
+                            TextView lbl_seller_volume = (TextView) detailView.findViewById(R.id.lbl_seller_volume);
+                            TextView tv_selles_volume = (TextView) detailView.findViewById(R.id.tv_seller_volume);
 
                             tv_retailername.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                             tv_location.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -195,11 +197,13 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                             tv_time_out.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                             tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                             tv_order_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                            tv_selles_volume.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                             tv_sequence.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                             lbl_time_in.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             lbl_time_out.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             lbl_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            lbl_seller_volume.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             lbl_order_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                             tv_retailername.setText(detailBO.getRetailerName());
@@ -209,6 +213,8 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                             tv_time_out.setText(detailBO.getTimeOut());
                             //tv_duration.setText(detailBO.getDuration());
                             tv_order_value.setText(detailBO.getSalesValue());
+                            tv_selles_volume.setText(detailBO.getSalesVolume());
+
 
                             long duration = 0;
                             //parse date and sum up intervals

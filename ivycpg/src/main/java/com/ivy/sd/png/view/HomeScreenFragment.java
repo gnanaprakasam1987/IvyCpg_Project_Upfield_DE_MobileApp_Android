@@ -140,6 +140,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_NEWRET_EDT = "MENU_NEWRET_EDT";
     private static final String MENU_TASK_NEW = "MENU_TASK_NEW";
     private static final String MENU_PLANE_MAP = "MENU_PLANE_MAP";
+
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_GROOM_CS = "MENU_GROOM_CS";
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
@@ -147,6 +148,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     //Deleiver MAnagement
     private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET";
+    //Offline Planning
+    private static final String MENU_OFLNE_PLAN = "MENU_OFLNE_PLAN";
 
     //Subd
     private static final String MENU_SUBD = "MENU_SUBD";
@@ -260,6 +263,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_GROOM_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_JOINT_ACK, R.drawable.ic_survey_icon);
+        menuIcons.put(MENU_OFLNE_PLAN, R.drawable.ic_expense_icon);
         menuIcons.put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
 
         // Load the HHTMenuTable
@@ -1020,10 +1024,33 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
-                bmodel.distributorMasterHelper.downloadDistributorsList();
-
                 switchFragment(MENU_DASH_INC, menuItem.getMenuName());
+            }
+
+        } else if (menuItem.getConfigCode().equals(MENU_OFLNE_PLAN)) {
+            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    "yyyy/MM/dd") > 0)
+                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (isLeave_today) {
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.mark_attendance),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.leaveToday),
+                            Toast.LENGTH_SHORT).show();
+            } else {
+                Intent i = new Intent(getContext(), OfflinePlanningActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.putExtra("screentitle", "" + "Call Planning");
+                startActivity(i);
+                getActivity().finish();
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_STOCK_ADJUSTMENT)) {
@@ -1482,20 +1509,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             switchFragment(MENU_DELMGMT_RET, menuItem.getMenuName());
         }
 
-          /*else if (menuItem.getConfigCode().equals(MENU_COLLECTION_PRINT)) {
-            String printFile = readPrintFile();
-            if (!"".equals(printFile)) {
-                bmodel.mCommonPrintHelper.setInvoiceData(new StringBuilder(printFile));
-                bmodel.mSelectedActivityName = menuItem.getMenuName();
-                Intent i = new Intent(getActivity(), CommonPrintPreviewActivity.class);
-                i.putExtra("isHomeBtnEnable", true);
-                startActivity(i);
-            } else {
-                Toast.makeText(getActivity(), "No Data", Toast.LENGTH_LONG).show();
-            }
-        }*/
-
-
     }
 
     private void switchFragment(String fragmentName, String menuName) {
@@ -1692,7 +1705,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 && planDeviationFragment.isVisible()) {
             return;
         }
-
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
         if (mNewOutletFragment != null)
@@ -1864,7 +1876,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DASH_INC);
                 break;
-
             case MENU_JOINT_CALL:
                 bmodel.configurationMasterHelper.setJointCallTitle(menuName);
                 bndl = new Bundle();

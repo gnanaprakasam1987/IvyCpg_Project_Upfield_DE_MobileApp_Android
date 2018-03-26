@@ -1180,7 +1180,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                     PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
 
                                         discountHelper.clearSchemeFreeProduct(mOrderedProductList);
-
+                                        BModel.deleteModuleCompletion("MENU_STK_ORD");
                                         new MyThread(OrderSummary.this,
                                                 DataMembers.DELETE_STOCK_AND_ORDER).start();
                                     }

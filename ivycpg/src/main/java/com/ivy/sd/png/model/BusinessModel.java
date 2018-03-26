@@ -1623,6 +1623,7 @@ public class BusinessModel extends Application {
                     retailer.setIsSEZzone(c.getInt(c.getColumnIndex("InSEZ")));
                     retailer.setDLNo(c.getString(c.getColumnIndex("DLNo")));
                     retailer.setDLNoExpDate(c.getString(c.getColumnIndex("DLNoExpDate")));
+                    retailer.setSubdId(c.getInt(c.getColumnIndex("SubDId")));
 
 
                     retailer.setIsToday(0);

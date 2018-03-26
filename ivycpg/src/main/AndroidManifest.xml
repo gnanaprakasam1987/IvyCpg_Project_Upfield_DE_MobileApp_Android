@@ -794,6 +794,12 @@
             android:screenOrientation="portrait" />
 
 
+        <activity
+            android:name="com.ivy.sd.png.view.OfflinePlanningActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>

@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.android.gms.common.ConnectionResult;
@@ -63,6 +62,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     private TransferUtility transferUtility;
     private String initialLanguage = "en";
     private SharedPreferences sharedPrefs;
+    private int mTotalRetailerCount = 0;
 
     LoginPresenterImpl(Context context) {
         this.context = context;
@@ -421,7 +421,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                         Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                 jsonObj.put(SynchronizationHelper.MOBILE_UTC_DATE_TIME,
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-                jsonObj.put(SynchronizationHelper.VERSION_NAME,businessModel.getApplicationVersionName());
+                jsonObj.put(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
                 if (!DataMembers.backDate.isEmpty())
                     jsonObj.put(SynchronizationHelper.REQUEST_MOBILE_DATE_TIME,
                             SDUtil.now(SDUtil.DATE_TIME_NEW));
@@ -709,18 +709,17 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            int mTotalRetailerCount;
             try {
 
-                //if (mTotalRetailerCount == 0) {
-                mTotalRetailerCount = businessModel.synchronizationHelper.getTotalRetailersCount();
-                mIterateCount = mTotalRetailerCount / SynchronizationHelper.LAST_VISIT_TRAN_SPLIT_RETAILER_COUNT;
-                final int remainder = mTotalRetailerCount % SynchronizationHelper.LAST_VISIT_TRAN_SPLIT_RETAILER_COUNT;
-                if (remainder > 0) mIterateCount = mIterateCount + 1;
+                if (mTotalRetailerCount == 0) {
+                    mTotalRetailerCount = businessModel.synchronizationHelper.getTotalRetailersCount();
+                    mIterateCount = mTotalRetailerCount / SynchronizationHelper.LAST_VISIT_TRAN_SPLIT_RETAILER_COUNT;
+                    final int remainder = mTotalRetailerCount % SynchronizationHelper.LAST_VISIT_TRAN_SPLIT_RETAILER_COUNT;
+                    if (remainder > 0) mIterateCount = mIterateCount + 1;
 
-                businessModel.synchronizationHelper.setRetailerwiseTotalIterateCount(mIterateCount);
-                businessModel.synchronizationHelper.setmRetailerWiseIterateCount(mIterateCount);
-                //}
+                    businessModel.synchronizationHelper.setRetailerwiseTotalIterateCount(mIterateCount);
+                    businessModel.synchronizationHelper.setmRetailerWiseIterateCount(mIterateCount);
+                }
                 final ArrayList<RetailerMasterBO> retailerIds = businessModel.synchronizationHelper.getRetailerIdsForDownloadTranSactionData(mIterateCount - 1);
                 mIterateCount--;
 
@@ -851,7 +850,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             } else {
 
                 if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
-                        CatalogImageDownloadProvider.getInstance(businessModel).callCatalogImageDownload();
+                    CatalogImageDownloadProvider.getInstance(businessModel).callCatalogImageDownload();
                 }
                 checkLogin();
                 loginView.finishActivity();
@@ -936,10 +935,6 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             }
         }
     }
-
-
-
-
 
 
     /**

@@ -624,6 +624,9 @@ public class DataMembers {
     public static final String tbl_display_scheme_tracking_header = "DisplaySchemeTrackingHeader";
     public static final String tbl_display_scheme_tracking_cols = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId,IsAvailable";
 
+    public static final String tbl_date_wise_plan = "DatewisePlan";
+    public static final String tbl_date_wise_plan_cols = "PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -795,6 +798,7 @@ public class DataMembers {
         uploadColumn.put(tbl_NonFieldActivity, tbl_NonFieldActivity_cols);
         uploadColumn.put(tbl_display_scheme_enrollment_header, tbl_display_scheme_enrollment_cols);
         uploadColumn.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
+        uploadColumn.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
 
     }
 
@@ -924,6 +928,7 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
         uploadColumnWithRetailer.put(tbl_display_scheme_enrollment_header, tbl_display_scheme_enrollment_cols);
         uploadColumnWithRetailer.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
+        uploadColumnWithRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

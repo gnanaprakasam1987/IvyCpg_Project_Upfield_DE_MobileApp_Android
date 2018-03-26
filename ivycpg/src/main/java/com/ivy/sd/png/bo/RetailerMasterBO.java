@@ -207,6 +207,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     private String DLNo;
     private String DLNoExpDate;
+    private int SubdId;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -1543,4 +1544,11 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         return DLNoExpDate;
     }
 
+    public int getSubdId() {
+        return SubdId;
+    }
+
+    public void setSubdId(int subdId) {
+        SubdId = subdId;
+    }
 }
