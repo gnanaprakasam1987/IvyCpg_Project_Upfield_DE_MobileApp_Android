@@ -2366,7 +2366,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-            } else if (msg.what == DataMembers.NOTIFY_ORDER_SAVED) {
+            } else if (msg.what == DataMembers.NOTIFY_ORDER_NOT_SAVED) {
                 try {
                     alertDialog.dismiss();
                     Toast.makeText(OrderSummary.this, getResources().getString(R.string.order_save_falied),

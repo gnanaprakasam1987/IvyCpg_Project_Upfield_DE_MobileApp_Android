@@ -70,10 +70,19 @@ public class SubDFragment extends IvyBaseFragment {
         retailer = bmodel.getSubDMaster();
         lvSubDId = (ListView) view.findViewById(R.id.lv_subdid);
 
+        setScreenTitle(bmodel.configurationMasterHelper.getSubdtitle());
+
         lvSubDId.setDivider(null);
         lvSubDId.setDividerHeight(0);
-        adapter = new RetailerSelectionAdapter(retailer);
-        lvSubDId.setAdapter(adapter);
+        if (retailer.size() > 0) {
+            if (retailer.size() == 1) {
+                bmodel.setRetailerMasterBO(retailer.get(0));
+                loadHomeScreenTwo(retailer.get(0));
+            } else {
+                adapter = new RetailerSelectionAdapter(retailer);
+                lvSubDId.setAdapter(adapter);
+            }
+        }
         return view;
     }
 
@@ -121,7 +130,7 @@ public class SubDFragment extends IvyBaseFragment {
                 holder.cardViewItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        bmodel.setRetailerMasterBO(retailerObj);
+                        bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
                         loadHomeScreenTwo(retailerObj);
                     }
                 });
@@ -130,12 +139,15 @@ public class SubDFragment extends IvyBaseFragment {
                 holder = (RetailerSelectionAdapter.ViewHolder) convertView.getTag();
             }
 
+            holder.retailerObjectHolder = retailerObj;
+
             String tvText = items.get(position).getRetailerName();
             holder.retailertNameTextView.setText(tvText);
             return convertView;
         }
 
         class ViewHolder {
+            private RetailerMasterBO retailerObjectHolder;
             private TextView retailertNameTextView;
             private CardView cardViewItem;
 
@@ -153,9 +165,7 @@ public class SubDFragment extends IvyBaseFragment {
                     Toast.LENGTH_SHORT).show();
 
         } else {
-            if (bmodel.timer == null) {
-                bmodel.timer = new TimerCount();
-            }
+
             new DownloadProductsAndPrice().execute();
         }
     }
