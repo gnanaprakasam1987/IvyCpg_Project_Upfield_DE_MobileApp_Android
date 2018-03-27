@@ -208,6 +208,13 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String DLNo;
     private String DLNoExpDate;
     private int SubdId;
+    private String panNumber;
+    private String foodLicenceNo;
+    private String foodLicenceExpDate;
+    private String mobile;
+    private String fax;
+    private String region;
+    private String country;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -1550,5 +1557,60 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setSubdId(int subdId) {
         SubdId = subdId;
+    }
+    public String getPanNumber() {
+        return panNumber;
+    }
+
+    public void setPanNumber(String panNumber) {
+        this.panNumber = panNumber;
+    }
+
+    public String getFoodLicenceNo() {
+        return foodLicenceNo;
+    }
+
+    public void setFoodLicenceNo(String foodLicenceNo) {
+        this.foodLicenceNo = foodLicenceNo;
+    }
+
+    public String getFoodLicenceExpDate() {
+        return foodLicenceExpDate;
+    }
+
+    public void setFoodLicenceExpDate(String foodLicenceExpDate) {
+        this.foodLicenceExpDate = foodLicenceExpDate;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

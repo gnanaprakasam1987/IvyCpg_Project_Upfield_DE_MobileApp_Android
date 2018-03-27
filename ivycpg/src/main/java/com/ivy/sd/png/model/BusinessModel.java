@@ -1432,8 +1432,8 @@ public class BusinessModel extends Application {
 
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,A.SubDId"
-
+                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,A.SubDId,"
+                            + "A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country"
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerClientMappingMaster RC on RC.rid = A.RetailerID"
@@ -1626,6 +1626,13 @@ public class BusinessModel extends Application {
                     retailer.setDLNo(c.getString(c.getColumnIndex("DLNo")));
                     retailer.setDLNoExpDate(c.getString(c.getColumnIndex("DLNoExpDate")));
                     retailer.setSubdId(c.getInt(c.getColumnIndex("SubDId")));
+                    retailer.setPanNumber(c.getString(c.getColumnIndex("pan_number")));
+                    retailer.setFoodLicenceNo(c.getString(c.getColumnIndex("food_licence_number")));
+                    retailer.setFoodLicenceExpDate(c.getString(c.getColumnIndex("food_licence_exp_date")));
+                    retailer.setMobile(c.getString(c.getColumnIndex("Mobile")));
+                    retailer.setFax(c.getString(c.getColumnIndex("FaxNo")));
+                    retailer.setRegion(c.getString(c.getColumnIndex("Region")));
+                    retailer.setCountry(c.getString(c.getColumnIndex("Country")));
 
 
                     retailer.setIsToday(0);
