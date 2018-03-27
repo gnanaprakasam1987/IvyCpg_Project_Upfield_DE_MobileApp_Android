@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -198,6 +199,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private String imageFileName;
     private ListView listView;
     private ChannelSelectionDialogFragment dialogFragment;
+    private ImageButton chatBtn, divStatusBtn, feedBackBtn;
 
 
     @Nullable
@@ -358,6 +360,55 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(),
                         UserSettingsActivity.class);
+                startActivity(i);
+            }
+        });
+
+        chatBtn = (ImageButton) view.findViewById(R.id.img_chat);
+        divStatusBtn = (ImageButton) view.findViewById(R.id.img_div_status);
+        feedBackBtn = (ImageButton) view.findViewById(R.id.img_user_feedback);
+
+        if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
+            chatBtn.setVisibility(View.VISIBLE);
+
+        if (bmodel.configurationMasterHelper.SHOW_DEVICE_STATUS)
+            divStatusBtn.setVisibility(View.VISIBLE);
+
+        if (bmodel.configurationMasterHelper.SHOW_FEEDBACK)
+            feedBackBtn.setVisibility(View.VISIBLE);
+
+
+        chatBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bmodel.getChatRegId() != null && bmodel.getChatUserName() != null
+                        && bmodel.getChatPassword() != null && !bmodel.getChatRegId().equals("")
+                        && !bmodel.getChatUserName().equals("") && !bmodel.getChatPassword().equals("")) {
+                    ChatApplicationHelper.getInstance(getActivity())
+                            .openChatApplication(bmodel.getChatUserName(),
+                                    bmodel.getChatUserName().trim() + "@ivymobility.com", bmodel.getChatPassword(),
+                                    bmodel.getChatRegId(), CHAT_AUTHENTICATION_KEY, CHAT_AUTHENTICATION_SECRET_KEY);
+                } else {
+                    Toast.makeText(getActivity(), R.string.not_registered, Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+
+        divStatusBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), DeviceStatusActivity.class);
+                startActivity(i);
+            }
+        });
+
+
+        feedBackBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), UserFeedbackActivity.class);
                 startActivity(i);
             }
         });

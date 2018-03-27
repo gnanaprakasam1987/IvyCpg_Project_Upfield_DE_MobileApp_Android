@@ -1963,10 +1963,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                         bmodel.batchAllocationHelper.downloadProductBatchCount();
                     }
 
+                    bmodel.productHelper.downloadBomMaster();
+
                     if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN
                             && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
                         bmodel.productHelper.downlaodReturnableProducts(MENU_STK_ORD);
-                        bmodel.productHelper.downloadBomMaster();
                         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
                             bmodel.productHelper.downloadTypeProducts();
                             bmodel.productHelper.downloadGenericProductID();

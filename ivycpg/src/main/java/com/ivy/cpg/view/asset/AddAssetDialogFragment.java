@@ -265,7 +265,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         assetBo.setPOSM(assetTrackingHelper.getAssetPosmIds(mAsset
                 .getSelectedItem().toString()));
 
-        if (mBrand != null) {
+        if (mBrand.getSelectedItem() != null) {
             if (!mBrand.getSelectedItem().toString()
                     .equals(SELECT))
                 assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(mBrand
