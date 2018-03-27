@@ -7,9 +7,9 @@ package com.ivy.sd.png.bo;
 public class SellerPerformanceBO {
 
     int userId;
-    int plannedCall,DeviatedCall,actualCall,productiveCall;
+    int plannedCall, DeviatedCall, actualCall, productiveCall;
     String userName;
-    String timeSpent,objective,actual,visitPer,productivePer,lastSync;
+    String timeSpent, objective, actual, visitPer, productivePer, lastSync, salesVolume;
 
     public int getUserId() {
         return userId;
@@ -105,5 +105,13 @@ public class SellerPerformanceBO {
 
     public void setProductiveCall(int productiveCall) {
         this.productiveCall = productiveCall;
+    }
+
+    public String getSalesVolume() {
+        return salesVolume;
+    }
+
+    public void setSalesVolume(String salesVolume) {
+        this.salesVolume = salesVolume;
     }
 }

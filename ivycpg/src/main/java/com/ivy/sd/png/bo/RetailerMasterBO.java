@@ -190,11 +190,24 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private boolean isOrderWithoutInvoice;
     private int salesTypeId = 0;
     private String profileImagePath;
+    private int subDId;
+
+
+    public int getSubDId() {
+        return subDId;
+    }
+
+    public void setSubDId(int subDId) {
+        this.subDId = subDId;
+    }
+
+
 
     private String GSTNumber = "-";
 
     private String DLNo;
     private String DLNoExpDate;
+    private int SubdId;
     private String panNumber;
     private String foodLicenceNo;
     private String foodLicenceExpDate;
@@ -1538,6 +1551,13 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         return DLNoExpDate;
     }
 
+    public int getSubdId() {
+        return SubdId;
+    }
+
+    public void setSubdId(int subdId) {
+        SubdId = subdId;
+    }
     public String getPanNumber() {
         return panNumber;
     }

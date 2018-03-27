@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1260"
+    android:versionCode="1280"
     android:versionName="2.127.0.1178">
 
 
@@ -779,6 +779,27 @@
         <activity
             android:name="com.ivy.sd.png.view.reports.SalesReturnValidationReport"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.SubDHomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.SubDStockCheckActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.sd.png.view.SubDStockOrderActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.sd.png.view.OfflinePlanningActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize" />
+
+
     </application>
 
 </manifest>

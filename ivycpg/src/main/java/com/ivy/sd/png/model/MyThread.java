@@ -2,6 +2,7 @@ package com.ivy.sd.png.model;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.telecom.Call;
 
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
 import com.ivy.cpg.view.login.LoginHelper;
@@ -9,6 +10,7 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -16,9 +18,11 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
+import com.ivy.sd.png.view.CallAnalysisActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.ReAllocationActivity;
+import com.ivy.sd.png.view.SubDStockOrderActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
@@ -32,10 +36,17 @@ public class MyThread extends Thread {
     private Activity ctx;
     private int opt;
     Handler handler;
+    private boolean isFromCallAnalysis;
 
     public MyThread(Activity ctx, int opt) {
         this.ctx = ctx;
         this.opt = opt;
+    }
+
+    public MyThread(Activity ctx, int opt,boolean isFromCallAnalysis) {
+        this.ctx = ctx;
+        this.opt = opt;
+        this.isFromCallAnalysis=isFromCallAnalysis;
     }
 
     public MyThread(Activity ctx, int opt, Handler handler) {
@@ -115,51 +126,77 @@ public class MyThread extends Thread {
                         DataMembers.NOTIFY_NOT_USEREXIST);
             }
         } else if (opt == DataMembers.AMAZONIMAGE_UPLOAD) {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+
+            Handler handler;
+            if(isFromCallAnalysis){
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler=fragment.getHandler();
+            }
+            else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler=fragment.getHandler();
+            }
+
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-            bmodel.uploadImageToAmazonCloud(fragment.getHandler());
+            bmodel.uploadImageToAmazonCloud(handler);
 
         } else if (opt == DataMembers.SYNCUPLOAD_IMAGE) {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+            Handler handler;
+            if(isFromCallAnalysis){
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler=fragment.getHandler();
+            }
+            else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler=fragment.getHandler();
+            }
+
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
             if (bmodel.synchronizationHelper.checkForImageToUpload()) {
-                bmodel.prepareUploadImageAtSOAP(fragment.getHandler());
+                bmodel.prepareUploadImageAtSOAP(handler);
                 // imageUploadStatus = bmodel.uploadImageAtSOAP(data);
             }
         } else if (opt == DataMembers.SYNCUPLOAD) {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
+            Handler handler;
+            if(isFromCallAnalysis){
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler=fragment.getHandler();
+            }
+            else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler=fragment.getHandler();
+            }
 
             if (bmodel.isOnline()) {
 
-
-                int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNCUPLOAD);
+                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOAD);
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 0);
 
                 if (bool == 1) {
                     if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
                         if (!bmodel.synchronizationHelper.backUpDB()) {
-                            fragment.getHandler().sendEmptyMessage(
-                                    DataMembers.NOTIFY_DATABASE_NOT_SAVED);
+                            handler.sendEmptyMessage(DataMembers.NOTIFY_DATABASE_NOT_SAVED);
 
                         }
                     }
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOADED);
                 } else if (bool == -1) {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
 
 
                 } else {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
             } else {
-                fragment.getHandler().sendEmptyMessage(
+                handler.sendEmptyMessage(
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
             }
 
@@ -169,8 +206,8 @@ public class MyThread extends Thread {
             ReAllocationActivity frm = (ReAllocationActivity) ctx;
 
             if (bmodel.isOnline()) {
-
-                int bool = bmodel.synchronizationHelper.uploadUsingHttp(frm.getHandler(), DataMembers.SYNC_REALLOC_UPLOAD);
+                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(frm.getHandler(), DataMembers.SYNC_REALLOC_UPLOAD);
                 if (bool == 1) {
                     frm.getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOADED);
@@ -185,30 +222,40 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.SYNCUPLOADRETAILERWISE) // download other
         // masters
         {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
 
+            Handler handler;
+            if(isFromCallAnalysis){
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler=fragment.getHandler();
+            }
+            else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler=fragment.getHandler();
+            }
+
             if (bmodel.isOnline()) {
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 1);
-                int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNCUPLOADRETAILERWISE);
+                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOADRETAILERWISE);
 
                 if (bool == 1) {
                     if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
                         if (!bmodel.synchronizationHelper.backUpDB()) {
-                            fragment.getHandler().sendEmptyMessage(
+                            handler.sendEmptyMessage(
                                     DataMembers.NOTIFY_DATABASE_NOT_SAVED);
 
                         }
                     }
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOADED);
                 } else {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
                 }
             } else {
-                fragment.getHandler().sendEmptyMessage(
+                handler.sendEmptyMessage(
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
             }
 
@@ -217,8 +264,9 @@ public class MyThread extends Thread {
             HomeScreenActivity fragment = (HomeScreenActivity) ctx;
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
+            UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
             // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 2);
-            int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNC_EXPORT);
+            int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNC_EXPORT);
 
             if (bool == 1) {
                 fragment.getHandler().sendEmptyMessage(
@@ -314,6 +362,49 @@ public class MyThread extends Thread {
                 frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
             } else {
                 OrderSummary frm = (OrderSummary) ctx;
+                frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_NOT_SAVED);
+            }
+        } else if (opt == DataMembers.SAVESUBDORDER) {
+            bmodel = (BusinessModel) ctx.getApplicationContext();
+            bmodel.setContext(ctx);
+
+            // Save Order
+            if (orderHelper.saveOrder(ctx)) {
+                bmodel.updateSbdDistStockinRetailerMaster();
+
+                bmodel.setOrderHeaderBO(null);
+
+                // Upadte isVisited Flag
+                if (bmodel.mSelectedModule != 1) {
+                    bmodel.updateIsVisitedFlag();
+                }
+
+                // Update review plan in DB
+                bmodel.setReviewPlanInDB();
+
+                // Set Order Flag
+                bmodel.setIsOrdered("Y");
+                bmodel.setOrderedInDB("Y");
+                bmodel.getRetailerMasterBO().setOrdered("Y");
+
+                // Set Order Taken/ executed flag
+                bmodel.setIsOrderMerch();
+                bmodel.setOrderMerchInDB("Y");
+                bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
+
+                // Clear all the temp values
+                SubDStockOrderActivity frm = (SubDStockOrderActivity) ctx;
+
+                // Backup the database
+                if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
+                    if (!bmodel.synchronizationHelper.backUpDB()) {
+                        frm.getHandler().sendEmptyMessage(
+                                DataMembers.NOTIFY_DATABASE_NOT_SAVED);
+                    }
+                }
+                frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
+            } else {
+                SubDStockOrderActivity frm = (SubDStockOrderActivity) ctx;
                 frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_NOT_SAVED);
             }
         } else if (opt == DataMembers.SAVEORDERPARTIALLY) {
@@ -656,50 +747,71 @@ public class MyThread extends Thread {
             }
 
         } else if (opt == DataMembers.SYNCSIHUPLOAD) {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
+            UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+
+            Handler handler;
+            if(isFromCallAnalysis){
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler=fragment.getHandler();
+            }
+            else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler=fragment.getHandler();
+            }
 
             if (bmodel.isOnline()) {
-                int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNCSIHUPLOAD);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSIHUPLOAD);
 
                 if (bool == 2) {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_SIH_UPLOADED);
                 } else if (bool == -1) {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
                 } else {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_SIH_UPLOAD_ERROR);
                 }
             } else {
-                fragment.getHandler().sendEmptyMessage(
+                handler.sendEmptyMessage(
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
             }
 
         } else if (opt == DataMembers.SYNCSTKAPPLYUPLOAD) {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
 
+
+            Handler handler;
+            if(isFromCallAnalysis){
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler=fragment.getHandler();
+            }
+            else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler=fragment.getHandler();
+            }
+
             if (bmodel.isOnline()) {
-                int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNCSTKAPPLYUPLOAD);
+                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSTKAPPLYUPLOAD);
 
                 if (bool == 2) {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_STOCKAPLY_UPLOADED);
                 } else if (bool == -1) {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
 
 
                 } else {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_STOCKAPLY_UPLOAD_ERROR);
                 }
             } else {
-                fragment.getHandler().sendEmptyMessage(
+                handler.sendEmptyMessage(
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
             }
 
@@ -709,7 +821,8 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             if (bmodel.isOnline()) {
-                int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_SIH_UPLOAD);
+                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_SIH_UPLOAD);
 
                 if (bool == 2) {
                     fragment.getHandler().sendEmptyMessage(
@@ -731,7 +844,8 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             if (bmodel.isOnline()) {
-                int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_STOCK_APPLY_UPLOAD);
+                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_STOCK_APPLY_UPLOAD);
 
                 if (bool == 2) {
                     fragment.getHandler().sendEmptyMessage(
@@ -753,7 +867,8 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             if (bmodel.isOnline()) {
-                int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.CS_REJECTED_VARIANCE_UPLOAD);
+                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.CS_REJECTED_VARIANCE_UPLOAD);
 
                 if (bool == 2) {
                     fragment.getHandler().sendEmptyMessage(
@@ -770,25 +885,35 @@ public class MyThread extends Thread {
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
             }
         } else if (opt == DataMembers.SYNCLYTYPTUPLOAD) {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
 
+            Handler handler;
+            if(isFromCallAnalysis){
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler=fragment.getHandler();
+            }
+            else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler=fragment.getHandler();
+            }
+
             if (bmodel.isOnline()) {
-                int bool = bmodel.synchronizationHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNCLYTYPTUPLOAD);
+                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCLYTYPTUPLOAD);
 
                 if (bool == 2) {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_LP_UPLOADED);
                 } else if (bool == -1) {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
                 } else {
-                    fragment.getHandler().sendEmptyMessage(
+                    handler.sendEmptyMessage(
                             DataMembers.NOTIFY_LP_UPLOAD_ERROR);
                 }
             } else {
-                fragment.getHandler().sendEmptyMessage(
+                handler.sendEmptyMessage(
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
             }
 

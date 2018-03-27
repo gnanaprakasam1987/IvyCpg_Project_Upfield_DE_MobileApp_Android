@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttendanceBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -492,7 +493,8 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         @Override
         protected Integer doInBackground(Void... params) {
 
-            return bmodel.synchronizationHelper.uploadUsingHttp(getHandler(), DataMembers.ATTENDANCE_UPLOAD);
+            UploadHelper mUploadHelper=UploadHelper.getInstance(getActivity());
+            return mUploadHelper.uploadUsingHttp(getHandler(), DataMembers.ATTENDANCE_UPLOAD);
         }
 
         @Override

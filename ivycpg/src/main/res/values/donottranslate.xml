@@ -294,11 +294,35 @@
     <string name="order_save_falied">Order Save Failed !</string>
     <string name="order_not_placed_focus_pack">Order not placed for Focus pack.</string>
 
+    <!--Offline Planning-->
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="monthView">Month View</string>
+    <string name="unplannedDay">UnPlanned Day</string>
+    <string name="noPlan">No Plans available</string>
+    <string name="do_you_want_delete_plan">Do you want to delete the plan?</string>
+    <string name="plan_deleted">Plan Deleted Successfully</string>
+    <string name="retailerExists">Outlet Already Exists</string>
+    <string name="notAllowtoPlanOutlet">Not allowed to plan Outlet!</string>
+    <string name="notAllowtoPlannonField">Not allowed to plan Non Field!</string>
+    <string name="nonFieldExists">NonField Already Exists</string>
+    <string name="pastAndCurrentDays">Plan can not be done for past days and current day</string>
+    <string name="endOfPeriod">End of Plan Period</string>
+
     <string name="replace_quantity_should_not_exceed_return_quantity">Replace quantity should not exceed Return quantity</string>
     <string name="please_enter_mrp_value">Please enter MRP Value</string>
     <string name="please_complete_order_taking_activity_to_perform_sales_return_activity">Please complete order taking activity to perform sales return activity</string>
     <string name="sales_return_value_should_not_exceed_order_value">Sales Return Value should not exceed Order Value. Your Order Value is %s RS</string>
     <string name="order_value_cannot_be_lesser_than_the_sales_return_value">Order Value cannot be lesser than the Sales Return Value, Please re-edit the Order.</string>
+
+    <string name="upload">Upload</string>
+    <string name="are_you_sure_you_want_to_submit">Are you sure you want to submit?</string>
+    <string name="submitted_orders_not_allowed_to_edit">Submitted transactions will not be allowed to edit.</string>
 
 
 </resources>

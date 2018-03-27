@@ -3743,13 +3743,23 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (TextUtils.isEmpty(lat)) {
                         profileConfig.get(i).setMenuNumber("0.0");
                     } else {
-                        profileConfig.get(i).setMenuNumber(lat);
+                        //converting big decimal value while Exponential value occur
+                        String longitude = (lat).contains("E")
+                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(lat), -1) + "")
+                                : lat;
+
+                        profileConfig.get(i).setMenuNumber(longitude);
                     }
                 } else if (configCode.equals("PROFILE31") && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(longitude)) {
                         profileConfig.get(i).setMenuNumber("0.0");
                     } else {
-                        profileConfig.get(i).setMenuNumber(longitude);
+                        //converting big decimal value while Exponential value occur
+                        String longiTude = (longitude).contains("E")
+                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(longitude), -1) + "")
+                                : longitude;
+
+                        profileConfig.get(i).setMenuNumber(longiTude);
                     }
                 } else if (configCode.equals("PROFILE63") && profileConfig.get(i).getModule_Order() == 1) {
                     if (bmodel.latlongImageFileName == null || "".equals(bmodel.latlongImageFileName)) {
