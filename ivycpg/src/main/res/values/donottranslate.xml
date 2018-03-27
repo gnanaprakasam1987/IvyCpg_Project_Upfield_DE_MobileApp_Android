@@ -297,6 +297,8 @@
     <string name="order_delivery_approve">Do you want to proceed ?</string>
     <string name="ordered_value_exceeds_sih_value_please_edit_the_order">Ordered value exceeds SIH value.Please edit the order</string>
     <string name="exceed_ordered_value">You have exceeded Ordered Value.</string>
+    <string name="invoice_generated">Invoice Generated</string>
+    <string name="not_able_to_generate_invoice">Not able to generate invoice</string>
 
 
 </resources>

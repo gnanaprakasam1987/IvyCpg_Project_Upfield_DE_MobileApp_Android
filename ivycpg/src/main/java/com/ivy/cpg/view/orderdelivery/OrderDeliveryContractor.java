@@ -15,13 +15,14 @@ public interface OrderDeliveryContractor {
         void getSchemeData();
         void getAmountDetails(boolean isEdit);
         void saveOrderDeliveryDetail(boolean isEdit,String orderId);
+        void goToPrintActivity();
     }
 
     interface OrderDeliveryView{
         void updateProductViewValues(Vector<ProductMasterBO> productList);
         void updateProductEditValues(Vector<ProductMasterBO> productList);
         void updateSchemeViewValues(ArrayList<SchemeProductBO> schemeProductBOS);
-        void updateAmountDetails(String orderVal,String discountAmt,String taxAmt);
+        void updateAmountDetails(String orderVal,String discountAmt,String taxAmt,String totalOrderAmt);
         void updateSaveStatus(boolean isSuccess);
     }
 

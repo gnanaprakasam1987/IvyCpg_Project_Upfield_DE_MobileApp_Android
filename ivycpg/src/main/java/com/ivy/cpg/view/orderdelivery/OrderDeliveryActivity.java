@@ -213,6 +213,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
             orderHelper.downloadSchemeFreeProducts(OrderDeliveryActivity.this,orderId);
             orderHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this,orderId);
             orderHelper.downloadOrderedProducts();
+            orderHelper.getProductTotalValue();
             return null;
         }
 

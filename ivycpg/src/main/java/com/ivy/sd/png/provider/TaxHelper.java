@@ -851,7 +851,6 @@ public class TaxHelper implements TaxInterface{
                         ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());
                         if (taxList != null) {
                             float taxAmount = 0;
-
                             for (TaxBO taxBO : taxList) {
                                 if (taxBO.getParentType().equals("0")) {
                                     float calTax = SDUtil.truncateDecimal(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();

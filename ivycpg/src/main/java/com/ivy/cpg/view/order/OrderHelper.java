@@ -3016,42 +3016,33 @@ public class OrderHelper {
                                                 String batchId,float weight,int msQty,int pcsUOMId,float priceOffValue,
                                                 int priceOffId,String hsnCode,int dOuomid,int uomid) {
         ProductMasterBO product;
-        int siz = businessModel.productHelper.getProductMaster().size();
-        if (siz == 0)
-            return;
 
         if (productId == null)
             return;
 
-        for (int i = 0; i < siz; ++i) {
-            product = businessModel.productHelper.getProductMaster().get(i);
+        product = businessModel.productHelper.getProductMasterBOById(productId);
 
-            if (product.getProductID().equals(productId)) {
-                product.setSchemeProducts(null);
-                product.setOrderedPcsQty(pieceQty);
-                product.setOrderedCaseQty(caseQty);
-                product.setOrderedOuterQty(outerQty);
-                product.setOrderPricePiece(pricePerPiece);
-                product.setSrp(srp);
-                product.setCaseSize(caseSize);
-                product.setOutersize(outerSize);
-                product.setBatchid(batchId);
-                product.setWeight(weight);
-                product.setMSQty(msQty);
-                product.setPcUomid(pcsUOMId);
-                product.setPriceoffvalue(priceOffValue);
-                product.setPriceOffId(priceOffId);
-                product.setHsnCode(hsnCode);
-                product.setOuUomid(dOuomid);
-                product.setCaseUomId(uomid);
+        product.setSchemeProducts(null);
+        product.setOrderedPcsQty(pieceQty);
+        product.setOrderedCaseQty(caseQty);
+        product.setOrderedOuterQty(outerQty);
+        product.setOrderPricePiece(pricePerPiece);
+        product.setSrp(srp);
+        product.setCaseSize(caseSize);
+        product.setOutersize(outerSize);
+        product.setBatchid(batchId);
+        product.setWeight(weight);
+        product.setMSQty(msQty);
+        product.setPcUomid(pcsUOMId);
+        product.setPriceoffvalue(priceOffValue);
+        product.setPriceOffId(priceOffId);
+        product.setHsnCode(hsnCode);
+        product.setOuUomid(dOuomid);
+        product.setCaseUomId(uomid);
 
-                product.setCheked(true);
+        product.setCheked(true);
 
-                businessModel.productHelper.getProductMaster().setElementAt(product, i);
 
-                return;
-            }
-        }
     }
 
     private void loadSalesReturnData(String orderId,DBUtil db) {
@@ -3245,13 +3236,6 @@ public class OrderHelper {
             db.createDataBase();
             db.openDataBase();
 
-            Cursor c = db.selectSQL("select sum(taxValue) from OrderTaxDetails " +
-                    "where orderid=" + businessModel.QT(id));
-            if (c.getCount() > 0 && c.moveToNext()) {
-                setOrderDeliveryTaxAmount(c.getString(0));
-            }
-            c.close();
-
             Cursor orderHeader = db.selectSQL("select OrderValue,discount from OrderHeader " +
                     "where orderid=" + businessModel.QT(id));
             if (orderHeader.getCount() > 0 && orderHeader.moveToNext()) {
@@ -3286,6 +3270,26 @@ public class OrderHelper {
         }
 
         return qty;
+    }
+
+    public double getProductTotalValue() {
+        double totalvalue = 0;
+        float taxValue = businessModel.productHelper.taxHelper.includeProductWiseTax(getOrderedProductMasterBOS());
+        for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
+            ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
+            if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
+                    || prodBo.getOrderedOuterQty() != 0) {
+                double temp = (prodBo.getOrderedPcsQty() * prodBo.getSrp())
+                        + (prodBo.getOrderedCaseQty() * prodBo.getCsrp())
+                        + prodBo.getOrderedOuterQty() * prodBo.getOsrp();
+                totalvalue = totalvalue + temp;
+            }
+        }
+
+        setOrderDeliveryTotalValue(String.valueOf(totalvalue));
+        setOrderDeliveryTaxAmount(String.valueOf(taxValue));
+
+        return totalvalue;
     }
 
     private boolean checkSalesReturnAvail(ProductMasterBO productMasterBO){
@@ -3327,68 +3331,8 @@ public class OrderHelper {
         return true;
     }
 
-    private void updateOrderDeliverySIH(DBUtil db,boolean isEdit){
-        try {
-
-            for(ProductMasterBO headProductMasterBO : businessModel.productHelper.getProductMaster()) {
-                int qty = 0;
-                int updateExcessSih = 0;
-                if(!isEdit)
-                    qty = getSchemeFreeProdCount(headProductMasterBO);
-
-                for (ProductMasterBO productBO : getOrderedProductMasterBOS()) {
-                    if(productBO.getProductID().equals(headProductMasterBO.getProductID())) {
-                        int prodQty = productBO.getOrderedPcsQty()
-                                + (productBO.getOrderedCaseQty() * productBO.getCaseSize())
-                                + (productBO.getOrderedOuterQty() * productBO.getOutersize());
-
-                        prodQty = prodQty + (productBO.getRepCaseQty() * productBO.getCaseSize()) + productBO.getRepPieceQty()
-                                + (productBO.getRepOuterQty() * productBO.getOutersize());
-
-
-                        if(storedProductQty.get(productBO.getProductID())!=null){
-                            if(storedProductQty.get(productBO.getProductID()) > prodQty){
-                                updateExcessSih = storedProductQty.get(productBO.getProductID()) - prodQty;
-                            }
-                        }
-
-                        qty = prodQty + qty;
-                        break;
-                    }
-                }
-
-                if (qty > 0 || updateExcessSih > 0) {
-
-                    int totalSIH = headProductMasterBO.getSIH() - qty;
-
-                    ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(headProductMasterBO.getProductID());
-                    productMasterBO.setSIH(totalSIH);
-                    db.updateSQL("update stockinhandmaster set qty = " +
-                            totalSIH + " where pid=" + headProductMasterBO.getProductID() + " and batchid= 0");
-                    db.updateSQL("update ProductMaster set sih = " +
-                            totalSIH + " where PID=" + headProductMasterBO.getProductID() );
-
-
-                    if(updateExcessSih > 0){
-                       Cursor c =  db.selectSQL("select qty from ExcessStockInHand where pid = "+ headProductMasterBO.getProductID());
-
-                       if(c.getCount() > 0 && c.moveToNext() ){
-                           updateExcessSih = c.getInt(0)+updateExcessSih;
-                           db.executeQ("update ExcessStockInHand set qty="+updateExcessSih+" where pid = "+ headProductMasterBO.getProductID());
-                       }else {
-                           db.executeQ("insert into ExcessStockInHand (qty,pid) values("+updateExcessSih+","+headProductMasterBO.getProductID()+")");
-                       }
-
-                       c.close();
-                    }
-                }
-            }
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-    }
-
-    public void updateTableValues(Context context,String orderId,boolean isEdit){
+    public boolean updateTableValues(Context context,String orderId,boolean isEdit){
+        boolean status = true;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
@@ -3406,9 +3350,11 @@ public class OrderHelper {
                 invoiceId = seqNo;
             }
 
-            if(isEdit){
+            double totalOrderValue =  SDUtil.convertToDouble(getOrderDeliveryTotalValue());
+            if(!isEdit)
+                totalOrderValue = SDUtil.convertToDouble(getOrderDeliveryTotalValue()) - SDUtil.convertToDouble(getOrderDeliveryDiscountAmount()) ;
 
-                double totalOrderValue =  0;
+            if(isEdit){
 
                 for(ProductMasterBO productBo : getOrderedProductMasterBOS()){
 
@@ -3430,8 +3376,6 @@ public class OrderHelper {
                                 .getCsrp())
                                 + (productBo.getOrderedPcsQty() * productBo.getSrp())
                                 + (productBo.getOrderedOuterQty() * productBo.getOsrp());
-
-                        totalOrderValue = totalOrderValue + line_total_price;
 
                         String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty," +
                                 "d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice," +
@@ -3465,25 +3409,7 @@ public class OrderHelper {
                     }
                 }
 
-                if (businessModel.configurationMasterHelper.SHOW_TAX) {
-                    if(businessModel.productHelper.taxHelper.getmTaxListByProductId()!=null
-                            && businessModel.productHelper.taxHelper.getmTaxListByProductId().size() > 0)
-                        saveProductLeveltax(orderId, db,totalOrderValue,invoiceId);
-                }
 
-                if (businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
-                    businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
-
-                    totalOrderValue = Double.parseDouble(SDUtil.format(totalOrderValue,
-                            businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                            0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
-
-                    final double totalTaxValue = applyBillWiseTax(totalOrderValue);
-
-                    if (businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
-                        totalOrderValue = totalOrderValue + totalTaxValue;
-
-                }
                 int linesPerCall = 0;
                 Cursor c = db.selectSQL("Select count(invoiceid) from InvoiceDetails where invoiceId = "+businessModel.QT(invoiceId));
                 if(c.getCount() > 0 && c.moveToNext())
@@ -3531,13 +3457,19 @@ public class OrderHelper {
 
                 db.executeQ(invoiceDiscountQry);
 
-                String invoiceTaxDetailQry = "Insert into InvoiceTaxDetails (RetailerId,pid,taxRate,taxType,taxValue,OrderId,GroupId," +
-                        "IsFreeProduct,invoiceID) select RetailerId,pid,taxRate,taxType,taxValue,OrderId,GroupId,IsFreeProduct,"+businessModel.QT(invoiceId)+
-                        " From OrderTaxDetails where  OrderId = "+businessModel.QT(orderId);
-
-                db.executeQ(invoiceTaxDetailQry);
+//                String invoiceTaxDetailQry = "Insert into InvoiceTaxDetails (RetailerId,pid,taxRate,taxType,taxValue,OrderId,GroupId," +
+//                        "IsFreeProduct,invoiceID) select RetailerId,pid,taxRate,taxType,taxValue,OrderId,GroupId,IsFreeProduct,"+businessModel.QT(invoiceId)+
+//                        " From OrderTaxDetails where  OrderId = "+businessModel.QT(orderId);
+//
+//                db.executeQ(invoiceTaxDetailQry);
 
                 db.updateSQL("update SchemeFreeProductDetail set InvoiceID = "+businessModel.QT(invoiceId)+" where orderId = "+businessModel.QT(orderId));
+            }
+
+            if (businessModel.configurationMasterHelper.SHOW_TAX) {
+                if(businessModel.productHelper.taxHelper.getmTaxListByProductId()!=null
+                        && businessModel.productHelper.taxHelper.getmTaxListByProductId().size() > 0)
+                    saveProductLeveltax(orderId, db,totalOrderValue,invoiceId);
             }
 
             db.updateSQL("update OrderHeader set invoicestatus = 1 where orderId = "+businessModel.QT(orderId));
@@ -3558,6 +3490,8 @@ public class OrderHelper {
 
             updateOrderDeliverySIH(db,isEdit);
 
+            businessModel.invoiceNumber = invoiceId;
+
             for(int i = 0;i<getOrderHeaders().size();i++){
                 OrderHeader orderHeader = getOrderHeaders().get(i);
                 if(orderHeader.getOrderid().equalsIgnoreCase(orderId)){
@@ -3570,7 +3504,9 @@ public class OrderHelper {
 
         }catch(Exception e){
             Commons.printException(e);
+            status = false;
         }
+        return status;
     }
 
     private void saveProductLeveltax(String orderId, DBUtil db,double totalOrderValue,String invoiceId) {
@@ -3619,87 +3555,74 @@ public class OrderHelper {
         String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,invoiceid";
         StringBuffer values = new StringBuffer();
 
-        double taxvalue = productBO.getTaxValue() * taxBO.getTaxRate() / 100;
         values.append(orderId + "," + productBO.getProductID() + ","
                 + taxBO.getTaxRate() + ",");
-        values.append(taxBO.getTaxType() + "," + taxvalue
+        values.append(taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
                 + "," + businessModel.getRetailerMasterBO().getRetailerID());
         values.append("," + taxBO.getGroupId() + ",0" +","+businessModel.QT(invoiceId));
         db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 
-    private double applyBillWiseTax(double totalOrderValue) {
-        double totalExclusiveOrderAmount = Double.parseDouble(SDUtil.format(totalOrderValue,
-                businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
-        double totalTaxValue = 0.0;
-        if (!businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
-            double totalTaxRate = 0;
-            for (TaxBO taxBO : businessModel.productHelper.taxHelper.getBillTaxList()) {
-                totalTaxRate = totalTaxRate + taxBO.getTaxRate();
-            }
+    private void updateOrderDeliverySIH(DBUtil db,boolean isEdit){
+        try {
 
-            totalExclusiveOrderAmount = totalOrderValue / (1 + (totalTaxRate / 100));
-        }
+            for(ProductMasterBO headProductMasterBO : businessModel.productHelper.getProductMaster()) {
+                int qty = 0;
+                int updateExcessSih = 0;
+                if(!isEdit)
+                    qty = getSchemeFreeProdCount(headProductMasterBO);
+
+                for (ProductMasterBO productBO : getOrderedProductMasterBOS()) {
+                    if(productBO.getProductID().equals(headProductMasterBO.getProductID())) {
+                        int prodQty = productBO.getOrderedPcsQty()
+                                + (productBO.getOrderedCaseQty() * productBO.getCaseSize())
+                                + (productBO.getOrderedOuterQty() * productBO.getOutersize());
+
+                        prodQty = prodQty + (productBO.getRepCaseQty() * productBO.getCaseSize()) + productBO.getRepPieceQty()
+                                + (productBO.getRepOuterQty() * productBO.getOutersize());
 
 
-        for (TaxBO taxBO : businessModel.productHelper.taxHelper.getBillTaxList()) {
-            double taxValue = totalExclusiveOrderAmount * (taxBO.getTaxRate() / 100);
-            totalTaxValue = totalTaxValue + taxValue;
-            taxBO.setTotalTaxAmount(taxValue);
-        }
-        return totalTaxValue;
-    }
-
-    public double getProductTotalValue() {
-        double totalvalue = 0;
-        float taxValue = businessModel.productHelper.taxHelper.includeProductWiseTax(getOrderedProductMasterBOS());
-        for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
-            ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
-            if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
-                    || prodBo.getOrderedOuterQty() != 0) {
-                double temp = (prodBo.getOrderedPcsQty() * prodBo.getSrp())
-                        + (prodBo.getOrderedCaseQty() * prodBo.getCsrp())
-                        + prodBo.getOrderedOuterQty() * prodBo.getOsrp();
-                totalvalue = totalvalue + temp;
-
-//                prodBo.setDiscount_order_value(temp);
-//
-//                taxValue = taxValue + getTaxAmount(prodBo);
-            }
-        }
-
-        setOrderDeliveryTotalValue(String.valueOf(totalvalue));
-        setOrderDeliveryTaxAmount(String.valueOf(totalvalue+taxValue));
-
-        return totalvalue;
-    }
-
-    private float getTaxAmount(ProductMasterBO productBo) {
-
-        ProductMasterBO productMasterBO = productBo;
-
-        float taxAmount = 0;
-        if(businessModel.productHelper.taxHelper.getmTaxListByProductId()!=null &&
-                businessModel.productHelper.taxHelper.getmTaxListByProductId().size() > 0) {
-            try {
-                if (businessModel.productHelper.taxHelper.getmTaxListByProductId().get(productMasterBO.getProductID()) != null) {
-                    for (TaxBO taxBO : businessModel.productHelper.taxHelper.getmTaxListByProductId().get(productMasterBO.getProductID())) {
-                        if (taxBO.getParentType().equals("0")) {
-                            taxAmount += SDUtil.truncateDecimal(productMasterBO.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                        if(storedProductQty.get(productBO.getProductID())!=null){
+                            if(storedProductQty.get(productBO.getProductID()) > prodQty){
+                                updateExcessSih = storedProductQty.get(productBO.getProductID()) - prodQty;
+                            }
                         }
+
+                        qty = prodQty + qty;
+                        break;
                     }
                 }
-            } catch (Exception ex) {
-                Commons.printException(ex);
+
+                if (qty > 0 || updateExcessSih > 0) {
+
+                    int totalSIH = headProductMasterBO.getSIH() - qty;
+
+                    ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(headProductMasterBO.getProductID());
+                    productMasterBO.setSIH(totalSIH);
+                    db.updateSQL("update stockinhandmaster set qty = " +
+                            totalSIH + " where pid=" + headProductMasterBO.getProductID() + " and batchid= 0");
+                    db.updateSQL("update ProductMaster set sih = " +
+                            totalSIH + " where PID=" + headProductMasterBO.getProductID() );
+
+
+                    if(updateExcessSih > 0){
+                        Cursor c =  db.selectSQL("select qty from ExcessStockInHand where pid = "+ headProductMasterBO.getProductID());
+
+                        if(c.getCount() > 0 && c.moveToNext() ){
+                            updateExcessSih = c.getInt(0)+updateExcessSih;
+                            db.executeQ("update ExcessStockInHand set qty="+updateExcessSih+" where pid = "+ headProductMasterBO.getProductID());
+                        }else {
+                            db.executeQ("insert into ExcessStockInHand (qty,pid) values("+updateExcessSih+","+headProductMasterBO.getProductID()+")");
+                        }
+
+                        c.close();
+                    }
+                }
             }
+        }catch(Exception e){
+            Commons.printException(e);
         }
-
-        productMasterBO.setDiscount_order_value(productMasterBO.getDiscount_order_value()+taxAmount);
-
-        return taxAmount;
     }
-
 
     class downloadOrderDeliveryDetail extends AsyncTask<Void,Void,Void> {
 
@@ -3738,7 +3661,7 @@ public class OrderHelper {
                         @Override
                         public void onPositiveButtonClick() {
 
-                            new UpdateOrderDeliveryTable(orderId,context).execute();
+                            new UpdateOrderDeliveryTable(orderId,context,false).execute();
 
                         }
                     }, new CommonDialog.negativeOnClickListener() {
@@ -3761,25 +3684,26 @@ public class OrderHelper {
         }
     }
 
-    class UpdateOrderDeliveryTable extends AsyncTask<Void,Void,Void>{
+    public class UpdateOrderDeliveryTable extends AsyncTask<Void,Void,Boolean>{
 
         private String orderId;
         private Context context;
+        private boolean isEdit;
 
-        private UpdateOrderDeliveryTable(String orderId, Context context){
+        private UpdateOrderDeliveryTable(String orderId, Context context,boolean isEdit){
             this.orderId = orderId;
             this.context = context;
+            this.isEdit = isEdit;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            updateTableValues(context, orderId,false);
-            return null;
+        protected Boolean doInBackground(Void... voids) {
+            return updateTableValues(context, orderId,isEdit);
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            // Todo -- display toast or update view based on result
+        protected void onPostExecute(Boolean aVoid) {
+
         }
     }
 

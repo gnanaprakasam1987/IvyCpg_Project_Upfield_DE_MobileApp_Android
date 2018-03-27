@@ -2,6 +2,7 @@ package com.ivy.cpg.view.orderdelivery;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -32,6 +34,9 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.print.CommonPrintPreviewActivity;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -47,6 +52,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private String append = "";
     private int invoiceStatus = 0;
     private boolean isEdit;
+    private TextView discount_value, taxValue, orderValue, orderBaseValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +104,31 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         llContent = findViewById(R.id.ll_content);
+
+        ((TextView)findViewById(R.id.discount_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView)findViewById(R.id.tax_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView)findViewById(R.id.order_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView)findViewById(R.id.ord_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+        discount_value = findViewById(R.id.discount_value);
+        taxValue = findViewById(R.id.tax_value);
+        orderValue = findViewById(R.id.order_value);
+        orderBaseValue = findViewById(R.id.ord_value);
+
+        discount_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        taxValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        orderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        orderBaseValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        discount_value.setTextColor(Color.parseColor("#000000"));
+        taxValue.setTextColor(Color.parseColor("#000000"));
+        orderValue.setTextColor(Color.parseColor("#000000"));
+        orderBaseValue.setTextColor(Color.parseColor("#000000"));
+
+        if(isEdit) {
+            discount_value.setVisibility(View.GONE);
+            (findViewById(R.id.discount_value_title)).setVisibility(View.GONE);
+        }
 
         if(invoiceStatus == 1)
             findViewById(R.id.accept_btn).setVisibility(View.GONE);
@@ -440,47 +471,28 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     }
 
     @Override
-    public void updateAmountDetails(String orderVal, String discountAmt, String taxAmt) {
+    public void updateAmountDetails(String orderVal, String discountAmt,String taxAmt, String totalOrderAmt) {
 
-        ((TextView)findViewById(R.id.discount_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView)findViewById(R.id.tax_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView)findViewById(R.id.order_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView)findViewById(R.id.ord_value_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-        TextView discount_value = findViewById(R.id.discount_value);
-        TextView taxValue = findViewById(R.id.tax_value);
-        TextView orderValue = findViewById(R.id.order_value);
-        TextView orderBaseValue = findViewById(R.id.ord_value);
-
-        if(isEdit) {
-            discount_value.setVisibility(View.GONE);
-            (findViewById(R.id.discount_value_title)).setVisibility(View.GONE);
-        }
-
-        discount_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        taxValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        orderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        orderBaseValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-        discount_value.setTextColor(Color.parseColor("#000000"));
-        taxValue.setTextColor(Color.parseColor("#000000"));
-        orderValue.setTextColor(Color.parseColor("#000000"));
-        orderBaseValue.setTextColor(Color.parseColor("#000000"));
-
-        double discountVal = SDUtil.convertToDouble(discountAmt);
-        double totalTaxVal = SDUtil.convertToDouble(taxAmt) - SDUtil.convertToDouble(orderVal);
-        double orderTaxIncludeVal = SDUtil.convertToDouble(taxAmt);
-
-        orderBaseValue.setText(String.valueOf(SDUtil.convertToDouble(orderVal) - discountVal));
-        discount_value.setText(String.valueOf(discountVal));
-        taxValue.setText(String.valueOf(totalTaxVal<0?0:bmodel.formatValueBasedOnConfig(totalTaxVal)));
-        orderValue.setText(String.valueOf(orderTaxIncludeVal<=0?SDUtil.convertToDouble(orderVal):bmodel.formatValueBasedOnConfig(orderTaxIncludeVal)));
+        orderBaseValue.setText(orderVal);
+        discount_value.setText(discountAmt);
+        taxValue.setText(taxAmt);
+        orderValue.setText(totalOrderAmt);
     }
 
     @Override
     public void updateSaveStatus(boolean isSuccess) {
-        if (isSuccess)
+        if (isSuccess) {
+
+            Intent i = new Intent(this,
+                    CommonPrintPreviewActivity.class);
+            i.putExtra("IsFromOrder", true);
+            i.putExtra("IsUpdatePrintCount", true);
+            i.putExtra("isHomeBtnEnable", true);
+            i.putExtra("sendMailAndLoadClass", "PRINT_FILE_INVOICE");
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             finish();
+        }
     }
 
     @Override
@@ -822,9 +834,8 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             }else if(currentOrderedQty > storedPieceQty){
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
-                                        String.format(
                                                 getResources().getString(
-                                                        R.string.exceed_ordered_value)),
+                                                        R.string.exceed_ordered_value),
                                         Toast.LENGTH_SHORT).show();
                             }
 
@@ -920,9 +931,8 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             }else if(currentOrderedQty > storedcaseQty){
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
-                                        String.format(
                                                 getResources().getString(
-                                                        R.string.exceed_ordered_value)),
+                                                        R.string.exceed_ordered_value),
                                         Toast.LENGTH_SHORT).show();
                             }
 
@@ -1018,9 +1028,8 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             }else if(currentOrderedQty > storedouterQty){
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
-                                        String.format(
                                                 getResources().getString(
-                                                        R.string.exceed_ordered_value)),
+                                                        R.string.exceed_ordered_value),
                                         Toast.LENGTH_SHORT).show();
                             }
 
