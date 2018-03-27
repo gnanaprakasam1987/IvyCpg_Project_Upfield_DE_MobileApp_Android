@@ -104,7 +104,6 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
         Commons.print("Photo Path, "+ "" + photoNamePath);
 
         bmodel.expenseSheetHelper.loadExpenseData();
-        bmodel.dynamicReportHelper.downloadDynamicReport("MENU_EXPENSE");
         loadExpenses();
 
 
@@ -120,10 +119,9 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
         transaction.addToBackStack(null);
         transaction.commit();
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                // viewPager.setCurrentItem(tab.getPosition());
                 FragmentTransaction transaction = getSupportFragmentManager()
                         .beginTransaction();
                 if (tab.getPosition() == 0) {
@@ -135,11 +133,7 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } else {
-                    dynamicReportFragment = new DynamicReportFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("isFrom", "Expense");
-                    dynamicReportFragment.setArguments(bundle);
-                    transaction.replace(R.id.fragment_content, dynamicReportFragment);
+                    transaction.replace(R.id.fragment_content, new PastMonthExpenseFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
