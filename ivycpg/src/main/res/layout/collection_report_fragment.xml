@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/black_bg1"
+        android:background="?customLayoutBackground"
         android:weightSum="3"
         android:paddingTop="@dimen/margin_20px"
         android:paddingBottom="@dimen/margin_20px"
@@ -71,7 +71,7 @@
                 android:text="Total Collected"
                 android:textStyle="bold"
                 android:textSize="@dimen/list_item_primary_text_size"
-                android:textColor="@color/GREEN" />
+                android:textColor="?attr/colorAccent" />
 
             <TextView
                 style="?textFieldStyle"
@@ -102,7 +102,7 @@
                 android:text="Total Cash"
                 android:textStyle="bold"
                 android:textSize="@dimen/list_item_primary_text_size"
-                android:textColor="@color/GREEN" />
+                android:textColor="?attr/colorAccent" />
 
             <TextView
                 style="?textFieldStyle"
@@ -133,7 +133,7 @@
                 android:text="Total Cheque"
                 android:textStyle="bold"
                 android:textSize="@dimen/list_item_primary_text_size"
-                android:textColor="@color/GREEN" />
+                android:textColor="?attr/colorAccent" />
 
             <TextView
                 style="?textFieldStyle"
@@ -165,7 +165,7 @@
                 android:text="Total DD"
                 android:textStyle="bold"
                 android:textSize="@dimen/list_item_primary_text_size"
-                android:textColor="@color/GREEN" />
+                android:textColor="?attr/colorAccent" />
 
             <TextView
                 style="?textFieldStyle"
@@ -194,7 +194,7 @@
                 android:layout_weight="1.5"
                 android:gravity="end"
                 android:text="Total Advance Payment"
-                android:textColor="@color/GREEN"
+                android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/list_item_primary_text_size"
                 android:textStyle="bold" />
 
@@ -227,7 +227,7 @@
                 android:text="Total Credit Note"
                 android:textStyle="bold"
                 android:textSize="@dimen/list_item_primary_text_size"
-                android:textColor="@color/GREEN" />
+                android:textColor="?attr/colorAccent" />
 
             <TextView
                 style="?textFieldStyle"
@@ -259,7 +259,7 @@
                 android:text="Total RTGS"
                 android:textStyle="bold"
                 android:textSize="@dimen/list_item_primary_text_size"
-                android:textColor="@color/GREEN" />
+                android:textColor="?attr/colorAccent" />
 
             <TextView
                 style="?textFieldStyle"
@@ -291,7 +291,7 @@
                 android:text="Total Mobile Payment"
                 android:textStyle="bold"
                 android:textSize="@dimen/list_item_primary_text_size"
-                android:textColor="@color/GREEN" />
+                android:textColor="?attr/colorAccent" />
 
             <TextView
                 style="?textFieldStyle"

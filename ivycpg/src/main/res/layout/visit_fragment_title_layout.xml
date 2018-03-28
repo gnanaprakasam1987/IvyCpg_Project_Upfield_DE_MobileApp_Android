@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        card_view:cardBackgroundColor="@color/black_bg1"
+        card_view:cardBackgroundColor="?tradeCoverageBackgroundOne"
         card_view:cardCornerRadius="@dimen/margin_5px"
         card_view:cardUseCompatPadding="true">
 
@@ -23,7 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="33.3"
-                android:background="@color/black_bg1"
+                android:background="?tradeCoverageBackgroundOne"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -61,7 +61,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="33.4"
-                android:background="@color/black_bg2"
+                android:background="?tradeCoverageBackgroundTwo"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -97,7 +97,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="33.3"
-                android:background="@color/black_bg3"
+                android:background="?tradeCoverageBackgroundThree"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -137,7 +137,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        card_view:cardBackgroundColor="@color/black_bg1"
+        card_view:cardBackgroundColor="?tradeCoverageBackgroundOne"
         card_view:cardCornerRadius="@dimen/margin_5px"
         card_view:cardUseCompatPadding="true">
 
@@ -201,7 +201,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="50"
-                android:background="@color/black_bg2"
+                android:background="?tradeCoverageBackgroundTwo"
                 android:gravity="center"
                 android:orientation="vertical">
 

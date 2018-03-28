@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DashBoardBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
@@ -102,26 +103,26 @@ public class SMPChartFragment extends Fragment {
     private void setData() {
         if (mDashboardList.getKpiTarget() != null && !mDashboardList.getKpiTarget().equals("0")) {
             ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-            float temp_ach = Float.parseFloat(mDashboardList.getKpiAcheived()) - Float.parseFloat(mDashboardList.getKpiTarget());
+            float temp_ach = SDUtil.convertToFloat(mDashboardList.getKpiAcheived()) - SDUtil.convertToFloat(mDashboardList.getKpiTarget());
             if (temp_ach > 0) {
-                int round = Math.round(Float.parseFloat(mDashboardList.getKpiAcheived()) /
-                        (Float.parseFloat(mDashboardList.getKpiTarget())) * 100);
+                int round = Math.round(SDUtil.convertToFloat(mDashboardList.getKpiAcheived()) /
+                        (SDUtil.convertToFloat(mDashboardList.getKpiTarget())) * 100);
                 if (round % 100 == 0) {
                     round = round + 1;
                 }
                 int rounded = ((round + 99) / 100) * 100;
-                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiAcheived()), "100%"));
+                entries.add(new PieEntry(SDUtil.convertToFloat(mDashboardList.getKpiAcheived()), "100%"));
 
-                int bonus = Math.round(Float.parseFloat(mDashboardList.getKpiAcheived()) /
-                        (Float.parseFloat(mDashboardList.getKpiTarget())) * 100);
+                int bonus = Math.round(SDUtil.convertToFloat(mDashboardList.getKpiAcheived()) /
+                        (SDUtil.convertToFloat(mDashboardList.getKpiTarget())) * 100);
                 entries.add(new PieEntry(temp_ach, bonus + "%"));
 
-                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiTarget()), (rounded) + "%"));
+                entries.add(new PieEntry(SDUtil.convertToFloat(mDashboardList.getKpiTarget()), (rounded) + "%"));
             } else {
-                int bonus = Math.round(Float.parseFloat(mDashboardList.getKpiAcheived()) /
-                        (Float.parseFloat(mDashboardList.getKpiTarget())) * 100);
-                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiAcheived()), bonus + "%"));
-                entries.add(new PieEntry(Float.parseFloat(mDashboardList.getKpiTarget()), "100%"));
+                int bonus = Math.round(SDUtil.convertToFloat(mDashboardList.getKpiAcheived()) /
+                        (SDUtil.convertToFloat(mDashboardList.getKpiTarget())) * 100);
+                entries.add(new PieEntry(SDUtil.convertToFloat(mDashboardList.getKpiAcheived()), bonus + "%"));
+                entries.add(new PieEntry(SDUtil.convertToFloat(mDashboardList.getKpiTarget()), "100%"));
             }
 
 
