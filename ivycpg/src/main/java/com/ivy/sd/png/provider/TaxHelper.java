@@ -860,6 +860,7 @@ public class TaxHelper implements TaxInterface{
                             }
 
                             totalTaxAmount = totalTaxAmount +taxAmount;
+                            productBo.setTaxValue(productBo.getDiscount_order_value());
 
                             productBo.setDiscount_order_value(productBo.getDiscount_order_value()+taxAmount);
                         }

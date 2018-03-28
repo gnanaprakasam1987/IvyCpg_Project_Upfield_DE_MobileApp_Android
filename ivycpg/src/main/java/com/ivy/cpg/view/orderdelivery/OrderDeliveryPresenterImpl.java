@@ -136,6 +136,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
+
             }
             else
                 Toast.makeText(

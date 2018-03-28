@@ -1861,6 +1861,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 OrderHelper orderHelper = OrderHelper.getInstance(this);
 
+                if(bmodel.configurationMasterHelper.IS_EXCESS_STOCK_AVAIL){
+                    bmodel.productHelper.clearOrderTable();
+                    bmodel.productHelper.updateProductWithExcessStock();
+                }
+
                 if (bmodel.configurationMasterHelper.IS_RESTRICT_ORDER_TAKING
                         && (bmodel.getRetailerMasterBO().getRField4().equals("1")
                         || (bmodel.getRetailerMasterBO().getTinExpDate() != null && !bmodel.getRetailerMasterBO().getTinExpDate().isEmpty() && SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.getRetailerMasterBO().getTinExpDate(), "yyyy/MM/dd") > 0))) {

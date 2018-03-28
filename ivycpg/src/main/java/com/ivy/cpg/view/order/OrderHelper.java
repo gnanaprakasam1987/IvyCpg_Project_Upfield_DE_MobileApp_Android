@@ -1694,6 +1694,15 @@ public class OrderHelper {
                     + product.getProductID()
                     + " and batchid=" + businessModel.QT(batchId));
 
+            if(businessModel.configurationMasterHelper.IS_EXCESS_STOCK_AVAIL){
+                db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
+                        + totalqty
+                        + " then ifnull(qty,0)-"
+                        + totalqty
+                        + " else 0 end) where pid="
+                        + product.getProductID());
+            }
+
             sb.append(businessModel.QT(invoiceId) + ",");
             sb.append(businessModel.QT(product.getProductID()) + ",");
             sb.append(totalqty + "," + srp + ",");
@@ -2265,6 +2274,16 @@ public class OrderHelper {
                                 + product.getProductID());
 
 
+                        if(businessModel.configurationMasterHelper.IS_EXCESS_STOCK_AVAIL){
+                            db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
+                                    + totalqty
+                                    + " then ifnull(qty,0)-"
+                                    + totalqty
+                                    + " else 0 end) where pid="
+                                    + product.getProductID());
+                        }
+
+
                         //updating object
                         product.setSIH(s);
 
@@ -2368,6 +2387,16 @@ public class OrderHelper {
                                     + totalQty
                                     + " else 0 end) where pid="
                                     + productMasterBO.getProductID());
+
+
+                            if(businessModel.configurationMasterHelper.IS_EXCESS_STOCK_AVAIL){
+                                db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
+                                        + totalQty
+                                        + " then ifnull(qty,0)-"
+                                        + totalQty
+                                        + " else 0 end) where pid="
+                                        + productMasterBO.getProductID());
+                            }
 
 
                             //updating object
@@ -3323,7 +3352,7 @@ public class OrderHelper {
             }
 
             if (qty > 0) {
-                if (headProductMasterBO.getSIH() < qty) {
+                if (headProductMasterBO.getDSIH() < qty) {
                     return false;
                 }
             }
@@ -3463,7 +3492,7 @@ public class OrderHelper {
 //
 //                db.executeQ(invoiceTaxDetailQry);
 
-                db.updateSQL("update SchemeFreeProductDetail set InvoiceID = "+businessModel.QT(invoiceId)+" where orderId = "+businessModel.QT(orderId));
+                db.updateSQL("update SchemeFreeProductDetail set upload='N',InvoiceID = "+businessModel.QT(invoiceId)+" where orderId = "+businessModel.QT(orderId));
             }
 
             if (businessModel.configurationMasterHelper.SHOW_TAX) {
@@ -3491,6 +3520,10 @@ public class OrderHelper {
             updateOrderDeliverySIH(db,isEdit);
 
             businessModel.invoiceNumber = invoiceId;
+            if(isEdit)
+                this.invoiceDiscount = "0.0";
+            else
+                this.invoiceDiscount = getOrderDeliveryDiscountAmount();
 
             for(int i = 0;i<getOrderHeaders().size();i++){
                 OrderHeader orderHeader = getOrderHeaders().get(i);
@@ -3595,9 +3628,10 @@ public class OrderHelper {
 
                 if (qty > 0 || updateExcessSih > 0) {
 
-                    int totalSIH = headProductMasterBO.getSIH() - qty;
+                    int totalSIH = headProductMasterBO.getDSIH() - qty;
 
                     ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(headProductMasterBO.getProductID());
+                    productMasterBO.setDSIH(totalSIH);
                     productMasterBO.setSIH(totalSIH);
                     db.updateSQL("update stockinhandmaster set qty = " +
                             totalSIH + " where pid=" + headProductMasterBO.getProductID() + " and batchid= 0");

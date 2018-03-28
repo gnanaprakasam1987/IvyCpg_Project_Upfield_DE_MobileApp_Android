@@ -23,8 +23,11 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.print.CommonPrintPreviewActivity;
 
 import java.util.ArrayList;
 
@@ -182,6 +185,8 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
             });
 
             if(orderHeaders.get(position).getInvoiceStatus() == 1){
+                holder.orderAccept.setVisibility(View.GONE);
+                holder.orderEdit.setVisibility(View.GONE);
                 holder.invoiceGeneratedText.setVisibility(View.VISIBLE);
             }
 
@@ -229,13 +234,34 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         @Override
                         public void onPositiveButtonClick() {
 
-                            orderHelper.updateTableValues(OrderDeliveryActivity.this, orderId,false);
-                            Toast.makeText(
-                                    OrderDeliveryActivity.this,
-                                    "Approved",
-                                    Toast.LENGTH_SHORT).show();
+                            boolean status = orderHelper.updateTableValues(OrderDeliveryActivity.this, orderId,false);
+                            if(status){
 
-                            myAdapter.notifyDataSetChanged();
+                                Toast.makeText(
+                                        OrderDeliveryActivity.this,
+                                        getResources().getString(R.string.invoice_generated),
+                                        Toast.LENGTH_SHORT).show();
+
+                                bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true,orderHelper.getOrderedProductMasterBOS() , null);
+
+                                bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                                        StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
+                                Intent i = new Intent(OrderDeliveryActivity.this,
+                                        CommonPrintPreviewActivity.class);
+                                i.putExtra("IsFromOrder", false);
+                                i.putExtra("IsUpdatePrintCount", true);
+                                i.putExtra("isHomeBtnEnable", true);
+                                i.putExtra("sendMailAndLoadClass", "PRINT_FILE_INVOICE");
+                                startActivity(i);
+                                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+                                myAdapter.notifyDataSetChanged();
+                            }
+                            else
+                                Toast.makeText(
+                                        OrderDeliveryActivity.this,
+                                        getResources().getString(R.string.not_able_to_generate_invoice),
+                                        Toast.LENGTH_SHORT).show();
 
                         }
                     }, new CommonDialog.negativeOnClickListener() {

@@ -1642,6 +1642,7 @@ public class ProductHelper {
                     product.setProductName(c.getString(2));
                     product.setParentid(c.getInt(3));
                     product.setSIH(c.getInt(4));
+                    product.setDSIH(c.getInt(4));
                     product.setProductShortName(c.getString(5));
                     product.setBarCode(c.getString(6));
                     product.setVat(c.getFloat(7));
@@ -2303,6 +2304,7 @@ public class ProductHelper {
                     product.setProductName(c.getString(2));
                     product.setParentid(c.getInt(3));
                     product.setSIH(c.getInt(4));
+                    product.setDSIH(c.getInt(4));
                     product.setProductShortName(c.getString(5));
                     product.setBarCode(c.getString(6));
                     product.setVat(c.getFloat(7));
@@ -3068,6 +3070,9 @@ public class ProductHelper {
                         .getOrderedOuterQty() * product.getOutersize());
                 product.setSIH(product.getSIH() >= newsi ? product.getSIH()
                         - newsi : 0);
+                product.setDSIH(product.getSIH() >= newsi ? product.getSIH()
+                        - newsi : 0);
+
             }
         }
     }
@@ -5461,6 +5466,7 @@ public class ProductHelper {
                     product.setProductName(c.getString(2));
                     product.setParentid(c.getInt(3));
                     product.setSIH(c.getInt(4));
+                    product.setDSIH(c.getInt(4));
                     product.setProductShortName(c.getString(5));
 //                    product.setBarCode(c.getString(6));
                     product.setSrp(c.getFloat(7));
@@ -7016,6 +7022,7 @@ public class ProductHelper {
                     product.setProductName(c.getString(2));
                     product.setParentid(c.getInt(3));
                     product.setSIH(c.getInt(4));
+                    product.setDSIH(c.getInt(4));
                     product.setProductShortName(c.getString(5));
                     product.setBarCode(c.getString(6));
                     product.setVat(c.getFloat(7));
@@ -7481,6 +7488,41 @@ public class ProductHelper {
             return productShortName;
         }
         return null;
+    }
+
+    private HashMap<String,Integer> excessQtyMap = new HashMap<>();
+
+    public int getExcessQtyById(String productId) {
+        if (excessQtyMap == null || excessQtyMap.size() == 0)
+            return 0;
+        return excessQtyMap.get(productId)!=null?excessQtyMap.get(productId):0;
+    }
+
+    public void updateProductWithExcessStock(){
+        try{
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor cur = db.selectSQL("Select pid,qty from ExcessStockInHand");
+            if(cur.getCount() > 0){
+                while (cur.moveToNext()){
+                    excessQtyMap.put(cur.getString(0),cur.getInt(1));
+                }
+            }
+            cur.close();
+
+            for(int i = 0;i < getProductMaster().size();i++){
+                ProductMasterBO productMasterBO = getProductMaster().elementAt(i);
+                if(excessQtyMap.get(productMasterBO.getProductID())!=null)
+                    productMasterBO.setSIH(excessQtyMap.get(productMasterBO.getProductID()));
+                else
+                    productMasterBO.setSIH(0);
+            }
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
     }
 
 }

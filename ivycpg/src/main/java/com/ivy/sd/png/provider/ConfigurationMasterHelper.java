@@ -471,6 +471,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FOCUS_PACK_NOT_DONE = "ORDB71";
     public boolean IS_FOCUS_PACK_NOT_DONE;
 
+    public boolean IS_EXCESS_STOCK_AVAIL = true;
+
 
     /**
      * RoadActivity config *

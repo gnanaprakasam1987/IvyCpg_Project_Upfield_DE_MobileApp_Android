@@ -300,7 +300,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             }
         }
         else {
-            ((TextView) view.findViewById(R.id.sih_qty)).setText(String.valueOf(productMasterBO.getSIH()));
+            ((TextView) view.findViewById(R.id.sih_qty)).setText(String.valueOf(productMasterBO.getDSIH()));
             ((TextView) view.findViewById(R.id.sih_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.sih_qty)).setTextColor(Color.parseColor("#000000"));
         }
@@ -357,6 +357,20 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             ((TextView) view.findViewById(R.id.sales_replace_qty)).setText(String.valueOf(totalReplaceQty));
             ((TextView) view.findViewById(R.id.sales_replace_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.sales_replace_qty)).setTextColor(Color.parseColor("#000000"));
+        }
+
+        if(!isHeader){
+            int totalOrderedQty = productMasterBO.getOrderedPcsQty() +
+                    productMasterBO.getOrderedCaseQty()*productMasterBO.getCaseSize()+
+                    productMasterBO.getOrderedOuterQty()*productMasterBO.getOutersize();
+
+            int totalReplaceQty =  (productMasterBO.getRepCaseQty() * productMasterBO.getCaseSize())
+                    +productMasterBO.getRepPieceQty()
+                    +(productMasterBO.getRepOuterQty() * productMasterBO.getOutersize());
+
+
+            if((totalOrderedQty+totalReplaceQty) > productMasterBO.getDSIH())
+                ((TextView)view.findViewById(R.id.prod_name)).setTextColor(Color.parseColor("#FF0000"));
         }
     }
 
@@ -477,22 +491,6 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         discount_value.setText(discountAmt);
         taxValue.setText(taxAmt);
         orderValue.setText(totalOrderAmt);
-    }
-
-    @Override
-    public void updateSaveStatus(boolean isSuccess) {
-        if (isSuccess) {
-
-            Intent i = new Intent(this,
-                    CommonPrintPreviewActivity.class);
-            i.putExtra("IsFromOrder", true);
-            i.putExtra("IsUpdatePrintCount", true);
-            i.putExtra("isHomeBtnEnable", true);
-            i.putExtra("sendMailAndLoadClass", "PRINT_FILE_INVOICE");
-            startActivity(i);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
-        }
     }
 
     @Override
@@ -735,6 +733,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             holder.srpQty.setTextColor(Color.parseColor("#000000"));
             holder.srQty.setTextColor(Color.parseColor("#000000"));
 
+
             holder.productName.setText(String.valueOf(productList.get(position).getProductName()));
             holder.pieceQty.setText(String.valueOf(productList.get(position).getOrderedPcsQty()));
             holder.caseQty.setText(String.valueOf(productList.get(position).getOrderedCaseQty()));
@@ -744,12 +743,20 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     productList.get(position).getOrderedCaseQty()*productList.get(position).getCaseSize()+
                     productList.get(position).getOrderedOuterQty()*productList.get(position).getOutersize();
 
+            int totalReplaceQty =  (productList.get(position).getRepCaseQty() * productList.get(position).getCaseSize())
+                    +productList.get(position).getRepPieceQty()
+                    +(productList.get(position).getRepOuterQty() * productList.get(position).getOutersize());
+
+
+            if((totalOrderedQty+totalReplaceQty) > productList.get(position).getDSIH())
+                holder.productName.setTextColor(Color.parseColor("#FF0000"));
+
 
             holder.pieceQty.setTag(String.valueOf(totalOrderedQty));
             holder.caseQty.setTag(String.valueOf(totalOrderedQty));
             holder.outerQty.setTag(String.valueOf(totalOrderedQty));
 
-            holder.sihQty.setText(String.valueOf(productList.get(position).getSIH()));
+            holder.sihQty.setText(String.valueOf(productList.get(position).getDSIH()));
 
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                 int total = 0;
@@ -761,9 +768,6 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                 holder.srQty.setText(strTotal);
             }
 
-            int totalReplaceQty =  (productList.get(position).getRepCaseQty() * productList.get(position).getCaseSize())
-                                    +productList.get(position).getRepPieceQty()
-                                    +(productList.get(position).getRepOuterQty() * productList.get(position).getOutersize());
 
             holder.srpQty.setText(String.valueOf(totalReplaceQty));
 
@@ -809,7 +813,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             + (SDUtil.convertToInt(qty))
                             + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
 
-                    if (totalQty <= productList.get(position).getSIH() &&
+                    if (totalQty <= productList.get(position).getDSIH() &&
                             currentOrderedQty <= storedPieceQty ) {
                         if (!"".equals(qty)) {
                             productList.get(position).setOrderedPcsQty(SDUtil
@@ -821,15 +825,17 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
                         productList.get(position).setTotalamount(tot);
                         orderDeliveryPresenter.getAmountDetails(isEdit);
+                        holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
-                            if (totalQty > productList.get(position).getSIH()) {
+                            if (totalQty > productList.get(position).getDSIH()) {
+                                holder.productName.setTextColor(Color.parseColor("#FF0000"));
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
                                         String.format(
                                                 getResources().getString(
                                                         R.string.exceed),
-                                                productList.get(position).getSIH()),
+                                                productList.get(position).getDSIH()),
                                         Toast.LENGTH_SHORT).show();
                             }else if(currentOrderedQty > storedPieceQty){
                                 Toast.makeText(
@@ -906,7 +912,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             + (productList.get(position).getOrderedPcsQty())
                             + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
 
-                    if (totalQty <= productList.get(position).getSIH() &&
+                    if (totalQty <= productList.get(position).getDSIH() &&
                             currentOrderedQty <= storedcaseQty) {
                         if (!"".equals(qty)) {
                             productList.get(position).setOrderedCaseQty(SDUtil
@@ -918,15 +924,17 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
                         productList.get(position).setTotalamount(tot);
                         orderDeliveryPresenter.getAmountDetails(isEdit);
+                        holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
-                            if (totalQty > productList.get(position).getSIH()) {
+                            if (totalQty > productList.get(position).getDSIH()) {
+                                holder.productName.setTextColor(Color.parseColor("#FF0000"));
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
                                         String.format(
                                                 getResources().getString(
                                                         R.string.exceed),
-                                                productList.get(position).getSIH()),
+                                                productList.get(position).getDSIH()),
                                         Toast.LENGTH_SHORT).show();
                             }else if(currentOrderedQty > storedcaseQty){
                                 Toast.makeText(
@@ -1003,7 +1011,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             + (productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize())
                             + (productList.get(position).getOrderedPcsQty());
 
-                    if (totalQty <= productList.get(position).getSIH() &&
+                    if (totalQty <= productList.get(position).getDSIH() &&
                             currentOrderedQty <= storedouterQty) {
                         if (!"".equals(qty)) {
                             productList.get(position).setOrderedOuterQty(SDUtil
@@ -1015,15 +1023,17 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
                         productList.get(position).setTotalamount(tot);
                         orderDeliveryPresenter.getAmountDetails(isEdit);
+                        holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
-                            if (totalQty > productList.get(position).getSIH()) {
+                            if (totalQty > productList.get(position).getDSIH()) {
+                                holder.productName.setTextColor(Color.parseColor("#FF0000"));
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
                                         String.format(
                                                 getResources().getString(
                                                         R.string.exceed),
-                                                productList.get(position).getSIH()),
+                                                productList.get(position).getDSIH()),
                                         Toast.LENGTH_SHORT).show();
                             }else if(currentOrderedQty > storedouterQty){
                                 Toast.makeText(
@@ -1082,6 +1092,22 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         @Override
         public int getItemCount() {
             return productList.size();
+        }
+    }
+
+    @Override
+    public void updateSaveStatus(boolean isSuccess) {
+        if (isSuccess) {
+
+            Intent i = new Intent(this,
+                    CommonPrintPreviewActivity.class);
+            i.putExtra("IsFromOrder", false);
+            i.putExtra("IsUpdatePrintCount", true);
+            i.putExtra("isHomeBtnEnable", true);
+            i.putExtra("sendMailAndLoadClass", "PRINT_FILE_INVOICE");
+            startActivity(i);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            finish();
         }
     }
 
