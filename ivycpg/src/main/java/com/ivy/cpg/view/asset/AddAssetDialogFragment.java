@@ -140,7 +140,12 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                 .getAssetPosmIds(mAsset.getSelectedItem()
                                         .toString()));
 
-                loadBrandData();
+                if (assetTrackingHelper.getAssetBrandNames().size() > 0)
+                    loadBrandData();
+                else {
+                    ((TextView) getView().findViewById(R.id.brand_spinner_txt)).setVisibility(View.GONE);
+                    mBrand.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -260,11 +265,14 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         assetBo.setPOSM(assetTrackingHelper.getAssetPosmIds(mAsset
                 .getSelectedItem().toString()));
 
-        if (!mBrand.getSelectedItem().toString()
-                .equals(SELECT))
-            assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(mBrand
-                    .getSelectedItem().toString()));
-        else
+        if (mBrand.getSelectedItem() != null) {
+            if (!mBrand.getSelectedItem().toString()
+                    .equals(SELECT))
+                assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(mBrand
+                        .getSelectedItem().toString()));
+            else
+                assetBo.setBrand("0");
+        } else
             assetBo.setBrand("0");
 
         assetBo.setNewInstallDate(btnAddInstallDate.getText().toString());

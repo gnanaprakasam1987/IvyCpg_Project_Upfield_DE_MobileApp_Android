@@ -2777,12 +2777,12 @@ public class ProductHelper {
         // Not a SBD or Initative SKU
         if ((!isSBD) && isInitiative != 1) {
 
-            if (ap3m == 0 && (closingStock == 0 || closingStock == -1)) {// Never distributed
+            if (ap3m == 0 && (closingStock == 0 || closingStock <= -1)) {// Never distributed
                 so = 0;
             } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
                 so = ((float) ap3m * (1.0 + getBuffer()));
             } else { // Normal condition
-                if (closingStock == -1)
+                if (closingStock <= -1)
                     so = ap3m;
                 else
                     so = ap3m - closingStock;
@@ -2795,7 +2795,10 @@ public class ProductHelper {
             } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
                 so = ((float) ap3m * (1.0 + getBuffer()));
             } else { // Normal condition
-                so = ap3m - closingStock;
+                if (closingStock <= -1)
+                    so = ap3m;
+                else
+                    so = ap3m - closingStock;
             }
         } else if ((!isSBD) && isInitiative == 1) { // initiative but not SBD
             if (ap3m == 0 && closingStock == 0) {// Never distributed
@@ -2803,7 +2806,10 @@ public class ProductHelper {
             } else if (ap3m > 0 && closingStock == 0) {// OutofStock condition
                 so = ((float) ap3m * (1.0 + getBuffer()));
             } else { // Normal condition
-                so = ap3m - closingStock;
+                if (closingStock <= -1)
+                    so = ap3m;
+                else
+                    so = ap3m - closingStock;
             }
             so = so > initiativeDropSize ? so : initiativeDropSize;
         } else if ((isSBD) && isInitiative == 1) {
@@ -2812,7 +2818,10 @@ public class ProductHelper {
             } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
                 so = ((float) ap3m * (1.0 + getBuffer()));
             } else { // Normal condition
-                so = ap3m - closingStock;
+                if (closingStock <= -1)
+                    so = ap3m;
+                else
+                    so = ap3m - closingStock;
             }
             so = so > initiativeDropSize ? so : initiativeDropSize;
         }
@@ -4500,12 +4509,16 @@ public class ProductHelper {
         }
         String query = "";
         if (mChildLevel == 0) {
-            query = "SELECT PM.ParentId, PM.PID, PM.PName, PM.suggestqty, PM.psname, PM.dUomQty,"
+            query = "SELECT PM.ParentId, PM.PID, PM.PName,"
+                    + " (select qty from StockProposalNorm PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs,"
+                    + " PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
                     + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" // + ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse"
                     + sql3
                     + sql1
+                    + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
+                    + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
                     + " FROM ProductMaster PM"
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + sql2
@@ -4534,10 +4547,12 @@ public class ProductHelper {
                     + loopEnd
                     + ".PID, PM"
                     + loopEnd
-                    + ".PName, PM"
+                    + ".PName, (select qty from StockProposalNorm PSQ where uomid =PM"
                     + loopEnd
-                    + ".suggestqty,"
-                    + " PM"
+                    + ".piece_uomid and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugpcs, PM"
                     + loopEnd
                     + ".psname, PM"
                     + loopEnd
@@ -4575,7 +4590,22 @@ public class ProductHelper {
                     + ".dUomId, PM" + loopEnd + ".dOuomid," + " PM" + loopEnd
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
-                    + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse" */ + sql3 + sql1
+                    + ".msqQty, PM" + loopEnd + ".issalable" + sql3 + sql1
+                    + " ,PM"
+                    + loopEnd
+                    + ".PName, (select qty from StockProposalNorm PSQ where uomid =PM"
+                    + loopEnd
+                    + ".dUomId and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugcs,PM"
+                    + loopEnd
+                    + ".PName, (select qty from StockProposalNorm PSQ where uomid =PM"
+                    + loopEnd
+                    + ".dOuomid and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugou "
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -4606,7 +4636,9 @@ public class ProductHelper {
                 bo.setParentid(c.getInt(0));
                 bo.setProductid(c.getInt(1));
                 bo.setProductname(c.getString(2));
-                bo.setSuggestqty(c.getInt(3));
+                bo.setSuggestqty(c.getInt(c.getColumnIndex("sugpcs")) +
+                        (c.getInt(c.getColumnIndex("sugcs")) * c.getInt(5)) +
+                        (c.getInt(c.getColumnIndex("sugou")) * c.getInt(12)));
                 bo.setProductshortname(c.getString(4));
                 bo.setCaseSize(c.getInt(5));
                 bo.setSih(c.getInt(6));
@@ -4761,12 +4793,16 @@ public class ProductHelper {
         }
         String query = "";
         if (mParentLevel == 0 && mChildLevel == 0) {
-            query = "SELECT  PM.ParentId, PM.PID, PM.PName, PM.suggestqty, PM.psname, PM.dUomQty,"
+            query = "SELECT  PM.ParentId, PM.PID, PM.PName,"
+                    + " (select qty from StockProposalNorm PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs, "
+                    + " PM.psname, PM.dUomQty,"
                     + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                     + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
                     + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" //+ ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse "
                     + sql3
                     + sql1
+                    + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
+                    + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
                     + " FROM ProductMaster PM"
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + sql2
@@ -4789,10 +4825,12 @@ public class ProductHelper {
                     + loopEnd
                     + ".PID, PM"
                     + loopEnd
-                    + ".PName, PM"
+                    + ".PName, (select qty from StockProposalNorm PSQ where uomid =PM"
                     + loopEnd
-                    + ".suggestqty,"
-                    + " PM"
+                    + ".piece_uomid and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugpcs, PM"
                     + loopEnd
                     + ".psname, PM"
                     + loopEnd
@@ -4831,6 +4869,21 @@ public class ProductHelper {
                     + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
                     + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
                     + ".msqQty, PM" + loopEnd + ".issalable" /*+ ",(CASE WHEN PWHS.PID=PM" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse " */ + sql3 + sql1
+                    + " ,PM"
+                    + loopEnd
+                    + ".PName, (select qty from StockProposalNorm PSQ where uomid =PM"
+                    + loopEnd
+                    + ".dUomId and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugcs,PM"
+                    + loopEnd
+                    + ".PName, (select qty from StockProposalNorm PSQ where uomid =PM"
+                    + loopEnd
+                    + ".dOuomid and PSQ.PID =PM"
+                    + loopEnd
+                    + ".PID) as"
+                    + " sugou "
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -4866,7 +4919,9 @@ public class ProductHelper {
                 bo.setParentid(c.getInt(0));
                 bo.setProductid(c.getInt(1));
                 bo.setProductname(c.getString(2));
-                bo.setSuggestqty(c.getInt(3));
+                bo.setSuggestqty(c.getInt(c.getColumnIndex("sugpcs")) +
+                        (c.getInt(c.getColumnIndex("sugcs")) * c.getInt(5)) +
+                        (c.getInt(c.getColumnIndex("sugou")) * c.getInt(12)));
                 bo.setProductshortname(c.getString(4));
                 bo.setCaseSize(c.getInt(5));
                 bo.setSih(c.getInt(6));
@@ -5730,18 +5785,13 @@ public class ProductHelper {
                 getAlCompetitorTaggedProducts(loopEnd);
             } else {
 
-                String sql;
-                sql = "SELECT A1.CPID, A1.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,A1.CPCode,PM.pid,A" + loopEnd
-                        + ".CPID as parentId FROM CompetitorProductMaster A1";
-                for (int i = 2; i <= loopEnd; i++)
-                    sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
-                            + ".CPID = A" + (i - 1) + ".CPTid";
                 Cursor cur = db
-                        .selectSQL(sql
-                                + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = A1.CPID"
+                        .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID "
+                                + " FROM CompetitorProductMaster CP"
+                                + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = CP.CPID"
                                 + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
                                 + " WHERE PM.PLid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode =" + QT(moduleCode) + ")" +
-                                " group by A1.CPID");
+                                "group by CP.CPID");
 
                 if (cur != null) {
 
@@ -5761,7 +5811,7 @@ public class ProductHelper {
                         product.setPcUomid(cur.getInt(5));
                         product.setProductCode(cur.getString(6));
                         product.setOwnPID(cur.getString(7));
-                        product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
+                        product.setCompanyId(cur.getInt(8));
 
                         // for level skiping
                         ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
@@ -7478,24 +7528,41 @@ public class ProductHelper {
         ArrayList<String> productShortName = new ArrayList<>();
         if (bmodel.productHelper.getBomMaster() != null) {
             for (BomMasterBO id : bmodel.productHelper.getBomMaster()) {
-
-                if (id.getPid().equalsIgnoreCase(productId)) {
-
-                    mBpids.add(id.getBomBO().get(0).getbPid());
-                }
+                if (id.getPid().equalsIgnoreCase(productId))
+                    for (BomBO bom : id.getBomBO()) {
+                        mBpids.add(bom.getbPid());
+                    }
             }
         }
         if (mBpids.size() > 0) {
-            for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
-
-                for (int i = 0; i < mBpids.size(); i++)
-                    if (mBpids.get(i).equalsIgnoreCase(bo.getProductID()))
-                        productShortName.add(bo.getProductShortName());
-
+            for (int i = 0; i < mBpids.size(); i++) {
+                ProductMasterBO bo = bmodel.productHelper.getProductMasterBOById(mBpids.get(i));
+                if (bo != null)
+                    productShortName.add(bo.getProductShortName());
             }
             return productShortName;
         }
         return null;
+    }
+
+    public float getSalesReturnValue() {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        float total = 0;
+        Cursor c = db
+                .selectSQL("select ifnull(sum(returnvalue),0) from SalesReturnHeader where retailerid="
+                        + QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
+        if (c != null) {
+            if (c.getCount() > 0) {
+                c.moveToNext();
+                total = c.getFloat(0);
+            }
+            c.close();
+        }
+        db.closeDB();
+        return total;
     }
 
 }

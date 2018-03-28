@@ -59,7 +59,40 @@
         android:layout_height="fill_parent"
         android:layout_above="@+id/ll_footer"
         android:layout_below="@+id/ll_header"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="@dimen/list_view_width"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_6dp"
+            android:layout_marginLeft="@dimen/dimen_6dp"
+            android:layout_marginTop="@dimen/dimen_6dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/img_chat"
+                android:layout_width="@dimen/ret_card_image"
+                android:layout_height="@dimen/ret_card_image"
+                android:background="@drawable/ic_action_communication_comment"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/img_div_status"
+                android:layout_width="@dimen/ret_card_image"
+                android:layout_height="@dimen/ret_card_image"
+                android:background="@drawable/ic_action_ic_action_collections_view_as_grid1"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/img_user_feedback"
+                android:layout_width="@dimen/ret_card_image"
+                android:layout_height="@dimen/ret_card_image"
+                android:background="@drawable/ic_remark"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
 
         <ListView
             android:id="@+id/listView1"
@@ -109,8 +142,8 @@
                 style="@style/menuLogoutTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_betwn_icon_and_text"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginStart="@dimen/space_betwn_icon_and_text"
                 android:text="@string/log_out" />
         </LinearLayout>
 
@@ -133,8 +166,8 @@
                 style="@style/menuLogoutTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_betwn_icon_and_text"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginStart="@dimen/space_betwn_icon_and_text"
                 android:text="@string/about" />
         </LinearLayout>
     </LinearLayout>

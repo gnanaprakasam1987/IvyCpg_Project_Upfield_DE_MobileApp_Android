@@ -126,6 +126,7 @@ public class StandardListMasterConstants {
 
 	static {
 		mActivityCodeByMenuCode.put("MENU_STK_ORD", "ORDER");
+		mActivityCodeByMenuCode.put("MENU_SUBD_ORD", "ORDER");
 		mActivityCodeByMenuCode.put("MENU_SALES_RET", "SALESRET");
 		mActivityCodeByMenuCode.put("MENU_NEAREXPIRY", "NEAREXPIRY");
 		mActivityCodeByMenuCode.put("MENU_PRICE", "PRICE");

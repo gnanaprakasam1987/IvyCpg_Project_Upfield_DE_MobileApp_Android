@@ -538,8 +538,8 @@ public class DashBoardHelper {
                         temp.setParentID(c.getInt(4));
                         temp.setLevelID(c.getInt(5));
                         temp.setKpiID(c.getInt(6));
-                        temp.setTarget(c.getInt(7));
-                        temp.setAchieved(c.getInt(8));
+                        temp.setTarget(c.getDouble(7));
+                        temp.setAchieved(c.getDouble(8));
                         temp.setCalculatedPercentage(c.getFloat(9));
                         temp.setSequence(c.getInt(10));
                         if (temp.getCalculatedPercentage() >= 100) {
@@ -703,8 +703,8 @@ public class DashBoardHelper {
                         temp.setParentID(c.getInt(4));
                         temp.setLevelID(c.getInt(5));
                         temp.setKpiID(c.getInt(6));
-                        temp.setTarget(c.getInt(7));
-                        temp.setAchieved(c.getInt(8));
+                        temp.setTarget(c.getDouble(7));
+                        temp.setAchieved(c.getDouble(8));
                         temp.setCalculatedPercentage(c.getFloat(9));
                         temp.setSequence(c.getInt(10));
                         if (temp.getCalculatedPercentage() >= 100) {
@@ -1353,7 +1353,7 @@ public class DashBoardHelper {
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
         sb.append("select Distinct p.PLid,pl.sequence from productmaster p ");
-        sb.append(" inner join Productlevel pl on pl.levelid =p.PLid where P.PID in (select distinct(ProductID) from OrderDetail)");
+        sb.append(" inner join Productlevel pl on pl.levelid =p.PLid where P.PID in ");
 
         if (isRetailer)
             sb.append("(select distinct(ProductID) from OrderDetail where retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + ")");
@@ -1475,8 +1475,8 @@ public class DashBoardHelper {
                         temp.setParentID(c.getInt(4));
                         temp.setLevelID(c.getInt(5));
                         temp.setKpiID(c.getInt(6));
-                        temp.setTarget(c.getInt(7));
-                        temp.setAchieved(c.getInt(8));
+                        temp.setTarget(c.getDouble(7));
+                        temp.setAchieved(c.getDouble(8));
                         temp.setCalculatedPercentage(c.getFloat(9));
                         temp.setSequence(c.getInt(10));
                         if (temp.getCalculatedPercentage() >= 100) {
@@ -1636,8 +1636,8 @@ public class DashBoardHelper {
                         temp.setParentID(c.getInt(4));
                         temp.setLevelID(c.getInt(5));
                         temp.setKpiID(c.getInt(6));
-                        temp.setTarget(c.getInt(7));
-                        temp.setAchieved(c.getInt(8));
+                        temp.setTarget(c.getDouble(7));
+                        temp.setAchieved(c.getDouble(8));
                         temp.setCalculatedPercentage(c.getFloat(9));
                         temp.setSequence(c.getInt(10));
                         if (temp.getCalculatedPercentage() >= 100) {
@@ -1922,8 +1922,8 @@ public class DashBoardHelper {
                     temp.setParentID(c.getInt(4));
                     temp.setBarcode(c.getString(5));
                     temp.setRetailerID(c.getString(6));
-                    temp.setTarget(c.getInt(7));
-                    temp.setAchieved(c.getInt(8));
+                    temp.setTarget(c.getDouble(7));
+                    temp.setAchieved(c.getDouble(8));
                     temp.setCalculatedPercentage(c.getFloat(9));
                     if (temp.getCalculatedPercentage() >= 100) {
                         temp.setConvTargetPercentage(0);
@@ -2477,8 +2477,8 @@ public class DashBoardHelper {
                         temp.setParentID(c.getInt(4));
                         temp.setLevelID(c.getInt(5));
                         temp.setKpiID(c.getInt(6));
-                        temp.setTarget(c.getInt(7));
-                        temp.setAchieved(c.getInt(8));
+                        temp.setTarget(c.getDouble(7));
+                        temp.setAchieved(c.getDouble(8));
                         temp.setCalculatedPercentage(c.getFloat(9));
                         temp.setSequence(c.getInt(10));
                         if (temp.getCalculatedPercentage() >= 100) {
@@ -2540,8 +2540,8 @@ public class DashBoardHelper {
                         temp.setParentID(c.getInt(4));
                         temp.setLevelID(c.getInt(5));
                         temp.setKpiID(c.getInt(6));
-                        temp.setTarget(c.getInt(7));
-                        temp.setAchieved(c.getInt(8));
+                        temp.setTarget(c.getDouble(7));
+                        temp.setAchieved(c.getDouble(8));
                         temp.setCalculatedPercentage(c.getFloat(9));
                         temp.setSequence(c.getInt(10));
                         if (temp.getCalculatedPercentage() >= 100) {
@@ -3049,8 +3049,8 @@ public class DashBoardHelper {
 
                         temp.setLevelID(c.getInt(5));
                         temp.setKpiID(c.getInt(6));
-                        temp.setTarget(c.getInt(7));
-                        temp.setAchieved(c.getInt(8));
+                        temp.setTarget(c.getDouble(7));
+                        temp.setAchieved(c.getDouble(8));
                         temp.setCalculatedPercentage(c.getFloat(9));
                         temp.setSequence(i + 1);
                         if (temp.getCalculatedPercentage() >= 100) {

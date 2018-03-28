@@ -100,7 +100,19 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_REPLACE)
                 findViewById(R.id.ll_replacementQty).setVisibility(View.GONE);
 
-            if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+            if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS ||
+                    bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS ||
+                    bmodel.configurationMasterHelper.CONVERT_EOD_SIH_OU) {
+
+                mLoadStkTV.setVisibility(View.VISIBLE);
+                mSoldStkTV.setVisibility(View.VISIBLE);
+                mSihTV.setVisibility(View.VISIBLE);
+                mFreeQtyTV.setVisibility(View.VISIBLE);
+                mEmptyQtyTV.setVisibility(View.VISIBLE);
+                mReturnQtyTV.setVisibility(View.VISIBLE);
+                mReplaceMentQtyTV.setVisibility(View.VISIBLE);
+
+            } else if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
                 mLoadStkTV.setVisibility(View.VISIBLE);
                 mSoldStkTV.setVisibility(View.VISIBLE);
                 mSihTV.setVisibility(View.VISIBLE);
@@ -180,18 +192,45 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
             mDetails = bmodel.reportHelper.getEODStockReport();
             String caseOrPieceOrOuter = "";
             String slash = "";
-            if (bmodel.configurationMasterHelper.SHOW_EOD_OC) {
-                caseOrPieceOrOuter = "c";
-                slash = "/";
+            if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS ||
+                    bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS ||
+                    bmodel.configurationMasterHelper.CONVERT_EOD_SIH_OU) {
+
+
+                if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS) {
+                    caseOrPieceOrOuter = "c";
+                    slash = "/";
+                }
+                if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS) {
+                    caseOrPieceOrOuter = caseOrPieceOrOuter + slash + "p";
+                    slash = "/";
+                }
+                if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_OU) {
+                    caseOrPieceOrOuter = caseOrPieceOrOuter + slash + "o";
+                }
+                mLoadStkTV.setText(caseOrPieceOrOuter);
+                mSoldStkTV.setText(caseOrPieceOrOuter);
+                mFreeQtyTV.setText(caseOrPieceOrOuter);
+                mSihTV.setText(caseOrPieceOrOuter);
+                mEmptyQtyTV.setText(caseOrPieceOrOuter);
+                mReturnQtyTV.setText(caseOrPieceOrOuter);
+                mReplaceMentQtyTV.setText(caseOrPieceOrOuter);
             }
-            if (bmodel.configurationMasterHelper.SHOW_EOD_OP) {
-                caseOrPieceOrOuter = caseOrPieceOrOuter + slash + "p";
-                slash = "/";
-            }
-            if (bmodel.configurationMasterHelper.SHOW_EOD_OO) {
-                caseOrPieceOrOuter = caseOrPieceOrOuter + slash + "o";
-            }
-            if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+
+
+            else if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+
+                if (bmodel.configurationMasterHelper.SHOW_EOD_OC) {
+                    caseOrPieceOrOuter = "c";
+                    slash = "/";
+                }
+                if (bmodel.configurationMasterHelper.SHOW_EOD_OP) {
+                    caseOrPieceOrOuter = caseOrPieceOrOuter + slash + "p";
+                    slash = "/";
+                }
+                if (bmodel.configurationMasterHelper.SHOW_EOD_OO) {
+                    caseOrPieceOrOuter = caseOrPieceOrOuter + slash + "o";
+                }
                 mLoadStkTV.setText(caseOrPieceOrOuter);
                 mSoldStkTV.setText(caseOrPieceOrOuter);
                 mFreeQtyTV.setText(caseOrPieceOrOuter);
@@ -247,7 +286,56 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
                     }
 
                     pName.setText(stockBO.getProductName() + "");
-                    if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+                    if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS ||
+                            bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS ||
+                            bmodel.configurationMasterHelper.CONVERT_EOD_SIH_OU) {
+
+                        if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS) {
+                            loadStk.setText(stockBO.getVanLoadQty() + "");
+                            soldStk.setText(stockBO.getSoldQty() + "");
+                            free.setText(stockBO.getFreeIssuedQty() + "");
+                            sih.setText(stockBO.getSih() + "");
+                            empty.setText(stockBO.getEmptyBottleQty() + "");
+                            returnQty.setText(stockBO.getReturnQty() + "");
+                            replacement.setText(stockBO.getReplacementQty() + "");
+                        } else if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_OU) {
+                            if (stockBO.getOuterSize() != 0) {
+                                loadStk.setText(SDUtil.mathRoundoff((double) stockBO.getVanLoadQty() / stockBO.getOuterSize()) + "");
+                                soldStk.setText(SDUtil.mathRoundoff((double) stockBO.getSoldQty() / stockBO.getOuterSize()) + "");
+                                free.setText(SDUtil.mathRoundoff((double) stockBO.getFreeIssuedQty() / stockBO.getOuterSize()) + "");
+                                sih.setText(SDUtil.mathRoundoff((double) stockBO.getSih() / stockBO.getOuterSize()) + "");
+                                empty.setText(SDUtil.mathRoundoff((double) stockBO.getEmptyBottleQty() / stockBO.getOuterSize()) + "");
+                                returnQty.setText(SDUtil.mathRoundoff((double) stockBO.getReturnQty() / stockBO.getOuterSize()) + "");
+                                replacement.setText(SDUtil.mathRoundoff((double) stockBO.getReplacementQty() / stockBO.getOuterSize()) + "");
+                            } else {
+                                loadStk.setText(stockBO.getVanLoadQty() + "");
+                                soldStk.setText(stockBO.getSoldQty() + "");
+                                free.setText(stockBO.getFreeIssuedQty() + "");
+                                sih.setText(stockBO.getSih() + "");
+                                empty.setText(stockBO.getEmptyBottleQty() + "");
+                                returnQty.setText(stockBO.getReturnQty() + "");
+                                replacement.setText(stockBO.getReplacementQty() + "");
+                            }
+                        } else if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS) {
+                            if (stockBO.getCaseSize() != 0) {
+                                loadStk.setText(SDUtil.mathRoundoff((double) stockBO.getVanLoadQty() / stockBO.getCaseSize()) + "");
+                                soldStk.setText(SDUtil.mathRoundoff((double) stockBO.getSoldQty() / stockBO.getCaseSize()) + "");
+                                free.setText(SDUtil.mathRoundoff((double) stockBO.getFreeIssuedQty() / stockBO.getCaseSize()) + "");
+                                sih.setText(SDUtil.mathRoundoff((double) stockBO.getSih() / stockBO.getCaseSize()) + "");
+                                empty.setText(SDUtil.mathRoundoff((double) stockBO.getEmptyBottleQty() / stockBO.getCaseSize()) + "");
+                                returnQty.setText(SDUtil.mathRoundoff((double) stockBO.getReturnQty() / stockBO.getCaseSize()) + "");
+                                replacement.setText(SDUtil.mathRoundoff((double) stockBO.getReplacementQty() / stockBO.getCaseSize()) + "");
+                            } else {
+                                loadStk.setText(stockBO.getVanLoadQty() + "");
+                                soldStk.setText(stockBO.getSoldQty() + "");
+                                free.setText(stockBO.getFreeIssuedQty() + "");
+                                sih.setText(stockBO.getSih() + "");
+                                empty.setText(stockBO.getEmptyBottleQty() + "");
+                                returnQty.setText(stockBO.getReturnQty() + "");
+                                replacement.setText(stockBO.getReplacementQty() + "");
+                            }
+                        }
+                    } else if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
                         StringBuffer loadStkSB = new StringBuffer();
                         StringBuffer soldStkSB = new StringBuffer();
                         StringBuffer freeSB = new StringBuffer();

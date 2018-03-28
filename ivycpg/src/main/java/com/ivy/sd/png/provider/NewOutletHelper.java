@@ -15,6 +15,7 @@ import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.MaterialSpinner;
@@ -986,6 +987,166 @@ public class NewOutletHelper {
                     }
 
 
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE81") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE82") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE84") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE83") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE85") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE78") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE79") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE86") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE87") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
+                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE88") && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
+
+
                 }
 
                 if (!queryInsert.equals(""))
@@ -1143,7 +1304,8 @@ public class NewOutletHelper {
                     "distributorId,TaxTypeid,contractstatuslovid,classid,AccountId,RC1.contactname as contactName1,RC1.ContactName_LName as contactLName1,RC1.contactNumber as contactNumber1" +
                     ",RC1.contact_title as contact_title1,RC1.contact_title_lovid as contact_title_lovid1" +
                     ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
-                    "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RM.RField5,RM.RField6,RM.TinExpDate" +
+                    "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RM.RField5,RM.RField6,RM.TinExpDate," +
+                    "RM.pan_number,RM.food_licence_number,RM.food_licence_exp_date,RM.DLNo,RM.DLNoExpDate,RM.RField4,RM.RField7,RA.Mobile,RA.Region,RA.Country,RM.userid" +
                     " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
                     " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
                     " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
@@ -1197,6 +1359,17 @@ public class NewOutletHelper {
                         retailer.setRfield5(c.getString(c.getColumnIndex("RField5")));
                         retailer.setRfield6(c.getString(c.getColumnIndex("RField6")));
                         retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
+                        retailer.setPanNo(c.getString(c.getColumnIndex("pan_number")));
+                        retailer.setFoodLicenseNo(c.getString(c.getColumnIndex("food_licence_number")));
+                        retailer.setFlExpDate(c.getString(c.getColumnIndex("food_licence_exp_date")));
+                        retailer.setDrugLicenseNo(c.getString(c.getColumnIndex("DLNo")));
+                        retailer.setDlExpDate(c.getString(c.getColumnIndex("DLNoExpDate")));
+                        retailer.setrField7(c.getString(c.getColumnIndex("RField7")));
+                        retailer.setrField4(c.getString(c.getColumnIndex("RField4")));
+                        retailer.setRegion(c.getString(c.getColumnIndex("Region")));
+                        retailer.setCountry(c.getString(c.getColumnIndex("Country")));
+                        retailer.setMobile(c.getString(c.getColumnIndex("Mobile")));
+                        retailer.setUserId(c.getInt(c.getColumnIndex("userid")));
                         lst.add(retailer);
                         mNewRetailerById.put(retailer.getRetailerId(), retailer);
                     }
@@ -1831,7 +2004,8 @@ public class NewOutletHelper {
             column = "RetailerID,RetailerName,channelID,subchannelid,beatid,"
                     + DataMembers.VISIT_DAYS_COLUMN_NAME + ",LocationId," +
                     "creditlimit,RPTypeId,tinnumber,RField3,distributorId,TaxTypeid," +
-                    "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber,RField5,RField6,TinExpDate";
+                    "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber,RField5,RField6,TinExpDate," +
+                    "pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
 
             value = QT(getId())
                     + "," + QT(outlet.getOutletName())
@@ -1856,7 +2030,15 @@ public class NewOutletHelper {
                     + "," + QT(getNewoutlet().getGstNum())
                     + "," + QT(getNewoutlet().getRfield5())
                     + "," + QT(getNewoutlet().getRfield6())
-                    + "," + QT(getNewoutlet().getTinExpDate());
+                    + "," + QT(getNewoutlet().getTinExpDate())
+                    + "," + QT(getNewoutlet().getPanNo())
+                    + "," + QT(getNewoutlet().getFoodLicenseNo())
+                    + "," + QT(getNewoutlet().getFlExpDate())
+                    + "," + QT(getNewoutlet().getDrugLicenseNo())
+                    + "," + QT(getNewoutlet().getDlExpDate())
+                    + "," + QT(getNewoutlet().getrField4())
+                    + "," + QT(getNewoutlet().getrField7())
+                    + "," + QT(getNewoutlet().getUserId() + "");
 
 
             db.insertSQL("RetailerMaster", column, value);
@@ -1889,7 +2071,16 @@ public class NewOutletHelper {
             }
 
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
-                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID";
+                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile";
+
+            //converting big decimal value while Exponential value occur
+            String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
+                    ? (SDUtil.truncateDecimal(outlet.getNewOutletlattitude(), -1) + "")
+                    : (outlet.getNewOutletlattitude() + "");
+
+            String longitude = (outlet.getNewOutletLongitude() + "").contains("E")
+                    ? (SDUtil.truncateDecimal(outlet.getNewOutletLongitude(), -1) + "")
+                    : (outlet.getNewOutletLongitude() + "");
 
             if (outlet.getmAddressByTag() != null) {
                 for (String addressType : outlet.getmAddressByTag().keySet()) {
@@ -1900,8 +2091,8 @@ public class NewOutletHelper {
                             + "," + QT(addressBO.getAddress3())
                             + "," + QT(addressBO.getPhone())
                             + "," + QT(addressBO.getCity())
-                            + "," + QT(outlet.getNewOutletlattitude() + "")
-                            + "," + QT(outlet.getNewOutletLongitude() + "")
+                            + "," + QT(lattitude)
+                            + "," + QT(longitude)
                             + "," + QT(addressBO.getEmail())
                             + "," + QT(addressBO.getFax())
                             + "," + QT(addressBO.getPincode())
@@ -1921,15 +2112,18 @@ public class NewOutletHelper {
                         + "," + QT(outlet.getAddress3())
                         + "," + QT(outlet.getPhone())
                         + "," + QT(outlet.getCity())
-                        + "," + QT(outlet.getNewOutletlattitude() + "")
-                        + "," + QT(outlet.getNewOutletLongitude() + "")
+                        + "," + QT(lattitude)
+                        + "," + QT(longitude)
                         + "," + QT(getNewoutlet().getEmail())
                         + "," + QT(getNewoutlet().getFax())
                         + "," + QT(getNewoutlet().getPincode())
                         + "," + QT(getNewoutlet().getState())
                         + "," + QT("N")
                         + "," + 1
-                        + "," + 0;
+                        + "," + 0
+                        + "," + QT(getNewoutlet().getRegion())
+                        + "," + QT(getNewoutlet().getCountry())
+                        + "," + QT(getNewoutlet().getMobile());
 
                 db.insertSQL("RetailerAddress", column, value);
 
@@ -2215,6 +2409,32 @@ public class NewOutletHelper {
         }
 
         return lst;
+    }
+
+    public ArrayList<RetailerFlexBO> downloadRetailerFlexValues(String type) {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        ArrayList<RetailerFlexBO> flexValues = new ArrayList<>();
+        try {
+            db.openDataBase();
+            String sql = "select id,name from RetailerFlexValues where type = " + bmodel.QT(type);
+            Cursor c = db.selectSQL(sql);
+            RetailerFlexBO retailerFlexBO;
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    retailerFlexBO = new RetailerFlexBO();
+                    retailerFlexBO.setId(c.getString(0));
+                    retailerFlexBO.setName(c.getString(1));
+                    flexValues.add(retailerFlexBO);
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            db.closeDB();
+        }
+        return flexValues;
     }
 
 }

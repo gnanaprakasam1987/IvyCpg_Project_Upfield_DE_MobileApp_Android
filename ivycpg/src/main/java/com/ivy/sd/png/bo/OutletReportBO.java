@@ -10,7 +10,7 @@ import android.os.Parcelable;
 public class OutletReportBO implements Parcelable {
 
     int userId, retailerId, isPlanned = 0, isVisited = 0;
-    String userName, retailerName, locationName, Address;
+    String userName, retailerName, locationName, Address, salesVolume;
     String timeIn, timeOut, duration;
 
     public int getUserId() {
@@ -48,6 +48,15 @@ public class OutletReportBO implements Parcelable {
     public String getLocationName() {
         return locationName;
     }
+
+    public String getSalesVolume() {
+        return salesVolume;
+    }
+
+    public void setSalesVolume(String salesVolume) {
+        this.salesVolume = salesVolume;
+    }
+
 
     public void setLocationName(String locationName) {
         this.locationName = locationName;
@@ -150,12 +159,13 @@ public class OutletReportBO implements Parcelable {
 
     int sequence;
 
-    public OutletReportBO(){
+    public OutletReportBO() {
 
     }
+
     protected OutletReportBO(Parcel in) {
         userName = in.readString();
-        isChecked=in.readByte()!=0;
+        isChecked = in.readByte() != 0;
 
     }
 

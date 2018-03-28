@@ -1610,8 +1610,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 holder.psname = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_productname);
-                holder.ssrp = (TextView) row
-                        .findViewById(R.id.stock_and_order_listview_ssrp);
                 holder.mrp = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_mrp);
                 holder.ppq = (TextView) row
@@ -1689,7 +1687,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 //setting typefaces
                 holder.tvbarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                holder.ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.msq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1737,9 +1734,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 if (!bmodel.configurationMasterHelper.SHOW_BARCODE)
                     holder.tvbarcode.setVisibility(View.GONE);
-
-                if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_SEC)
-                    holder.ssrp.setVisibility(View.GONE);
 
                 if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
                     holder.salesReturn.setVisibility(View.VISIBLE);
@@ -3376,12 +3370,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.psname.setText(holder.productObj.getProductShortName());
             holder.pname = holder.productObj.getProductName();
 
-            // set values below to the product name
-            if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_SEC) {
-                String strSrp = getResources().getString(R.string.price)
-                        + ": " + bmodel.formatValue(holder.productObj.getSrp());
-                holder.ssrp.setText(strSrp);
-            }
             if (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP) {
                 String strMrp = getResources().getString(R.string.mrp)
                         + ": " + bmodel.formatValue(holder.productObj.getMRP());
@@ -3751,7 +3739,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView psname;
         private TextView so;
         private TextView sih;
-        private TextView ssrp;
         private TextView ppq;
         private TextView msq;
         private TextView srp;
@@ -4192,6 +4179,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.hasOrder()) {
                 //if this config IS_RFIELD1_ENABLED enabled below code will work
                 //and
+
+                if(bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+                        !bmodel.configurationMasterHelper.IS_INVOICE &&
+                        bmodel.productHelper.getSalesReturnValue() >= totalvalue){
+                    Toast.makeText(this,
+                            getResources().getString(R.string.order_value_cannot_be_lesser_than_the_sales_return_value),
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 if (bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
                     int size = bmodel.productHelper
                             .getProductMaster().size();
@@ -4251,6 +4248,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     nextBtnSubTask();
             } else {
                 if (hasStockOnly()) {
+                    if(bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+                            !bmodel.configurationMasterHelper.IS_INVOICE &&
+                            bmodel.productHelper.getSalesReturnValue() > totalvalue){
+                        Toast.makeText(this,
+                                getResources().getString(R.string.order_value_cannot_be_lesser_than_the_sales_return_value),
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     showDialog(1);
                 } else
                     bmodel.showAlert(

@@ -1831,10 +1831,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
                 holder.moq.setText(strMoqQty);
             }
-            if (holder.ssrp != null) {
-                final String price = "Price : " + bmodel.formatValue(holder.productObj.getSrp());
-                holder.ssrp.setText(price);
-            }
+
             if (holder.mrp != null) {
                 holder.mrp.setText(getResources().getString(R.string.mrp) + ": " + bmodel.formatValue(holder.productObj.getMRP()));
             }
@@ -1943,7 +1940,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private ImageView pdt_image;
-            private TextView catalog_order_listview_productname, ppq, ssrp,
+            private TextView catalog_order_listview_productname, ppq,
                     mrp, total, sih, wsih,moq;
             private Button list_view_order_btn, list_view_stock_btn;
             private LinearLayout pdt_details_layout;
@@ -1957,7 +1954,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 catalog_order_listview_productname = (TextView) v.findViewById(R.id.catalog_order_listview_productname);
                 ppq = (TextView) v.findViewById(R.id.catalog_order_listview_ppq);
                 moq = (TextView) v.findViewById(R.id.catalog_order_listview_moq);
-                ssrp = (TextView) v.findViewById(R.id.catalog_order_listview_srp);
                 mrp = (TextView) v.findViewById(R.id.catalog_order_listview_mrp);
                 total = (TextView) v.findViewById(R.id.catalog_order_listview_product_value);
                 list_view_order_btn = (Button) v.findViewById(R.id.list_view_order_btn);
@@ -1970,7 +1966,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                 catalog_order_listview_productname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
                 ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 list_view_order_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -2018,8 +2013,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 if (!bmodel.configurationMasterHelper.IS_SHOW_PPQ) {
                     ppq.setVisibility(View.GONE);
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_SEC)
-                    ssrp.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP)
                     mrp.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)

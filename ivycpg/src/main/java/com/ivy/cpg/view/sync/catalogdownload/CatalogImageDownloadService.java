@@ -25,7 +25,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Created by dharmapriya.k on 15/12/17.
+ * Created by Mansoor.k on 15/12/17.
  */
 
 public class CatalogImageDownloadService extends IntentService {

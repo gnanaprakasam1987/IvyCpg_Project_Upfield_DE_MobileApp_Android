@@ -93,22 +93,20 @@
                             android:id="@+id/retailer_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@android:color/white"
-                            android:textSize="@dimen/highlight_small"
-                            android:text="Apollo Healthcare"
                             android:lineSpacingExtra="@dimen/profile_header_store_text_line_spcing"
-                            />
+                            android:text="Apollo Healthcare"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/highlight_small" />
 
                         <TextView
                             android:id="@+id/retailer_code"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/profile_margin_top_minus"
+                            android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
                             android:textColor="@android:color/white"
                             android:textSize="@dimen/font_small"
-                            android:layout_marginTop="@dimen/profile_margin_top_minus"
-                            tools:text="Ghatkopar (w)"
-                            android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
-                            />
+                            tools:text="Ghatkopar (w)" />
 
                     </LinearLayout>
 
@@ -124,16 +122,16 @@
                             android:layout_width="@dimen/dimens_20dp"
                             android:layout_height="@dimen/dimens_20dp"
                             android:layout_marginBottom="@dimen/dimens_20dp"
-                            android:layout_marginStart="@dimen/dimens_10dp"
-                            android:layout_marginEnd="@dimen/dimens_10dp" />
+                            android:layout_marginEnd="@dimen/dimens_10dp"
+                            android:layout_marginStart="@dimen/dimens_10dp" />
 
                         <ImageView
                             android:id="@+id/draw_routeimg_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/dimens_22dp"
-                            android:layout_marginStart="@dimen/dimens_10dp"
                             android:layout_marginEnd="@dimen/dimens_10dp"
+                            android:layout_marginStart="@dimen/dimens_10dp"
                             android:clickable="true"
                             android:contentDescription="@null"
                             android:focusable="true"
@@ -168,8 +166,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            >
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
@@ -177,12 +174,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/dimen_1dp"
+                app:tabBackground="@drawable/tab_unselected_indicator"
                 app:tabIndicatorHeight="4dp"
                 app:tabMaxWidth="1500dp"
                 app:tabMode="fixed"
                 app:tabTextColor="@color/tab_unselcted_text_color"
-                android:layout_margin="@dimen/dimen_1dp"
-                app:tabBackground="@drawable/tab_unselected_indicator"
 
                 />
 
@@ -218,8 +215,8 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/target_top_margin"
-                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginEnd="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/add_plane"
@@ -230,8 +227,8 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/target_top_margin"
-                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginEnd="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/non_visit"
@@ -243,21 +240,20 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/target_top_margin"
-                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginEnd="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/start_visit"
-                android:textAllCaps="false"
-                />
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/add_plane"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/target_top_margin"
-                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginEnd="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
                 android:text="@string/add_plane"

@@ -836,7 +836,7 @@ public class DiscountHelper {
             for (SchemeBO schemeBO : appliedSchemeList) {
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
-                        totalSchemeDiscountValue = schemeBO.getSelectedAmount();
+                        totalSchemeDiscountValue += schemeBO.getSelectedAmount();
                     }
 
                     List<SchemeProductBO> schemeProductList = schemeBO
@@ -924,7 +924,7 @@ public class DiscountHelper {
 
                                             schemeProductBo.setDiscountValue(totalPriceDiscount);
 
-                                            totalSchemeDiscountValue = totalPriceDiscount;
+                                            totalSchemeDiscountValue += totalPriceDiscount;
 
 
                                         } else if (schemeBO
@@ -967,7 +967,7 @@ public class DiscountHelper {
                                                 productBO.setSchemeAppliedValue(productBO.getSchemeAppliedValue() - totalPercentageDiscount);
                                             }
                                             schemeProductBo.setDiscountValue(totalPercentageDiscount);
-                                            totalSchemeDiscountValue = totalPercentageDiscount;
+                                            totalSchemeDiscountValue += totalPercentageDiscount;
                                         } else if (schemeBO
                                                 .isQuantityTypeSelected()) {
                                             orderHelper.updateSchemeFreeProduct(schemeBO, productBO);

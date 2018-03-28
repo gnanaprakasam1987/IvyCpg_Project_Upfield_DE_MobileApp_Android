@@ -47,8 +47,18 @@ public class NewOutletBO {
     private ArrayList<NewOutletBO> lst;
     private String rfield5;
     private String rfield6;
+    private String rField4;
+    private String rField7;
     private String tinExpDate;
     private int userId;
+    private String panNo;
+    private String drugLicenseNo;
+    private String foodLicenseNo;
+    private String dlExpDate;
+    private String flExpDate;
+    private String region;
+    private String country;
+    private String mobile;
 
     public java.lang.String getRetailerId() {
         return retailerId;
@@ -429,7 +439,6 @@ public class NewOutletBO {
     }
 
     public String toString() {
-        // TODO Auto-generated method stub
         return listName;
     }
 
@@ -597,4 +606,83 @@ public class NewOutletBO {
         this.userId = userId;
     }
 
+    public java.lang.String getPanNo() {
+        return panNo;
+    }
+
+    public void setPanNo(java.lang.String panNo) {
+        this.panNo = panNo;
+    }
+
+    public java.lang.String getDrugLicenseNo() {
+        return drugLicenseNo;
+    }
+
+    public void setDrugLicenseNo(java.lang.String drugLicenseNo) {
+        this.drugLicenseNo = drugLicenseNo;
+    }
+
+    public java.lang.String getFoodLicenseNo() {
+        return foodLicenseNo;
+    }
+
+    public void setFoodLicenseNo(java.lang.String foodLicenseNo) {
+        this.foodLicenseNo = foodLicenseNo;
+    }
+
+    public java.lang.String getDlExpDate() {
+        return dlExpDate;
+    }
+
+    public void setDlExpDate(java.lang.String dlExpDate) {
+        this.dlExpDate = dlExpDate;
+    }
+
+    public java.lang.String getFlExpDate() {
+        return flExpDate;
+    }
+
+    public void setFlExpDate(java.lang.String flExpDate) {
+        this.flExpDate = flExpDate;
+    }
+
+    public java.lang.String getrField4() {
+        return rField4;
+    }
+
+    public void setrField4(java.lang.String rField4) {
+        this.rField4 = rField4;
+    }
+
+    public java.lang.String getrField7() {
+        return rField7;
+    }
+
+    public void setrField7(java.lang.String rField7) {
+        this.rField7 = rField7;
+    }
+
+    public java.lang.String getRegion() {
+        return region;
+    }
+
+    public void setRegion(java.lang.String region) {
+        this.region = region;
+    }
+
+    public java.lang.String getCountry() {
+        return country;
+    }
+
+    public void setCountry(java.lang.String country) {
+        this.country = country;
+    }
+
+    public java.lang.String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(java.lang.String mobile) {
+        this.mobile = mobile;
+    }
 }

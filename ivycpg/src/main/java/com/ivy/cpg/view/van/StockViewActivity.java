@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -40,6 +41,7 @@ public class StockViewActivity extends ToolBarwithFilter implements
     private boolean isExpandList = false;
     private Intent loadActivity;
     private boolean isFromPlanning = false;
+    private boolean isOutersize;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,57 @@ public class StockViewActivity extends ToolBarwithFilter implements
         ((TextView) findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
-        if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
+        if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
+                bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||
+                bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
+
+            if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                            R.id.sihTitle).getTag()) != null)
+                        ((TextView) findViewById(R.id.sihTitle))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(findViewById(R.id.sihTitle)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    Commons.printException("" + e);
+                }
+
+                findViewById(R.id.sihCaseTitle).setVisibility(View.GONE);
+                findViewById(R.id.sihOuterTitle).setVisibility(View.GONE);
+            } else if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS) {
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                            R.id.sihCaseTitle).getTag()) != null)
+                        ((TextView) findViewById(R.id.sihCaseTitle))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(findViewById(R.id.sihCaseTitle)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    Commons.printException("" + e);
+                }
+
+                findViewById(R.id.sihTitle).setVisibility(View.GONE);
+                findViewById(R.id.sihOuterTitle).setVisibility(View.GONE);
+            } else if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU) {
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                            R.id.sihOuterTitle).getTag()) != null)
+                        ((TextView) findViewById(R.id.sihOuterTitle))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(findViewById(R.id.sihOuterTitle)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    Commons.printException("" + e);
+                }
+
+                findViewById(R.id.sihCaseTitle).setVisibility(View.GONE);
+                findViewById(R.id.sihTitle).setVisibility(View.GONE);
+            }
+        } else if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
                 findViewById(R.id.sihCaseTitle).setVisibility(View.GONE);
             } else {
@@ -587,7 +639,33 @@ public class StockViewActivity extends ToolBarwithFilter implements
                     R.string.batch_no)
                     + ": " + childBoObj.getBatchNo() + "";
             holder.batchNo.setText(tv);
-            if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
+            if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
+                    bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||
+                    bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
+                holder.sihCase.setVisibility(View.GONE);
+                holder.sihOuter.setVisibility(View.GONE);
+                if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU) {
+                    if (childBoObj.getOuterSize() != 0) {
+                        tv = SDUtil.mathRoundoff((double) childBoObj.getStocksih() / childBoObj.getOuterSize()) + "";
+                        holder.sih.setText(tv);
+                    } else {
+                        tv = childBoObj.getStocksih() + "";
+                        holder.sih.setText(tv);
+                    }
+                } else if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS) {
+                    if (childBoObj.getCaseSize() != 0) {
+                        tv = SDUtil.mathRoundoff((double) childBoObj.getStocksih() / childBoObj.getCaseSize()) + "";
+                        holder.sih.setText(tv);
+                    } else {
+                        tv = childBoObj.getStocksih() + "";
+                        holder.sih.setText(tv);
+                    }
+                } else if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
+                    tv = childBoObj.getStocksih() + "";
+                    holder.sih.setText(tv);
+                }
+
+            } else if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
                 if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
                         && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
                         && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
@@ -817,7 +895,38 @@ public class StockViewActivity extends ToolBarwithFilter implements
 
             holder.psname.setText(groupBoObj.getProductshortname());
             holder.pname = groupBoObj.getProductname();
-            if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
+            if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
+                    bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||
+                    bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
+                holder.sihCase.setVisibility(View.GONE);
+                holder.sihOuter.setVisibility(View.GONE);
+                if(bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU){
+                    if(groupBoObj.getOuterSize()!=0)
+                    {
+                        tv = SDUtil.mathRoundoff((double)groupBoObj.getStocksih()/groupBoObj.getOuterSize()) + "";
+                        holder.sih.setText(tv);
+                    }else{
+                        tv = groupBoObj.getStocksih() + "";
+                        holder.sih.setText(tv);
+
+                    }
+                }
+                else if(bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS){
+                    if(groupBoObj.getCaseSize()!=0)
+                    {
+                        tv = SDUtil.mathRoundoff((double)groupBoObj.getStocksih()/groupBoObj.getCaseSize()) + "";
+                        holder.sih.setText(tv);
+                    }else{
+                        tv = groupBoObj.getStocksih() + "";
+                        holder.sih.setText(tv);
+
+                    }
+                }else{
+                    tv = groupBoObj.getStocksih() + "";
+                    holder.sih.setText(tv);
+
+                }
+            } else if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
                 if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
                         && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
                         && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {

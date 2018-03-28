@@ -453,10 +453,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
 
-
     @Override
     public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
-        stockCheckPresenter.updateCompetitorFilteredProducts(parentIdList,  mSelectedIdByLevelId,  filterText) ;
+        stockCheckPresenter.updateCompetitorFilteredProducts(parentIdList, mSelectedIdByLevelId, filterText);
     }
 
     class MyAdapter extends ArrayAdapter<ProductMasterBO> {
@@ -775,7 +774,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                         holder.mReason.setSelection(0);
                                     }
 
-
+                                    updateFooter();
                                 }
 
                                 @Override
@@ -823,7 +822,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                         holder.mReason.setSelection(0);
 
                                     }
-
+                                    updateFooter();
                                 }
 
                                 @Override
@@ -884,7 +883,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 holder.mReason.setSelection(0);
 
                             }
-
+                            updateFooter();
                         }
                     });
 
@@ -1324,7 +1323,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     }
                 }
             }
-            if ( businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                 menu.findItem(R.id.menu_competitor_filter).setVisible(true);
             }
             /*if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && stockCheckPresenter.mSelectedIdByLevelId != null
@@ -1334,7 +1333,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             }*/
 
-            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && mCompetitorSelectedIdByLevelId!=null) {
+            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && mCompetitorSelectedIdByLevelId != null) {
                 for (Integer id : mCompetitorSelectedIdByLevelId.keySet()) {
                     if (mCompetitorSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_competitor_filter).setIcon(
@@ -1710,7 +1709,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
         }
         if (!tag.toString().equalsIgnoreCase("All")) {
-            stockCheckPresenter.mCompetitorSelectedIdByLevelId=new HashMap<>();
+            stockCheckPresenter.mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
         getActivity().supportInvalidateOptionsMenu();
 

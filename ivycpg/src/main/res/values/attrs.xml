@@ -92,4 +92,8 @@
     <declare-styleable name="cardViewLayout">
         <attr name="cardViewLayoutStyle" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="customSearchView">
+        <attr name="SearchViewStyle" format="reference" />
+    </declare-styleable>
 </resources>

@@ -1791,14 +1791,32 @@ public class SurveyHelperNew {
                     for (SurveyBO surveyBO : getSurvey()) {
                         if (surveyBO.getSurveyID() == c.getInt(0)) {
 
-                            for (QuestionBO questionBO : surveyBO.getQuestions()) {
-                                if (questionBO.getQuestionID() == c.getInt(1)) {
+                            //Load Main Question Last transaction data
+                            if (c.getInt(4) == 0) {
+                                for (QuestionBO questionBO : surveyBO.getQuestions()) {
+                                    if (questionBO.getQuestionID() == c.getInt(1)) {
 
-                                    questionBO.setSelectedAnswerID(c.getInt(2));
-                                    questionBO.setSelectedAnswer(c.getString(3));
+                                        questionBO.setSelectedAnswerID(c.getInt(2));
+                                        questionBO.setSelectedAnswer(c.getString(3));
 
+                                    }
                                 }
                             }
+
+                            //Load sub question Last transaction data
+                            if (c.getInt(4) == 1) {
+                                for (QuestionBO subQuestioBo : getDependentQuestions()) {
+                                    if (subQuestioBo.getQuestionID() == c.getInt(1)) {
+                                        subQuestioBo.setIsSubQuestion(1);
+                                        subQuestioBo.setSelectedAnswerID(c.getInt(2));
+                                        subQuestioBo.setSelectedAnswer(c.getString(3));
+
+                                    }
+                                    surveyBO.getQuestions().add(subQuestioBo);
+                                }
+                            }
+
+
                         }
 
                     }

@@ -60,6 +60,9 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.sync.SyncContractor;
+import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.cpg.view.sync.UploadPresenterImpl;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImagesDownlaod;
 import com.ivy.cpg.view.van.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
@@ -94,7 +97,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-public class SynchronizationFragment extends IvyBaseFragment implements View.OnClickListener, SwitchUserDialog.onSwitchUser {
+public class SynchronizationFragment extends IvyBaseFragment
+        implements View.OnClickListener, SwitchUserDialog.onSwitchUser,SyncContractor.SyncView {
 
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
@@ -135,12 +139,16 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
     //switchUser UserName and password
     private String userName, password;
 
+    private UploadPresenterImpl presenter;
+    private UploadHelper mUploadHelper;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(getActivity());
+        mUploadHelper=UploadHelper.getInstance(getActivity());
+        presenter =new UploadPresenterImpl(context,bmodel,this,mUploadHelper,mVanUnloadHelper);
     }
 
     @Override
@@ -217,6 +225,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
             if (dbImageCount >= bmodel.configurationMasterHelper.photocount) {
 
                 withPhotosCheckBox.setChecked(true);
+                presenter.updateIsWithImageStatus(true);
                 Checked = true;
             }
 
@@ -227,8 +236,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView,
                                                  boolean isChecked) {
-                        int dbImageCount = bmodel.synchronizationHelper
-                                .countImageFiles();
+                        int dbImageCount = presenter.getImageFilesCount();
                         if (!isChecked) {
 
                             if (dbImageCount >= bmodel.configurationMasterHelper.photocount) {
@@ -238,12 +246,16 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                                                         R.string.its_not_possible_to_upload_without_img),
                                         0);
                                 withPhotosCheckBox.setChecked(true);
+                                presenter.updateIsWithImageStatus(true);
                                 Checked = true;
-                            } else
+                            } else {
                                 Checked = false;
+                                presenter.updateIsWithImageStatus(false);
+                            }
 
                         } else {
                             Checked = true;
+                            presenter.updateIsWithImageStatus(true);
 
                         }
                         syncStatus(1);
@@ -266,19 +278,25 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     public void onCheckedChanged(CompoundButton buttonView,
                                                  boolean isChecked) {
                         if (isChecked) {
-                            if (SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
-                                    bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
+                            presenter.updateDayCloseStatus(true);
+                            if (SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                                     "yyyy/MM/dd") >= 0) {
-                                if (!bmodel.synchronizationHelper.isDayClosed()) {
-                                    Vector<NonproductivereasonBO> nonProductiveRetailersVector = bmodel.getMissedCallRetailers();
+
+                                if (!presenter.isDayClosed()) {
+
+                                    final Vector<NonproductivereasonBO> nonProductiveRetailersVector = presenter.getMissedCallRetailers();
                                     if ((nonProductiveRetailersVector.size() != 0 && bmodel.configurationMasterHelper.HAS_NO_VISIT_REASON_VALIDATION)) {
+
                                         dayCloseCheckBox.setChecked(false);
+                                        presenter.updateDayCloseStatus(false);
+
                                         nvrd = new NonVisitReasonDialog(getActivity(), nonProductiveRetailersVector);
                                         nvrd.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                             @Override
                                             public void onDismiss(DialogInterface dialogInterface) {
-                                                if (bmodel.getMissedCallRetailers().size() == 0) {
+                                                if (nonProductiveRetailersVector.size() == 0) {
                                                     dayCloseCheckBox.setChecked(true);
+                                                    presenter.updateDayCloseStatus(true);
                                                 }
                                             }
                                         });
@@ -297,15 +315,14 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                                     } else {
                                         try {
                                             if (bmodel.configurationMasterHelper.SHOW_CLOSE_DAY_VALID) {
-                                                if (bmodel.configurationMasterHelper
-                                                        .isOdaMeterOn()
-                                                        && !bmodel.endjourneyclicked) {
+                                                if (presenter.isOdameterON() && !bmodel.endjourneyclicked) {
                                                     bmodel.showAlert(
                                                             getResources()
                                                                     .getString(
                                                                             R.string.journey_not_ended),
                                                             0);
                                                     dayCloseCheckBox.setChecked(false);
+                                                    presenter.updateDayCloseStatus(false);
                                                     syncStatus(1);
 
                                                 } else {
@@ -359,6 +376,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                                         getResources().getString(R.string.download_date_mismatch),
                                         Toast.LENGTH_SHORT).show();
                                 dayCloseCheckBox.setChecked(false);
+                                presenter.updateDayCloseStatus(false);
 
                             }
                         }
@@ -551,6 +569,8 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
     }
 
+
+
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
@@ -645,14 +665,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                 Toast.makeText(getActivity(), getResources().getString(R.string.no_network_connection),
                         Toast.LENGTH_SHORT).show();
             }
-
-        } else if (i == R.id.menu_export_txt) {
-            getActivity().supportInvalidateOptionsMenu();
-            if (!isClicked)
-                isClicked = true;
-            showAlertOkCancel(
-                    getResources().getString(
-                            R.string.do_u_want_to_close_the_day), 1);
 
         } else if (i == R.id.menu_catalog_img) {
             startActivity(new Intent(getActivity(), CatalogImagesDownlaod.class));
@@ -756,15 +768,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.NOTIFY_SIH_UPLOADED:
                     alertDialog.dismiss();
-                    if (bmodel.synchronizationHelper.checkStockTable())
-                        startSync(UPLOAD_STOCK_APPLY);
-                    else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                        startSync(UPLOAD_LOYALTY_POINTS);
-                    else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                            && !dayCloseCheckBox.isChecked()) {
-                        startSync(RETAILER_WISE_UPLOAD);
-                    } else
-                        startSync(UPLOAD_ALL);
+                    presenter.upload();
                     break;
                 case DataMembers.NOTIFY_SIH_UPLOAD_ERROR:
                     Commons.print("SIH ," + "Error");
@@ -776,14 +780,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.NOTIFY_STOCKAPLY_UPLOADED:
                     alertDialog.dismiss();
-                    if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                        startSync(UPLOAD_LOYALTY_POINTS);
-                    else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                            && !dayCloseCheckBox.isChecked()) {
-                        startSync(RETAILER_WISE_UPLOAD);
-                    } else {
-                        startSync(UPLOAD_ALL);
-                    }
+                    presenter.upload();
                     break;
                 case DataMembers.NOTIFY_STOCKAPLY_UPLOAD_ERROR:
                     Commons.print("Stock Apply Upload," + "Error");
@@ -794,43 +791,19 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     break;
                 case DataMembers.NOTIFY_COUNTER_SIH_UPLOADED:
                     alertDialog.dismiss();
-                    if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                        startSync(UPLOAD_LOYALTY_POINTS);
-                    else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                            && !dayCloseCheckBox.isChecked()) {
-                        startSync(RETAILER_WISE_UPLOAD);
-                    } else {
-                        startSync(UPLOAD_ALL);
-                    }
+                    presenter.upload();
                     break;
                 case DataMembers.NOTIFY_COUNTER_STOCK_APPLY_UPLOADED:
                     alertDialog.dismiss();
-                    if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                        startSync(UPLOAD_LOYALTY_POINTS);
-                    else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                            && !dayCloseCheckBox.isChecked()) {
-                        startSync(RETAILER_WISE_UPLOAD);
-                    } else
-                        startSync(UPLOAD_ALL);
+                    presenter.upload();
                     break;
                 case DataMembers.NOTIFY_CS_REJECTED_VARIANCE_UPLOADED:
                     alertDialog.dismiss();
-                    if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                        startSync(UPLOAD_LOYALTY_POINTS);
-                    else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                            && !dayCloseCheckBox.isChecked()) {
-                        startSync(RETAILER_WISE_UPLOAD);
-                    } else
-                        startSync(UPLOAD_ALL);
+                    presenter.upload();
                     break;
                 case DataMembers.NOTIFY_LP_UPLOADED:
                     alertDialog.dismiss();
-                    if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                            && !dayCloseCheckBox.isChecked()) {
-                        startSync(RETAILER_WISE_UPLOAD);
-                    } else {
-                        startSync(UPLOAD_ALL);
-                    }
+                    presenter.upload();
                     break;
                 case DataMembers.NOTIFY_LP_UPLOAD_ERROR:
                     alertDialog.dismiss();
@@ -841,7 +814,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                 case DataMembers.NOTIFY_UPLOADED:
                     if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES)
-                            && (bmodel.synchronizationHelper.countImageFiles() > 0 || bmodel.synchronizationHelper.countTextFiles() > 0)) {
+                            && (presenter.getImageFilesCount()>0 || presenter.getTextFilesCount() > 0)) {
                         String s1 = tvwstatus.getText()
                                 + DataMembers.CR1
                                 + getResources().getString(
@@ -851,15 +824,8 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                         setMessageInProgressDialog(builder, getResources().getString(
                                 R.string.image_uploading));
                         alertDialog.show();
-                        if (bmodel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
-                            new MyThread(getActivity(),
-                                    DataMembers.AMAZONIMAGE_UPLOAD).start();
+                        presenter.uploadImages();
 
-                        } else {
-                            new MyThread(getActivity(),
-                                    DataMembers.SYNCUPLOAD_IMAGE).start();
-
-                        }
 
                     } else {
                         alertDialog.dismiss();
@@ -881,7 +847,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     break;
                 case DataMembers.NOTIFY_UPLOADED_IMAGE:
                     if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT)
-                        new LoadRetailerIsVisited().execute();
+                        presenter.loadRetailerSelectionScreen();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.images_sucessfully_uploaded), 0);
@@ -967,70 +933,27 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
         if (v.getId() == R.id.startsync) {
 
-            if (bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
-                if (bmodel.synchronizationHelper.isAttendanceCompleted()) {
-                    if (bmodel.synchronizationHelper.isSaleDrafted()) {
-                        if (bmodel.isOnline()) {
-                            if (!bmodel.configurationMasterHelper.IS_INVOICE || !bmodel.isOrderExistToCreateInvoiceAll()) {
+                if (presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
 
-                                if (dayCloseCheckBox.isChecked()) {
-                                    if (!isClicked) {
-                                        showAlertOkCancel(
-                                                getResources()
-                                                        .getString(
-                                                                R.string.do_u_want_to_close_the_day),
-                                                0);
-                                    }
-
-                                } else {
-                                    if (!isClicked) {
-                                        isClicked = true;
-                                        if (bmodel.synchronizationHelper.checkDataForSync() || bmodel.synchronizationHelper.checkSIHTable()
-                                                || bmodel.synchronizationHelper.checkStockTable()) {
-
-                                            if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT) {
-                                                new LoadRetailerIsVisited().execute();
-                                            } else {
-                                                IsImagechecked();
-                                            }
-
-                                        } else if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES) && bmodel.synchronizationHelper.countImageFiles() > 0) {
-                                            startSync(UPLOAD_WITH_IMAGES);
-                                        } else {
-                                            isClicked = false;
-                                            bmodel.showAlert(getResources().getString(R.string.no_unsubmitted_orders), 0);
-                                        }
-                                    }
-                                }
-
-                            } else {
-                                bmodel.showAlert(
-                                        getResources().getString(
-                                                R.string.order_exist_without_invoice),
-                                        0);
-                            }
-
-                        } else {
-                            bmodel.showAlert(
+                    if (dayCloseCheckBox.isChecked()) {
+                            showAlertOkCancel(
                                     getResources()
-                                            .getString(R.string.no_network_connection), 0);
-                        }
+                                            .getString(
+                                                    R.string.do_u_want_to_close_the_day),
+                                    0);
+
                     } else {
-                        bmodel.showAlert(
-                                getResources()
-                                        .getString(R.string.drafted_sales_not_processed), 0);
+                      presenter.validateAndUpload();
+
                     }
                 } else {
                     bmodel.showAlert(
-                            getResources()
-                                    .getString(R.string.attendance_activity_not_completed), 0);
+                            getResources().getString(
+                                    R.string.password_does_not_match), 0);
                 }
 
-            } else {
-                bmodel.showAlert(
-                        getResources().getString(
-                                R.string.password_does_not_match), 0);
-            }
+
+
 
         } else if (v.getId() == R.id.download) {
             isSwitchUser = false;
@@ -1113,76 +1036,22 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
     }
 
 
-    private void callSyncRetailerDialog() {
-        if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
-                && !dayCloseCheckBox.isChecked()) {
-
-            Intent intent = new Intent(getActivity(), SyncRetailerSelectActivity.class);
-            SyncVisitedRetailer catObj = new SyncVisitedRetailer(isVisitedRetailerList);
-            Bundle bun = new Bundle();
-            bun.putParcelable("list", catObj);
-            intent.putExtras(bun);
-            startActivityForResult(intent, 1);
-            //startActivity(intent);
-
-        } else if (bmodel.synchronizationHelper.checkSIHTable())
-            startSync(UPLOAD_STOCK_IN_HAND);
-        else if (bmodel.synchronizationHelper.checkStockTable())
-            startSync(UPLOAD_STOCK_APPLY);
-
-        else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-            startSync(UPLOAD_LOYALTY_POINTS);
-        else if (bmodel.synchronizationHelper.checkDataForSync()) {
-            startSync(UPLOAD_ALL);
-        } else {
-            isClicked = false;
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.no_data_exists),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 0:
                 if (resultCode == Activity.RESULT_OK) {
-
-
-                    if (bmodel.synchronizationHelper.checkStockTable())
-                        startSync(UPLOAD_STOCK_IN_HAND);
-                    else if (bmodel.synchronizationHelper.checkStockTable())
-                        startSync(UPLOAD_STOCK_APPLY);
-
-                    else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                        startSync(UPLOAD_LOYALTY_POINTS);
-                    else
-                        startSync(UPLOAD_ALL);
+                  presenter.upload();
 
                 }
                 break;
 
             case 1:
                 if (resultCode == Activity.RESULT_OK) {
-                    bmodel.synchronizationHelper.setRetailerIds(new StringBuilder());
-                    for (SyncRetailerBO sbo : isVisitedRetailerList) {
-                        if (sbo.isChecked())
-                            bmodel.synchronizationHelper.getRetailerIds().append(
-                                    bmodel.QT(sbo.getRetailerId()));
-                        bmodel.synchronizationHelper.getRetailerIds().append(",");
-                    }
-                    if (bmodel.synchronizationHelper.getRetailerIds() != null && bmodel.synchronizationHelper.getRetailerIds().toString().length() > 0) {
-                        bmodel.synchronizationHelper.getRetailerIds().delete(bmodel.synchronizationHelper.getRetailerIds().length() - 1, bmodel.synchronizationHelper.getRetailerIds().length());
+                    presenter.prepareSelectedRetailerIds();
+                    if (presenter.getVisitedRetailerId() != null
+                            && presenter.getVisitedRetailerId().toString().length() > 0) {
                         isClicked = false;
-                        //dialog.dismiss();
-                        if (bmodel.synchronizationHelper.checkSIHTable())
-                            startSync(UPLOAD_STOCK_IN_HAND);
-                        else if (bmodel.synchronizationHelper.checkStockTable())
-                            startSync(UPLOAD_STOCK_APPLY);
-
-                        else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                            startSync(UPLOAD_LOYALTY_POINTS);
-                        else
-                            startSync(RETAILER_WISE_UPLOAD);
+                      presenter.upload();
                     } else {
                         bmodel.showAlert(
                                 getResources()
@@ -1239,97 +1108,12 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
 
                     public void onClick(DialogInterface dialog, int which) {
                         if (idd == 0) {
-                            // To do extra
-                            bmodel.synchronizationHelper.closeDay(1);
-
-                            if (bmodel.deliveryManagementHelper.isDeliveryModuleAvailable()) {
-                                bmodel.deliveryManagementHelper.updateNotDeliveryDetails();
-                            }
-
-                            bmodel.mEmptyReconciliationhelper.updateTable();
-                            if (bmodel.configurationMasterHelper.CALCULATE_UNLOAD) {
-                                mVanUnloadHelper
-                                        .vanUnloadAutomatically();
-                            }
-                            if (bmodel.synchronizationHelper.checkDataForSync()
-                                    || (withPhotosCheckBox.isChecked() && bmodel.synchronizationHelper
-                                    .countImageFiles() > 0)) {
-                                isClicked = true;
-
-                                if (bmodel.synchronizationHelper.checkSIHTable())
-                                    startSync(3);
-                                else if (bmodel.synchronizationHelper.checkStockTable())
-                                    startSync(4);
-                                else
-                                    startSync(0);
-
-
-                            } else {
-                                bmodel.showAlert(
-                                        getResources().getString(
-                                                R.string.no_unsubmitted_orders),
-                                        0);
-                            }
-                        } else if (idd == 1) {
-                            if (bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword
-                                    .getText().toString())) {
-                                if (!bmodel.isOrderExistToCreateInvoiceAll()
-                                        || !bmodel.configurationMasterHelper.IS_INVOICE) {
-                                    if (bmodel.synchronizationHelper
-                                            .checkDataForSync()) {
-                                        if (dayCloseCheckBox.isChecked()) {
-                                            if (!isOnline()) {
-                                                bmodel.synchronizationHelper.closeDay(1);
-                                                startSync(5);
-                                            } else {
-                                                isClicked = false;
-                                                bmodel.showAlert(
-                                                        getResources()
-                                                                .getString(
-                                                                        R.string.you_are_online_cant_export),
-                                                        0);
-                                            }
-                                        } else {
-                                            isClicked = false;
-                                            bmodel.showAlert(
-                                                    getResources()
-                                                            .getString(
-                                                                    R.string.select_close_for_the_day),
-                                                    0);
-                                        }
-                                    } else {
-                                        isClicked = false;
-                                        bmodel.showAlert(
-                                                getResources()
-                                                        .getString(
-                                                                R.string.no_unsubmitted_orders),
-                                                0);
-                                    }
-                                } else {
-                                    isClicked = false;
-                                    bmodel.showAlert(
-                                            getResources()
-                                                    .getString(
-                                                            R.string.order_exist_without_invoice),
-                                            0);
-                                }
-                            } else {
-                                isClicked = false;
-                                bmodel.showAlert(
-                                        getResources()
-                                                .getString(
-                                                        R.string.password_does_not_match),
-                                        0);
-                            }
+                           presenter.dayCloseAndUpload();
                         } else if (idd == 3) {
                             isClicked = false;
                             withPhotosCheckBox.setChecked(true);
-                            if (bmodel.synchronizationHelper.checkSIHTable())
-                                startSync(3);
-                            else if (bmodel.synchronizationHelper.checkStockTable())
-                                startSync(4);
-                            else
-                                startSync(0);
+                            presenter.updateIsWithImageStatus(true);
+                            presenter.upload();
                         }
                     }
 
@@ -1339,12 +1123,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
                     public void onClick(DialogInterface dialog, int which) {
                         isClicked = false;
                         if (idd == 3) {
-                            if (bmodel.synchronizationHelper.checkSIHTable())
-                                startSync(3);
-                            else if (bmodel.synchronizationHelper.checkStockTable())
-                                startSync(4);
-                            else
-                                startSync(0);
+                          presenter.upload();
                         }
                     }
                 });
@@ -1689,68 +1468,6 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         super.onConfigurationChanged(newConfig);
     }
 
-    public void startSync(int callFlag) {
-        Commons.print(" callFlag : " + callFlag);
-        if (bmodel.mAttendanceHelper.checkMenuInOut())
-            bmodel.mAttendanceHelper.updateAttendaceDetailInTime();
-        builder = new AlertDialog.Builder(getActivity());
-        customProgressDialog(builder, getResources().getString(R.string.uploading_data));
-
-        alertDialog = builder.create();
-        alertDialog.show();
-
-        if (callFlag == UPLOAD_ALL)
-            new MyThread(getActivity(), DataMembers.SYNCUPLOAD).start();
-        else if (callFlag == RETAILER_WISE_UPLOAD)
-            new MyThread(getActivity(), DataMembers.SYNCUPLOADRETAILERWISE).start();
-        else if (callFlag == UPLOAD_WITH_IMAGES) {
-            if (bmodel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
-                new MyThread(getActivity(),
-                        DataMembers.AMAZONIMAGE_UPLOAD).start();
-            } else {
-                new MyThread(getActivity(), DataMembers.SYNCUPLOAD_IMAGE)
-                        .start();
-            }
-        } else if (callFlag == UPLOAD_STOCK_IN_HAND)
-            new MyThread(getActivity(), DataMembers.SYNCSIHUPLOAD).start();
-        else if (callFlag == UPLOAD_STOCK_APPLY)
-            new MyThread(getActivity(), DataMembers.SYNCSTKAPPLYUPLOAD).start();
-        else if (callFlag == 5)
-            new MyThread(getActivity(), DataMembers.SYNC_EXPORT).start();
-        else if (callFlag == UPLOAD_LOYALTY_POINTS)
-            new MyThread(getActivity(), DataMembers.SYNCLYTYPTUPLOAD).start();
-        else if (callFlag == UPLOAD_CS_SIH)
-            new MyThread(getActivity(), DataMembers.COUNTER_SIH_UPLOAD).start();
-        else if (callFlag == UPLOAD_CS_STOCK_APPLY)
-            new MyThread(getActivity(), DataMembers.COUNTER_STOCK_APPLY_UPLOAD).start();
-        else if (callFlag == UPLOAD_CS_REJECTED_VARIANCE)
-            new MyThread(getActivity(), DataMembers.CS_REJECTED_VARIANCE_UPLOAD).start();
-    }
-
-    public void settOnclickListenerForDialogForOrderProcessing() {
-        class ButtonOnClickListener implements View.OnClickListener {
-
-            @Override
-            public void onClick(View v) {
-
-
-                if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT
-                        && !dayCloseCheckBox.isChecked()) {
-                    new LoadRetailerIsVisited().execute();
-                } else {
-                    if (bmodel.synchronizationHelper.checkSIHTable())
-                        startSync(UPLOAD_STOCK_IN_HAND);
-                    else if (bmodel.synchronizationHelper.checkStockTable())
-                        startSync(UPLOAD_STOCK_APPLY);
-                    else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                        startSync(UPLOAD_LOYALTY_POINTS);
-                    else
-                        startSync(UPLOAD_ALL);
-                }
-            }
-
-        }
-    }
 
     public void showAlertForDownload() {
         AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -1800,72 +1517,7 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         bmodel.applyAlertDialogTheme(builder);
     }
 
-    class LoadRetailerIsVisited extends AsyncTask<Integer, Integer, Boolean> {
 
-        private ProgressDialog progressDialogue;
-
-        protected void onPreExecute() {
-            progressDialogue = ProgressDialog.show(getActivity(),
-                    DataMembers.SD, getResources().getString(R.string.loading), true, false);
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                isVisitedRetailerList = bmodel.synchronizationHelper.getRetailerIsVisited();
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE; // Return your real result here
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-            callSyncRetailerDialog();
-            progressDialogue.dismiss();
-
-        }
-
-    }
-
-    public void IsImagechecked() {
-        int dbImageCount = bmodel.synchronizationHelper.countImageFiles();
-        if (!Checked) {
-            if (bmodel.configurationMasterHelper.photocount >= 10 && (((double) dbImageCount / bmodel.configurationMasterHelper.photocount) * 100) >= bmodel.configurationMasterHelper.photopercent) {
-                showAlertOkCancel(
-                        getResources()
-                                .getString(
-                                        R.string.image_upload_recommended),
-                        3);
-            } else {
-                if (bmodel.synchronizationHelper.checkSIHTable())
-                    startSync(UPLOAD_STOCK_IN_HAND);
-                else if (bmodel.synchronizationHelper.checkStockTable())
-                    startSync(UPLOAD_STOCK_APPLY);
-
-                else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                    startSync(UPLOAD_LOYALTY_POINTS);
-                else
-                    startSync(UPLOAD_ALL);
-            }
-        } else {
-            if (bmodel.synchronizationHelper.checkSIHTable())
-                startSync(UPLOAD_STOCK_IN_HAND);
-            else if (bmodel.synchronizationHelper.checkStockTable())
-                startSync(UPLOAD_STOCK_APPLY);
-
-            else if (bmodel.synchronizationHelper.checkLoyaltyPoints())
-                startSync(UPLOAD_LOYALTY_POINTS);
-            else
-                startSync(UPLOAD_ALL);
-        }
-
-    }
 
     public class SyncronizationReceiver extends BroadcastReceiver {
         public static final String PROCESS_RESPONSE = "com.ivy.intent.action.SYNC";
@@ -2582,4 +2234,90 @@ public class SynchronizationFragment extends IvyBaseFragment implements View.OnC
         }).show();
     }
 
+
+    @Override
+    public void showAttendanceNotCompletedToast() {
+        bmodel.showAlert(
+                getResources()
+                        .getString(R.string.attendance_activity_not_completed), 0);
+    }
+
+    @Override
+    public void showNoInternetToast() {
+        bmodel.showAlert(
+                getResources()
+                        .getString(R.string.no_network_connection), 0);
+    }
+
+    @Override
+    public void showOrderExistWithoutInvoice() {
+        bmodel.showAlert(
+                        getResources().getString(
+                R.string.order_exist_without_invoice),
+                0);
+    }
+
+    @Override
+    public void showNoDataExist() {
+        Toast.makeText(getActivity(),
+            getResources().getString(R.string.no_data_exists),
+                    Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressLoading() {
+
+        if(alertDialog!=null){
+            alertDialog.dismiss();
+        }
+        builder = new AlertDialog.Builder(getActivity());
+        customProgressDialog(builder, getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void showProgressUploading() {
+        if(alertDialog!=null){
+            alertDialog.dismiss();
+        }
+        builder = new AlertDialog.Builder(getActivity());
+        customProgressDialog(builder, getResources().getString(R.string.uploading_data));
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void cancelProgress() {
+        if(alertDialog!=null){
+            alertDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showRetailerSelectionScreen(List<SyncRetailerBO> isVisitedRetailerList) {
+        Intent intent = new Intent(getActivity(), SyncRetailerSelectActivity.class);
+        SyncVisitedRetailer catObj = new SyncVisitedRetailer(isVisitedRetailerList);
+        Bundle bun = new Bundle();
+        bun.putParcelable("list", catObj);
+        intent.putExtras(bun);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void showAlertImageUploadRecommended() {
+        showAlertOkCancel(
+                getResources()
+                        .getString(
+                                R.string.image_upload_recommended),
+                3);
+    }
+
+    @Override
+    public void showAlertNoUnSubmittedOrder() {
+        bmodel.showAlert(
+                getResources().getString(
+                        R.string.no_unsubmitted_orders),
+                0);
+    }
 }

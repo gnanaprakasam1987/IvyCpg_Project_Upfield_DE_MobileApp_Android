@@ -79,7 +79,7 @@
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
-
+        <item name="SearchViewStyle">@style/SearchViewStyleBlue</item>
     </style>
 
     <style name="MyButtonBlue" parent="Base.Widget.AppCompat.Button">
@@ -139,6 +139,22 @@ negative button and neutral button -->
         <item name="android:gravity">center</item>
     </style>
 
+
+    <style name="SearchViewStyleBlue" parent="Widget.AppCompat.SearchView">
+        <!-- Gets rid of the search icon -->
+        <item name="searchIcon">@drawable/icon_search</item>
+        <item name="closeIcon">@drawable/ic_action_circle_close</item>
+        <!-- Gets rid of the "underline" in the text -->
+        <item name="queryBackground">@color/colorPrimary</item>
+        <!-- Gets rid of the search icon when the SearchView is expanded -->
+        <item name="searchHintIcon">@null</item>
+        <!-- The hint text that appears when the user has not typed anything -->
+        <item name="queryHint">@string/search</item>
+        <item name="android:textColorHint">@color/WHITE</item>
+        <item name="android:textColorPrimary">@color/WHITE</item>
+        <!--This line changes the color of icons in toolbar (back, overflow menu icons)-->
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
 
     <!--Blue Theme End-->
 
@@ -217,7 +233,7 @@ negative button and neutral button -->
         <item name="dashboardSpinnerSelector">@color/footerBackgroundColor</item>
 
         <!--CustomTextViews-->
-
+        <item name="SearchViewStyle">@style/SearchViewStyleNBlue</item>
     </style>
 
 
@@ -267,6 +283,22 @@ negative button and neutral button -->
         <item name="android:textColor">@color/WHITE</item>
         <item name="android:gravity">center</item>
         <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="SearchViewStyleNBlue" parent="Widget.AppCompat.SearchView">
+        <!-- Gets rid of the search icon -->
+        <item name="searchIcon">@drawable/icon_search</item>
+        <item name="closeIcon">@drawable/ic_action_circle_close</item>
+        <!-- Gets rid of the "underline" in the text -->
+        <item name="queryBackground">@color/colorPrimaryNBlue</item>
+        <!-- Gets rid of the search icon when the SearchView is expanded -->
+        <item name="searchHintIcon">@null</item>
+        <!-- The hint text that appears when the user has not typed anything -->
+        <item name="queryHint">@string/search</item>
+        <item name="android:textColorHint">@color/WHITE</item>
+        <item name="android:textColorPrimary">@color/WHITE</item>
+        <!--This line changes the color of icons in toolbar (back, overflow menu icons)-->
+        <item name="android:textColorSecondary">@color/white</item>
     </style>
 
     <!--N Blue Theme End-->
@@ -349,6 +381,8 @@ negative button and neutral button -->
         <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
 
+        <item name="SearchViewStyle">@style/SearchViewStyleRed</item>
+
     </style>
 
     <style name="MyButtonRed" parent="Base.Widget.AppCompat.Button">
@@ -394,6 +428,21 @@ negative button and neutral button -->
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="SearchViewStyleRed" parent="Widget.AppCompat.SearchView">
+        <!-- Gets rid of the search icon -->
+        <item name="searchIcon">@drawable/icon_search</item>
+        <item name="closeIcon">@drawable/ic_action_circle_close</item>
+        <!-- Gets rid of the "underline" in the text -->
+        <item name="queryBackground">@color/colorPrimaryRed</item>
+        <!-- Gets rid of the search icon when the SearchView is expanded -->
+        <item name="searchHintIcon">@null</item>
+        <!-- The hint text that appears when the user has not typed anything -->
+        <item name="queryHint">@string/search</item>
+        <item name="android:textColorHint">@color/WHITE</item>
+        <item name="android:textColorPrimary">@color/WHITE</item>
+        <!--This line changes the color of icons in toolbar (back, overflow menu icons)-->
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
     <!--Red Theme End-->
 
 
@@ -473,7 +522,7 @@ negative button and neutral button -->
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
-
+        <item name="SearchViewStyle">@style/SearchViewStyleOrange</item>
     </style>
 
     <style name="MyButtonOrange" parent="Base.Widget.AppCompat.Button">
@@ -518,6 +567,21 @@ negative button and neutral button -->
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="SearchViewStyleOrange" parent="Widget.AppCompat.SearchView">
+        <!-- Gets rid of the search icon -->
+        <item name="searchIcon">@drawable/icon_search</item>
+        <item name="closeIcon">@drawable/ic_action_circle_close</item>
+        <!-- Gets rid of the "underline" in the text -->
+        <item name="queryBackground">@color/colorPrimaryOrange</item>
+        <!-- Gets rid of the search icon when the SearchView is expanded -->
+        <item name="searchHintIcon">@null</item>
+        <!-- The hint text that appears when the user has not typed anything -->
+        <item name="queryHint">@string/search</item>
+        <item name="android:textColorHint">@color/WHITE</item>
+        <item name="android:textColorPrimary">@color/WHITE</item>
+        <!--This line changes the color of icons in toolbar (back, overflow menu icons)-->
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
     <!--Orange Theme End-->
 
 
@@ -597,6 +661,7 @@ negative button and neutral button -->
         <item name="homescreenbackground">@drawable/burger_menu_bg</item>
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/light_grey</item>
+        <item name="SearchViewStyle">@style/SearchViewStyleCarlsberg</item>
         <!--CustomTextViews-->
 
     </style>
@@ -643,6 +708,21 @@ negative button and neutral button -->
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="SearchViewStyleCarlsberg" parent="Widget.AppCompat.SearchView">
+        <!-- Gets rid of the search icon -->
+        <item name="searchIcon">@drawable/icon_search</item>
+        <item name="closeIcon">@drawable/ic_action_circle_close</item>
+        <!-- Gets rid of the "underline" in the text -->
+        <item name="queryBackground">@color/colorPrimaryCB</item>
+        <!-- Gets rid of the search icon when the SearchView is expanded -->
+        <item name="searchHintIcon">@null</item>
+        <!-- The hint text that appears when the user has not typed anything -->
+        <item name="queryHint">@string/search</item>
+        <item name="android:textColorHint">@color/WHITE</item>
+        <item name="android:textColorPrimary">@color/WHITE</item>
+        <!--This line changes the color of icons in toolbar (back, overflow menu icons)-->
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
     <!--Carlsberg Theme End-->
 
     <!--Pink Theme Start-->
@@ -722,7 +802,7 @@ negative button and neutral button -->
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
-
+        <item name="SearchViewStyle">@style/SearchViewStylePink</item>
     </style>
 
     <style name="MyButtonPink" parent="Base.Widget.AppCompat.Button">
@@ -767,6 +847,21 @@ negative button and neutral button -->
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="SearchViewStylePink" parent="Widget.AppCompat.SearchView">
+        <!-- Gets rid of the search icon -->
+        <item name="searchIcon">@drawable/icon_search</item>
+        <item name="closeIcon">@drawable/ic_action_circle_close</item>
+        <!-- Gets rid of the "underline" in the text -->
+        <item name="queryBackground">@color/colorPrimaryPink</item>
+        <!-- Gets rid of the search icon when the SearchView is expanded -->
+        <item name="searchHintIcon">@null</item>
+        <!-- The hint text that appears when the user has not typed anything -->
+        <item name="queryHint">@string/search</item>
+        <item name="android:textColorHint">@color/WHITE</item>
+        <item name="android:textColorPrimary">@color/WHITE</item>
+        <!--This line changes the color of icons in toolbar (back, overflow menu icons)-->
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
     <!--Pink Theme End-->
 
 

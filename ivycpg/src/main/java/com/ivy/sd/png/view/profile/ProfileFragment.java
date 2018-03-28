@@ -39,6 +39,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
+import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -329,7 +330,9 @@ public class ProfileFragment extends IvyBaseFragment {
         profileConfig = new Vector<>();
         profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
-        int size = profileConfig.size();
+        int size = 0;
+        if (profileConfig != null)
+            size = profileConfig.size();
         for (int i = 0; i < size; i++) {
 
             int flag = profileConfig.get(i).isFlag();
@@ -959,6 +962,12 @@ public class ProfileFragment extends IvyBaseFragment {
                 String text = retailerObj.getRField4();
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
+                if (profileConfig.get(i).getHasLink() == 1)
+                    for (RetailerFlexBO retailerFlexBO : bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD4"))
+                        if (retailerFlexBO.getId().equals(text)) {
+                            text = retailerFlexBO.getName();
+                            break;
+                        }
                 outletBO.setValueText(text);
                 finalProfileList.add(outletBO);
                 break;
@@ -1068,23 +1077,45 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE53": {
+                String rField5 = retailerObj.getRField5();
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
-                outletBO.setValueText(retailerObj.getRField5());
+                if (profileConfig.get(i).getHasLink() == 1)
+                    for (RetailerFlexBO retailerFlexBO : bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD5"))
+                        if (retailerFlexBO.getId().equals(rField5)) {
+                            rField5 = retailerFlexBO.getName();
+                            break;
+                        }
+                outletBO.setValueText(rField5);
                 finalProfileList.add(outletBO);
                 break;
             }
             case "PROFILE54": {
+                String rField6 = retailerObj.getRField6();
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
-                outletBO.setValueText(retailerObj.getRField6());
+                if (profileConfig.get(i).getHasLink() == 1)
+                    for (RetailerFlexBO retailerFlexBO : bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD6"))
+                        if (retailerFlexBO.getId().equals(rField6)) {
+                            rField6 = retailerFlexBO.getName();
+                            break;
+                        }
+                outletBO.setValueText(rField6);
                 finalProfileList.add(outletBO);
                 break;
             }
             case "PROFILE55": {
+                String rField7 = retailerObj.getRField7();
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
-                outletBO.setValueText(retailerObj.getRField7());
+                if (profileConfig.get(i).getHasLink() == 1)
+                    for (RetailerFlexBO retailerFlexBO : bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD7"))
+                        if (retailerFlexBO.getId().equals(rField7)) {
+                            rField7 = retailerFlexBO.getName();
+                            break;
+                        }
+
+                outletBO.setValueText(rField7);
                 finalProfileList.add(outletBO);
                 break;
             }
@@ -1192,6 +1223,75 @@ public class ProfileFragment extends IvyBaseFragment {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(loyaltyBalancePoints + "");
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE81": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getPanNumber());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE82": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getFoodLicenceNo());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE83": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getFoodLicenceExpDate());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE84": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getDLNo());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE85": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getDLNoExpDate());
+                finalProfileList.add(outletBO);
+                break;
+            } case "PROFILE78": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getEmail());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE79": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getMobile());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE86": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getFax());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE87": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getRegion());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE88": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getCountry());
                 finalProfileList.add(outletBO);
                 break;
             }

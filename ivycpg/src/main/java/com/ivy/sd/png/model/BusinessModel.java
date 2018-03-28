@@ -230,6 +230,7 @@ public class BusinessModel extends Application {
     public RetailerMasterBO retailerMasterBO;
     public String deleteSpliteOrderID;
     public Vector<RetailerMasterBO> retailerMaster;
+    public Vector<RetailerMasterBO> subDMaster;
     public ArrayList<RetailerMasterBO> visitretailerMaster;
     private Vector<BankMasterBO> bankMaster;
     private Vector<BranchMasterBO> bankBranch;
@@ -505,6 +506,8 @@ public class BusinessModel extends Application {
                 ctxx.startActivityForResult(myIntent, 0);
             } else {*/
             myIntent = new Intent(ctxx, HomeScreenActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ctxx.startActivityForResult(myIntent, 0);
             //}
         } else if (act.equals(DataMembers.actPlanning)) {
@@ -1429,8 +1432,8 @@ public class BusinessModel extends Application {
 
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate"
-
+                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,A.SubDId,"
+                            + "A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country"
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerClientMappingMaster RC on RC.rid = A.RetailerID"
@@ -1464,6 +1467,9 @@ public class BusinessModel extends Application {
                     retailer.setRetailerID(retID);
                     retailer.setRetailerCode(c.getString(c.getColumnIndex("RetailerCode")));
                     retailer.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
+
+                    retailer.setSubDId(c.getInt(c.getColumnIndex("SubDId")));
+
                     retailer.setBeatID(c.getInt(c.getColumnIndex("beatid")));
                     retailer.setCreditLimit(c.getFloat(c.getColumnIndex("creditlimit")));
                     retailer.setTinnumber(c.getString(c.getColumnIndex("tinnumber")));
@@ -1524,6 +1530,7 @@ public class BusinessModel extends Application {
                     retailer.setInitiative_target(c.getInt(c.getColumnIndex("init_target")));
                     retailer.setRfield2(c.getString(c.getColumnIndex("RField2")));
                     retailer.setIsPresentation(c.getString(c.getColumnIndex("isPresentation")));
+
 
                     retailer.setGpsDistance(c.getInt(c.getColumnIndex("GPS_DIST")));
                     retailer.setOtpActivatedDate(c.getString(c.getColumnIndex("StoreOTPActivated")));
@@ -1618,6 +1625,14 @@ public class BusinessModel extends Application {
                     retailer.setIsSEZzone(c.getInt(c.getColumnIndex("InSEZ")));
                     retailer.setDLNo(c.getString(c.getColumnIndex("DLNo")));
                     retailer.setDLNoExpDate(c.getString(c.getColumnIndex("DLNoExpDate")));
+                    retailer.setSubdId(c.getInt(c.getColumnIndex("SubDId")));
+                    retailer.setPanNumber(c.getString(c.getColumnIndex("pan_number")));
+                    retailer.setFoodLicenceNo(c.getString(c.getColumnIndex("food_licence_number")));
+                    retailer.setFoodLicenceExpDate(c.getString(c.getColumnIndex("food_licence_exp_date")));
+                    retailer.setMobile(c.getString(c.getColumnIndex("Mobile")));
+                    retailer.setFax(c.getString(c.getColumnIndex("FaxNo")));
+                    retailer.setRegion(c.getString(c.getColumnIndex("Region")));
+                    retailer.setCountry(c.getString(c.getColumnIndex("Country")));
 
 
                     retailer.setIsToday(0);
@@ -2186,7 +2201,10 @@ public class BusinessModel extends Application {
 
         boolean bool = false;
         RetailerMasterBO retailer;
-        int siz = retailerMaster.size();
+        int siz = 0;
+
+        if (retailerMaster != null)
+            siz = retailerMaster.size();
 
         if (siz == 0)
             return bool;
@@ -9010,7 +9028,7 @@ public class BusinessModel extends Application {
      * This method will called to planeDeviateReason
      * reason.
      */
-    public void savePlaneDiveateReason(NonproductivereasonBO outlet, String remarks) {
+    public void savePlaneDiveateReason(ArrayList<NonproductivereasonBO> reasonBoList, String remarks) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -9048,12 +9066,17 @@ public class BusinessModel extends Application {
 
             String columns = "UID,UserId,Date,ReasonID,Remarks,DistributorID";
 
-            values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
-                    + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
-                    + "," + QT(remarks) +
-                    "," + getRetailerMasterBO().getDistributorId();
+            for (NonproductivereasonBO reasnBo : reasonBoList) {
 
-            db.insertSQL("NonFieldActivity", columns, values);
+                values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
+                        + QT(reasnBo.getDate()) + "," + QT(reasnBo.getReasonid())
+                        + "," + QT(remarks) +
+                        "," + getRetailerMasterBO().getDistributorId();
+
+                db.insertSQL("NonFieldActivity", columns, values);
+
+            }
+
 
             db.closeDB();
         } catch (Exception e) {
@@ -9299,7 +9322,15 @@ public class BusinessModel extends Application {
         return mUserCredentials;
     }
 
+    public Vector<RetailerMasterBO> getSubDMaster() {
+        if (subDMaster == null)
+            return new Vector<RetailerMasterBO>();
+        return subDMaster;
+    }
 
+    public void setSubDMaster(Vector<RetailerMasterBO> subDMaster) {
+        this.subDMaster = subDMaster;
+    }
 }
 
 

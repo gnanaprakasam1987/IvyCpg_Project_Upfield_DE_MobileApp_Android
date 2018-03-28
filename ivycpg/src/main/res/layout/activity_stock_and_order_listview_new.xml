@@ -73,14 +73,40 @@
             android:orientation="horizontal"
             android:padding="3dp">
 
-            <TextView
-                android:id="@+id/stock_and_order_listview_ssrp"
-                style="?attr/customListItemSecondary"
+            <LinearLayout
+                android:id="@+id/llSrp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:maxLines="1"
-                android:text="@string/srp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/srpTitle"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:tag="srp"
+                    android:text="@string/srp" />
+
+                <TextView
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_1dp"
+                    android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:maxLines="1"
+                    android:text=":" />
+
+                <TextView
+                    android:id="@+id/stock_and_order_listview_srp"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/zero" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/stock_and_order_listview_ppq"
@@ -533,40 +559,6 @@
                     android:text="@string/zero" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/llSrp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/srpTitle"
-                    style="?attr/customListItemSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="srp"
-                    android:text="@string/srp" />
-
-                <TextView
-                    style="?attr/customListItemSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_srp"
-                    style="?attr/customListItemSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
         </LinearLayout>
 
         <View

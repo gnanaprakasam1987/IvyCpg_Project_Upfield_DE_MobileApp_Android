@@ -29,7 +29,6 @@ public class DataMembers {
 
     public static String fileName = "sd_png_asean_android.apk";
 
-    public static String zip_Down_URL = "Product/CatalogImages.zip";
     public static final int MESSAGE_UNZIPPED = 10113;
 
     public static final String DIGITAL_CONTENT = "TRAN";
@@ -133,6 +132,7 @@ public class DataMembers {
     public static final int SAVENEWOUTLET = 123;
     public static final int NOTIFY_UPLOAD_CLOSINGSTOCK = 1007;
     public static final int SAVEINVOICE = 1008;
+    public static final int SAVESUBDORDER = 1013;
     public static final int NOTIFY_USEREXIST = 0;
     public static final int NOTIFY_NOT_USEREXIST = 1;
     public static final int NOTIFY_UPDATE = 2;
@@ -152,6 +152,7 @@ public class DataMembers {
     public static final int NOTIFY_INVOICE_SAVED = -7;
     public static final int NOTIFY_ORDER_DELETED = -8;
     public static final int NOTIFY_DATABASE_NOT_SAVED = -9;
+    public static final int NOTIFY_ORDER_NOT_SAVED = -11;
 
     public static final int NOTIFY_EXPORT_SUCCESS = 69;
     public static final int NOTIFY_EXPORT_FAILURE = 70;
@@ -238,12 +239,6 @@ public class DataMembers {
     public static final int SDCARD_NOT_AVAILABLE = 1007;
     public static final int MESSAGE_DOWNLOAD_COMPLETE_DC = 1008;
     public static final int MESSAGE_ENCOUNTERED_ERROR_DC = 1009;
-
-    /*Catolog Order*/
-    public static final int MESSAGE_ENCOUNTERED_ERROR_CATALOG = 1010;
-    public static final int MESSAGE_UPDATE_PROGRESS_CATALOG = 1011;
-    public static final int MESSAGE_DOWNLOAD_COMPLETE_CATALOG = 10112;
-
 
     public static final String tbl_beatMaster = "BeatMaster";
     public static final String tbl_beatMaster_cols = "BeatID,BeatDescription,today";
@@ -363,7 +358,7 @@ public class DataMembers {
     private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath";
     private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
-    private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VisitFrequency,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate";
+    private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VisitFrequency,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate,pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7";
     private static final String tbl_deviateReasontableupload_cols = "uid,retailerid,date,reasonid,DistributorID,remarks";
     private static final String tbl_SbdMerchandisingHeaderupload_cols = "uid,date,RetailerID,beatid";
     private static final String tbl_SbdMerchandisingDetailupload_cols = "uid,sbdid,brandid,visibilityListid,value,TypeListId,isHit";
@@ -568,7 +563,7 @@ public class DataMembers {
     private static final String tbl_retailerContactupload_cols = "RetailerID,contactname,ContactName_LName,ContactNumber," +
             "contact_title,contact_title_lovid,IsPrimary";
     private static final String tbl_retailerAddressupload_cols = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
-            + "email,FaxNo,pincode,State,IsPrimary";
+            + "email,FaxNo,pincode,State,IsPrimary,Mobile,Region,Country";
     private static final String tbl_retailerAttributeupload_cols = "RetailerId,AttributeId,LevelId";
     private static final String tbl_retailerEditAttributeupload_cols = "Tid,RetailerId,AttributeId,LevelId,Status";
     private static final String tbl_OrderHeaderRequest_cols = "OrderID,OrderDate,RetailerID,DistributorId,OrderValue,LinesPerCall,TotalWeight,Remarks,OrderTime";
@@ -628,6 +623,9 @@ public class DataMembers {
 
     public static final String tbl_display_scheme_tracking_header = "DisplaySchemeTrackingHeader";
     public static final String tbl_display_scheme_tracking_cols = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId,IsAvailable";
+
+    public static final String tbl_date_wise_plan = "DatewisePlan";
+    public static final String tbl_date_wise_plan_cols = "PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence";
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
@@ -800,6 +798,7 @@ public class DataMembers {
         uploadColumn.put(tbl_NonFieldActivity, tbl_NonFieldActivity_cols);
         uploadColumn.put(tbl_display_scheme_enrollment_header, tbl_display_scheme_enrollment_cols);
         uploadColumn.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
+        uploadColumn.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
 
     }
 
@@ -929,6 +928,7 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
         uploadColumnWithRetailer.put(tbl_display_scheme_enrollment_header, tbl_display_scheme_enrollment_cols);
         uploadColumnWithRetailer.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
+        uploadColumnWithRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();
