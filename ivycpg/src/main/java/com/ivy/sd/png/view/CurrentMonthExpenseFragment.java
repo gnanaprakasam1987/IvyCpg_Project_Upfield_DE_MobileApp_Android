@@ -12,6 +12,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ExpenseSheetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,10 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
     BusinessModel bmodel;
     private ExpandedListView list;
     private TextView tvTotalAmount;
+
+    private String VALUE_PENDING = "Pending"; //R
+    private String VALUE_ACCEPTED = "Accepted"; //S
+    private String VALUE_REJECTED = "Rejected"; //D
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,10 +37,13 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        list = (ExpandedListView) view.findViewById(R.id.expenses_list);
-        tvTotalAmount = (TextView) view.findViewById(R.id.tvTotalAmount);
+        list =  view.findViewById(R.id.expenses_list);
+        tvTotalAmount =  view.findViewById(R.id.tvTotalAmount);
         list.setAdapter(new MyAdapter(bmodel.expenseSheetHelper.getCurrentMonthExpense()));
         tvTotalAmount.setText(sumExpenses(bmodel.expenseSheetHelper.getCurrentMonthExpense()));
+
+        ((TextView)view.findViewById(R.id.titleTotalamt)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         return view;
     }
@@ -48,7 +56,7 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
     }
 
     class ViewHolder {
-        TextView tvDate, tvExpType, tvAmount,tvProof;
+        TextView tvDate, tvExpType, tvAmount,tvProof,tvStatus;
         ExpenseSheetBO expenseSheetBO;
     }
 
@@ -82,12 +90,13 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
 
-                convertView = (View) inflater.inflate(R.layout.row_expense_sheet, null);
+                convertView =  inflater.inflate(R.layout.row_expense_sheet, null);
 
-                holder.tvDate = (TextView) convertView.findViewById(R.id.tv_datevalue);
-                holder.tvExpType = (TextView) convertView.findViewById(R.id.tv_expTypeValue);
-                holder.tvAmount = (TextView) convertView.findViewById(R.id.tv_amountvalue);
-                holder.tvProof = (TextView) convertView.findViewById(R.id.tv_imageproof);
+                holder.tvDate =  convertView.findViewById(R.id.tv_datevalue);
+                holder.tvExpType =  convertView.findViewById(R.id.tv_expTypeValue);
+                holder.tvAmount =  convertView.findViewById(R.id.tv_amountvalue);
+                holder.tvProof =  convertView.findViewById(R.id.tv_imageproof);
+                holder.tvStatus =  convertView.findViewById(R.id.tv_status);
                 holder.tvProof.setVisibility(View.GONE);
 
                 convertView.setTag(holder);
@@ -100,6 +109,13 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
             holder.tvDate.setText(holder.expenseSheetBO.getDate());
             holder.tvExpType.setText(holder.expenseSheetBO.getTypeName());
             holder.tvAmount.setText("" + holder.expenseSheetBO.getAmount());
+
+            if(holder.expenseSheetBO.getStatus().equalsIgnoreCase("S"))
+                holder.tvStatus.setText(VALUE_ACCEPTED);
+            if(holder.expenseSheetBO.getStatus().equalsIgnoreCase("D"))
+                holder.tvStatus.setText(VALUE_REJECTED);
+            if(holder.expenseSheetBO.getStatus().equalsIgnoreCase("R"))
+                holder.tvStatus.setText(VALUE_PENDING);
 
             return convertView;
         }
