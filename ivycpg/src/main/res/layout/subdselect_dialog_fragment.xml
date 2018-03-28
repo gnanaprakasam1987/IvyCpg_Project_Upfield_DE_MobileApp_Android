@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/windowBackground"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="?attr/primarycolor"
+        android:gravity="center"
+        android:minHeight="@dimen/widht_medium"
+        android:padding="@dimen/profile_header_txt_layout_marginleft"
+        android:text="@string/select_distributor"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_medium" />
+
+    <ListView
+        android:id="@+id/lvSubd"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title"
+        android:paddingLeft="@dimen/dimens_10dp"
+        android:paddingRight="@dimen/dimens_10dp" />
+</RelativeLayout>

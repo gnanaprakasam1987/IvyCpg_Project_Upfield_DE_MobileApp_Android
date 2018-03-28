@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
@@ -113,6 +114,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     private int mSelectedPostion = -1;
     private StandardListBO mSelectedMenuBO;
+
+    SubDSelectionDialog subDSelectionDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -649,6 +652,21 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         } catch (Exception e) {
             Commons.printException("" + e);
+        }
+
+        if (subDSelectionDialog == null) {
+            subDSelectionDialog = new SubDSelectionDialog();
+            subDSelectionDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    //loadExpensesList();
+                    subDSelectionDialog = null;
+                }
+            });
+            Bundle args = new Bundle();
+            args.putString("refId", "1");
+            subDSelectionDialog.setArguments(args);
+            subDSelectionDialog.show(getActivity().getSupportFragmentManager(), "ExpenseDilogFragement");
         }
     }
 

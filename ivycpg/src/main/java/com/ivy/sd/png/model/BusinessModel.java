@@ -1461,6 +1461,7 @@ public class BusinessModel extends Application {
             // group by A.retailerid
             if (c != null) {
                 setRetailerMaster(new Vector<RetailerMasterBO>());
+                setSubDMaster(new Vector<RetailerMasterBO>());
                 while (c.moveToNext()) {
                     retailer = new RetailerMasterBO();
                     String retID = c.getString(c.getColumnIndex("RetailerID"));
@@ -1650,6 +1651,10 @@ public class BusinessModel extends Application {
                     }
 
                     getRetailerMaster().add(retailer);
+                    if (retailer.getSubdId() != 0) {
+                        retailer.setTretailerName(retailer.getRetailerName());
+                        getSubDMaster().add(retailer);
+                    }
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
 
 
