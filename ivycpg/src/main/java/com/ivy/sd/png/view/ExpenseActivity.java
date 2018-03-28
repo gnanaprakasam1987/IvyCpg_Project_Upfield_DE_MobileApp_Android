@@ -76,9 +76,9 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
 
     private void initializeItem() {
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        if(toolbar!=null) {
+        if (toolbar != null) {
             setSupportActionBar(toolbar);
             // Set title to actionbar
             getSupportActionBar().setTitle(getResources().getString(R.string.expense_title));
@@ -101,7 +101,7 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
 
         imagesList = new ArrayList<String>();
         photoNamePath = HomeScreenFragment.photoPath + "/";
-        Commons.print("Photo Path, "+ "" + photoNamePath);
+        Commons.print("Photo Path, " + "" + photoNamePath);
 
         bmodel.expenseSheetHelper.loadExpenseData();
         loadExpenses();
@@ -221,7 +221,7 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
         int mToMonth = c1.get(Calendar.MONTH);
         int mToDay = c1.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog dpd1 = new DatePickerDialog(mContext,R.style.DatePickerDialogStyle,
+        DatePickerDialog dpd1 = new DatePickerDialog(mContext, R.style.DatePickerDialogStyle,
                 new DatePickerDialog.OnDateSetListener() {
 
                     public void onDateSet(DatePicker view, int year,
@@ -382,18 +382,18 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
 
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                Commons.print(TAG+ ",Camers Activity : Sucessfully Captured.");
+                Commons.print(TAG + ",Camers Activity : Sucessfully Captured.");
 
                 //For adding server ref path to image name
                 String path = "Expense/"
                         + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                         .replace("/", "") + "/"
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()+ "/";
+                        + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/";
                 imagesList.add(path + imageFileName);
                 tvImgCount.setText("" + imagesList.size());
 
             } else {
-                Commons.print(TAG+ ",Camers Activity : Canceled");
+                Commons.print(TAG + ",Camers Activity : Canceled");
             }
         }
     }

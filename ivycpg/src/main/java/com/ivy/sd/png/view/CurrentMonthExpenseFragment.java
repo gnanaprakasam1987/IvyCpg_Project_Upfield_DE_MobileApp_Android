@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
@@ -13,6 +14,7 @@ import com.ivy.sd.png.bo.ExpenseSheetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
 
@@ -37,12 +39,12 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        list =  view.findViewById(R.id.expenses_list);
-        tvTotalAmount =  view.findViewById(R.id.tvTotalAmount);
+        list = view.findViewById(R.id.expenses_list);
+        tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
         list.setAdapter(new MyAdapter(bmodel.expenseSheetHelper.getCurrentMonthExpense()));
         tvTotalAmount.setText(sumExpenses(bmodel.expenseSheetHelper.getCurrentMonthExpense()));
 
-        ((TextView)view.findViewById(R.id.titleTotalamt)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.titleTotalamt)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         return view;
@@ -52,11 +54,12 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
         Double sum = 0.0;
         for (ExpenseSheetBO expobj : expenseList)
             sum = sum + Double.parseDouble(expobj.getAmount());
-        return String.format( "%.2f", sum );
+        return String.format("%.2f", sum);
     }
 
     class ViewHolder {
-        TextView tvDate, tvExpType, tvAmount,tvProof,tvStatus;
+        TextView tvDate, tvExpType, tvAmount, tvProof;
+        ImageView tvStatus;
         ExpenseSheetBO expenseSheetBO;
     }
 
@@ -90,13 +93,13 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
 
-                convertView =  inflater.inflate(R.layout.row_expense_sheet, null);
+                convertView = inflater.inflate(R.layout.row_expense_sheet, null);
 
-                holder.tvDate =  convertView.findViewById(R.id.tv_datevalue);
-                holder.tvExpType =  convertView.findViewById(R.id.tv_expTypeValue);
-                holder.tvAmount =  convertView.findViewById(R.id.tv_amountvalue);
-                holder.tvProof =  convertView.findViewById(R.id.tv_imageproof);
-                holder.tvStatus =  convertView.findViewById(R.id.tv_status);
+                holder.tvDate = convertView.findViewById(R.id.tv_datevalue);
+                holder.tvExpType = convertView.findViewById(R.id.tv_expTypeValue);
+                holder.tvAmount = convertView.findViewById(R.id.tv_amountvalue);
+                holder.tvProof = convertView.findViewById(R.id.tv_imageproof);
+                holder.tvStatus = convertView.findViewById(R.id.tv_status);
                 holder.tvProof.setVisibility(View.GONE);
 
                 convertView.setTag(holder);
@@ -106,16 +109,17 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
             }
 
             holder.expenseSheetBO = items.get(position);
-            holder.tvDate.setText(holder.expenseSheetBO.getDate());
+            holder.tvDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.expenseSheetBO.getDate(),
+                    ConfigurationMasterHelper.outDateFormat));
             holder.tvExpType.setText(holder.expenseSheetBO.getTypeName());
-            holder.tvAmount.setText("" + holder.expenseSheetBO.getAmount());
+            holder.tvAmount.setText(bmodel.formatValue(Double.parseDouble("" + holder.expenseSheetBO.getAmount())));
 
-            if(holder.expenseSheetBO.getStatus().equalsIgnoreCase("S"))
-                holder.tvStatus.setText(VALUE_ACCEPTED);
-            if(holder.expenseSheetBO.getStatus().equalsIgnoreCase("D"))
-                holder.tvStatus.setText(VALUE_REJECTED);
-            if(holder.expenseSheetBO.getStatus().equalsIgnoreCase("R"))
-                holder.tvStatus.setText(VALUE_PENDING);
+            if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("S"))
+                holder.tvStatus.setImageResource(R.drawable.ok_tick);
+            if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("D"))
+                holder.tvStatus.setImageResource(R.drawable.ic_cross_enable);
+            if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("R"))
+                holder.tvStatus.setImageResource(R.drawable.ic_image_camera_alt_blk);
 
             return convertView;
         }

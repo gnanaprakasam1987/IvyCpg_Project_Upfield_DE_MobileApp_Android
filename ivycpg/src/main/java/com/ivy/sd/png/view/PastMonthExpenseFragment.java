@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.ivy.sd.png.bo.ExpenseSheetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
 
@@ -59,7 +61,8 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
     }
 
     class ViewHolder {
-        TextView tvDate, tvExpType, tvAmount, tvProof, tvStatus, tvMonthName;
+        TextView tvDate, tvExpType, tvAmount, tvProof, tvMonthName;
+        ImageView ivStatus;
         ExpenseSheetBO expenseSheetBO;
         LinearLayout llView;
     }
@@ -100,12 +103,11 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
                 holder.tvExpType = convertView.findViewById(R.id.tv_expTypeValue);
                 holder.tvAmount = convertView.findViewById(R.id.tv_amountvalue);
                 holder.tvProof = convertView.findViewById(R.id.tv_imageproof);
-                holder.tvStatus = convertView.findViewById(R.id.tv_status);
+                holder.ivStatus = convertView.findViewById(R.id.tv_status);
                 holder.tvProof.setVisibility(View.GONE);
 
                 holder.tvMonthName = convertView.findViewById(R.id.tvMonthName);
                 holder.llView = convertView.findViewById(R.id.llview);
-
                 holder.tvMonthName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
                 convertView.setTag(holder);
@@ -125,17 +127,17 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
             } else {
                 holder.llView.setVisibility(View.VISIBLE);
                 holder.tvMonthName.setVisibility(View.GONE);
-
-                holder.tvDate.setText(holder.expenseSheetBO.getDate());
+                holder.tvDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.expenseSheetBO.getDate(),
+                        ConfigurationMasterHelper.outDateFormat));
                 holder.tvExpType.setText(holder.expenseSheetBO.getTypeName());
-                holder.tvAmount.setText("" + holder.expenseSheetBO.getAmount());
+                holder.tvAmount.setText(bmodel.formatValue(Double.parseDouble("" + holder.expenseSheetBO.getAmount())));
 
                 if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("S"))
-                    holder.tvStatus.setText(VALUE_ACCEPTED);
+                    holder.ivStatus.setImageResource(R.drawable.ic_cross_enable);
                 if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("D"))
-                    holder.tvStatus.setText(VALUE_REJECTED);
+                    holder.ivStatus.setImageResource(R.drawable.ok_tick);
                 if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("R"))
-                    holder.tvStatus.setText(VALUE_PENDING);
+                    holder.ivStatus.setImageResource(R.drawable.ic_image_camera_alt_blk);
 
             }
 
