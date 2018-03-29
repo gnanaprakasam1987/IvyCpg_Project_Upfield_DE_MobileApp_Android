@@ -25,7 +25,11 @@ public class ExpenseSheetHelper {
     private BusinessModel bmodel;
     private static ExpenseSheetHelper instance = null;
     private ArrayList<ExpenseSheetBO> currentMonthExpense;
+    private ArrayList<ExpenseSheetBO> pastMonthExpense;
     private ArrayList<SpinnerBO> expnenses;
+
+    public static final String MONTH_NAME[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
     public ArrayList<ExpenseSheetBO> getCurrentMonthExpense() {
         return currentMonthExpense;
     }
@@ -59,10 +63,10 @@ public class ExpenseSheetHelper {
 
 
             currentMonthExpense = new ArrayList<>();
-            sql = "SELECT userId,typeId,typeName,date,amount FROM ExpenseMTDDetail "
-                            + "WHERE Date >= " + QT(getMonthFirstDateString()) + " AND Date <= " + QT(getYesterdayDateString()) + " AND "
-                            + "userID = " + QT("" + bmodel.userMasterHelper.getUserMasterBO().getUserid()) + " "
-                            + "ORDER BY Date ASC";
+            sql = "SELECT userId,typeId,typeName,date,amount,status FROM ExpenseMTDDetail "
+                    + "WHERE Date >= " + QT(getMonthFirstDateString()) + " AND Date <= " + QT(getYesterdayDateString()) + " AND "
+                    + "userID = " + QT("" + bmodel.userMasterHelper.getUserMasterBO().getUserid()) + " "
+                    + "ORDER BY Date ASC";
             c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -72,6 +76,7 @@ public class ExpenseSheetHelper {
                     currentExps.setTypeName(c.getString(2));
                     currentExps.setDate(c.getString(3));
                     currentExps.setAmount(c.getString(4));
+                    currentExps.setStatus(c.getString(5));
 
                     currentMonthExpense.add(currentExps);
                 }
@@ -80,7 +85,7 @@ public class ExpenseSheetHelper {
 
             expnenses = new ArrayList<>();
             sql = "select listID,listname from StandardListMaster "
-                            + "where listType = " + "'" + CODE_EXPENSE_LIST_TYPE + "'";
+                    + "where listType = " + "'" + CODE_EXPENSE_LIST_TYPE + "'";
             c = db.selectSQL(sql);
             SpinnerBO spinnerBO;
             if (c != null) {
@@ -91,10 +96,47 @@ public class ExpenseSheetHelper {
                 c.close();
             }
 
+            pastMonthExpense = new ArrayList<>();
+            sql = "SELECT userId,typeId,typeName,date,amount,status,"
+                    + "strftime('%m', replace(date, '/', '-')),"
+                    + "strftime('%Y', replace(date, '/', '-'))"
+                    + "FROM ExpenseMTDDetail "
+                    + "WHERE Date < " + QT(getMonthFirstDateString()) + " AND "
+                    + "userID = " + QT("" + bmodel.userMasterHelper.getUserMasterBO().getUserid()) + " "
+                    + "ORDER BY Date DESC";
+            c = db.selectSQL(sql);
+            if (c != null) {
+                String filterText = "";
+                while (c.moveToNext()) {
+                    // for add month in the same list
+                    int monthValue = Integer.parseInt(c.getString(6));
+                    if (monthValue > 0 && monthValue <= 12) {
+                        if (!filterText.equalsIgnoreCase(MONTH_NAME[monthValue - 1] + "-" + c.getString(7))) {
+                            ExpenseSheetBO monthsExp = new ExpenseSheetBO();
+                            monthsExp.setMonthName(true);
+                            monthsExp.setTypeName(MONTH_NAME[monthValue - 1] + "-" + c.getString(7));
+                            filterText = monthsExp.getTypeName();
+                            pastMonthExpense.add(monthsExp);
+                        }
+                    }
+                    ExpenseSheetBO pastExps = new ExpenseSheetBO();
+                    pastExps.setUserId(c.getInt(0));
+                    pastExps.setTypeId(c.getInt(1));
+                    pastExps.setTypeName(c.getString(2));
+                    pastExps.setDate(c.getString(3));
+                    pastExps.setAmount(c.getString(4));
+                    pastExps.setStatus(c.getString(5));
+                    pastExps.setMonthName(false);
+
+                    pastMonthExpense.add(pastExps);
+                }
+                c.close();
+            }
+
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
     }
 
@@ -129,9 +171,9 @@ public class ExpenseSheetHelper {
             Cursor c;
 
             sql = "select Tid from ExpenseHeader "
-                            + "where userid = " + QT("" + bmodel.userMasterHelper.getUserMasterBO().getUserid())
-                            + " AND date = " + QT(Date)
-                            + " AND Upload = " + QT("N");
+                    + "where userid = " + QT("" + bmodel.userMasterHelper.getUserMasterBO().getUserid())
+                    + " AND date = " + QT(Date)
+                    + " AND Upload = " + QT("N");
             c = db.selectSQL(sql);
 
             if (c != null) {
@@ -144,7 +186,7 @@ public class ExpenseSheetHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
         return tid;
     }
@@ -161,8 +203,8 @@ public class ExpenseSheetHelper {
             Cursor c;
 
             sql = "select Tid from ExpenseHeader "
-                            + "where userid = " + QT("" + bmodel.userMasterHelper.getUserMasterBO().getUserid())
-                            + " AND Upload = " + QT("N");
+                    + "where userid = " + QT("" + bmodel.userMasterHelper.getUserMasterBO().getUserid())
+                    + " AND Upload = " + QT("N");
             c = db.selectSQL(sql);
 
             if (c != null) {
@@ -173,7 +215,7 @@ public class ExpenseSheetHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
         return count;
     }
@@ -190,10 +232,10 @@ public class ExpenseSheetHelper {
             Cursor c;
 
             sql = "select TotalAmount from ExpenseHeader "
-                            + "where userid = " + QT("" + bmodel.userMasterHelper.getUserMasterBO().getUserid())
-                            + " AND date = " + QT(date)
-                            + " AND Tid = " + QT(Tid)
-                            + " AND Upload = " + QT("N");
+                    + "where userid = " + QT("" + bmodel.userMasterHelper.getUserMasterBO().getUserid())
+                    + " AND date = " + QT(date)
+                    + " AND Tid = " + QT(Tid)
+                    + " AND Upload = " + QT("N");
             c = db.selectSQL(sql);
 
             if (c != null) {
@@ -206,7 +248,7 @@ public class ExpenseSheetHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
         return total;
     }
@@ -224,9 +266,9 @@ public class ExpenseSheetHelper {
             Cursor c;
 
             sql = "select ED.TypeID,ED.Tid,ED.amount,ED.Refid,SM.listname from ExpenseDetail ED "
-                            + "inner join StandardListMaster SM on SM.listID = ED.TypeID "
-                            + "where ED.Tid = " + QT(Tid)
-                            + " AND ED.Upload = "+ QT("N");
+                    + "inner join StandardListMaster SM on SM.listID = ED.TypeID "
+                    + "where ED.Tid = " + QT(Tid)
+                    + " AND ED.Upload = " + QT("N");
             c = db.selectSQL(sql);
 
             ExpensesBO expensesBO;
@@ -247,7 +289,7 @@ public class ExpenseSheetHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
         return expenseList;
     }
@@ -265,9 +307,9 @@ public class ExpenseSheetHelper {
             Cursor c;
 
             sql = "select ED.TypeID,ED.Tid,ED.amount,ED.Refid,SM.listname,EH.date from ExpenseDetail ED "
-                            + "inner join StandardListMaster SM on SM.listID = ED.TypeID "
-                            + "inner join ExpenseHeader EH on EH.Tid =  ED.Tid "
-                            + "where ED.Upload = "+ QT("N");
+                    + "inner join StandardListMaster SM on SM.listID = ED.TypeID "
+                    + "inner join ExpenseHeader EH on EH.Tid =  ED.Tid "
+                    + "where ED.Upload = " + QT("N");
             c = db.selectSQL(sql);
 
             ExpensesBO expensesBO;
@@ -290,7 +332,7 @@ public class ExpenseSheetHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
         return expenseList;
     }
@@ -307,8 +349,8 @@ public class ExpenseSheetHelper {
             Cursor c;
 
             sql = "select imagename from ExpenseImageDetails "
-                            + "where Refid = " + QT(RefID)
-                            + "AND Upload = " + QT("N");
+                    + "where Refid = " + QT(RefID)
+                    + "AND Upload = " + QT("N");
             c = db.selectSQL(sql);
 
             if (c != null) {
@@ -322,7 +364,7 @@ public class ExpenseSheetHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
         return imageList;
     }
@@ -369,7 +411,7 @@ public class ExpenseSheetHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
             db.closeDB();
         }
     }
@@ -421,7 +463,7 @@ public class ExpenseSheetHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
             db.closeDB();
         }
     }
@@ -441,7 +483,7 @@ public class ExpenseSheetHelper {
                     + QT(path + ImageName), false);
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
     }
 
@@ -469,7 +511,7 @@ public class ExpenseSheetHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
     }
 
@@ -485,9 +527,13 @@ public class ExpenseSheetHelper {
 
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
     }
 
+
+    public ArrayList<ExpenseSheetBO> getPastMonthExpense() {
+        return pastMonthExpense;
+    }
 
 }
