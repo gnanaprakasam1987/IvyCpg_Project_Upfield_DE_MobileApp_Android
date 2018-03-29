@@ -461,9 +461,11 @@ public class OrderDeliveryHelper {
         return qty;
     }
 
+    /* Total product count, value of total product,total tax are calculated here */
     public double getProductTotalValue() {
         double totalvalue = 0;
         int totalProdQty = 0;
+        //Product wise Tax amount will be calculated according to the tax rate
         float taxValue = businessModel.productHelper.taxHelper.includeProductWiseTax(getOrderedProductMasterBOS());
         for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
             ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
@@ -550,7 +552,7 @@ public class OrderDeliveryHelper {
                 invoiceId = seqNo;
             }
 
-            double totalOrderValue =  SDUtil.convertToDouble(getOrderDeliveryTotalValue()) + SDUtil.convertToDouble(getOrderDeliveryTaxAmount());
+            double totalOrderValue =  SDUtil.convertToDouble(getOrderDeliveryTotalValue());
             if(!isEdit)
                 totalOrderValue = SDUtil.convertToDouble(getOrderDeliveryTotalValue()) - SDUtil.convertToDouble(getOrderDeliveryDiscountAmount()) ;
 
@@ -617,8 +619,8 @@ public class OrderDeliveryHelper {
                         "orderid,ImageName,invoiceAmount,latitude,longitude,return_amt," +
                         "LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
                         "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3)" +
-                        " select "+invoiceId+","+businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",retailerid,"+totalOrderValue+",orderid," +
-                        "imagename,"+totalOrderValue+",latitude,longitude,ReturnValue,"+linesPerCall+",totalWeight,SalesType," +
+                        " select "+invoiceId+","+businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",retailerid,"+(totalOrderValue+ SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))+",orderid," +
+                        "imagename,"+(totalOrderValue+ SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))+",latitude,longitude,ReturnValue,"+linesPerCall+",totalWeight,SalesType," +
                         "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3" +
                         " from OrderHeader where OrderId = "+businessModel.QT(orderId);
 
@@ -680,13 +682,14 @@ public class OrderDeliveryHelper {
 
             updateOrderDeliverySIH(db,isEdit);
 
-            //
+            //For Print saved in Discount and invoice number
             businessModel.invoiceNumber = invoiceId;
             if(isEdit)
                 OrderHelper.getInstance(context).invoiceDiscount = "0";
             else
                 OrderHelper.getInstance(context).invoiceDiscount = getOrderDeliveryDiscountAmount();
 
+            /* Invoice status 1 --> invoice generated for the order */
             for(int i = 0;i<getOrderHeaders().size();i++){
                 OrderHeader orderHeader = getOrderHeaders().get(i);
                 if(orderHeader.getOrderid().equalsIgnoreCase(orderId)){
@@ -758,6 +761,8 @@ public class OrderDeliveryHelper {
         db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 
+
+    /* To update SIH values in Product master and in Excess Stock master */
     private void updateOrderDeliverySIH(DBUtil db,boolean isEdit){
         try {
 
@@ -828,6 +833,7 @@ public class OrderDeliveryHelper {
         return excessQtyMap.get(productId)!=null?excessQtyMap.get(productId):0;
     }
 
+    //Update Excess stock QTY in Product master SIH. Works only inside this module
     public void updateProductWithExcessStock(Context mContext){
         try{
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
