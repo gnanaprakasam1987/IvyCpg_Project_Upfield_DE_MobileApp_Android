@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,7 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -34,8 +34,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 
 import java.util.ArrayList;
@@ -53,6 +51,9 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private int invoiceStatus = 0;
     private boolean isEdit;
     private TextView discount_value, taxValue, orderValue, orderBaseValue;
+    final String Str_ACCEPT = "ACCEPT";
+    final String Str_VIEW = "VIEW";
+    final String Str_EDIT = "EDIT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +86,11 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
         orderDeliveryPresenter.getProductData(getIntent().getExtras().getString("From"));
 
-        if(getIntent().getExtras().getString("From").equals("ViewDetail")){
+        if(getIntent().getExtras().getString("From").equals(Str_VIEW)){
             orderDeliveryPresenter.getSchemeData();
         }
 
-        if(getIntent().getExtras().getString("From").equals("Edit"))
+        if(getIntent().getExtras().getString("From").equals(Str_EDIT))
             isEdit = true;
         else
             isEdit = false;
@@ -130,8 +131,10 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             (findViewById(R.id.discount_value_title)).setVisibility(View.GONE);
         }
 
-        if(invoiceStatus == 1)
+        if(invoiceStatus == 1) {
             findViewById(R.id.accept_btn).setVisibility(View.GONE);
+            findViewById(R.id.footer).setVisibility(View.GONE);
+        }
 
         findViewById(R.id.accept_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -830,13 +833,13 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                         if (!"0".equals(qty)) {
                             if (totalQty > productList.get(position).getDSIH()) {
                                 holder.productName.setTextColor(Color.parseColor("#FF0000"));
-                                Toast.makeText(
-                                        OrderDeliveryDetailActivity.this,
-                                        String.format(
-                                                getResources().getString(
-                                                        R.string.exceed),
-                                                productList.get(position).getDSIH()),
-                                        Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(
+//                                        OrderDeliveryDetailActivity.this,
+//                                        String.format(
+//                                                getResources().getString(
+//                                                        R.string.exceed),
+//                                                productList.get(position).getDSIH()),
+//                                        Toast.LENGTH_SHORT).show();
                             }else if(currentOrderedQty > storedPieceQty){
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
@@ -929,13 +932,13 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                         if (!"0".equals(qty)) {
                             if (totalQty > productList.get(position).getDSIH()) {
                                 holder.productName.setTextColor(Color.parseColor("#FF0000"));
-                                Toast.makeText(
-                                        OrderDeliveryDetailActivity.this,
-                                        String.format(
-                                                getResources().getString(
-                                                        R.string.exceed),
-                                                productList.get(position).getDSIH()),
-                                        Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(
+//                                        OrderDeliveryDetailActivity.this,
+//                                        String.format(
+//                                                getResources().getString(
+//                                                        R.string.exceed),
+//                                                productList.get(position).getDSIH()),
+//                                        Toast.LENGTH_SHORT).show();
                             }else if(currentOrderedQty > storedcaseQty){
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
@@ -1028,13 +1031,13 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                         if (!"0".equals(qty)) {
                             if (totalQty > productList.get(position).getDSIH()) {
                                 holder.productName.setTextColor(Color.parseColor("#FF0000"));
-                                Toast.makeText(
-                                        OrderDeliveryDetailActivity.this,
-                                        String.format(
-                                                getResources().getString(
-                                                        R.string.exceed),
-                                                productList.get(position).getDSIH()),
-                                        Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(
+//                                        OrderDeliveryDetailActivity.this,
+//                                        String.format(
+//                                                getResources().getString(
+//                                                        R.string.exceed),
+//                                                productList.get(position).getDSIH()),
+//                                        Toast.LENGTH_SHORT).show();
                             }else if(currentOrderedQty > storedouterQty){
                                 Toast.makeText(
                                         OrderDeliveryDetailActivity.this,
@@ -1112,12 +1115,28 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+//        if(invoiceStatus == 1)
+//            menu.findItem(R.id.menu_review).setVisible(true);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
             backButtonClick();
             return true;
         }
+        else if(i ==  R.id.menu_print) {
+//            if (!isPrintClicked) {
+//                isPrintClicked = true;
+//                callPrinter();
+//            }
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 

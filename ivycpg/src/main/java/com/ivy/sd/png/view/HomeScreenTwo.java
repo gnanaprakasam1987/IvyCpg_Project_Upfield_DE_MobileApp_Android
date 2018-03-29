@@ -50,6 +50,7 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity;
+import com.ivy.cpg.view.orderdelivery.OrderDeliveryHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
@@ -1863,7 +1864,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 if(bmodel.configurationMasterHelper.IS_EXCESS_STOCK_AVAIL){
                     bmodel.productHelper.clearOrderTable();
-                    bmodel.productHelper.updateProductWithExcessStock();
+                    OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
+                    orderDeliveryHelper.updateProductWithExcessStock(this);
                 }
 
                 if (bmodel.configurationMasterHelper.IS_RESTRICT_ORDER_TAKING
@@ -3653,14 +3655,24 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
+                OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
+                orderDeliveryHelper.downloadOrderDeliveryHeader(this);
 
-
-                Intent i = new Intent(this,
-                        OrderDeliveryActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                i.putExtra("menuName", menu.getMenuName());
-                startActivity(i);
-                finish();
+                if(orderDeliveryHelper.getOrderHeaders().size() > 0) {
+                    Intent i = new Intent(this,
+                            OrderDeliveryActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    i.putExtra("menuName", menu.getMenuName());
+                    startActivity(i);
+                    finish();
+                }else {
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.data_not_mapped),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+                }
 
             } else {
                 Toast.makeText(

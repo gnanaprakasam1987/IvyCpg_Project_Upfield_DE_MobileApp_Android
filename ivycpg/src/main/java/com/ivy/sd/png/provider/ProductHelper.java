@@ -7490,41 +7490,6 @@ public class ProductHelper {
         return null;
     }
 
-    private HashMap<String,Integer> excessQtyMap = new HashMap<>();
-
-    public int getExcessQtyById(String productId) {
-        if (excessQtyMap == null || excessQtyMap.size() == 0)
-            return 0;
-        return excessQtyMap.get(productId)!=null?excessQtyMap.get(productId):0;
-    }
-
-    public void updateProductWithExcessStock(){
-        try{
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor cur = db.selectSQL("Select pid,qty from ExcessStockInHand");
-            if(cur.getCount() > 0){
-                while (cur.moveToNext()){
-                    excessQtyMap.put(cur.getString(0),cur.getInt(1));
-                }
-            }
-            cur.close();
-
-            for(int i = 0;i < getProductMaster().size();i++){
-                ProductMasterBO productMasterBO = getProductMaster().elementAt(i);
-                if(excessQtyMap.get(productMasterBO.getProductID())!=null)
-                    productMasterBO.setSIH(excessQtyMap.get(productMasterBO.getProductID()));
-                else
-                    productMasterBO.setSIH(0);
-            }
-
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-    }
-
 }
 
 

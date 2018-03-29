@@ -17,7 +17,8 @@
         android:gravity="center_vertical"
         android:singleLine="true"
         android:text="@string/product_name"
-        android:textColor="@color/Black" />
+        android:textColor="@color/Black"
+        android:tag="prod_name"/>
 
     <EditText
         android:id="@+id/piece_qty"
@@ -27,7 +28,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero"
-        android:textColor="@color/Black" />
+        android:textColor="@color/Black"
+        android:tag="d_piece"/>
 
     <EditText
         android:id="@+id/case_qty"
@@ -37,7 +39,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero"
-        android:textColor="@color/Black" />
+        android:textColor="@color/Black"
+        android:tag="d_case"/>
 
     <EditText
         android:id="@+id/outer_qty"
@@ -47,7 +50,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero"
-        android:textColor="@color/Black" />
+        android:textColor="@color/Black"
+        android:tag="d_outer"/>
 
     <TextView
         android:id="@+id/sales_return_qty"
@@ -59,7 +63,8 @@
         android:text="@string/zero"
         android:textColor="@color/Black"
         android:focusable="false"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:tag="d_sr"/>
 
     <TextView
         android:id="@+id/sales_replace_qty"
@@ -72,7 +77,8 @@
         android:maxLines="1"
         android:textColor="@color/Black"
         android:focusable="false"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:tag="d_replace"/>
 
     <TextView
         android:id="@+id/sih_qty"
@@ -84,6 +90,7 @@
         android:text="@string/zero"
         android:textColor="@color/Black"
         android:focusable="false"
-        android:enabled="false" />
+        android:enabled="false"
+        android:tag="d_sih"/>
 
 </LinearLayout>

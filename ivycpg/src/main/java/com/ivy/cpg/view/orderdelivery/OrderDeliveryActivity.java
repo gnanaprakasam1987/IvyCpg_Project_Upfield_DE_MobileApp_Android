@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -35,9 +34,12 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
     private BusinessModel bmodel;
     private RecyclerView recyclerView;
-    OrderHelper orderHelper;
+    OrderDeliveryHelper orderDeliveryHelper;
     ArrayList<OrderHeader> orderHeaders;
     private MyAdapter myAdapter;
+    final String Str_ACCEPT = "ACCEPT";
+    final String Str_VIEW = "VIEW";
+    final String Str_EDIT = "EDIT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +55,20 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle("Order Delivery");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        orderHelper = OrderHelper.getInstance(this);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
+            setScreenTitle(title);
+        }
 
-        orderHelper.downloadOrderDeliveryHeader(this);
-        orderHeaders = orderHelper.getOrderHeaders();
+        orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
+
+        orderDeliveryHelper.downloadOrderDeliveryHeader(this);
+        orderHeaders = orderDeliveryHelper.getOrderHeaders();
 
         recyclerView = findViewById(R.id.order_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -146,7 +153,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),"ViewDetail",orderHeaders.get(position).getInvoiceStatus()).execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),Str_VIEW,orderHeaders.get(position).getInvoiceStatus()).execute();
 
                 }
             });
@@ -163,7 +170,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),"Edit",orderHeaders.get(position).getInvoiceStatus()).execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),Str_EDIT,orderHeaders.get(position).getInvoiceStatus()).execute();
                 }
             });
 
@@ -179,7 +186,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),"Approve",orderHeaders.get(position).getInvoiceStatus()).execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),Str_ACCEPT,orderHeaders.get(position).getInvoiceStatus()).execute();
 
                 }
             });
@@ -213,28 +220,33 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected Void doInBackground(Void... voids) {
             bmodel.productHelper.clearOrderTable();
-            orderHelper.clearSalesReturnTable();
-            orderHelper.downloadOrderDeliveryDetail(OrderDeliveryActivity.this,orderId);
-            orderHelper.downloadSchemeFreeProducts(OrderDeliveryActivity.this,orderId);
-            orderHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this,orderId);
-            orderHelper.downloadOrderedProducts();
-            orderHelper.getProductTotalValue();
+            orderDeliveryHelper.clearSalesReturnTable();
+            orderDeliveryHelper.downloadOrderDeliveryDetail(OrderDeliveryActivity.this,orderId);
+            orderDeliveryHelper.downloadSchemeFreeProducts(OrderDeliveryActivity.this,orderId);
+            orderDeliveryHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this,orderId);
+            orderDeliveryHelper.downloadOrderedProducts();
+            orderDeliveryHelper.getProductTotalValue();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
 
-            if(from.equalsIgnoreCase("Approve")) {
+            if(from.equalsIgnoreCase(Str_ACCEPT)) {
 
-                if (orderHelper.isSIHAvailable(false)) {
+                if(orderDeliveryHelper.getTotalProductQty() == 0)
+                    Toast.makeText(
+                            OrderDeliveryActivity.this,
+                            getResources().getString(R.string.no_ordered_products_found),
+                            Toast.LENGTH_SHORT).show();
+                else if (orderDeliveryHelper.isSIHAvailable(false)) {
 
                     CommonDialog dialog = new CommonDialog(getApplicationContext(), OrderDeliveryActivity.this, "", getResources().getString(R.string.order_delivery_approve), false,
                             getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
 
-                            boolean status = orderHelper.updateTableValues(OrderDeliveryActivity.this, orderId,false);
+                            boolean status = orderDeliveryHelper.updateTableValues(OrderDeliveryActivity.this, orderId,false);
                             if(status){
 
                                 Toast.makeText(
@@ -242,7 +254,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                                         getResources().getString(R.string.invoice_generated),
                                         Toast.LENGTH_SHORT).show();
 
-                                bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true,orderHelper.getOrderedProductMasterBOS() , null);
+                                bmodel.mCommonPrintHelper.xmlRead(".xml", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null);
 
                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -254,8 +266,6 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                                 i.putExtra("sendMailAndLoadClass", "PRINT_FILE_INVOICE");
                                 startActivity(i);
                                 overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-
-                                myAdapter.notifyDataSetChanged();
                             }
                             else
                                 Toast.makeText(
@@ -278,7 +288,6 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                             getResources().getString(R.string.ordered_value_exceeds_sih_value_please_edit_the_order),
                             Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             else {

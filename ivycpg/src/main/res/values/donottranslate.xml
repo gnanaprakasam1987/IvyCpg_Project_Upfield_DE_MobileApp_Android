@@ -299,6 +299,7 @@
     <string name="exceed_ordered_value">You have exceeded Ordered Value.</string>
     <string name="invoice_generated">Invoice Generated</string>
     <string name="not_able_to_generate_invoice">Not able to generate invoice</string>
+    <string name="no_ordered_products_found">No ordered products found.</string>
 
 
 </resources>
