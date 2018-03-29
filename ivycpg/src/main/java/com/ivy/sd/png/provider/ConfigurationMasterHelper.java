@@ -1336,6 +1336,9 @@ public class ConfigurationMasterHelper {
     }
 
     public Vector<ConfigureBO> getProfileModuleConfig() {
+        if(profileConfig==null){
+            profileConfig=new Vector<>();
+        }
         return profileConfig;
     }
 

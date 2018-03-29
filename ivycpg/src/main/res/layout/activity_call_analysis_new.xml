@@ -167,7 +167,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg"
+        android:background="?customLayoutBackground"
         android:minHeight="@dimen/call_analysis_footer_min_height"
         android:paddingStart="@dimen/search_edt_margin_left_n_right"
         android:paddingEnd="@dimen/search_edt_margin_left_n_right">
@@ -220,7 +220,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/reason_spinner_height"
                     android:layout_weight="1"
-                    android:background="@color/footer_bg"
+                    style="?attr/customLayoutBackground"
                     android:gravity="center"
                     android:overlapAnchor="false"
 
@@ -268,7 +268,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/reason_spinner_height"
                 android:layout_weight="1"
-                android:background="@color/footer_bg"
+                style="?attr/customLayoutBackground"
                 android:gravity="center"
                 android:overlapAnchor="false"/>
 
@@ -277,7 +277,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/reason_spinner_height"
                 android:layout_weight="1"
-                android:background="@color/footer_bg"
+                style="?attr/customLayoutBackground"
                 android:gravity="center"
                 android:overlapAnchor="false"      />
 

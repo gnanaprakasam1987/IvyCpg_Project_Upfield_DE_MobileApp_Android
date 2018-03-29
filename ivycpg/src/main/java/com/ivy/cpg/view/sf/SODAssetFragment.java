@@ -573,9 +573,9 @@ public class SODAssetFragment extends IvyBaseFragment implements
             holder.tvPercentage.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getPercentage());
             holder.tvGap.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getGap());
 
-            if (Float.parseFloat(holder.mSOD.getLocations().get(mSelectedLocationIndex).getGap()) < 0)
+            if (SDUtil.convertToFloat(holder.mSOD.getLocations().get(mSelectedLocationIndex).getGap()) < 0)
                 holder.tvGap.setTextColor(Color.RED);
-            else if (Float.parseFloat(holder.mSOD.getGap()) > 0)
+            else if (SDUtil.convertToFloat(holder.mSOD.getGap()) > 0)
                 holder.tvGap.setTextColor(Color.rgb(34, 139, 34));
             else
                 holder.tvGap.setTextColor(Color.BLACK);
