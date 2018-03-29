@@ -16,6 +16,8 @@ public class DailyReportBO {
 	private String totPlannedProductive;
 	private String totAdhoc;
 	private String totAdhocProductive;
+	private double delivered;
+	private double loaded;
 
 	public String getEffCoverage() {
 		return effCoverage;
@@ -128,5 +130,21 @@ public class DailyReportBO {
 
 	public void setTotAdhocProductive(String totAdhocProductive) {
 		this.totAdhocProductive = totAdhocProductive;
+	}
+
+	public double getDelivered() {
+		return delivered;
+	}
+
+	public void setDelivered(double delivered) {
+		this.delivered = delivered;
+	}
+
+	public double getLoaded() {
+		return loaded;
+	}
+
+	public void setLoaded(double loaded) {
+		this.loaded = loaded;
 	}
 }

@@ -9226,6 +9226,32 @@ public class BusinessModel extends Application {
         return dailyRp;
     }
 
+    public DailyReportBO getNoOfOrderAndValue() {
+        DailyReportBO dailyRp = new DailyReportBO();
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select count(distinct orderid),sum(ordervalue) from OrderHeader");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        dailyRp.setTotLines(c.getInt(0) + "");
+                        dailyRp.setTotValues(c.getDouble(1) + "");
+                    }
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getNoOfOrderAndValue", e);
+        }
+        return dailyRp;
+    }
+
     public DailyReportBO getFocusBrandInvoiceAmt() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {
@@ -9278,6 +9304,48 @@ public class BusinessModel extends Application {
             Commons.printException("Error at getFocusBrandInvoiceAmt", e);
         }
         return sale_return_value;
+    }
+
+    public DailyReportBO getFullFillmentValue() {
+        DailyReportBO dailyRp = new DailyReportBO();
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
+                                + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
+                                + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
+            Cursor c = db
+                    .selectSQL(query);
+            int loadQty;
+            int deliverQty;
+            double price;
+            double deliveredValue = 0;
+            double loadedValue = 0;
+
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        loadQty = c.getInt(0) + (c.getInt(1) * c.getInt(2))
+                                + (c.getInt(3) * c.getInt(4));
+                        deliverQty = loadQty - c.getInt(5);
+                        deliverQty = deliverQty < 0 ? 0 : deliverQty;
+                        price = c.getDouble(6);
+                        deliveredValue += deliverQty * price;
+                        loadedValue += loadQty * price;
+                    }
+                    dailyRp.setDelivered(deliveredValue);
+                    dailyRp.setLoaded(loadedValue);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getFullFillmentValue", e);
+        }
+        return dailyRp;
     }
 
 
