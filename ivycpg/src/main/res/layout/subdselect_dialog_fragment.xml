@@ -22,7 +22,52 @@
         android:id="@+id/lvSubd"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title"
-        android:paddingLeft="@dimen/dimens_10dp"
-        android:paddingRight="@dimen/dimens_10dp" />
+        android:layout_above="@+id/lvFooter"
+        android:layout_below="@+id/title" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/lvFooter"
+        android:background="@color/black_bg1" />
+
+    <LinearLayout
+        android:id="@+id/lvFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/column_padding">
+
+        <View
+            android:layout_width="@dimen/dimen_14dp"
+            android:layout_height="@dimen/dimen_14dp"
+            android:layout_margin="@dimen/dimen_4dp"
+            android:background="@drawable/rectangle_green" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_4dp"
+            android:text="Planned"
+            android:textColor="@color/black_bg1"
+            android:textSize="@dimen/font_small" />
+
+        <View
+            android:layout_width="@dimen/dimen_14dp"
+            android:layout_height="@dimen/dimen_14dp"
+            android:layout_margin="@dimen/dimen_4dp"
+            android:background="@drawable/rectangle_red" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_4dp"
+            android:text="Unplanned"
+            android:textColor="@color/black_bg1"
+            android:textSize="@dimen/font_small" />
+
+    </LinearLayout>
 </RelativeLayout>
