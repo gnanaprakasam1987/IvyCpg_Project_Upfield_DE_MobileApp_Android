@@ -700,8 +700,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     if ((bmodel.getRetailerMaster().get(i).getRetailerName()
                             .toLowerCase()).contains(filter.toLowerCase()) ||
                             (bmodel.getRetailerMaster().get(i)
-                                    .getRetailerCode().toLowerCase())
-                                    .contains(filter.toLowerCase())) {
+                                    .getRetailerCode() != null ? bmodel.getRetailerMaster().get(i)
+                                    .getRetailerCode().toLowerCase()
+                                    .contains(filter.toLowerCase()) : false)) {
 
                         if (bmodel.getRetailerMaster().get(i).getWalkingSequence() != 0) {
                             retailerWIthSequence.add(bmodel.getRetailerMaster().get(i));
@@ -716,8 +717,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     } else {
                         retailerWithoutSequence.add(bmodel.getRetailerMaster().get(i));
                     }
-
-
 
 
                 }
@@ -771,8 +770,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     if ((bmodel.getRetailerMaster().get(i).getRetailerName()
                             .toLowerCase()).contains(filter.toLowerCase()) ||
                             (bmodel.getRetailerMaster().get(i)
-                                    .getRetailerCode().toLowerCase())
-                                    .contains(filter.toLowerCase())) {
+                                    .getRetailerCode() != null
+                                    ? bmodel.getRetailerMaster().get(i).getRetailerCode().toLowerCase()
+                                    .contains(filter.toLowerCase()) : false)) {
                         retailer.add(bmodel.getRetailerMaster().get(i));
                     }
                 } else {
@@ -780,12 +780,16 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
             } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
                 if (filter != null) {
-                    if ((bmodel.getRetailerMaster().get(i).getRetailerName()
-                            .toLowerCase()).contains(filter.toLowerCase()) ||
-                            (bmodel.getRetailerMaster().get(i)
-                                    .getRetailerCode().toLowerCase())
-                                    .contains(filter.toLowerCase())) {
-                        retailer.add(bmodel.getRetailerMaster().get(i));
+                    if (bmodel.getRetailerMaster().get(i).getIsToday() == 0
+                            && "N".equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+                        if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                                .toLowerCase()).contains(filter.toLowerCase()) ||
+                                (bmodel.getRetailerMaster().get(i)
+                                        .getRetailerCode() != null ? bmodel.getRetailerMaster().get(i)
+                                        .getRetailerCode().toLowerCase()
+                                        .contains(filter.toLowerCase()) : false)) {
+                            retailer.add(bmodel.getRetailerMaster().get(i));
+                        }
                     }
                 } else {
                     retailer.add(bmodel.getRetailerMaster().get(i));
