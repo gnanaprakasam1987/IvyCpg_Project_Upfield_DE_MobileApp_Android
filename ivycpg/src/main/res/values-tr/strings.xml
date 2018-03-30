@@ -1127,6 +1127,10 @@
     <string name="profile">PROFİL</string>
     <string name="view">Görüntüle</string>
 
+    <string name="sort_by">SIRALA</string>
+    <string name="adhoc_planning">Fuar - Müşteri Ekleme</string>
+    <string name="search_retailer">Müşteri Ara</string>
+
     <string-array name="task_tab_header">
         <item>TÜMÜ</item>
         <item>VERİLENLER</item>

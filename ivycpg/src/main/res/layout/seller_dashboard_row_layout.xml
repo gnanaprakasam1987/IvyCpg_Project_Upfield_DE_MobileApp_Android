@@ -138,7 +138,7 @@
                             android:paddingStart="5dp"
                             android:paddingEnd="5dp"
                             android:tag="achieved_day"
-                            android:text="Achieved"
+                            android:text="@string/achieved"
                             android:textColor="?primarycolor"
                             android:textSize="@dimen/greyed_text_size"
                             android:textStyle="normal" />
@@ -331,7 +331,7 @@
                             android:paddingStart="5dp"
                             android:paddingEnd="5dp"
                             android:tag="target_day"
-                            android:text="Target"
+                            android:text="@string/target"
                             android:textColor="?accentcolor"
                             android:textSize="@dimen/greyed_text_size"
                             android:textStyle="normal" />
@@ -374,7 +374,7 @@
                     android:layout_marginEnd="@dimen/skuwise_right_margin"
                     android:gravity="center"
                     android:tag="details"
-                    android:text="Details"
+                    android:text="@string/details"
                     android:textColor="@color/Black"
                     android:textSize="@dimen/greyed_text_size"
                     android:textStyle="normal" />

@@ -169,7 +169,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             ((RelativeLayout) mview.findViewById(R.id.relativeLayout)).
                     setVisibility(View.GONE);
             filterLayout.setVisibility(View.VISIBLE);
-            mDateList.add(0, "ALL");
+            mDateList.add(0, getResources().getString(R.string.all));
             weekLL.setVisibility(View.GONE);
             dateLL.setVisibility(View.GONE);
         } else {
@@ -404,7 +404,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
     private void loadDataByusingDateFilter(String date, String searchStr) {
         retailer = new ArrayList<>();
-        if (!("ALL".equals(date))) {
+        if (!(getResources().getString(R.string.all).equals(date))) {
             for (RetailerMasterBO retailerMasterBO : bmodel.getRetailerMaster()) {
                 if (retailerMasterBO != null) {
                     HashSet<DateWisePlanBO> plannedDateList = retailerMasterBO.getPlannedDates();

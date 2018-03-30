@@ -1854,11 +1854,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
             if (holder.list_view_order_btn != null && holder.total != null) {
                 if (holder.productObj.getOrderedPcsQty() != 0) {
-                    holder.list_view_order_btn.setText("Ordered - " + holder.productObj.getOrderedPcsQty() + "");
+                    holder.list_view_order_btn.setText(getResources().getString(R.string.ordered)+" - " + holder.productObj.getOrderedPcsQty() + "");
                     holder.total.setText("" + bmodel.formatValue(holder.productObj.getTotalamount()));
                 } else {
                     holder.total.setText("0");
-                    holder.list_view_order_btn.setText("ORDER");
+                    holder.list_view_order_btn.setText(getResources().getString(R.string.order));
                 }
             }
             if (holder.pdt_image != null) {

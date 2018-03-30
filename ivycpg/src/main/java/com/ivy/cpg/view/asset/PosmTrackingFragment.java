@@ -882,7 +882,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                                     mFileNameStarts);
                             if (nFilesThere) {
                                 showFileDeleteAlertWithImage(holder.assetBO.getAssetID()
-                                        + "", mFileNameStarts, holder.assetBO.getImageName());
+                                        + "", mFileNameStarts, holder.assetBO.getImgName());
                             } else {
                                 captureCustom();
                             }

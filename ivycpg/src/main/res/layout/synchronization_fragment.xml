@@ -96,7 +96,7 @@
                     android:layout_marginStart="@dimen/card_margin_top"
                     android:layout_marginEnd="@dimen/card_margin_top"
                     android:gravity="bottom"
-                    android:hint="Password"
+                    android:hint="@string/password"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:minHeight="70dp"

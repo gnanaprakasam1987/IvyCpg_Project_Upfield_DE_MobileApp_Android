@@ -289,7 +289,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
-            final String PENDING = "Pending";
+            final String PENDING = getResources().getString(R.string.pending);
             final String ACCEPTED = "Accepted";
             final String REJECTED = "Rejected";
 

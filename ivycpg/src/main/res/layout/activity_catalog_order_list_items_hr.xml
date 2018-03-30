@@ -199,7 +199,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/order_lay_height"
                         android:layout_weight="1"
-                        android:text="ORDER"
+                        android:text="@string/order"
                         android:textSize="@dimen/text_sz_small"
                         android:visibility="visible" />
                 </LinearLayout>

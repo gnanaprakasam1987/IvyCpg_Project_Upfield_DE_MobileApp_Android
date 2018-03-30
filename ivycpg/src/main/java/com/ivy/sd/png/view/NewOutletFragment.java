@@ -5614,6 +5614,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
         if (resultCode == RESULT_OK) {
             if (data.hasExtra("lat") && data.hasExtra("isChanged")) {
 
@@ -5628,6 +5630,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
 
         }
+
     }
 
 

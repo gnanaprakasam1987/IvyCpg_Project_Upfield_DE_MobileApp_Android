@@ -63,7 +63,7 @@
                 <LinearLayout
                     android:id="@+id/ll_sku_mixture_product_name"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_60dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@android:color/white"
                     android:gravity="center|start"

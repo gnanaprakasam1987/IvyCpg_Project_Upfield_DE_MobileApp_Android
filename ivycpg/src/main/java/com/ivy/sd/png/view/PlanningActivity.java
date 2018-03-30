@@ -172,7 +172,7 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
         nearByTab.setTag("near");
 
         TabLayout.Tab adhocTab = tabLayout.newTab();
-        adhocTab.setText("Adhoc Planning");
+        adhocTab.setText(getResources().getString(R.string.adhoc_planning));
         adhocTab.setTag(mAdhoc);
 
         missedRetailerTab = tabLayout.newTab();

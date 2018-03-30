@@ -341,7 +341,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(order_history_title));
                 } else {
-                    order_history_title = "History";
+                    order_history_title = getResources().getString(R.string.history);
                     tabLayout.addTab(tabLayout.newTab().setText(order_history_title));
                 }
             } catch (Exception ex) {
@@ -434,7 +434,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(invoice_history_title));
                 } else {
-                    invoice_history_title = "Invoice History";
+                    invoice_history_title = getResources().getString(R.string.invoice_history);
                     tabLayout.addTab(tabLayout.newTab().setText(invoice_history_title));
                 }
             } catch (Exception ex) {

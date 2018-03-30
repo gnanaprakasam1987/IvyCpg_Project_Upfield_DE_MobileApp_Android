@@ -111,7 +111,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
 
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle("New Request");
+            setScreenTitle(getResources().getString(R.string.new_request));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
