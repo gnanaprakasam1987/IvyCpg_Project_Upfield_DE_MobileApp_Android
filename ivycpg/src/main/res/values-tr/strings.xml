@@ -1127,9 +1127,38 @@
     <string name="profile">PROFİL</string>
     <string name="view">Görüntüle</string>
 
+
+    <string name="history">GEÇMİŞ</string>
+    <string name="profile_edit_screen__title">Profili Değiştir</string>
+    <string name="settings">Ayarlar</string>
+    <string name="switch_label">KULLANICI DEĞİŞTİR</string>
+    <string name="language_settings__label">DİL SEÇİMİ</string>
+    <string name="new_request">Yeni İzin</string>
+    <string name="pending">Bekleniyor</string>
+    <string name="order">Ekle</string>
+    <string name="ordered">Eklendi</string>
+    <string name="moq">MSA</string>
+    <string name="minimum_order_required">Minimum Sipariş Adedi</string>
+    <string name="foc_piece">Bedelsiz Adedi</string>
+    <string name="piece">Satış Adet</string>
+    <string name="multiple_of">ve Katları:</string>
+    <string name="discounted_price">İsk. Fiyat</string>
+    <string name="do_u_want_to_save">Kaydedilsin mi?</string>
+    <string name="this_is_exceptional_order">Bu sipariş Özel Sipariş statüsündedir ve Satış Müdürü onayına gönderilecektir. Sipariş Sahibi:</string>
+    <string name="this_is_standared_order">Bu sipariş Standard bir sipariştir. Sipariş Sahibi: </string>
+    <string name="confirm">Onayla</string>
+    <string name="enter_email_id">Mail Adresi Girin</string>
+    <string name="send">Gönder</string>
+    <string name="invalid_email_address">Hatalı Mail Adresi</string>
+    <string name="details">Detay</string>
+    <string name="sku_target_title">Kategori Hedefi</string>
     <string name="sort_by">SIRALA</string>
     <string name="adhoc_planning">Fuar - Müşteri Ekleme</string>
     <string name="search_retailer">Müşteri Ara</string>
+    <string name="invoice_history">GEÇMİŞ SATIŞ</string>
+    <string name="net_price">Ek İsk.</string>
+    <string name="free">Mal Fzl.</string>
+    <string name="review">Not</string>
 
     <string-array name="task_tab_header">
         <item>TÜMÜ</item>

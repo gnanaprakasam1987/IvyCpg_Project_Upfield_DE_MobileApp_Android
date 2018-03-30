@@ -1147,6 +1147,7 @@
     <string name="profile">Profile</string>
     <string name="view">View</string>
 
+
     <string name="history">History</string>
     <string name="profile_edit_screen__title">Profile Edit</string>
     <string name="settings">Settings</string>
@@ -1171,11 +1172,13 @@
     <string name="invalid_email_address">Invalid EMail Address</string>
     <string name="details">Details</string>
     <string name="sku_target_title">SKU Target</string>
-
     <string name="sort_by">Sort By</string>
     <string name="adhoc_planning">Adhoc Planning</string>
     <string name="search_retailer">Search Retailer</string>
     <string name="invoice_history">Invoice History</string>
+    <string name="net_price">Net Price</string>
+    <string name="free">Free</string>
+    <string name="review">Review</string>
 
     <string-array name="task_tab_header">
         <item>All</item>
