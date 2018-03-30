@@ -371,17 +371,24 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 if (!tempList.isEmpty()) {
                     NewOutletAttributeBO tempBO1;
                     NewOutletAttributeBO tempBO2;
-                    for (int i = 0; i < attributeList.size(); i++) {
-                        tempBO1 = attributeList.get(i);
-                        for (int j = 0; j < tempList.size(); j++) {
-                            tempBO2 = tempList.get(j);
-                            if (tempBO1.getParentId() == tempBO2.getParentId()) {
-                                if (tempBO1.getAttrId() != tempBO2.getAttrId() && "N".equals(tempBO2.getStatus()))
-                                    attributeList.set(i, tempBO2);
+                    if(attributeList.size()>0) {
+                        for (int i = 0; i < attributeList.size(); i++) {
+                            tempBO1 = attributeList.get(i);
+                            for (int j = 0; j < tempList.size(); j++) {
+                                tempBO2 = tempList.get(j);
+                                if (tempBO1.getParentId() == tempBO2.getParentId()) {
+                                    if (tempBO1.getAttrId() != tempBO2.getAttrId() && "N".equals(tempBO2.getStatus()))
+                                        attributeList.set(i, tempBO2);
+                                }
                             }
                         }
                     }
+                    else {
+                        attributeList.addAll(tempList);
+                    }
                 }
+
+
 
             }
 

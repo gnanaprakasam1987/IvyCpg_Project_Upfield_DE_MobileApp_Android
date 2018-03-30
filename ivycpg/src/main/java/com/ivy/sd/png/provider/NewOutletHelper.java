@@ -877,17 +877,23 @@ public class NewOutletHelper {
                     NewOutletAttributeBO tempBO2;
                     for (int i = 0; i < attributeList.size(); i++) {
                         tempBO1 = attributeList.get(i);
-                        for (int j = 0; j < attList.size(); j++) {
-                            tempBO2 = attList.get(j);
-                            if (tempBO1.getParentId() == tempBO2.getParentId()) {
-                                if (tempBO1.getAttrId() != tempBO2.getAttrId()) {
-                                    tempBO1.setStatus("N");
-                                    tempList.add(tempBO1);
-                                    tempBO2.setStatus("D");
-                                    tempList.add(tempBO2);
+                        if(attList.size()>0) {
+                            for (int j = 0; j < attList.size(); j++) {
+                                tempBO2 = attList.get(j);
+                                if (tempBO1.getParentId() == tempBO2.getParentId()) {
+                                    if (tempBO1.getAttrId() != tempBO2.getAttrId()) {
+                                        tempBO1.setStatus("N");
+                                        tempList.add(tempBO1);
+                                        tempBO2.setStatus("D");
+                                        tempList.add(tempBO2);
+                                    }
                                 }
-                            }
 
+                            }
+                        }
+                        else {
+                            tempBO1.setStatus("N");
+                            tempList.add(tempBO1);
                         }
                     }
 
