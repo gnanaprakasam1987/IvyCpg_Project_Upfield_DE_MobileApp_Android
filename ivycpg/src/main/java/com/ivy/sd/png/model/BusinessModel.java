@@ -364,6 +364,7 @@ public class BusinessModel extends Application {
     private OrderFullfillmentBO orderfullfillmentbo;
     private TextView messagetv;
     public int photocount = 0;
+    public int mSelectedSubId = -1;
 
 
     private HashMap<String, RetailerMasterBO> mRetailerBOByRetailerid;
@@ -975,21 +976,21 @@ public class BusinessModel extends Application {
         }
     }
 
-	/*
+    /*
      * This method will return total acheived value of the seller for the day.
-	 * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
-	 * value will not be considered.
-	 */
+     * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
+     * value will not be considered.
+     */
 
     public String QT(String data) {
         return "'" + data + "'";
     }
 
-	/*
+    /*
      * This method will return total acheived value of the seller for the day.
-	 * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
-	 * value will be considered.
-	 */
+     * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
+     * value will be considered.
+     */
 
     /**
      * Used to check order exist without invoice creation.
@@ -1022,11 +1023,11 @@ public class BusinessModel extends Application {
         return false;
     }
 
-	/*
+    /*
      * This method will return total acheived value of the retailwer for the
-	 * day. OrderHeader if preseller or InvoiceMaster. Deviated retailer
-	 * acheived value will be considered.
-	 */
+     * day. OrderHeader if preseller or InvoiceMaster. Deviated retailer
+     * acheived value will be considered.
+     */
 
     /**
      * This method will return whether there is any order exist in DB without
@@ -1432,8 +1433,8 @@ public class BusinessModel extends Application {
 
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,A.SubDId,"
-                            + "A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country"
+                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
+                            + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country"
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerClientMappingMaster RC on RC.rid = A.RetailerID"
@@ -1461,15 +1462,13 @@ public class BusinessModel extends Application {
             // group by A.retailerid
             if (c != null) {
                 setRetailerMaster(new Vector<RetailerMasterBO>());
+                setSubDMaster(new Vector<RetailerMasterBO>());
                 while (c.moveToNext()) {
                     retailer = new RetailerMasterBO();
                     String retID = c.getString(c.getColumnIndex("RetailerID"));
                     retailer.setRetailerID(retID);
                     retailer.setRetailerCode(c.getString(c.getColumnIndex("RetailerCode")));
                     retailer.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
-
-                    retailer.setSubDId(c.getInt(c.getColumnIndex("SubDId")));
-
                     retailer.setBeatID(c.getInt(c.getColumnIndex("beatid")));
                     retailer.setCreditLimit(c.getFloat(c.getColumnIndex("creditlimit")));
                     retailer.setTinnumber(c.getString(c.getColumnIndex("tinnumber")));
@@ -1648,8 +1647,8 @@ public class BusinessModel extends Application {
                     if (configurationMasterHelper.isRetailerBOMEnabled) {
                         setIsBOMAchieved(retailer);
                     }
-
                     getRetailerMaster().add(retailer);
+
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
 
 
@@ -1681,6 +1680,16 @@ public class BusinessModel extends Application {
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
 
             updateCurrentFITscore();
+
+            if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD) {
+
+                for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
+                    if (retailerMasterBO.getSubdId() != 0) {
+                        getSubDMaster().add(retailerMasterBO);
+                    }
+
+                }
+            }
 
             db.closeDB();
         } catch (Exception e) {
@@ -2756,7 +2765,7 @@ public class BusinessModel extends Application {
                     String tempVal;
                     String fractionalStr;
 
-                   /* tempVal = formatValue(value) + "";*/
+                    /* tempVal = formatValue(value) + "";*/
                     tempVal = SDUtil.format(value, configurationMasterHelper.VALUE_PRECISION_COUNT, 0);
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
@@ -3583,8 +3592,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("BixolonIPrint")) {
                         BixolonIPrint frm = (BixolonIPrint) ctx;
@@ -3592,8 +3601,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("BtPrint4Ivy")) {
                         BtPrint4Ivy frm = (BtPrint4Ivy) ctx;
@@ -3601,8 +3610,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("InvoicePrintZebraNew")) {
                         InvoicePrintZebraNew frm = (InvoicePrintZebraNew) ctx;
@@ -3610,8 +3619,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("PrintPreviewScreen")) {
                         PrintPreviewScreen frm = (PrintPreviewScreen) ctx;
@@ -3619,8 +3628,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("PrintPreviewScreenDiageo")) {
                         PrintPreviewScreenDiageo frm = (PrintPreviewScreenDiageo) ctx;
@@ -4683,7 +4692,7 @@ public class BusinessModel extends Application {
         return i;
     }
 
-	/* ******* Invoice Number To Print End ******* */
+    /* ******* Invoice Number To Print End ******* */
 
     /**
      * this method will count number of today retailer for which SBD Merch is
@@ -4794,7 +4803,7 @@ public class BusinessModel extends Application {
     }
 
 
-     /* ******* Invoice Number To Print End ******* */
+    /* ******* Invoice Number To Print End ******* */
 
     public int getAdhocimgCount() {
         int i = 0;
@@ -4961,7 +4970,7 @@ public class BusinessModel extends Application {
     }
 
     /* This method will download the config for the productivecall. Based on the RField
-    * value the productive config will turn ON and accordingly the productiveCalls values will be computed*/
+     * value the productive config will turn ON and accordingly the productiveCalls values will be computed*/
 
     public void loadProductiveCallsConfig() {
         try {
@@ -6210,8 +6219,8 @@ public class BusinessModel extends Application {
                                           String fNameStarts) {
         /*
          * It returns true if the folder contains the n or more than n files
-		 * which starts name fnameStarts otherwiese returns false;
-		 */
+         * which starts name fnameStarts otherwiese returns false;
+         */
         if (n < 1)
             return true;
 

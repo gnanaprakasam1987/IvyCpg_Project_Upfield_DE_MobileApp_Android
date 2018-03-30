@@ -784,13 +784,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
             } else {
                 if (bmodel.getRetailerMaster().size() > 0) {
-                    Vector<RetailerMasterBO> subDMaster = new Vector<>();
-                    for (RetailerMasterBO retailerMasterBO : bmodel.getRetailerMaster()) {
-                        if (retailerMasterBO.getSubDId() != 0)
-                            subDMaster.add(retailerMasterBO);
-                    }
-                    if (subDMaster.size() > 0) {
-                        bmodel.setSubDMaster(subDMaster);
+                    if (bmodel.getSubDMaster().size() > 0) {
                         if (!isClicked) {
                             isClicked = false;
                             bmodel.distributorMasterHelper.downloadDistributorsList();

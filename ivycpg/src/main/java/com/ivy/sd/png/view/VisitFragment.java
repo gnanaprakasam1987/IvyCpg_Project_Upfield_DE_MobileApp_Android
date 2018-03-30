@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
@@ -76,7 +77,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, SearchView.OnQueryTextListener {
+public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
 
     private static final String CODE_PRODUCTIVE = "Filt_01";
     private static final String CODE_NON_PRODUCTIVE = "Filt_02";
@@ -113,6 +114,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     private int mSelectedPostion = -1;
     private StandardListBO mSelectedMenuBO;
+
+    SubDSelectionDialog subDSelectionDialog;
+    private int mSelectedSubId = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -231,6 +235,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             fab.setVisibility(View.GONE);
         }
 
+        if (bmodel.configurationMasterHelper.SUBD_RETAILER_SELECTION)
+            fab.setVisibility(View.GONE);
+        else
+            fab.setVisibility(View.VISIBLE);
+
         /* Show/Hide the "all route filter" **/
         if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
             cardView1.setVisibility(View.GONE);
@@ -239,7 +248,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             cardView.setVisibility(View.GONE);
             cardView1.setVisibility(View.VISIBLE);
 
-            Spinner daySpinner = (Spinner) view.findViewById(R.id.routeSpinner);
+            Spinner daySpinner = view.findViewById(R.id.routeSpinner);
 
             class BeatAdapter extends ArrayAdapter<BeatMasterBO> {
 
@@ -359,6 +368,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             bmodel.daySpinnerPositon = 0;
             BeatMasterBO beatmasterbo = brandAdapter.getItem(0);
             bmodel.beatMasterHealper.setTodayBeatMasterBO(beatmasterbo);
+
+
             loadData(beatmasterbo != null ? beatmasterbo.getBeatId() : 0, null);
             mBrandAutoCompleteTV.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -532,6 +543,25 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         else
             bmodel.productHelper.taxHelper = TaxHelper.getInstance(getActivity());
 
+        if (bmodel.configurationMasterHelper.SUBD_RETAILER_SELECTION) {
+            if (bmodel.mSelectedSubId != -1) {
+                mSelectedSubId = bmodel.mSelectedSubId;
+            } else {
+                if (bmodel.getSubDMaster().size() == 1) {
+                    bmodel.mSelectedSubId = bmodel.getSubDMaster().get(0).getSubdId();
+                    mSelectedSubId = bmodel.mSelectedSubId;
+                } else if (bmodel.getSubDMaster().size() > 1) {
+                    if (subDSelectionDialog == null) {
+                        subDSelectionDialog = new SubDSelectionDialog();
+                        Bundle args = new Bundle();
+                        args.putInt("subDId", mSelectedSubId);
+                        subDSelectionDialog.setArguments(args);
+                        subDSelectionDialog.setSubIdSelectionInterface(this);
+                        subDSelectionDialog.show(getActivity().getSupportFragmentManager(), "SubDSelectionDialog");
+                    }
+                }
+            }
+        }
         return view;
     }
 
@@ -565,6 +595,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         menu.findItem(R.id.menu_selection_filter)
                 .setVisible(bmodel.configurationMasterHelper.SHOW_RETAILER_SELECTION_FILTER);
+
+        menu.findItem(R.id.menu_subd_selection)
+                .setVisible(bmodel.configurationMasterHelper.SUBD_RETAILER_SELECTION && bmodel.getSubDMaster().size() > 1);
 
         if (calledBy.equals(MENU_VISIT)
                 && bmodel.configurationMasterHelper.SHOW_JOINT_CALL) {
@@ -619,6 +652,15 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             dialogFragment.setArguments(bundle);
 
             dialogFragment.show(fm, "Sample Fragment");
+        } else if (i1 == R.id.menu_subd_selection) {
+            if (subDSelectionDialog == null) {
+                subDSelectionDialog = new SubDSelectionDialog();
+                Bundle args = new Bundle();
+                args.putInt("subDId", mSelectedSubId);
+                subDSelectionDialog.setArguments(args);
+                subDSelectionDialog.setSubIdSelectionInterface(this);
+                subDSelectionDialog.show(getActivity().getSupportFragmentManager(), "SubDSelectionDialog");
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -650,6 +692,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+
     }
 
 
@@ -661,77 +704,192 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         ArrayList<RetailerMasterBO> retailerWIthSequence = new ArrayList<>();
         ArrayList<RetailerMasterBO> retailerWithoutSequence = new ArrayList<>();
 
-        /* Add today's retailers. **/
-        for (int i = 0; i < siz; i++) {
-            if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                if (mSelecteRetailerType.equalsIgnoreCase(CODE_DEAD_STORE) && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeadStore())) {
-                    continue;
-                } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_GOLDEN_STORE) && bmodel.getRetailerMaster().get(i).getIsGoldStore() != 1) {
-                    continue;
-                } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_HANGING) && !bmodel.getRetailerMaster().get(i).isHangingOrder()) {
-                    continue;
-                } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_INDICATIVE) && bmodel.getRetailerMaster().get(i).getIndicateFlag() != 1) {
-                    continue;
-                } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_NON_PRODUCTIVE)) {
-                    if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                            && ("Y").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
+
+        if (!bmodel.configurationMasterHelper.SUBD_RETAILER_SELECTION) {
+            /* Add today's retailers. **/
+            for (int i = 0; i < siz; i++) {
+                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    if (mSelecteRetailerType.equalsIgnoreCase(CODE_DEAD_STORE) && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeadStore())) {
                         continue;
-                    } else if (!bmodel.configurationMasterHelper.IS_INVOICE && ("Y").equals(bmodel.getRetailerMaster().get(i).isOrdered())) {
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_GOLDEN_STORE) && bmodel.getRetailerMaster().get(i).getIsGoldStore() != 1) {
+                        continue;
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_HANGING) && !bmodel.getRetailerMaster().get(i).isHangingOrder()) {
+                        continue;
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_INDICATIVE) && bmodel.getRetailerMaster().get(i).getIndicateFlag() != 1) {
+                        continue;
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_NON_PRODUCTIVE)) {
+                        if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                                && ("Y").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
+                            continue;
+                        } else if (!bmodel.configurationMasterHelper.IS_INVOICE && ("Y").equals(bmodel.getRetailerMaster().get(i).isOrdered())) {
+                            continue;
+                        }
+
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_PRODUCTIVE)) {
+                        if (!("Y".equals(bmodel.getRetailerMaster().get(i).isOrdered()))) {
+
+                            continue;
+
+                        } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                                && ("N").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
+                            continue;
+
+                        }
+
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_QDVP3) && !("1".equals(bmodel.getRetailerMaster().get(i).getRField4()))) {
+                        continue;
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_VISITED) && !("Y".equals(bmodel.getRetailerMaster().get(i).getIsVisited()))) {
                         continue;
                     }
+                    if (filter != null) {
+                        if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                                .toLowerCase()).contains(filter.toLowerCase()) ||
+                                (bmodel.getRetailerMaster().get(i)
+                                        .getRetailerCode().toLowerCase())
+                                        .contains(filter.toLowerCase())) {
 
-                } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_PRODUCTIVE)) {
-                    if (!("Y".equals(bmodel.getRetailerMaster().get(i).isOrdered()))) {
+                            if (bmodel.getRetailerMaster().get(i).getWalkingSequence() != 0) {
+                                retailerWIthSequence.add(bmodel.getRetailerMaster().get(i));
+                            } else {
+                                retailerWithoutSequence.add(bmodel.getRetailerMaster().get(i));
+                            }
 
-                        continue;
-
-                    } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                            && ("N").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
-                        continue;
-
-                    }
-
-                } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_QDVP3) && !("1".equals(bmodel.getRetailerMaster().get(i).getRField4()))) {
-                    continue;
-                } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_VISITED) && !("Y".equals(bmodel.getRetailerMaster().get(i).getIsVisited()))) {
-                    continue;
-                }
-                if (filter != null) {
-                    if ((bmodel.getRetailerMaster().get(i).getRetailerName()
-                            .toLowerCase()).contains(filter.toLowerCase()) ||
-                            (bmodel.getRetailerMaster().get(i)
-                                    .getRetailerCode() != null ? bmodel.getRetailerMaster().get(i)
-                                    .getRetailerCode().toLowerCase()
-                                    .contains(filter.toLowerCase()) : false)) {
-
+                        }
+                    } else {
                         if (bmodel.getRetailerMaster().get(i).getWalkingSequence() != 0) {
                             retailerWIthSequence.add(bmodel.getRetailerMaster().get(i));
                         } else {
                             retailerWithoutSequence.add(bmodel.getRetailerMaster().get(i));
                         }
-
                     }
-                } else {
-                    if (bmodel.getRetailerMaster().get(i).getWalkingSequence() != 0) {
-                        retailerWIthSequence.add(bmodel.getRetailerMaster().get(i));
-                    } else {
-                        retailerWithoutSequence.add(bmodel.getRetailerMaster().get(i));
-                    }
-
-
                 }
             }
+
+            Collections.sort(retailerWIthSequence, RetailerMasterBO.WalkingSequenceComparator);
+            Collections.sort(retailerWithoutSequence, RetailerMasterBO.RetailerNameComparator);
+            retailer.addAll(retailerWIthSequence);
+            retailer.addAll(retailerWithoutSequence);
+            startVistitRetailers.addAll(retailerWIthSequence);
+
+            /* Add today'sdeviated retailers. **/
+            for (int i = 0; i < siz; i++) {
+                if ("Y".equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+                    if (mSelecteRetailerType.equalsIgnoreCase(CODE_DEAD_STORE) && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeadStore())) {
+                        continue;
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_GOLDEN_STORE) && bmodel.getRetailerMaster().get(i).getIsGoldStore() != 1) {
+                        continue;
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_HANGING) && !bmodel.getRetailerMaster().get(i).isHangingOrder()) {
+                        continue;
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_INDICATIVE) && bmodel.getRetailerMaster().get(i).getIndicateFlag() != 1) {
+                        continue;
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_NON_PRODUCTIVE)) {
+                        if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                                && ("Y").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
+                            continue;
+                        } else if (!bmodel.configurationMasterHelper.IS_INVOICE && ("Y").equals(bmodel.getRetailerMaster().get(i).isOrdered())) {
+                            continue;
+                        }
+
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_PRODUCTIVE)) {
+                        if (!("Y".equals(bmodel.getRetailerMaster().get(i).isOrdered()))) {
+
+                            continue;
+
+                        } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                                && ("N").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
+                            continue;
+
+                        }
+
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_QDVP3) && !("1".equals(bmodel.getRetailerMaster().get(i).getRField4()))) {
+                        continue;
+                    } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_VISITED) && !("Y".equals(bmodel.getRetailerMaster().get(i).getIsVisited()))) {
+                        continue;
+                    } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsNew())) {
+                        continue;
+                    }
+                    if (filter != null) {
+                        if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                                .toLowerCase()).contains(filter.toLowerCase()) ||
+                                (bmodel.getRetailerMaster().get(i)
+                                        .getRetailerCode().toLowerCase())
+                                        .contains(filter.toLowerCase())) {
+                            retailer.add(bmodel.getRetailerMaster().get(i));
+                        }
+                    } else {
+                        retailer.add(bmodel.getRetailerMaster().get(i));
+                    }
+                } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
+                    if (filter != null) {
+                        if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                                .toLowerCase()).contains(filter.toLowerCase()) ||
+                                (bmodel.getRetailerMaster().get(i)
+                                        .getRetailerCode().toLowerCase())
+                                        .contains(filter.toLowerCase())) {
+                            retailer.add(bmodel.getRetailerMaster().get(i));
+                        }
+                    } else {
+                        retailer.add(bmodel.getRetailerMaster().get(i));
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < siz; i++) {
+                if (bmodel.getRetailerMaster().get(i).getDistributorId() == mSelectedSubId &&
+                        bmodel.getRetailerMaster().get(i).getSubdId() == 0) {
+
+                    if (filter != null) {
+                        if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                                .toLowerCase()).contains(filter.toLowerCase()) ||
+                                (bmodel.getRetailerMaster().get(i)
+                                        .getRetailerCode().toLowerCase())
+                                        .contains(filter.toLowerCase())) {
+
+                            if (bmodel.getRetailerMaster().get(i).getWalkingSequence() != 0) {
+                                retailerWIthSequence.add(bmodel.getRetailerMaster().get(i));
+                            } else {
+                                retailerWithoutSequence.add(bmodel.getRetailerMaster().get(i));
+                            }
+
+                        }
+                    } else {
+                        if (bmodel.getRetailerMaster().get(i).getWalkingSequence() != 0) {
+                            retailerWIthSequence.add(bmodel.getRetailerMaster().get(i));
+                        } else {
+                            retailerWithoutSequence.add(bmodel.getRetailerMaster().get(i));
+                        }
+                    }
+                }
+            }
+
+            Collections.sort(retailerWIthSequence, RetailerMasterBO.WalkingSequenceComparator);
+            Collections.sort(retailerWithoutSequence, RetailerMasterBO.RetailerNameComparator);
+            retailer.addAll(retailerWIthSequence);
+            retailer.addAll(retailerWithoutSequence);
+            startVistitRetailers.addAll(retailerWIthSequence);
         }
 
-        Collections.sort(retailerWIthSequence, RetailerMasterBO.WalkingSequenceComparator);
-        Collections.sort(retailerWithoutSequence, RetailerMasterBO.RetailerNameComparator);
-        retailer.addAll(retailerWIthSequence);
-        retailer.addAll(retailerWithoutSequence);
-        startVistitRetailers.addAll(retailerWIthSequence);
+        if (!hasOrderScreen)
+            setRetailerDoneforNoOrderMenu(retailer);
+        Collections.sort(retailer, new RetailerSotringIsDone());
+        RetailerSelectionAdapter mSchedule = new RetailerSelectionAdapter(
+                retailer);
+        mSchedule.notifyDataSetChanged();
 
-        /* Add today'sdeviated retailers. **/
-        for (int i = 0; i < siz; i++) {
-            if ("Y".equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+        String strCount = mSchedule.getCount() + "";
+        tv_storeVisit.setText(strCount);
+        listView.setAdapter(mSchedule);
+        setHasOptionsMenu(true);
+
+    }
+
+    private void loadData(int beatId, String filter) {
+
+        retailer = new ArrayList<>();
+        int siz = bmodel.getRetailerMaster().size();
+        if (!bmodel.configurationMasterHelper.SUBD_RETAILER_SELECTION) {
+            for (int i = 0; i < siz; i++) {
+
                 if (mSelecteRetailerType.equalsIgnoreCase(CODE_DEAD_STORE) && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeadStore())) {
                     continue;
                 } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_GOLDEN_STORE) && bmodel.getRetailerMaster().get(i).getIsGoldStore() != 1) {
@@ -766,106 +924,42 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsNew())) {
                     continue;
                 }
-                if (filter != null) {
-                    if ((bmodel.getRetailerMaster().get(i).getRetailerName()
-                            .toLowerCase()).contains(filter.toLowerCase()) ||
-                            (bmodel.getRetailerMaster().get(i)
-                                    .getRetailerCode() != null
-                                    ? bmodel.getRetailerMaster().get(i).getRetailerCode().toLowerCase()
-                                    .contains(filter.toLowerCase()) : false)) {
-                        retailer.add(bmodel.getRetailerMaster().get(i));
-                    }
-                } else {
-                    retailer.add(bmodel.getRetailerMaster().get(i));
-                }
-            } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
-                if (filter != null) {
-                    if (bmodel.getRetailerMaster().get(i).getIsToday() == 0
-                            && "N".equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+
+                if ((bmodel.getRetailerMaster().get(i).getBeatID() == beatId || beatId == 0)
+                        && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+
+                    if (filter != null) {
                         if ((bmodel.getRetailerMaster().get(i).getRetailerName()
-                                .toLowerCase()).contains(filter.toLowerCase()) ||
-                                (bmodel.getRetailerMaster().get(i)
-                                        .getRetailerCode() != null ? bmodel.getRetailerMaster().get(i)
-                                        .getRetailerCode().toLowerCase()
-                                        .contains(filter.toLowerCase()) : false)) {
+                                .toLowerCase()).contains(filter.toLowerCase())) {
                             retailer.add(bmodel.getRetailerMaster().get(i));
                         }
-                    }
-                } else {
-                    retailer.add(bmodel.getRetailerMaster().get(i));
-                }
-            }
-        }
-
-        if (!hasOrderScreen)
-            setRetailerDoneforNoOrderMenu(retailer);
-        Collections.sort(retailer, new RetailerSotringIsDone());
-        RetailerSelectionAdapter mSchedule = new RetailerSelectionAdapter(
-                retailer);
-        mSchedule.notifyDataSetChanged();
-
-        String strCount = mSchedule.getCount() + "";
-        tv_storeVisit.setText(strCount);
-        listView.setAdapter(mSchedule);
-        setHasOptionsMenu(true);
-
-    }
-
-    private void loadData(int beatId, String filter) {
-
-        retailer = new ArrayList<>();
-        int siz = bmodel.getRetailerMaster().size();
-        for (int i = 0; i < siz; i++) {
-
-            if (mSelecteRetailerType.equalsIgnoreCase(CODE_DEAD_STORE) && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeadStore())) {
-                continue;
-            } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_GOLDEN_STORE) && bmodel.getRetailerMaster().get(i).getIsGoldStore() != 1) {
-                continue;
-            } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_HANGING) && !bmodel.getRetailerMaster().get(i).isHangingOrder()) {
-                continue;
-            } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_INDICATIVE) && bmodel.getRetailerMaster().get(i).getIndicateFlag() != 1) {
-                continue;
-            } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_NON_PRODUCTIVE)) {
-                if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                        && ("Y").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
-                    continue;
-                } else if (!bmodel.configurationMasterHelper.IS_INVOICE && ("Y").equals(bmodel.getRetailerMaster().get(i).isOrdered())) {
-                    continue;
-                }
-
-            } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_PRODUCTIVE)) {
-                if (!("Y".equals(bmodel.getRetailerMaster().get(i).isOrdered()))) {
-
-                    continue;
-
-                } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                        && ("N").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
-                    continue;
-
-                }
-
-            } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_QDVP3) && !("1".equals(bmodel.getRetailerMaster().get(i).getRField4()))) {
-                continue;
-            } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_VISITED) && !("Y".equals(bmodel.getRetailerMaster().get(i).getIsVisited()))) {
-                continue;
-            } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsNew())) {
-                continue;
-            }
-
-            if ((bmodel.getRetailerMaster().get(i).getBeatID() == beatId || beatId == 0)
-                    && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
-
-                if (filter != null) {
-                    if ((bmodel.getRetailerMaster().get(i).getRetailerName()
-                            .toLowerCase()).contains(filter.toLowerCase())) {
+                    } else {
                         retailer.add(bmodel.getRetailerMaster().get(i));
                     }
-                } else {
-                    retailer.add(bmodel.getRetailerMaster().get(i));
+
                 }
 
             }
+        } else {
+            for (int i = 0; i < siz; i++) {
 
+                if (bmodel.getRetailerMaster().get(i).getDistributorId() == mSelectedSubId &&
+                        bmodel.getRetailerMaster().get(i).getSubdId() == 0) {
+
+                    if ((bmodel.getRetailerMaster().get(i).getBeatID() == beatId || beatId == 0)) {
+
+                        if (filter != null) {
+                            if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                                    .toLowerCase()).contains(filter.toLowerCase())) {
+                                retailer.add(bmodel.getRetailerMaster().get(i));
+                            }
+                        } else {
+                            retailer.add(bmodel.getRetailerMaster().get(i));
+                        }
+
+                    }
+                }
+            }
         }
         if (!hasOrderScreen)
             setRetailerDoneforNoOrderMenu(retailer);
@@ -1108,6 +1202,18 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         mSelecteRetailerType = type;
         loadFilteredData(null);
 
+    }
+
+    @Override
+    public void onSubIdSelected(int subID) {
+        mSelectedSubId = subID;
+        bmodel.mSelectedSubId = subID;
+        if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
+            loadData(0, null);
+        } else {
+            displayTodayRoute(null);
+        }
+        subDSelectionDialog = null;
     }
 
     private class RetailerSelectionAdapter extends ArrayAdapter<RetailerMasterBO> {
