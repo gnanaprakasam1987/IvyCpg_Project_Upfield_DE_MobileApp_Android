@@ -1264,7 +1264,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 return new PlanningOutletFragment();
             } else if (tabName.equals(retailer_kpi_title)) {
                 SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
+                bmodel.dashBoardHelper.checkDayAndP3MSpinner(true);
                 bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
                 Bundle bnd = new Bundle();
                 bnd.putString("screentitle", "");
