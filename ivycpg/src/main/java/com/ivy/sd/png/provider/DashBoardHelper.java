@@ -1162,6 +1162,7 @@ public class DashBoardHelper {
     public int getSubdataCount(int KPIParamLovId) {
         int count = 0;
         try {
+            showDayAndP3MSpinner=0;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
@@ -1253,7 +1254,7 @@ public class DashBoardHelper {
         }
     }
 
-    public void checkDayAndP3MSpinner() {
+    public void checkDayAndP3MSpinner(boolean isRetailerDashboard) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1262,7 +1263,11 @@ public class DashBoardHelper {
             boolean isDaySpinner = false;
             boolean isP3MSpinner = false;
 
-            String sql = "select count(*) from SellerKPI where interval = 'DAY'";
+            String tableName="SellerKPI";
+            if(isRetailerDashboard)
+                tableName="RetailerKPI";
+
+            String sql = "select count(*) from "+tableName+" where interval = 'DAY'";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -1272,7 +1277,7 @@ public class DashBoardHelper {
                     }
                 }
             }
-            sql = "select count(*) from SellerKPI where interval = 'P3M'";
+            sql = "select count(*) from "+tableName+" where interval = 'P3M'";
             c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {

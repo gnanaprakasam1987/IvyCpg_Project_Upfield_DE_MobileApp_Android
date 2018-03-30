@@ -47,6 +47,17 @@ public class TotalAchivedFragment extends Fragment {
         tvTitle.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         tvValue.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
 
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.tvTitle).getTag()) != null)
+                ((TextView) view.findViewById(R.id.tvTitle))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.tvTitle)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
         double total_ach = 0;
 
         if (skuList != null) {
