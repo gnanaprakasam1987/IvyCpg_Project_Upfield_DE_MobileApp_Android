@@ -507,8 +507,8 @@ public class BusinessModel extends Application {
                 ctxx.startActivityForResult(myIntent, 0);
             } else {*/
             myIntent = new Intent(ctxx, HomeScreenActivity.class);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             ctxx.startActivityForResult(myIntent, 0);
             //}
         } else if (act.equals(DataMembers.actPlanning)) {

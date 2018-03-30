@@ -35,6 +35,7 @@
             android:layout_marginStart="@dimen/dimens_16dp"
             android:gravity="center|start"
             android:text="Rs"
+            android:tag="paid_label"
             android:textColor="@color/colorPrimary"
             android:textIsSelectable="false"
             android:textSize="@dimen/text_sz_small" />

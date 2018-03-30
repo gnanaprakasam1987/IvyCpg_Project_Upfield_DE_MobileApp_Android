@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
@@ -821,18 +820,24 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     }
                 } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
                     if (filter != null) {
-                        if ((bmodel.getRetailerMaster().get(i).getRetailerName()
-                                .toLowerCase()).contains(filter.toLowerCase()) ||
-                                (bmodel.getRetailerMaster().get(i)
-                                        .getRetailerCode().toLowerCase())
-                                        .contains(filter.toLowerCase())) {
-                            retailer.add(bmodel.getRetailerMaster().get(i));
+                        if (!("Y".equals(bmodel.getRetailerMaster().get(i).getIsDeviated()))
+                                && bmodel.getRetailerMaster().get(i).getIsToday() == 0) {
+                            if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                                    .toLowerCase()).contains(filter.toLowerCase()) ||
+                                    (bmodel.getRetailerMaster().get(i)
+                                            .getRetailerCode() != null && (bmodel.getRetailerMaster().get(i)
+                                            .getRetailerCode().toLowerCase())
+                                            .contains(filter.toLowerCase()))) {
+                                retailer.add(bmodel.getRetailerMaster().get(i));
+                            }
                         }
+
                     } else {
                         retailer.add(bmodel.getRetailerMaster().get(i));
                     }
                 }
             }
+
         } else {
             for (int i = 0; i < siz; i++) {
                 if (bmodel.getRetailerMaster().get(i).getDistributorId() == mSelectedSubId &&
@@ -882,6 +887,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         setHasOptionsMenu(true);
 
     }
+
 
     private void loadData(int beatId, String filter) {
 

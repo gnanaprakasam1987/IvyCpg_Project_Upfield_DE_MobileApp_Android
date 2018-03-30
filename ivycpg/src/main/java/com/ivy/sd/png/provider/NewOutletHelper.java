@@ -2079,12 +2079,16 @@ public class NewOutletHelper {
 
             //converting big decimal value while Exponential value occur
             String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
-                    ? (SDUtil.truncateDecimal(outlet.getNewOutletlattitude(), -1) + "")
-                    : (outlet.getNewOutletlattitude() + "");
+                    ? (SDUtil.truncateDecimal(outlet.getNewOutletlattitude(), -1) + "").substring(0, 20)
+                    : ((outlet.getNewOutletlattitude() + "").length() > 20
+                                ? (outlet.getNewOutletlattitude() + "").substring(0, 20)
+                                : (outlet.getNewOutletlattitude() + ""));
 
             String longitude = (outlet.getNewOutletLongitude() + "").contains("E")
-                    ? (SDUtil.truncateDecimal(outlet.getNewOutletLongitude(), -1) + "")
-                    : (outlet.getNewOutletLongitude() + "");
+                    ? (SDUtil.truncateDecimal(outlet.getNewOutletLongitude(), -1) + "").substring(0, 20)
+                    : ((outlet.getNewOutletLongitude() + "").length() > 20
+                                ? (outlet.getNewOutletLongitude() + "").substring(0, 20)
+                                : (outlet.getNewOutletLongitude() + ""));
 
             if (outlet.getmAddressByTag() != null) {
                 for (String addressType : outlet.getmAddressByTag().keySet()) {

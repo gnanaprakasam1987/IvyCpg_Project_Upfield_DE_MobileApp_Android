@@ -914,9 +914,9 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
                     if (profileConfig.get(i).getHasLink() == 0)
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
                     else {
                         if (text.equals(""))
                             text = "0";
@@ -932,9 +932,9 @@ public class ProfileEditFragment extends IvyBaseFragment {
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
                     if (profileConfig.get(i).getHasLink() == 0)
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
                     else {
                         if (text.equals(""))
                             text = "0";
@@ -949,9 +949,9 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
                     if (profileConfig.get(i).getHasLink() == 0)
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
                     else {
                         if (text.equals(""))
                             text = "0";
@@ -966,9 +966,9 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
                     if (profileConfig.get(i).getHasLink() == 0)
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_NUMBER),
-                            commonsparams);
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_NUMBER),
+                                commonsparams);
                     else {
                         if (text.equals(""))
                             text = "0";
@@ -1261,9 +1261,9 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
-                                commonsparams);
+                    totalView.addView(
+                            getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
+                            commonsparams);
                 } else if (configCode.equals("PROFILE86") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
                     if (retailerObj.getFax() == null
                             || retailerObj.getFax().equals(
@@ -1373,13 +1373,13 @@ public class ProfileEditFragment extends IvyBaseFragment {
             editText[mNumber].setHint(MName);
             //cmd for not apply inputfilter value for email id
             if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78"))
-            if (inputFilters != null && inputFilters.size() > 0) {
-                InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                stockArr = inputFilters.toArray(stockArr);
-                editText[mNumber].setFilters(stockArr);
-                if (inputFilters.size() == 2)
-                    editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            }
+                if (inputFilters != null && inputFilters.size() > 0) {
+                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
+                    stockArr = inputFilters.toArray(stockArr);
+                    editText[mNumber].setFilters(stockArr);
+                    if (inputFilters.size() == 2)
+                        editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                }
             editTextInputLayout.addView(editText[mNumber]);
 
 //            secondlayout.addView(editTextInputLayout, commonsparams);
@@ -2196,7 +2196,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     .getString(R.string.select_str) + " " + MName));
 
             int selPos = 0;
-            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD5").size(); i++){
+            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD5").size(); i++) {
                 RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD5").get(i);
                 rField5Adapter.add(retBO);
                 if (id == Integer.valueOf(retBO.getId()))
@@ -2234,7 +2234,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     .getString(R.string.select_str) + " " + MName));
 
             int selPos = 0;
-            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD6").size(); i++){
+            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD6").size(); i++) {
                 RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD6").get(i);
                 rField6Adapter.add(retBO);
                 if (id == Integer.valueOf(retBO.getId()))
@@ -2272,7 +2272,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     .getString(R.string.select_str) + " " + MName));
 
             int selPos = 0;
-            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD7").size(); i++){
+            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD7").size(); i++) {
                 RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD7").get(i);
                 rField7Adapter.add(retBO);
                 if (id == Integer.valueOf(retBO.getId()))
@@ -2310,7 +2310,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     .getString(R.string.select_str) + " " + MName));
 
             int selPos = 0;
-            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD4").size(); i++){
+            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD4").size(); i++) {
                 RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD4").get(i);
                 rField4Adapter.add(retBO);
                 if (id == Integer.valueOf(retBO.getId()))
@@ -3744,11 +3744,11 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         profileConfig.get(i).setMenuNumber("0.0");
                     } else {
                         //converting big decimal value while Exponential value occur
-                        String longitude = (lat).contains("E")
-                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(lat), -1) + "")
-                                : lat;
+                        String lattiTude = (lat).contains("E")
+                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(lat), -1) + "").substring(0, 20)
+                                : (lat.length() > 20 ? lat.substring(0, 20) : lat);
 
-                        profileConfig.get(i).setMenuNumber(longitude);
+                        profileConfig.get(i).setMenuNumber(lattiTude);
                     }
                 } else if (configCode.equals("PROFILE31") && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(longitude)) {
@@ -3756,8 +3756,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     } else {
                         //converting big decimal value while Exponential value occur
                         String longiTude = (longitude).contains("E")
-                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(longitude), -1) + "")
-                                : longitude;
+                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(longitude), -1) + "").substring(0, 20)
+                                : (longitude.length() > 20 ? longitude.substring(0, 20) : longitude);
 
                         profileConfig.get(i).setMenuNumber(longiTude);
                     }
@@ -3919,12 +3919,12 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     }
                 } else if (configCode.equals("PROFILE28") && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
-                    }
+                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[i].getText().toString()));
+                        }
                     } else {
                         RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField4Spinner.getSelectedItem();
                         if (retailerFlexBO != null)
@@ -3934,12 +3934,12 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     }
                 } else if (configCode.equals("PROFILE53") && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
-                    }
+                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[i].getText().toString()));
+                        }
                     } else {
                         RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField5Spinner.getSelectedItem();
                         if (retailerFlexBO != null)
@@ -3949,12 +3949,12 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     }
                 } else if (configCode.equals("PROFILE54") && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
-                    }
+                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[i].getText().toString()));
+                        }
                     } else {
                         RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField6Spinner.getSelectedItem();
                         if (retailerFlexBO != null)
@@ -3964,19 +3964,19 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     }
                 } else if (configCode.equals("PROFILE55") && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
+                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[i].getText().toString()));
+                        }
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
+                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField7Spinner.getSelectedItem();
+                        if (retailerFlexBO != null)
+                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
+                        else
+                            profileConfig.get(i).setMenuNumber("0");
                     }
-                } else {
-                    RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField7Spinner.getSelectedItem();
-                    if (retailerFlexBO != null)
-                        profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
-                    else
-                        profileConfig.get(i).setMenuNumber("0");
-                }
                 } else if (configCode.equals("PROFILE60") && profileConfig.get(i).getModule_Order() == 1) {
                     if (imageFileName == null || "".equals(imageFileName)) {
                         profileConfig.get(i).setMenuNumber("");
@@ -4315,7 +4315,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
         int month;
         int day;
         String code;
-        DatePickerFragment(String code, int year, int month, int day){
+
+        DatePickerFragment(String code, int year, int month, int day) {
             this.code = code;
             this.year = year;
             this.month = month;
@@ -4324,7 +4325,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,this, year, month, day);
+            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
