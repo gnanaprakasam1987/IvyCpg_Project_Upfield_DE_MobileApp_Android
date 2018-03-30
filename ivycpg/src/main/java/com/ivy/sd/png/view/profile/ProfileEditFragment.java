@@ -2721,6 +2721,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
             ArrayList<Integer> mCommonAttributeList = null;// common attributes
             ArrayList<Integer> mChannelAttributeList = null;// attributes for selected channel already(from DB)..
             ArrayList<Integer> mNewChannelAttributeList = null;// Newly selected channel's attribute
+
             if (isCommon) {
 
                 // creating parent layout for attributes
@@ -2747,12 +2748,20 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 // attributes mapped to channel already are added here
                 if (isChannelAvailable()) {
                     mChannelAttributeList = new ArrayList<>();
-                    mChannelAttributeList.addAll(mAttributeListByChannelId.get(bmodel.getRetailerMasterBO().getSubchannelid()));
+                    int subChannelID;
+                    if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null)
+                        subChannelID = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"));
+                    else subChannelID=bmodel.getRetailerMasterBO().getSubchannelid();
+                    mChannelAttributeList.addAll(mAttributeListByChannelId.get(subChannelID));
                 }
 
             } else if (isFromChannel) {
-                if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
 
+                if(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")!=null
+                        &&(Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"))==((SpinnerBO) subchannel.getSelectedItem()).getId())){
+                    isNewChannel=false;
+                }
+                else if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
                     // in case of user selecting new sub channel.. then view wil be updated here..
                     isNewChannel = true;
 
@@ -2777,10 +2786,9 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
             spinnerHashMap = new HashMap<>();
             spinnerAdapterMap = new HashMap<>();
-
             if (isFromChannel && isNewChannel) {
-                // User selected a sub channel an it is new one.
 
+                // User selected a sub channel an it is new one.
                 for (int i = 0; i < bmodel.newOutletAttributeHelper.getAttributeParentList().size(); i++) {
 
                     final NewOutletAttributeBO parentBO;
@@ -2850,13 +2858,10 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
                                         if (index < columnCount)
                                             loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
-
                                     }
                                 }
-
                                 @Override
                                 public void onNothingSelected(AdapterView<?> parent) {
-
                                 }
                             });
                             spinnerHashMap.put(attribName + index, spinner);
@@ -2877,116 +2882,190 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         parentLayout.addView(layout);
                     }
                 }
-
             } else if (isCommon) {
+
                 //Call while creating view first time
+                if(attributeList.size()>0) {
+                    int rowCount = attributeList.size();
+                    updateRetailerAttribute(attributeList);
+                    for (int i = 0; i < rowCount; i++) {
 
-                int rowCount = attributeList.size();
-                updateRetailerAttribute(attributeList);
+                        final NewOutletAttributeBO parentBO;
+                        parentBO = attributeHeaderList.get(i);
+                        //Allowing only if parent attribute is available in common list or channel's(from Db) attribute
+                        if ((isCommon && (mCommonAttributeList.contains(parentBO.getAttrId()) || mChannelAttributeList.contains(parentBO.getAttrId())))
+                                ) {
 
-                for (int i = 0; i < rowCount; i++) {
+                            LinearLayout layout = new LinearLayout(getActivity());
+                            // setting tag as channel, used to remove channel views particularly and update new one if channel changed
+                            if (mChannelAttributeList.contains(parentBO.getAttrId()))
+                                layout.setTag("channel");
+                            layout.setOrientation(LinearLayout.HORIZONTAL);
+                            layout.setGravity(Gravity.CENTER_VERTICAL);
+                            layout.setWeightSum(3f);
+                            layout.setLayoutParams(LLParams);
+                            final String attribName = parentBO.getAttrName();
+                            TextView mn_textview = new TextView(getActivity());
+                            mn_textview.setText(attribName);
+                            mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+                            mn_textview.setTextColor(Color.BLACK);
+                            mn_textview.setLayoutParams(paramsAttrib);
+                            layout.addView(mn_textview);
+                            final int columnCount = getLevel(parentBO.getAttrId());
+                            MaterialSpinner spinner;
+                            LinearLayout innerLL = new LinearLayout(getActivity());
+                            innerLL.setOrientation(LinearLayout.VERTICAL);
+                            innerLL.setLayoutParams(paramsAttribSpinner);
+                            LinearLayout innerHL = new LinearLayout(getActivity());
+                            innerHL.setWeightSum(2);
+                            innerHL.setLayoutParams(LLParams);
+                            innerHL.setOrientation(LinearLayout.HORIZONTAL);
+                            boolean isAdded = false;
+                            ArrayList<Integer> indexList = attributeIndexMap.get(attribName);
+                            //creating child levels
+                            for (int j = 0; j < columnCount; j++) {
 
-                    final NewOutletAttributeBO parentBO;
-                    parentBO = attributeHeaderList.get(i);
-
-                    //Allowing only if parent attribute is available in common list or channel's(from Db) attribute
-                    if ((isCommon && (mCommonAttributeList.contains(parentBO.getAttrId()) || mChannelAttributeList.contains(parentBO.getAttrId())))
-                            ) {
-
-                        LinearLayout layout = new LinearLayout(getActivity());
-
-                        // setting tag as channel, used to remove channel views particularly and update new one if channel changed
-                        if (mChannelAttributeList.contains(parentBO.getAttrId()))
-                            layout.setTag("channel");
-
-                        layout.setOrientation(LinearLayout.HORIZONTAL);
-                        layout.setGravity(Gravity.CENTER_VERTICAL);
-                        layout.setWeightSum(3f);
-                        layout.setLayoutParams(LLParams);
-                        final String attribName = parentBO.getAttrName();
-                        TextView mn_textview = new TextView(getActivity());
-                        mn_textview.setText(attribName);
-                        mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-                        mn_textview.setTextColor(Color.BLACK);
-                        mn_textview.setLayoutParams(paramsAttrib);
-                        layout.addView(mn_textview);
-
-                        final int columnCount = getLevel(parentBO.getAttrId());
-                        MaterialSpinner spinner;
-                        LinearLayout innerLL = new LinearLayout(getActivity());
-                        innerLL.setOrientation(LinearLayout.VERTICAL);
-                        innerLL.setLayoutParams(paramsAttribSpinner);
-                        LinearLayout innerHL = new LinearLayout(getActivity());
-                        innerHL.setWeightSum(2);
-                        innerHL.setLayoutParams(LLParams);
-                        innerHL.setOrientation(LinearLayout.HORIZONTAL);
-                        boolean isAdded = false;
-                        ArrayList<Integer> indexList = attributeIndexMap.get(attribName);
-
-                        //creating child levels
-                        for (int j = 0; j < columnCount; j++) {
-                            isAdded = false;
-                            final ArrayList<NewOutletAttributeBO> attrbList;
-                            final int index = j;
-                            final int selectedPos = indexList.get(j);
-                            spinner = new MaterialSpinner(getActivity());
-
-                            attrbList = new ArrayList<>();
-                            attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                                    .getString(R.string.select_str) + " " + getActivity().getResources()
-                                    .getString(R.string.attribute)));
-                            attrbList.addAll(listHashMap.get(attribName).get(j));
-
-                            final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                                    android.R.layout.simple_spinner_item, attrbList);
-                            spinner.setAdapter(arrayAdapter);
-                            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinner.setLayoutParams(innerParams);
-                            innerHL.addView(spinner);
-                            spinnerAdapterMap.put(attribName + index, arrayAdapter);
-                            spinner.setSelection(selectedPos + 1);
-                            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                @Override
-                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                    if (++check > spinnerCount) {
-                                        selectedAttribList.remove(parentBO.getAttrId());
-                                        selectedAttribList.put(parentBO.getAttrId(), attrbList.get(position));
-
-                                        if (index < columnCount)
-                                            loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
-
+                                isAdded = false;
+                                final ArrayList<NewOutletAttributeBO> attrbList;
+                                final int index = j;
+                                final int selectedPos = indexList.get(j);
+                                spinner = new MaterialSpinner(getActivity());
+                                attrbList = new ArrayList<>();
+                                attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
+                                        .getString(R.string.select_str) + " " + getActivity().getResources()
+                                        .getString(R.string.attribute)));
+                                attrbList.addAll(listHashMap.get(attribName).get(j));
+                                final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
+                                        android.R.layout.simple_spinner_item, attrbList);
+                                spinner.setAdapter(arrayAdapter);
+                                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                spinner.setLayoutParams(innerParams);
+                                innerHL.addView(spinner);
+                                spinnerAdapterMap.put(attribName + index, arrayAdapter);
+                                spinner.setSelection(selectedPos + 1);
+                                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        if (++check > spinnerCount) {
+                                            selectedAttribList.remove(parentBO.getAttrId());
+                                            selectedAttribList.put(parentBO.getAttrId(), attrbList.get(position));
+                                            if (index < columnCount)
+                                                loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
+                                        }
                                     }
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+                                    }
+                                });
+                                spinnerHashMap.put(attribName + index, spinner);
+                                if ((j + 1) % 2 == 0) {
+                                    innerLL.addView(innerHL);
+                                    innerHL = new LinearLayout(getActivity());
+                                    innerHL.setWeightSum(2);
+                                    innerHL.setLayoutParams(LLParams);
+                                    innerHL.setOrientation(LinearLayout.HORIZONTAL);
+                                    isAdded = true;
                                 }
-
-                                @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-
-                                }
-                            });
-                            spinnerHashMap.put(attribName + index, spinner);
-                            if ((j + 1) % 2 == 0) {
-                                innerLL.addView(innerHL);
-                                innerHL = new LinearLayout(getActivity());
-                                innerHL.setWeightSum(2);
-                                innerHL.setLayoutParams(LLParams);
-                                innerHL.setOrientation(LinearLayout.HORIZONTAL);
-                                isAdded = true;
                             }
+                            if (!isAdded) {
+                                innerLL.addView(innerHL);
+                            }
+                            layout.addView(innerLL);
+                            parentLayout.addView(layout);
                         }
-                        if (!isAdded) {
-                            innerLL.addView(innerHL);
-                        }
-
-                        layout.addView(innerLL);
-                        parentLayout.addView(layout);
                     }
                 }
+                else {
+                    int rowCount = bmodel.newOutletAttributeHelper.getAttributeParentList().size();
+                    selectedAttribList = new HashMap<>();
+                    for (int i = 0; i < rowCount; i++) {
 
+                        final NewOutletAttributeBO parentBO=bmodel.newOutletAttributeHelper.getAttributeParentList().get(i);
+                        if(mCommonAttributeList.contains(parentBO.getAttrId())){
+
+                            LinearLayout layout = new LinearLayout(getActivity());
+                            // setting tag as channel, used to remove channel views particularly and update new one if channel changed
+                            if (mChannelAttributeList.contains(parentBO.getAttrId()))
+                                layout.setTag("channel");
+                            layout.setOrientation(LinearLayout.HORIZONTAL);
+                            layout.setGravity(Gravity.CENTER_VERTICAL);
+                            layout.setWeightSum(3f);
+                            layout.setLayoutParams(LLParams);
+                            final String attribName = parentBO.getAttrName();
+                            TextView mn_textview = new TextView(getActivity());
+                            mn_textview.setText(attribName);
+                            mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+                            mn_textview.setTextColor(Color.BLACK);
+                            mn_textview.setLayoutParams(paramsAttrib);
+                            layout.addView(mn_textview);
+                            final int columnCount = getLevel(parentBO.getAttrId());
+                            MaterialSpinner spinner;
+                            LinearLayout innerLL = new LinearLayout(getActivity());
+                            innerLL.setOrientation(LinearLayout.VERTICAL);
+                            innerLL.setLayoutParams(paramsAttribSpinner);
+                            LinearLayout innerHL = new LinearLayout(getActivity());
+                            innerHL.setWeightSum(2);
+                            innerHL.setLayoutParams(LLParams);
+                            innerHL.setOrientation(LinearLayout.HORIZONTAL);
+                            boolean isAdded = false;
+                            // ArrayList<Integer> indexList = attributeIndexMap.get(attribName);
+                            //creating child levels
+                            for (int j = 0; j < columnCount; j++) {
+
+                                isAdded = false;
+                                final ArrayList<NewOutletAttributeBO> attrbList;
+                                final int index = j;
+                                //final int selectedPos = indexList.get(j);
+                                spinner = new MaterialSpinner(getActivity());
+                                attrbList = new ArrayList<>();
+                                attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
+                                        .getString(R.string.select_str) + " " + getActivity().getResources()
+                                        .getString(R.string.attribute)));
+                                attrbList.addAll(bmodel.newOutletAttributeHelper.getAttribMap().get(attribName));
+                                final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
+                                        android.R.layout.simple_spinner_item, attrbList);
+                                spinner.setAdapter(arrayAdapter);
+                                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                spinner.setLayoutParams(innerParams);
+                                innerHL.addView(spinner);
+                                spinnerAdapterMap.put(attribName + index, arrayAdapter);
+                                // spinner.setSelection(selectedPos + 1);
+                                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        if (++check > spinnerCount) {
+                                            selectedAttribList.remove(parentBO.getAttrId());
+                                            selectedAttribList.put(parentBO.getAttrId(), attrbList.get(position));
+                                            if (index < columnCount)
+                                                loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
+                                        }
+                                    }
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+                                    }
+                                });
+                                spinnerHashMap.put(attribName + index, spinner);
+                                if ((j + 1) % 2 == 0) {
+                                    innerLL.addView(innerHL);
+                                    innerHL = new LinearLayout(getActivity());
+                                    innerHL.setWeightSum(2);
+                                    innerHL.setLayoutParams(LLParams);
+                                    innerHL.setOrientation(LinearLayout.HORIZONTAL);
+                                    isAdded = true;
+                                }
+                            }
+                            if (!isAdded) {
+                                innerLL.addView(innerHL);
+                            }
+                            layout.addView(innerLL);
+                            parentLayout.addView(layout);
+                        }
+                    }
+                }
             }
         } catch (Exception ex) {
-
+            Commons.printException(ex);
         }
-
         return parentLayout;
     }
 
@@ -3627,7 +3706,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     bmodel.setRetailerAttribute(selectedAttributeLevel);
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE78")
-                        && profileConfig.get(i).getModule_Order() == 1 && editText[i].getText().toString().trim().length() != 0) {
+                        && profileConfig.get(i).getModule_Order() == 1
+                        && editText[i].getText().toString().trim().length() != 0) {
                     if (!isValidEmail(editText[i].getText().toString())) {
                         editText[i].requestFocus();
                         validate = false;
