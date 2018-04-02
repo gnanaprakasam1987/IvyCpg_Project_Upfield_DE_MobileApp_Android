@@ -51,6 +51,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.WebViewActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -430,13 +431,13 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 break;
             case MENU_LOAD_WEBVIEW:
                 if (bmodel.isOnline()) {
-                    Intent i = new Intent(getActivity(), WebViewLoadMgmtActivity.class);
+                    Intent i = new Intent(getActivity(), WebViewActivity.class);
                     i.putExtra("screentitle", menuItem.getMenuName());
+                    i.putExtra("menucode", menuItem.getConfigCode());
                     startActivity(i);
                     getActivity().finish();
                 } else
                     Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
-
                 break;
             default:
                 break;
