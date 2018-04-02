@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/list_view_height_volume_report"
+    android:background="@drawable/list_selector"
+    android:orientation="horizontal" android:layout_gravity="center_vertical"
+    android:weightSum="10">
+
+    <TextView
+        android:id="@+id/visitno"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/dimen_0dp"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="center"
+        android:textSize="@dimen/font_small"
+        android:layout_weight="1">
+    </TextView>
+
+    <TextView
+        android:id="@+id/storename"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/dimen_0dp"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="left"
+        android:textSize="@dimen/font_small"
+        android:layout_weight="4"/>
+
+    <LinearLayout
+        android:layout_width="@dimen/dimen_0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5">
+    <TextView
+        android:id="@+id/vtgt"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/dimen_0dp"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="center"
+        android:textSize="@dimen/font_small"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/vact"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/dimen_0dp"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="center"
+        android:textSize="@dimen/font_small"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/vgap"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/dimen_0dp"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="center"
+        android:textSize="@dimen/font_small"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/vperc"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/dimen_0dp"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="center"
+        android:textSize="@dimen/font_small"
+        android:layout_weight="1"/>
+    </LinearLayout>
+    <!--<TextView
+        android:id="@+id/linessold"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/volume_width_medium"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="center"
+        android:textSize="@dimen/font_small" />
+    <TextView
+        android:id="@+id/start"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/volume_width_medium"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="center"
+        android:textSize="@dimen/font_small" />
+    <TextView
+        android:id="@+id/end"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/volume_width_medium"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="center"
+        android:textSize="@dimen/font_small" />
+    <TextView
+        android:id="@+id/duration"
+        android:textColor="@android:color/black"
+        android:layout_width="@dimen/volume_width_medium"
+        android:layout_height="@dimen/list_view_height_volume_report"
+        android:gravity="center"
+        android:textSize="@dimen/font_small" />
+-->
+</LinearLayout>
