@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1280"
+    android:versionCode="1250"
     android:versionName="2.127.0.1178">
 
 
@@ -645,19 +645,7 @@
             android:name="com.ivy.sd.png.view.ExpenseActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.WebViewPlanActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.sd.png.view.WebViewActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.WebViewLoadMgmtActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.WebViewApprovalActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.WebViewPlanReqActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.camera.NativeCameraActivity"

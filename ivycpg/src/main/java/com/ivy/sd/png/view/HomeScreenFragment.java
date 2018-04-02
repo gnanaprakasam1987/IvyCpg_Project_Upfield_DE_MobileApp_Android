@@ -1493,7 +1493,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_WVW_PLAN)) {
 
             if (bmodel.isOnline()) {
-                Intent i = new Intent(getActivity(), WebViewPlanActivity.class);
+                Intent i = new Intent(getActivity(), WebViewActivity.class);
+                i.putExtra("screentitle", menuItem.getMenuName());
+                i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
                 getActivity().finish();
             } else
@@ -1504,6 +1506,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             if (bmodel.isOnline()) {
                 Intent i = new Intent(getActivity(), WebViewActivity.class);
                 i.putExtra("screentitle", menuItem.getMenuName());
+                i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
                 getActivity().finish();
             } else
@@ -1512,8 +1515,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_WEB_VIEW_PLAN)) {
 
             if (bmodel.isOnline()) {
-                Intent i = new Intent(getActivity(), WebViewPlanReqActivity.class);
+                Intent i = new Intent(getActivity(), WebViewActivity.class);
                 i.putExtra("screentitle", menuItem.getMenuName());
+                i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
                 getActivity().finish();
             } else
@@ -1522,8 +1526,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_WEB_VIEW_APPR)) {
 
             if (bmodel.isOnline()) {
-                Intent i = new Intent(getActivity(), WebViewApprovalActivity.class);
+                Intent i = new Intent(getActivity(), WebViewActivity.class);
                 i.putExtra("screentitle", menuItem.getMenuName());
+                i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
                 getActivity().finish();
             } else
