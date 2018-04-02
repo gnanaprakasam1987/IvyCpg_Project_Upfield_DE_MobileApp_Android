@@ -1294,7 +1294,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                             if (totalcalls == 0) {
                                 dashBoardBO.setKpiAcheived("0");
                             } else {
-                                dashBoardBO.setKpiAcheived((visitedcalls / totalcalls) + "");
+                                dashBoardBO.setKpiAcheived(((visitedcalls / totalcalls) * 100) + "");
                             }
 
                         } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_SALE)) {
@@ -1302,7 +1302,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                             if (totalcalls == 0) {
                                 dashBoardBO.setKpiAcheived("0");
                             } else {
-                                dashBoardBO.setKpiAcheived((productivecalls / totalcalls) + "");
+                                dashBoardBO.setKpiAcheived(((productivecalls / totalcalls) * 100) + "");
                             }
                         } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_DROP_SIZE_INV)) {
                             if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
@@ -1327,21 +1327,21 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                             if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
                                 dashBoardBO.setKpiAcheived("0");
                             } else {
-                                dashBoardBO.setKpiAcheived((sales_ret_val / (SDUtil.convertToDouble(dailrp.getTotValues()))) + "");
+                                dashBoardBO.setKpiAcheived(((sales_ret_val / SDUtil.convertToDouble(dailrp.getTotValues())) * 100) + "");
                             }
                         } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE_ORD)) {
                             double sales_ret_val = bmodel.getSalesReturnValue();
                             if (SDUtil.convertToDouble(dailyrp_order.getTotValues()) == 0) {
                                 dashBoardBO.setKpiAcheived("0");
                             } else {
-                                dashBoardBO.setKpiAcheived((sales_ret_val / (SDUtil.convertToDouble(dailyrp_order.getTotValues()))) + "");
+                                dashBoardBO.setKpiAcheived(((sales_ret_val / SDUtil.convertToDouble(dailyrp_order.getTotValues())) * 100) + "");
                             }
                         } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_FULLFILLMENT)) {
                             DailyReportBO dailyReportBO = bmodel.getFullFillmentValue();
                             if (dailyReportBO.getLoaded() == 0) {
                                 dashBoardBO.setKpiAcheived("0");
                             } else {
-                                dashBoardBO.setKpiAcheived((dailyReportBO.getDelivered() / dailyReportBO.getLoaded()) + "");
+                                dashBoardBO.setKpiAcheived(((dailyReportBO.getDelivered() / dailyReportBO.getLoaded()) * 100) + "");
                             }
                         }
 
