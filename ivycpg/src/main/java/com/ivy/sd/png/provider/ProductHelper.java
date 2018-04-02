@@ -3658,7 +3658,7 @@ public class ProductHelper {
                         + " ,ReturnValue ="
                         + QT(SDUtil.format(bmodel.getOrderHeaderBO()
                         .getRemainigValue(), 2, 0)
-                        + "") + " WHERE RetailerID = "
+                        + "") + " WHERE upload !='X' and RetailerID = "
                         + bmodel.getRetailerMasterBO().getRetailerID());
                 // }
 
@@ -3778,7 +3778,7 @@ public class ProductHelper {
             }*/
             Cursor c = db
                     .selectSQL("select orderid from orderheader where IndicativeOrderID ="
-                            + indicativeOrderId + " and invoicestatus=1");
+                            + indicativeOrderId + " and invoicestatus=1 and upload!='X' ");
             if (c.getCount() > 0) {
                 bmodel.getRetailerMasterBO().setIndicativeOrderid("");
                 bmodel.getRetailerMasterBO().setIndicateFlag(0);
@@ -4009,7 +4009,7 @@ public class ProductHelper {
             if (bmodel.configurationMasterHelper.IS_INVOICE) {
                 sb.append(" and invoicestatus =1 ");
             }
-            sb.append(" and OD.upload='N' GROUP BY IO.pid");
+            sb.append(" and OH.upload!='X' and OD.upload='N' GROUP BY IO.pid");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -5000,7 +5000,7 @@ public class ProductHelper {
             sBuffer.append("SELECT IFNULL(SUM(" + columnName + "),0) FROM "
                     + headertable + " OH INNER JOIN  " + detailTable
                     + " OD ON " + ID);
-            sBuffer.append(" WHERE  OH.RetailerID = ");
+            sBuffer.append(" WHERE  OH.upload!='X' and OH.RetailerID = ");
             sBuffer.append(bmodel.QT(bmodel.getRetailerMasterBO()
                     .getRetailerID()));
 
@@ -5614,7 +5614,7 @@ public class ProductHelper {
             sb.append("select sum(totalweight) from orderheader where OrderDate=");
             sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             if (!retailerid.equals("")) {
-                sb.append("and retailerid=" + bmodel.QT(retailerid));
+                sb.append("and upload!='X' and retailerid=" + bmodel.QT(retailerid));
             }
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -5871,7 +5871,7 @@ public class ProductHelper {
         StringBuffer sb = new StringBuffer();
         sb.append("update SalesReturnHeader set invoiceid=");
         sb.append(QT(invoiceid) + " where retailerid=" + QT(bmodel.getRetailerMasterBO().getRetailerID()));
-        sb.append(" and invoiceid=0");
+        sb.append(" and invoiceid=0 and upload!='X'");
         db.updateSQL(sb.toString());
     }
 
@@ -6613,7 +6613,7 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
             String query = "select orderid from orderheader where IndicativeOrderID ="
-                    + indicativeOrderId + " and invoicestatus=1";
+                    + indicativeOrderId + " and upload !='X' and invoicestatus=1";
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 isAvailable = false;

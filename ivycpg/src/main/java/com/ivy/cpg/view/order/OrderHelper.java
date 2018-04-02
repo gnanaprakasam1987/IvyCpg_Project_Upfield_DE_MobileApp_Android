@@ -1450,14 +1450,14 @@ public class OrderHelper {
             // update invoice createed in SalesReturnHeader **/
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCreditNoteCreated != 1) {
-                db.executeQ("update SalesReturnHeader set invoicecreated=1 where RetailerID="
+                db.executeQ("update SalesReturnHeader set invoicecreated=1 where upload!='X' and RetailerID="
                         + businessModel.getRetailerMasterBO().getRetailerID());
             }
             // update credit not flag in sales return header **/
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCreditNoteCreated != 1
                     && salesReturnHelper.isValueReturned(mContext)) {
-                db.executeQ("update SalesReturnHeader set credit_flag=2 where RetailerID="
+                db.executeQ("update SalesReturnHeader set credit_flag=2 where upload!='X' and RetailerID="
                         + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()));
             }
             // update credit balance
@@ -1759,7 +1759,7 @@ public class OrderHelper {
                         + retailerId);
 
             else
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader where retailerid=" + retailerId);
+                c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' retailerid=" + retailerId);
 
 
             if (c != null) {
@@ -1866,7 +1866,7 @@ public class OrderHelper {
             List<String> OrderId = null;
 
             Cursor c = db
-                    .selectSQL("SELECT OrderID FROM OrderHeader WHERE RetailerID = '"
+                    .selectSQL("SELECT OrderID FROM OrderHeader WHERE upload!='X' and RetailerID = '"
                             + retailerId + "'");
             if (c != null) {
                 OrderId = new ArrayList<>();

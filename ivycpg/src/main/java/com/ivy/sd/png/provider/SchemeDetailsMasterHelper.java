@@ -2457,7 +2457,7 @@ public class SchemeDetailsMasterHelper {
                     " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
                     + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and invoicestatus=1"
                     + " LEFT JOIN SchemeDetail SD on SD.parentid=A.schid and OH.orderid=SD.orderid"
-                    + " where rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                    + " where OH.upload!='X' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
                     + " and A.schid!=IFNULL(SD.parentid,0) order by schid";
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {

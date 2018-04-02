@@ -113,7 +113,7 @@ public class VolumeReportFragment extends Fragment {
             if (bmodel.configurationMasterHelper.IS_INVOICE) {
                 c = db.selectSQL("select Retailerid, sum(invNetamount) from InvoiceMaster group by retailerid");
             } else {
-                c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader group by retailerid");
+                c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
             }
             if (c != null) {
                 while (c.moveToNext()) {
