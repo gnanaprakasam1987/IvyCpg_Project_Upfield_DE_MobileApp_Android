@@ -11,12 +11,12 @@
         android:id="@+id/tvMonthName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/list_margin"
         android:background="?attr/primarycolor"
+        android:padding="@dimen/list_margin"
         android:text="Month Name"
         android:textColor="@android:color/white"
         android:textSize="@dimen/font_small"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/llview"
@@ -66,14 +66,12 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_small" />
 
-        <TextView
-            android:id="@+id/tv_status"
+        <ImageView
+            android:id="@+id/iv_status"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/info_icon"
             android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:gravity="center"/>
 
     </LinearLayout>
 </LinearLayout>

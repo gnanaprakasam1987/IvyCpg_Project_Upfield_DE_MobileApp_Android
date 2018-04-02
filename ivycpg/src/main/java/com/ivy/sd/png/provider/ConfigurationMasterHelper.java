@@ -483,6 +483,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PLAN_RETAILER_ON_NONFILED = "OFPLAN03";
     public boolean IS_PLAN_RETIALER_NON_FIELD;
 
+    private static final String CODE_EXPENSE_DAYS = "EXP01";
+    public int expenseDays =30;
+
 
     /**
      * RoadActivity config *
@@ -2192,6 +2195,9 @@ public class ConfigurationMasterHelper {
         this.IS_TEMP_ORDER_SAVE = hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) : false;
         this.tempOrderInterval = hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) : 10;
         this.tempOrderInterval = this.tempOrderInterval >= 10 ? this.tempOrderInterval : 10;
+
+        this.expenseDays = hashMapHHTModuleOrder.get(CODE_EXPENSE_DAYS) != null ? hashMapHHTModuleOrder.get(CODE_EXPENSE_DAYS) : 30;
+        this.expenseDays = this.expenseDays >= 30 ? this.expenseDays : 30;
 
         this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 
