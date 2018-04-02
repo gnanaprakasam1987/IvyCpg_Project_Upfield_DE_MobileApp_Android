@@ -132,10 +132,10 @@ public class SubDSelectionDialog extends DialogFragment {
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
 
-                convertView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null);
+                convertView = inflater.inflate(R.layout.btn_radio, null);
 
                 holder.tvRetailerName = convertView.findViewById(android.R.id.text1);
-                holder.tvRetailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tvRetailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 convertView.setTag(holder);
 
