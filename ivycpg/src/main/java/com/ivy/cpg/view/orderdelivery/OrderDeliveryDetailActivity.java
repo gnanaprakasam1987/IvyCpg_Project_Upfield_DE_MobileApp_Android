@@ -479,7 +479,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             ((TextView) view.findViewById(R.id.outer_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
-        if (!isHeader) {
+        if (!isHeader && bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId())!=null) {
             if (schemeProductBO.getUomID() == bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()).getPcUomid())
                 ((TextView) view.findViewById(R.id.piece_qty)).setText(String.valueOf(schemeProductBO.getQuantitySelected()));
             else if (schemeProductBO.getUomID() == bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()).getCaseUomId())

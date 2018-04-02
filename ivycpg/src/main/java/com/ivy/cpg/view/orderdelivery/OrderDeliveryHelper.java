@@ -8,20 +8,17 @@ package com.ivy.cpg.view.orderdelivery;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.AsyncTask;
 
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -54,11 +51,11 @@ public class OrderDeliveryHelper {
         return instance;
     }
 
-    public int getTotalProductQty() {
+    int getTotalProductQty() {
         return totalProductQty;
     }
 
-    public void setTotalProductQty(int totalProductQty) {
+    private void setTotalProductQty(int totalProductQty) {
         this.totalProductQty = totalProductQty;
     }
 
@@ -70,7 +67,7 @@ public class OrderDeliveryHelper {
         this.orderHeaders = orderHeaders;
     }
 
-    public Vector<ProductMasterBO> getOrderedProductMasterBOS() {
+    Vector<ProductMasterBO> getOrderedProductMasterBOS() {
         return orderedProductMasterBOS;
     }
 
@@ -78,7 +75,7 @@ public class OrderDeliveryHelper {
         this.orderedProductMasterBOS = orderedProductMasterBOS;
     }
 
-    public String getOrderDeliveryDiscountAmount() {
+    String getOrderDeliveryDiscountAmount() {
         return orderDeliveryDiscountAmount;
     }
 
@@ -86,7 +83,7 @@ public class OrderDeliveryHelper {
         this.orderDeliveryDiscountAmount = orderDeliveryDiscountAmount;
     }
 
-    public ArrayList<SchemeProductBO> getSchemeProductBOS() {
+    ArrayList<SchemeProductBO> getSchemeProductBOS() {
         return schemeProductBOS;
     }
 
@@ -94,7 +91,7 @@ public class OrderDeliveryHelper {
         this.schemeProductBOS = schemeProductBOS;
     }
 
-    public String getOrderDeliveryTaxAmount() {
+    String getOrderDeliveryTaxAmount() {
         return orderDeliveryTaxAmount;
     }
 
@@ -102,7 +99,7 @@ public class OrderDeliveryHelper {
         this.orderDeliveryTaxAmount = orderDeliveryTaxAmount;
     }
 
-    public String getOrderDeliveryTotalValue() {
+    String getOrderDeliveryTotalValue() {
         return orderDeliveryTotalValue;
     }
 
@@ -148,7 +145,7 @@ public class OrderDeliveryHelper {
         }
     }
 
-    public void downloadOrderDeliveryDetail(Context mContext,String orderId){
+    void downloadOrderDeliveryDetail(Context mContext,String orderId){
         try{
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -317,7 +314,7 @@ public class OrderDeliveryHelper {
         c.close();
     }
 
-    public void clearSalesReturnTable() { //true -> Stock and Order --- false -> SalesReturn
+    void clearSalesReturnTable() { //true -> Stock and Order --- false -> SalesReturn
         ProductMasterBO product;
         Vector<ProductMasterBO> productMaster ;
 
@@ -352,7 +349,7 @@ public class OrderDeliveryHelper {
         }
     }
 
-    public void downloadOrderedProducts(){
+    void downloadOrderedProducts(){
         orderedProductMasterBOS = new Vector<>();
         mTotalDeliverQtyByPid = new HashMap<>();
 
@@ -373,7 +370,7 @@ public class OrderDeliveryHelper {
         setOrderedProductMasterBOS(orderedProductMasterBOS);
     }
 
-    public void downloadSchemeFreeProducts(Context context,String id) {
+    void downloadSchemeFreeProducts(Context context,String id) {
 
         schemeProductBOS = new ArrayList<>();
 
@@ -415,7 +412,7 @@ public class OrderDeliveryHelper {
         setSchemeProductBOS(schemeProductBOS);
     }
 
-    public void downloadOrderDeliveryAmountDetail(Context context,String id) {
+    void downloadOrderDeliveryAmountDetail(Context context,String id) {
         try {
 
             setOrderDeliveryDiscountAmount("0");
@@ -503,7 +500,7 @@ public class OrderDeliveryHelper {
         return false;
     }
 
-    public boolean isSIHAvailable(boolean isEdit) {
+    boolean isSIHAvailable(boolean isEdit) {
         for(ProductMasterBO headProductMasterBO : businessModel.productHelper.getProductMaster()) {
 
             int qty = 0;
@@ -533,7 +530,7 @@ public class OrderDeliveryHelper {
         return true;
     }
 
-    public boolean updateTableValues(Context context,String orderId,boolean isEdit){
+    boolean updateTableValues(Context context,String orderId,boolean isEdit){
         boolean status = true;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -654,7 +651,7 @@ public class OrderDeliveryHelper {
 
                 db.executeQ(invoiceDiscountQry);
 
-                db.updateSQL("update SchemeFreeProductDetail set upload='N',InvoiceID = "+businessModel.QT(invoiceId)+" where orderId = "+businessModel.QT(orderId));
+                db.updateSQL("update SchemeFreeProductDetail set upload='X',InvoiceID = "+businessModel.QT(invoiceId)+" where orderId = "+businessModel.QT(orderId));
             }
 
             if (businessModel.configurationMasterHelper.SHOW_TAX) {
@@ -864,7 +861,7 @@ public class OrderDeliveryHelper {
     }
 
     /*Preparing ProductMasterBo For printing purpose*/
-    public Vector<ProductMasterBO> preparePrintData(Context context,String orderId){
+    Vector<ProductMasterBO> preparePrintData(Context context,String orderId){
         Vector<ProductMasterBO> mInvoiceDetailsList = new Vector<>();
         try{
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -963,6 +960,8 @@ public class OrderDeliveryHelper {
                     businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()).setTaxValue(productMasterBO.getTaxValue());
             }
 
+            mInvoiceDetailsList.get(mInvoiceDetailsList.size()-1).setSchemeProducts(downloadSchemeFreePrint(context,orderId));
+
             db.closeDB();
 
         }catch(Exception e){
@@ -970,5 +969,56 @@ public class OrderDeliveryHelper {
         }
 
         return mInvoiceDetailsList;
+    }
+
+    /*Preparing SchemeFreeProducts For printing purpose*/
+    ArrayList<SchemeProductBO> downloadSchemeFreePrint(Context context,String orderId){
+
+        ArrayList<SchemeProductBO> schemeProductBOS = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+
+        try {
+
+            String invoiceId ="";
+            Cursor invoice = db.selectSQL("Select invoiceno from invoicemaster where orderid="+businessModel.QT(orderId));
+            if(invoice.getCount()>0 && invoice.moveToNext()){
+                invoiceId = invoice.getString(0);
+                invoice.close();
+            }
+
+            SchemeProductBO schemeProductBO;
+
+            Cursor c = db
+                    .selectSQL("select schemeid,FreeProductID,FreeQty,UomID,pm.PName from schemeFreeProductDetail " +
+                            " Inner Join ProductMaster pm ON pm.PID = FreeProductID "
+                            + "where invoiceid="
+                            + businessModel.QT(invoiceId)
+                            + " and upload='X' order by schemeid");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+
+                    schemeProductBO = new SchemeProductBO();
+
+                    schemeProductBO.setProductId(c.getString(1));
+                    schemeProductBO.setQuantitySelected(c.getInt(2));
+                    schemeProductBO.setProductName(c.getString(4));
+                    schemeProductBO.setUomID(c.getInt(3));
+
+                    schemeProductBOS.add(schemeProductBO);
+                }
+            }
+            c.close();
+
+            db.closeDB();
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return schemeProductBOS;
+
     }
 }

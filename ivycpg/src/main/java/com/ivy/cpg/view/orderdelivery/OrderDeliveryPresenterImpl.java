@@ -149,6 +149,10 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                         context.getResources().getString(R.string.invoice_generated),
                         Toast.LENGTH_SHORT).show();
 
+                if(!isEdit)
+                    orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size()-1).
+                            setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(context,orderId));
+
                 bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true,orderDeliveryHelper.getOrderedProductMasterBOS() , null);
 
                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
