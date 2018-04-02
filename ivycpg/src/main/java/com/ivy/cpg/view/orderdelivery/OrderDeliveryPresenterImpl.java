@@ -1,6 +1,10 @@
 package com.ivy.cpg.view.orderdelivery;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -9,9 +13,12 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
+import java.io.OutputStream;
+import java.util.UUID;
 import java.util.Vector;
 
 
@@ -20,6 +27,13 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     private OrderDeliveryContractor.OrderDeliveryView orderDeliveryView;
     private Context context;
     private OrderDeliveryHelper orderDeliveryHelper;
+    CommonDialog commonDialog;
+
+    private int mPrintCountInput = 1;
+    private int mDataPrintCount = 0;
+    private int mTotalNumbersPrinted = 0;
+
+    private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     OrderDeliveryPresenterImpl(Context context,BusinessModel mBModel) {
         this.bmodel = mBModel;
@@ -102,8 +116,12 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     }
 
     @Override
-    public void goToPrintActivity() {
+    public void doPrintActivity(String orderId) {
+        bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true,orderDeliveryHelper.preparePrintData(context,orderId) , null);
 
+        bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
+        orderDeliveryView.updateSaveStatus(true);
     }
 
     public class UpdateOrderDeliveryTable extends AsyncTask<Void,Void,Boolean> {
@@ -131,7 +149,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                         context.getResources().getString(R.string.invoice_generated),
                         Toast.LENGTH_SHORT).show();
 
-                bmodel.mCommonPrintHelper.xmlRead(".xml", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null);
+                bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true,orderDeliveryHelper.getOrderedProductMasterBOS() , null);
 
                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -145,6 +163,95 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
             orderDeliveryView.updateSaveStatus(isSuccess);
         }
+    }
+
+    class Print extends AsyncTask<String, Void, Boolean> {
+
+        String orderId;
+        Print(String orderId){
+            this.orderId = orderId;
+        }
+
+        protected void onPreExecute() {
+            orderDeliveryView.updatePrintStatus("Connecting...",true);
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true,orderDeliveryHelper.preparePrintData(context,orderId) , null);
+
+            bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                    StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
+            doInterMecPrint(getMacAddressFieldText());
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+
+            boolean isPrintSuccess = false;
+            if (mPrintCountInput == mDataPrintCount)
+                isPrintSuccess = true;
+
+
+            String msg;
+            if (isPrintSuccess) {
+                msg = context.getResources().getString(
+                        R.string.printed_successfully);
+                orderDeliveryView.updatePrintStatus(msg,false);
+            } else {
+                msg = "Error";
+                orderDeliveryView.updatePrintStatus(msg,false);
+            }
+        }
+
+    }
+
+    private void doInterMecPrint(String macAddress) {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothDevice mBluetoothDevice ;
+        BluetoothSocket mBluetoothSocket ;
+        OutputStream mOutputStream = null;
+        try {
+            if (macAddress.equals(""))
+                orderDeliveryView.updatePrintStatus("Mac address is empty...",true);
+
+            mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(macAddress);
+            mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID);
+            mBluetoothSocket.connect();
+            orderDeliveryView.updatePrintStatus("Printing...",true);
+
+            for (int i = 0; i < mPrintCountInput; i++) {
+                mOutputStream = mBluetoothSocket.getOutputStream();
+                mOutputStream.write((bmodel.mCommonPrintHelper.getInvoiceData().toString()).getBytes());
+                mOutputStream.flush();
+                mDataPrintCount++;
+                mTotalNumbersPrinted++;
+            }
+
+            mOutputStream.close();
+            mBluetoothSocket.close();
+        } catch (Exception e) {
+            Commons.printException(e);
+            orderDeliveryView.updatePrintStatus("Connection Failed",false);
+        }
+    }
+
+    public String getMacAddressFieldText() {
+        String macAddress = null;
+        try {
+            // String macAddress = "00:22:58:3A:CD:46";
+            SharedPreferences pref = context.getSharedPreferences("PRINT",
+                    Context.MODE_PRIVATE);
+            macAddress = pref.getString("MAC", "");
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("MAC", macAddress);
+            editor.commit();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return macAddress;
     }
 
 }

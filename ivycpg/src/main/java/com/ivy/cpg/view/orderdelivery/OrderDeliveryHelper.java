@@ -833,7 +833,7 @@ public class OrderDeliveryHelper {
         return excessQtyMap.get(productId)!=null?excessQtyMap.get(productId):0;
     }
 
-    //Update Excess stock QTY in Product master SIH. Works only inside this module
+    /*Update Excess stock QTY in Product master SIH. Works only inside this module*/
     public void updateProductWithExcessStock(Context mContext){
         try{
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -856,93 +856,119 @@ public class OrderDeliveryHelper {
                     productMasterBO.setSIH(0);
             }
 
+            db.closeDB();
+
         }catch(Exception e){
             Commons.printException(e);
         }
     }
 
-    class downloadOrderDeliveryDetail extends AsyncTask<Void,Void,Void> {
+    /*Preparing ProductMasterBo For printing purpose*/
+    public Vector<ProductMasterBO> preparePrintData(Context context,String orderId){
+        Vector<ProductMasterBO> mInvoiceDetailsList = new Vector<>();
+        try{
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
 
-        private String orderId;
-        private String from;
-        private int invoiceStatus;
-        private Context context;
+            String invoiceno = "";
+            Cursor cursor = db.selectSQL("select invoiceno,discount from invoicemaster where orderid ="+businessModel.QT(orderId));
+            if(cursor.getCount()>0 && cursor.moveToNext()) {
+                invoiceno = cursor.getString(0);
+                OrderHelper.getInstance(context).invoiceDiscount = cursor.getString(1);
 
-        private downloadOrderDeliveryDetail(String orderId,String from,int invoiceStatus, Context context){
-            this.orderId = orderId;
-            this.from = from;
-            this.invoiceStatus = invoiceStatus;
-            this.context = context;
-        }
+                cursor.close();
+            }
+            businessModel.invoiceNumber = invoiceno;
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            businessModel.productHelper.clearOrderTable();
-            clearSalesReturnTable();
-            downloadOrderDeliveryDetail(context,orderId);
-            downloadSchemeFreeProducts(context,orderId);
-            downloadOrderDeliveryAmountDetail(context,orderId);
-            downloadOrderedProducts();
-            return null;
-        }
+            StringBuffer sb = new StringBuffer();
+            sb.append("select PM.pid,PM.psname,ID.pcsQty,ID.caseQty,ID.OuterQty,ifnull(BM.Batchnum,\"\"),PM.duomQty,PM.douomQty,ID.Qty,PM.piece_uomid,PM.dUomId,PM.dOuomid,rate,caseprice,outerprice from InvoiceDetails ID ");
+            sb.append("inner join Productmaster PM on PM.pid=ID.productid ");
+            sb.append("left join batchmaster BM on ID.productid=BM.pid and ID.batchid=BM.batchid ");
+            sb.append("where ID.invoiceID=" + businessModel.QT(invoiceno));
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                ProductMasterBO productBO;
+                while (c.moveToNext()) {
+                    productBO = new ProductMasterBO();
+                    productBO.setProductID(c.getString(0));
+                    productBO.setProductShortName(c.getString(1));
+                    productBO.setOrderedPcsQty(c.getInt(2));
+                    productBO.setOrderedCaseQty(c.getInt(3));
+                    productBO.setOrderedOuterQty(c.getInt(4));
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
+                    productBO.setBatchNo(c.getString(5));
+                    productBO.setCaseSize(c.getInt(6));
+                    productBO.setOutersize(c.getInt(7));
+                    productBO.setTotalQty(c.getInt(8));
+                    productBO.setPcUomid(c.getInt(9));
+                    productBO.setCaseUomId(c.getInt(10));
+                    productBO.setOuUomid(c.getInt(11));
+                    productBO.setSrp(c.getFloat(12));
+                    productBO.setCsrp(c.getFloat(13));
+                    productBO.setOsrp(c.getFloat(14));
+                    productBO.setCheked(true);
 
-            if(from.equalsIgnoreCase("Approve")) {
-
-                if (isSIHAvailable(false)) {
-
-                    CommonDialog dialog = new CommonDialog(context.getApplicationContext(), context, "", context.getResources().getString(R.string.order_delivery_approve), false,
-                            context.getResources().getString(R.string.ok), context.getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
-                        @Override
-                        public void onPositiveButtonClick() {
-
-                            new UpdateOrderDeliveryTable(orderId,context,false).execute();
-
-                        }
-                    }, new CommonDialog.negativeOnClickListener() {
-                        @Override
-                        public void onNegativeButtonClick() {
-
-                        }
-                    });
-                    dialog.show();
-                    dialog.setCancelable(false);
-                } else {
-                    //Todo -- display toast based on condition
+                    mInvoiceDetailsList.add(productBO);
                 }
-
+                c.close();
             }
 
-            else {
-                //Todo --- Move to next activity
+            String replQry = "select pid,batchid,uomid,qty from SalesReturnHeader SH" +
+                    " inner join SalesReturnReplacementDetails SRPD on SRPD.uid = SH.uid where SH.invoiceid ="+businessModel.QT(invoiceno);
+            Cursor cursorRpl = db.selectSQL(replQry);
+            if (cursorRpl.getCount() > 0) {
+                while (cursorRpl.moveToNext()) {
+                    String pid = cursorRpl.getString(0);
+                    boolean isProductAvail = false;
+                    for(int i=0;i<mInvoiceDetailsList.size();i++) {
+                        if (mInvoiceDetailsList.get(i).getProductID().equals(pid)) {
+                            isProductAvail = true;
+                            int uomid = cursorRpl.getInt(2);
+                            if (uomid == mInvoiceDetailsList.get(i).getPcUomid()) {
+                                mInvoiceDetailsList.get(i).setRepPieceQty(cursorRpl.getInt(3));
+                            } else if (uomid == mInvoiceDetailsList.get(i).getCaseUomId()) {
+                                mInvoiceDetailsList.get(i).setRepCaseQty(cursorRpl.getInt(3));
+                            } else if (uomid == mInvoiceDetailsList.get(i).getOuUomid()) {
+                                mInvoiceDetailsList.get(i).setRepOuterQty(cursorRpl.getInt(3));
+                            }
+                        }
+                    }
+
+                    if (!isProductAvail){
+                        ProductMasterBO productBORplace = new ProductMasterBO();
+                        if (businessModel.productHelper.getProductMasterBOById(pid) != null) {
+                            int uomid = cursorRpl.getInt(2);
+                            if (uomid == businessModel.productHelper.getProductMasterBOById(pid).getPcUomid()) {
+                                productBORplace.setRepPieceQty(cursorRpl.getInt(3));
+                            } else if (uomid == businessModel.productHelper.getProductMasterBOById(pid).getCaseUomId()) {
+                                productBORplace.setRepCaseQty(cursorRpl.getInt(3));
+                            } else if (uomid == businessModel.productHelper.getProductMasterBOById(pid).getOuUomid()) {
+                                productBORplace.setRepOuterQty(cursorRpl.getInt(3));
+                            }
+                            productBORplace.setProductName(businessModel.productHelper.getProductMasterBOById(pid).getProductName());
+                            mInvoiceDetailsList.add(productBORplace);
+                        }
+                    }
+                }
+                cursorRpl.close();
             }
+
+            businessModel.productHelper.taxHelper.includeProductWiseTax(mInvoiceDetailsList);
+
+            /*Updating master tax value for print purpose*/
+            for(ProductMasterBO productMasterBO : mInvoiceDetailsList){
+                if(businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID())!=null)
+                    businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()).setTaxValue(productMasterBO.getTaxValue());
+            }
+
+            db.closeDB();
+
+        }catch(Exception e){
+            Commons.printException(e);
         }
+
+        return mInvoiceDetailsList;
     }
-
-    public class UpdateOrderDeliveryTable extends AsyncTask<Void,Void,Boolean>{
-
-        private String orderId;
-        private Context context;
-        private boolean isEdit;
-
-        private UpdateOrderDeliveryTable(String orderId, Context context,boolean isEdit){
-            this.orderId = orderId;
-            this.context = context;
-            this.isEdit = isEdit;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            return updateTableValues(context, orderId,isEdit);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aVoid) {
-
-        }
-    }
-
-
 }

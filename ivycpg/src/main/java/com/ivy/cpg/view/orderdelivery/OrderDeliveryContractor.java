@@ -15,7 +15,7 @@ public interface OrderDeliveryContractor {
         void getSchemeData();
         void getAmountDetails(boolean isEdit);
         void saveOrderDeliveryDetail(boolean isEdit,String orderId);
-        void goToPrintActivity();
+        void doPrintActivity(String orderId);
     }
 
     interface OrderDeliveryView{
@@ -24,6 +24,7 @@ public interface OrderDeliveryContractor {
         void updateSchemeViewValues(ArrayList<SchemeProductBO> schemeProductBOS);
         void updateAmountDetails(String orderVal,String discountAmt,String taxAmt,String totalOrderAmt);
         void updateSaveStatus(boolean isSuccess);
+        void updatePrintStatus(String msg,boolean status);
     }
 
 }

@@ -51,9 +51,10 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private int invoiceStatus = 0;
     private boolean isEdit;
     private TextView discount_value, taxValue, orderValue, orderBaseValue;
-    final String Str_ACCEPT = "ACCEPT";
     final String Str_VIEW = "VIEW";
     final String Str_EDIT = "EDIT";
+    private boolean isPrintClicked;
+    private String orderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,12 +137,14 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             findViewById(R.id.footer).setVisibility(View.GONE);
         }
 
+        orderId = getIntent().getExtras().getString("OrderId");
+
         findViewById(R.id.accept_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 orderDeliveryPresenter.saveOrderDeliveryDetail(
-                        isEdit,
-                        getIntent().getExtras().getString("OrderId")
+                        isEdit,orderId
+
                 );
             }
         });
@@ -1115,10 +1118,39 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     }
 
     @Override
+    public void updatePrintStatus(final String msg,boolean status) {
+        try {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(OrderDeliveryDetailActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        if(status)
+            isPrintClicked = status;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_print_preview, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-//        if(invoiceStatus == 1)
-//            menu.findItem(R.id.menu_review).setVisible(true);
+        menu.findItem(R.id.menu_share_pdf).setVisible(false);
+        menu.findItem(R.id.menu_email_print).setVisible(false);
+
+        if(invoiceStatus == 1)
+            menu.findItem(R.id.menu_print).setVisible(true);
+        else
+            menu.findItem(R.id.menu_print).setVisible(false);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -1130,10 +1162,9 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             return true;
         }
         else if(i ==  R.id.menu_print) {
-//            if (!isPrintClicked) {
-//                isPrintClicked = true;
-//                callPrinter();
-//            }
+            if (!isPrintClicked) {
+                orderDeliveryPresenter.doPrintActivity(orderId);
+            }
         }
 
 
