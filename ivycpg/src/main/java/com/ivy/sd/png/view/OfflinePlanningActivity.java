@@ -180,13 +180,8 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
             retailerList = bmodel.getRetailerMaster();
 
             if (bmodel.configurationMasterHelper.IS_LOAD_ONLY_SUBD) {
-                Vector<RetailerMasterBO> temp = new Vector<>();
-                for (RetailerMasterBO retailerMasterBO : retailerList) {
-                    if (retailerMasterBO.getSubdId() != 0)
-                        temp.add(retailerMasterBO);
-                }
                 retailerList.clear();
-                retailerList.addAll(temp);
+                retailerList.addAll(bmodel.getSubDMaster());
             }
 
             Collections.sort(retailerList, RetailerMasterBO.RetailerNameComparator);

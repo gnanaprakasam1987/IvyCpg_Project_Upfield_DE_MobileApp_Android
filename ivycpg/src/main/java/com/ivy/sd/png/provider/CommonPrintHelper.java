@@ -1157,13 +1157,6 @@ public class CommonPrintHelper {
                                 mProductValue = prod.getProductCode();
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
                                 mProductValue = context.getResources().getString(R.string.free);
-                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
-                                int totalQty = prod.getOrderedPcsQty()
-                                        + prod.getOrderedCaseQty()
-                                        * prod.getCaseSize()
-                                        + prod.getOrderedOuterQty()
-                                        * prod.getOutersize();
-                                mProductValue = String.valueOf((prod.getTotalamount() - prod.getApplyValue()) / totalQty);
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {

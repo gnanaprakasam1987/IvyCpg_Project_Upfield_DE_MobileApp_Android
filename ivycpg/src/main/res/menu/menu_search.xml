@@ -28,4 +28,12 @@
         android:title="Selection filter"
         android:visible="false"
         ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_subd_selection"
+        android:icon="@drawable/supplier"
+        android:orderInCategory="103"
+        android:title="Selection filter"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+
 </menu>
