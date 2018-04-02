@@ -167,7 +167,7 @@
                             android:layout_width="5dp"
                             android:layout_height="5dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/dot_circle_green"></View>
+                            android:background="?roundedCustomDashboardButton"></View>
 
                         <TextView
                             android:id="@+id/target_title"

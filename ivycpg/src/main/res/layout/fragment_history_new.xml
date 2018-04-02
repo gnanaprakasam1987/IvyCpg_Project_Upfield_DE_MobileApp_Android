@@ -55,7 +55,7 @@
                         android:layout_gravity="center|start"
                         android:gravity="center|start"
                         android:text="@string/average_lines"
-                        android:textColor="@color/font_green"
+                        android:textColor="?attr/colorAccent"
                         android:textSize="@dimen/text_sz_small" />
 
                     <TextView
@@ -97,7 +97,7 @@
                         android:gravity="start|top"
                         android:tag="average_value_or_volume"
                         android:text="Average Value"
-                        android:textColor="@color/font_green"
+                        android:textColor="?attr/colorAccent"
                         android:textSize="@dimen/text_sz_small" />
 
                     <TextView
