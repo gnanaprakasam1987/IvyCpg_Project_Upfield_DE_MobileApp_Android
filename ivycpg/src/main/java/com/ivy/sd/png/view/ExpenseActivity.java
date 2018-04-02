@@ -34,6 +34,10 @@ import com.ivy.sd.png.view.reports.DynamicReportFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import jxl.write.DateTime;
 
 public class ExpenseActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
@@ -243,29 +247,26 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
                         sp_expenses.setSelection(0);
                         et_amount.setText("");
                         tvImgCount.setText("");
-
-
                     }
                 }, mToYear, mToMonth, mToDay);
 
         dpd1.getDatePicker().setCalendarViewShown(false);
 
-        dpd1.getDatePicker().setMinDate(getMonthFirstDateMills());
+        dpd1.getDatePicker().setMinDate(getFirstDateMills());
         dpd1.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
 
         dpd1.show();
     }
 
-    private long getMonthFirstDateMills() {
+    private long getFirstDateMills() {
 
-        Calendar mCalendarTo = Calendar.getInstance();
-        mCalendarTo.set(Calendar.DAY_OF_MONTH, 1);
+        Calendar mCalendarTo = GregorianCalendar.getInstance();
+        mCalendarTo.add(Calendar.DAY_OF_YEAR, -bmodel.configurationMasterHelper.expenseDays);
 
         mCalendarTo.set(Calendar.HOUR_OF_DAY, mCalendarTo.getMinimum(Calendar.HOUR_OF_DAY));
         mCalendarTo.set(Calendar.MINUTE, mCalendarTo.getMinimum(Calendar.MINUTE));
         mCalendarTo.set(Calendar.SECOND, mCalendarTo.getMinimum(Calendar.SECOND));
         mCalendarTo.set(Calendar.MILLISECOND, mCalendarTo.getMinimum(Calendar.MILLISECOND));
-
         return mCalendarTo.getTimeInMillis();
     }
 
@@ -309,37 +310,6 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
     }
 
 
-   /* public class PagerAdapter extends FragmentStatePagerAdapter {
-        int mNumOfTabs;
-
-        public PagerAdapter(FragmentManager fm, int NumOfTabs) {
-            super(fm);
-            this.mNumOfTabs = NumOfTabs;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            switch (position) {
-                case 0:
-                    tab1 = new DailyExpenseFragment();
-                    return tab1;
-                case 1:
-                    CurrentMonthExpenseFragment tab2 = new CurrentMonthExpenseFragment();
-                    return tab2;
-                case 2:
-                    DynamicReportFragment tab3 = new DynamicReportFragment();
-                    return tab3;
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return mNumOfTabs;
-        }
-    }*/
 
     private void takePhoto() {
         if (bmodel.isExternalStorageAvailable()) {
@@ -354,13 +324,10 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
                 i.putExtra(EXTRA_PARAMETER, DISABLE_PLUGIN);
                 mContext.sendBroadcast(i);
 
-//                Thread.sleep(100);
 
                 Intent intent = new Intent(mContext, CameraActivity.class);
                 intent.putExtra(getResources().getString(R.string.quality), 40);
                 intent.putExtra(getResources().getString(R.string.path), path);
-//                intent.putExtra(
-//                        getResources().getString(R.string.is_save_required), false);
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {

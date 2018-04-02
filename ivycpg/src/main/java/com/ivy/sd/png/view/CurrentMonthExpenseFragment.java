@@ -54,12 +54,12 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
         Double sum = 0.0;
         for (ExpenseSheetBO expobj : expenseList)
             sum = sum + Double.parseDouble(expobj.getAmount());
-        return String.format("%.2f", sum);
+        return bmodel.formatValue(sum);
     }
 
     class ViewHolder {
         TextView tvDate, tvExpType, tvAmount, tvProof;
-        ImageView tvStatus;
+        ImageView ivStatus;
         ExpenseSheetBO expenseSheetBO;
     }
 
@@ -99,7 +99,7 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
                 holder.tvExpType = convertView.findViewById(R.id.tv_expTypeValue);
                 holder.tvAmount = convertView.findViewById(R.id.tv_amountvalue);
                 holder.tvProof = convertView.findViewById(R.id.tv_imageproof);
-                holder.tvStatus = convertView.findViewById(R.id.tv_status);
+                holder.ivStatus = convertView.findViewById(R.id.iv_status);
                 holder.tvProof.setVisibility(View.GONE);
 
                 convertView.setTag(holder);
@@ -115,11 +115,11 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
             holder.tvAmount.setText(bmodel.formatValue(Double.parseDouble("" + holder.expenseSheetBO.getAmount())));
 
             if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("S"))
-                holder.tvStatus.setImageResource(R.drawable.ok_tick);
+                holder.ivStatus.setImageResource(R.drawable.ok_tick);
             if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("D"))
-                holder.tvStatus.setImageResource(R.drawable.ic_cross_enable);
+                holder.ivStatus.setImageResource(R.drawable.ic_cross_enable);
             if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("R"))
-                holder.tvStatus.setImageResource(R.drawable.ic_image_camera_alt_blk);
+                holder.ivStatus.setImageResource(R.drawable.ic_pending);
 
             return convertView;
         }

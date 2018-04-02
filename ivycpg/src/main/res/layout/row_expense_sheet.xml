@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right"
+            android:gravity="center"
             android:maxLines="1"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_small" />
@@ -67,13 +67,11 @@
             android:textSize="@dimen/font_small" />
 
         <ImageView
-            android:id="@+id/tv_status"
+            android:id="@+id/iv_status"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/info_icon"
             android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:gravity="center"/>
 
     </LinearLayout>
 </LinearLayout>

@@ -104,7 +104,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
                     total_amount = total_amount + Double.parseDouble(expAmount.getAmount());
                 }
                 //tvTotalAmount.setText(String.format("%.2f", total_amount));
-                tvTotalAmount.setText("" + total_amount);
+                tvTotalAmount.setText(bmodel.formatValue(total_amount));
             }
         } else {
             list.setVisibility(View.GONE);
@@ -157,7 +157,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
 
                 holder.tvProof.setPaintFlags(holder.tvProof.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-                convertView.findViewById(R.id.tv_status).setVisibility(View.GONE);
+                convertView.findViewById(R.id.iv_status).setVisibility(View.GONE);
                 convertView.setTag(holder);
 
             } else {
