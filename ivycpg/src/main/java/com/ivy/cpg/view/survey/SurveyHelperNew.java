@@ -1025,15 +1025,14 @@ public class SurveyHelperNew {
             String retailerid = "0";
             int distID = 0;
             String type = "RETAILER";
-            int superwiserID;
+            int superwiserID = 0;
             if ("MENU_SURVEY_SW".equalsIgnoreCase(menuCode)) {
                 type = "SELLER";
                 superwiserID = mSelectedSuperVisiorID;
-            } else if (bmodel.configurationMasterHelper.IS_CNT01) {
-                superwiserID = bmodel.getSelectedUserId();
-            } else {
-                superwiserID = 0;
+            } else if (bmodel.configurationMasterHelper.IS_CNT01 && "MENU_SURVEY01_SW".equalsIgnoreCase(menuCode)) {
+                userid = bmodel.getSelectedUserId();
             }
+
             if (!isFromHomeScreen()) {
                 retailerid = bmodel.getRetailerMasterBO().getRetailerID();
                 distID = bmodel.getRetailerMasterBO().getDistributorId();
@@ -1591,7 +1590,7 @@ public class SurveyHelperNew {
         String uid;
         int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
         if (!isFromCSsurvey() && bmodel.configurationMasterHelper.IS_CNT01) {
-            supervisiorId = bmodel.getSelectedUserId();
+            userid = bmodel.getSelectedUserId();
         }
 
         boolean isLocalData = false;// to check whether transaction record is there or not
