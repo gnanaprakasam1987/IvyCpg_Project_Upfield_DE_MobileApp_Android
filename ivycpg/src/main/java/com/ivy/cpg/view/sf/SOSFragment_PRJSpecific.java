@@ -84,8 +84,8 @@ public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnC
         final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
-            setScreenTitle(
-                    mSFHelper.mSelectedActivityName);
+            if (getActivity().getIntent().getStringExtra("screenTitle") != null)
+                setScreenTitle(getActivity().getIntent().getStringExtra("screenTitle"));
         }
 
         setHasOptionsMenu(true);

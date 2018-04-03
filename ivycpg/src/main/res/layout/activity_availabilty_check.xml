@@ -226,6 +226,7 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:tag="@string/item_piece"
                                         android:text="@string/avail_pcs"
                                         android:textSize="@dimen/greyed_text_size" />
 
@@ -253,6 +254,7 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:tag="@string/item_case"
                                         android:text="@string/avail_cases"
                                         android:textSize="@dimen/card_margin" />
 
@@ -279,6 +281,7 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:tag="@string/item_outer"
                                         android:text="@string/avail_outer"
                                         android:textSize="@dimen/card_margin" />
 
@@ -522,6 +525,7 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:tag="price_piece"
                                         android:text="@string/avail_pcs"
                                         android:textSize="@dimen/card_margin" />
 
@@ -553,6 +557,7 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:tag="price_case"
                                         android:text="@string/avail_cases"
                                         android:textSize="@dimen/card_margin" />
 
@@ -580,6 +585,7 @@
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:tag="price_outer"
                                         android:text="@string/avail_outer"
                                         android:textSize="@dimen/card_margin" />
 
@@ -785,6 +791,7 @@
                                             style="?attr/customListItemSecondary"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:tag="expiry_piece"
                                             android:text="@string/avail_pcs"
                                             android:textSize="@dimen/card_margin" />
 
@@ -811,6 +818,7 @@
                                             style="?attr/customListItemSecondary"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:tag="expiry_case"
                                             android:text="@string/avail_cases"
                                             android:textSize="@dimen/card_margin" />
 
@@ -837,6 +845,7 @@
                                             style="?attr/customListItemSecondary"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:tag="expiry_outer"
                                             android:text="@string/avail_outer"
                                             android:textSize="@dimen/card_margin" />
 
