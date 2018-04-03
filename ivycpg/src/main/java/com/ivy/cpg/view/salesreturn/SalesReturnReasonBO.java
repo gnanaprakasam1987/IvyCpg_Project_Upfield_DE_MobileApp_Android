@@ -21,7 +21,7 @@ public class SalesReturnReasonBO {
 
     private double oldMrp;
     private String lotNumber="";
-    private String invoiceno="0";
+    private String invoiceno="";
 
     private String ProductId;
     private String ProductName;

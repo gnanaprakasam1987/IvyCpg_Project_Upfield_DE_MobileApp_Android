@@ -748,6 +748,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         BusinessModel.loadActivity(getActivity(),
                                 DataMembers.actHomeScreen);
                     } else {
+                        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance();
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
                     }
 
@@ -830,6 +831,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     } else {
                         alertDialog.dismiss();
                         updateLastSync();
+                        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance();
                         tvwstatus.setText(getResources().getString(
                                 R.string.data_upload_completed_sucessfully));
                         displaymetrics = new DisplayMetrics();
@@ -874,6 +876,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     tvwstatus.setText(s2);
                     bmodel.photocount = 0;
                     alertDialog.dismiss();
+                    HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance();
                     //bmodel.showAlert(getResources().getString(R.string.successfully_uploaded), 0);
                     displaymetrics = new DisplayMetrics();
                     getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
