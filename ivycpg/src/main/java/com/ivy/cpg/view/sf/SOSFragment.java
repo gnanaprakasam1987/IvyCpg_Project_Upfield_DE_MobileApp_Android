@@ -1183,7 +1183,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                             1, mFirstName);
                             if (nFilesThere) {
 
-                                showFileDeleteAlertWithImage(mFirstName, holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName());
+                                showFileDeleteAlertWithImage(mFirstName, holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName());
                             } else {
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);

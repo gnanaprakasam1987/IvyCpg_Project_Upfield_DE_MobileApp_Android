@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.DashBoardBO;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,17 @@ public class TotalAchivedFragment extends Fragment {
         //typefaceApp
         tvTitle.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         tvValue.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.tvTitle).getTag()) != null)
+                ((TextView) view.findViewById(R.id.tvTitle))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.tvTitle)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
 
         double total_ach = 0;
 

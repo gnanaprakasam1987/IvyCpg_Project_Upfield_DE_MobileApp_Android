@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
             android:layout_weight="0.1"
-            card_view:cardBackgroundColor="@color/history_card_bg"
+            card_view:cardBackgroundColor="?customLayoutBackground"
             card_view:cardCornerRadius="4dp"
             card_view:cardElevation="3dp"
             card_view:cardUseCompatPadding="true">
@@ -55,7 +55,7 @@
                         android:layout_gravity="center|start"
                         android:gravity="center|start"
                         android:text="@string/average_lines"
-                        android:textColor="@color/font_green"
+                        android:textColor="?attr/colorAccent"
                         android:textSize="@dimen/text_sz_small" />
 
                     <TextView
@@ -97,7 +97,7 @@
                         android:gravity="start|top"
                         android:tag="average_value_or_volume"
                         android:text="Average Value"
-                        android:textColor="@color/font_green"
+                        android:textColor="?attr/colorAccent"
                         android:textSize="@dimen/text_sz_small" />
 
                     <TextView

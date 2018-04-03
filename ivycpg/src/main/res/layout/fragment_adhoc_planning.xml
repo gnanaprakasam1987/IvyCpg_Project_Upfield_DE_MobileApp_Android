@@ -39,7 +39,7 @@
             android:id="@+id/input_retailer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search Retailer"
+            android:hint="@string/search_retailer"
             android:inputType="text"
             android:maxLength="50"
             android:maxLines="1" />

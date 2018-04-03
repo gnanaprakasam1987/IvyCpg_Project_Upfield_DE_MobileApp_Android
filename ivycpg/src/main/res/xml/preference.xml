@@ -4,7 +4,7 @@
 
     <com.ivy.sd.png.view.CustomPreferenceCategory
         android:layout="@layout/settings_header_layout"
-        android:title="Language Settings">
+        android:title="@string/language_settings__label">
         <!--<com.ivy.sd.png.view.CustomListPreference-->
         <com.ivy.sd.png.view.ThemedListPreference
             android:entries="@array/languageList"
@@ -49,7 +49,7 @@
     <com.ivy.sd.png.view.CustomPreferenceCategory
         android:key="clear"
         android:layout="@layout/settings_header_layout"
-        android:title="Switch">
+        android:title="@string/switch_label">
         <com.ivy.sd.png.view.CustomPreference
             android:key="clear_data"
             android:layout="@layout/settings_card_layout"

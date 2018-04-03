@@ -1002,7 +1002,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
+                bmodel.dashBoardHelper.checkDayAndP3MSpinner(false);
                 bmodel.distributorMasterHelper.downloadDistributorsList();
 
                 switchFragment(MENU_DASH_KPI, menuItem.getMenuName());
@@ -2813,13 +2813,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     + path);
             if (imgFile.exists()) {
                 try {
-                    Bitmap myBitmap = bmodel.decodeFile(imgFile);
                     profileImageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     profileImageView.setAdjustViewBounds(true);
                     //  profileImageView.setImageBitmap(getCircularBitmapFrom(myBitmap));
 
                     Glide.with(getActivity())
-                            .load(myBitmap)
+                            .load(imgFile)
                             .centerCrop()
                             .placeholder(R.drawable.face)
                             .error(R.drawable.no_image_available)

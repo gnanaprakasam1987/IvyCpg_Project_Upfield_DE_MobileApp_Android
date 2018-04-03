@@ -366,6 +366,26 @@ public class ReturnFragment extends IvyBaseFragment {
                 ((TextView) row.findViewById(R.id.tv_exp_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                            R.id.tv_oldmrp_title).getTag()) != null)
+                        ((TextView) row.findViewById(R.id.tv_oldmrp_title))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(row.findViewById(
+                                                R.id.tv_oldmrp_title)
+                                                .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                            R.id.tv_srpEdit_title).getTag()) != null)
+                        ((TextView) row.findViewById(R.id.tv_srpEdit_title))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(row.findViewById(
+                                                R.id.tv_srpEdit_title)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
                     ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
                 else {
