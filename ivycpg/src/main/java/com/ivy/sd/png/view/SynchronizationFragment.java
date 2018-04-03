@@ -829,6 +829,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
                     } else {
                         alertDialog.dismiss();
+                        withPhotosCheckBox.setChecked(false);
                         updateLastSync();
                         tvwstatus.setText(getResources().getString(
                                 R.string.data_upload_completed_sucessfully));
@@ -846,6 +847,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                     R.string.upload_failed_please_try_again), 0);
                     break;
                 case DataMembers.NOTIFY_UPLOADED_IMAGE:
+                    withPhotosCheckBox.setChecked(false);
                     if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT)
                         presenter.loadRetailerSelectionScreen();
                     bmodel.showAlert(
@@ -872,6 +874,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     String s2 = tvwstatus.getText() + DataMembers.CR1
                             + msg.obj;
                     tvwstatus.setText(s2);
+                    withPhotosCheckBox.setChecked(false);
                     bmodel.photocount = 0;
                     alertDialog.dismiss();
                     //bmodel.showAlert(getResources().getString(R.string.successfully_uploaded), 0);
