@@ -312,5 +312,10 @@
     <string name="are_you_sure_you_want_to_submit">Are you sure you want to submit?</string>
     <string name="submitted_orders_not_allowed_to_edit">Submitted transactions will not be allowed to edit.</string>
 
+    <string name="sellout">Sell Out</string>
+    <string name="tot_lines_sold">Lines Sold</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+
 
 </resources>
