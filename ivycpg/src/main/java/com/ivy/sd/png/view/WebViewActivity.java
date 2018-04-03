@@ -17,6 +17,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.van.LoadManagementScreen;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -34,6 +35,8 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
     BusinessModel bmodel;
     private Toolbar toolbar;
     HashMap<String, String> reqHeader;
+    HashMap<String, String> listMap;
+    String mMenuCode = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +91,16 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
             getSupportActionBar().setDisplayUseLogoEnabled(true);
             getSupportActionBar().setTitle(null);
         }
-        bmodel.reportHelper.downloadWebViewPlanAuthUrl("WEB_VIEW");
+
+        listMap = new HashMap<>();
+        listMap.put("MENU_WEB_VIEW", "WEB_VIEW");
+        listMap.put("MENU_WVW_APPR", "WEBVIEW_APPR");
+        listMap.put("MENU_LOAD_WEBVIEW", "WEBVIEW_LD_MGMT");
+        listMap.put("MENU_WVW_PLAN", "WEBVIEW_PLAN");
+        listMap.put("MENU_WVW_PLAN_REQ", "WEBVIEW_PLN_REQ");
+
+        mMenuCode = getIntent().getStringExtra("menucode");
+        bmodel.reportHelper.downloadWebViewPlanAuthUrl(listMap.get(mMenuCode));
         if (!bmodel.reportHelper.getWebViewAuthUrl().equals(""))
             new DownloadToken().execute();
         else
@@ -101,7 +113,10 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
 
         if (item.getItemId() == android.R.id.home) {
+
             Intent in = new Intent(WebViewActivity.this, HomeScreenActivity.class);
+            if (mMenuCode.equals("MENU_LOAD_WEBVIEW"))
+                in = new Intent(WebViewActivity.this, LoadManagementScreen.class);
             startActivity(in);
             finish();
             return true;
@@ -143,7 +158,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
             }
 
             if (!token.equals("")) {
-                bmodel.reportHelper.downloadWebViewPlanUrl("WEB_VIEW");
+                bmodel.reportHelper.downloadWebViewPlanUrl(listMap.get(mMenuCode));
                 if (!bmodel.reportHelper.getWebViewPlanUrl().equals("")) {
                     reqHeader = new HashMap<>();
                     reqHeader.put("SECURITY_TOKEN_KEY", token);

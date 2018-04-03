@@ -1129,6 +1129,7 @@
     <string name="invoice_qty">Invoice Qty</string>
     <string name="delivery_rep_code">Rep Code</string>
     <string name="maximum_count_is_exceed">Maximum count is exceed</string>
+    <string name="new_retailer">New Retailer</string>
 
     <!-- Order summary success dialog message -->
     <string name="delivery_date_is">Delivery Date is: </string>

@@ -256,10 +256,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             .getRetailerName().toLowerCase()
                                             .contains(filter.toLowerCase()) ||
                                             ((bmodel.getRetailerMaster().get(i)
-                                                    .getRetailerCode() != null) ?
+                                                    .getRetailerCode() != null) &&
                                                     bmodel.getRetailerMaster().get(i)
                                                             .getRetailerCode().toLowerCase()
-                                                            .contains(filter.toLowerCase()) : false)) {
+                                                            .contains(filter.toLowerCase()))) {
                                         retailer.add(bmodel.getRetailerMaster().get(i));
                                     }
                                 } else {
@@ -270,10 +270,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                 if (bmodel.getRetailerMaster().get(i)
                                         .getRetailerName().toLowerCase()
                                         .contains(filter.toLowerCase()) || ((bmodel.getRetailerMaster().get(i)
-                                        .getRetailerCode() != null) ?
+                                        .getRetailerCode() != null) &&
                                         bmodel.getRetailerMaster().get(i)
                                                 .getRetailerCode().toLowerCase()
-                                                .contains(filter.toLowerCase()) : false)) {
+                                                .contains(filter.toLowerCase()))) {
                                     retailer.add(bmodel.getRetailerMaster().get(i));
                                 }
                             } else {
@@ -300,10 +300,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                                 .getRetailerName().toLowerCase()
                                                 .contains(filter.toLowerCase()) ||
                                                 ((bmodel.getRetailerMaster().get(i)
-                                                        .getRetailerCode() != null) ?
+                                                        .getRetailerCode() != null) &&
                                                         bmodel.getRetailerMaster().get(i)
                                                                 .getRetailerCode().toLowerCase()
-                                                                .contains(filter.toLowerCase()) : false)) {
+                                                                .contains(filter.toLowerCase()))) {
                                             retailer.add(bmodel.getRetailerMaster()
                                                     .get(i));
                                         }
@@ -320,10 +320,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             .getRetailerName().toLowerCase()
                                             .contains(filter.toLowerCase()) ||
                                             ((bmodel.getRetailerMaster().get(i)
-                                                    .getRetailerCode() != null) ?
+                                                    .getRetailerCode() != null) &&
                                                     bmodel.getRetailerMaster().get(i)
                                                             .getRetailerCode().toLowerCase()
-                                                            .contains(filter.toLowerCase()) : false)) {
+                                                            .contains(filter.toLowerCase()))) {
                                         retailer.add(bmodel.getRetailerMaster()
                                                 .get(i));
                                     }
@@ -364,8 +364,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         if (retailerMasterBO
                                 .getRetailerName().toLowerCase()
                                 .contains(searchStr.toLowerCase()) ||
-                                retailerMasterBO.getRetailerCode().toLowerCase()
-                                        .contains(searchStr.toLowerCase())) {
+                                ((retailerMasterBO.getRetailerCode() != null)&&
+                                        retailerMasterBO.getRetailerCode().toLowerCase().contains(searchStr.toLowerCase()))) {
                             retailer.add(retailerMasterBO);
                         }
                     } else {
@@ -381,8 +381,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         if (retailerMasterBO
                                 .getRetailerName().toLowerCase()
                                 .contains(searchStr.toLowerCase()) ||
-                                retailerMasterBO.getRetailerCode().toLowerCase()
-                                        .contains(searchStr.toLowerCase())) {
+                                ((retailerMasterBO.getRetailerCode() != null)
+                                        && retailerMasterBO.getRetailerCode().toLowerCase().contains(searchStr.toLowerCase()))) {
                             retailer.add(retailerMasterBO);
                         }
                     } else {
@@ -418,8 +418,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                     if (retailerMasterBO
                                             .getRetailerName().toLowerCase()
                                             .contains(searchStr.toLowerCase()) ||
-                                            retailerMasterBO.getRetailerCode().toLowerCase()
-                                                    .contains(searchStr.toLowerCase())) {
+                                            ((retailerMasterBO.getRetailerCode() != null)
+                                                    && retailerMasterBO.getRetailerCode().toLowerCase().contains(searchStr.toLowerCase()))) {
                                         retailer.add(retailerMasterBO);
                                     }
                                 } else {
@@ -436,8 +436,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                     if (retailerMasterBO
                             .getRetailerName().toLowerCase()
                             .contains(searchStr.toLowerCase()) ||
-                            retailerMasterBO.getRetailerCode().toLowerCase()
-                                    .contains(searchStr.toLowerCase())) {
+                            ((retailerMasterBO.getRetailerCode() != null)
+                                    && retailerMasterBO.getRetailerCode().toLowerCase().contains(searchStr.toLowerCase()))) {
                         retailer.add(retailerMasterBO);
                     }
                 } else {

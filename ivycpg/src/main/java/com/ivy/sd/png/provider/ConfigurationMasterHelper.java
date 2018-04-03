@@ -60,6 +60,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SHOW_ALL_ROUTE_FILTER = "RTRS27";
     public static final String CODE_SHOW_MISSED_RETAILER = "RTRS28";
     public static final String CODE_VALIDATE_TRADE_COVERAGE = "RTRS29";
+    public static final String CODE_SUBD_RETIALER_SELECTION = "RTRS30";
     public static final String CODE_CONTRACT_TYPE = "PROFILE17";
     public static final String CODE_CONTRACT_EXPIRYDATE = "PROFILE18";
     public static final String CODE_VISIT_FREQUENCY = "PROFILE19";
@@ -339,7 +340,7 @@ public class ConfigurationMasterHelper {
     public int VALUE_NEARBY_RETAILER_MAX = 1;
     private static final String CODE_IS_AUDIT_USER = "ISAUDITUSER";
     public boolean IS_AUDIT_USER = false;
-    private static final String CODE_IN_OUT_MANDATE = "ATTENDANCE01";
+    private static final String CODE_IN_OUT_MANDATE = "Attendance01";
     public boolean IS_IN_OUT_MANDATE = false;
     private static final String CODE_IS_ADHOC = "RTRS11";
     public boolean IS_ADHOC = false;
@@ -481,6 +482,9 @@ public class ConfigurationMasterHelper {
     public boolean IS_LOAD_NON_FIELD;
     private static final String CODE_PLAN_RETAILER_ON_NONFILED = "OFPLAN03";
     public boolean IS_PLAN_RETIALER_NON_FIELD;
+
+    private static final String CODE_EXPENSE_DAYS = "EXP01";
+    public int expenseDays =30;
 
 
     /**
@@ -867,7 +871,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_WEEK_ROUTE;
     public boolean SHOW_RETAILER_LOCATION;//RTRS26
     public boolean SHOW_MISSED_RETAILER;//RTRS28
-    public boolean VALIDATE_TRADE_COVERAGE;//RTRS9
+    public boolean VALIDATE_TRADE_COVERAGE;//RTRS29
+    public boolean SUBD_RETAILER_SELECTION;//RTRS30
     public boolean SHOW_CONTRACT_TYPE;
     public boolean SHOW_CONTRACT_EXPIRYDATE;
     public boolean SHOW_VISIT_FREQUENCY;
@@ -1886,6 +1891,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_PROFILE_LOC3 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC3) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC3) : false;
         this.SHOW_MISSED_RETAILER = hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) : false;
         this.VALIDATE_TRADE_COVERAGE = hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) : false;
+        this.SUBD_RETAILER_SELECTION = hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) != null ? hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) : false;
         this.SHOW_RETAILER_LOCATION = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) : false;
         this.SHOW_PROFILE_LOC2 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) : false;
         this.SHOW_CONTRACT_TYPE = hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) : false;
@@ -2189,6 +2195,9 @@ public class ConfigurationMasterHelper {
         this.IS_TEMP_ORDER_SAVE = hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleConfig.get(CODE_TEMP_ORDER_DETAILS) : false;
         this.tempOrderInterval = hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) != null ? hashMapHHTModuleOrder.get(CODE_TEMP_ORDER_DETAILS) : 10;
         this.tempOrderInterval = this.tempOrderInterval >= 10 ? this.tempOrderInterval : 10;
+
+        this.expenseDays = hashMapHHTModuleOrder.get(CODE_EXPENSE_DAYS) != null ? hashMapHHTModuleOrder.get(CODE_EXPENSE_DAYS) : 30;
+        this.expenseDays = this.expenseDays >= 30 ? this.expenseDays : 30;
 
         this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
 

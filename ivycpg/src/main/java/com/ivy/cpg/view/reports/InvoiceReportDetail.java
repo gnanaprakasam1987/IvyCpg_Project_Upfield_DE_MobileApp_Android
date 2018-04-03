@@ -365,6 +365,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                         CommonPrintPreviewActivity.class);
                 intent.putExtra("IsUpdatePrintCount", true);
                 intent.putExtra("isHomeBtnEnable", true);
+                intent.putExtra("isFromInvoice",true);
             } else
                 intent.setClass(InvoiceReportDetail.this, BixolonIIPrint.class);
 

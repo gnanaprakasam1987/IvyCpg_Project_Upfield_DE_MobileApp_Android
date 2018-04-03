@@ -29,6 +29,16 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         }
 
     };
+
+
+    public static final Comparator<RetailerMasterBO> RetailerIsTodayComparator = new Comparator<RetailerMasterBO>() {
+
+        public int compare(RetailerMasterBO mRtrMasterBO1, RetailerMasterBO mRtrMasterBO2) {
+
+            return mRtrMasterBO2.getIsToday() - mRtrMasterBO1.getIsToday();
+        }
+
+    };
     public String visitday;
     public int accountid;
     int distributorId;
@@ -191,23 +201,10 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int salesTypeId = 0;
     private String profileImagePath;
     private int subDId;
-
-
-    public int getSubDId() {
-        return subDId;
-    }
-
-    public void setSubDId(int subDId) {
-        this.subDId = subDId;
-    }
-
-
-
     private String GSTNumber = "-";
 
     private String DLNo;
     private String DLNoExpDate;
-    private int SubdId;
     private String panNumber;
     private String foodLicenceNo;
     private String foodLicenceExpDate;
@@ -1552,12 +1549,13 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     public int getSubdId() {
-        return SubdId;
+        return subDId;
     }
 
     public void setSubdId(int subdId) {
-        SubdId = subdId;
+        this.subDId = subdId;
     }
+
     public String getPanNumber() {
         return panNumber;
     }

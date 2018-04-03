@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
+            android:tag="remark_header"
             android:padding="6dp"
             android:text="@string/order_remarks" />
 

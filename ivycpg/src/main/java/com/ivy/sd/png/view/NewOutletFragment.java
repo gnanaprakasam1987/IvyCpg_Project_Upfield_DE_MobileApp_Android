@@ -1867,18 +1867,18 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         && mandatory == 1) {
                     Commons.print("rf5");
                     if (profileConfig.get(i).getHasLink() == 0) {
-                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (editText[i].getText().toString().trim().length() == 0) {
-                        validate = false;
-                        scrollToSpecificEditText(edittextinputLayout);
-                        editText[i].requestFocus();
+                        edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                        if (editText[i].getText().toString().trim().length() == 0) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
 
-                        edittextinputLayout.setErrorEnabled(true);
-                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        editText[i].addTextChangedListener(watcher);
-                        break;
-                    }
-                    }  else if (profileConfig.get(i).getHasLink() == 1 && rField5Spinner.getSelectedItem().toString()
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }
+                    } else if (profileConfig.get(i).getHasLink() == 1 && rField5Spinner.getSelectedItem().toString()
                             .contains("Select")) {
                         validate = false;
                         scrollToSpecificSpinner(rField5Spinner);
@@ -1891,19 +1891,19 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         && mandatory == 1) {
                     Commons.print("rf6");
                     if (profileConfig.get(i).getHasLink() == 0) {
-                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (editText[i].getText().toString().trim().length() == 0) {
-                        validate = false;
-                        scrollToSpecificEditText(edittextinputLayout);
-                        editText[i].requestFocus();
+                        edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                        if (editText[i].getText().toString().trim().length() == 0) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
 
-                        edittextinputLayout.setErrorEnabled(true);
-                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        editText[i].addTextChangedListener(watcher);
-                        break;
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                            editText[i].addTextChangedListener(watcher);
+                            break;
 
-                    }
-                    }  else if (profileConfig.get(i).getHasLink() == 1 && rField6Spinner.getSelectedItem().toString()
+                        }
+                    } else if (profileConfig.get(i).getHasLink() == 1 && rField6Spinner.getSelectedItem().toString()
                             .contains("Select")) {
                         validate = false;
                         scrollToSpecificSpinner(rField6Spinner);
@@ -1928,7 +1928,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             break;
 
                         }
-                    }  else if (profileConfig.get(i).getHasLink() == 1 && rField4Spinner.getSelectedItem().toString()
+                    } else if (profileConfig.get(i).getHasLink() == 1 && rField4Spinner.getSelectedItem().toString()
                             .contains("Select")) {
                         validate = false;
                         scrollToSpecificSpinner(rField4Spinner);
@@ -1953,7 +1953,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             break;
 
                         }
-                    }  else if (profileConfig.get(i).getHasLink() == 1 && rField7Spinner.getSelectedItem().toString()
+                    } else if (profileConfig.get(i).getHasLink() == 1 && rField7Spinner.getSelectedItem().toString()
                             .contains("Select")) {
                         validate = false;
                         scrollToSpecificSpinner(rField7Spinner);
@@ -2784,8 +2784,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 return outlet.getCountry();
             case "MOBILE":
                 return outlet.getMobile();
-            }
-
+        }
 
 
         return "";
@@ -3106,12 +3105,14 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         int month;
         int day;
         String code;
-        DatePickerFragment(String code, int year, int month, int day){
+
+        DatePickerFragment(String code, int year, int month, int day) {
             this.code = code;
             this.year = year;
             this.month = month;
             this.day = day;
         }
+
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -4209,7 +4210,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
 
                 break;
-            }
+        }
 
 
         return layout;
@@ -4966,11 +4967,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                     rfield5 = true;
                     if (profileConfig.get(i).getHasLink() == 0) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        outlet.setRfield5("0");
-                    } else {
-                        outlet.setRfield5(bmodel.validateInput(editText[i].getText().toString()));
-                    }
+                        if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                            outlet.setRfield5("0");
+                        } else {
+                            outlet.setRfield5(bmodel.validateInput(editText[i].getText().toString()));
+                        }
                     } else {
                         RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField5Spinner.getSelectedItem();
                         if (retailerFlexBO != null)
@@ -4982,11 +4983,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                     rfield6 = true;
                     if (profileConfig.get(i).getHasLink() == 0) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        outlet.setRfield6("0");
-                    } else {
-                        outlet.setRfield6(bmodel.validateInput(editText[i].getText().toString()));
-                    }
+                        if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                            outlet.setRfield6("0");
+                        } else {
+                            outlet.setRfield6(bmodel.validateInput(editText[i].getText().toString()));
+                        }
                     } else {
                         RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField6Spinner.getSelectedItem();
                         if (retailerFlexBO != null)
@@ -5348,8 +5349,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             if (result) {
 
                 if (mParam.equalsIgnoreCase("1")) {
-
-                    new UploadNewOutlet().execute("");
+                    if (bmodel.isOnline())
+                        new UploadNewOutlet().execute("");
+                    else
+                        bmodel.showAlert(getActivity().getResources().getString(R.string.please_connect_to_internet), 0);
                 } else {
 
                     bmodel.downloadRetailerMaster();
@@ -5403,7 +5406,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         protected Boolean doInBackground(String... params) {
 
             if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper=UploadHelper.getInstance(getActivity());
+                UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
                 String rid = mUploadHelper.uploadNewOutlet(getHandler());
 
                 if (rid.equals("-1")) {

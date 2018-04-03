@@ -50,7 +50,7 @@
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789$&amp;*/-"
                     android:gravity="start|center_vertical"
                     android:maxLength="25"
-                    android:text="@string/zero" />
+                    android:text="" />
 
             </LinearLayout>
 
@@ -79,7 +79,7 @@
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789$&amp;*"
                     android:gravity="start|center_vertical"
                     android:maxLength="25"
-                    android:text="@string/zero"
+                    android:text=""
                     android:textColor="@android:color/black" />
 
             </LinearLayout>

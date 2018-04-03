@@ -1119,6 +1119,7 @@
     <!-- Order summary success dialog message -->
     <string name="delivery_date_is">Delivery Date is: </string>
     <string name="old_order_volume">Original value</string>
+    <string name="new_retailer">New Retailer</string>
 
 
     <string name="history">History</string>

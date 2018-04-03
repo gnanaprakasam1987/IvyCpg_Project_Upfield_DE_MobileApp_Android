@@ -570,7 +570,7 @@ public class ReturnFragment extends IvyBaseFragment {
                         if (!"".equals(qty) && !"0".equals(qty)) {
                             holder.reasonBO.setInvoiceno(qty);
                         } else
-                            holder.reasonBO.setInvoiceno("0");
+                            holder.reasonBO.setInvoiceno("");
                     }
                 });
 
@@ -831,13 +831,13 @@ public class ReturnFragment extends IvyBaseFragment {
             if (holder.reasonBO.getLotNumber() != null)
                 holder.lotNumber.setText(holder.reasonBO.getLotNumber());
             else
-                holder.lotNumber.setText("0");
+                holder.lotNumber.setText("");
 
             if (holder.reasonBO.getInvoiceno() != null) {
                 String strInvoiceno = holder.reasonBO.getInvoiceno() + "";
                 holder.invoiceno.setText(strInvoiceno);
             } else
-                holder.invoiceno.setText("0");
+                holder.invoiceno.setText("");
 
             if (holder.reasonBO.getCaseQty() == 0 && holder.reasonBO.getPieceQty() == 0
                     && holder.reasonBO.getOuterQty() == 0) {

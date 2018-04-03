@@ -123,9 +123,8 @@ public class AttendanceHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+            int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
             if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE) {
-                int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-
                 Cursor c = db
                         .selectSQL("SELECT * FROM AttendanceTimeDetails where userid = " + userid + " AND date = " + bmodel.QT(currentDate) +
                                 " AND upload = 'N' or upload ='I'");
@@ -138,7 +137,7 @@ public class AttendanceHelper {
             } else {
                 Cursor c1 = db.selectSQL("select Session from AttendanceDetail AD inner join StandardListMaster SLM on " +
                         "SLM.ListId=AD.Session where " +
-                        bmodel.QT(currentDate) + " BETWEEN AD.FromDate AND AD.ToDate");
+                        bmodel.QT(currentDate) + " BETWEEN AD.FromDate AND AD.ToDate AND AD.userid=" + userid);
                 if (c1 != null) {
                     if (c1.getCount() == 1)
                         while (c1.moveToNext()) {
@@ -150,7 +149,7 @@ public class AttendanceHelper {
 
 
                 query.append("SELECT * FROM StandardListMaster where Listcode = 'LEAVE'  and listid in (select Atd_ID from AttendanceDetail where " +
-                        bmodel.QT(currentDate) + " BETWEEN FromDate AND ToDate AND Status = 'S')");
+                        bmodel.QT(currentDate) + " BETWEEN FromDate AND ToDate AND Status = 'S' AND userid=" + userid + ")");
 
                 if (sessionType.equals("FN")) {
                     query.append(" AND " + bmodel.QT(SDUtil.now(SDUtil.TIME)) + "<=" + bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF")));
@@ -1130,9 +1129,8 @@ public class AttendanceHelper {
     public boolean getCheckAlreadyApplied(int atdId, String fromDate, String toDate, int sessionId) {
         boolean is_applied = false;
         String sesCode = "";
-
+        int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
         try {
-            int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
             if (bmodel.configurationMasterHelper.IS_CNT01) {
                 userid = bmodel.getSelectedUserId();
             }
@@ -1143,7 +1141,7 @@ public class AttendanceHelper {
                     "where userid=" + userid + " AND (" +
                     bmodel.QT(fromDate) + " BETWEEN FromDate AND ToDate " + " OR " +
                     bmodel.QT(toDate) + " BETWEEN FromDate AND ToDate) " +
-                    "AND Status !=" + bmodel.QT("D"));
+                    "AND Status !=" + bmodel.QT("D") + " AND Session=" + sessionId);
             if (c != null)
                 if (c.getCount() == 1)
                     sesCode = bmodel.getStandardListCode(sessionId);

@@ -205,7 +205,7 @@
     <string name="competitor_filter">Competitor Filter</string>
     <string name="error_e26">Unauthorized access</string>
     <string name="error_e27">DeviceId mismatch</string>
-    <string name="new_retailer">New Retailer</string>
+
 
     <string name="sign_captured_already">Signature already captured. Do you want to delete and re-capture?</string>
     <string name="post_dated_demand_draft_notallow">Post dated Demand Draft Not Allowed</string>

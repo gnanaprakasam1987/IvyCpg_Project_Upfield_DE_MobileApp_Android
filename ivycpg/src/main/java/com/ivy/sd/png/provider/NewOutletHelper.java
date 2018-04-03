@@ -2013,6 +2013,10 @@ public class NewOutletHelper {
                     "contractstatuslovid,classid,AccountId,is_new,Upload,creditPeriod,inSEZ,GSTnumber,RField5,RField6,TinExpDate," +
                     "pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
 
+            int userid = getNewoutlet().getUserId();
+            if (userid == 0)
+                userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+
             value = QT(getId())
                     + "," + QT(outlet.getOutletName())
                     + "," + outlet.getChannel()
@@ -2044,7 +2048,7 @@ public class NewOutletHelper {
                     + "," + QT(getNewoutlet().getDlExpDate())
                     + "," + QT(getNewoutlet().getrField4())
                     + "," + QT(getNewoutlet().getrField7())
-                    + "," + QT(getNewoutlet().getUserId() + "");
+                    + "," + QT(userid + "");
 
 
             db.insertSQL("RetailerMaster", column, value);
@@ -2081,12 +2085,16 @@ public class NewOutletHelper {
 
             //converting big decimal value while Exponential value occur
             String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
-                    ? (SDUtil.truncateDecimal(outlet.getNewOutletlattitude(), -1) + "")
-                    : (outlet.getNewOutletlattitude() + "");
+                    ? (SDUtil.truncateDecimal(outlet.getNewOutletlattitude(), -1) + "").substring(0, 20)
+                    : ((outlet.getNewOutletlattitude() + "").length() > 20
+                                ? (outlet.getNewOutletlattitude() + "").substring(0, 20)
+                                : (outlet.getNewOutletlattitude() + ""));
 
             String longitude = (outlet.getNewOutletLongitude() + "").contains("E")
-                    ? (SDUtil.truncateDecimal(outlet.getNewOutletLongitude(), -1) + "")
-                    : (outlet.getNewOutletLongitude() + "");
+                    ? (SDUtil.truncateDecimal(outlet.getNewOutletLongitude(), -1) + "").substring(0, 20)
+                    : ((outlet.getNewOutletLongitude() + "").length() > 20
+                                ? (outlet.getNewOutletLongitude() + "").substring(0, 20)
+                                : (outlet.getNewOutletLongitude() + ""));
 
             if (outlet.getmAddressByTag() != null) {
                 for (String addressType : outlet.getmAddressByTag().keySet()) {
