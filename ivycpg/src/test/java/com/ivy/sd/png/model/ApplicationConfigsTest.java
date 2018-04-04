@@ -1,6 +1,4 @@
-package com.ivy.cpg.junit;
-
-import com.ivy.sd.png.model.ApplicationConfigs;
+package com.ivy.sd.png.model;
 
 import junit.framework.Assert;
 
@@ -8,10 +6,13 @@ import org.junit.Test;
 
 import java.util.regex.Pattern;
 
+import static org.junit.Assert.*;
+
 /**
- * Created by ramkumar.d on 12-05-2016.
+ * Created by abbas.a on 04/04/18.
  */
-public class UTApplicationConfigs implements ApplicationConfigs {
+public class ApplicationConfigsTest implements ApplicationConfigs {
+
     @Test
     public void checkWithActivation() {
         Assert.assertTrue("ApplicationConfig: Expected value for variable - withActivation is True but actual value is " + withActivation, withActivation);
