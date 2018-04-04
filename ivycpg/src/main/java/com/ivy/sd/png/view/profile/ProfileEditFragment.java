@@ -3004,6 +3004,100 @@ public class ProfileEditFragment extends IvyBaseFragment {
     }
 
 
+    private void prepareCommonAttributeView(ArrayList<Integer> mCommonAttributeList
+            ,LinearLayout parentLayout,ArrayList<Integer> mAddedCommonAttributeList) {
+
+        LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams innerParams = new LinearLayout.LayoutParams(0,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+
+        int rowCount = bmodel.newOutletAttributeHelper.getAttributeParentList().size();
+        selectedAttribList = new HashMap<>();
+        for (int i = 0; i < rowCount; i++) {
+
+            final NewOutletAttributeBO parentBO = bmodel.newOutletAttributeHelper.getAttributeParentList().get(i);
+            if (mCommonAttributeList.contains(parentBO.getAttrId())
+                    && !mAddedCommonAttributeList.contains(parentBO.getAttrId())) {
+
+                LinearLayout layout = new LinearLayout(getActivity());
+                layout.setOrientation(LinearLayout.HORIZONTAL);
+                layout.setGravity(Gravity.CENTER_VERTICAL);
+                layout.setWeightSum(3f);
+                layout.setLayoutParams(LLParams);
+                final String attribName = parentBO.getAttrName();
+                TextView mn_textview = new TextView(getActivity());
+                mn_textview.setText(attribName);
+                mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+                mn_textview.setTextColor(Color.BLACK);
+                mn_textview.setLayoutParams(paramsAttrib);
+                layout.addView(mn_textview);
+                final int columnCount = getLevel(parentBO.getAttrId());
+                MaterialSpinner spinner;
+                LinearLayout innerLL = new LinearLayout(getActivity());
+                innerLL.setOrientation(LinearLayout.VERTICAL);
+                innerLL.setLayoutParams(paramsAttribSpinner);
+                LinearLayout innerHL = new LinearLayout(getActivity());
+                innerHL.setWeightSum(2);
+                innerHL.setLayoutParams(LLParams);
+                innerHL.setOrientation(LinearLayout.HORIZONTAL);
+                boolean isAdded = false;
+                // ArrayList<Integer> indexList = attributeIndexMap.get(attribName);
+                //creating child levels
+                for (int j = 0; j < columnCount; j++) {
+                    isAdded = false;
+                    final ArrayList<NewOutletAttributeBO> attrbList;
+                    final int index = j;
+                    //final int selectedPos = indexList.get(j);
+                    spinner = new MaterialSpinner(getActivity());
+                    attrbList = new ArrayList<>();
+                    attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
+                            .getString(R.string.select_str) + " " + getActivity().getResources()
+                            .getString(R.string.attribute)));
+                    attrbList.addAll(bmodel.newOutletAttributeHelper.getAttribMap().get(attribName));
+                    final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
+                            android.R.layout.simple_spinner_item, attrbList);
+                    spinner.setAdapter(arrayAdapter);
+                    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner.setLayoutParams(innerParams);
+                    innerHL.addView(spinner);
+                    spinnerAdapterMap.put(attribName + index, arrayAdapter);
+                    // spinner.setSelection(selectedPos + 1);
+                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (++check > spinnerCount) {
+                                selectedAttribList.remove(parentBO.getAttrId());
+                                selectedAttribList.put(parentBO.getAttrId(), attrbList.get(position));
+                                if (index < columnCount)
+                                    loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
+                    spinnerHashMap.put(attribName + index, spinner);
+                    if ((j + 1) % 2 == 0) {
+                        innerLL.addView(innerHL);
+                        innerHL = new LinearLayout(getActivity());
+                        innerHL.setWeightSum(2);
+                        innerHL.setLayoutParams(LLParams);
+                        innerHL.setOrientation(LinearLayout.HORIZONTAL);
+                        isAdded = true;
+                    }
+                }
+                if (!isAdded) {
+                    innerLL.addView(innerHL);
+                }
+                layout.addView(innerLL);
+                parentLayout.addView(layout);
+            }
+        }
+    }
+
+
 
 
     // to check sub channel is available or not
