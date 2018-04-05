@@ -1,6 +1,5 @@
 package com.ivy.sd.png.bo;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -44,7 +43,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     int distributorId;
     int distParentId;
     private String RetailerID = "0", movRetailerId = "0";
-    private String RetailerCode, movRetailerCode;
+    private String RetailerCode;
     private String RetailerName, movRetailerName;
     private String Addressid = "0";
     private String Cp1id = "0";
@@ -54,7 +53,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String address3;
 
     // Sales per category
-    private String salseProductName, salesInvoiceId, salesInvoiceValue, salesProdParentId, salesLovId, salesLpc, salesQty, salesProductSName;
+    private String  salesInvoiceId, salesInvoiceValue, salesLpc, salesQty, salesProductSName;
 
     public String getMovRetailerId() {
         return movRetailerId;
@@ -62,14 +61,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setMovRetailerId(String movRetailerId) {
         this.movRetailerId = movRetailerId;
-    }
-
-    public String getMovRetailerCode() {
-        return movRetailerCode;
-    }
-
-    public void setMovRetailerCode(String movRetailerCode) {
-        this.movRetailerCode = movRetailerCode;
     }
 
     public String getMovRetailerName() {
@@ -183,7 +174,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int locationId;
     private int PlannedVisitCount;
     private int contractLovid;
-    private String plannedDate;
     private int SelectedUserID;
     private String RField4;
     private boolean isSurveyDone;
@@ -1158,14 +1148,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.locationId = locationId;
     }
 
-    public String getPlannedDate() {
-        return plannedDate;
-    }
-
-    public void setPlannedDate(String plannedDate) {
-        this.plannedDate = plannedDate;
-    }
-
     public int getSurveyHistoryScore() {
         return surveyHistoryScore;
     }
@@ -1468,14 +1450,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     private boolean isBomAchieved = false;
 
-    public String getSalseProductName() {
-        return salseProductName;
-    }
-
-    public void setSalseProductName(String salseProductName) {
-        this.salseProductName = salseProductName;
-    }
-
     public String getSalesInvoiceId() {
         return salesInvoiceId;
     }
@@ -1490,22 +1464,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setSalesInvoiceValue(String salesInvoiceValue) {
         this.salesInvoiceValue = salesInvoiceValue;
-    }
-
-    public String getSalesProdParentId() {
-        return salesProdParentId;
-    }
-
-    public void setSalesProdParentId(String salesProdParentId) {
-        this.salesProdParentId = salesProdParentId;
-    }
-
-    public String getSalesLovId() {
-        return salesLovId;
-    }
-
-    public void setSalesLovId(String salesLovId) {
-        this.salesLovId = salesLovId;
     }
 
     public String getSalesLpc() {
