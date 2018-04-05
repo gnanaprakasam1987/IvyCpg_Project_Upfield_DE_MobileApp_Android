@@ -341,7 +341,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         ll_logout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                bmodel.synchronizationHelper.backUpDB();
                 showDialog(0);
             }
         });
@@ -2330,7 +2329,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             startActivity(new Intent(getActivity(), About.class));
             return true;
         } else if (i1 == R.id.menu_back) {
-            bmodel.synchronizationHelper.backUpDB();
             showDialog(0);
             return true;
         } else if (i1 == R.id.menu_pswd) {

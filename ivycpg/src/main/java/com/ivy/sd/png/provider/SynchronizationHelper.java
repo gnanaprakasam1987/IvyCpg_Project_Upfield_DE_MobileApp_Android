@@ -426,47 +426,44 @@ SynchronizationHelper {
      *
      * @return true - if saved sucessfully and false - save failed
      */
-    public boolean backUpDB() {
-        String currentDBPath = "data/com.ivy.sd.png.asean.view/databases/"
-                + DataMembers.DB_NAME;
-        File data = Environment.getDataDirectory();
+    public void backUpDB() {
+        if(!ApplicationConfigs.withActivation) {
+            String currentDBPath = "data/com.ivy.sd.png.asean.view/databases/"
+                    + DataMembers.DB_NAME;
+            File data = Environment.getDataDirectory();
 
-        if (isExternalStorageAvailable()) {
-            File folder;
-            folder = new File(
-                    context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                            + "/pandg/");
-            if (!folder.exists()) {
-                folder.mkdir();
+            if (isExternalStorageAvailable()) {
+                File folder;
+                folder = new File(
+                        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                                + "/pandg/");
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
+
+                String path = folder + "";
+
+                File SDPath = new File(path);
+                if (!SDPath.exists()) {
+                    SDPath.mkdir();
+                }
+                try {
+                    File currentDB = new File(data, currentDBPath);
+                    InputStream input = new FileInputStream(currentDB);
+                    byte dataa[] = new byte[input.available()];
+                    input.read(dataa);
+
+                    OutputStream out = new FileOutputStream(path + "/"
+                            + DataMembers.DB_NAME);
+                    out.write(dataa);
+                    out.flush();
+                    out.close();
+                    input.close();
+                } catch (Exception e) {
+                    Commons.printException("exception," + e + "");
+                }
             }
-
-            String path = folder + "";
-
-            File SDPath = new File(path);
-            if (!SDPath.exists()) {
-                SDPath.mkdir();
-            }
-            try {
-                File currentDB = new File(data, currentDBPath);
-                InputStream input = new FileInputStream(currentDB);
-                byte dataa[] = new byte[input.available()];
-                input.read(dataa);
-
-                OutputStream out = new FileOutputStream(path + "/"
-                        + DataMembers.DB_NAME);
-                out.write(dataa);
-                out.flush();
-                out.close();
-                input.close();
-            } catch (Exception e) {
-                Commons.printException("exception," + e + "");
-                return false;
-            }
-            return true;
-        } else {
-            return false;
         }
-
     }
 
     /**
