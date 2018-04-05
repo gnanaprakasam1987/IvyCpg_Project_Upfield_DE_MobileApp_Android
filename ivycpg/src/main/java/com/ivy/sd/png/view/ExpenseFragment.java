@@ -64,53 +64,33 @@ public class ExpenseFragment extends IvyBaseFragment {
     final String DISABLE_PLUGIN = "DISABLE_PLUGIN";
     private static final int CAMERA_REQUEST_CODE = 1;
 
-    private Toolbar toolbar;
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_expense, container, false);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
         mContext = getActivity();
+
         initializeItem(view);
 
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        initializeItem(view);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
     }
 
     private void initializeItem(View view) {
 
-        toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-
-        if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            // Set title to actionbar
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.expense_title));
-            // Used to on / off the back arrow icon
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            // Used to remove the app logo actionbar icon and set title as home
-            // (title support click)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-            // Used to hide the app logo icon from actionbar
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(false);
-        }
-
-        et_exp_date = (EditText) view.findViewById(R.id.et_exp_date);
-        et_amount = (EditText) view.findViewById(R.id.et_amount);
-        sp_expenses = (Spinner) view.findViewById(R.id.sp_expenses);
-        tvcamera = (TextView) view.findViewById(R.id.tv_camera);
-        tvImgCount = (TextView) view.findViewById(R.id.tv_img_count);
-        tvDone = (TextView) view.findViewById(R.id.tv_done);
-        tvClear = (TextView) view.findViewById(R.id.tv_clear);
+        et_exp_date = view.findViewById(R.id.et_exp_date);
+        et_amount = view.findViewById(R.id.et_amount);
+        sp_expenses = view.findViewById(R.id.sp_expenses);
+        tvcamera = view.findViewById(R.id.tv_camera);
+        tvImgCount = view.findViewById(R.id.tv_img_count);
+        tvDone = view.findViewById(R.id.tv_done);
+        tvClear = view.findViewById(R.id.tv_clear);
 
         imagesList = new ArrayList<String>();
         photoNamePath = HomeScreenFragment.photoPath + "/";
@@ -120,14 +100,14 @@ public class ExpenseFragment extends IvyBaseFragment {
         loadExpenses();
 
 
-        tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_current_month)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_mtd)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_p3m)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_content, new DailyExpenseFragment());
+        transaction.replace(R.id.fragment_exp_type, new DailyExpenseFragment());
         transaction.addToBackStack(null);
         transaction.commit();
 
@@ -137,15 +117,15 @@ public class ExpenseFragment extends IvyBaseFragment {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                         .beginTransaction();
                 if (tab.getPosition() == 0) {
-                    transaction.replace(R.id.fragment_content, new DailyExpenseFragment());
+                    transaction.replace(R.id.fragment_exp_type, new DailyExpenseFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } else if (tab.getPosition() == 1) {
-                    transaction.replace(R.id.fragment_content, new CurrentMonthExpenseFragment());
+                    transaction.replace(R.id.fragment_exp_type, new CurrentMonthExpenseFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } else {
-                    transaction.replace(R.id.fragment_content, new PastMonthExpenseFragment());
+                    transaction.replace(R.id.fragment_exp_type, new PastMonthExpenseFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
@@ -294,30 +274,6 @@ public class ExpenseFragment extends IvyBaseFragment {
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_leave_approval, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_history).setVisible(false);
-        menu.findItem(R.id.menu_save).setVisible(false);
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                startActivity(new Intent(mContext, HomeScreenActivity.class));
-                getActivity().finish();
-                break;
-        }
-        return true;
-    }
-
     private void takePhoto() {
         if (bmodel.isExternalStorageAvailable()) {
 
@@ -437,7 +393,7 @@ public class ExpenseFragment extends IvyBaseFragment {
             if (tabLayout.getSelectedTabPosition() == 0) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                         .beginTransaction();
-                transaction.replace(R.id.fragment_content, new DailyExpenseFragment());
+                transaction.replace(R.id.fragment_exp_type, new DailyExpenseFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

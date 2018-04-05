@@ -1643,11 +1643,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_LOAD_REQUEST);
         NewOutletEditFragment newOutletEditFragment = (NewOutletEditFragment) fm
                 .findFragmentByTag(MENU_NEWRET_EDT);
-
         ExpenseFragment expenseFragment = (ExpenseFragment) fm
                 .findFragmentByTag(MENU_EXPENSE);
-
-
         GroomingFragment groomingFragment = (GroomingFragment) fm
                 .findFragmentByTag(MENU_GROOM_CS);
         AcknowledgementFragment acknowledgementFragment = (AcknowledgementFragment) fm
@@ -1824,14 +1821,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(stockProposalFragment);
         if (newOutletEditFragment != null)
             ft.remove(newOutletEditFragment);
-
         if (groomingFragment != null)
             ft.remove(groomingFragment);
         if (acknowledgementFragment != null)
             ft.remove(acknowledgementFragment);
         if (planDeviationFragment != null)
             ft.remove(planDeviationFragment);
-
         if (expenseFragment != null)
             ft.remove(expenseFragment);
 

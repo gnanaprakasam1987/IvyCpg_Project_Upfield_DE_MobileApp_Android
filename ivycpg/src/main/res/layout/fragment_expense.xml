@@ -5,12 +5,6 @@
     android:orientation="vertical"
     tools:context="com.ivy.sd.png.view.ExpenseFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
-<!--    <include
-        android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar" />-->
-
     <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -19,7 +13,7 @@
         android:fillViewport="true"
         android:orientation="vertical"
         android:scrollbars="none"
-        tools:context="com.ivy.sd.png.view.ExpenseActivity">
+        tools:context="com.ivy.sd.png.view.ExpenseFragment">
 
 
         <LinearLayout
@@ -237,7 +231,7 @@
                     android:minHeight="?attr/actionBarSize" />
 
                 <FrameLayout
-                    android:id="@+id/fragment_content"
+                    android:id="@+id/fragment_exp_type"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
             </LinearLayout>
