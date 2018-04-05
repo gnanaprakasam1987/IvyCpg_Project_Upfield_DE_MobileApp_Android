@@ -450,9 +450,9 @@ public class SOSKUFragment extends IvyBaseFragment implements
             holder.tvPercentage.setText(holder.mSOSKU.getPercentage());
             holder.tvGap.setText(holder.mSOSKU.getGap());
 
-            if (Float.parseFloat(holder.mSOSKU.getGap()) < 0)
+            if (SDUtil.convertToFloat(holder.mSOSKU.getGap()) < 0)
                 holder.tvGap.setTextColor(Color.RED);
-            else if (Float.parseFloat(holder.mSOSKU.getGap()) > 0)
+            else if (SDUtil.convertToFloat(holder.mSOSKU.getGap()) > 0)
                 holder.tvGap.setTextColor(Color.rgb(34, 139, 34));
             else
                 holder.tvGap.setTextColor(Color.BLACK);

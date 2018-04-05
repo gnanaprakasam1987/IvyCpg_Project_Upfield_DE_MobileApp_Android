@@ -107,6 +107,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_CS_RPT = "MENU_CS_RPT";
 
 	public static final String MENU_INVENTORY_RPT = "MENU_INVPJ_RPT";
+    public static final String MENU_RETAILER_ACTIVITY_REPORT = "MENU_RETACT_RPT";
 
 	// For Piramal
 	public static final String MENU_BRAND_PERFORMANCE_REPORT = "MENU_BRAND_RPT";
@@ -126,6 +127,7 @@ public class StandardListMasterConstants {
 
 	static {
 		mActivityCodeByMenuCode.put("MENU_STK_ORD", "ORDER");
+		mActivityCodeByMenuCode.put("MENU_SUBD_ORD", "ORDER");
 		mActivityCodeByMenuCode.put("MENU_SALES_RET", "SALESRET");
 		mActivityCodeByMenuCode.put("MENU_NEAREXPIRY", "NEAREXPIRY");
 		mActivityCodeByMenuCode.put("MENU_PRICE", "PRICE");

@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -140,6 +141,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_NEWRET_EDT = "MENU_NEWRET_EDT";
     private static final String MENU_TASK_NEW = "MENU_TASK_NEW";
     private static final String MENU_PLANE_MAP = "MENU_PLANE_MAP";
+
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_GROOM_CS = "MENU_GROOM_CS";
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
@@ -147,6 +149,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     //Deleiver MAnagement
     private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET";
+    //Offline Planning
+    private static final String MENU_OFLNE_PLAN = "MENU_OFLNE_PLAN";
+
+    //Subd
+    private static final String MENU_SUBD = "MENU_SUBD";
+
 
     private String roadTitle;
     private boolean isClicked;
@@ -191,6 +199,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private String imageFileName;
     private ListView listView;
     private ChannelSelectionDialogFragment dialogFragment;
+    private ImageButton chatBtn, divStatusBtn, feedBackBtn;
 
 
     @Nullable
@@ -227,6 +236,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_PLANNING, R.drawable.ic_vector_planning);
         menuIcons.put(MENU_MVP, R.drawable.ic_mvp_icon);
         menuIcons.put(MENU_VISIT, R.drawable.ic_vector_tradecoverage);
+        menuIcons.put(MENU_SUBD, R.drawable.ic_vector_gallery);
         menuIcons.put(MENU_LOAD_MANAGEMENT, R.drawable.ic_load_mgmt_icon);
         menuIcons.put(MENU_NEW_RETAILER, R.drawable.ic_new_retailer_icon);
         menuIcons.put(MENU_LOAD_REQUEST, R.drawable.ic_stock_proposal_icon);
@@ -255,6 +265,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_GROOM_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_JOINT_ACK, R.drawable.ic_survey_icon);
+        menuIcons.put(MENU_OFLNE_PLAN, R.drawable.ic_expense_icon);
         menuIcons.put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
 
         // Load the HHTMenuTable
@@ -349,6 +360,55 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(),
                         UserSettingsActivity.class);
+                startActivity(i);
+            }
+        });
+
+        chatBtn = (ImageButton) view.findViewById(R.id.img_chat);
+        divStatusBtn = (ImageButton) view.findViewById(R.id.img_div_status);
+        feedBackBtn = (ImageButton) view.findViewById(R.id.img_user_feedback);
+
+        if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
+            chatBtn.setVisibility(View.VISIBLE);
+
+        if (bmodel.configurationMasterHelper.SHOW_DEVICE_STATUS)
+            divStatusBtn.setVisibility(View.VISIBLE);
+
+        if (bmodel.configurationMasterHelper.SHOW_FEEDBACK)
+            feedBackBtn.setVisibility(View.VISIBLE);
+
+
+        chatBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bmodel.getChatRegId() != null && bmodel.getChatUserName() != null
+                        && bmodel.getChatPassword() != null && !bmodel.getChatRegId().equals("")
+                        && !bmodel.getChatUserName().equals("") && !bmodel.getChatPassword().equals("")) {
+                    ChatApplicationHelper.getInstance(getActivity())
+                            .openChatApplication(bmodel.getChatUserName(),
+                                    bmodel.getChatUserName().trim() + "@ivymobility.com", bmodel.getChatPassword(),
+                                    bmodel.getChatRegId(), CHAT_AUTHENTICATION_KEY, CHAT_AUTHENTICATION_SECRET_KEY);
+                } else {
+                    Toast.makeText(getActivity(), R.string.not_registered, Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+
+        divStatusBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), DeviceStatusActivity.class);
+                startActivity(i);
+            }
+        });
+
+
+        feedBackBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), UserFeedbackActivity.class);
                 startActivity(i);
             }
         });
@@ -647,9 +707,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         showDialog(1);
                     return;
                 }
-
             }
-
 
             if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
                             .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -685,6 +743,63 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                     switchFragment(MENU_VISIT, menuItem.getMenuName());
                 }
+            }
+        } else if (menuItem.getConfigCode().equals(MENU_SUBD)) {
+            if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
+                boolean bool = bmodel.locationUtil.isGPSProviderEnabled();
+                if (!bool) {
+                    Integer resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
+                    if (resultCode == ConnectionResult.SUCCESS)
+                        bmodel.requestLocation(getActivity());
+                    else
+                        showDialog(1);
+                    return;
+                }
+            }
+
+            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    "yyyy/MM/dd") > 0)
+                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (bmodel.synchronizationHelper.isDayClosed()) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.day_closed),
+                        Toast.LENGTH_SHORT).show();
+            } else if (isLeave_today) {
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.mark_attendance),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.leaveToday),
+                            Toast.LENGTH_SHORT).show();
+            } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
+                Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                if (bmodel.getRetailerMaster().size() > 0) {
+                    if (bmodel.getSubDMaster().size() > 0) {
+                        if (!isClicked) {
+                            isClicked = false;
+                            bmodel.distributorMasterHelper.downloadDistributorsList();
+                            bmodel.configurationMasterHelper
+                                    .setSubdtitle(menuItem.getMenuName());
+
+                            switchFragment(MENU_SUBD, menuItem.getMenuName());
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "No Subd Available", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "No Retailer Available", Toast.LENGTH_LONG).show();
+                }
+
             }
         } else if (menuItem.getConfigCode().equals(MENU_ATTENDANCE)) {
             bmodel.mAttendanceHelper.downNonFieldReasons();
@@ -768,12 +883,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else {
 
                 switchFragment(MENU_REPORT, menuItem.getMenuName());
-//                Intent reportintent = new Intent(getActivity(),
-//                        ReportMenuActivity.class);
-//                reportintent.putExtra("screentitle", menuItem.getMenuName());
-//                bmodel.productHelper.downloadProductFilter("MENU_STK_ORD");
-//                reportintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivity(reportintent);
             }
         } else if (menuItem.getConfigCode().equals(MENU_LOAD_MANAGEMENT)) {
 
@@ -822,12 +931,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else {
                 switchFragment(MENU_PLANNING_SUB, menuItem.getMenuName());
 
-//                Intent i = new Intent(getActivity(), PlanningSubScreen.class);
-//                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                bmodel.configurationMasterHelper
-//                        .setLoadplanningsubttitle(menuItem.getMenuName());
-//                startActivity(i);
-//                getActivity().finish();
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_SYNC)) {
@@ -899,7 +1002,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
+                bmodel.dashBoardHelper.checkDayAndP3MSpinner(false);
                 bmodel.distributorMasterHelper.downloadDistributorsList();
 
                 switchFragment(MENU_DASH_KPI, menuItem.getMenuName());
@@ -966,10 +1069,33 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
-                bmodel.distributorMasterHelper.downloadDistributorsList();
-
                 switchFragment(MENU_DASH_INC, menuItem.getMenuName());
+            }
+
+        } else if (menuItem.getConfigCode().equals(MENU_OFLNE_PLAN)) {
+            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    "yyyy/MM/dd") > 0)
+                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (isLeave_today) {
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.mark_attendance),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.leaveToday),
+                            Toast.LENGTH_SHORT).show();
+            } else {
+                Intent i = new Intent(getContext(), OfflinePlanningActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.putExtra("screentitle", "" + "Call Planning");
+                startActivity(i);
+                getActivity().finish();
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_STOCK_ADJUSTMENT)) {
@@ -1367,7 +1493,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_WVW_PLAN)) {
 
             if (bmodel.isOnline()) {
-                Intent i = new Intent(getActivity(), WebViewPlanActivity.class);
+                Intent i = new Intent(getActivity(), WebViewActivity.class);
+                i.putExtra("screentitle", menuItem.getMenuName());
+                i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
                 getActivity().finish();
             } else
@@ -1378,6 +1506,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             if (bmodel.isOnline()) {
                 Intent i = new Intent(getActivity(), WebViewActivity.class);
                 i.putExtra("screentitle", menuItem.getMenuName());
+                i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
                 getActivity().finish();
             } else
@@ -1386,8 +1515,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_WEB_VIEW_PLAN)) {
 
             if (bmodel.isOnline()) {
-                Intent i = new Intent(getActivity(), WebViewPlanReqActivity.class);
+                Intent i = new Intent(getActivity(), WebViewActivity.class);
                 i.putExtra("screentitle", menuItem.getMenuName());
+                i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
                 getActivity().finish();
             } else
@@ -1396,14 +1526,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_WEB_VIEW_APPR)) {
 
             if (bmodel.isOnline()) {
-                Intent i = new Intent(getActivity(), WebViewApprovalActivity.class);
+                Intent i = new Intent(getActivity(), WebViewActivity.class);
                 i.putExtra("screentitle", menuItem.getMenuName());
+                i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
                 getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
-        }  else if (menuItem.getConfigCode().equals(MENU_NEWRET_EDT)) {
+        } else if (menuItem.getConfigCode().equals(MENU_NEWRET_EDT)) {
 //            Intent i = new Intent(getActivity(), NewOutletEdit.class);
 //            i.putExtra("screentitle", menuItem.getMenuName());
 //            i.putExtra("flag", 0);
@@ -1428,20 +1559,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             switchFragment(MENU_DELMGMT_RET, menuItem.getMenuName());
         }
 
-          /*else if (menuItem.getConfigCode().equals(MENU_COLLECTION_PRINT)) {
-            String printFile = readPrintFile();
-            if (!"".equals(printFile)) {
-                bmodel.mCommonPrintHelper.setInvoiceData(new StringBuilder(printFile));
-                bmodel.mSelectedActivityName = menuItem.getMenuName();
-                Intent i = new Intent(getActivity(), CommonPrintPreviewActivity.class);
-                i.putExtra("isHomeBtnEnable", true);
-                startActivity(i);
-            } else {
-                Toast.makeText(getActivity(), "No Data", Toast.LENGTH_LONG).show();
-            }
-        }*/
-
-
     }
 
     private void switchFragment(String fragmentName, String menuName) {
@@ -1452,6 +1569,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         VisitFragment mVisitFragment = (VisitFragment) fm
                 .findFragmentByTag(MENU_VISIT);
+
+        SubDFragment mSubDFragment = (SubDFragment) fm
+                .findFragmentByTag(MENU_SUBD);
 
         VisitFragment mPlanningFragment = (VisitFragment) fm
                 .findFragmentByTag(MENU_PLANNING);
@@ -1541,6 +1661,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             return;
         } else if (mVisitFragment != null && (fragmentName.equals(MENU_VISIT))
                 && mVisitFragment.isVisible()) {
+            return;
+        } else if (mSubDFragment != null && (fragmentName.equals(MENU_SUBD))
+                && mSubDFragment.isVisible()) {
             return;
         } else if (mSyncFragment != null && (fragmentName.equals(MENU_SYNC))
                 && mSyncFragment.isVisible()) {
@@ -1632,13 +1755,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 && planDeviationFragment.isVisible()) {
             return;
         }
-
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
         if (mNewOutletFragment != null)
             ft.remove(mNewOutletFragment);
         if (mVisitFragment != null)
             ft.remove(mVisitFragment);
+        if (mSubDFragment != null)
+            ft.remove(mSubDFragment);
         if (mPlanningFragment != null)
             ft.remove(mPlanningFragment);
         if (mSyncFragment != null)
@@ -1737,6 +1861,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_VISIT);
                 break;
+
+            case MENU_SUBD:
+                fragment = new SubDFragment();
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_SUBD);
+                break;
             case MENU_PLANNING:
                 bndl = new Bundle();
                 bndl.putString("From", MENU_PLANNING_CONSTANT);
@@ -1796,7 +1926,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DASH_INC);
                 break;
-
             case MENU_JOINT_CALL:
                 bmodel.configurationMasterHelper.setJointCallTitle(menuName);
                 bndl = new Bundle();
@@ -1994,6 +2123,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     }
 
+
     public void onTabRemoved() {
 
         android.support.v4.app.FragmentManager fm = getFragmentManager();
@@ -2003,6 +2133,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         VisitFragment mVisitFragment = (VisitFragment) fm
                 .findFragmentByTag(MENU_VISIT);
+
+        SubDFragment mSubDFragment = (SubDFragment) fm
+                .findFragmentByTag(MENU_SUBD);
 
         VisitFragment mPlanningFragment = (VisitFragment) fm
                 .findFragmentByTag(MENU_PLANNING);
@@ -2074,6 +2207,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
         if (mVisitFragment != null) {
             ft.detach(mVisitFragment);
+        }
+        if (mSubDFragment != null) {
+            ft.detach(mSubDFragment);
         }
         if (mSyncFragment != null) {
             ft.detach(mSyncFragment);
@@ -2181,7 +2317,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
 
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -2678,13 +2813,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     + path);
             if (imgFile.exists()) {
                 try {
-                    Bitmap myBitmap = bmodel.decodeFile(imgFile);
                     profileImageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     profileImageView.setAdjustViewBounds(true);
                     //  profileImageView.setImageBitmap(getCircularBitmapFrom(myBitmap));
 
                     Glide.with(getActivity())
-                            .load(myBitmap)
+                            .load(imgFile)
                             .centerCrop()
                             .placeholder(R.drawable.face)
                             .error(R.drawable.no_image_available)

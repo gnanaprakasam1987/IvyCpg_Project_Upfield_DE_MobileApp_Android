@@ -145,9 +145,12 @@ public class SDUtil {
 
     public static BigDecimal truncateDecimal(double value, int numberofDecimals) {
 
-        return new BigDecimal(SDUtil.format(value,
-                numberofDecimals,
-                0));
+        if (numberofDecimals == -1)
+            return new BigDecimal(value);
+        else
+            return new BigDecimal(SDUtil.format(value,
+                    numberofDecimals,
+                    0));
     }
 
     public static String format(double value, int precisionCount, int separatorCount) {
@@ -344,8 +347,7 @@ public class SDUtil {
 
     /* This method will round the float or Decimal value using
      * Math.round */
-    public static double mathRoundoff(double value)
-    {
+    public static double mathRoundoff(double value) {
         double roundOff = Math.round(value * 100.0) / 100.0;
         return roundOff;
     }

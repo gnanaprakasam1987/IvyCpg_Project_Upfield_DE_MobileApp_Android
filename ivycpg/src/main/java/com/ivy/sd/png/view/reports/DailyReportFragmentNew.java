@@ -232,8 +232,8 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT07")) {
                 float avg1 = 0;
                 try {
-                    float f1 = Float.parseFloat(outlet.getTotLines());
-                    float f2 = Float.parseFloat(outlet.getEffCoverage());
+                    float f1 = SDUtil.convertToFloat(outlet.getTotLines());
+                    float f2 = SDUtil.convertToFloat(outlet.getEffCoverage());
                     if (f2 == 0.0) {
                         avg1 = 0;
                     } else {

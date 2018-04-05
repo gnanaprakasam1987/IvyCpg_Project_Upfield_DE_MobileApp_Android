@@ -58,13 +58,13 @@
 
                         <EditText
                             android:id="@+id/et_exp_date"
+                            style="@style/EditTextGravity"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="1dp"
                             android:layout_weight="0.50"
                             android:drawableEnd="@drawable/icon_monthly_plan"
                             android:focusable="false"
-                            style="@style/EditTextGravity"
                             android:inputType="none"
                             android:paddingStart="@dimen/dimen_8dp"
                             android:singleLine="true"
@@ -116,10 +116,10 @@
 
                         <EditText
                             android:id="@+id/et_amount"
+                            style="@style/EditTextGravity"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="1dp"
-                            style="@style/EditTextGravity"
                             android:layout_weight="0.50"
                             android:imeOptions="actionDone"
                             android:inputType="numberDecimal"
@@ -219,36 +219,26 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_padding"
-                card_view:cardCornerRadius="3dp"
-                card_view:cardElevation="5dp"
-                card_view:cardUseCompatPadding="true">
+                android:layout_marginTop="@dimen/dimen_1dp"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    style="@style/Widget.CardContent"
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tab_layout"
+                    style="?attr/tablayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/dimen_1dp">
+                    android:layout_marginBottom="@dimen/dimen_4dp"
+                    android:elevation="2dp"
+                    android:minHeight="?attr/actionBarSize" />
 
-                    <android.support.design.widget.TabLayout
-                        android:id="@+id/tab_layout"
-                        style="?attr/tablayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_4dp"
-                        android:elevation="2dp"
-                        android:minHeight="?attr/actionBarSize" />
-
-                    <FrameLayout
-                        android:id="@+id/fragment_content"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent" />
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
+                <FrameLayout
+                    android:id="@+id/fragment_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+            </LinearLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

@@ -938,9 +938,9 @@ public class DashBoardHelper {
                             ArrayList<String> value = (ArrayList<String>) mapEntry.getValue();
                             if (kpiList.getKpiTypeLovID() == Integer.parseInt(keyValue)) {
 
-                                target = Float.parseFloat(value.get(0));
-                                achieved = Float.parseFloat(value.get(1));
-                                percentage = Float.parseFloat(value.get(2));
+                                target = SDUtil.convertToFloat(value.get(0));
+                                achieved = SDUtil.convertToFloat(value.get(1));
+                                percentage = SDUtil.convertToFloat(value.get(2));
                             }
                         }
                         finalTarget = SDUtil.roundIt((target), 2) + "";
@@ -969,8 +969,8 @@ public class DashBoardHelper {
 
                                 if (!value.get(0).equals("0")) {
 
-                                    target = target + Float.parseFloat(value.get(0));
-                                    achieved = achieved + Float.parseFloat(value.get(1));
+                                    target = target + SDUtil.convertToFloat(value.get(0));
+                                    achieved = achieved + SDUtil.convertToFloat(value.get(1));
 
                                     avg++;
 
@@ -1162,6 +1162,7 @@ public class DashBoardHelper {
     public int getSubdataCount(int KPIParamLovId) {
         int count = 0;
         try {
+            showDayAndP3MSpinner=0;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
@@ -1253,7 +1254,7 @@ public class DashBoardHelper {
         }
     }
 
-    public void checkDayAndP3MSpinner() {
+    public void checkDayAndP3MSpinner(boolean isRetailerDashboard) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1262,7 +1263,11 @@ public class DashBoardHelper {
             boolean isDaySpinner = false;
             boolean isP3MSpinner = false;
 
-            String sql = "select count(*) from SellerKPI where interval = 'DAY'";
+            String tableName="SellerKPI";
+            if(isRetailerDashboard)
+                tableName="RetailerKPI";
+
+            String sql = "select count(*) from "+tableName+" where interval = 'DAY'";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -1272,7 +1277,7 @@ public class DashBoardHelper {
                     }
                 }
             }
-            sql = "select count(*) from SellerKPI where interval = 'P3M'";
+            sql = "select count(*) from "+tableName+" where interval = 'P3M'";
             c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -1418,7 +1423,7 @@ public class DashBoardHelper {
                         sBO.setAchieved(c.getInt(1));
 
 
-                        sBO.setCalculatedPercentage(Float.parseFloat(SDUtil.format(((sBO.getAchieved() / sBO.getTarget()) * 100),
+                        sBO.setCalculatedPercentage(SDUtil.convertToFloat(SDUtil.format(((sBO.getAchieved() / sBO.getTarget()) * 100),
                                 bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                                 0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP)));
                         if (sBO.getCalculatedPercentage() >= 100) {
@@ -2120,7 +2125,7 @@ public class DashBoardHelper {
                                     dashBoardBO.setAcheived(c.getDouble(2));
 
                                     if (dashBoardBO.getTarget() > 0) {
-                                        dashBoardBO.setCalculatedPercentage(Float.parseFloat(SDUtil.roundIt(((dashBoardBO.getAcheived() / dashBoardBO.getTarget()) * 100), 2)));
+                                        dashBoardBO.setCalculatedPercentage(SDUtil.convertToFloat(SDUtil.roundIt(((dashBoardBO.getAcheived() / dashBoardBO.getTarget()) * 100), 2)));
                                         if (dashBoardBO.getCalculatedPercentage() >= 100) {
                                             dashBoardBO.setConvTargetPercentage(0);
                                             dashBoardBO.setConvAcheivedPercentage(100);
@@ -2292,7 +2297,7 @@ public class DashBoardHelper {
                         dashBoardBO.setAcheived(c.getDouble(0));
 
                         if (dashBoardBO.getTarget() > 0) {
-                            dashBoardBO.setCalculatedPercentage(Float.parseFloat(bmodel.formatValue(((dashBoardBO.getAcheived() / dashBoardBO.getTarget()) * 100))));
+                            dashBoardBO.setCalculatedPercentage(SDUtil.convertToFloat(bmodel.formatValue(((dashBoardBO.getAcheived() / dashBoardBO.getTarget()) * 100))));
                             if (dashBoardBO.getCalculatedPercentage() >= 100) {
                                 dashBoardBO.setConvTargetPercentage(0);
                                 dashBoardBO.setConvAcheivedPercentage(100);
@@ -2311,7 +2316,7 @@ public class DashBoardHelper {
                         dashBoardBO.setAcheived(c.getInt(1));
 
                         if (dashBoardBO.getTarget() > 0) {
-                            dashBoardBO.setCalculatedPercentage(Float.parseFloat(bmodel.formatValue(((dashBoardBO.getAcheived() / dashBoardBO.getTarget()) * 100))));
+                            dashBoardBO.setCalculatedPercentage(SDUtil.convertToFloat(bmodel.formatValue(((dashBoardBO.getAcheived() / dashBoardBO.getTarget()) * 100))));
                             if (dashBoardBO.getCalculatedPercentage() >= 100) {
                                 dashBoardBO.setConvTargetPercentage(0);
                                 dashBoardBO.setConvAcheivedPercentage(100);
@@ -3236,7 +3241,7 @@ public class DashBoardHelper {
                     for (SKUWiseTargetBO sBO : sellerKpiSku) {
                         if (c.getInt(0) == sBO.getPid()) {
                             sBO.setAchieved(c.getInt(1));
-                            sBO.setCalculatedPercentage(Float.parseFloat(SDUtil.format(((sBO.getAchieved() / sBO.getTarget()) * 100),
+                            sBO.setCalculatedPercentage(SDUtil.convertToFloat(SDUtil.format(((sBO.getAchieved() / sBO.getTarget()) * 100),
                                     bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                                     0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP)));
                             if (sBO.getCalculatedPercentage() >= 100) {

@@ -341,7 +341,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(order_history_title));
                 } else {
-                    order_history_title = "History";
+                    order_history_title = getResources().getString(R.string.history);
                     tabLayout.addTab(tabLayout.newTab().setText(order_history_title));
                 }
             } catch (Exception ex) {
@@ -434,7 +434,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(invoice_history_title));
                 } else {
-                    invoice_history_title = "Invoice History";
+                    invoice_history_title = getResources().getString(R.string.invoice_history);
                     tabLayout.addTab(tabLayout.newTab().setText(invoice_history_title));
                 }
             } catch (Exception ex) {
@@ -1264,7 +1264,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 return new PlanningOutletFragment();
             } else if (tabName.equals(retailer_kpi_title)) {
                 SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner();
+                bmodel.dashBoardHelper.checkDayAndP3MSpinner(true);
                 bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
                 Bundle bnd = new Bundle();
                 bnd.putString("screentitle", "");
@@ -1535,7 +1535,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             }
         }
 
-        if (bmodel.configurationMasterHelper.SHOW_RET_SKIP_VALIDATION) {
+        if (bmodel.configurationMasterHelper.SHOW_RET_SKIP_VALIDATION
+                && !bmodel.retailerMasterBO.getIsDeviated().equalsIgnoreCase("Y")
+                && bmodel.getVisitretailerMaster().size() > 0) {
             if (!validateSequenceSkip(bmodel.getRetailerMasterBO()))
                 return;
         }
@@ -1961,10 +1963,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                         bmodel.batchAllocationHelper.downloadProductBatchCount();
                     }
 
+                    bmodel.productHelper.downloadBomMaster();
+
                     if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN
                             && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
                         bmodel.productHelper.downlaodReturnableProducts(MENU_STK_ORD);
-                        bmodel.productHelper.downloadBomMaster();
                         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
                             bmodel.productHelper.downloadTypeProducts();
                             bmodel.productHelper.downloadGenericProductID();

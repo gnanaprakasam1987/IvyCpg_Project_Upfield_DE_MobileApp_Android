@@ -32,7 +32,7 @@ public class SKUWiseTargetActivity extends IvyBaseActivityNoActionBar {
             Intent i = getIntent();
             screenTitle = i.getStringExtra("screentitle");
             if (screenTitle.equals("")) {
-                screenTitle = "SKU Target";
+                screenTitle = getResources().getString(R.string.sku_target_title);
             }
             setScreenTitle(screenTitle);
         }

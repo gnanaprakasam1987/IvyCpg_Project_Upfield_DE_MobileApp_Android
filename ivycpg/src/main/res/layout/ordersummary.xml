@@ -64,7 +64,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="@dimen/footer_height"
-            android:background="@color/footer_bg"
+            android:background="?customLayoutBackground"
             android:orientation="horizontal"
             android:padding="@dimen/footer_padding">
 

@@ -4141,6 +4141,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     private void onnext() {
+
+        if (!"MENU_ORDER".equals(screenCode)&&bmodel.configurationMasterHelper.IS_MUST_SELL_STK
+                && !bmodel.productHelper.isMustSellFilledStockCheck(false)) {
+            Toast.makeText(this, R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (bmodel.getOrderHeaderBO() == null)
             bmodel.setOrderHeaderBO(new OrderHeader());
 
@@ -4172,6 +4179,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.hasOrder()) {
                 //if this config IS_RFIELD1_ENABLED enabled below code will work
                 //and
+
+                if(bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+                        !bmodel.configurationMasterHelper.IS_INVOICE &&
+                        bmodel.productHelper.getSalesReturnValue() >= totalvalue){
+                    Toast.makeText(this,
+                            getResources().getString(R.string.order_value_cannot_be_lesser_than_the_sales_return_value),
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 if (bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
                     int size = bmodel.productHelper
                             .getProductMaster().size();
@@ -4231,6 +4248,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     nextBtnSubTask();
             } else {
                 if (hasStockOnly()) {
+                    if(bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+                            !bmodel.configurationMasterHelper.IS_INVOICE &&
+                            bmodel.productHelper.getSalesReturnValue() > totalvalue){
+                        Toast.makeText(this,
+                                getResources().getString(R.string.order_value_cannot_be_lesser_than_the_sales_return_value),
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     showDialog(1);
                 } else
                     bmodel.showAlert(

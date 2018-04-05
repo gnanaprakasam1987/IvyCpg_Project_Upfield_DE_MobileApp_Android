@@ -2155,7 +2155,7 @@ public class ReportHelper {
                     if (String.valueOf(achievement).equals("0") || String.valueOf(achievement).equals("NaN"))
                         brandPerformanceReport.setTarget_achievement(0);
                     else
-                        brandPerformanceReport.setTarget_achievement(Float.parseFloat(SDUtil.roundIt(achievement, 2)));
+                        brandPerformanceReport.setTarget_achievement(SDUtil.convertToFloat(SDUtil.roundIt(achievement, 2)));
 
                     brandperformancelist.add(brandPerformanceReport);
                 }
@@ -3237,7 +3237,7 @@ public class ReportHelper {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct UseriD,UserName,Retailerid,RetailerName,LocationName,Address,isPlanned,isVisited");
-            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong from OutletPerfomanceReport order by UseriD,timein,timeout");
+            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong,SalesVolume from OutletPerfomanceReport order by UseriD,timein,timeout");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
@@ -3258,6 +3258,7 @@ public class ReportHelper {
                     outletReportBO.setSalesValue(c.getString(11));
                     outletReportBO.setLatitude(c.getDouble(12));
                     outletReportBO.setLongitude(c.getDouble(13));
+                    outletReportBO.setSalesVolume(c.getString(14));
 
                     lst.add(outletReportBO);
 

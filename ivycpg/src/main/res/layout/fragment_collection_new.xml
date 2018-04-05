@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:elevation="@dimen/dimens_6dp"
-        app:cardBackgroundColor="@color/store_title"
+        app:cardBackgroundColor="?cardViewLayoutStyle"
+
         app:cardCornerRadius="@dimen/dimens_4dp">
 
         <LinearLayout

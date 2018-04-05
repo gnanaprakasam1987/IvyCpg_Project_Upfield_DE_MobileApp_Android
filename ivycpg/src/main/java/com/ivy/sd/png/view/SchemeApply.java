@@ -1052,6 +1052,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.quantityCB.setEnabled(false);
                 } else if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK) {
                     holder.quantityCB.setChecked(false);
+                    holder.schemeBO
+                            .setQuantityTypeSelected(false);
                 } else {
                     holder.quantityCB.setChecked(true);
                 }
@@ -1092,6 +1094,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.priceCB.setEnabled(false);
                 } else if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK) {
                     holder.priceCB.setChecked(false);
+                    holder.schemeBO
+                            .setPriceTypeSeleted(false);
+                    holder.priceET.setText("");
                 } else {
                     holder.priceCB.setChecked(true);
                 }
@@ -1133,6 +1138,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.amountCB.setEnabled(false);
                 } else if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK) {
                     holder.amountCB.setChecked(false);
+                    holder.schemeBO
+                            .setAmountTypeSelected(false);
+                    holder.amountET.setText("");
                 } else {
                     holder.amountCB.setChecked(true);
                 }
@@ -1176,6 +1184,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.percentCB.setEnabled(false);
                 } else if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK) {
                     holder.percentCB.setChecked(false);
+                    holder.schemeBO
+                            .setDiscountPrecentSelected(false);
+                    holder.percentET.setText("");
                 } else {
                     holder.percentCB.setChecked(true);
                 }

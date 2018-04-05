@@ -40,7 +40,6 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
     String strFixed = "Fixed", strTopUP = "Top Up";
 
     @Override
-
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();

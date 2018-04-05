@@ -285,7 +285,7 @@ public class OrderHelper {
                     + "," + businessModel.QT(printFilePath)
                     + "," + businessModel.QT(businessModel.getRField1())
                     + "," + businessModel.QT(businessModel.getRField2()) + "," + businessModel.QT(SDUtil.now(SDUtil.TIME))
-                    + "," + businessModel.getRemarkType() + "," + businessModel.QT(businessModel.getRField3());
+                    + "," + businessModel.QT(businessModel.getRemarkType()) + "," + businessModel.QT(businessModel.getRField3());
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);

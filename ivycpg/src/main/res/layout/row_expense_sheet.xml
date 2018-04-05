@@ -2,12 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_selector"
     android:layout_gravity="center"
-    android:padding="@dimen/dimen_4dp"
-    android:orientation="vertical">
+    android:background="@drawable/list_selector"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_4dp">
+
+    <TextView
+        android:id="@+id/tvMonthName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/primarycolor"
+        android:padding="@dimen/list_margin"
+        android:text="Month Name"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_small"
+        android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/llview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -19,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:maxLines="1"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_small" />
 
@@ -27,8 +40,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:ellipsize="middle"
             android:gravity="center"
-            android:maxLines="2"
+            android:singleLine="true"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_small" />
 
@@ -39,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:maxLines="1"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_small" />
 
@@ -50,6 +65,13 @@
             android:gravity="center"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_small" />
+
+        <ImageView
+            android:id="@+id/iv_status"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/info_icon"
+            android:layout_weight="1"
+            android:gravity="center"/>
 
     </LinearLayout>
 </LinearLayout>

@@ -153,22 +153,19 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
         }
 
-        if (!businessModel.configurationMasterHelper.SHOW_LPC_ORDER) {
-            view.findViewById(R.id.lbl_avg_lines).setVisibility(View.GONE);
-            averageLines.setVisibility(View.GONE);
+        if (businessModel.configurationMasterHelper.SHOW_LPC_ORDER) {
+            view.findViewById(R.id.lbl_avg_lines).setVisibility(View.VISIBLE);
+            averageLines.setVisibility(View.VISIBLE);
         }
-        if (!businessModel.configurationMasterHelper.SHOW_TOTAL_LINES) {
-            totalLines.setVisibility(View.GONE);
-            view.findViewById(R.id.lbl_total_lines).setVisibility(View.GONE);
+        if (businessModel.configurationMasterHelper.SHOW_TOTAL_LINES) {
+            totalLines.setVisibility(View.VISIBLE);
+            view.findViewById(R.id.lbl_total_lines).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.view00).setVisibility(View.VISIBLE);
 
         }
-        if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
-            view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.dist).setVisibility(View.VISIBLE);
 
-        }
         if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+            view.findViewById(R.id.view1).setVisibility(View.GONE);
             view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.dist).setVisibility(View.GONE);
@@ -252,6 +249,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         if (!businessModel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
             text_totalOrderValue.setVisibility(View.GONE);
             text_totalValueTitle.setVisibility(View.GONE);
+            view.findViewById(R.id.view0).setVisibility(View.GONE);
         }
 
         return view;

@@ -30,7 +30,7 @@ public class NonFeildTwoDialog extends DialogFragment implements View.OnClickLis
     private TextView fromTime;
     private Spinner reasonSpinner;
     private ArrayAdapter<NonFieldBO> spinnerAdapter;
-    private Button addButton , cancelButton;
+    private Button addButton, cancelButton;
     int reasonId = 0;
 
     @Override
@@ -113,34 +113,34 @@ public class NonFeildTwoDialog extends DialogFragment implements View.OnClickLis
     public void onClick(View v) {
         int id = v.getId();
 
-            if(id == R.id.btn_add){
+        if (id == R.id.btn_add) {
 
-                if (reasonId == 0) {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.select_reason),
-                            Toast.LENGTH_LONG).show();
-                } else {
+            if (reasonId == 0) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.select_reason),
+                        Toast.LENGTH_LONG).show();
+            } else {
 
-                    NonFieldTwoBo nonFieldTwoBo = new NonFieldTwoBo();
-                    try {
-                        nonFieldTwoBo.setFromDate(fromDate.getText().toString());
-                        nonFieldTwoBo.setOutTime(fromTime.getText().toString());
-                        nonFieldTwoBo.setReasonId(reasonId);
-                    } catch (Exception e) {
+                NonFieldTwoBo nonFieldTwoBo = new NonFieldTwoBo();
+                try {
+                    nonFieldTwoBo.setFromDate(fromDate.getText().toString());
+                    nonFieldTwoBo.setOutTime(fromTime.getText().toString());
+                    nonFieldTwoBo.setReasonId(reasonId);
+                } catch (Exception e) {
 
-                    }
-
-                    bmodel.mAttendanceHelper.addNonFieldTwoWorkDetails(nonFieldTwoBo);
-
-                    Toast.makeText(getActivity(), "Data added successfully", Toast.LENGTH_SHORT).show();
-
-                    getTargetFragment().onActivityResult(getTargetRequestCode(),
-                            Activity.RESULT_OK, getActivity().getIntent());
-                    dismiss();
                 }
-            } else if(id == R.id.bt_Cancel) {
+
+                bmodel.mAttendanceHelper.addNonFieldTwoWorkDetails(nonFieldTwoBo);
+
+                Toast.makeText(getActivity(), "Data added successfully", Toast.LENGTH_SHORT).show();
+
+                getTargetFragment().onActivityResult(getTargetRequestCode(),
+                        Activity.RESULT_OK, getActivity().getIntent());
                 dismiss();
             }
+        } else if (id == R.id.bt_Cancel) {
+            dismiss();
+        }
 
     }
 }

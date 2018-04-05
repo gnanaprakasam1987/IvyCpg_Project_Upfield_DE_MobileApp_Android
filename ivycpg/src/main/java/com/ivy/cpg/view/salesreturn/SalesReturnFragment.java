@@ -640,6 +640,19 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                     return;
                 }
             }
+
+            double totalOrderValue = bmodel.getOrderValue() ;
+            if(bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+                    !bmodel.configurationMasterHelper.IS_INVOICE &&
+                    totalvalue >= totalOrderValue){
+                Toast.makeText(getActivity(),
+                        getResources().getString(
+                                R.string.sales_return_value_should_not_exceed_order_value ,
+                                String.valueOf(totalOrderValue)),
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
             salesReturnHelper.setLpcValue((String) lpcText.getText());
             salesReturnHelper.setReturnValue(totalvalue);
 
@@ -711,12 +724,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-        if (!salesReturnHelper.SHOW_REMARKS_SAL_RET) {
-            menu.findItem(R.id.menu_remarks).setVisible(false);
-        } else {
-            menu.findItem(R.id.menu_remarks).setVisible(true);
-            menu.findItem(R.id.menu_remarks).setVisible(!drawerOpen);
-        }
 
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
@@ -724,6 +731,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         } else {
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
         }
+        menu.findItem(R.id.menu_remarks).setVisible(false);
         menu.findItem(R.id.menu_scheme).setVisible(false);
         menu.findItem(R.id.menu_apply_so).setVisible(false);
         menu.findItem(R.id.menu_apply_std_qty).setVisible(false);

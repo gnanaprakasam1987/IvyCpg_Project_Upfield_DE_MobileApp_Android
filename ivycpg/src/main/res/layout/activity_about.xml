@@ -81,7 +81,7 @@
         android:textColor="#000000"
         android:text="Help Line"
         android:layout_centerInParent="true"
-        android:textSize="@dimen/version_text_size"
+        android:textSize="@dimen/font_small"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

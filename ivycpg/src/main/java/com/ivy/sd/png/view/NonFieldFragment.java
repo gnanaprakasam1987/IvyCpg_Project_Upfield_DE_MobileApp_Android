@@ -111,7 +111,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
 
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle("New Request");
+            setScreenTitle(getResources().getString(R.string.new_request));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -138,8 +138,6 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
 
         radioGroup = (RadioGroup) findViewById(R.id.radiogroup);
         rb_single = (RadioButton) findViewById(R.id.rb_single);
-        if (!NonFieldActivity.isSaved)
-            rb_single.setChecked(true);
         rb_single.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         rb_multiple = (RadioButton) findViewById(R.id.rb_multiple);
         rb_multiple.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -160,6 +158,12 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
         btn_traveltime.setOnClickListener(this);
         rdgrp = (RadioGroup) findViewById(R.id.rdGrp_session);
         btn_add = (Button) findViewById(R.id.btn_add);
+
+        if (!NonFieldActivity.isSaved) {
+            rb_single.setChecked(true);
+            txt_fromDate.setText(R.string.date);
+        }
+
         try {
             if (bmodel.labelsMasterHelper.applyLabels(btn_add.getTag()) != null)
                 btn_add.setText(bmodel.labelsMasterHelper.applyLabels(btn_add.getTag()));

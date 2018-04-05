@@ -42,6 +42,7 @@ import com.ivy.sd.png.view.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
+import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -104,6 +105,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private SalesReturnReportFragment salesReturnReport;
     private WebViewArchivalReportFragment webViewArchivalReportFragment;
     private ClosingStockReportFragment closingStockReportFragment;
+    private RetailerActivityReportFragment mRetailerActivityReport;
 
     private Toolbar toolbar;
 
@@ -229,6 +231,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mSellerPerformReport = new SellerPerformanceReportFragment();
         mOutletPerformanceReportFragmnet = new OutletPerformanceReportFragmnet();
         webViewArchivalReportFragment = new WebViewArchivalReportFragment();
+        mRetailerActivityReport=new RetailerActivityReportFragment();
 
         closingStockReportFragment = new ClosingStockReportFragment();
 
@@ -649,8 +652,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
             bmodel.reportHelper.downloadUsers();
             if (bmodel.reportHelper.getLstUsers().size() > 0) {
@@ -703,14 +705,25 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             getSupportActionBar().setSubtitle(config.getMenuName());
             transaction.commit();
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
 
             transaction.replace(R.id.fragment_content, closingStockReportFragment);
             transaction.addToBackStack(null);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(config.getMenuName());
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            transaction.commit();
+
+        }
+        else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_RETAILER_ACTIVITY_REPORT)) {
+
+            transaction.replace(R.id.fragment_content, mRetailerActivityReport);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
+            bmodel.mSelectedActivityName = config.getMenuName();
+            transaction.addToBackStack(null);
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
 

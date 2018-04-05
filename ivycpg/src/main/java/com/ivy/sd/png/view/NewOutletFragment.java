@@ -69,6 +69,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.maplib.BaiduMapDialogue;
@@ -80,6 +81,7 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
+import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -144,6 +146,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private ArrayAdapter<LocationBO> locationAdapter2;
     private ArrayAdapter<LocationBO> locationAdapter3;
     private ArrayAdapter<BeatMasterBO> routeAdapter;
+    private ArrayAdapter<RetailerFlexBO> rField5Adapter;
+    private ArrayAdapter<RetailerFlexBO> rField4Adapter;
+    private ArrayAdapter<RetailerFlexBO> rField6Adapter;
+    private ArrayAdapter<RetailerFlexBO> rField7Adapter;
     private Timer timer;
     private ArrayAdapter<String> mImageTypeAdapter;
     private String PHOTO_PATH = "";
@@ -179,7 +185,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private ScrollView scrollview2;
     private MaterialSpinner channel, subchannel, location1, location2, location3,
             route, paymentType, distributorSpinner, taxTypeSpinner, contactTitleSpinner1,
-            contactTitleSpinner2, contractSpinner, classSpinner, userSpinner;
+            contactTitleSpinner2, contractSpinner, classSpinner, userSpinner, rField5Spinner, rField6Spinner, rField4Spinner, rField7Spinner;
     private TextView latlongtextview;
     private AppCompatAutoCompleteTextView priorityProductAutoCompleteTextView, nearbyAutoCompleteTextView;
 
@@ -229,6 +235,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     private ArrayList<InputFilter> inputFilters = new ArrayList<>();
     static TextView tinExpDateTextView;
+    static TextView dlExpDateTextView;
+    static TextView flExpDateTextView;
     private SurveyHelperNew surveyHelperNew;
 
     @Override
@@ -847,6 +855,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         || configCode.equalsIgnoreCase("CITY")
                         || configCode.equalsIgnoreCase("STATE")
                         || configCode.equalsIgnoreCase("CONTACTPERSON2")
+                        || configCode.equalsIgnoreCase("PAN_NUMBER")
+                        || configCode.equalsIgnoreCase("DRUG_LICENSE_NUM")
+                        || configCode.equalsIgnoreCase("FOOD_LICENCE_NUM")
+                        || configCode.equalsIgnoreCase("REGION")
+                        || configCode.equalsIgnoreCase("COUNTRY")
                         ) {
 
                     totalView.addView(getEditTextView(i, mName,
@@ -862,7 +875,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         || configCode.equalsIgnoreCase("PHNO2")
                         || configCode.equalsIgnoreCase("CREDITLIMIT")
                         || configCode.equalsIgnoreCase("FAX")
-                        || configCode.equalsIgnoreCase("CREDITPERIOD")) {
+                        || configCode.equalsIgnoreCase("CREDITPERIOD")
+                        || configCode.equalsIgnoreCase("MOBILE")) {
 
                     totalView.addView(
                             getEditTextView(i, mName,
@@ -881,6 +895,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         || configCode.equalsIgnoreCase("TAXTYPE")
                         || configCode.equalsIgnoreCase("CLASS")
                         || configCode.equalsIgnoreCase("USER")
+                        || (configCode.equalsIgnoreCase("RFIELD5") && hasLink == 1)
+                        || (configCode.equalsIgnoreCase("RFIELD4") && hasLink == 1)
+                        || (configCode.equalsIgnoreCase("RFIELD6") && hasLink == 1)
+                        || (configCode.equalsIgnoreCase("RFIELD7") && hasLink == 1)
                         ) {
 
                     totalView.addView(
@@ -1129,7 +1147,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     totalView.addView(getEditTextView(i, mName,
                             InputType.TYPE_CLASS_TEXT, mandatory),
                             commonsparams);
-                } else if (configCode.equalsIgnoreCase("TINEXPDATE")) {
+                } else if (configCode.equalsIgnoreCase("TINEXPDATE")
+                        || configCode.equalsIgnoreCase("DRUG_LICENSE_EXP_DATE")
+                        || configCode.equalsIgnoreCase("FOOD_LICENCE_EXP_DATE")) {
                     totalView.addView(
                             getTextView(i, mName, "Select Date", mandatory),
                             commonsparams);
@@ -1137,11 +1157,19 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     totalView.addView(getEditTextView(i, mName,
                             InputType.TYPE_CLASS_TEXT, mandatory),
                             commonsparams);
-                } else if (configCode.equalsIgnoreCase("RFIELD5")) {
+                } else if (configCode.equalsIgnoreCase("RFIELD5") && hasLink == 0) {
                     totalView.addView(getEditTextView(i, mName,
                             InputType.TYPE_CLASS_TEXT, mandatory),
                             commonsparams);
-                } else if (configCode.equalsIgnoreCase("RFIELD6")) {
+                } else if (configCode.equalsIgnoreCase("RFIELD6") && hasLink == 0) {
+                    totalView.addView(getEditTextView(i, mName,
+                            InputType.TYPE_CLASS_TEXT, mandatory),
+                            commonsparams);
+                } else if (configCode.equalsIgnoreCase("RFIELD4") && hasLink == 0) {
+                    totalView.addView(getEditTextView(i, mName,
+                            InputType.TYPE_CLASS_TEXT, mandatory),
+                            commonsparams);
+                } else if (configCode.equalsIgnoreCase("RFIELD7") && hasLink == 0) {
                     totalView.addView(getEditTextView(i, mName,
                             InputType.TYPE_CLASS_TEXT, mandatory),
                             commonsparams);
@@ -1838,33 +1866,100 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         .equalsIgnoreCase("RFIELD5")
                         && mandatory == 1) {
                     Commons.print("rf5");
-                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (editText[i].getText().toString().trim().length() == 0) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                        if (editText[i].getText().toString().trim().length() == 0) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }
+                    } else if (profileConfig.get(i).getHasLink() == 1 && rField5Spinner.getSelectedItem().toString()
+                            .contains("Select")) {
                         validate = false;
-                        scrollToSpecificEditText(edittextinputLayout);
-                        editText[i].requestFocus();
-
-                        edittextinputLayout.setErrorEnabled(true);
-                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        editText[i].addTextChangedListener(watcher);
+                        scrollToSpecificSpinner(rField5Spinner);
+                        rField5Spinner.requestFocus();
+                        rField5Spinner.setError(getResources().getString(R.string.select_str) + " " + menuName);
                         break;
-
                     }
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("RFIELD6")
                         && mandatory == 1) {
                     Commons.print("rf6");
-                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (editText[i].getText().toString().trim().length() == 0) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                        if (editText[i].getText().toString().trim().length() == 0) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+
+                        }
+                    } else if (profileConfig.get(i).getHasLink() == 1 && rField6Spinner.getSelectedItem().toString()
+                            .contains("Select")) {
                         validate = false;
-                        scrollToSpecificEditText(edittextinputLayout);
-                        editText[i].requestFocus();
-
-                        edittextinputLayout.setErrorEnabled(true);
-                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        editText[i].addTextChangedListener(watcher);
+                        scrollToSpecificSpinner(rField6Spinner);
+                        rField6Spinner.requestFocus();
+                        rField6Spinner.setError(getResources().getString(R.string.select_str) + " " + menuName);
                         break;
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("RFIELD4")
+                        && mandatory == 1) {
+                    Commons.print("rf4");
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                        if (editText[i].getText().toString().trim().length() == 0) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
 
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+
+                        }
+                    } else if (profileConfig.get(i).getHasLink() == 1 && rField4Spinner.getSelectedItem().toString()
+                            .contains("Select")) {
+                        validate = false;
+                        scrollToSpecificSpinner(rField4Spinner);
+                        rField4Spinner.requestFocus();
+                        rField4Spinner.setError(getResources().getString(R.string.select_str) + " " + menuName);
+                        break;
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("RFIELD7")
+                        && mandatory == 1) {
+                    Commons.print("rf7");
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                        if (editText[i].getText().toString().trim().length() == 0) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+
+                        }
+                    } else if (profileConfig.get(i).getHasLink() == 1 && rField7Spinner.getSelectedItem().toString()
+                            .contains("Select")) {
+                        validate = false;
+                        scrollToSpecificSpinner(rField7Spinner);
+                        rField7Spinner.requestFocus();
+                        rField7Spinner.setError(getResources().getString(R.string.select_str) + " " + menuName);
+                        break;
                     }
                 } else if ((profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("CREDITLIMIT") && profileConfig.get(i).getMaxLengthNo() > 0)
@@ -2000,6 +2095,112 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         break;
                     }
 
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("PAN_NUMBER")
+                        && mandatory == 1) {
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("DRUG_LICENSE_NUM")
+                        && mandatory == 1) {
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("FOOD_LICENCE_NUM")
+                        && mandatory == 1) {
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("DRUG_LICENSE_EXP_DATE")
+                        && mandatory == 1) {
+                    if (dlExpDateTextView.getText().toString().isEmpty() || dlExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
+                        validate = false;
+                        dlExpDateTextView.requestFocus();
+                        scrollview2.smoothScrollTo(0, dlExpDateTextView.getTop());
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.select_str) + " " + menuName,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("FOOD_LICENCE_EXP_DATE")
+                        && mandatory == 1) {
+                    if (flExpDateTextView.getText().toString().isEmpty() || flExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
+                        validate = false;
+                        flExpDateTextView.requestFocus();
+                        scrollview2.smoothScrollTo(0, flExpDateTextView.getTop());
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.select_str) + " " + menuName,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("REGION")
+                        && mandatory == 1) {
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("COUNTRY")
+                        && mandatory == 1) {
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+                    }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("MOBILE")
+                        && mandatory == 1) {
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+                    }
                 }
 
             }
@@ -2563,6 +2764,26 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 return outlet.getCreditDays();
             case "GST_NO":
                 return outlet.getGstNum();
+            case "PAN_NUMBER":
+                return outlet.getPanNo();
+            case "DRUG_LICENSE_NUM":
+                return outlet.getDrugLicenseNo();
+            case "FOOD_LICENCE_NUM":
+                return outlet.getFoodLicenseNo();
+            case "DRUG_LICENSE_EXP_DATE":
+                return outlet.getDlExpDate();
+            case "FOOD_LICENCE_EXP_DATE":
+                return outlet.getFlExpDate();
+            case "RFIELD4":
+                return outlet.getrField4();
+            case "RFIELD7":
+                return outlet.getrField7();
+            case "REGION":
+                return outlet.getRegion();
+            case "COUNTRY":
+                return outlet.getCountry();
+            case "MOBILE":
+                return outlet.getMobile();
         }
 
 
@@ -2666,6 +2887,38 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
             }
 
+        } else if (code.equals("RFIELD5")) {
+            for (int i = 0; i < rField5Adapter.getCount(); i++) {
+                RetailerFlexBO tempBO = rField5Adapter.getItem(i);
+                if (tempBO != null && tempBO.getId().equals(outlet.getRfield5())) {
+                    return i;
+                }
+            }
+
+        } else if (code.equals("RFIELD6")) {
+            for (int i = 0; i < rField6Adapter.getCount(); i++) {
+                RetailerFlexBO tempBO = rField6Adapter.getItem(i);
+                if (tempBO != null && tempBO.getId().equals(outlet.getRfield6())) {
+                    return i;
+                }
+            }
+
+        } else if (code.equals("RFIELD7")) {
+            for (int i = 0; i < rField7Adapter.getCount(); i++) {
+                RetailerFlexBO tempBO = rField7Adapter.getItem(i);
+                if (tempBO != null && tempBO.getId().equals(outlet.getrField7())) {
+                    return i;
+                }
+            }
+
+        } else if (code.equals("RFIELD4")) {
+            for (int i = 0; i < rField4Adapter.getCount(); i++) {
+                RetailerFlexBO tempBO = rField4Adapter.getItem(i);
+                if (tempBO != null && tempBO.getId().equals(outlet.getrField4())) {
+                    return i;
+                }
+            }
+
         }
 
 
@@ -2728,35 +2981,114 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             });
 
         } else {
-            tinExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
-            tinExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            tinExpDateTextView.setTextColor(Color.BLACK);
-            tinExpDateTextView.setId(mNumber);
-            tinExpDateTextView.setText(textname);
-            tinExpDateTextView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            tinExpDateTextView.setTextColor(Color.BLACK);//edittext_bottom_border
-            tinExpDateTextView.setGravity(Gravity.CENTER);
-            tinExpDateTextView.setTypeface(tinExpDateTextView.getTypeface(), Typeface.NORMAL);
+            TextView dateTV = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
+            dateTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+            dateTV.setTextColor(Color.BLACK);
+            dateTV.setGravity(Gravity.CENTER);
+            dateTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("TINEXPDATE")) {
+                tinExpDateTextView = dateTV;
+                tinExpDateTextView.setId(mNumber);
+                tinExpDateTextView.setText(textname);
+                tinExpDateTextView.setTypeface(tinExpDateTextView.getTypeface(), Typeface.NORMAL);
+                secondlayout.addView(tinExpDateTextView, weight0wrap);
 
-            secondlayout.addView(tinExpDateTextView, weight0wrap);
-
-            if (screenMode == VIEW || screenMode == EDIT) {
-                String tindate = outlet.getTinExpDate();
-                tinExpDateTextView.setText(tindate);
-                if (screenMode == VIEW)
-                    tinExpDateTextView.setEnabled(false);
-
-
-            }
-
-            tinExpDateTextView.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    DialogFragment newFragment = new DatePickerFragment();
-                    newFragment.show(getActivity().getSupportFragmentManager(), "tinDatePicker");
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    String tindate = outlet.getTinExpDate();
+                    tinExpDateTextView.setText(tindate);
+                    if (screenMode == VIEW)
+                        tinExpDateTextView.setEnabled(false);
                 }
-            });
+
+                tinExpDateTextView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar c = Calendar.getInstance();
+                        int year = c.get(Calendar.YEAR);
+                        int month = c.get(Calendar.MONTH);
+                        int day = c.get(Calendar.DAY_OF_MONTH);
+                        String date = tinExpDateTextView.getText().toString();
+                        if (!date.equalsIgnoreCase("Select Date") && date.contains("/") && date.split("/").length == 3) {
+                            year = Integer.valueOf(date.split("/")[0]);
+                            month = Integer.valueOf(date.split("/")[1]) - 1;
+                            day = Integer.valueOf(date.split("/")[2]);
+                        }
+                        DialogFragment newFragment = new DatePickerFragment("TINEXPDATE", year, month, day);
+                        newFragment.show(getActivity().getSupportFragmentManager(), "tinDatePicker");
+                    }
+                });
+            } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("DRUG_LICENSE_EXP_DATE")) {
+                dlExpDateTextView = dateTV;
+                dlExpDateTextView.setId(mNumber);
+                dlExpDateTextView.setText(textname);
+                dlExpDateTextView.setTypeface(dlExpDateTextView.getTypeface(), Typeface.NORMAL);
+
+                secondlayout.addView(dlExpDateTextView, weight0wrap);
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    String dlexpDate = outlet.getDlExpDate();
+                    dlExpDateTextView.setText(dlexpDate);
+                    if (screenMode == VIEW)
+                        dlExpDateTextView.setEnabled(false);
+
+
+                }
+
+                dlExpDateTextView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar c = Calendar.getInstance();
+                        int year = c.get(Calendar.YEAR);
+                        int month = c.get(Calendar.MONTH);
+                        int day = c.get(Calendar.DAY_OF_MONTH);
+                        String date = dlExpDateTextView.getText().toString();
+                        if (!date.equalsIgnoreCase("Select Date") && date.contains("/") && date.split("/").length == 3) {
+                            year = Integer.valueOf(date.split("/")[0]);
+                            month = Integer.valueOf(date.split("/")[1]) - 1;
+                            day = Integer.valueOf(date.split("/")[2]);
+                        }
+                        DialogFragment newFragment = new DatePickerFragment("DLEXPDATE", year, month, day);
+                        newFragment.show(getActivity().getSupportFragmentManager(), "dlDatePicker");
+                    }
+                });
+            } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("FOOD_LICENCE_EXP_DATE")) {
+                flExpDateTextView = dateTV;
+                flExpDateTextView.setId(mNumber);
+                flExpDateTextView.setText(textname);
+                flExpDateTextView.setTypeface(flExpDateTextView.getTypeface(), Typeface.NORMAL);
+
+                secondlayout.addView(flExpDateTextView, weight0wrap);
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    String flexpDate = outlet.getFlExpDate();
+                    flExpDateTextView.setText(flexpDate);
+                    if (screenMode == VIEW)
+                        flExpDateTextView.setEnabled(false);
+
+
+                }
+
+                flExpDateTextView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar c = Calendar.getInstance();
+                        int year = c.get(Calendar.YEAR);
+                        int month = c.get(Calendar.MONTH);
+                        int day = c.get(Calendar.DAY_OF_MONTH);
+                        String date = flExpDateTextView.getText().toString();
+                        if (!date.equalsIgnoreCase("Select Date") && date.contains("/") && date.split("/").length == 3) {
+                            year = Integer.valueOf(date.split("/")[0]);
+                            month = Integer.valueOf(date.split("/")[1]) - 1;
+                            day = Integer.valueOf(date.split("/")[2]);
+                        }
+                        DialogFragment newFragment = new DatePickerFragment("FLEXPDATE", year, month, day);
+                        newFragment.show(getActivity().getSupportFragmentManager(), "flDatePicker");
+                    }
+                });
+            }
 
         }
         finallayout.addView(firstlayout, params8);
@@ -2769,14 +3101,25 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     @SuppressLint("ValidFragment")
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
+        int year;
+        int month;
+        int day;
+        String code;
+
+        DatePickerFragment(String code, int year, int month, int day) {
+            this.code = code;
+            this.year = year;
+            this.month = month;
+            this.day = day;
+        }
 
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
+//            final Calendar c = Calendar.getInstance();
+//            int year = c.get(Calendar.YEAR);
+//            int month = c.get(Calendar.MONTH);
+//            int day = c.get(Calendar.DAY_OF_MONTH);
             return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
         }
 
@@ -2785,7 +3128,15 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             Calendar selectedDate = new GregorianCalendar(year, month, day);
             if (selectedDate.after(Calendar.getInstance())) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-                tinExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                if (code.equalsIgnoreCase("TINEXPDATE"))
+                    tinExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                else if (code.equalsIgnoreCase("DLEXPDATE"))
+                    dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                else if (code.equalsIgnoreCase("FLEXPDATE"))
+                    flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                this.year = year;
+                this.day = day;
+                this.month = month;
             } else {
                 Toast.makeText(getActivity(),
                         "Select future date",
@@ -3671,7 +4022,196 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
                 break;
             }
+            case "RFIELD5":
+                rField5Spinner = new MaterialSpinner(getActivity());
+                rField5Spinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                rField5Spinner.setId(mNumber);
+                rField5Spinner.setFloatingLabelText(MName);
+
+                rField5Adapter = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item);
+                rField5Adapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                rField5Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
+                        .getString(R.string.select_str) + " " + MName));
+
+                for (RetailerFlexBO retBO : bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD5"))
+                    rField5Adapter.add(retBO);
+
+                rField5Spinner.setAdapter(rField5Adapter);
+                rField5Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
+
+
+                        RetailerFlexBO tempBO = (RetailerFlexBO) parent
+                                .getSelectedItem();
+                        outlet.setRfield5(tempBO.getId());
+                    }
+
+                    public void onNothingSelected(AdapterView<?> arg0) {
+
+                    }
+
+                });
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    rField5Spinner.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        rField5Spinner.setEnabled(false);
+                }
+                if (mandatory != 1) {
+                    firstlayout.addView(rField5Spinner, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(rField5Spinner, params12);
+                    layout.addView(firstlayout, params10);
+                }
+
+                break;
+            case "RFIELD6":
+                rField6Spinner = new MaterialSpinner(getActivity());
+                rField6Spinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                rField6Spinner.setId(mNumber);
+                rField6Spinner.setFloatingLabelText(MName);
+
+                rField6Adapter = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item);
+                rField6Adapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                rField6Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
+                        .getString(R.string.select_str) + " " + MName));
+
+                for (RetailerFlexBO retBO : bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD6"))
+                    rField6Adapter.add(retBO);
+
+                rField6Spinner.setAdapter(rField6Adapter);
+                rField6Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
+
+
+                        RetailerFlexBO tempBO = (RetailerFlexBO) parent
+                                .getSelectedItem();
+                        outlet.setRfield6(tempBO.getId());
+                    }
+
+                    public void onNothingSelected(AdapterView<?> arg0) {
+
+                    }
+
+                });
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    rField6Spinner.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        rField6Spinner.setEnabled(false);
+                }
+                if (mandatory != 1) {
+                    firstlayout.addView(rField6Spinner, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(rField6Spinner, params12);
+                    layout.addView(firstlayout, params10);
+                }
+
+                break;
+            case "RFIELD7":
+                rField7Spinner = new MaterialSpinner(getActivity());
+                rField7Spinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                rField7Spinner.setId(mNumber);
+                rField7Spinner.setFloatingLabelText(MName);
+
+                rField7Adapter = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item);
+                rField7Adapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                rField7Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
+                        .getString(R.string.select_str) + " " + MName));
+
+                for (RetailerFlexBO retBO : bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD7"))
+                    rField7Adapter.add(retBO);
+
+                rField7Spinner.setAdapter(rField7Adapter);
+                rField7Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
+
+
+                        RetailerFlexBO tempBO = (RetailerFlexBO) parent
+                                .getSelectedItem();
+                        outlet.setrField7(tempBO.getId());
+                    }
+
+                    public void onNothingSelected(AdapterView<?> arg0) {
+
+                    }
+
+                });
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    rField7Spinner.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        rField7Spinner.setEnabled(false);
+                }
+                if (mandatory != 1) {
+                    firstlayout.addView(rField7Spinner, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(rField7Spinner, params12);
+                    layout.addView(firstlayout, params10);
+                }
+
+                break;
+            case "RFIELD4":
+                rField4Spinner = new MaterialSpinner(getActivity());
+                rField4Spinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                rField4Spinner.setId(mNumber);
+                rField4Spinner.setFloatingLabelText(MName);
+
+                rField4Adapter = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item);
+                rField4Adapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                rField4Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
+                        .getString(R.string.select_str) + " " + MName));
+
+                for (RetailerFlexBO retBO : bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD4"))
+                    rField4Adapter.add(retBO);
+
+                rField4Spinner.setAdapter(rField4Adapter);
+                rField4Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
+
+
+                        RetailerFlexBO tempBO = (RetailerFlexBO) parent
+                                .getSelectedItem();
+                        outlet.setrField4(tempBO.getId());
+                    }
+
+                    public void onNothingSelected(AdapterView<?> arg0) {
+
+                    }
+
+                });
+
+                if (screenMode == VIEW || screenMode == EDIT) {
+                    rField4Spinner.setSelection(getPosition(menuCode));
+                    if (screenMode == VIEW)
+                        rField4Spinner.setEnabled(false);
+                }
+                if (mandatory != 1) {
+                    firstlayout.addView(rField4Spinner, params12);
+                    layout.addView(firstlayout, editweightmargin);
+                } else {
+                    firstlayout.addView(rField4Spinner, params12);
+                    layout.addView(firstlayout, params10);
+                }
+
+                break;
         }
+
 
         return layout;
 
@@ -4162,8 +4702,18 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             boolean rfield3 = false;
             boolean rfield5 = false;
             boolean rfield6 = false;
+            boolean rfield7 = false;
+            boolean rfield4 = false;
             boolean pinno = false;
             boolean isCreditDays = false;
+            boolean isPanNo = false;
+            boolean isDLNo = false;
+            boolean isFLNo = false;
+            boolean isDLExpDate = false;
+            boolean isFLExpDate = false;
+            boolean isRegion = false;
+            boolean isCountry = false;
+            boolean isMobile = false;
 
 
             for (int i = 0; i < size; i++) {
@@ -4416,20 +4966,66 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 } else if (configCode.equalsIgnoreCase("RFIELD5")) {
 
                     rfield5 = true;
-
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        outlet.setRfield5("0");
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                            outlet.setRfield5("0");
+                        } else {
+                            outlet.setRfield5(bmodel.validateInput(editText[i].getText().toString()));
+                        }
                     } else {
-                        outlet.setRfield5(bmodel.validateInput(editText[i].getText().toString()));
+                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField5Spinner.getSelectedItem();
+                        if (retailerFlexBO != null)
+                            outlet.setRfield5(retailerFlexBO.getId());
+                        else
+                            outlet.setRfield5("0");
                     }
                 } else if (configCode.equalsIgnoreCase("RFIELD6")) {
 
                     rfield6 = true;
-
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        outlet.setRfield6("0");
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                            outlet.setRfield6("0");
+                        } else {
+                            outlet.setRfield6(bmodel.validateInput(editText[i].getText().toString()));
+                        }
                     } else {
-                        outlet.setRfield6(bmodel.validateInput(editText[i].getText().toString()));
+                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField6Spinner.getSelectedItem();
+                        if (retailerFlexBO != null)
+                            outlet.setRfield6(retailerFlexBO.getId());
+                        else
+                            outlet.setRfield6("0");
+                    }
+                } else if (configCode.equalsIgnoreCase("RFIELD7")) {
+
+                    rfield7 = true;
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                            outlet.setrField7("0");
+                        } else {
+                            outlet.setrField7(bmodel.validateInput(editText[i].getText().toString()));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField7Spinner.getSelectedItem();
+                        if (retailerFlexBO != null)
+                            outlet.setrField7(retailerFlexBO.getId());
+                        else
+                            outlet.setrField7("0");
+                    }
+                } else if (configCode.equalsIgnoreCase("RFIELD4")) {
+
+                    rfield4 = true;
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                            outlet.setrField4("0");
+                        } else {
+                            outlet.setrField4(bmodel.validateInput(editText[i].getText().toString()));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField4Spinner.getSelectedItem();
+                        if (retailerFlexBO != null)
+                            outlet.setrField4(retailerFlexBO.getId());
+                        else
+                            outlet.setrField4("0");
                     }
                 } else if (configCode.equalsIgnoreCase("TAXTYPE")) {
                     outlet.setTaxTypeId(((StandardListBO) taxTypeSpinner.getSelectedItem()).getListID());
@@ -4473,6 +5069,78 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         outlet.setIsSEZ(1);
                     } else {
                         outlet.setIsSEZ(0);
+                    }
+                } else if (configCode.equalsIgnoreCase("PAN_NUMBER")) {
+                    isPanNo = true;
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setPanNo("");
+                    } else {
+                        outlet.setPanNo(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equalsIgnoreCase("DRUG_LICENSE_NUM")) {
+                    isDLNo = true;
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setDrugLicenseNo("");
+                    } else {
+                        outlet.setDrugLicenseNo(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equalsIgnoreCase("FOOD_LICENCE_NUM")) {
+                    isFLNo = true;
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setFoodLicenseNo("");
+                    } else {
+                        outlet.setFoodLicenseNo(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equalsIgnoreCase("DRUG_LICENSE_EXP_DATE")) {
+
+                    isDLExpDate = true;
+
+                    if (dlExpDateTextView.getText().toString().equalsIgnoreCase("Select Date") || TextUtils.isEmpty(bmodel.validateInput(dlExpDateTextView.getText().toString()))) {
+                        outlet.setDlExpDate("");
+                    } else {
+                        outlet.setDlExpDate(bmodel.validateInput(dlExpDateTextView.getText().toString()));
+                    }
+                } else if (configCode.equalsIgnoreCase("FOOD_LICENCE_EXP_DATE")) {
+
+                    isFLExpDate = true;
+
+                    if (flExpDateTextView.getText().toString().equalsIgnoreCase("Select Date") || TextUtils.isEmpty(bmodel.validateInput(flExpDateTextView.getText().toString()))) {
+                        outlet.setFlExpDate("");
+                    } else {
+                        outlet.setFlExpDate(bmodel.validateInput(flExpDateTextView.getText().toString()));
+                    }
+                } else if (configCode.equalsIgnoreCase("REGION")) {
+                    isRegion = true;
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setRegion("");
+                    } else {
+                        outlet.setRegion(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equalsIgnoreCase("COUNTRY")) {
+                    isCountry = true;
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setCountry("");
+                    } else {
+                        outlet.setCountry(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equalsIgnoreCase("MOBILE")) {
+                    isMobile = true;
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setMobile("");
+                    } else {
+                        outlet.setMobile(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
                     }
                 }
 
@@ -4551,7 +5219,26 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 outlet.setCity("");
             if (!isState)
                 outlet.setState("");
-
+            if (!isPanNo)
+                outlet.setPanNo("");
+            if (!isDLNo)
+                outlet.setDrugLicenseNo("");
+            if (!isFLNo)
+                outlet.setFoodLicenseNo("");
+            if (!isDLExpDate)
+                outlet.setDlExpDate("");
+            if (!isFLExpDate)
+                outlet.setFlExpDate("");
+            if (!rfield4)
+                outlet.setrField4("0");
+            if (!rfield7)
+                outlet.setrField7("0");
+            if (!isRegion)
+                outlet.setRegion("");
+            if (!isCountry)
+                outlet.setCountry("");
+            if (!isMobile)
+                outlet.setMobile("");
             /*if (!isCreditDays)
                 outlet.setCreditDays("-1");*/
 
@@ -4662,8 +5349,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             if (result) {
 
                 if (mParam.equalsIgnoreCase("1")) {
-
-                    new UploadNewOutlet().execute("");
+                    if (bmodel.isOnline())
+                        new UploadNewOutlet().execute("");
+                    else
+                        bmodel.showAlert(getActivity().getResources().getString(R.string.please_connect_to_internet), 0);
                 } else {
 
                     bmodel.downloadRetailerMaster();
@@ -4717,7 +5406,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         protected Boolean doInBackground(String... params) {
 
             if (bmodel.isOnline()) {
-                String rid = bmodel.synchronizationHelper.uploadNewOutlet(getHandler());
+                UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
+                String rid = mUploadHelper.uploadNewOutlet(getHandler());
 
                 if (rid.equals("-1")) {
                     getHandler().sendEmptyMessage(
@@ -4927,6 +5617,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
         if (resultCode == RESULT_OK) {
             if (data.hasExtra("lat") && data.hasExtra("isChanged")) {
 
@@ -4941,6 +5633,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
 
         }
+
     }
 
 
@@ -5336,7 +6029,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         super.onSaveInstanceState(outState);
 
 
-        MaterialSpinner materialSpinner[] = new MaterialSpinner[13];
+        MaterialSpinner materialSpinner[] = new MaterialSpinner[17];
         materialSpinner[0] = channel;
         materialSpinner[1] = subchannel;
         materialSpinner[2] = location1;
@@ -5350,6 +6043,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         materialSpinner[10] = contactTitleSpinner2;
         materialSpinner[11] = contractSpinner;
         materialSpinner[12] = classSpinner;
+        materialSpinner[13] = rField5Spinner;
+        materialSpinner[14] = rField6Spinner;
+        materialSpinner[15] = rField7Spinner;
+        materialSpinner[16] = rField4Spinner;
         bmodel.newOutletHelper.setMaterialSpinner(materialSpinner);
         outState.putSerializable("ImageIdList", outlet.getImageId());
         outState.putSerializable("ImageNameList", outlet.getImageName());
@@ -5395,6 +6092,14 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     contractSpinner = materialSpinner[i];
                 } else if (i == 12) {
                     classSpinner = materialSpinner[i];
+                } else if (i == 13) {
+                    rField5Spinner = materialSpinner[i];
+                } else if (i == 14) {
+                    rField6Spinner = materialSpinner[i];
+                } else if (i == 15) {
+                    rField7Spinner = materialSpinner[i];
+                } else if (i == 16) {
+                    rField4Spinner = materialSpinner[i];
                 }
 
 

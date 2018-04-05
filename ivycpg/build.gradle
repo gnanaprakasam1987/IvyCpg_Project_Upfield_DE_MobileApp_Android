@@ -34,6 +34,7 @@ android {
         targetSdkVersion 25
         multiDexEnabled true
         resConfigs "en", "in", "lo", "th", "vi", "tr" ,"ar"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     lintOptions {
@@ -159,7 +160,13 @@ dependencies {
         transitive = true;
     }
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    testCompile 'junit:junit:4.12'
 
     implementation files('libs/deviceutility.jar')
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestCompile 'com.android.support:support-annotations:26.1.0'
+    androidTestCompile 'com.android.support.test:rules:1.0.1'
+
+
 }

@@ -143,7 +143,7 @@ public class SchemeDetailsMasterHelper {
     public void downloadValidSchemeGroups(DBUtil db) {
 
         StringBuilder sb = new StringBuilder();
-
+        mGroupIDList.clear();
         ArrayList<String> retailerAttributes = bmodel.getAttributeParentListForCurrentRetailer();
 
         sb.append("select Distinct schemeid,groupid,EA1.AttributeName as ParentName,EA.ParentID from SchemeAttributeMapping  SAM" +
@@ -162,8 +162,8 @@ public class SchemeDetailsMasterHelper {
                     if (lastSchemeId != c.getInt(0) || lastGroupId != c.getInt(1)) {
 
                         if (isGroupSatisfied) {
-                            if (!mGroupIDList.contains(c.getString(1) + c.getString(0))) {
-                                mGroupIDList.add(c.getString(1) + c.getString(0));
+                            if (!mGroupIDList.contains(lastGroupId+"" + lastSchemeId)) {
+                                mGroupIDList.add(lastGroupId+"" + lastSchemeId);
                             }
                         }
 
@@ -1358,13 +1358,24 @@ public class SchemeDetailsMasterHelper {
                     i++;
 
                     if (!bmodel.configurationMasterHelper.IS_SIH_VALIDATION || isSihAvailableForFreeProducts) {
-
+                        int freeQuantity = 0;
+                        int count = 0;
                         for (SchemeProductBO schemePdtBO : freeProducts) {
 
                             if (freeGroupName.equals(schemePdtBO.getGroupName())) {
 
-                                int freeQuantity = schemePdtBO
-                                        .getQuantityActualCalculated();
+                                if (schemePdtBO.getGroupBuyType().equals(ANY_LOGIC)) {//check any logic condition
+                                    if (count == 0) {
+                                        freeQuantity = schemePdtBO
+                                                .getQuantityActualCalculated();
+                                    }
+
+                                } else {
+                                    freeQuantity = schemePdtBO
+                                            .getQuantityActualCalculated();
+
+                                }
+                                count++;
 
                                 int stock = 0;
                                 productMasterBO = bmodel.productHelper
@@ -1405,14 +1416,20 @@ public class SchemeDetailsMasterHelper {
                                         schemePdtBO
                                                 .setQuantitySelected(freeQuantity);
                                     }
+
+                                    if (schemePdtBO.getGroupBuyType().equals(ANY_LOGIC)) {// child
+                                        // ANY
+                                        // logic
+                                        if (freeQuantity == 0)
+                                            break;
+                                    }
                                 } else {
                                     schemePdtBO.setQuantitySelected(freeQuantity);
-                                }
-
-                                if (schemePdtBO.getGroupBuyType().equals(ANY_LOGIC)) { // child
-                                    // ANY
-                                    // logic
-                                    break;
+                                    if (schemePdtBO.getGroupBuyType().equals(ANY_LOGIC)) { // child
+                                        // ANY
+                                        // logic
+                                        break;
+                                    }
                                 }
 
                             }
@@ -4509,6 +4526,9 @@ public class SchemeDetailsMasterHelper {
                         freeProductQty = freeProductQty * schemeBO.getApplyCount();
                         if (stock < freeProductQty) {
                             flag = false;
+                        } else {// to check for any logic
+                            if (!schemeProductBO.getGroupBuyType().equals(AND_LOGIC))
+                                flag = true;
                         }
                         if (schemeProductBO.getGroupBuyType().equals(ANY_LOGIC) || schemeProductBO.getGroupBuyType().equals(ONLY_LOGIC)) {
                             if (flag) return true;

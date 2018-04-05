@@ -3,137 +3,144 @@
     android:id="@+id/top"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black_bg1"
+    android:background="?customLayoutBackground"
     android:padding="2dp">
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/resetbox_header_height"
         android:gravity="center_vertical">
-
         <TextView
             android:id="@+id/lbl_avg_lines"
             style="?textFieldStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_20px"
+            android:layout_marginLeft="@dimen/margin_20px"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:text="@string/avg_lines"
             android:textColor="?attr/accentcolor"
             android:visibility="gone" />
-
         <TextView
             android:id="@+id/txtavglines"
             style="?textFieldStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_20px"
-            android:layout_toEndOf="@+id/lbl_avg_lines"
+            android:layout_marginLeft="@dimen/margin_20px"
+            android:layout_below="@+id/lbl_avg_lines"
             android:layout_weight="4"
             android:text=""
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="gone" />
-
+        <View
+            android:id="@+id/view00"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/ret_card_image"
+            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginTop="@dimen/icons_top_margin"
+            android:layout_toRightOf="@+id/lbl_avg_lines"
+            android:background="@android:color/darker_gray"
+            android:visibility="gone" />
         <TextView
             android:id="@+id/lbl_total_lines"
             style="?textFieldStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_20px"
-            android:layout_toEndOf="@+id/txtavglines"
+            android:layout_marginLeft="@dimen/margin_20px"
+            android:layout_toRightOf="@+id/view00"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:text="@string/tot_line"
             android:textColor="?attr/accentcolor"
             android:visibility="gone" />
-
         <TextView
             android:id="@+id/txttotallines"
             style="?textFieldStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_20px"
-            android:layout_toEndOf="@+id/lbl_total_lines"
+            android:layout_marginLeft="@dimen/margin_20px"
+            android:layout_below="@+id/lbl_total_lines"
+            android:layout_toRightOf="@+id/view00"
             android:layout_weight="4"
             android:text=""
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="gone" />
-
+        <View
+            android:id="@+id/view0"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/ret_card_image"
+            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginTop="@dimen/icons_top_margin"
+            android:layout_toRightOf="@+id/lbl_total_lines"
+            android:background="@android:color/darker_gray"
+            />
         <TextView
             android:id="@+id/totalvaluetitle"
             style="?textFieldStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_20px"
-            android:layout_toEndOf="@+id/txttotallines"
+            android:layout_marginLeft="@dimen/margin_20px"
+            android:layout_toRightOf="@+id/view0"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:text="@string/total_value"
             android:textColor="?attr/accentcolor"
             android:textSize="@dimen/list_item_primary_text_size"
             android:textStyle="bold" />
-
         <TextView
             android:id="@+id/txttotal"
             style="?textFieldStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/totalvaluetitle"
-            android:layout_marginStart="@dimen/margin_20px"
-            android:layout_toEndOf="@+id/txttotallines"
+            android:layout_marginLeft="@dimen/margin_20px"
+            android:layout_toRightOf="@+id/view0"
             android:layout_weight="4"
             android:adjustViewBounds="true"
             android:text="0"
             android:textColor="@color/white"
             android:textSize="@dimen/login_edittext_text_size" />
-
         <View
             android:id="@+id/view1"
             android:layout_width="1dp"
             android:layout_height="@dimen/ret_card_image"
-            android:layout_marginStart="@dimen/store_margin_top"
+            android:layout_marginLeft="@dimen/store_margin_top"
             android:layout_marginTop="@dimen/icons_top_margin"
-            android:layout_toEndOf="@+id/totalvaluetitle"
+            android:layout_toRightOf="@+id/totalvaluetitle"
             android:background="@android:color/darker_gray" />
-
         <TextView
             android:id="@+id/lab_dist_pre_post"
             style="?textFieldStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/store_margin_top"
-            android:layout_toEndOf="@+id/view1"
+            android:layout_marginLeft="@dimen/store_margin_top"
+            android:layout_toRightOf="@+id/view1"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:text="@string/order_report_avg_line"
             android:textColor="?attr/accentcolor"
             android:textSize="@dimen/list_item_primary_text_size"
             android:textStyle="bold" />
-
         <TextView
             android:id="@+id/txt_dist_pre_post"
             style="?textFieldStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lab_dist_pre_post"
-            android:layout_marginStart="@dimen/store_margin_top"
-            android:layout_toEndOf="@+id/view1"
+            android:layout_marginLeft="@dimen/store_margin_top"
+            android:layout_toRightOf="@+id/view1"
             android:layout_weight="4"
             android:adjustViewBounds="true"
             android:text="0/0"
             android:textColor="@color/white"
             android:textSize="@dimen/login_edittext_text_size" />
-
         <Button
             android:id="@+id/btn_export"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:text="@string/export"
             android:textAllCaps="false"
             android:visibility="gone"/>
-
     </RelativeLayout>
 </RelativeLayout>

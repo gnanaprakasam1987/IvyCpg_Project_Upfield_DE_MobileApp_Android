@@ -2,7 +2,8 @@ package com.ivy.sd.png.bo;
 
 public class ExpenseSheetBO {
     private int typeId, userId;
-    private String typeName, date, amount;
+    private String typeName, date, amount, status;
+    private boolean isMonthName;
 
     public int getTypeId() {
         return typeId;
@@ -42,5 +43,21 @@ public class ExpenseSheetBO {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public boolean isMonthName() {
+        return isMonthName;
+    }
+
+    public void setMonthName(boolean monthName) {
+        isMonthName = monthName;
     }
 }

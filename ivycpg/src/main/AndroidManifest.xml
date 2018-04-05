@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1260"
+    android:versionCode="1280"
     android:versionName="2.127.0.1178">
 
     <supports-screens
@@ -90,6 +90,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/MVPTheme.Blue">
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -645,19 +646,7 @@
             android:name="com.ivy.sd.png.view.ExpenseActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.WebViewPlanActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.sd.png.view.WebViewActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.WebViewLoadMgmtActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.WebViewApprovalActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.WebViewPlanReqActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.camera.NativeCameraActivity"
@@ -778,6 +767,27 @@
         <activity
             android:name="com.ivy.sd.png.view.reports.SalesReturnValidationReport"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.SubDHomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.sd.png.view.SubDStockCheckActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.sd.png.view.SubDStockOrderActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.sd.png.view.OfflinePlanningActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize" />
+
+
         <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity" />
         <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"></activity>
     </application>

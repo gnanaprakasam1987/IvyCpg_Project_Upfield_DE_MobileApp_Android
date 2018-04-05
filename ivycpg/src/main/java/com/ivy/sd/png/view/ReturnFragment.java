@@ -366,12 +366,72 @@ public class ReturnFragment extends IvyBaseFragment {
                 ((TextView) row.findViewById(R.id.tv_exp_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-                if (!salesReturnHelper.SHOW_SALES_RET_CASE)
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                            R.id.tv_oldmrp_title).getTag()) != null)
+                        ((TextView) row.findViewById(R.id.tv_oldmrp_title))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(row.findViewById(
+                                                R.id.tv_oldmrp_title)
+                                                .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                            R.id.tv_srpEdit_title).getTag()) != null)
+                        ((TextView) row.findViewById(R.id.tv_srpEdit_title))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(row.findViewById(
+                                                R.id.tv_srpEdit_title)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
                     ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
-                if (!salesReturnHelper.SHOW_SALES_RET_PCS)
+                else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.tv_case_title).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.tv_case_title))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.tv_case_title)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
                     ((LinearLayout) row.findViewById(R.id.ll_piece)).setVisibility(View.GONE);
-                if (!salesReturnHelper.SHOW_SALES_RET_OUTER_CASE)
+                else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.tv_piece_title).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.tv_piece_title))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.tv_piece_title)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
                     ((LinearLayout) row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
+                else {
+
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.tv_outer_title).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.tv_outer_title))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.tv_outer_title)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
 
                 if (!salesReturnHelper.SHOW_SAL_RET_OLD_MRP)
                     ((LinearLayout) row.findViewById(R.id.ll_oldmrp)).setVisibility(View.GONE);
@@ -510,7 +570,7 @@ public class ReturnFragment extends IvyBaseFragment {
                         if (!"".equals(qty) && !"0".equals(qty)) {
                             holder.reasonBO.setInvoiceno(qty);
                         } else
-                            holder.reasonBO.setInvoiceno("0");
+                            holder.reasonBO.setInvoiceno("");
                     }
                 });
 
@@ -771,13 +831,13 @@ public class ReturnFragment extends IvyBaseFragment {
             if (holder.reasonBO.getLotNumber() != null)
                 holder.lotNumber.setText(holder.reasonBO.getLotNumber());
             else
-                holder.lotNumber.setText("0");
+                holder.lotNumber.setText("");
 
             if (holder.reasonBO.getInvoiceno() != null) {
                 String strInvoiceno = holder.reasonBO.getInvoiceno() + "";
                 holder.invoiceno.setText(strInvoiceno);
             } else
-                holder.invoiceno.setText("0");
+                holder.invoiceno.setText("");
 
             if (holder.reasonBO.getCaseQty() == 0 && holder.reasonBO.getPieceQty() == 0
                     && holder.reasonBO.getOuterQty() == 0) {

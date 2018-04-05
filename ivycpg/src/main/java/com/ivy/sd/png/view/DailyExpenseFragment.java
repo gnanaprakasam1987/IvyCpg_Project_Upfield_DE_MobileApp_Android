@@ -17,8 +17,10 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ExpensesBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,8 +52,11 @@ public class DailyExpenseFragment extends IvyBaseFragment {
         photoNamePath = HomeScreenFragment.photoPath + "/";
 
 
-        tvTotalAmount = (TextView) view.findViewById(R.id.tvTotalAmount);
-        list = (ExpandedListView) view.findViewById(R.id.expenses_list);
+        tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
+        list = view.findViewById(R.id.expenses_list);
+
+        ((TextView) view.findViewById(R.id.tvTitleTotal)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
 
         return view;
@@ -99,7 +104,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
                     total_amount = total_amount + Double.parseDouble(expAmount.getAmount());
                 }
                 //tvTotalAmount.setText(String.format("%.2f", total_amount));
-                tvTotalAmount.setText("" + total_amount);
+                tvTotalAmount.setText(bmodel.formatValue(total_amount));
             }
         } else {
             list.setVisibility(View.GONE);
@@ -143,15 +148,16 @@ public class DailyExpenseFragment extends IvyBaseFragment {
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-                convertView = (View) inflater.inflate(R.layout.row_expense_sheet, null);
+                convertView = inflater.inflate(R.layout.row_expense_sheet, null);
 
-                holder.tvDate = (TextView) convertView.findViewById(R.id.tv_datevalue);
-                holder.tvExpType = (TextView) convertView.findViewById(R.id.tv_expTypeValue);
-                holder.tvAmount = (TextView) convertView.findViewById(R.id.tv_amountvalue);
-                holder.tvProof = (TextView) convertView.findViewById(R.id.tv_imageproof);
+                holder.tvDate = convertView.findViewById(R.id.tv_datevalue);
+                holder.tvExpType = convertView.findViewById(R.id.tv_expTypeValue);
+                holder.tvAmount = convertView.findViewById(R.id.tv_amountvalue);
+                holder.tvProof = convertView.findViewById(R.id.tv_imageproof);
 
                 holder.tvProof.setPaintFlags(holder.tvProof.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
+                convertView.findViewById(R.id.iv_status).setVisibility(View.GONE);
                 convertView.setTag(holder);
 
             } else {
@@ -167,9 +173,11 @@ public class DailyExpenseFragment extends IvyBaseFragment {
                 }
             });
             holder.expensesBO = items.get(position);
-            holder.tvDate.setText(holder.expensesBO.getDate());
+            holder.tvDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.expensesBO.getDate(),
+                    ConfigurationMasterHelper.outDateFormat));
+
             holder.tvExpType.setText(holder.expensesBO.getTypeName());
-            holder.tvAmount.setText("" + holder.expensesBO.getAmount());
+            holder.tvAmount.setText(bmodel.formatValue(Double.parseDouble("" + holder.expensesBO.getAmount())));
 
             holder.tvProof.setText("" + holder.expensesBO.getImageList().size());
 

@@ -78,6 +78,7 @@ public class CommonPrintHelper {
     private static String TAG_DISTRIBUTOR_CST_NUMBER = "dist_cst";
     private static String TAG_DISTRIBUTOR_FAX_NUMBER = "dist_fax_no";
     private static String TAG_DISTRIBUTOR_GST_NUMBER = "dist_gst_no";
+    private static String TAG_SUPPLIER_NAME = "supplier_name";
 
     private static String TAG_RETAILER_NAME = "ret_name";
     private static String TAG_RETAILER_CODE = "ret_code";
@@ -601,6 +602,10 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_DISTRIBUTOR_GST_NUMBER)) {
             value = label + bmodel.userMasterHelper.getUserMasterBO()
                     .getGSTNumber();
+        } else if (tag.equalsIgnoreCase(TAG_SUPPLIER_NAME)) {
+            if (bmodel.getRetailerMasterBO().getSupplierBO() != null)
+                value = label + bmodel.getRetailerMasterBO().getSupplierBO()
+                        .getSupplierName();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_NAME)) {
             value = label + bmodel.getRetailerMasterBO().getRetailerName();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_CODE)) {
@@ -846,6 +851,7 @@ public class CommonPrintHelper {
                     mProductValue = getPromoType(context, prod);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
                     mProductValue = String.valueOf(prod.getFoc());
+                    mProductQtyInPieceTotal = mProductQtyInPieceTotal + Integer.parseInt(mProductValue);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
                     int totalQty = prod.getOrderedPcsQty()
                             + prod.getOrderedCaseQty()
@@ -1011,6 +1017,7 @@ public class CommonPrintHelper {
                                 mProductValue = getPromoType(context, prod);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
                                 mProductValue = String.valueOf(prod.getFoc());
+                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + Integer.parseInt(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
                                 int totalQty = prod.getOrderedPcsQty()
                                         + prod.getOrderedCaseQty()
@@ -1139,7 +1146,7 @@ public class CommonPrintHelper {
                                         && freeProduct.getPcUomid() != 0) {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
                                 }
-
+                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + Integer.parseInt(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
@@ -1150,13 +1157,6 @@ public class CommonPrintHelper {
                                 mProductValue = prod.getProductCode();
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
                                 mProductValue = context.getResources().getString(R.string.free);
-                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
-                                int totalQty = prod.getOrderedPcsQty()
-                                        + prod.getOrderedCaseQty()
-                                        * prod.getCaseSize()
-                                        + prod.getOrderedOuterQty()
-                                        * prod.getOutersize();
-                                mProductValue = String.valueOf((prod.getTotalamount() - prod.getApplyValue()) / totalQty);
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {

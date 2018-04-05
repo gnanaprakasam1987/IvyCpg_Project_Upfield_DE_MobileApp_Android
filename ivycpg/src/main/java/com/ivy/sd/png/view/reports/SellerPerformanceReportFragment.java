@@ -148,7 +148,7 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                 ArrayList<OutletReportBO> userList = bmodel.reportHelper.downloadUsers();
 
                 for (OutletReportBO user : userList) {
-                    int plannedCall = 0, deviateCall = 0, actualCall = 0, productiveCall = 0;
+                    int plannedCall = 0, deviateCall = 0, actualCall = 0, productiveCall = 0 ,salesVolume = 0;
                     double vistPer = 0, productivePer = 0, actual = 0, objective = 0;
                     long duration = 0;
                     String lastSync = "";
@@ -159,6 +159,8 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                     for (OutletReportBO outletReport : outLetReportList) {
                         if (user.getUserId() == outletReport.getUserId()) {
                             actual += Double.parseDouble(outletReport.getSalesValue());
+                            salesVolume += Integer.parseInt(outletReport.getSalesVolume());
+
                             if (outletReport.getIsPlanned() == 1)
                                 plannedCall += 1;
                             if (outletReport.getIsPlanned() == 0 && outletReport.getIsVisited() == 1)
@@ -186,6 +188,8 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                     sellerPerformanceBO.setDeviatedCall(deviateCall);
                     sellerPerformanceBO.setActualCall(actualCall);
                     sellerPerformanceBO.setProductiveCall(productiveCall);
+                    sellerPerformanceBO.setSalesVolume(salesVolume + "");
+
 
                     sellerPerformanceBO.setTimeSpent(String.format("%02d:%02d:%02d",
                             TimeUnit.MILLISECONDS.toHours(duration),
@@ -265,7 +269,7 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         private ArrayList<SellerPerformanceBO> performList;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            public TextView tvUserName, tvLastSync, tvTimeSpent, tvActual, tvVistPer, tvProdPer, tvPlannedCall, tvDeviateCall, tvActualCall, tvProdCall;
+            public TextView tvUserName, tvLastSync, tvTimeSpent, tvActual, tvVistPer, tvProdPer, tvPlannedCall, tvDeviateCall, tvActualCall, tvProdCall, tvSalesVolume;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -279,6 +283,7 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                 tvDeviateCall = (TextView) view.findViewById(R.id.tvadevCallValue);
                 tvActualCall = (TextView) view.findViewById(R.id.tvActualCallValue);
                 tvProdCall = (TextView) view.findViewById(R.id.tvProdCallValue);
+                tvSalesVolume = (TextView) view.findViewById(R.id.tv_sales_volume_value);
 
                 tvUserName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 tvLastSync.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -290,6 +295,7 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                 tvDeviateCall.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 tvActualCall.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 tvProdCall.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvSalesVolume.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 ((TextView) view.findViewById(R.id.tv_last_sync_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) view.findViewById(R.id.tv_time_spent_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -300,6 +306,8 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                 ((TextView) view.findViewById(R.id.tvdevCallTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) view.findViewById(R.id.tvActCallTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) view.findViewById(R.id.tvProdCallTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tv_sales_volume_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
             }
         }
 
@@ -329,6 +337,8 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
             holder.tvDeviateCall.setText(performanceBO.getDeviatedCall() + "");
             holder.tvActualCall.setText(performanceBO.getActualCall() + "");
             holder.tvProdCall.setText(performanceBO.getProductiveCall() + "");
+            holder.tvSalesVolume.setText(performanceBO.getSalesVolume() + "");
+
 
         }
 

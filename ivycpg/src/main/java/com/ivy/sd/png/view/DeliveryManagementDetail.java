@@ -315,6 +315,14 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
                     @Override
                     public void afterTextChanged(Editable s) {
+                        if (holder.productBO.getPcUomid() == 0) {
+                            holder.pieceET.removeTextChangedListener(this);
+                            holder.pieceET.setText("0");
+                            holder.pieceET.addTextChangedListener(this);
+                            return;
+                        }
+
+
                         String qty = s.toString();
                         if (!qty.equals("")) {
                             int enteredQty = SDUtil
@@ -350,6 +358,14 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
                     @Override
                     public void afterTextChanged(Editable s) {
+                        if (holder.productBO.getCaseSize() == 0) {
+                            holder.caseET.removeTextChangedListener(this);
+                            holder.caseET.setText("0");
+                            holder.caseET.addTextChangedListener(this);
+                            return;
+                        }
+
+
                         String qty = s.toString();
                         if (!qty.equals("")) {
                             int enteredQty = SDUtil
@@ -383,6 +399,14 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
                     @Override
                     public void afterTextChanged(Editable s) {
+
+                        if (holder.productBO.getOutersize() == 0) {
+                            holder.outerET.removeTextChangedListener(this);
+                            holder.outerET.setText("0");
+                            holder.outerET.addTextChangedListener(this);
+                            return;
+                        }
+
                         String qty = s.toString();
                         if (!qty.equals("")) {
                             int enteredQty = SDUtil

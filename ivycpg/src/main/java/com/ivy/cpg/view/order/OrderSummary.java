@@ -1180,7 +1180,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                     PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
 
                                         discountHelper.clearSchemeFreeProduct(mOrderedProductList);
-
+                                        BModel.deleteModuleCompletion("MENU_STK_ORD");
                                         new MyThread(OrderSummary.this,
                                                 DataMembers.DELETE_STOCK_AND_ORDER).start();
                                     }
@@ -1860,7 +1860,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 holder.text_total = (TextView) row.findViewById(R.id.TOTAL);
                 holder.outerQty = (TextView) row.findViewById(R.id.OC_QUANTITY);
                 holder.weight = (TextView) row.findViewById(R.id.tv_weight);
-
+                holder.foc = (TextView) row.findViewById(R.id.FOC_QUANTITY);
                 holder.shelfCaseQty = (TextView) row.findViewById(R.id.sc_quantity);
                 holder.shelfOuterQty = (TextView) row.findViewById(R.id.sho_quantity);
                 holder.shelfPieceQty = (TextView) row.findViewById(R.id.sp_quantity);
@@ -2049,6 +2049,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
 
             holder.tw_srp.setText(SDUtil.roundIt(0, 2));
+            holder.foc.setText(SDUtil.roundIt(0, 2));
 
             if (!BModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                 holder.text_total.setVisibility(View.GONE);
@@ -2110,7 +2111,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 holder.shelfCaseQty = (TextView) row.findViewById(R.id.sc_quantity);
                 holder.shelfOuterQty = (TextView) row.findViewById(R.id.sho_quantity);
                 holder.shelfPieceQty = (TextView) row.findViewById(R.id.sp_quantity);
-
+                holder.foc = (TextView) row.findViewById(R.id.FOC_QUANTITY);
                 holder.text_productName.setMaxLines(BModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.text_productName.setTypeface(BModel.configurationMasterHelper.getProductNameFont());
                 (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -2260,6 +2261,40 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     holder.text_total.setVisibility(View.GONE);
                 }
 
+                if (!BModel.configurationMasterHelper.SHOW_FOC) {
+                    (row.findViewById(R.id.llfoc)).setVisibility(View.GONE);
+                } else {
+                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    holder.foc.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    try {
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.focTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.focTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.focTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(" " + e);
+                    }
+                }
+                if (!BModel.configurationMasterHelper.SHOW_FOC) {
+                    (row.findViewById(R.id.llfoc)).setVisibility(View.GONE);
+                } else {
+                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    holder.foc.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    try {
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.focTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.focTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.focTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(" " + e);
+                    }
+                }
+
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -2275,11 +2310,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             holder.shelfCaseQty.setText(String.valueOf(((holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfCase() == -1) ? 0 : holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfCase())));
             holder.shelfOuterQty.setText(String.valueOf(((holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfOuter() == -1) ? 0 : holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfOuter())));
             holder.shelfPieceQty.setText(String.valueOf(((holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfPiece() == -1) ? 0 : holder.productBO.getLocations().get(BModel.productHelper.getmSelectedLocationIndex()).getShelfPiece())));
-
+            holder.foc.setText(String.valueOf(holder.productBO.getFoc()));
             holder.text_total.setText(String.valueOf(BModel.formatValue(holder.productBO
                     .getDiscount_order_value())));
             int weight = holder.productBO.getOrderedPcsQty() + (holder.productBO.getOrderedCaseQty() * holder.productBO.getCaseSize()) + (holder.productBO.getOrderedOuterQty() * holder.productBO.getOutersize());
             holder.weight.setText(String.valueOf(weight * holder.productBO.getWeight()));
+
 
             return row;
         }
@@ -2308,6 +2344,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         private TextView shelfPieceQty;
         private TextView tw_srp;
         private TextView text_total;
+        private TextView foc;
     }
 
 
@@ -2366,7 +2403,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-            } else if (msg.what == DataMembers.NOTIFY_ORDER_SAVED) {
+            } else if (msg.what == DataMembers.NOTIFY_ORDER_NOT_SAVED) {
                 try {
                     alertDialog.dismiss();
                     Toast.makeText(OrderSummary.this, getResources().getString(R.string.order_save_falied),

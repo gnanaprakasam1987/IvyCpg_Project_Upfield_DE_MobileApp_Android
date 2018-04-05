@@ -1308,6 +1308,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private void nextButtonClick() {
         try {
+
+            if (bmodel.configurationMasterHelper.SHOW_STOCK_SP
+                    &&bmodel.configurationMasterHelper.IS_MUST_SELL_STK
+                    && !bmodel.productHelper.isMustSellFilledStockCheck(false)) {
+                Toast.makeText(this, R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (bmodel.hasOrder()) {
 
                 //if this config IS_RFIELD1_ENABLED enabled below code will work
@@ -1846,11 +1854,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
             if (holder.list_view_order_btn != null && holder.total != null) {
                 if (holder.productObj.getOrderedPcsQty() != 0) {
-                    holder.list_view_order_btn.setText("Ordered - " + holder.productObj.getOrderedPcsQty() + "");
+                    holder.list_view_order_btn.setText(getResources().getString(R.string.ordered)+" - " + holder.productObj.getOrderedPcsQty() + "");
                     holder.total.setText("" + bmodel.formatValue(holder.productObj.getTotalamount()));
                 } else {
                     holder.total.setText("0");
-                    holder.list_view_order_btn.setText("ORDER");
+                    holder.list_view_order_btn.setText(getResources().getString(R.string.order));
                 }
             }
             if (holder.pdt_image != null) {
@@ -2074,7 +2082,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         productIdList = new ArrayList<String>();
                         for (ProductMasterBO product : mylist) {
                             productIdList.add(product.getProductID());
-                        }
+                        }bottom_layout.setVisibility(View.GONE);
                         Intent i = new Intent(CatalogOrder.this, ProductDetailsCatalogActivity.class);
                         i.putExtra("FiveFilter", mSelectedIdByLevelId);
                         i.putStringArrayListExtra("ProductIdList", productIdList);

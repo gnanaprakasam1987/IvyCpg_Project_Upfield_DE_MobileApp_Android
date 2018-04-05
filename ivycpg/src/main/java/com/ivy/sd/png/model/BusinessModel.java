@@ -230,6 +230,7 @@ public class BusinessModel extends Application {
     public RetailerMasterBO retailerMasterBO;
     public String deleteSpliteOrderID;
     public Vector<RetailerMasterBO> retailerMaster;
+    public Vector<RetailerMasterBO> subDMaster;
     public ArrayList<RetailerMasterBO> visitretailerMaster;
     private Vector<BankMasterBO> bankMaster;
     private Vector<BranchMasterBO> bankBranch;
@@ -363,6 +364,7 @@ public class BusinessModel extends Application {
     private OrderFullfillmentBO orderfullfillmentbo;
     private TextView messagetv;
     public int photocount = 0;
+    public int mSelectedSubId = -1;
 
 
     private HashMap<String, RetailerMasterBO> mRetailerBOByRetailerid;
@@ -505,6 +507,8 @@ public class BusinessModel extends Application {
                 ctxx.startActivityForResult(myIntent, 0);
             } else {*/
             myIntent = new Intent(ctxx, HomeScreenActivity.class);
+            myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             ctxx.startActivityForResult(myIntent, 0);
             //}
         } else if (act.equals(DataMembers.actPlanning)) {
@@ -972,21 +976,21 @@ public class BusinessModel extends Application {
         }
     }
 
-	/*
+    /*
      * This method will return total acheived value of the seller for the day.
-	 * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
-	 * value will not be considered.
-	 */
+     * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
+     * value will not be considered.
+     */
 
     public String QT(String data) {
         return "'" + data + "'";
     }
 
-	/*
+    /*
      * This method will return total acheived value of the seller for the day.
-	 * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
-	 * value will be considered.
-	 */
+     * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
+     * value will be considered.
+     */
 
     /**
      * Used to check order exist without invoice creation.
@@ -1019,11 +1023,11 @@ public class BusinessModel extends Application {
         return false;
     }
 
-	/*
+    /*
      * This method will return total acheived value of the retailwer for the
-	 * day. OrderHeader if preseller or InvoiceMaster. Deviated retailer
-	 * acheived value will be considered.
-	 */
+     * day. OrderHeader if preseller or InvoiceMaster. Deviated retailer
+     * acheived value will be considered.
+     */
 
     /**
      * This method will return whether there is any order exist in DB without
@@ -1429,8 +1433,8 @@ public class BusinessModel extends Application {
 
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate"
-
+                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
+                            + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country"
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerClientMappingMaster RC on RC.rid = A.RetailerID"
@@ -1458,6 +1462,7 @@ public class BusinessModel extends Application {
             // group by A.retailerid
             if (c != null) {
                 setRetailerMaster(new Vector<RetailerMasterBO>());
+                setSubDMaster(new Vector<RetailerMasterBO>());
                 while (c.moveToNext()) {
                     retailer = new RetailerMasterBO();
                     String retID = c.getString(c.getColumnIndex("RetailerID"));
@@ -1524,6 +1529,7 @@ public class BusinessModel extends Application {
                     retailer.setInitiative_target(c.getInt(c.getColumnIndex("init_target")));
                     retailer.setRfield2(c.getString(c.getColumnIndex("RField2")));
                     retailer.setIsPresentation(c.getString(c.getColumnIndex("isPresentation")));
+
 
                     retailer.setGpsDistance(c.getInt(c.getColumnIndex("GPS_DIST")));
                     retailer.setOtpActivatedDate(c.getString(c.getColumnIndex("StoreOTPActivated")));
@@ -1618,6 +1624,14 @@ public class BusinessModel extends Application {
                     retailer.setIsSEZzone(c.getInt(c.getColumnIndex("InSEZ")));
                     retailer.setDLNo(c.getString(c.getColumnIndex("DLNo")));
                     retailer.setDLNoExpDate(c.getString(c.getColumnIndex("DLNoExpDate")));
+                    retailer.setSubdId(c.getInt(c.getColumnIndex("SubDId")));
+                    retailer.setPanNumber(c.getString(c.getColumnIndex("pan_number")));
+                    retailer.setFoodLicenceNo(c.getString(c.getColumnIndex("food_licence_number")));
+                    retailer.setFoodLicenceExpDate(c.getString(c.getColumnIndex("food_licence_exp_date")));
+                    retailer.setMobile(c.getString(c.getColumnIndex("Mobile")));
+                    retailer.setFax(c.getString(c.getColumnIndex("FaxNo")));
+                    retailer.setRegion(c.getString(c.getColumnIndex("Region")));
+                    retailer.setCountry(c.getString(c.getColumnIndex("Country")));
 
 
                     retailer.setIsToday(0);
@@ -1633,8 +1647,8 @@ public class BusinessModel extends Application {
                     if (configurationMasterHelper.isRetailerBOMEnabled) {
                         setIsBOMAchieved(retailer);
                     }
-
                     getRetailerMaster().add(retailer);
+
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
 
 
@@ -1666,6 +1680,16 @@ public class BusinessModel extends Application {
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
 
             updateCurrentFITscore();
+
+            if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD) {
+
+                for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
+                    if (retailerMasterBO.getSubdId() != 0) {
+                        getSubDMaster().add(retailerMasterBO);
+                    }
+
+                }
+            }
 
             db.closeDB();
         } catch (Exception e) {
@@ -2741,7 +2765,7 @@ public class BusinessModel extends Application {
                     String tempVal;
                     String fractionalStr;
 
-                   /* tempVal = formatValue(value) + "";*/
+                    /* tempVal = formatValue(value) + "";*/
                     tempVal = SDUtil.format(value, configurationMasterHelper.VALUE_PRECISION_COUNT, 0);
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
@@ -3568,8 +3592,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("BixolonIPrint")) {
                         BixolonIPrint frm = (BixolonIPrint) ctx;
@@ -3577,8 +3601,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("BtPrint4Ivy")) {
                         BtPrint4Ivy frm = (BtPrint4Ivy) ctx;
@@ -3586,8 +3610,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("InvoicePrintZebraNew")) {
                         InvoicePrintZebraNew frm = (InvoicePrintZebraNew) ctx;
@@ -3595,8 +3619,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("PrintPreviewScreen")) {
                         PrintPreviewScreen frm = (PrintPreviewScreen) ctx;
@@ -3604,8 +3628,8 @@ public class BusinessModel extends Application {
                                 DataMembers.NOTIFY_PRINT);
                         /*
                          * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                   * frm.finish();
-                   */
+                         * frm.finish();
+                         */
                     } else if (ctx.getClass().getSimpleName()
                             .equalsIgnoreCase("PrintPreviewScreenDiageo")) {
                         PrintPreviewScreenDiageo frm = (PrintPreviewScreenDiageo) ctx;
@@ -4668,7 +4692,7 @@ public class BusinessModel extends Application {
         return i;
     }
 
-	/* ******* Invoice Number To Print End ******* */
+    /* ******* Invoice Number To Print End ******* */
 
     /**
      * this method will count number of today retailer for which SBD Merch is
@@ -4779,7 +4803,7 @@ public class BusinessModel extends Application {
     }
 
 
-     /* ******* Invoice Number To Print End ******* */
+    /* ******* Invoice Number To Print End ******* */
 
     public int getAdhocimgCount() {
         int i = 0;
@@ -4946,7 +4970,7 @@ public class BusinessModel extends Application {
     }
 
     /* This method will download the config for the productivecall. Based on the RField
-    * value the productive config will turn ON and accordingly the productiveCalls values will be computed*/
+     * value the productive config will turn ON and accordingly the productiveCalls values will be computed*/
 
     public void loadProductiveCallsConfig() {
         try {
@@ -6195,8 +6219,8 @@ public class BusinessModel extends Application {
                                           String fNameStarts) {
         /*
          * It returns true if the folder contains the n or more than n files
-		 * which starts name fnameStarts otherwiese returns false;
-		 */
+         * which starts name fnameStarts otherwiese returns false;
+         */
         if (n < 1)
             return true;
 
@@ -9211,6 +9235,32 @@ public class BusinessModel extends Application {
         return dailyRp;
     }
 
+    public DailyReportBO getNoOfOrderAndValue() {
+        DailyReportBO dailyRp = new DailyReportBO();
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select count(distinct orderid),sum(ordervalue) from OrderHeader");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        dailyRp.setTotLines(c.getInt(0) + "");
+                        dailyRp.setTotValues(c.getDouble(1) + "");
+                    }
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getNoOfOrderAndValue", e);
+        }
+        return dailyRp;
+    }
+
     public DailyReportBO getFocusBrandInvoiceAmt() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {
@@ -9265,6 +9315,48 @@ public class BusinessModel extends Application {
         return sale_return_value;
     }
 
+    public DailyReportBO getFullFillmentValue() {
+        DailyReportBO dailyRp = new DailyReportBO();
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
+                                + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
+                                + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
+            Cursor c = db
+                    .selectSQL(query);
+            int loadQty;
+            int deliverQty;
+            double price;
+            double deliveredValue = 0;
+            double loadedValue = 0;
+
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        loadQty = c.getInt(0) + (c.getInt(1) * c.getInt(2))
+                                + (c.getInt(3) * c.getInt(4));
+                        deliverQty = loadQty - c.getInt(5);
+                        deliverQty = deliverQty < 0 ? 0 : deliverQty;
+                        price = c.getDouble(6);
+                        deliveredValue += deliverQty * price;
+                        loadedValue += loadQty * price;
+                    }
+                    dailyRp.setDelivered(deliveredValue);
+                    dailyRp.setLoaded(loadedValue);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getFullFillmentValue", e);
+        }
+        return dailyRp;
+    }
+
 
     /**
      * Returns email credentials given
@@ -9307,7 +9399,15 @@ public class BusinessModel extends Application {
         return mUserCredentials;
     }
 
+    public Vector<RetailerMasterBO> getSubDMaster() {
+        if (subDMaster == null)
+            return new Vector<RetailerMasterBO>();
+        return subDMaster;
+    }
 
+    public void setSubDMaster(Vector<RetailerMasterBO> subDMaster) {
+        this.subDMaster = subDMaster;
+    }
 }
 
 
