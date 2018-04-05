@@ -340,7 +340,7 @@ public class ConfigurationMasterHelper {
     public int VALUE_NEARBY_RETAILER_MAX = 1;
     private static final String CODE_IS_AUDIT_USER = "ISAUDITUSER";
     public boolean IS_AUDIT_USER = false;
-    private static final String CODE_IN_OUT_MANDATE = "ATTENDANCE01";
+    private static final String CODE_IN_OUT_MANDATE = "Attendance01";
     public boolean IS_IN_OUT_MANDATE = false;
     private static final String CODE_IS_ADHOC = "RTRS11";
     public boolean IS_ADHOC = false;

@@ -276,9 +276,9 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                 catalogOrderValueUpdate.updateTotalValue(pdtBO.getOrderedPcsQty() + "");
                 //mSelectedTV.setText(value);
                 if (String.valueOf(pdtBO.getOrderedPcsQty()).equals("0")) {
-                    orderBtn.setText("ORDER");
+                    orderBtn.setText(context.getResources().getString(R.string.order));
                 } else {
-                    orderBtn.setText("Ordered - " + pdtBO.getOrderedPcsQty() + "");
+                    orderBtn.setText(context.getResources().getString(R.string.ordered)+" - " + pdtBO.getOrderedPcsQty() + "");
                 }
                 total_tv.setText(bmodel.formatValue(pdtBO.getTotalamount()) + "");
             }
@@ -360,7 +360,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                         + (pdtBO
                         .getOrderedOuterQty() * pdtBO
                         .getOsrp());
-                value_keyboard.setText("Value : " + bmodel.formatValue(tot));
+                value_keyboard.setText(context.getResources().getString(R.string.value)+": " + bmodel.formatValue(tot));
                 if (isFrom.equals("SUBMIT")) {
                     pdtBO.setTotalamount(tot);
                 }
@@ -391,7 +391,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                     .getSrp())
                     + (pdtBO.getOrderedOuterQty() * pdtBO
                     .getOsrp());
-            value_keyboard.setText("Value : " + bmodel.formatValue(tot) + "");
+            value_keyboard.setText(context.getResources().getString(R.string.value)+": " + bmodel.formatValue(tot) + "");
             if (isFrom.equals("SUBMIT")) {
                 pdtBO.setTotalamount(tot);
             }

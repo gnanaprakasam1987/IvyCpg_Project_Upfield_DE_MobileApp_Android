@@ -1740,6 +1740,12 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.iv_outlet_color.setVisibility(View.GONE);
             }
 
+            if (retailerObj.getIsDeviated()!=null
+                    &&("Y").equalsIgnoreCase((retailerObj.getIsDeviated())))
+                holder.imgDeviate.setVisibility(View.VISIBLE);
+            else
+                holder.imgDeviate.setVisibility(View.GONE);
+
             return convertView;
         }
 

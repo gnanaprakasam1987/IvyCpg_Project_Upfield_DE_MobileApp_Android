@@ -33,7 +33,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar implements N
             // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle(null);
-            setScreenTitle("Profile Edit");
+            setScreenTitle(getResources().getString(R.string.profile_edit_screen__title));
         }
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {

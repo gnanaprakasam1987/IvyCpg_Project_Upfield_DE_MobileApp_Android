@@ -748,6 +748,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         BusinessModel.loadActivity(getActivity(),
                                 DataMembers.actHomeScreen);
                     } else {
+                        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance();
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
                     }
 
@@ -829,7 +830,9 @@ public class SynchronizationFragment extends IvyBaseFragment
 
                     } else {
                         alertDialog.dismiss();
+                        withPhotosCheckBox.setChecked(false);
                         updateLastSync();
+                        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance();
                         tvwstatus.setText(getResources().getString(
                                 R.string.data_upload_completed_sucessfully));
                         displaymetrics = new DisplayMetrics();
@@ -846,6 +849,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                     R.string.upload_failed_please_try_again), 0);
                     break;
                 case DataMembers.NOTIFY_UPLOADED_IMAGE:
+                    withPhotosCheckBox.setChecked(false);
                     if (bmodel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT)
                         presenter.loadRetailerSelectionScreen();
                     bmodel.showAlert(
@@ -872,8 +876,10 @@ public class SynchronizationFragment extends IvyBaseFragment
                     String s2 = tvwstatus.getText() + DataMembers.CR1
                             + msg.obj;
                     tvwstatus.setText(s2);
+                    withPhotosCheckBox.setChecked(false);
                     bmodel.photocount = 0;
                     alertDialog.dismiss();
+                    HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance();
                     //bmodel.showAlert(getResources().getString(R.string.successfully_uploaded), 0);
                     displaymetrics = new DisplayMetrics();
                     getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);

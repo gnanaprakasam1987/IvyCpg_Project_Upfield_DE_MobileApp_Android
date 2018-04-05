@@ -107,6 +107,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_CS_RPT = "MENU_CS_RPT";
 
 	public static final String MENU_INVENTORY_RPT = "MENU_INVPJ_RPT";
+    public static final String MENU_RETAILER_ACTIVITY_REPORT = "MENU_RETACT_RPT";
 
 	// For Piramal
 	public static final String MENU_BRAND_PERFORMANCE_REPORT = "MENU_BRAND_RPT";

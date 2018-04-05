@@ -59,6 +59,7 @@
                     android:layout_marginStart="@dimen/target_top_margin"
                     android:layout_marginEnd="@dimen/dimen_1dp"
                     android:background="@drawable/activity_icon_bg_normal"
+                    android:backgroundTintMode="src_over"
                     android:backgroundTint="@color/colorPrimary"
                     android:gravity="center">
 

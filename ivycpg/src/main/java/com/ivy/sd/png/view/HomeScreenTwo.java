@@ -1519,7 +1519,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
 
-                bmodel.productHelper.downloadTaggedProducts(MENU_STOCK);
+                // More than 15 characters not allowed in sync. So code shortened..
+                if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
+                    bmodel.productHelper.downloadTaggedProducts("MENU_COMB_STK");
+                else
+                    bmodel.productHelper.downloadTaggedProducts(MENU_STOCK);
 
                 /** Download location to load in the filter. **/
                 bmodel.productHelper.downloadInStoreLocations();
@@ -2485,13 +2489,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if ((menu.getConfigCode().equals(MENU_SALES_RET) && hasLink == 1)
                 || (menu.getConfigCode().equals(StandardListMasterConstants.MENU_STOCK_REPLACEMENT) && hasLink == 1)) {
 
-            if(bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+            if (bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
                     !bmodel.configurationMasterHelper.IS_INVOICE &&
-                    bmodel.getOrderValue() == 0){
+                    bmodel.getOrderValue() == 0) {
                 Toast.makeText(this, getResources().getString(R.string.please_complete_order_taking_activity_to_perform_sales_return_activity), Toast.LENGTH_LONG).show();
                 isCreated = false;
-            }
-            else if (isPreviousDone(menu) || bmodel.configurationMasterHelper.IS_JUMP) {
+            } else if (isPreviousDone(menu) || bmodel.configurationMasterHelper.IS_JUMP) {
 
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
                 salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());

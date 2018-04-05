@@ -138,6 +138,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
     private boolean isHomeBtnEnable;
     private boolean isPrintClicked;
     private boolean isHidePrintBtn;
+    private boolean isFromInvoice;
     private int widthImage, heightImage;
     private String PRINT_STATE = "";
     private Toolbar toolbar;
@@ -174,6 +175,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         isHomeBtnEnable = getIntent().getExtras().getBoolean("isHomeBtnEnable", false);
         isFromCollection = getIntent().getExtras().getBoolean("isFromCollection", false);
         isHidePrintBtn = getIntent().getExtras().getBoolean("isHidePrintBtn", false);
+        isFromInvoice = getIntent().getExtras().getBoolean("isFromInvoice", false);
         sendMailAndLoadClass = getIntent().getExtras().getString("sendMailAndLoadClass");
         if (isHomeBtnEnable) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -1014,7 +1016,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         }
 
         if (bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT
-                && isPrintSuccess && mTotalNumbersPrinted < bmodel.configurationMasterHelper.printCount) {
+                && isPrintSuccess && mTotalNumbersPrinted < bmodel.configurationMasterHelper.printCount && isFromInvoice) {
             msg = getResources().getString(R.string.do_u_want_to_take_one_more_print);
 
             commonDialog = new CommonDialog(getApplicationContext(), this,

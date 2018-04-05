@@ -1,11 +1,8 @@
 package com.ivy.cpg.view.stockcheck;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -40,7 +37,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.Vector;
 
@@ -251,10 +247,49 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 (findViewById(R.id.ll_availability)).setVisibility(View.GONE);
             if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
                 ((LinearLayout) findViewById(R.id.ll_avail_case)).setVisibility(View.GONE);
+            else {
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                            R.id.tv_avail_cstitle).getTag()) != null)
+                        ((TextView) findViewById(R.id.tv_avail_cstitle))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(findViewById(
+                                                R.id.tv_avail_cstitle)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+            }
             if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
                 ((LinearLayout) findViewById(R.id.ll_avail_piece)).setVisibility(View.GONE);
+            else {
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                            R.id.tv_avail_pctitle).getTag()) != null)
+                        ((TextView) findViewById(R.id.tv_avail_pctitle))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(findViewById(
+                                                R.id.tv_avail_pctitle)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+            }
             if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
                 ((LinearLayout) findViewById(R.id.ll_avail_outer)).setVisibility(View.GONE);
+            else {
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                            R.id.tv_avail_outitle).getTag()) != null)
+                        ((TextView) findViewById(R.id.tv_avail_outitle))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(findViewById(
+                                                R.id.tv_avail_outitle)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+            }
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
                 ((LinearLayout) findViewById(R.id.ll_avgdays)).setVisibility(View.GONE);
 
@@ -281,10 +316,49 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
             if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK) {
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_CS)
                     ((LinearLayout) findViewById(R.id.ll_price_case)).setVisibility(View.GONE);
+                else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                                R.id.tv_price_csTitle).getTag()) != null)
+                            ((TextView) findViewById(R.id.tv_price_csTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(findViewById(
+                                                    R.id.tv_price_csTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_OU)
                     ((LinearLayout) findViewById(R.id.ll_price_outer)).setVisibility(View.GONE);
+                else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                                R.id.tv_price_ouTitle).getTag()) != null)
+                            ((TextView) findViewById(R.id.tv_price_ouTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(findViewById(
+                                                    R.id.tv_price_ouTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_PCS)
                     ((LinearLayout) findViewById(R.id.ll_price_piece)).setVisibility(View.GONE);
+                else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                                R.id.tv_price_pcTitle).getTag()) != null)
+                            ((TextView) findViewById(R.id.tv_price_pcTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(findViewById(
+                                                    R.id.tv_price_pcTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
 
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_MRP_CS)
                     ((LinearLayout) findViewById(R.id.ll_priceMrp_case)).setVisibility(View.GONE);
@@ -318,10 +392,49 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
             if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK) {
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_NEAREXPIRY_CS)
                     ((LinearLayout) findViewById(R.id.ll_exp_outer)).setVisibility(View.GONE);
+                else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                                R.id.tv_exp_csTitle).getTag()) != null)
+                            ((TextView) findViewById(R.id.tv_exp_csTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(findViewById(
+                                                    R.id.tv_exp_csTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_NEAREXPIRY_OU)
                     ((LinearLayout) findViewById(R.id.ll_exp_case)).setVisibility(View.GONE);
+                else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                                R.id.tv_exp_ouTitle).getTag()) != null)
+                            ((TextView) findViewById(R.id.tv_exp_ouTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(findViewById(
+                                                    R.id.tv_exp_ouTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_NEAREXPIRY_PCS)
                     ((LinearLayout) findViewById(R.id.ll_exp_piece)).setVisibility(View.GONE);
+                else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                                R.id.tv_exp_pcTitle).getTag()) != null)
+                            ((TextView) findViewById(R.id.tv_exp_pcTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(findViewById(
+                                                    R.id.tv_exp_pcTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
 
             } else {
                 ((LinearLayout) findViewById(R.id.ll_expriyCheck_parentLty)).setVisibility(View.GONE);

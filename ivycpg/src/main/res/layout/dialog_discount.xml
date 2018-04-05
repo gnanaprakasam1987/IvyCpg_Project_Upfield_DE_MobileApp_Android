@@ -276,7 +276,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:tag="discounted_price"
-                                android:text="Discounted Price" />
+                                android:text="@string/discounted_price" />
                             <TextView
                                 android:id="@+id/d1title"
                                 style="?attr/customListTitle"

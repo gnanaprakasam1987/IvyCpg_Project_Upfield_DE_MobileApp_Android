@@ -77,7 +77,7 @@ public class UserSettingsActivity extends PreferenceActivity {
 
             getActionBar().setDisplayShowHomeEnabled(false);
 
-            getActionBar().setTitle("Settings");
+            getActionBar().setTitle(getResources().getString(R.string.settings));
 
 
             getActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary)));

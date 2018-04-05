@@ -490,7 +490,7 @@
             android:layout_marginBottom="@dimen/activity_margin1"
             android:layout_marginTop="@dimen/activity_margin1"
             android:minWidth="@dimen/savebtn_minwd"
-            android:text="APPLY"
+            android:text="@string/apply"
             android:tag="apply_leave" />
 
         <Button
