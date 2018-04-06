@@ -2418,6 +2418,23 @@ SynchronizationHelper {
             http.create(MyHttpConnectionNew.POST, downloadUrl.toString(), null);
             http.addParam(USER_IDENTITY, RSAEncrypt(jsonObj.toString()));
             http.connectMe();
+
+            Vector<String> result = http.getResult();
+            if (!result.isEmpty()) {
+                for (String s : result) {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Iterator itr = jsonObject.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals("ErrorCode")) {
+                            mAuthErrorCode = jsonObject.get("ErrorCode").toString();
+                            mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
+                            break;
+                        }
+                    }
+                }
+            }
+
             Map<String, List<String>> headerFields = http.getResponseHeaderField();
             if (headerFields != null) {
                 for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {

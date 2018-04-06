@@ -43,7 +43,6 @@ public class SurveyHelperNew {
     public int mSelectedSuperVisiorID;
 
 
-
     public String remarkDone = "N";
 
     public final static String cs_feedback_menucode = "MENU_SURVEY_CS";
@@ -1446,7 +1445,6 @@ public class SurveyHelperNew {
     }
 
 
-
     public void deleteUnusedImages() {
 
         Vector<QuestionBO> mAllQuestions = new Vector<>();
@@ -1781,7 +1779,7 @@ public class SurveyHelperNew {
         //Load last visit data
         if (!isLocalData && bmodel.configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN) {
 
-            String query = "SELECT surveyId,qid, answerid, Answer FROM LastVisitSurvey WHERE"
+            String query = "SELECT surveyId,qid, answerid, Answer,isSubQuest FROM LastVisitSurvey WHERE"
                     + " retailerID = " + bmodel.getRetailerMasterBO().getRetailerID();
             Cursor c = db.selectSQL(query);
             if (c != null) {

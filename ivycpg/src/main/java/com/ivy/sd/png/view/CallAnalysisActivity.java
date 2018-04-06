@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.CardView;
@@ -21,14 +20,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.telecom.Call;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,7 +38,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.services.s3.UploadObjectObserver;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
@@ -60,19 +55,17 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.ScreenOrientation;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener,SyncContractor.SyncView {
+public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener, SyncContractor.SyncView {
 
     private BusinessModel bmodel;
     private ImageView mGoldStoreIV;
@@ -120,7 +113,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     private UploadPresenterImpl presenter;
     private DisplayMetrics displaymetrics;
     SharedPreferences mLastSyncSharedPref;
-    private static int REQUEST_CODE_RETAILER_WISE_UPLOAD=100;
+    private static int REQUEST_CODE_RETAILER_WISE_UPLOAD = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,8 +146,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         mLastSyncSharedPref = getSharedPreferences("lastSync", Context.MODE_PRIVATE);
 
         mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(this);
-        mUploadHelper=UploadHelper.getInstance(this);
-        presenter =new UploadPresenterImpl(this,bmodel,this,mUploadHelper,mVanUnloadHelper);
+        mUploadHelper = UploadHelper.getInstance(this);
+        presenter = new UploadPresenterImpl(this, bmodel, this, mUploadHelper, mVanUnloadHelper);
 
         mTime = (TextView) findViewById(R.id.edt_time_taken);
 
@@ -1156,16 +1149,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     int totalFocusBrand4 = 0;
                     for (ProductMasterBO productBO : bmodel.productHelper.getProductMaster()) {
                         if (productBO.getIsFocusBrand() == 1) {
-                            totalFocusBrand1 = 1;
+                            totalFocusBrand1 += 1;
                         }
                         if (productBO.getIsFocusBrand2() == 1) {
-                            totalFocusBrand2 = 1;
+                            totalFocusBrand2 += 1;
                         }
                         if (productBO.getIsFocusBrand3() == 1) {
-                            totalFocusBrand3 = 1;
+                            totalFocusBrand3 += 1;
                         }
                         if (productBO.getIsFocusBrand4() == 1) {
-                            totalFocusBrand4 = 1;
+                            totalFocusBrand4 += 1;
                         }
                     }
                     totalFocusBrand = totalFocusBrand1 + totalFocusBrand2 + totalFocusBrand3 + totalFocusBrand4;
@@ -1319,7 +1312,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         }
     }
 
-      private void showCollectionReasonOrDialog() {
+    private void showCollectionReasonOrDialog() {
         if (collectionReasonFlag) {
             ReasonMaster collectioReasonBO = (ReasonMaster) spinnerNooCollectionReason
                     .getSelectedItem();
@@ -1513,16 +1506,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
                                     }
                                 });
-                 if(bmodel.configurationMasterHelper.IS_SYNC_FROM_CALL_ANALYSIS) {
-                     builder.setNeutralButton(getResources().getString(R.string.submit), new DialogInterface.OnClickListener() {
-                         public void onClick(DialogInterface dialog,
-                                             int whichButton) {
-                             showDialog(2);
+                if (bmodel.configurationMasterHelper.IS_SYNC_FROM_CALL_ANALYSIS) {
+                    builder.setNeutralButton(getResources().getString(R.string.submit), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton) {
+                            showDialog(2);
 
 
-                         }
-                     });
-                 }
+                        }
+                    });
+                }
 
                 bmodel.applyAlertDialogTheme(builder);
                 break;
@@ -1562,17 +1555,17 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        presenter.isFromCallAnalysis=true;
+                                        presenter.isFromCallAnalysis = true;
                                         presenter.validateAndUpload();
                                     }
                                 })
-                  .setNegativeButton(getResources().getString(R.string.cancel),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
-                                            int whichButton) {
+                        .setNegativeButton(getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
 
-                        }
-                    });
+                                    }
+                                });
                 bmodel.applyAlertDialogTheme(builder_sync);
                 break;
 
@@ -1961,8 +1954,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 bmodel.reasonHelper.saveImage(mImageName, mImagePath);
 
             }
-        }
-        else if(requestCode==REQUEST_CODE_RETAILER_WISE_UPLOAD){
+        } else if (requestCode == REQUEST_CODE_RETAILER_WISE_UPLOAD) {
             if (resultCode == Activity.RESULT_OK) {
                 presenter.prepareSelectedRetailerIds();
                 if (presenter.getVisitedRetailerId() != null
@@ -1976,8 +1968,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
             }
-        }
-        else {
+        } else {
             Commons.print(bmodel.mSelectedActivityName
                     + "Camers Activity : Canceled");
             isPhotoTaken = false;
@@ -1993,13 +1984,12 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     }
 
 
-
     //////
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             bmodel = (BusinessModel) getApplicationContext();
-           // isClicked = false;
+            // isClicked = false;
             SyncDownloadStatusDialog sdsd;
             switch (msg.what) {
 
@@ -2098,7 +2088,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
                 case DataMembers.NOTIFY_UPLOADED:
                     if (!bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES
-                            && (presenter.getImageFilesCount()>0 || presenter.getTextFilesCount() > 0)) {
+                            && (presenter.getImageFilesCount() > 0 || presenter.getTextFilesCount() > 0)) {
 
                         builder = new AlertDialog.Builder(CallAnalysisActivity.this);
                         setMessageInProgressDialog(builder, getResources().getString(
@@ -2156,7 +2146,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             R.string.successfully_uploaded), displaymetrics);
                     sdsd.show();
                     break;
-
 
 
                 default:
@@ -2240,7 +2229,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     @Override
     public void showProgressLoading() {
 
-        if(alertDialog!=null){
+        if (alertDialog != null) {
             alertDialog.dismiss();
         }
         builder = new AlertDialog.Builder(this);
@@ -2251,7 +2240,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
     @Override
     public void showProgressUploading() {
-        if(alertDialog!=null){
+        if (alertDialog != null) {
             alertDialog.dismiss();
         }
         builder = new AlertDialog.Builder(this);
@@ -2262,7 +2251,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
     @Override
     public void cancelProgress() {
-        if(alertDialog!=null){
+        if (alertDialog != null) {
             alertDialog.dismiss();
         }
     }
@@ -2307,8 +2296,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         if (idd == 0) {
                             presenter.dayCloseAndUpload();
                         } else if (idd == 3) {
-                           // isClicked = false;
-                           // withPhotosCheckBox.setChecked(true);
+                            // isClicked = false;
+                            // withPhotosCheckBox.setChecked(true);
                             presenter.updateIsWithImageStatus(true);
                             presenter.upload();
                         }
@@ -2318,7 +2307,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         builder.setNegativeButton(getResources().getString(R.string.no),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                       // isClicked = false;
+                        // isClicked = false;
                         if (idd == 3) {
                             presenter.upload();
                         }
