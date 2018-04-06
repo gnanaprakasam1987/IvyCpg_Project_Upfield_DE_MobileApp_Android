@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.InStoreActivityBO;
 import com.ivy.sd.png.bo.TaskDataBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -20,14 +19,12 @@ public class TaskHelper {
     private BusinessModel bmodel;
     private static TaskHelper instance = null;
     public String mode = "seller";
-    private InStoreActivityBO instoreBO;
     private Vector<TaskDataBO> taskDataBO;
 
     protected TaskHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
         setTaskDataBO(new Vector<TaskDataBO>());
-        instoreBO = new InStoreActivityBO();
     }
 
     public static TaskHelper getInstance(Context context) {
@@ -83,7 +80,7 @@ public class TaskHelper {
                     + "'N'," + QT("self") + ", " + date + ",1";
             db.insertSQL("TaskMaster", columns_new, value_new);
 
-            String columns = "taskid,retailerid,usercreated,upload,date,uid";
+            String columns = "taskid,retailerid,usercreated,upload,date,uid,userid";
             String UID = QT(bmodel.getRetailerMasterBO().getRetailerID()
                     + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
 
@@ -91,14 +88,14 @@ public class TaskHelper {
                 String[] chrid = this.getChannelRetailerId(0);
                 for (int i = 0; i < chrid.length; i++) {
 
-                    values = id + "," + chrid[i] + "," + "1" + "," + "'N'," + date + "," + UID;
+                    values = id + "," + chrid[i] + "," + "1" + "," + "'N'," + date + "," + UID + "," + "0";
                     db.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                             columns, values);
                 }
 
-            } else if (channelId == 0) {
+            } else if (bmodel.taskHelper.mode.equals("seller")) {
 
-                values = id + "," + 0 + "," + "1" + "," + "'N'," + date + "," + UID;
+                values = id + "," + 0 + "," + "1" + "," + "'N'," + date + "," + UID + "," + channelId;
                 db.insertSQL(DataMembers.tbl_TaskConfigurationMaster, columns,
                         values);
             } else if (bmodel.taskHelper.mode.equals("retailer")) {
@@ -107,12 +104,12 @@ public class TaskHelper {
                     for (int i = 0; i < chrid.length; i++) {
 
                         values = id + "," + chrid[i] + "," + "1" + ","
-                                + "'N'," + date + "," + UID;
+                                + "'N'," + date + "," + UID + "," + "0";
                         db.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                                 columns, values);
                     }
                 } else {
-                    values = id + "," + channelId + "," + "1" + "," + "'N'," + date + "," + UID;
+                    values = id + "," + channelId + "," + "1" + "," + "'N'," + date + "," + UID + "," + "0";
                     db.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                             columns, values);
                 }
@@ -120,7 +117,7 @@ public class TaskHelper {
 
                 String[] chrid = this.getChannelRetailerId(channelId);
                 for (int i = 0; i < chrid.length; i++) {
-                    values = id + "," + chrid[i] + "," + "1" + "," + "'N'," + date + "," + UID;
+                    values = id + "," + chrid[i] + "," + "1" + "," + "'N'," + date + "," + UID + "," + "0";
                     db.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                             columns, values);
                 }
@@ -197,9 +194,8 @@ public class TaskHelper {
                 if (c.getCount() > 0) {
                     flag = true;
                 }
+                c.close();
             }
-
-            c.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -214,7 +210,7 @@ public class TaskHelper {
         db.openDataBase();
         Cursor c = db
                 .selectSQL("select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,A.upload,(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
-                        + "B.usercreated , B.taskowner , B.date, A.upload,channelid  from TaskConfigurationMaster A inner join TaskMaster B on "
+                        + "B.usercreated , B.taskowner , B.date, A.upload,channelid,A.userid  from TaskConfigurationMaster A inner join TaskMaster B on "
                         + "A.taskid=B.taskid left join TaskExecutionDetails TD on TD.TaskId=A.taskid  and  A.TaskId not in (Select taskid from TaskHistory where RetailerId =" + retailerId + " ) and TD.RetailerId = " + retailerId); //where A.upload!='Y'
         taskDataBO = new Vector<>();
         if (c != null) {
@@ -234,10 +230,12 @@ public class TaskHelper {
                 else
                     taskmasterbo.setIsUpload(false);
                 taskmasterbo.setChannelId(c.getInt(10));
+                taskmasterbo.setUserId(c.getInt(11));
                 taskDataBO.add(taskmasterbo);
             }
+            c.close();
         }
-        c.close();
+
         db.closeDB();
         return taskDataBO;
 
@@ -261,8 +259,8 @@ public class TaskHelper {
                 taskmasterbo.setTaskOwner(c.getString(3));
                 taskDataBO.add(taskmasterbo);
             }
+            c.close();
         }
-        c.close();
         db.closeDB();
         return taskDataBO;
 
@@ -288,8 +286,8 @@ public class TaskHelper {
                 taskmasterbo.setTaskOwner(c.getString(1));
                 taskDataBO.add(taskmasterbo);
             }
+            c.close();
         }
-        c.close();
         db.closeDB();
         return taskDataBO;
 
@@ -307,7 +305,7 @@ public class TaskHelper {
                         " where A.retailerId!=0 AND A.isdone=0");
         taskDataBO = new Vector<>();
         if (c != null) {
-            TaskDataBO taskmasterbo = null;
+            TaskDataBO taskmasterbo;
             while (c.moveToNext()) {
                 taskmasterbo = new TaskDataBO();
                 taskmasterbo.setTaskId(c.getString(0));
@@ -334,7 +332,7 @@ public class TaskHelper {
                 .selectSQL("SELECT RID, Date FROM RetailerClientMappingMaster ORDER BY RID");
         taskDataBO = new Vector<>();
         if (c != null) {
-            TaskDataBO taskmasterbo = null;
+            TaskDataBO taskmasterbo;
             while (c.moveToNext()) {
                 taskmasterbo = new TaskDataBO();
                 taskmasterbo.setRid(c.getInt(0));
@@ -398,7 +396,7 @@ public class TaskHelper {
 
     private void updateTask(TaskDataBO taskBO, boolean isNew,
                             String retailerid) {
-        DBUtil db = null;
+        DBUtil db;
         db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();

@@ -341,7 +341,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         ll_logout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                bmodel.synchronizationHelper.backUpDB();
                 showDialog(0);
             }
         });
@@ -1443,12 +1442,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_TASK_NEW)) {
             if (!isClicked) {
                 isClicked = false;
-                Intent intent = new Intent(getActivity(), Task.class);
+                switchFragment(MENU_TASK_NEW, menuItem.getMenuName());
+               /* Intent intent = new Intent(getActivity(), Task.class);
                 intent.putExtra("screentitle", menuItem.getMenuName());
                 intent.putExtra("IsRetailerwisetask", false);
                 intent.putExtra("fromHomeScreen", true);
                 startActivity(intent);
-                getActivity().finish();
+                getActivity().finish();*/
             }
         } else if (menuItem.getConfigCode().equals(MENU_PRIMARY_SALES)) {
             if (bmodel.synchronizationHelper.isDayClosed()) {
@@ -1651,6 +1651,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_JOINT_ACK);
         PlanDeviationFragment planDeviationFragment = (PlanDeviationFragment) fm
                 .findFragmentByTag(MENU_NON_FIELD);
+        TaskFragment taskFragment = (TaskFragment) fm.findFragmentByTag(MENU_TASK_NEW);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1754,6 +1755,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (planDeviationFragment != null && fragmentName.equals(MENU_NON_FIELD)
                 && planDeviationFragment.isVisible()) {
             return;
+        } else if (taskFragment != null && fragmentName.equals(MENU_TASK_NEW)
+                && taskFragment.isVisible()) {
+            return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
@@ -1824,6 +1828,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(acknowledgementFragment);
         if (planDeviationFragment != null)
             ft.remove(planDeviationFragment);
+        if (taskFragment != null)
+            ft.remove(taskFragment);
 
         Bundle bndl;
         Fragment fragment;
@@ -2118,6 +2124,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DELMGMT_RET);
                 break;
+            case MENU_TASK_NEW:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                bndl.putBoolean("IsRetailerwisetask", false);
+                bndl.putBoolean("fromHomeScreen", true);
+                fragment = new TaskFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_TASK_NEW);
+                break;
         }
         ft.commit();
 
@@ -2330,7 +2346,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             startActivity(new Intent(getActivity(), About.class));
             return true;
         } else if (i1 == R.id.menu_back) {
-            bmodel.synchronizationHelper.backUpDB();
             showDialog(0);
             return true;
         } else if (i1 == R.id.menu_pswd) {

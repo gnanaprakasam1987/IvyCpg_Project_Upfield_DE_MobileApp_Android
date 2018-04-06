@@ -4708,10 +4708,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     continue;
 
                 if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                        && ret.getSIH() > 0 && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
-                        || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0) ||
-                        (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && ret.getSIH() > 0)) {
+                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                && ret.getSIH() > 0
+                                && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
+                        || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 0
+                                && ret.getWSIH() > 0)
+                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.configurationMasterHelper.IS_INVOICE
+                                && ret.getSIH() > 0)) {
                     if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
                         if (mSelectedFilter.equals(getResources().getString(
                                 R.string.order_dialog_barcode))) {
