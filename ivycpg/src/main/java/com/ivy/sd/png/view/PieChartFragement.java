@@ -86,7 +86,6 @@ public class PieChartFragement extends Fragment implements OnChartValueSelectedL
         l.setYOffset(0f);
         l.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-
         if (skuList.size() > 0)
             setData();
         else

@@ -83,14 +83,6 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
 
         setHasOptionsMenu(true);
 
-
-        return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
         vpPager = (ViewPager) view.findViewById(R.id.viewpager);
         indicator = (CircleIndicator) view.findViewById(R.id.indicator);
         previous = (Button) view.findViewById(R.id.previousBTN);
@@ -123,6 +115,12 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         });
 
 
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
 
@@ -134,11 +132,12 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         }
         int siz = mylist.size();
         ArrayList<SKUWiseTargetBO> temp = new ArrayList<>();
+        if (bmodel.dashBoardHelper.getKpiSkuMasterBoById(new Integer(mSelectedProductId)) != 0)
+            mSelectedProductId = bmodel.dashBoardHelper.getKpiSkuMasterBoById(new Integer(mSelectedProductId));
         for (int i = 0; i < siz; ++i) {
-
             SKUWiseTargetBO ret = mylist.get(i);
-            if (bid != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel && !bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD) {
-                if (ret.getSequence() == bid && ret.getPid() == mSelectedProductId) {
+            if (bid != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel && bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD) {
+                if (ret.getSequence() == bid && ret.getParentID() == mSelectedProductId) {
                     temp.add(ret);
                 }
             } else {
