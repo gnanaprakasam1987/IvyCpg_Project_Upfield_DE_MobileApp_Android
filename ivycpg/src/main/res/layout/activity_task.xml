@@ -1,104 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/GRAY" />
-
-        <Button
-            android:id="@+id/btn_close"
-            style="?attr/roundedCustomButtonNormal"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/target_top_margin"
-            android:gravity="center"
-            android:text="@string/close"
-            android:textAllCaps="false" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/body"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/footer"
-        android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
         <include
             android:id="@+id/toolbar"
             layout="@layout/material_tool_bar" />
+    <fragment
+        android:id="@+id/survey_fragment"
+        android:name="com.ivy.sd.png.view.TaskFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabs"
-                style="?attr/tablayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                app:tabGravity="fill"
-                app:tabIndicatorHeight="4dp"
-                app:tabMaxWidth="1500dp"
-                app:tabMode="fixed" />
-        </LinearLayout>
-
-        <TextView
-            style="?textTitleStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:text="@string/task_creation"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/llbody"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/footer"
-            android:layout_below="@+id/lllbody"
-            android:orientation="horizontal">
-
-            <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"></android.support.v4.view.ViewPager>
-
-
-            <Button
-                android:id="@+id/newtask"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="@string/new1"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:id="@+id/task_cintainer_ll"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" />
-        </ScrollView>
-
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

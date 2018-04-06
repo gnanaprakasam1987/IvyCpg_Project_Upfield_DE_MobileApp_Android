@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,12 +27,14 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickListener {
@@ -42,24 +45,25 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
     private BusinessModel bmodel;
 
     private int channelId, retailerid;
-    private LinearLayout ll, rll;
 
     private boolean fromHomeScreen = false;
 
 
     private int taskChannelId;
     private String taskTitleDec, taskDetailDesc;
+    private int mSelectedUserId = 0;
+    ArrayList<UserMasterBO> sellerUserList;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_task_creation);
         bmodel = (BusinessModel) getApplicationContext();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         Bundle extras = getIntent().getExtras();
         setSupportActionBar(toolbar);
         if (toolbar != null && getSupportActionBar() != null) {
-            TextView mScreenTitleTV = (TextView) findViewById(R.id.tv_toolbar_title);
+            TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);
             mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
             getSupportActionBar().setTitle(null);
             mScreenTitleTV.setText(getResources().getString(R.string.task_creation));
@@ -77,36 +81,33 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
             }
         }
 
-        taskView = (EditText) findViewById(R.id.taskView);
-        taskTitle = (EditText) findViewById(R.id.tv);
-        Spinner channelSpinner = (Spinner) findViewById(R.id.channel);
-        Spinner retailerSpinner = (Spinner) findViewById(R.id.retailer);
-        close = (Button) findViewById(R.id.closeTask);
-        save = (Button) findViewById(R.id.saveTask);
+        taskView = findViewById(R.id.taskView);
+        taskTitle = findViewById(R.id.tv);
+        final Spinner channelSpinner = findViewById(R.id.channel);
+        channelSpinner.setEnabled(false);
+        final Spinner retailerSpinner = findViewById(R.id.retailer);
+        retailerSpinner.setEnabled(false);
+        final Spinner sellerSpinner = findViewById(R.id.spinner_seller);
+        sellerSpinner.setEnabled(true);
+        close = findViewById(R.id.closeTask);
+        save = findViewById(R.id.saveTask);
         bmodel.setContext(this);
         close.setOnClickListener(this);
         save.setOnClickListener(this);
 
-        TextView task_title = (TextView) findViewById(R.id.task_title_tv);
-        TextView applicable_tv = (TextView) findViewById(R.id.applicable_tv);
+        TextView task_title = findViewById(R.id.task_title_tv);
+        TextView applicable_tv = findViewById(R.id.applicable_tv);
         task_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         applicable_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         taskTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         taskView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         save.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.LIGHT));
 
-        /*channelSpinner.setEnabled(false);
-        retailerSpinner.setEnabled(false);*/
-        ll = (LinearLayout) findViewById(R.id.allchannel);
-        rll = (LinearLayout) findViewById(R.id.allretailer);
-        RadioGroup rb = (RadioGroup) findViewById(R.id.rg);
-        CheckBox focusCheck = (CheckBox) findViewById(R.id.allcheckbox);
-        focusCheck.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        CheckBox retailercheck = (CheckBox) findViewById(R.id.allretaicheckbox);
-        retailercheck.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        final RadioButton seller_rb = (RadioButton) findViewById(R.id.seller);
-        final RadioButton channelwise_rb = (RadioButton) findViewById(R.id.Channelwise);
-        final RadioButton retailerwise_rb = (RadioButton) findViewById(R.id.Retailerwise);
+
+        RadioGroup rb = findViewById(R.id.rg);
+        final RadioButton seller_rb = findViewById(R.id.seller);
+        final RadioButton channelwise_rb = findViewById(R.id.Channelwise);
+        final RadioButton retailerwise_rb = findViewById(R.id.Retailerwise);
         seller_rb.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         TypedArray typearr = this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
@@ -120,22 +121,25 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                     seller_rb.setTextColor(color);
                     channelwise_rb.setTextColor(secondary_color);
                     retailerwise_rb.setTextColor(secondary_color);
-                    ll.setVisibility(View.GONE);
-                    rll.setVisibility(View.GONE);
+                    channelSpinner.setEnabled(false);
+                    retailerSpinner.setEnabled(false);
+                    sellerSpinner.setEnabled(true);
                     bmodel.taskHelper.mode = "seller";
                 } else if (checkedId == R.id.Channelwise) {
                     seller_rb.setTextColor(secondary_color);
                     channelwise_rb.setTextColor(color);
                     retailerwise_rb.setTextColor(secondary_color);
-                    ll.setVisibility(View.VISIBLE);
-                    rll.setVisibility(View.GONE);
+                    channelSpinner.setEnabled(true);
+                    retailerSpinner.setEnabled(false);
+                    sellerSpinner.setEnabled(false);
                     bmodel.taskHelper.mode = "channel";
                 } else if (checkedId == R.id.Retailerwise) {
                     seller_rb.setTextColor(secondary_color);
                     channelwise_rb.setTextColor(secondary_color);
                     retailerwise_rb.setTextColor(color);
-                    ll.setVisibility(View.GONE);
-                    rll.setVisibility(View.VISIBLE);
+                    channelSpinner.setEnabled(false);
+                    retailerSpinner.setEnabled(true);
+                    sellerSpinner.setEnabled(false);
                     bmodel.taskHelper.mode = "retailer";
                 }
             }
@@ -189,6 +193,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         channelSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
+                ((TextView)view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
                 ChannelBO chBo = (ChannelBO) parent.getSelectedItem();
                 if (chBo.getChannelName().equalsIgnoreCase(getResources().getString(R.string.all_channel))) {
                     channelId = -1;
@@ -220,6 +225,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
             retailerSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int position, long id) {
+                    ((TextView)view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
                     RetailerMasterBO reBo = (RetailerMasterBO) parent.getSelectedItem();
                     if (reBo.getTretailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
                         retailerid = -2;
@@ -234,6 +240,32 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         } catch (Exception e) {
             Commons.printException(e);
         }
+
+        sellerUserList = new ArrayList<>();
+        sellerUserList.add(0, new UserMasterBO(0, "Select Seller"));
+        sellerUserList.addAll(bmodel.userMasterHelper.downloadAllUser());
+        for (UserMasterBO userMasterBO : sellerUserList)
+            if (userMasterBO.getUserid() == bmodel.userMasterHelper.getUserMasterBO().getUserid()) {
+                userMasterBO.setUserName("Self");
+                break;
+            }
+
+        ArrayAdapter<UserMasterBO> sellerAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_bluetext_layout, sellerUserList);
+        sellerAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        sellerSpinner.setAdapter(sellerAdapter);
+        sellerSpinner.setSelection(0);
+        sellerSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                ((TextView)view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
+                mSelectedUserId = position;
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         /*focusCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -302,11 +334,15 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
             taskDetailDesc = bmodel.validateInput(taskView.getText().toString());
             taskTitleDec = bmodel.validateInput(taskTitle.getText().toString());
 
-            if (validate() == false)
+            if (!validate())
                 return;
 
             if (bmodel.taskHelper.mode.equals("seller")) {
-                taskChannelId = 0;
+                if (mSelectedUserId == 0)
+                    taskChannelId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+                else
+                    taskChannelId = sellerUserList.get(mSelectedUserId).getUserid();
+
             } else if (bmodel.taskHelper.mode.equals("retailer")) {
                 if (fromHomeScreen)
                     taskChannelId = retailerid;
@@ -397,7 +433,6 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
 
     public void onBackPressed() {
         // do something on back.
-        return;
     }
 
     @Override
