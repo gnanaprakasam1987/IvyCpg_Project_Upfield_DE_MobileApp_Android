@@ -261,7 +261,7 @@ public class DataMembers {
     private static final String tbl_TaskMaster_cols = "taskid,taskdesc,taskcode,TaskOwner";
 
     public static final String tbl_TaskConfigurationMaster = "TaskConfigurationMaster";
-    private static final String tbl_TaskConfigurationMaster_cols = "taskid,retailerid,uid,date,usercreated";
+    private static final String tbl_TaskConfigurationMaster_cols = "taskid,retailerid,uid,date,usercreated,userid";
 
     public static final String tbl_InvoiceMaster = "InvoiceMaster";
     public static final String tbl_InvoiceDetails = "InvoiceDetails";
