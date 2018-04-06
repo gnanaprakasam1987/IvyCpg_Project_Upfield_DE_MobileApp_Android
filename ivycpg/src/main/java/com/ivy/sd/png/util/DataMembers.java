@@ -21,8 +21,8 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
-    //public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
-    public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_bisleri/Webapi/api";
+    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
+    //public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_bisleri/Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
@@ -242,7 +242,7 @@ public class DataMembers {
     public static final int MESSAGE_ENCOUNTERED_ERROR_DC = 1009;
 
     public static final String tbl_beatMaster = "BeatMaster";
-    public static final String tbl_beatMaster_cols = "BeatID,BeatDescription,today";
+    public static final String tbl_beatMaster_cols = "BeatID,BeatDescription,today,BeatCode";
 
 
     public static final String tbl_userMaster = "UserMaster";

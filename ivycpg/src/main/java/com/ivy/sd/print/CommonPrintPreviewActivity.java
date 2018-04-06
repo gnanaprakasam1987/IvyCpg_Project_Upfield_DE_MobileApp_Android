@@ -806,6 +806,98 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         }
     }
 
+    private byte[] getDataInterMec() {
+
+        try {
+
+            StringBuilder tempsb = new StringBuilder();
+
+
+            String[] lines = bmodel.mCommonPrintHelper.getInvoiceData().toString().split("\\r?\\n");
+            for (String s : lines) {
+
+                if (s.contains("print_type")) {
+                    if (mPrintCount == 0) {
+                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
+                            String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_type_primary") != null ? bmodel.labelsMasterHelper.applyLabels("print_type_primary") : "Original");
+                            s = s.replace("print_type", primaryLabel);
+                        } else
+                            s = s.replace("print_type", "Original");
+                    } else {
+                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
+                            String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_type_secondary");
+                            s = s.replace("print_type", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
+                        } else
+                            s = s.replace("print_type", "Duplicate");
+                    }
+
+                }
+
+                if (s.contains("print_title")) {
+                    if (mPrintCount == 0) {
+                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
+                            String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_title_primary") != null ? bmodel.labelsMasterHelper.applyLabels("print_title_primary") : "Original");
+                            s = s.replace("print_title", primaryLabel);
+                        } else
+                            s = s.replace("print_title", "");
+                    } else {
+                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
+                            String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_title_secondary");
+                            s = s.replace("print_title", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
+                        } else
+                            s = s.replace("print_title", "");
+                    }
+                }
+
+                if (s.contains("print_no")) {
+                    s = s.replace("print_no", (mPrintCount + 1) + " of " + mPrintCountInput);
+                }
+
+                if (s.contains("#B#")) {
+                    s = s.replace("#B#", " FT \"Swiss 721 Bold BT\"");
+                    tempsb.append(s);
+                    tempsb.append("\n\r");
+                   /* int spaceCount = 0;
+                    for (char c : str.toCharArray()) {
+                        if (c == ' ') {
+                            spaceCount++;
+                        } else {
+                            break;
+                        }
+                    }*/
+
+
+
+                } else {
+                        tempsb.append(s);
+                        tempsb.append("\n\r");
+
+                }
+            }
+            tempsb=new StringBuilder();
+            tempsb.append("PP40," + 5 + ":AN1\n");
+            tempsb.append("PP40," + 5 + ":FT \"Swiss 721 Bold BT\"\n");
+            tempsb.append("FONTSIZE 7\n");
+
+            tempsb.append("PP30," + 5 + ":PT \""
+                    + getResources().getString(R.string.itemno) + "\"\n");
+            tempsb.append("PP120," + 5 + ":PT \""
+                    + getResources().getString(R.string.description) + "\"\n");
+
+            byte[] result;
+                result = String.valueOf(tempsb).getBytes();
+
+
+
+            return result;
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return new byte[0];
+
+    }
     private byte[] getDataZebra() {
 
         try {
@@ -909,6 +1001,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
     }
 
+
     private void doLogonPrintNew(String macAddress) {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothDevice mBluetoothDevice = null;
@@ -955,7 +1048,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             updateStatus("Printing...");
             for (int i = 0; i < mPrintCountInput; i++) {
                 mOutputStream = mBluetoothSocket.getOutputStream();
-                mOutputStream.write((bmodel.mCommonPrintHelper.getInvoiceData().toString()).getBytes());
+                mOutputStream.write(getDataInterMec());
                 mOutputStream.flush();
                 mDataPrintCount++;
                 mPrintCount++;
