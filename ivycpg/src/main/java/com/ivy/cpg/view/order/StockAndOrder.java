@@ -4070,7 +4070,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (vw == mBtnNext) {
 
-            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
+            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode()!=null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
                 if (!orderHelper.isPendingReplaceAmt()) {
                     onnext();
                 } else {

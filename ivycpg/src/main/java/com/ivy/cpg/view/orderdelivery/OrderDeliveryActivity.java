@@ -226,6 +226,10 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
             orderDeliveryHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this,orderId);
             orderDeliveryHelper.downloadOrderedProducts();
             orderDeliveryHelper.getProductTotalValue();
+            if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
+                bmodel.collectionHelper.downloadDiscountSlab();
+            }
+
             return null;
         }
 

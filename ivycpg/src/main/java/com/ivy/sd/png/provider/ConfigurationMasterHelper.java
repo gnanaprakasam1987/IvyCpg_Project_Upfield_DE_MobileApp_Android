@@ -476,6 +476,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FOCUS_PACK_NOT_DONE = "ORDB71";
     public boolean IS_FOCUS_PACK_NOT_DONE;
 
+//    private static final String CODE_EXCESS_STOCK_AVAIL = "ORDB100";
     public boolean IS_EXCESS_STOCK_AVAIL = true;
 
     private static final String CODE_LOAD_SUBD_ONLY = "OFPLAN01";
@@ -2234,6 +2235,8 @@ public class ConfigurationMasterHelper {
         this.IS_LOAD_ONLY_SUBD = hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) : false;
         this.IS_LOAD_NON_FIELD = hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) : false;
         this.IS_PLAN_RETIALER_NON_FIELD = hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) != null ? hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) : false;
+
+//        this.IS_EXCESS_STOCK_AVAIL = hashMapHHTModuleConfig.get(CODE_EXCESS_STOCK_AVAIL) != null ? hashMapHHTModuleConfig.get(CODE_EXCESS_STOCK_AVAIL) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG) != null) {
             if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG)) {

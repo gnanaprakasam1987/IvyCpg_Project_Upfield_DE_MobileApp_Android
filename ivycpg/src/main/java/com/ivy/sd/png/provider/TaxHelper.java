@@ -848,21 +848,24 @@ public class TaxHelper implements TaxInterface{
 
                         productBo.setDiscount_order_value(temp);
 
-                        ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());
-                        if (taxList != null) {
-                            float taxAmount = 0;
-                            for (TaxBO taxBO : taxList) {
-                                if (taxBO.getParentType().equals("0")) {
-                                    float calTax = SDUtil.truncateDecimal(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
-                                    taxBO.setTotalTaxAmount(calTax);
-                                    taxAmount += calTax;
+                        if(mTaxListByProductId!=null && mTaxListByProductId.get(productBo.getProductID())!=null) {
+
+                            ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());
+                            if (taxList != null) {
+                                float taxAmount = 0;
+                                for (TaxBO taxBO : taxList) {
+                                    if (taxBO.getParentType().equals("0")) {
+                                        float calTax = SDUtil.truncateDecimal(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                                        taxBO.setTotalTaxAmount(calTax);
+                                        taxAmount += calTax;
+                                    }
                                 }
+
+                                totalTaxAmount = totalTaxAmount + taxAmount;
+                                productBo.setTaxValue(productBo.getDiscount_order_value());
+
+                                productBo.setDiscount_order_value(productBo.getDiscount_order_value() + taxAmount);
                             }
-
-                            totalTaxAmount = totalTaxAmount +taxAmount;
-                            productBo.setTaxValue(productBo.getDiscount_order_value());
-
-                            productBo.setDiscount_order_value(productBo.getDiscount_order_value()+taxAmount);
                         }
                     }
                 }
