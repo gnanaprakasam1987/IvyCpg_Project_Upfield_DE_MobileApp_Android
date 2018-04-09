@@ -247,7 +247,7 @@ public class DataMembers {
 
 
     public static final String tbl_userMaster = "UserMaster";
-    public static final String tbl_userMaster_cols = "distributorid,distributorTinNumber,distributorName,branchid,vanid,userid,username,Password,loginid,distContactNo,OrganisationId,downloaddate,UserCode,custommsg,accountno,credit_limit,admincno,isJointCall,vanno,SchemeFactor,upliftFactor,usertype,ProfileImagePath";
+    public static final String tbl_userMaster_cols = "distributorid,distributorTinNumber,distributorName,branchid,vanid,userid,username,Password,loginid,distContactNo,OrganisationId,downloaddate,UserCode,custommsg,accountno,credit_limit,admincno,isJointCall,vanno,SchemeFactor,upliftFactor,usertype,ProfileImagePath,BackupUserId";
 
     public static final String tbl_DTPMaster = "DTPMaster";
     public static final String tbl_retailerMaster = "RetailerMaster";

@@ -2198,6 +2198,9 @@ public class SynchronizationFragment extends IvyBaseFragment
             } else {
                 if (output.equals("E27")) {
                     showDialog();
+                } else if (output.equals("E28")) {
+                    bmodel.showAlert(getActivity().getResources().
+                            getString(R.string.user_already_assigned), 0);
                 } else {
                     /*if (output.equals("E25")) {
                         loginView.showForgotPassword();

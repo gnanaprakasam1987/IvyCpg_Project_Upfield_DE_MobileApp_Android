@@ -35,6 +35,8 @@ public class UserMasterBO {
     private ArrayList<UserMasterBO> joinCallUserList;
     private String userType;
     private String imagePath;
+    private String backupSellerID;
+    private boolean isBackup;
 
     public UserMasterBO() {
 
@@ -322,4 +324,20 @@ public class UserMasterBO {
     }
 
     private String GSTNumber;
+
+    public String getBackupSellerID() {
+        return backupSellerID;
+    }
+
+    public void setBackupSellerID(String backupSellerID) {
+        this.backupSellerID = backupSellerID;
+    }
+
+    public boolean isBackup() {
+        return isBackup;
+    }
+
+    public void setBackup(boolean backup) {
+        isBackup = backup;
+    }
 }
