@@ -211,6 +211,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_margin="2dp"
+                    android:tag="stk_ord_qty"
                     android:maxLines="1"
                     android:text="@string/total_qty"
                     android:textColor="?attr/colorAccent"

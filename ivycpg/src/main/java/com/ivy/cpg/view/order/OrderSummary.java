@@ -5,11 +5,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -24,7 +22,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,7 +63,6 @@ import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.CatalogOrder;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.sd.png.view.EmailDialog;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.IndicativeOrderReasonDialog;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
@@ -98,26 +94,11 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Vector;
-
-import javax.activation.CommandMap;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.activation.MailcapCommandMap;
-import javax.mail.BodyPart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickListener,
         StoreWiseDiscountDialog.OnMyDialogResult, DataPickerDialogFragment.UpdateDateInterface,
-        EmailDialog.onSendButtonClickListnor, OrderConfirmationDialog.OnConfirmationResult {
+        OrderConfirmationDialog.OnConfirmationResult {
 
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
@@ -341,6 +322,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Commons.printException(" " + e);
         }
 
+
+        try {
+            if (BModel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.title_totalqty).getTag()) != null)
+                ((TextView) findViewById(R.id.title_totalqty))
+                        .setText(BModel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.title_totalqty)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(" " + e);
+        }
 
         try {
             if (BModel.labelsMasterHelper.applyLabels(findViewById(
@@ -1054,7 +1047,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                                        printOrder();
+                                        Intent i = new Intent(
+                                                OrderSummary.this,
+                                                HomeScreenTwo.class);
+                                        Bundle extras = getIntent().getExtras();
+                                        if (extras != null) {
+                                            i.putExtra("IsMoveNextActivity", BModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                                            i.putExtra("CurrentActivityCode", mCurrentActivityCode);
+                                        }
+                                        startActivity(i);
 
                                     }
                                 });
@@ -2393,7 +2394,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     if ((BModel.configurationMasterHelper.SHOW_ZEBRA_GHANA
                             || BModel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO
                             || BModel.configurationMasterHelper.SHOW_ZEBRA_TITAN
-                            || BModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL)) {
+                            || BModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL
+                            || BModel.configurationMasterHelper.COMMON_PRINT_ZEBRA)) {
                         showDialog(DIALOG_ORDER_SAVED_WITH_PRINT_OPTION);
                     } else {
                         showDialog(DIALOG_ORDER_SAVED);
@@ -2850,150 +2852,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             finish();
         }
 
-    }
-
-
-    private void prepareEmailData() {
-
-        if (mOrderedProductList.size() > 0) {
-
-            if (BModel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
-                android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
-                EmailDialog dialog = new EmailDialog(OrderSummary.this, BModel.getRetailerMasterBO().getEmail());
-                dialog.setCancelable(false);
-                dialog.show(ft, "MENU_STK_ORD");
-            }
-        } else {
-            Toast.makeText(BModel, "No data to store", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void setEmailAddress(String value) {
-        new SendMail(this, "Read", "Test", value).execute();
-
-    }
-
-    public class SendMail extends AsyncTask<Void, Void, Boolean> {
-
-        private final String emailId = "";//Change this field value
-        private final String password = "";//Change this field value
-        Session session;
-        Context mContext;
-        ProgressDialog progressDialog;
-        private String subject;
-        private String body;
-        private String email;
-
-        public SendMail(Context ctx, String subject, String message, String email) {
-            this.mContext = ctx;
-
-            this.subject = subject;
-            this.body = message;
-            this.email = email;
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            progressDialog = ProgressDialog.show(mContext, getResources().getString(R.string.sending_email), getResources().getString(R.string.please_wait_some_time), false);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-
-            Properties props = System.getProperties();// new Properties();
-
-            //Configuring properties for GMAIL
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.socketFactory.port", "587");
-            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.port", "587");
-            props.put("mail.smtp.starttls.enable", "true");
-
-            //Creating a new session
-            session = Session.getDefaultInstance(props,
-                    new javax.mail.Authenticator() {
-                        //Authenticating the password
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(emailId, password);
-                        }
-                    });
-
-            try {
-
-
-                javax.mail.Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(emailId));
-                if (!TextUtils.isEmpty(BModel.getRetailerMasterBO().getEmail()))
-                    message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(BModel.getRetailerMasterBO().getEmail(), email));
-                else
-                    message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(email));
-                message.setSubject(subject);
-                message.setText(body);
-                //  mm.setContent(message,"text/html; charset=utf-8");
-
-                BodyPart bodyPart = new MimeBodyPart();
-                bodyPart.setText(body);
-                //Attachment
-                DataSource source;
-                if (sendMailAndLoadClass.equalsIgnoreCase("CommonPrintPreviewActivityPRINT_FILE_ORDER") ||
-                        sendMailAndLoadClass.equalsIgnoreCase("HomeScreenTwoPRINT_FILE_ORDER")) {
-                    source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
-                            StandardListMasterConstants.PRINT_FILE_ORDER + orderHelper.getOrderId() + ".txt");
-                    bodyPart.setDataHandler(new DataHandler(source));
-                    bodyPart.setFileName("OrderDetails" + ".txt");
-                }
-                if (sendMailAndLoadClass.equalsIgnoreCase("CommonPrintPreviewActivityPRINT_FILE_INVOICE")) {
-                    source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
-                            StandardListMasterConstants.PRINT_FILE_INVOICE + BModel.invoiceNumber + ".txt");
-                    bodyPart.setDataHandler(new DataHandler(source));
-                    bodyPart.setFileName("InvoiceDetails" + ".txt");
-                }
-
-
-                MimeMultipart multiPart = new MimeMultipart();
-                multiPart.addBodyPart(bodyPart);
-                message.setContent(multiPart);
-
-                Thread.currentThread().setContextClassLoader(getClassLoader());
-
-                MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-                mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-                mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-                mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-                mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-                mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822");
-
-                //sending mail
-                Transport.send(message);
-
-            } catch (Exception ex) {
-                Commons.printException(ex);
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean isSent) {
-            super.onPostExecute(isSent);
-
-            progressDialog.dismiss();
-
-            if (isSent) {
-                Toast.makeText(OrderSummary.this, getResources().getString(R.string.email_sent),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(OrderSummary.this, getResources().getString(R.string.error_in_sending_email),
-                        Toast.LENGTH_SHORT).show();
-            }
-            loadClass();
-        }
     }
 
 
