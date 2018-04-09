@@ -1156,7 +1156,7 @@
     <string name="piece">Piece</string>
     <string name="multiple_of">Multiple of</string>
     <string name="discounted_price">Discounted Price</string>
-    <string name="do_u_want_to_save">Do you want to save?</string>
+    <string name="do_u_want_to_save">هل تريد حفظ ؟</string>
     <string name="this_is_exceptional_order">This is an exceptional order.</string>
     <string name="this_is_standared_order">This is an Standard order for : </string>
     <string name="confirm">Confirm</string>
@@ -1172,6 +1172,10 @@
     <string name="net_price">Net Price</string>
     <string name="free">Free</string>
     <string name="review">Review</string>
+    <string name="select_photo_type">Select PhotoType</string>
+    <string name="my_gallery">My Gallery</string>
+    <string name="select_condition">Select condition</string>
+    <string name="profile_updated_scccess">Customer Profile updated successfully.</string>
 
 
 
