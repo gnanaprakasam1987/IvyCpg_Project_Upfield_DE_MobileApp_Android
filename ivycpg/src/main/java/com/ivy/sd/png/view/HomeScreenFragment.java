@@ -341,6 +341,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         ll_logout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                bmodel.synchronizationHelper.backUpDB();
                 showDialog(0);
             }
         });
