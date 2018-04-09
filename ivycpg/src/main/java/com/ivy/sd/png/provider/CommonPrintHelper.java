@@ -80,6 +80,8 @@ public class CommonPrintHelper {
     private static String TAG_DISTRIBUTOR_GST_NUMBER = "dist_gst_no";
     private static String TAG_SUPPLIER_NAME = "supplier_name";
 
+    private static String TAG_BEAT_CODE = "beat_code";
+
     private static String TAG_RETAILER_NAME = "ret_name";
     private static String TAG_RETAILER_CODE = "ret_code";
     private static String TAG_RETAILER_ADDRESS1 = "ret_address1";
@@ -610,7 +612,9 @@ public class CommonPrintHelper {
             value = label + bmodel.getRetailerMasterBO().getRetailerName();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_CODE)) {
             value = label + bmodel.getRetailerMasterBO().getRetailerCode();
-        } else if (tag.equalsIgnoreCase(TAG_RETAILER_ADDRESS1)) {
+        }  else if (tag.equalsIgnoreCase(TAG_BEAT_CODE)) {
+            value = label + bmodel.beatMasterHealper.getBeatMasterBOByID(bmodel.getRetailerMasterBO().getBeatID()).getBeatCode();
+        }else if (tag.equalsIgnoreCase(TAG_RETAILER_ADDRESS1)) {
             value = label + bmodel.getRetailerMasterBO().getAddress1();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_ADDRESS2)) {
             value = label + bmodel.getRetailerMasterBO().getAddress2();

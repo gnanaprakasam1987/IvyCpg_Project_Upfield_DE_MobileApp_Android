@@ -2566,7 +2566,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             startActivity(i);
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         } else if (BModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
-                || BModel.configurationMasterHelper.COMMON_PRINT_ZEBRA || BModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || BModel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+                || BModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
+                || BModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
+                || BModel.configurationMasterHelper.COMMON_PRINT_LOGON
+                || BModel.configurationMasterHelper.COMMON_PRINT_INTERMEC
+                || BModel.configurationMasterHelper.COMMON_PRINT_MAESTROS) {
 
             if ("1".equalsIgnoreCase(BModel.retailerMasterBO.getRField4()))
                 BModel.productHelper.updateDistributorDetails();
@@ -2647,7 +2651,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         } else if (BModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
                 || BModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
                 || BModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
-                || BModel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+                || BModel.configurationMasterHelper.COMMON_PRINT_LOGON
+                || BModel.configurationMasterHelper.COMMON_PRINT_INTERMEC
+                || BModel.configurationMasterHelper.COMMON_PRINT_MAESTROS) {
+
 
             if ("1".equalsIgnoreCase(BModel.getRetailerMasterBO().getRField4())) {
                 BModel.productHelper.updateDistributorDetails();
@@ -2657,7 +2664,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-            BModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null);
+            BModel.mCommonPrintHelper.xmlRead("invoice_print.xml", true, orderList, null);
 
 
             BModel.writeToFile(String.valueOf(BModel.mCommonPrintHelper.getInvoiceData()),

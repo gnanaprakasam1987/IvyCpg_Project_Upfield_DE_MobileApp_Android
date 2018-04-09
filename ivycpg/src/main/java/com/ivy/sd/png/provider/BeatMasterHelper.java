@@ -94,7 +94,7 @@ public class BeatMasterHelper {
         try {
             db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
-            String beatCols = "BeatID,BeatDescription,today,UserId";
+            String beatCols = "BeatID,BeatDescription,today,UserId,BeatCode";
             BeatMasterBO beat;
             db.openDataBase();
 
@@ -110,6 +110,7 @@ public class BeatMasterHelper {
                     beat.setBeatDescription(c.getString(1));
                     beat.setToday(c.getInt(2));
                     beat.setUserId(c.getInt(3));
+                    beat.setBeatCode(c.getString(4));
                     getBeatMaster().add(beat);
                 }
                 c.close();
@@ -139,6 +140,7 @@ public class BeatMasterHelper {
                     beat.setBeatId(c.getInt(0));
                     beat.setBeatDescription(c.getString(1));
                     beat.setToday(c.getInt(2));
+                    beat.setBeatCode(c.getString(3));
                     beatList.add(beat);
                 }
                 c.close();

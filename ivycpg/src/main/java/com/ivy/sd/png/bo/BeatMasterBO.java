@@ -4,6 +4,10 @@ public class BeatMasterBO {
 
     private int beatId;
     private String beatDescription;
+
+
+
+    private String beatCode;
     private int today;
     private int userId;
     public BeatMasterBO() {
@@ -52,5 +56,13 @@ public class BeatMasterBO {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getBeatCode() {
+        return beatCode;
+    }
+
+    public void setBeatCode(String beatCode) {
+        this.beatCode = beatCode;
     }
 }
