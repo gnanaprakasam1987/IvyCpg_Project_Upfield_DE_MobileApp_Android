@@ -5277,6 +5277,7 @@ public class BusinessModel extends Application {
                         int shelfCase = ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase());
                         int shelfPiece = ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece());
                         int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
+                        int availability = ((product.getLocations().get(j).getAvailability() == -1) ? 0 : product.getLocations().get(j).getAvailability());
                         values = (id) + ","
                                 + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                 + QT(product.getProductID()) + ","
@@ -5309,7 +5310,7 @@ public class BusinessModel extends Application {
                                 + "," + rField1
                                 + "," + rField2
                                 + "," + rField3
-                                + "," + product.getLocations().get(j).getAvailability();
+                                + "," + availability;
 
 
                         if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
@@ -9323,8 +9324,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
-                                + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
-                                + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
+                    + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
+                    + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
             Cursor c = db
                     .selectSQL(query);
             int loadQty;

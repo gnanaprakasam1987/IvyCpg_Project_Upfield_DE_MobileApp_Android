@@ -1333,8 +1333,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
      */
     private void hideAndSeeK() {
         View view = getView();
-        if (view != null && (assetTrackingHelper.SHOW_POSM_TARGET
-                || assetTrackingHelper.SHOW_POSM_QTY
+        if (view != null && (assetTrackingHelper.SHOW_POSM_QTY
                 || assetTrackingHelper.SHOW_POSM_COMPETITOR_QTY)
                 || assetTrackingHelper.SHOW_POSM_EXECUTED) {
             view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
