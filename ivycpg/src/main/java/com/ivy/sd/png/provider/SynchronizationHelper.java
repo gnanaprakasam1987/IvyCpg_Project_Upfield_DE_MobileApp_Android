@@ -1394,6 +1394,8 @@ SynchronizationHelper {
                         .getUserid());
                 json.put("VersionCode", bmodel.getApplicationVersionNumber());
                 json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+                json.put("BackupUserId", bmodel.userMasterHelper.getUserMasterBO()
+                        .getBackupSellerID());
 
                 int insert = VOLLEY_DOWNLOAD_INSERT;
                 if (whichDownload == DownloadType.RETAILER_WISE_DOWNLOAD) {
@@ -3270,8 +3272,14 @@ SynchronizationHelper {
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
 
             try {
-                jsonFormatter.addParameter("UserId", bmodel.userMasterHelper
-                        .getUserMasterBO().getUserid());
+                if (!"0".equals(bmodel.userMasterHelper.getUserMasterBO().getBackupSellerID())) {
+                    jsonFormatter.addParameter("UserId", bmodel.userMasterHelper
+                            .getUserMasterBO().getBackupSellerID());
+                    jsonFormatter.addParameter("WorkingFor", bmodel.userMasterHelper.getUserMasterBO().getUserid());
+                } else {
+                    jsonFormatter.addParameter("UserId", bmodel.userMasterHelper
+                            .getUserMasterBO().getUserid());
+                }
                 jsonFormatter.addParameter("DistributorId", bmodel.userMasterHelper
                         .getUserMasterBO().getDistributorid());
                 jsonFormatter.addParameter("BranchId", bmodel.userMasterHelper

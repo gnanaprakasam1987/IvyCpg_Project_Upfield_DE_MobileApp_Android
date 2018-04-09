@@ -327,5 +327,9 @@
     <string name="click_to_switch">Click to switch</string>
     <string name="click_to_change_password">Click to change password</string>
     <string name="click_to_show_device_status">Click to show device status</string>
+    <!--Backup Seller-->
+    <string name="user_already_assigned">User Already Assigned</string>
+    <string name="seller_already_assigned">Seller is assigned to some other backup seller</string>
+    <string name="backup_seller_already_assigned">Backup seller is assigned to some other user</string>
 
 </resources>

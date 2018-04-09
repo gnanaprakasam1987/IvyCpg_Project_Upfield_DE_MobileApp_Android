@@ -19,6 +19,7 @@ public class UserMasterHelper {
     private final Context context;
     private final BusinessModel bmodel;
     private UserMasterBO userMasterBO;
+    private ArrayList<UserMasterBO> backupSellerList;
 
     private UserMasterHelper(Context context) {
         this.context = context;
@@ -92,6 +93,9 @@ public class UserMasterHelper {
                             .getColumnIndex("upliftFactor")));
                     userMasterBO.setImagePath(c.getString(c
                             .getColumnIndex("ProfileImagePath")));
+                    userMasterBO.setBackupSellerID(c.getString(c
+                            .getColumnIndex("BackupUserId")));
+                    userMasterBO.setBackup(false);
 
                 }
                 c.close();
@@ -543,5 +547,41 @@ public class UserMasterHelper {
             db.closeDB();
         }
         return userList;
+    }
+
+    public ArrayList<UserMasterBO> getBackupSellerList() {
+        return backupSellerList;
+    }
+
+    public void setBackupSellerList(ArrayList<UserMasterBO> backupSellerList) {
+        this.backupSellerList = backupSellerList;
+    }
+
+    public void downloadBackupSeller() {
+        String codeChild = "CHILD";
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String query = "select userid,username from usermaster where relationship =" + bmodel.QT(codeChild) + " OR relationship = 'ASSOCIATE'";
+            Cursor c = db.selectSQL(query);
+            setBackupSellerList(new ArrayList<UserMasterBO>());
+            if (c != null) {
+                UserMasterBO userMasterBO;
+                while (c.moveToNext()) {
+                    userMasterBO = new UserMasterBO();
+                    userMasterBO.setUserid(c.getInt(0));
+                    userMasterBO.setUserName(c.getString(1));
+                    userMasterBO.setBackup(false);
+                    getBackupSellerList().add(userMasterBO);
+                }
+                c.close();
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            db.closeDB();
+        }
     }
 }

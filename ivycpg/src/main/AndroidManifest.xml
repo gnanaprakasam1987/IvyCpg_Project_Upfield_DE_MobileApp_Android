@@ -786,6 +786,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.ivy.sd.png.view.BackUpSellerActivity"
+            android:screenOrientation="portrait"/>
 
 
         <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity" />
