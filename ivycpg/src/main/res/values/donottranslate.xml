@@ -317,5 +317,9 @@
     <string name="start">Start</string>
     <string name="end">End</string>
 
+    <string name="click_to_export">Click to export</string>
+    <string name="click_to_switch">Click to switch</string>
+    <string name="click_to_change_password">Click to change password</string>
+    <string name="click_to_show_device_status">Click to show device status</string>
 
 </resources>
