@@ -851,14 +851,16 @@ public class ReturnFragment extends IvyBaseFragment {
                         .setText((holder.reasonBO.getMfgDate() == null) ? DateUtil
                                 .convertFromServerDateToRequestedFormat(
                                         SDUtil.now(SDUtil.DATE_GLOBAL),
-                                        outPutDateFormat) : holder.reasonBO
-                                .getMfgDate());
+                                        outPutDateFormat) : DateUtil.convertFromServerDateToRequestedFormat(
+                                holder.reasonBO.getMfgDate(),
+                                ConfigurationMasterHelper.outDateFormat));
                 holder.expDate
                         .setText((holder.reasonBO.getExpDate() == null) ? DateUtil
                                 .convertFromServerDateToRequestedFormat(
                                         SDUtil.now(SDUtil.DATE_GLOBAL),
-                                        outPutDateFormat) : holder.reasonBO
-                                .getExpDate());
+                                        outPutDateFormat) : DateUtil.convertFromServerDateToRequestedFormat(
+                                holder.reasonBO.getExpDate(),
+                                ConfigurationMasterHelper.outDateFormat));
             }
 
             if (productMasterBO.getOuUomid() == 0 || !productMasterBO.isOuterMapped()) {

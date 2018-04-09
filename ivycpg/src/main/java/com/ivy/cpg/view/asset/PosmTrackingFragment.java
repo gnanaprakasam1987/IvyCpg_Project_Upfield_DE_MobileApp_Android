@@ -481,9 +481,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         ReasonMaster reason = new ReasonMaster();
         ReasonMaster reason1 = new ReasonMaster();
         reason.setReasonID(Integer.toString(0));
-        reason.setReasonDesc("" + getResources().getString(R.string.select_reason));
+        reason.setReasonDesc(getResources().getString(R.string.select_reason));
         reason1.setReasonID(Integer.toString(0));
-        reason1.setReasonDesc("Select " + getResources().getString(R.string.condition));
+        reason1.setReasonDesc(getResources().getString(R.string.select_condition));
 
         mPOSMReasonList = assetTrackingHelper.getPOSMReasonList();
         mPOSMReasonList.add(0, reason);
@@ -1333,8 +1333,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
      */
     private void hideAndSeeK() {
         View view = getView();
-        if (view != null && (assetTrackingHelper.SHOW_POSM_TARGET
-                || assetTrackingHelper.SHOW_POSM_QTY
+        if (view != null && (assetTrackingHelper.SHOW_POSM_QTY
                 || assetTrackingHelper.SHOW_POSM_COMPETITOR_QTY)
                 || assetTrackingHelper.SHOW_POSM_EXECUTED) {
             view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);

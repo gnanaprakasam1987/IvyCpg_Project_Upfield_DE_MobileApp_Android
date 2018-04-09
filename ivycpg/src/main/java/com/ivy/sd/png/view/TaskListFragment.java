@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -105,15 +106,7 @@ public class TaskListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_task_list,
                 container, false);
-
-        return rootView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Commons.print("TaskListFragment ," + " On Resume called ");
-        mTaskContainer = (LinearLayout) getView().findViewById(
+        mTaskContainer = rootView.findViewById(
                 R.id.task_cintainer_ll);
         if (mTaskContainer != null)
             mTaskContainer.removeAllViews();
@@ -126,6 +119,27 @@ public class TaskListFragment extends Fragment {
                 chids = surveyHelperNew.getChannelidForSurvey().split(",");
             }
         updateTasks(tasktype);
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Commons.print("TaskListFragment ," + " On Resume called ");
+       /* if (getView() != null)
+        mTaskContainer = getView().findViewById(
+                R.id.task_cintainer_ll);
+        if (mTaskContainer != null)
+            mTaskContainer.removeAllViews();
+
+        taskDataBO = bmodel.taskHelper.getTaskData(mSelectedRetailerID);
+        tasktype = getArguments().getInt("type");
+        if (IsRetailerwisetask)
+            if (surveyHelperNew.getChannelidForSurvey() != null && surveyHelperNew.getChannelidForSurvey().length() > 0) {
+                bool = true;
+                chids = surveyHelperNew.getChannelidForSurvey().split(",");
+            }
+        updateTasks(tasktype);*/
     }
 
     @Override
@@ -138,7 +152,7 @@ public class TaskListFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
 
         super.onPrepareOptionsMenu(menu);
-        if (hide_new_menu == false)
+        if (!hide_new_menu)
             menu.findItem(R.id.menu_new_task).setVisible(false);
 
     }
@@ -195,7 +209,7 @@ public class TaskListFragment extends Fragment {
                         }
                     } else {
 
-                        if (taskData.getRid() == 0 && taskData.getChannelId() == 0) {
+                        if (taskData.getRid() == 0 && taskData.getChannelId() == 0 && (taskData.getUserId() == bmodel.userMasterHelper.getUserMasterBO().getUserid() || taskData.getUserId() == 0)) {
 
                             if (taskType == 1) { // server
                                 if (taskData.getUsercreated().toUpperCase()

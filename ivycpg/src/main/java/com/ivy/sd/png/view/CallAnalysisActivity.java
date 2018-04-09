@@ -177,7 +177,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 spinnerNoOrderReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if (parent.getSelectedItem().toString().equals("Others")) {
+                        if (parent.getSelectedItem().toString().equalsIgnoreCase(getResources().getString(R.string.other_reason))) {
                             edt_other_remarks.setVisibility(View.VISIBLE);
                         } else {
                             hideKeyboard();
@@ -787,16 +787,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     int totalFocusBrand4 = 0;
                     for (ProductMasterBO productBO : bmodel.productHelper.getProductMaster()) {
                         if (productBO.getIsFocusBrand() == 1) {
-                            totalFocusBrand1 = 1;
+                            totalFocusBrand1 += 1;
                         }
                         if (productBO.getIsFocusBrand2() == 1) {
-                            totalFocusBrand2 = 1;
+                            totalFocusBrand2 += 1;
                         }
                         if (productBO.getIsFocusBrand3() == 1) {
-                            totalFocusBrand3 = 1;
+                            totalFocusBrand3 += 1;
                         }
                         if (productBO.getIsFocusBrand4() == 1) {
-                            totalFocusBrand4 = 1;
+                            totalFocusBrand4 += 1;
                         }
                     }
                     totalFocusBrand = totalFocusBrand1 + totalFocusBrand2 + totalFocusBrand3 + totalFocusBrand4;

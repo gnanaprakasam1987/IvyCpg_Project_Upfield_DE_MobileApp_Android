@@ -484,7 +484,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PLAN_RETIALER_NON_FIELD;
 
     private static final String CODE_EXPENSE_DAYS = "EXP01";
-    public int expenseDays =30;
+    public int expenseDays = 30;
 
 
     /**
@@ -1341,8 +1341,8 @@ public class ConfigurationMasterHelper {
     }
 
     public Vector<ConfigureBO> getProfileModuleConfig() {
-        if(profileConfig==null){
-            profileConfig=new Vector<>();
+        if (profileConfig == null) {
+            profileConfig = new Vector<>();
         }
         return profileConfig;
     }
@@ -5254,7 +5254,8 @@ public class ConfigurationMasterHelper {
                 || bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN
                 || bmodel.configurationMasterHelper.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN
                 || bmodel.configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN
-                || bmodel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
+                || bmodel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN
+                || bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
             return true;
         }
         return false;

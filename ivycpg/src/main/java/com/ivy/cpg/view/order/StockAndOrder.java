@@ -1180,7 +1180,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e + "");
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_FOC) {
+                /*if (!bmodel.configurationMasterHelper.SHOW_FOC) {
                     findViewById(R.id.focTitle).setVisibility(View.GONE);
                 } else {
                     try {
@@ -1194,7 +1194,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     } catch (Exception e) {
                         Commons.printException(e + "");
                     }
-                }
+                }*/
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                     findViewById(R.id.srpTitle).setVisibility(View.GONE);
                 } else {
@@ -1460,12 +1460,35 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             if (bmodel.configurationMasterHelper.SHOW_TOTAL_QTY_ORDER) {
                 findViewById(R.id.ll_totqty).setVisibility(View.VISIBLE);
+                try {
+                    ((TextView) findViewById(R.id.title_totalqty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                            R.id.title_totalqty).getTag()) != null)
+                        ((TextView) findViewById(R.id.title_totalqty))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(findViewById(
+                                                R.id.title_totalqty)
+                                                .getTag()));
+                } catch (Exception e) {
+
+                }
             } else {
                 findViewById(R.id.ll_totqty).setVisibility(View.GONE);
             }
 
             if (bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
                 findViewById(R.id.ll_value).setVisibility(View.VISIBLE);
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                            R.id.totalText).getTag()) != null)
+                        ((TextView) findViewById(R.id.totalText))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(findViewById(
+                                                R.id.totalText)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
             } else {
                 findViewById(R.id.ll_value).setVisibility(View.GONE);
             }
@@ -4708,10 +4731,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     continue;
 
                 if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                        && ret.getSIH() > 0 && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
-                        || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0) ||
-                        (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && ret.getSIH() > 0)) {
+                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                && ret.getSIH() > 0
+                                && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
+                        || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                                && bmodel.getRetailerMasterBO().getIsVansales() == 0
+                                && ret.getWSIH() > 0)
+                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                && bmodel.configurationMasterHelper.IS_INVOICE
+                                && ret.getSIH() > 0)) {
                     if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
                         if (mSelectedFilter.equals(getResources().getString(
                                 R.string.order_dialog_barcode))) {

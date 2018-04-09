@@ -131,101 +131,109 @@
 
                     <RadioGroup
                         android:id="@+id/rg"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
+                        android:weightSum="9"
                         android:orientation="horizontal">
 
                         <RadioButton
                             android:id="@+id/seller"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:checked="true"
                             android:text="@string/Seller"
                             android:textSize="@dimen/font_small"
                             android:paddingEnd="@dimen/radio_button_gap"
+                            android:layout_weight="3"
                             android:textColor="@color/task_description_color" />
 
                         <RadioButton
                             android:id="@+id/Channelwise"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="@string/Channelwise"
                             android:paddingEnd="@dimen/radio_button_gap"
                             android:textSize="@dimen/font_small"
+                            android:layout_weight="3"
                             android:textColor="@color/task_description_color" />
                         <RadioButton
                             android:id="@+id/Retailerwise"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="@string/Retailerwise"
                             android:textSize="@dimen/font_small"
+                            android:layout_weight="3"
                             android:textColor="@color/task_description_color" />
                     </RadioGroup>
 
                     <LinearLayout
-                        android:id="@+id/allchannel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="6dp"
-                        android:layout_marginBottom="@dimen/dimen_22dp"
-                        android:visibility="gone" >
-
-                        <CheckBox
-                            android:id="@+id/allcheckbox"
-                            android:layout_width="wrap_content"
+                        android:layout_margin="5dp"
+                        android:weightSum="9"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:id="@+id/all_seller"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:paddingEnd="@dimen/dimen_20dp"
-                            android:text="@string/all_channel"
-                            android:textSize="@dimen/font_medium"
-                            android:textColor="@color/task_description_color"
-                            android:visibility="gone"/>
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" >
+                            android:layout_marginBottom="@dimen/dimen_22dp"
+                            android:visibility="visible"
+                            android:paddingEnd="@dimen/radio_button_gap"
+                            android:layout_weight="3">
+
+                            <Spinner
+                                android:id="@+id/spinner_seller"
+                                android:background="@android:color/transparent"
+                                android:layout_width="@dimen/spinner_width"
+                                android:layout_height="@dimen/spinner_height"
+                                android:paddingLeft="@dimen/dimen_20dp"
+                                android:paddingStart="@dimen/dimen_20dp"
+                                android:paddingRight="@dimen/dimen_10dp"
+                                android:paddingEnd="@dimen/dimen_10dp"
+                                android:popupTheme="@android:style/ThemeOverlay.Material.Light"/>
+                        </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/allchannel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="@dimen/radio_button_gap"
+                        android:layout_marginBottom="@dimen/dimen_22dp"
+                        android:layout_weight="3"
+                        android:visibility="visible" >
 
                             <Spinner
                                 android:id="@+id/channel"
-                                android:layout_centerHorizontal="true"
                                 android:background="@android:color/transparent"
                                 android:layout_width="@dimen/spinner_width"
                                 android:layout_height="@dimen/spinner_height"
+                                android:paddingLeft="@dimen/dimen_20dp"
+                                android:paddingStart="@dimen/dimen_20dp"
+                                android:paddingRight="@dimen/dimen_10dp"
+                                android:paddingEnd="@dimen/dimen_10dp"
                                 android:popupTheme="@android:style/ThemeOverlay.Material.Light"/>
-                        </RelativeLayout>
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/allretailer"
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:padding="6dp"
-                        android:visibility="gone"
+                        android:visibility="visible"
+                        android:layout_weight="3"
                         android:layout_marginBottom="@dimen/dimen_22dp">
-
-                        <CheckBox
-                            android:id="@+id/allretaicheckbox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:visibility="gone"
-                            android:paddingEnd="@dimen/dimen_20dp"
-                            android:text="@string/all_retailer"
-                            android:textSize="@dimen/font_medium"
-                            android:textColor="@color/task_description_color" />
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
 
                             <Spinner
                                 android:id="@+id/retailer"
-                                android:layout_centerHorizontal="true"
                                 android:background="@android:color/transparent"
                                 android:layout_width="@dimen/spinner_width"
                                 android:layout_height="@dimen/spinner_height"
+                                android:paddingLeft="@dimen/dimen_20dp"
+                                android:paddingStart="@dimen/dimen_20dp"
+                                android:paddingRight="@dimen/dimen_10dp"
+                                android:paddingEnd="@dimen/dimen_10dp"
                                 android:popupTheme="@android:style/ThemeOverlay.Material.Light">
                             </Spinner>
-                        </RelativeLayout>
+                    </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
