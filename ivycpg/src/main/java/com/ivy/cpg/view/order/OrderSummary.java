@@ -890,7 +890,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         // Apply Exclude Item level Tax  in Product
         if (BModel.configurationMasterHelper.SHOW_TAX) {
-            BModel.productHelper.taxHelper.updateProductWiseTax();
+            if(BModel.configurationMasterHelper.IS_EXCLUDE_TAX)
+                BModel.productHelper.taxHelper.updateProductWiseExcludeTax();
+            else {
+                float totalTaxVal = BModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
+                totalOrderValue = totalOrderValue + totalTaxVal;
+            }
         }
 
 

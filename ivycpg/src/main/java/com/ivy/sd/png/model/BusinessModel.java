@@ -1005,7 +1005,7 @@ public class BusinessModel extends Application {
             Cursor c = db.selectSQL("select orderid from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
                     + QT(getRetailerMasterBO().getRetailerID())
-                    + " and invoicestatus=0");
+                    + " and invoicestatus=0 and upload!='X'");
             if (c != null) {
                 if (c.getCount() > 0) {
                     c.close();
@@ -1042,7 +1042,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select orderid from " + DataMembers.tbl_orderHeader
-                    + " where invoicestatus = 0 and OFlag = 1 ");
+                    + " where invoicestatus = 0 and upload!='X' and OFlag = 1 ");
             if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                 sb.append(" and is_vansales=1");
             }
@@ -1074,7 +1074,7 @@ public class BusinessModel extends Application {
             sql = "select retailerid,invoicestatus from " + DataMembers.tbl_orderHeader;
 
             if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                sql += " where is_vansales=1";
+                sql += " where is_vansales=1 and upload != 'X'";
             }
             Cursor c = db.selectSQL(sql);
             if (c != null) {
@@ -2279,7 +2279,7 @@ public class BusinessModel extends Application {
 
         if (!configurationMasterHelper.IS_INVOICE) {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-            sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -2307,7 +2307,7 @@ public class BusinessModel extends Application {
         }
         sb = new StringBuffer();
         sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2323,7 +2323,7 @@ public class BusinessModel extends Application {
         sb = new StringBuffer();
         sb.append("select sum(pieceQty),sum(caseQty),sum(outerQty) from OrderDetail OD ");
         sb.append("inner join OrderHeader oh on oh.orderid=od.orderid ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2353,7 +2353,7 @@ public class BusinessModel extends Application {
         sb.append("select count(oh.RetailerID) from OrderHeader oh ");
         sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
         sb.append("LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = rm.RetailerID ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2397,7 +2397,7 @@ public class BusinessModel extends Application {
         sb.append("select count(oh.RetailerID) from OrderHeader oh ");
         sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
         sb.append(" inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2509,7 +2509,7 @@ public class BusinessModel extends Application {
             sb.append(" SELECT RM.RetailerID as rid,RetailerName,beatid,");
             sb.append(configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as DistributorId" : +userMasterHelper.getUserMasterBO().getDistributorid() + " as DistributorId");
             sb.append(" FROM RetailerMaster RM INNER JOIN RetailerMasterInfo RMI on RM.RetailerID = RMI.RetailerID ");
-            sb.append(" where RM.retailerid NOT IN (select oh.retailerid from orderheader oh) and RM.retailerid not in ");
+            sb.append(" where RM.retailerid NOT IN (select oh.retailerid from orderheader oh where oh.upload!='X') and RM.retailerid not in ");
             sb.append("(select np.retailerid from nonproductivereasonmaster np) and RMI.isToday=1");
 
             Cursor c = db.selectSQL(sb.toString());
@@ -2850,7 +2850,7 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("select OrderID from "
-                    + DataMembers.tbl_orderHeader + " where retailerid="
+                    + DataMembers.tbl_orderHeader + " where upload !='X' and retailerid="
                     + QT(getRetailerMasterBO().getRetailerID()));
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -2911,7 +2911,7 @@ public class BusinessModel extends Application {
         String sql = null;
 
         sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
-                + " where RetailerID=" + QT(retailerId);
+                + " where upload !='X' and RetailerID=" + QT(retailerId);
 
         Cursor orderHeaderCursor = db.selectSQL(sql);
         if (orderHeaderCursor != null) {
@@ -4855,10 +4855,10 @@ public class BusinessModel extends Application {
                 if (PRD_FOR_ORDER) {
                     if (beatMasterHealper.getTodayBeatMasterBO() == null
                             || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
-                        c = db.selectSQL("select  distinct(Retailerid) from OrderHeader");
+                        c = db.selectSQL("select  distinct(Retailerid) from OrderHeader where upload!='X'");
                     } else {
                         c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
-                                + "o.retailerid=r.retailerid ");// where
+                                + "o.retailerid=r.retailerid where o.upload!='X' ");// where
                         // r.isdeviated='N'
                     }
                 } else if (PRD_FOR_SKT) {
@@ -4945,7 +4945,7 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.IS_INVOICE) {
                 c = db.selectSQL("select Retailerid, sum(invNetamount) from InvoiceMaster group by retailerid");
             } else {
-                c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader group by retailerid");
+                c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
             }
             if (c != null) {
                 while (c.moveToNext()) {
@@ -9110,7 +9110,7 @@ public class BusinessModel extends Application {
                 }
             } else {
                 c = db.selectSQL("select  distinct(r.Retailerid) from OrderHeader o" +
-                        " inner join retailermaster r on o.retailerid=r.retailerid where r.isdeviated='N' and isPlanned='Y'");
+                        " inner join retailermaster r on o.retailerid=r.retailerid where o.upload!='X' and r.isdeviated='N' and isPlanned='Y'");
             }
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -9216,7 +9216,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader");
+            sb.append("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader where upload!='X'");
             Cursor c = db
                     .selectSQL(sb.toString());
             if (c != null) {

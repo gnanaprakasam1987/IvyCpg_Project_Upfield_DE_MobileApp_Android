@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/orderScreenListRow"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimens_50dp"
+    android:gravity="center_vertical"
+    android:weightSum="10">
+
+    <TextView
+        android:id="@+id/prod_name"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="3dp"
+        android:layout_marginStart="3dp"
+        android:layout_weight="4"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="@string/product_name"
+        android:textColor="@color/Black"
+        android:tag="prod_name"/>
+
+    <EditText
+        android:id="@+id/piece_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textColor="@color/Black"
+        android:tag="d_piece"/>
+
+    <EditText
+        android:id="@+id/case_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textColor="@color/Black"
+        android:tag="d_case"/>
+
+    <EditText
+        android:id="@+id/outer_qty"
+        style="@style/EditText_ListItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textColor="@color/Black"
+        android:tag="d_outer"/>
+
+    <TextView
+        android:id="@+id/sales_return_qty"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textColor="@color/Black"
+        android:focusable="false"
+        android:enabled="false"
+        android:tag="d_sr"/>
+
+    <TextView
+        android:id="@+id/sales_replace_qty"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:maxLines="1"
+        android:textColor="@color/Black"
+        android:focusable="false"
+        android:enabled="false"
+        android:tag="d_replace"/>
+
+    <TextView
+        android:id="@+id/sih_qty"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textColor="@color/Black"
+        android:focusable="false"
+        android:enabled="false"
+        android:tag="d_sih"/>
+
+</LinearLayout>

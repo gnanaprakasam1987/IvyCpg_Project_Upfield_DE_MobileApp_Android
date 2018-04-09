@@ -709,6 +709,8 @@ public class OrderHelper {
                     + (productBo.getOrderedPcsQty() * productBo.getSrp())
                     + (productBo.getOrderedOuterQty() * productBo.getOsrp());
             totalValue = productBo.getDiscount_order_value();
+            if(!businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
+                line_total_price = line_total_price + businessModel.productHelper.taxHelper.getTaxAmountByProduct(productBo);
         }
 
 
@@ -1447,14 +1449,14 @@ public class OrderHelper {
             // update invoice createed in SalesReturnHeader **/
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCreditNoteCreated != 1) {
-                db.executeQ("update SalesReturnHeader set invoicecreated=1 where RetailerID="
+                db.executeQ("update SalesReturnHeader set invoicecreated=1 where upload!='X' and RetailerID="
                         + businessModel.getRetailerMasterBO().getRetailerID());
             }
             // update credit not flag in sales return header **/
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCreditNoteCreated != 1
                     && salesReturnHelper.isValueReturned(mContext)) {
-                db.executeQ("update SalesReturnHeader set credit_flag=2 where RetailerID="
+                db.executeQ("update SalesReturnHeader set credit_flag=2 where upload!='X' and RetailerID="
                         + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()));
             }
             // update credit balance
@@ -1694,6 +1696,15 @@ public class OrderHelper {
                     + product.getProductID()
                     + " and batchid=" + businessModel.QT(batchId));
 
+            if(businessModel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
+                db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
+                        + totalqty
+                        + " then ifnull(qty,0)-"
+                        + totalqty
+                        + " else 0 end) where pid="
+                        + product.getProductID());
+            }
+
             sb.append(businessModel.QT(invoiceId) + ",");
             sb.append(businessModel.QT(product.getProductID()) + ",");
             sb.append(totalqty + "," + srp + ",");
@@ -1751,7 +1762,7 @@ public class OrderHelper {
                         + retailerId);
 
             else
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader where retailerid=" + retailerId);
+                c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' retailerid=" + retailerId);
 
 
             if (c != null) {
@@ -1858,7 +1869,7 @@ public class OrderHelper {
             List<String> OrderId = null;
 
             Cursor c = db
-                    .selectSQL("SELECT OrderID FROM OrderHeader WHERE RetailerID = '"
+                    .selectSQL("SELECT OrderID FROM OrderHeader WHERE upload!='X' and RetailerID = '"
                             + retailerId + "'");
             if (c != null) {
                 OrderId = new ArrayList<>();
@@ -2266,6 +2277,16 @@ public class OrderHelper {
                                 + product.getProductID());
 
 
+                        if(businessModel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
+                            db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
+                                    + totalqty
+                                    + " then ifnull(qty,0)-"
+                                    + totalqty
+                                    + " else 0 end) where pid="
+                                    + product.getProductID());
+                        }
+
+
                         //updating object
                         product.setSIH(s);
 
@@ -2369,6 +2390,16 @@ public class OrderHelper {
                                     + totalQty
                                     + " else 0 end) where pid="
                                     + productMasterBO.getProductID());
+
+
+                            if(businessModel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
+                                db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
+                                        + totalQty
+                                        + " then ifnull(qty,0)-"
+                                        + totalQty
+                                        + " else 0 end) where pid="
+                                        + productMasterBO.getProductID());
+                            }
 
 
                             //updating object
@@ -2791,7 +2822,6 @@ public class OrderHelper {
 
     }
 
-
     private String deleteOrderTransactions(DBUtil db, int isVanSales, String uid) {
         StringBuffer sb = new StringBuffer();
         sb.append("select OrderID from OrderHeader where RetailerID=");
@@ -2861,4 +2891,5 @@ public class OrderHelper {
 
         return uid;
     }
+
 }

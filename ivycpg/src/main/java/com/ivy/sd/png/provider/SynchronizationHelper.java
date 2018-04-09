@@ -4063,7 +4063,7 @@ SynchronizationHelper {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String query = "SELECT Orderdate from OrderHeader ORDER BY Orderdate DESC";
+            String query = "SELECT Orderdate from OrderHeader where upload!='X' ORDER BY Orderdate DESC";
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 if (c.moveToFirst()) {
@@ -4077,7 +4077,7 @@ SynchronizationHelper {
                     dateList.add(c.getString(0));
                 }
             }
-            query = "SELECT date from SalesReturnHeader ORDER BY date DESC";
+            query = "SELECT date from SalesReturnHeader where upload!='X' ORDER BY date DESC";
             c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 if (c.moveToFirst()) {

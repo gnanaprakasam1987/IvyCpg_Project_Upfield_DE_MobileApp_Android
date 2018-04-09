@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by mansoor on 18/1/18.
@@ -25,7 +27,7 @@ public interface TaxInterface {
     void insertOrderTaxList(String orderId, DBUtil db);
     void loadTaxDetailsForPrint(String invoiceid);
     void loadTaxProductDetailsForPrint(String invoiceid);
-    void updateProductWiseTax();
+    void updateProductWiseExcludeTax();
     void saveProductLeveltax(String orderId, DBUtil db);
     void updateInvoiceIdInProductLevelTax(DBUtil db, String invid, String orderId);
     double applyBillWiseTax(double totalOrderValue);
@@ -41,6 +43,8 @@ public interface TaxInterface {
     HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct();
     ArrayList<TaxBO> getBillTaxList();
     LinkedHashMap<Integer, HashSet<Double>> getTaxPercentagerListByGroupId();
+    float updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS);
+    float getTaxAmountByProduct(ProductMasterBO productMasterBO);
 
 
     //Project specific: Tax should be removed for scheme calculation.

@@ -79,6 +79,8 @@ public class ProductMasterBO {
     private int deliveredPcsQty;
     private int deliveredOuterQty;
     private int companyId = 0;
+    private int DSIH;
+
 
 
     // To maintain original SRP value given in master, in case of updating @srp with some other values(SRP without tax).
@@ -1832,5 +1834,13 @@ public class ProductMasterBO {
 
     public void setFoc(int foc) {
         this.foc = foc;
+    }
+
+    public int getDSIH() {
+        return DSIH;
+    }
+
+    public void setDSIH(int DSIH) {
+        this.DSIH = DSIH;
     }
 }

@@ -208,7 +208,7 @@ public class SalesReturnHelper {
         db.openDataBase();
         float total = 0;
         Cursor c = db
-                .selectSQL("select ifnull(sum(returnvalue),0) from SalesReturnHeader where retailerid="
+                .selectSQL("select ifnull(sum(returnvalue),0) from SalesReturnHeader where upload!='X' and retailerid="
                         + QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
         if (c != null) {
             if (c.getCount() > 0) {
@@ -604,7 +604,7 @@ public class SalesReturnHelper {
                     .selectSQL("SELECT DISTINCT PM.PName,SRD.batchid, IFNULL(BM.batchNUM,''),RM.ListName,SRD.Pqty," +
                             " SRD.Cqty, SRD.outerQty, SRD.oldmrp, SRD.mfgdate, SRD.expdate, SRH.ReturnValue, SRH.Lpc,SRD.ProductID," +
                             " PM.dUomQty,PM.dUomId,PM.dOuomQty,PM.dOuomid,PM.sih,PM.psname FROM SalesReturnDetails SRD" +
-                            " INNER JOIN SalesReturnHeader SRH ON SRD.uid = SRH.uid" +
+                            " INNER JOIN SalesReturnHeader SRH ON SRD.uid = SRH.uid and SRH.upload!='X' " +
                             " INNER JOIN StandardListMaster RM ON SRD.Condition = RM.ListId" +
                             " AND SRD.reason_type=1 AND SRH.unload=0 AND RM.ParentId = (SELECT ListId FROM StandardListMaster WHERE ListType ='REASON_TYPE' AND ListCode = 'SR')" +
                             " LEFT JOIN BatchMaster BM on SRD.ProductID = BM.pid AND SRD.batchid = BM.batchid " +
@@ -651,7 +651,7 @@ public class SalesReturnHelper {
         Cursor c = db
                 .selectSQL("SELECT reason_type,sum(totalamount) as saleable from SalesReturnDetails sd  inner join SalesReturnHeader  sh on sh.RetailerID="
                         + bmodel.getRetailerMasterBO().getRetailerID()
-                        + " and sd.uid=sh.uid and sh.invoicecreated=0 and sh.distributorid=" + bmodel.retailerMasterBO.getDistributorId() + " group by reason_type=0");
+                        + " and sd.uid=sh.uid and sh.invoicecreated=0 and sh.upload!='X' and sh.distributorid=" + bmodel.retailerMasterBO.getDistributorId() + " group by reason_type=0");
         if (c != null && c.getCount() > 0) {
             while (c.moveToNext()) {
                 if ("0".equals(c.getString(0)))
@@ -672,7 +672,7 @@ public class SalesReturnHelper {
         Cursor c = db
                 .selectSQL("SELECT reason_type,sum(totalamount) as saleable from SalesReturnDetails sd  inner join SalesReturnHeader  sh on sh.RetailerID="
                         + bmodel.getRetailerMasterBO().getRetailerID()
-                        + " and sd.uid=sh.uid and sh.distributorid=" + bmodel.retailerMasterBO.getDistributorId() + " group by reason_type=0");
+                        + " and sd.uid=sh.uid and sh.upload!='X' and sh.distributorid=" + bmodel.retailerMasterBO.getDistributorId() + " group by reason_type=0");
         if (c != null && c.getCount() > 0) {
             while (c.moveToNext()) {
                 if (!("0".equals(c.getString(0))))
@@ -716,7 +716,7 @@ public class SalesReturnHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select invoicecreated from SalesReturnHeader where Retailerid="
+                    .selectSQL("select invoicecreated from SalesReturnHeader where upload !='X' and Retailerid="
                             + bmodel.getRetailerMasterBO().getRetailerID() + " and distributorid=" + bmodel.retailerMasterBO.getDistributorId());
             if (c != null) {
                 while (c.moveToNext()) {
@@ -983,7 +983,7 @@ public class SalesReturnHelper {
         db.openDataBase();
         double total = 0;
         Cursor c = db
-                .selectSQL("select ifnull(sum(returnvalue),0) from SalesReturnHeader");
+                .selectSQL("select ifnull(sum(returnvalue),0) from SalesReturnHeader where upload!='X'");
         if (c != null) {
             if (c.getCount() > 0) {
                 c.moveToNext();
@@ -1190,7 +1190,7 @@ public class SalesReturnHelper {
      * @param db  db
      * @param uid uid
      */
-    private void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid, String module, String code) {
+    public void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid, String module, String code) {
 
         String columns = "uid,Retailerid,taxRate,taxType,applyLevelId,taxValue,pid";
         setTotalValue(getTotalCreditNoteWithOutTAX(db));
@@ -1325,7 +1325,7 @@ public class SalesReturnHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select credit_flag from SalesReturnHeader where RetailerID="
+                    .selectSQL("select credit_flag from SalesReturnHeader where upload != 'X' and RetailerID="
                             + QT(bmodel.getRetailerMasterBO().getRetailerID()));
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
