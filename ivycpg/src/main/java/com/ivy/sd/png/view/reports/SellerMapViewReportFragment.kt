@@ -138,11 +138,11 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
             mDrawerLayout = getView()!!.findViewById(
                     R.id.drawer_layout) as DrawerLayout
 
-            mDrawerLayout!!.setDrawerShadow(R.drawable.drawer_shadow,
+            mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                     GravityCompat.START)
-            mDrawerLayout!!.setDrawerShadow(R.drawable.drawer_shadow,
+            mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                     GravityCompat.END)
-            mDrawerLayout!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
             mDrawerToggle = object : ActionBarDrawerToggle(activity,
                     mDrawerLayout,
@@ -166,8 +166,8 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
                 }
             }
 
-            mDrawerLayout!!.addDrawerListener(mDrawerToggle)
-            mDrawerLayout!!.closeDrawer(GravityCompat.END)
+            mDrawerLayout.addDrawerListener(mDrawerToggle)
+            mDrawerLayout.closeDrawer(GravityCompat.END)
 
             initializeMap()
 
@@ -225,7 +225,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
 
-        val drawerOpen = mDrawerLayout!!.isDrawerOpen(GravityCompat.END)
+        val drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END)
         menu.findItem(R.id.menu_users).isVisible = !drawerOpen
     }
 
@@ -234,8 +234,8 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
         if (i == R.id.menu_users) {
             loadUsers()
         } else if (i == android.R.id.home) {
-            if (mDrawerLayout!!.isDrawerOpen(GravityCompat.END))
-                mDrawerLayout!!.closeDrawers()
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers()
             else {
                 onBackButtonClick()
             }
@@ -256,7 +256,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
     private fun loadUsers() {
 
         try {
-            mDrawerLayout!!.openDrawer(GravityCompat.END)
+            mDrawerLayout.openDrawer(GravityCompat.END)
 
             val fm = activity.supportFragmentManager
             val frag: SellerListFragment?
@@ -273,7 +273,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
             ft.replace(R.id.right_drawer, fragment, "filter")
             ft.commit()
 
-            mDrawerLayout!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
         } catch (ex: Exception) {
             Commons.printException(ex)
         }
@@ -291,7 +291,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
                 if (mMap != null) {
                     mMap!!.clear()
                 }
-                mDrawerLayout!!.closeDrawers()
+                mDrawerLayout.closeDrawers()
 
                 //If nothing selected then showing default text
                 if (actionBar != null) {
@@ -473,7 +473,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
     }
 
     override fun updateClose() {
-        mDrawerLayout!!.closeDrawers()
+        mDrawerLayout.closeDrawers()
 
         if (actionBar != null) {
             (activity.findViewById(R.id.tv_toolbar_title) as TextView).text = bmodel.mSelectedActivityName
