@@ -56,7 +56,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.RetailerSotringIsDone;
 import com.ivy.sd.png.bo.VisitConfiguration;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -1486,7 +1485,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
             startVistitRetailers.addAll(retailerWIthSequence);
         }
 
-        Collections.sort(retailer, new RetailerSotringIsDone());
         tv_storeVisit.setText(retailer.size() + "");
 
     }
@@ -1568,7 +1566,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 }
             }
         }
-        Collections.sort(retailer, new RetailerSotringIsDone());
 
     }
 

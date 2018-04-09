@@ -696,8 +696,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                             mBModel.outletTimeStampHelper
                                     .updateTimeStampModuleWise(SDUtil
                                             .now(SDUtil.TIME));
-                            mBModel.updateIsVisitedFlag();
-
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
                             Bundle extras = getActivity().getIntent().getExtras();
                             if (extras != null) {

@@ -1353,9 +1353,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 // Save closing stock
                 bmodel.saveClosingStock(false);
 
-                // Upadte isVisited Flag
-                bmodel.updateIsVisitedFlag();
-
                 // update review plan in DB
                 bmodel.setReviewPlanInDB();
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMBINED_STOCK);

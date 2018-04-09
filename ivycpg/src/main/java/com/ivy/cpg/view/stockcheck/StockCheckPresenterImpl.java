@@ -167,10 +167,6 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
 
                 // Save closing stock
                 businessModel.saveClosingStock(false);
-
-                // Upadte isVisited Flag
-                businessModel.updateIsVisitedFlag();
-
                 // update review plan in DB
                 businessModel.setReviewPlanInDB();
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_STOCK);

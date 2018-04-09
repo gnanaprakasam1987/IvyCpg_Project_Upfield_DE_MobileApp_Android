@@ -30,9 +30,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -68,22 +66,14 @@ import java.util.Vector;
 public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener, SyncContractor.SyncView {
 
     private BusinessModel bmodel;
-    private ImageView mGoldStoreIV;
     private Spinner spinnerNoOrderReason, spinnerNooCollectionReason, spinnerFeedback;
-    private TextView mTime;
     private ArrayAdapter<ReasonMaster> spinnerAdapter, collectionReasonAdapter, feedBackReasonAdapter;
     public static final String MENU_CALL_ANLYS = "MENU_CALL_ANLYS";
-    //  private ListView listview;
     private RecyclerView recyclerView;
-    private ArrayList<ConfigureBO> visitConfig;
     private Vector<ConfigureBO> callanalysismenu = new Vector<ConfigureBO>();
-    private int inittarget;
     private Button mNoOrderCameraBTN;
-    private int salestarget;
     private double day_act = 0;
     private double day_obj;
-    private int disttgt;
-    private int merchtgt;
     private boolean collectionReasonFlag = false;
     private String mImageName, mImagePath, mSelectedReasonId;
     private String mModuleName = "MENU_CALL_ANLYS";
@@ -96,7 +86,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     EditText edt_noOrderReason;
     EditText edt_other_remarks;
     Button btn_close;
-    private RelativeLayout rl_store_status;
     private CardView content_card;
 
     View view_sale_header;
@@ -124,7 +113,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
 
         /** Handling session out */
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
@@ -133,7 +122,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     Toast.LENGTH_SHORT).show();
             finish();
         }
-
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -149,29 +137,25 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         mUploadHelper = UploadHelper.getInstance(this);
         presenter = new UploadPresenterImpl(this, bmodel, this, mUploadHelper, mVanUnloadHelper);
 
-        mTime = (TextView) findViewById(R.id.edt_time_taken);
 
         /** set handler for the Timer class */
         if (bmodel.timer != null) {
             bmodel.timer.setHandler(handler);
         }
-        content_card = (CardView) findViewById(R.id.content_card);
+        content_card = findViewById(R.id.content_card);
         try {
 
-            //  listview = (ListView) findViewById(R.id.callAnalysisList);
-            recyclerView = (RecyclerView) findViewById(R.id.callAnalysisListRecycler);
+            recyclerView = findViewById(R.id.callAnalysisListRecycler);
 
-            mGoldStoreIV = (ImageView) findViewById(R.id.goldstore_iv);
-            rl_store_status = (RelativeLayout) findViewById(R.id.rl_store_status);
-            spinnerNoOrderReason = (Spinner) findViewById(R.id.spinnerNoorderreason);
-            spinnerNooCollectionReason = (Spinner) findViewById(R.id.spinnerNooCollectionReason);
-            spinnerFeedback = (Spinner) findViewById(R.id.spinner_feedback);
-            edt_noOrderReason = (EditText) findViewById(R.id.edtNoorderreason);
-            edt_other_remarks = (EditText) findViewById(R.id.edt_other_remarks);
-            mNoOrderCameraBTN = (Button) findViewById(R.id.btn_camera);
-            contentCloseCall = (CardView) findViewById(R.id.content_closeCallCard);
-            TVMenuName = (TextView) findViewById(R.id.tvMenuName);
-            TVMenuValue = (TextView) findViewById(R.id.tv_menuValue);
+            spinnerNoOrderReason = findViewById(R.id.spinnerNoorderreason);
+            spinnerNooCollectionReason = findViewById(R.id.spinnerNooCollectionReason);
+            spinnerFeedback = findViewById(R.id.spinner_feedback);
+            edt_noOrderReason = findViewById(R.id.edtNoorderreason);
+            edt_other_remarks = findViewById(R.id.edt_other_remarks);
+            mNoOrderCameraBTN = findViewById(R.id.btn_camera);
+            contentCloseCall = findViewById(R.id.content_closeCallCard);
+            TVMenuName = findViewById(R.id.tvMenuName);
+            TVMenuValue = findViewById(R.id.tv_menuValue);
             TVMenuName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             TVMenuValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
@@ -186,9 +170,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             }
 
             mNoOrderCameraBTN.setOnClickListener(this);
-
-
-            String[] dateTime = bmodel.outletTimeStampHelper.getTimeIn().split(" ");
 
             if ((hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
                     && bmodel.getRetailerMasterBO().getIsOrdered().equals("N"))) {
@@ -302,9 +283,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             lstRight.add(configlist.get(i));
                         }
                     }
-//                    ListArrayAdapter adapter = new ListArrayAdapter(this,
-//                            R.layout.call_analysis_list_item, lstLeft, lstRight);
-//                    listview.setAdapter(adapter);
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
                     RecyclerAdapter recyclerAdapter = new RecyclerAdapter(this, R.layout.call_analysis_list_item, configlist);
                     recyclerView.setLayoutManager(gridLayoutManager);
@@ -316,9 +294,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 }
 
             } else {
-//                ListArrayAdapter adapter = new ListArrayAdapter(this,
-//                        R.layout.call_analysis_list_item, configlist, null);
-//                listview.setAdapter(adapter);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                 linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 RecyclerAdapter recyclerAdapter = new RecyclerAdapter(this, R.layout.call_analysis_list_item, configlist);
@@ -332,24 +307,22 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             }
 
 
-            updateGoldFlag();
-
-            tv_store_status = (TextView) findViewById(R.id.tv_store_status);
+            tv_store_status =  findViewById(R.id.tv_store_status);
             tv_store_status.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            tv_duration = (TextView) findViewById(R.id.tv_duration);
+            tv_duration =  findViewById(R.id.tv_duration);
             tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            tv_edt_time_taken = (TextView) findViewById(R.id.edt_time_taken);
+            tv_edt_time_taken =  findViewById(R.id.edt_time_taken);
             tv_edt_time_taken.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
-            btn_close = (Button) findViewById(R.id.button1);
+            btn_close =  findViewById(R.id.button1);
             btn_close.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-            tv_sale = (TextView) findViewById(R.id.sale);
+            tv_sale =  findViewById(R.id.sale);
             tv_sale.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-            view_sale_header = (View) findViewById(R.id.view_dotted_line);
+            view_sale_header =  findViewById(R.id.view_dotted_line);
             view_sale_header.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
             //updating FIT score for current retailer
@@ -357,252 +330,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         } catch (Exception e) {
             Commons.printException(e);
 
-        }
-    }
-
-
-    private void updateGoldFlag() {
-
-        boolean sbdFalg = true, sbdMerch = true, initFalg = true, valueFlag = true;
-        float sbdDistTarget = (float) bmodel.getRetailerMasterBO()
-                .getSbdDistributionTarget() * (float) disttgt / 100;
-        float sbdMerchTarget = (float) bmodel.getRetailerMasterBO()
-                .getSBDMerchTarget() * (float) merchtgt / 100;
-
-        float initiativetarget = (float) bmodel.getRetailerMasterBO()
-                .getInitiative_target() * (float) inittarget / 100;
-
-        float Salestarget = (float) day_obj * (float) salestarget / 100;
-        if (disttgt > 0) {
-            if (sbdDistTarget <= bmodel.retailerMasterBO
-                    .getSbdDistributionAchieve()
-                    && bmodel.retailerMasterBO.getSbdDistributionTarget() != 0) {
-                sbdFalg = true;
-            } else
-                sbdFalg = false;
-        }
-        if (merchtgt > 0) {
-            if (sbdMerchTarget <= bmodel.retailerMasterBO.getSBDMerchAchieved()
-                    && bmodel.retailerMasterBO.getSBDMerchTarget() != 0) {
-                sbdMerch = true;
-            } else {
-                sbdMerch = false;
-            }
-        }
-        if (inittarget > 0) {
-            if (initiativetarget <= bmodel.retailerMasterBO
-                    .getInitiative_achieved()
-                    && bmodel.retailerMasterBO.getInitiative_target() != 0) {
-                initFalg = true;
-            } else {
-                initFalg = false;
-            }
-        }
-        if (salestarget > 0) {
-            if (Salestarget <= day_act && day_obj != 0) {
-                valueFlag = true;
-            } else {
-                valueFlag = false;
-            }
-        }
-        Commons.print("dist" + sbdFalg + " merch" + sbdMerchTarget + " init"
-                + initFalg + " sales" + valueFlag);
-        if (disttgt == 0 && merchtgt == 0 && inittarget == 0 && salestarget == 0) {
-            rl_store_status.setVisibility(View.GONE);
-        } else {
-            if (sbdFalg && sbdMerch && initFalg && valueFlag) {
-                mGoldStoreIV.setImageResource(R.drawable.icon_star_gold);
-                updateGoldenStore(1);
-            } else {
-                mGoldStoreIV.setImageResource(R.drawable.icon_star);
-                updateGoldenStore(0);
-            }
-            rl_store_status.setVisibility(View.VISIBLE);
-        }
-
-    }
-
-    public class ListArrayAdapter extends ArrayAdapter {
-        private Context context;
-        private int layoutResourceId;
-        ArrayList<ConfigureBO> configlist;
-        ArrayList<ConfigureBO> configlist_second;
-
-        public ListArrayAdapter(CallAnalysisActivity applicationContext,
-                                int simpleExpandableListItem2,
-                                ArrayList<ConfigureBO> configlist_first, ArrayList<ConfigureBO> configlist_sec) {
-            super(applicationContext, simpleExpandableListItem2, configlist_first);
-            context = applicationContext;
-            layoutResourceId = simpleExpandableListItem2;
-            configlist = configlist_first;
-            configlist_second = configlist_sec;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            View row = convertView;
-            OperationHolder holder = null;
-
-            if (convertView == null) {
-
-                LayoutInflater inflater = ((Activity) context)
-                        .getLayoutInflater();
-                row = inflater.inflate(layoutResourceId, parent, false);
-
-
-                holder = new OperationHolder(row);
-                row.setTag(holder);
-            } else
-                holder = (OperationHolder) row.getTag();
-
-
-            holder.Name.setText(configlist.get(position).getMenuName());
-
-            try {
-                if (configlist.get(position).getKpiTarget().equals("-1")) {
-                    holder.ll_seekbar.setVisibility(View.GONE);
-                    holder.tv_progress_text.setVisibility(View.GONE);
-
-                    holder.tv_achieved_value.setText(configlist.get(position).getMenuNumber());
-                    holder.tv_target_value.setVisibility(View.GONE);
-
-                } else {
-                    holder.ll_seekbar.setVisibility(View.VISIBLE);
-                    holder.tv_progress_text.setVisibility(View.VISIBLE);
-                    holder.tv_target_value.setVisibility(View.VISIBLE);
-
-                    holder.seekBar.setEnabled(false);
-                    holder.seekBar.setProgress((int) Double.parseDouble(configlist.get(position).getKpiAchieved()));
-                    holder.seekBar.setMax((int) Double.parseDouble(configlist.get(position).getKpiTarget()));
-
-
-                    holder.tv_achieved_value.setText(bmodel.formatValue(Double.parseDouble(configlist.get(position).getKpiAchieved())));
-                    holder.tv_target_value.setText("/" + bmodel.formatValue(Double.parseDouble(configlist.get(position).getKpiTarget())));
-
-                    if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) > 0) {
-                        int ach = (int) Double.parseDouble(configlist.get(position).getKpiAchieved());
-                        int tgt = (int) Double.parseDouble(configlist.get(position).getKpiTarget());
-                        int percent = (ach * 100) / tgt;
-                        if (percent > 100) {
-                            percent = 100;
-                        }
-                        holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
-                    } /*else if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist.get(position).getKpiAchieved()) > 0) {
-                        holder.tv_progress_text.setText("100" + getResources().getString(R.string.percent_of_tot_target_achieved));
-                    }*/
-                }
-            } catch (Exception ex) {
-                Commons.printException(ex);
-            }
-
-            if (configlist_second != null)
-                if (row.findViewById(R.id.ll_second_layout) != null && position < configlist_second.size()) {// Tab view
-
-                    row.findViewById(R.id.ll_second_layout).setVisibility(View.VISIBLE);
-                    holder.view_separator.setVisibility(View.VISIBLE);
-
-                    holder.Name_right.setText(configlist_second.get(position).getMenuName());
-
-
-                    try {
-                        if (configlist_second.get(position).getKpiTarget().equals("-1")) {
-                            holder.ll_seekbar_right.setVisibility(View.GONE);
-                            holder.tv_progress_text_right.setVisibility(View.GONE);
-
-                            holder.tv_achieved_value_right.setText(configlist_second.get(position).getMenuNumber());
-                            holder.tv_target_value_right.setVisibility(View.GONE);
-
-                        } else {
-                            holder.ll_seekbar_right.setVisibility(View.VISIBLE);
-                            holder.tv_progress_text_right.setVisibility(View.VISIBLE);
-                            holder.tv_target_value_right.setVisibility(View.VISIBLE);
-
-                            holder.seekBar_right.setProgress((int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()));
-                            holder.seekBar_right.setMax((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()));
-                            holder.seekBar_right.setEnabled(false);
-
-                            holder.tv_achieved_value_right.setText(bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiAchieved())));
-                            holder.tv_target_value_right.setText("/" + bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiTarget())));
-
-                            if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) > 0) {
-                                int ach = (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved());
-                                int tgt = (int) Double.parseDouble(configlist_second.get(position).getKpiTarget());
-                                int percent = (ach * 100) / tgt;
-                                if (percent > 100) {
-                                    percent = 100;
-                                }
-                                holder.tv_progress_text_right.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
-                            } else if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()) > 0) {
-                                holder.tv_progress_text_right.setText("100% " + getResources().getString(R.string.percent_of_tot_target_achieved));
-                            }
-                        }
-                    } catch (Exception ex) {
-                        Commons.printException(ex);
-                    }
-
-                }
-
-            TypedArray typearr = CallAnalysisActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-            if (position % 2 == 0) {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            } else {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-            }
-
-
-            return row;
-
-        }
-
-        public class OperationHolder {
-
-            TextView Name;
-            TextView tv_target_value;
-            TextView tv_achieved_value;
-            LinearLayout ll_seekbar;
-            SeekBar seekBar;
-            TextView tv_progress_text;
-
-            TextView Name_right;
-            TextView tv_target_value_right;
-            TextView tv_achieved_value_right;
-            LinearLayout ll_seekbar_right;
-            SeekBar seekBar_right;
-            TextView tv_progress_text_right;
-
-            View view_separator;
-
-            OperationHolder(View row) {
-
-                Name = (TextView) row.findViewById(R.id.menunametxt);
-                Name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_achieved_value = (TextView) row.findViewById(R.id.tv_menuvalue_achieved);
-                tv_achieved_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                tv_target_value = (TextView) row.findViewById(R.id.tv_menuvalue_target);
-                tv_target_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ll_seekbar = (LinearLayout) row.findViewById(R.id.ll_seekbar);
-                seekBar = (SeekBar) row.findViewById(R.id.seek);
-                tv_progress_text = (TextView) row.findViewById(R.id.tv_progress_text);
-                tv_progress_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-                //
-                if (row.findViewById(R.id.ll_second_layout) != null) {// Tab view
-                    Name_right = (TextView) row.findViewById(R.id.menunametxt_two);
-                    Name_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    tv_achieved_value_right = (TextView) row.findViewById(R.id.tv_menuvalue_achieved_two);
-                    tv_achieved_value_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    tv_target_value_right = (TextView) row.findViewById(R.id.tv_menuvalue_target_two);
-                    tv_target_value_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    ll_seekbar_right = (LinearLayout) row.findViewById(R.id.ll_seekbar_two);
-                    seekBar_right = (SeekBar) row.findViewById(R.id.seek_two);
-                    tv_progress_text_right = (TextView) row.findViewById(R.id.tv_progress_text_two);
-                    tv_progress_text_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-                    view_separator = (View) row.findViewById(R.id.view_separator);
-                }
-
-            }
         }
     }
 
@@ -659,59 +386,12 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             percent = 100;
                         }
                         holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
-                    } /*else if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist.get(position).getKpiAchieved()) > 0) {
-                        holder.tv_progress_text.setText("100" + getResources().getString(R.string.percent_of_tot_target_achieved));
-                    }*/
+                    }
                 }
             } catch (Exception ex) {
                 Commons.printException(ex);
             }
 
-//            if (holder.itemView.findViewById(R.id.ll_second_layout) != null && position < configlist_second.size()) {// Tab view
-//
-//                holder.itemView.findViewById(R.id.ll_second_layout).setVisibility(View.VISIBLE);
-//                holder.view_separator.setVisibility(View.VISIBLE);
-//
-//                holder.Name_right.setText(configlist_second.get(position).getMenuName());
-//
-//
-//                try {
-//                    if (configlist_second.get(position).getKpiTarget().equals("-1")) {
-//                        holder.ll_seekbar_right.setVisibility(View.GONE);
-//                        holder.tv_progress_text_right.setVisibility(View.GONE);
-//
-//                        holder.tv_achieved_value_right.setText(configlist_second.get(position).getMenuNumber());
-//                        holder.tv_target_value_right.setVisibility(View.GONE);
-//
-//                    } else {
-//                        holder.ll_seekbar_right.setVisibility(View.VISIBLE);
-//                        holder.tv_progress_text_right.setVisibility(View.VISIBLE);
-//                        holder.tv_target_value_right.setVisibility(View.VISIBLE);
-//
-//                        holder.seekBar_right.setProgress((int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()));
-//                        holder.seekBar_right.setMax((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()));
-//                        holder.seekBar_right.setEnabled(false);
-//
-//                        holder.tv_achieved_value_right.setText(bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiAchieved())));
-//                        holder.tv_target_value_right.setText("/" + bmodel.formatValue(Double.parseDouble(configlist_second.get(position).getKpiTarget())));
-//
-//                        if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) > 0) {
-//                            int ach = (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved());
-//                            int tgt = (int) Double.parseDouble(configlist_second.get(position).getKpiTarget());
-//                            int percent = (ach * 100) / tgt;
-//                            if (percent > 100) {
-//                                percent = 100;
-//                            }
-//                            holder.tv_progress_text_right.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
-//                        } else if ((int) Double.parseDouble(configlist_second.get(position).getKpiTarget()) <= 0 && (int) Double.parseDouble(configlist_second.get(position).getKpiAchieved()) > 0) {
-//                            holder.tv_progress_text_right.setText("100% " + getResources().getString(R.string.percent_of_tot_target_achieved));
-//                        }
-//                    }
-//                } catch (Exception ex) {
-//                    Commons.printException(ex);
-//                }
-//
-//            }
 
             TypedArray typearr = CallAnalysisActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             if (position % 2 == 0) {
@@ -734,40 +414,20 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             LinearLayout ll_seekbar;
             SeekBar seekBar;
             TextView tv_progress_text;
-//            TextView Name_right;
-//            TextView tv_target_value_right;
-//            TextView tv_achieved_value_right;
-//            LinearLayout ll_seekbar_right;
-//            SeekBar seekBar_right;
-//            TextView tv_progress_text_right;
-//            View view_separator;
 
             MyViewHolder(View row) {
                 super(row);
-                Name = (TextView) row.findViewById(R.id.menunametxt);
+                Name =  row.findViewById(R.id.menunametxt);
                 Name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_achieved_value = (TextView) row.findViewById(R.id.tv_menuvalue_achieved);
+                tv_achieved_value =  row.findViewById(R.id.tv_menuvalue_achieved);
                 tv_achieved_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                tv_target_value = (TextView) row.findViewById(R.id.tv_menuvalue_target);
+                tv_target_value =  row.findViewById(R.id.tv_menuvalue_target);
                 tv_target_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ll_seekbar = (LinearLayout) row.findViewById(R.id.ll_seekbar);
-                seekBar = (SeekBar) row.findViewById(R.id.seek);
-                tv_progress_text = (TextView) row.findViewById(R.id.tv_progress_text);
+                ll_seekbar =  row.findViewById(R.id.ll_seekbar);
+                seekBar =  row.findViewById(R.id.seek);
+                tv_progress_text =  row.findViewById(R.id.tv_progress_text);
                 tv_progress_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-//                if (row.findViewById(R.id.ll_second_layout) != null) {// Tab view
-//                    Name_right = (TextView) row.findViewById(R.id.menunametxt_two);
-//                    Name_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-//                    tv_achieved_value_right = (TextView) row.findViewById(R.id.tv_menuvalue_achieved_two);
-//                    tv_achieved_value_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-//                    tv_target_value_right = (TextView) row.findViewById(R.id.tv_menuvalue_target_two);
-//                    tv_target_value_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-//                    ll_seekbar_right = (LinearLayout) row.findViewById(R.id.ll_seekbar_two);
-//                    seekBar_right = (SeekBar) row.findViewById(R.id.seek_two);
-//                    tv_progress_text_right = (TextView) row.findViewById(R.id.tv_progress_text_two);
-//                    tv_progress_text_right.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-//
-//                    view_separator = (View) row.findViewById(R.id.view_separator);
-//                }
+
             }
 
         }
@@ -843,9 +503,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 }
             }
 
-            float SBDAchievePer = ((float) bmodel.getRetailerMasterBO()
-                    .getSbdDistributionAchieve() / (float) bmodel
-                    .getRetailerMasterBO().getSbdDistributionTarget()) * 100;
+            float SBDAchievePer = 0;
 
             if (bmodel.getRetailerMasterBO().getSbdDistributionTarget() > 0) {
                 SBDAchievePer = ((float) bmodel.getRetailerMasterBO()
@@ -877,9 +535,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             + bmodel.formatPercent(salesPercentValue) + " %");
                     if (callanalysismenu.get(i).getConfigCode()
                             .equalsIgnoreCase("CallA12"))
-                        salestarget = callanalysismenu.get(i).getMandatory();
 
-                    con.setKpiTarget(day_obj + "");
+                        con.setKpiTarget(day_obj + "");
                     con.setKpiAchieved(day_act + "");
 
                 } else if (callanalysismenu.get(i).getConfigCode()
@@ -910,7 +567,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             + bmodel.formatPercent(SDUtil.convertToFloat(bmodel
                             .getRetailerMasterBO()
                             .getInitiativePercent())) + " %");
-                    inittarget = callanalysismenu.get(i).getMandatory();
 
                     con.setKpiTarget(bmodel.retailerMasterBO.getInitiative_target() + "");
                     con.setKpiAchieved(bmodel.retailerMasterBO
@@ -936,7 +592,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             + bmodel.formatPercent(SDUtil.convertToFloat(bmodel
                             .getRetailerMasterBO().getSbdMercPercent()))
                             + " %");
-                    merchtgt = callanalysismenu.get(i).getMandatory();
 
                     con.setKpiTarget(bmodel.getRetailerMasterBO().getSBDMerchTarget() + "");
                     con.setKpiAchieved(bmodel.getRetailerMasterBO()
@@ -962,7 +617,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             .getSbdDistributionTarget()
                             + " , "
                             + bmodel.formatPercent(SBDAchievePer) + "%");
-                    disttgt = callanalysismenu.get(i).getMandatory();
 
                     con.setKpiTarget(bmodel.getRetailerMasterBO()
                             .getSbdDistributionTarget() + "");
@@ -985,7 +639,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                             .getSbdDistributionTarget()
                             + " , "
                             + bmodel.formatPercent(SBDAchievePer) + "%");
-                    disttgt = callanalysismenu.get(i).getMandatory();
 
 
                 } else if (callanalysismenu.get(i).getConfigCode()
@@ -1031,24 +684,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         .equals("CallA17")) {
 
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    //  int totalvalue = bmodel.getTotalLinesTarget();
 
                     int totalLines = bmodel.getTotalLines();
-                  /*  if (totalvalue > 0) {
 
-                        double percentage = Utils
-                                .round(((double) totalLines / (double) totalvalue) * 100,
-                                        2);
-                        if (percentage > 100)
-                            percentage = 100;
-
-                        con.setMenuNumber(totalLines + "/" + totalvalue + " , "
-                                + percentage + "%");
-                    } else {
-                        con.setMenuNumber(totalLines + "/0 , 0%");
-                    }*/
-
-//                    con.setKpiTarget(totalvalue + "");
                     con.setMenuNumber(totalLines + "");
                     con.setKpiTarget("-1");
                     con.setKpiAchieved(totalLines + "");
@@ -1261,15 +899,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     Toast.LENGTH_SHORT).show();
             finish();
         }
-    }
-
-    public void onBack(View v) {
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
-        resetRemarksBO();
-        BusinessModel.loadActivity(CallAnalysisActivity.this,
-                DataMembers.actHomeScreenTwo);
-        finish();
     }
 
     public void onClose(View v) {
@@ -1657,7 +1286,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         if (bmodel.getRetailerMasterBO().getIsReviewPlan().equals("Y")
                 && bmodel.getRetailerMasterBO().getIsOrderMerch().equals("N")) {
             bmodel.setIsReviewPlan("N");
-
             bmodel.getRetailerMasterBO().setIsReviewPlan("N");
         }
         // Roll Back collection View done if not not order or stock not done
@@ -1746,25 +1374,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         return handler;
     }
 
-
-    /**
-     * Update Isgoldstore in RetaierMaster db and Retailer bo
-     */
-    private void updateGoldenStore(int flag) {
-        try {
-            DBUtil db = new DBUtil(CallAnalysisActivity.this,
-                    DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            db.executeQ("update RetailerMaster set IsGoldStore=" + flag
-                    + "  where RetailerID="
-                    + bmodel.getRetailerMasterBO().getRetailerID());
-            db.closeDB();
-            bmodel.getRetailerMasterBO().setIsGoldStore(flag);
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
 
     public void loadCollectionReason() {
         try {
