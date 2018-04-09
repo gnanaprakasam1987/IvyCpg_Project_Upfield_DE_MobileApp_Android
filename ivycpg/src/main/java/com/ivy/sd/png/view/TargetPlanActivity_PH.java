@@ -513,9 +513,7 @@ public class TargetPlanActivity_PH extends IvyBaseActivityNoActionBar implements
                 bmodel.setIsPlanned();
                 bmodel.setIsPlannedInDB();
                 bmodel.getRetailerMasterBO().setIsPlanned("Y");
-                if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
-                    boolean bool = bmodel.synchronizationHelper.backUpDB();
-                }
+                
             } catch (Exception e) {
                 Commons.printException(e);
                 bool = false;

@@ -1165,5 +1165,9 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
+    <string name="select_photo_type">Select PhotoType</string>
+    <string name="my_gallery">My Gallery</string>
+    <string name="select_condition">Select condition</string>
+    <string name="profile_updated_scccess">Customer Profile updated successfully.</string>
 
 </resources>

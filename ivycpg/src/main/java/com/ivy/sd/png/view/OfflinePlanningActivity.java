@@ -1107,8 +1107,14 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                                 boolean isAvailable = false;
                                                 boolean isRoutePlanned = false;
                                                 for (OfflineDateWisePlanBO ofBo : mData) {
-                                                    if (ofBo.getEntityType().equals(mEntityRetailer) || ofBo.getEntityType().equals(mEntityDistributor)) {
+                                                    if (ofBo.getEntityType().equals(mEntityRetailer)) {
                                                         if (ofBo.getEntityId() == SDUtil.convertToInt(mRsdholder.retailerMasterBO.getRetailerID())) {
+                                                            isAvailable = true;
+                                                        }
+                                                    }
+
+                                                    if (ofBo.getEntityType().equals(mEntityDistributor)) {
+                                                        if (ofBo.getEntityId() == mRsdholder.retailerMasterBO.getSubdId()) {
                                                             isAvailable = true;
                                                         }
                                                     }
@@ -1227,8 +1233,13 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                         boolean isAvailable = false;
                                         boolean isRoutePlanned = false;
                                         for (OfflineDateWisePlanBO ofBo : mData) {
-                                            if (ofBo.getEntityType().equals(mEntityRetailer) || ofBo.getEntityType().equals(mEntityDistributor)) {
+                                            if (ofBo.getEntityType().equals(mEntityRetailer)) {
                                                 if (ofBo.getEntityId() == SDUtil.convertToInt(mRsdholder.retailerMasterBO.getRetailerID())) {
+                                                    isAvailable = true;
+                                                }
+                                            }
+                                            if (ofBo.getEntityType().equals(mEntityDistributor)) {
+                                                if (ofBo.getEntityId() == mRsdholder.retailerMasterBO.getSubdId()) {
                                                     isAvailable = true;
                                                 }
                                             }

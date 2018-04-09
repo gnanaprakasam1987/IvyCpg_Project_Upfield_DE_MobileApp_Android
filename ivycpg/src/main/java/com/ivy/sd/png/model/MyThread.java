@@ -178,12 +178,7 @@ public class MyThread extends Thread {
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 0);
 
                 if (bool == 1) {
-                    if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
-                        if (!bmodel.synchronizationHelper.backUpDB()) {
-                            handler.sendEmptyMessage(DataMembers.NOTIFY_DATABASE_NOT_SAVED);
 
-                        }
-                    }
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOADED);
                 } else if (bool == -1) {
@@ -241,13 +236,7 @@ public class MyThread extends Thread {
                 int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOADRETAILERWISE);
 
                 if (bool == 1) {
-                    if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
-                        if (!bmodel.synchronizationHelper.backUpDB()) {
-                            handler.sendEmptyMessage(
-                                    DataMembers.NOTIFY_DATABASE_NOT_SAVED);
 
-                        }
-                    }
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOADED);
                 } else {
@@ -295,10 +284,6 @@ public class MyThread extends Thread {
 
                 bmodel.setOrderHeaderBO(null);
 
-                // Upadte isVisited Flag
-                if (bmodel.mSelectedModule != 1) {
-                    bmodel.updateIsVisitedFlag();
-                }
                 // Update review plan in DB
                 bmodel.setReviewPlanInDB();
 
@@ -323,8 +308,6 @@ public class MyThread extends Thread {
                     String percent = bmodel.getSBDDistributionPrecentNewPhilip();
                     bmodel.sbdMerchandisingHelper
                             .setSBDDistributionPercent(percent);
-                    bmodel.setDistributionPercent(percent);
-                    bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
                 }
 
                 // Set Order Flag
@@ -351,13 +334,7 @@ public class MyThread extends Thread {
                 OrderSummary frm = (OrderSummary) ctx;
                 // bmodel.productHelper.clearOrderTable();
 
-                // Backup the database
-                if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
-                    if (!bmodel.synchronizationHelper.backUpDB()) {
-                        frm.getHandler().sendEmptyMessage(
-                                DataMembers.NOTIFY_DATABASE_NOT_SAVED);
-                    }
-                }
+
 
                 frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
             } else {
@@ -373,11 +350,6 @@ public class MyThread extends Thread {
                 bmodel.updateSbdDistStockinRetailerMaster();
 
                 bmodel.setOrderHeaderBO(null);
-
-                // Upadte isVisited Flag
-                if (bmodel.mSelectedModule != 1) {
-                    bmodel.updateIsVisitedFlag();
-                }
 
                 // Update review plan in DB
                 bmodel.setReviewPlanInDB();
@@ -395,13 +367,7 @@ public class MyThread extends Thread {
                 // Clear all the temp values
                 SubDStockOrderActivity frm = (SubDStockOrderActivity) ctx;
 
-                // Backup the database
-                if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
-                    if (!bmodel.synchronizationHelper.backUpDB()) {
-                        frm.getHandler().sendEmptyMessage(
-                                DataMembers.NOTIFY_DATABASE_NOT_SAVED);
-                    }
-                }
+
                 frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
             } else {
                 SubDStockOrderActivity frm = (SubDStockOrderActivity) ctx;
@@ -435,8 +401,6 @@ public class MyThread extends Thread {
                 String percent = bmodel.getSBDDistributionPrecentNewPhilip();
                 bmodel.sbdMerchandisingHelper
                         .setSBDDistributionPercent(percent);
-                bmodel.setDistributionPercent(percent);
-                bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
             }
 
             if (!bmodel.isOrderTaken()) {
@@ -491,13 +455,7 @@ public class MyThread extends Thread {
                         .deleteEmptyReconciliationOrder();
             }
             bmodel.setOrderHeaderBO(null);
-            if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
-                if (!bmodel.synchronizationHelper.backUpDB()) {
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_DATABASE_NOT_SAVED);
 
-                }
-            }
 
             frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_DELETED);
         } else if (opt == DataMembers.DELETE_STOCK_AND_ORDER) {
@@ -513,8 +471,6 @@ public class MyThread extends Thread {
                 String percent = bmodel.getSBDDistributionPrecentNewPhilip();
                 bmodel.sbdMerchandisingHelper
                         .setSBDDistributionPercent(percent);
-                bmodel.setDistributionPercent(percent);
-                bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
             }
 
             if (!bmodel.isOrderTaken()) {
@@ -567,13 +523,7 @@ public class MyThread extends Thread {
                         .deleteEmptyReconciliationOrder();
             }
             bmodel.setOrderHeaderBO(null);
-            if (bmodel.configurationMasterHelper.IS_DB_BACKUP) {
-                if (!bmodel.synchronizationHelper.backUpDB()) {
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_DATABASE_NOT_SAVED);
 
-                }
-            }
 
             frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_DELETED);
         } else if (opt == DataMembers.DIST_DELETE_ORDER) {
@@ -613,8 +563,6 @@ public class MyThread extends Thread {
 
                 bmodel.setOrderHeaderNote("");
 
-                // Upadte isVisited Flag
-                bmodel.updateIsVisitedFlag();
 
                 // Update review plan in DB
                 bmodel.setReviewPlanInDB();
@@ -659,8 +607,6 @@ public class MyThread extends Thread {
                 // Calculate and set Distribution percent
                 String percent = bmodel.getSBDDistributionPrecentNewPhilip();
                 bmodel.sbdMerchandisingHelper.setSBDDistributionPercent(percent);
-                bmodel.setDistributionPercent(percent);
-                bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
 
                 bmodel.setIsOrdered("Y");
                 bmodel.setOrderedInDB("Y");

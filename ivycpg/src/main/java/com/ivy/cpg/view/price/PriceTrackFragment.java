@@ -545,7 +545,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE);
                 businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                businessModel.updateIsVisitedFlag();
 
                 return Boolean.TRUE;
             } catch (Exception e) {

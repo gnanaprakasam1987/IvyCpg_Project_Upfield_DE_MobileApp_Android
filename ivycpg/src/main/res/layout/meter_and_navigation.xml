@@ -25,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/order_volume"
+                android:tag="stk_ord_value"
                 android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/greyed_text_size" />
 
@@ -79,6 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/total_qty"
+                android:tag="stk_ord_qty"
                 android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/greyed_text_size" />
 

@@ -51,7 +51,6 @@ import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.RetailerSotringIsDone;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.VisitConfiguration;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -876,7 +875,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         if (!hasOrderScreen)
             setRetailerDoneforNoOrderMenu(retailer);
-        Collections.sort(retailer, new RetailerSotringIsDone());
         RetailerSelectionAdapter mSchedule = new RetailerSelectionAdapter(
                 retailer);
         mSchedule.notifyDataSetChanged();
@@ -969,7 +967,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
         if (!hasOrderScreen)
             setRetailerDoneforNoOrderMenu(retailer);
-        Collections.sort(retailer, new RetailerSotringIsDone());
         RetailerSelectionAdapter mSchedule = new RetailerSelectionAdapter(
                 new ArrayList<>(retailer));
         String strCount = "" + mSchedule.getCount();

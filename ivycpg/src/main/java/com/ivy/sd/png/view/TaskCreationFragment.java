@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -31,7 +30,6 @@ public class TaskCreationFragment extends IvyBaseFragment {
 
     private EditText taskView;
     private EditText taskTitle;
-    private Button close, save;
     private BusinessModel bmodel;
     private ArrayAdapter<ChannelBO> channelAdapter;
     private ArrayAdapter<ChannelBO> channelAdapter1;
@@ -39,7 +37,6 @@ public class TaskCreationFragment extends IvyBaseFragment {
     private int channelId;
     private CheckBox focusCheck;
     private LinearLayout ll;
-    private RadioGroup rb;
     private String mode = "seller";
 
     private int taskChannelId;
@@ -49,20 +46,17 @@ public class TaskCreationFragment extends IvyBaseFragment {
     public void onStart() {
 
         super.onStart();
-        taskView = (EditText) getView().findViewById(R.id.taskView);
-        taskTitle = (EditText) getView().findViewById(R.id.tv);
-        channelSpinner = (Spinner) getView().findViewById(R.id.channel);
-
-        close = (Button) getView().findViewById(R.id.closeTask);
-        save = (Button) getView().findViewById(R.id.saveTask);
+        taskView = getView().findViewById(R.id.taskView);
+        taskTitle = getView().findViewById(R.id.tv);
+        channelSpinner = getView().findViewById(R.id.channel);
 
         //	close.setOnClickListener((OnClickListener) getActivity());
         //	save.setOnClickListener((OnClickListener) getActivity());
 
         channelSpinner.setEnabled(false);
 
-        ll = (LinearLayout) getView().findViewById(R.id.allchannel);
-        rb = (RadioGroup) getView().findViewById(R.id.rg);
+        ll = getView().findViewById(R.id.allchannel);
+        RadioGroup rb = getView().findViewById(R.id.rg);
         rb.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.seller) {
@@ -101,13 +95,12 @@ public class TaskCreationFragment extends IvyBaseFragment {
             }
         });
 
-        focusCheck = (CheckBox) getView().findViewById(R.id.allcheckbox);
+        focusCheck = getView().findViewById(R.id.allcheckbox);
         focusCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
-                // TODO Auto-generated method stub
                 if (isChecked) {
                     channelSpinner.setAdapter(channelAdapter1);
                     channelSpinner.setEnabled(false);
@@ -207,7 +200,6 @@ public class TaskCreationFragment extends IvyBaseFragment {
 
     public void onBackPressed() {
         // do something on back.
-        return;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -231,10 +223,10 @@ public class TaskCreationFragment extends IvyBaseFragment {
             getActivity().finish();
             return true;
         } else if (i == R.id.menu_next) {
-            taskDetailDesc = (String) taskView.getText().toString();
-            taskTitleDec = (String) taskTitle.getText().toString();
+            taskDetailDesc = taskView.getText().toString();
+            taskTitleDec = taskTitle.getText().toString();
 
-            if (validate() == false)
+            if (!validate())
                 return true;
 
             if (mode.equals("seller")) {

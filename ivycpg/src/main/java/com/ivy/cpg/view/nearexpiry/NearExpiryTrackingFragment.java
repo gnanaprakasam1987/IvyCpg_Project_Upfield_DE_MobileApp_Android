@@ -661,7 +661,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                mBModel.updateIsVisitedFlag();
 
                 return Boolean.TRUE;
             } catch (Exception e) {

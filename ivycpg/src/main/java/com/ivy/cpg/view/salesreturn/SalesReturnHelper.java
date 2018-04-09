@@ -17,6 +17,7 @@ import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.TaxInterface;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -480,14 +481,14 @@ public class SalesReturnHelper {
                                 .sqlEscapeString(SHOW_SAL_RET_MFG_DATE ?
                                         (bo.getMfgDate() == null || bo.getMfgDate().length() == 0) ?
                                                 SDUtil.now(SDUtil.DATE_GLOBAL)
-                                                : DateUtil.convertToServerDateFormat(bo.getMfgDate(), "yyyy/MM/dd")
+                                                : DateUtil.convertToServerDateFormat(bo.getMfgDate(), ConfigurationMasterHelper.outDateFormat)
                                         : "")
                                 + ","
                                 + DatabaseUtils
                                 .sqlEscapeString(SHOW_SAL_RET_EXP_DATE ?
                                         (bo.getExpDate() == null || bo.getExpDate().length() == 0) ?
                                                 SDUtil.now(SDUtil.DATE_GLOBAL)
-                                                : DateUtil.convertToServerDateFormat(bo.getExpDate(), "yyyy/MM/dd")
+                                                : DateUtil.convertToServerDateFormat(bo.getExpDate(), ConfigurationMasterHelper.outDateFormat)
                                         : "")
                                 + ","
                                 + bo.getOuterQty()

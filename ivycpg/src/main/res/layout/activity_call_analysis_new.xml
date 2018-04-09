@@ -46,6 +46,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/golden_store"
+                    android:visibility="gone"
                     android:src="@drawable/icon_star" />
             </RelativeLayout>
             <LinearLayout
