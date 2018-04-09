@@ -44,12 +44,10 @@ import java.util.StringTokenizer;
 public class TimeTrackingFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
-    private NonFeildTwoDialog nonFeildTwoDialog;
     int addDialogrequestCode;
     private ListView listview;
     ArrayList<NonFieldTwoBo> nonFieldTwoBos = new ArrayList<NonFieldTwoBo>();
     MyAdapter mAdapter;
-    int tempCount = 2;
     private InOutReasonDialog dialog;
     OnMyDialogResult onmydailogresult;
     TextView no_data_txt;
@@ -67,8 +65,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         bmodel.setContext(getActivity());
 
         View view = inflater.inflate(R.layout.fragment_time_tracking, container, false);
-        listview = (ListView) view.findViewById(R.id.listview);
-        no_data_txt = (TextView) view.findViewById(R.id.no_data_txt);
+        listview = view.findViewById(R.id.listview);
+        no_data_txt = view.findViewById(R.id.no_data_txt);
 
         //typeface
         no_data_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -256,7 +254,6 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                         ConfigurationMasterHelper.outDateFormat) + "\n" + time);
             }
 
-
             holder.btInTime.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -321,9 +318,6 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             getActivity().finish();
             return true;
         } else if (i1 == R.id.menu_select) {
-            //bmodel.mAttendanceHelper.saveNonFieldWorkTwoDetails(nonFieldTwoBos);
-
-            //select user
             showUserDialog();
             return true;
         } else if (i1 == R.id.menu_add) {
@@ -335,26 +329,6 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
                     public void cancel(String reasonid) {
                         dialog.dismiss();
-                        //This if condition commented 25-04-2016 for start time end time inter change issue fixed
-                       /* if (bmodel.mAttendanceHelper.getNonFieldTwoBoList().size() > 0) {
-
-                            NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
-
-                           // if (bmodel.tid == null)
-                                generateTid();
-
-
-                            addNonFieldTwoBo.setId(bmodel.tid);
-                            addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
-                            addNonFieldTwoBo.setOutTime(SDUtil.now(SDUtil.DATE_TIME));
-                            addNonFieldTwoBo.setInTime(null);
-                            addNonFieldTwoBo.setRemarks("");
-                            addNonFieldTwoBo.setReason(reasonid);
-                            bmodel.mAttendanceHelper.saveNonFieldWorkTwoDetail(addNonFieldTwoBo);
-                        } else {*/
-
-                        // if (bmodel.tid == null)
-                        //  generateTid();
 
 
                         NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
@@ -378,7 +352,6 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                     }
                 });
                 dialog.show();
-                //dialog.setCancelable(false);
 
             } else {
                 try {

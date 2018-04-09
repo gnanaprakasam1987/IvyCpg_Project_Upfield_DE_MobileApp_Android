@@ -21,8 +21,9 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
-    //public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
-    public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_bisleri/Webapi/api";
+    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
+    //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
+    //public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_bisleri/Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
@@ -359,7 +360,7 @@ public class DataMembers {
     private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath";
     private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
-    private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VisitFrequency,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate,pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
+    private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate,pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
     private static final String tbl_deviateReasontableupload_cols = "uid,retailerid,date,reasonid,DistributorID,remarks";
     private static final String tbl_SbdMerchandisingHeaderupload_cols = "uid,date,RetailerID,beatid";
     private static final String tbl_SbdMerchandisingDetailupload_cols = "uid,sbdid,brandid,visibilityListid,value,TypeListId,isHit";

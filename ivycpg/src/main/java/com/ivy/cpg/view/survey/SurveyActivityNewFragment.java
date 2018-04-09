@@ -2224,7 +2224,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     surveyHelperNew.deleteUnusedImages();
                     surveyHelperNew.saveAnswer(mMenuCode);
                 }
-                bmodel.updateIsVisitedFlag();
                 bmodel.saveModuleCompletion(mMenuCode);
                 return Boolean.TRUE;
             } catch (Exception e) {

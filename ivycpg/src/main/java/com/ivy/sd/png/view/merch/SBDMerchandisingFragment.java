@@ -163,9 +163,6 @@ public class SBDMerchandisingFragment extends IvyBaseFragment {
                 bmodel.sbdMerchandisingHelper.setIsMerchandisingDone("Y");
                 bmodel.getRetailerMasterBO().setIsMerchandisingDone("Y");
 
-                // Update isVisited Flag
-                bmodel.updateIsVisitedFlag();
-
                 if (checkBox.length > 0) {
                     new SaveTask().execute();
                 } else {

@@ -1180,7 +1180,6 @@ public class SODFragment extends IvyBaseFragment implements
             try {
                 mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOD);
-                mBModel.updateIsVisitedFlag();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));

@@ -295,8 +295,6 @@ public class TaskListFragment extends Fragment {
                                     bmodel.taskHelper.saveTask(0 + "",
                                             holder.taskBO);
                                 }
-                                if (IsRetailerwisetask)
-                                    bmodel.updateIsVisitedFlag();
                             }
                         });
 

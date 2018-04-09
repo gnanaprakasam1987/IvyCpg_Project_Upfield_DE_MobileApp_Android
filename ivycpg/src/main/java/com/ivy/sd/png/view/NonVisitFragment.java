@@ -37,7 +37,6 @@ import com.ivy.sd.png.bo.DateWisePlanBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.RetailerSotringIsDone;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -393,7 +392,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             }
         }
 
-        Collections.sort(retailer, new RetailerSotringIsDone());
         IconicAdapter mSchedule = new IconicAdapter(retailer);
         if (listView != null) {
             listView.setAdapter(mSchedule);
@@ -446,7 +444,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             }
         }
 
-        Collections.sort(retailer, new RetailerSotringIsDone());
         IconicAdapter mSchedule = new IconicAdapter(retailer);
         if (listView != null) {
             listView.setAdapter(mSchedule);
@@ -768,8 +765,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             .get(i));
                                 }
 
-                                Collections.sort(retailer,
-                                        new RetailerSotringIsDone());
                                 IconicAdapter mSchedule = new IconicAdapter(
                                         retailer);
                                 listView.setAdapter(mSchedule);
@@ -796,8 +791,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             .get(i));
                                 }
 
-                                Collections.sort(retailer,
-                                        new RetailerSotringIsDone());
                                 IconicAdapter mSchedule = new IconicAdapter(
                                         retailer);
                                 listView.setAdapter(mSchedule);

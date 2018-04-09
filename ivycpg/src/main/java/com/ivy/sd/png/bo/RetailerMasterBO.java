@@ -102,7 +102,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int visit_frequencey;
     private String credit_invoice_count;
     private SupplierMasterBO supplierBO;
-    private String isAttended;
     private int isToday;
     private int visitDoneCount;
     private String weekNo;
@@ -129,13 +128,11 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String isOrderMerch;
     private String isDeviated;
     private String isNew;
-    private String isDeliveryReport;
     private String isDigitalContent;
     private String isReviewPlan;
     private String isSKUTGT = "";
     private String sbdMercPercent;
     private String sbdMerchInitPrecent;
-    private String sbdDistpercent;
     private String initiativePercent;
     private String isOrdered;
     private String isProductive;
@@ -159,7 +156,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String skipActivatedDate;
     private boolean isSkip;
     private double coverage;
-    private String isPresentation;
     private int totalLines;
     private String isCollectionView;
     private int gpsDistance;
@@ -726,14 +722,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.daily_target = daily_target;
     }
 
-    public int getCategoryid() {
-        return categoryid;
-    }
-
-    public void setCategoryid(int categoryid) {
-        this.categoryid = categoryid;
-    }
-
     public int getClassid() {
         return classid;
     }
@@ -758,14 +746,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.daily_target_planned = daily_target_planned;
     }
 
-    public String getIsAttended() {
-        return isAttended;
-    }
-
-    public void setIsAttended(String isAttended) {
-        this.isAttended = isAttended;
-    }
-
     public String getIsDeviated() {
         return isDeviated;
     }
@@ -780,14 +760,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setSbdMercPercent(String sbdMercPercent) {
         this.sbdMercPercent = sbdMercPercent;
-    }
-
-    public String getSbdDistpercent() {
-        return sbdDistpercent;
-    }
-
-    public void setSbdDistpercent(String sbdDistpercent) {
-        this.sbdDistpercent = sbdDistpercent;
     }
 
     @Override
@@ -842,14 +814,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setInvoiceDone(String isInvoiceDone) {
         this.isInvoiceDone = isInvoiceDone;
-    }
-
-    public String getIsDeliveryReport() {
-        return isDeliveryReport;
-    }
-
-    public void setIsDeliveryReport(String isDeliveryReport) {
-        this.isDeliveryReport = isDeliveryReport;
     }
 
     public String getIsDigitalContent() {
@@ -1026,14 +990,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setCreditDays(int creditDays) {
         this.creditDays = creditDays;
-    }
-
-    public String getIsPresentation() {
-        return isPresentation;
-    }
-
-    public void setIsPresentation(String isPresentation) {
-        this.isPresentation = isPresentation;
     }
 
     public int getTotalLines() {
