@@ -327,7 +327,7 @@ public class ReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.totalamount from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
+                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.totalDiscountedAmt from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
                             + " WHERE OD.ProductID IN (" + productIds + ")"
                             + " AND OH.OrderDate="
                             + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
@@ -371,7 +371,7 @@ public class ReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,((OD.totalamount)-(OD.totalamount *(OD.d1+OD.d2+OD.d3)/100)) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
+                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,(OD.totalDiscountedAmt) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
                             + " from OrderDetail OD INNER JOIN  ProductMaster PM ON OD.ProductID = PM.PID LEFT JOIN BatchMaster BM ON OD.batchid =  BM.batchid  and BM.pid=OD.productid where OD.OrderID="
                             + bmodel.QT(orderID) + "and OD.OrderType = 0");
             if (c != null) {
@@ -716,7 +716,7 @@ public class ReportHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append(" SELECT IM.orderid, IM.InvoiceNo,RM.RetailerId,RM.RetailerName,IM.invNetamount,(select count (invoiceid) from InvoiceDetails where ");
-            sb.append("InvoiceDetails.invoiceid=IM.InvoiceNo) as LPC,RM.sbd_dist_stock,RM.sbd_dist_achieve,RM.beatId,P.invoiceamount,IM.totalweight,IM.taxamount,(IM.priceoffAmount+IM.discount), ");
+            sb.append("InvoiceDetails.invoiceid=IM.InvoiceNo) as LPC,RM.sbd_dist_stock,RM.sbd_dist_achieve,RM.beatId,P.invoiceamount,IM.totalweight,IM.taxamount,(IM.priceoffAmount+IM.discount+IM.SchemeAmount), ");
             sb.append("(select sum(Qty) from InvoiceDetails where InvoiceDetails.invoiceid=IM.InvoiceNo) FROM InvoiceMaster IM lEFT JOIN ");
             sb.append("payment p on p.Billnumber=IM.invoiceno  INNER JOIN InvoiceDetails ID ON IM.InvoiceNo = ID.invoiceid INNER JOIN RetailerMaster RM ON IM.Retailerid = RM.RetailerID");
             sb.append(" group by IM.InvoiceNo,IM.RetailerId");
@@ -3163,7 +3163,7 @@ public class ReportHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
-        sb.append("select psname,productid,pcsQty,caseqty,outerqty,totalamount,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
+        sb.append("select psname,productid,pcsQty,caseqty,outerqty,totalDiscountedAmt,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
         sb.append("inner join productmaster PM on ID.productid=PM.pid ");
         sb.append("left join BatchMaster BM on  BM.pid=ID.productid and BM.batchid=ID.batchid ");
         sb.append(" where invoiceid=" + bmodel.QT(invoiceno));
@@ -3432,7 +3432,7 @@ public class ReportHelper {
                     + ".psname,A"
                     + loopEnd
                     + ".isSalable," +
-                    "A1.pname as brandname,A1.parentid,sum(OD.totalamount) from ProductMaster A1";
+                    "A1.pname as brandname,A1.parentid,sum(OD.totalDiscountedAmt) from ProductMaster A1";
 
             for (int i = 2; i <= loopEnd; i++)
                 sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
@@ -3663,8 +3663,8 @@ public class ReportHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db.selectSQL("select sum(ordervalue)from "
-                    + DataMembers.tbl_orderHeader + " where  upload='N'");
+            Cursor c = db.selectSQL("select ifnull(sum(ordervalue),0) from "
+                    + DataMembers.tbl_orderHeader);
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getDouble(0);

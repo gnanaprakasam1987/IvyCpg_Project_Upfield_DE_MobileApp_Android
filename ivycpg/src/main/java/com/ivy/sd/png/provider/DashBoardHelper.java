@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -75,6 +76,7 @@ public class DashBoardHelper {
 
     private ArrayList<SKUWiseTargetBO> skuWiseTarget;
     private Vector<SKUWiseTargetBO> sellerKpiSku;
+    private Map<Integer, Integer> kpiSkuMasterById;
 
     //for viewpager pie graph used in both kpi and day dashboard
     private ArrayList<SKUWiseTargetBO> skuwiseGraphData;
@@ -529,6 +531,7 @@ public class DashBoardHelper {
 
                 if (c != null) {
                     sellerKpiSku = new Vector<>();
+                    kpiSkuMasterById = new HashMap<>();
                     while (c.moveToNext()) {
                         temp = new SKUWiseTargetBO();
                         temp.setPid(c.getInt(0));
@@ -553,6 +556,7 @@ public class DashBoardHelper {
                         }
 
                         sellerKpiSku.add(temp);
+                        kpiSkuMasterById.put(new Integer(temp.getPid()), new Integer(temp.getParentID()));
                     }
                     c.close();
                 }
@@ -694,6 +698,7 @@ public class DashBoardHelper {
 
                 if (c != null) {
                     sellerKpiSku = new Vector<>();
+                    kpiSkuMasterById = new HashMap<>();
                     while (c.moveToNext()) {
                         temp = new SKUWiseTargetBO();
                         temp.setPid(c.getInt(0));
@@ -718,6 +723,7 @@ public class DashBoardHelper {
                         }
 
                         sellerKpiSku.add(temp);
+                        kpiSkuMasterById.put(new Integer(temp.getPid()), new Integer(temp.getParentID()));
                     }
                     c.close();
                 }
@@ -1162,7 +1168,7 @@ public class DashBoardHelper {
     public int getSubdataCount(int KPIParamLovId) {
         int count = 0;
         try {
-            showDayAndP3MSpinner=0;
+            showDayAndP3MSpinner = 0;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
@@ -1263,11 +1269,11 @@ public class DashBoardHelper {
             boolean isDaySpinner = false;
             boolean isP3MSpinner = false;
 
-            String tableName="SellerKPI";
-            if(isRetailerDashboard)
-                tableName="RetailerKPI";
+            String tableName = "SellerKPI";
+            if (isRetailerDashboard)
+                tableName = "RetailerKPI";
 
-            String sql = "select count(*) from "+tableName+" where interval = 'DAY'";
+            String sql = "select count(*) from " + tableName + " where interval = 'DAY'";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -1277,7 +1283,7 @@ public class DashBoardHelper {
                     }
                 }
             }
-            sql = "select count(*) from "+tableName+" where interval = 'P3M'";
+            sql = "select count(*) from " + tableName + " where interval = 'P3M'";
             c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -1471,6 +1477,7 @@ public class DashBoardHelper {
 
                 if (c != null) {
                     sellerKpiSku = new Vector<>();
+                    kpiSkuMasterById = new HashMap<>();
                     while (c.moveToNext()) {
                         temp = new SKUWiseTargetBO();
                         temp.setPid(c.getInt(0));
@@ -1495,6 +1502,7 @@ public class DashBoardHelper {
                         }
 
                         sellerKpiSku.add(temp);
+                        kpiSkuMasterById.put(new Integer(temp.getPid()), new Integer(temp.getParentID()));
                     }
                     c.close();
                 }
@@ -1632,6 +1640,7 @@ public class DashBoardHelper {
 
                 if (c != null) {
                     sellerKpiSku = new Vector<>();
+                    kpiSkuMasterById = new HashMap<>();
                     while (c.moveToNext()) {
                         temp = new SKUWiseTargetBO();
                         temp.setPid(c.getInt(0));
@@ -1656,6 +1665,7 @@ public class DashBoardHelper {
                         }
 
                         sellerKpiSku.add(temp);
+                        kpiSkuMasterById.put(new Integer(temp.getPid()), new Integer(temp.getParentID()));
                     }
                     c.close();
                 }
@@ -1961,6 +1971,14 @@ public class DashBoardHelper {
     public ArrayList<SKUWiseTargetBO> getSkuWiseTarget() {
         return skuWiseTarget;
     }
+
+    public Integer getKpiSkuMasterBoById(Integer productID) {
+        if (kpiSkuMasterById == null || kpiSkuMasterById.get(productID) == null)
+            return 0;
+
+        return kpiSkuMasterById.get(productID);
+    }
+
 
     public void LoadSKUWiseTarget(String retailerId) {
         try {
@@ -2473,6 +2491,7 @@ public class DashBoardHelper {
 
                 if (c != null) {
                     sellerKpiSku = new Vector<SKUWiseTargetBO>();
+                    kpiSkuMasterById = new HashMap<>();
                     while (c.moveToNext()) {
                         temp = new SKUWiseTargetBO();
                         temp.setPid(c.getInt(0));
@@ -2497,6 +2516,7 @@ public class DashBoardHelper {
                         }
 
                         sellerKpiSku.add(temp);
+                        kpiSkuMasterById.put(new Integer(temp.getPid()), new Integer(temp.getParentID()));
                     }
                     c.close();
                 }
@@ -2536,6 +2556,7 @@ public class DashBoardHelper {
 
                 if (c != null) {
                     sellerKpiSku = new Vector<SKUWiseTargetBO>();
+                    kpiSkuMasterById = new HashMap<>();
                     while (c.moveToNext()) {
                         temp = new SKUWiseTargetBO();
                         temp.setPid(c.getInt(0));
@@ -2560,6 +2581,7 @@ public class DashBoardHelper {
                         }
 
                         sellerKpiSku.add(temp);
+                        kpiSkuMasterById.put(new Integer(temp.getPid()), new Integer(temp.getParentID()));
                     }
                     c.close();
                 }
@@ -3024,6 +3046,7 @@ public class DashBoardHelper {
                 c.close();
             }
             sellerKpiSku = new Vector<>();
+            kpiSkuMasterById = new HashMap<>();
             for (int i = 0; i < levelList.size(); i++) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("SELECT P.PID, P.pname, P.psname, P.pcode, P.parentId,p.plid ,IFNULL(SKSD .kpiid,0), IFNULL(SKSD .Target,0)");
@@ -3070,6 +3093,7 @@ public class DashBoardHelper {
 
 
                         sellerKpiSku.add(temp);
+                        kpiSkuMasterById.put(new Integer(temp.getPid()), new Integer(temp.getParentID()));
                     }
                     c.close();
                 }

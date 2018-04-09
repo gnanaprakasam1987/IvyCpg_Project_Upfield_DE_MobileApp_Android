@@ -1,6 +1,5 @@
 package com.ivy.sd.png.bo;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -44,7 +43,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     int distributorId;
     int distParentId;
     private String RetailerID = "0", movRetailerId = "0";
-    private String RetailerCode, movRetailerCode;
+    private String RetailerCode;
     private String RetailerName, movRetailerName;
     private String Addressid = "0";
     private String Cp1id = "0";
@@ -54,7 +53,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String address3;
 
     // Sales per category
-    private String salseProductName, salesInvoiceId, salesInvoiceValue, salesProdParentId, salesLovId, salesLpc, salesQty, salesProductSName;
+    private String  salesInvoiceId, salesInvoiceValue, salesLpc, salesQty, salesProductSName;
 
     public String getMovRetailerId() {
         return movRetailerId;
@@ -62,14 +61,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setMovRetailerId(String movRetailerId) {
         this.movRetailerId = movRetailerId;
-    }
-
-    public String getMovRetailerCode() {
-        return movRetailerCode;
-    }
-
-    public void setMovRetailerCode(String movRetailerCode) {
-        this.movRetailerCode = movRetailerCode;
     }
 
     public String getMovRetailerName() {
@@ -111,7 +102,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int visit_frequencey;
     private String credit_invoice_count;
     private SupplierMasterBO supplierBO;
-    private String isAttended;
     private int isToday;
     private int visitDoneCount;
     private String weekNo;
@@ -138,13 +128,11 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String isOrderMerch;
     private String isDeviated;
     private String isNew;
-    private String isDeliveryReport;
     private String isDigitalContent;
     private String isReviewPlan;
     private String isSKUTGT = "";
     private String sbdMercPercent;
     private String sbdMerchInitPrecent;
-    private String sbdDistpercent;
     private String initiativePercent;
     private String isOrdered;
     private String isProductive;
@@ -168,7 +156,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String skipActivatedDate;
     private boolean isSkip;
     private double coverage;
-    private String isPresentation;
     private int totalLines;
     private String isCollectionView;
     private int gpsDistance;
@@ -183,7 +170,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int locationId;
     private int PlannedVisitCount;
     private int contractLovid;
-    private String plannedDate;
     private int SelectedUserID;
     private String RField4;
     private boolean isSurveyDone;
@@ -736,14 +722,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.daily_target = daily_target;
     }
 
-    public int getCategoryid() {
-        return categoryid;
-    }
-
-    public void setCategoryid(int categoryid) {
-        this.categoryid = categoryid;
-    }
-
     public int getClassid() {
         return classid;
     }
@@ -768,14 +746,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.daily_target_planned = daily_target_planned;
     }
 
-    public String getIsAttended() {
-        return isAttended;
-    }
-
-    public void setIsAttended(String isAttended) {
-        this.isAttended = isAttended;
-    }
-
     public String getIsDeviated() {
         return isDeviated;
     }
@@ -790,14 +760,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setSbdMercPercent(String sbdMercPercent) {
         this.sbdMercPercent = sbdMercPercent;
-    }
-
-    public String getSbdDistpercent() {
-        return sbdDistpercent;
-    }
-
-    public void setSbdDistpercent(String sbdDistpercent) {
-        this.sbdDistpercent = sbdDistpercent;
     }
 
     @Override
@@ -852,14 +814,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setInvoiceDone(String isInvoiceDone) {
         this.isInvoiceDone = isInvoiceDone;
-    }
-
-    public String getIsDeliveryReport() {
-        return isDeliveryReport;
-    }
-
-    public void setIsDeliveryReport(String isDeliveryReport) {
-        this.isDeliveryReport = isDeliveryReport;
     }
 
     public String getIsDigitalContent() {
@@ -1038,14 +992,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.creditDays = creditDays;
     }
 
-    public String getIsPresentation() {
-        return isPresentation;
-    }
-
-    public void setIsPresentation(String isPresentation) {
-        this.isPresentation = isPresentation;
-    }
-
     public int getTotalLines() {
         return totalLines;
     }
@@ -1156,14 +1102,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setLocationId(int locationId) {
         this.locationId = locationId;
-    }
-
-    public String getPlannedDate() {
-        return plannedDate;
-    }
-
-    public void setPlannedDate(String plannedDate) {
-        this.plannedDate = plannedDate;
     }
 
     public int getSurveyHistoryScore() {
@@ -1468,14 +1406,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     private boolean isBomAchieved = false;
 
-    public String getSalseProductName() {
-        return salseProductName;
-    }
-
-    public void setSalseProductName(String salseProductName) {
-        this.salseProductName = salseProductName;
-    }
-
     public String getSalesInvoiceId() {
         return salesInvoiceId;
     }
@@ -1490,22 +1420,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setSalesInvoiceValue(String salesInvoiceValue) {
         this.salesInvoiceValue = salesInvoiceValue;
-    }
-
-    public String getSalesProdParentId() {
-        return salesProdParentId;
-    }
-
-    public void setSalesProdParentId(String salesProdParentId) {
-        this.salesProdParentId = salesProdParentId;
-    }
-
-    public String getSalesLovId() {
-        return salesLovId;
-    }
-
-    public void setSalesLovId(String salesLovId) {
-        this.salesLovId = salesLovId;
     }
 
     public String getSalesLpc() {

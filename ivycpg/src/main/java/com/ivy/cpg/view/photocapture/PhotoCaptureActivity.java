@@ -753,8 +753,6 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         protected Boolean doInBackground(String... arg0) {
             try {
                 mPhotoCaptureHelper.savePhotoCaptureDetails(getApplicationContext(), mRetailerId);
-
-                mBModel.updateIsVisitedFlag();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PHOTO);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));

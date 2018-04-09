@@ -51,9 +51,6 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
     TabLayout tabLayout;
     private DynamicReportFragment dynamicReportFragment;
 
-/*    // for displaying month name in header
-    private String[] monthName = {"January", "February", "March", "April", "May", "June", "July",
-            "August", "September", "October", "November", "December"};*/
 
     private int exp_type = 0;
     private static final String TAG = "ExpenseActivity";
@@ -95,13 +92,13 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayUseLogoEnabled(false);
         }
 
-        et_exp_date = (EditText) findViewById(R.id.et_exp_date);
-        et_amount = (EditText) findViewById(R.id.et_amount);
-        sp_expenses = (Spinner) findViewById(R.id.sp_expenses);
-        tvcamera = (TextView) findViewById(R.id.tv_camera);
-        tvImgCount = (TextView) findViewById(R.id.tv_img_count);
-        tvDone = (TextView) findViewById(R.id.tv_done);
-        tvClear = (TextView) findViewById(R.id.tv_clear);
+        et_exp_date =  findViewById(R.id.et_exp_date);
+        et_amount =  findViewById(R.id.et_amount);
+        sp_expenses =  findViewById(R.id.sp_expenses);
+        tvcamera = findViewById(R.id.tv_camera);
+        tvImgCount =  findViewById(R.id.tv_img_count);
+        tvDone = findViewById(R.id.tv_done);
+        tvClear =  findViewById(R.id.tv_clear);
 
         imagesList = new ArrayList<String>();
         photoNamePath = HomeScreenFragment.photoPath + "/";
@@ -111,7 +108,7 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
         loadExpenses();
 
 
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout =  findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_current_month)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_mtd)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_p3m)));

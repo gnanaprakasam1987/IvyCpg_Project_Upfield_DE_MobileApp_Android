@@ -216,7 +216,7 @@
             style="?attr/roundedCustomButtonSmall"
             android:onClick="CallAnalysisClick"
             android:tag="call_analysis"
-            android:text="Call Analysis"
+            android:text="@string/close_call"
             android:textAllCaps="false"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"

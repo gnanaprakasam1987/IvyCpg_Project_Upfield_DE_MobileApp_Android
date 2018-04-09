@@ -1069,7 +1069,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             try {
                 promotionHelper.savePromotionDetails(getContext().getApplicationContext());
                 promotionHelper.deleteUnusedImages();
-                businessModel.updateIsVisitedFlag();
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PROMO);
                 businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));

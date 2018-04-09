@@ -103,7 +103,7 @@
     <string name="authentication_error">Error in authentication</string>
 
     <string name="mock_location_enabled">Disable Mock Location and Login.</string>
-    <string name="profile_updated_scccess">Profile updated successfully.</string>
+
 
     <string name="select_remarks">Select Remarks</string>
     <string name="select_noorder_reason">Enter No Order Reason</string>
@@ -184,7 +184,6 @@
     <string name="cancelled">Cancelled</string>
 
     <string name="exec_rating">Executing Rating</string>
-    <string name="my_gallery">My Gallery</string>
     <string name="previous">Previous</string>
     <string name="pls_etr_bnk_name">Please Enter Bank Name</string>
     <string name="pls_etr_brc_name">Please Enter Branch Name</string>
@@ -259,7 +258,7 @@
     <string name="no_space">No space available.</string>
     <string name="un_zip">Unzipping...</string>
 
-    <string name="do_u_want_to_take_one_more_print">Do you want to take one more print?</string>
+    <string name="do_u_want_to_take_one_more_print">Click Yes to continue for the 2 nd copy?</string>
     <string name="supplier_mandatory">Please select Supplier</string>
     <string name="wk5">wk5</string>
 
@@ -317,6 +316,10 @@
     <string name="start">Start</string>
     <string name="end">End</string>
 
+    <string name="click_to_export">Click to export</string>
+    <string name="click_to_switch">Click to switch</string>
+    <string name="click_to_change_password">Click to change password</string>
+    <string name="click_to_show_device_status">Click to show device status</string>
     <!--Backup Seller-->
     <string name="user_already_assigned">User Already Assigned</string>
     <string name="seller_already_assigned">Seller is assigned to some other backup seller</string>

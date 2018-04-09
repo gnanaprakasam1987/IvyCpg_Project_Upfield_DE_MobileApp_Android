@@ -301,7 +301,6 @@ public class SBDMerchandisingHelper {
             retailer = (RetailerMasterBO) bmodel.getRetailerMaster().get(i);
             if (retailer.getRetailerID().equals(
                     bmodel.getRetailerMasterBO().getRetailerID())) {
-                retailer.setSbdDistpercent(sbd);
                 bmodel.getRetailerMaster().setElementAt(retailer, i);
             }
         }

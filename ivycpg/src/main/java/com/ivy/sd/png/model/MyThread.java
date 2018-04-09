@@ -284,10 +284,6 @@ public class MyThread extends Thread {
 
                 bmodel.setOrderHeaderBO(null);
 
-                // Upadte isVisited Flag
-                if (bmodel.mSelectedModule != 1) {
-                    bmodel.updateIsVisitedFlag();
-                }
                 // Update review plan in DB
                 bmodel.setReviewPlanInDB();
 
@@ -312,8 +308,6 @@ public class MyThread extends Thread {
                     String percent = bmodel.getSBDDistributionPrecentNewPhilip();
                     bmodel.sbdMerchandisingHelper
                             .setSBDDistributionPercent(percent);
-                    bmodel.setDistributionPercent(percent);
-                    bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
                 }
 
                 // Set Order Flag
@@ -356,11 +350,6 @@ public class MyThread extends Thread {
                 bmodel.updateSbdDistStockinRetailerMaster();
 
                 bmodel.setOrderHeaderBO(null);
-
-                // Upadte isVisited Flag
-                if (bmodel.mSelectedModule != 1) {
-                    bmodel.updateIsVisitedFlag();
-                }
 
                 // Update review plan in DB
                 bmodel.setReviewPlanInDB();
@@ -412,8 +401,6 @@ public class MyThread extends Thread {
                 String percent = bmodel.getSBDDistributionPrecentNewPhilip();
                 bmodel.sbdMerchandisingHelper
                         .setSBDDistributionPercent(percent);
-                bmodel.setDistributionPercent(percent);
-                bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
             }
 
             if (!bmodel.isOrderTaken()) {
@@ -484,8 +471,6 @@ public class MyThread extends Thread {
                 String percent = bmodel.getSBDDistributionPrecentNewPhilip();
                 bmodel.sbdMerchandisingHelper
                         .setSBDDistributionPercent(percent);
-                bmodel.setDistributionPercent(percent);
-                bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
             }
 
             if (!bmodel.isOrderTaken()) {
@@ -578,8 +563,6 @@ public class MyThread extends Thread {
 
                 bmodel.setOrderHeaderNote("");
 
-                // Upadte isVisited Flag
-                bmodel.updateIsVisitedFlag();
 
                 // Update review plan in DB
                 bmodel.setReviewPlanInDB();
@@ -624,8 +607,6 @@ public class MyThread extends Thread {
                 // Calculate and set Distribution percent
                 String percent = bmodel.getSBDDistributionPrecentNewPhilip();
                 bmodel.sbdMerchandisingHelper.setSBDDistributionPercent(percent);
-                bmodel.setDistributionPercent(percent);
-                bmodel.getRetailerMasterBO().setSbdDistpercent(percent);
 
                 bmodel.setIsOrdered("Y");
                 bmodel.setOrderedInDB("Y");

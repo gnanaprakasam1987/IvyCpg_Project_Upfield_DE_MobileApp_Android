@@ -345,7 +345,6 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                 bmodel.mEmptyReturnHelper.saveEmptyReturn();
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                bmodel.updateIsVisitedFlag();
                 bmodel.saveModuleCompletion("MENU_EMPTY_RETURN");
 
                 return Boolean.TRUE;
