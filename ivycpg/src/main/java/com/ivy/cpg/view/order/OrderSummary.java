@@ -2655,8 +2655,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 || BModel.configurationMasterHelper.COMMON_PRINT_INTERMEC
                 || BModel.configurationMasterHelper.COMMON_PRINT_MAESTROS) {
 
-          //  BModel.configurationMasterHelper.COMMON_PRINT_BIXOLON=false;
-          //  BModel.configurationMasterHelper.COMMON_PRINT_INTERMEC=true;
 
             if ("1".equalsIgnoreCase(BModel.getRetailerMasterBO().getRField4())) {
                 BModel.productHelper.updateDistributorDetails();

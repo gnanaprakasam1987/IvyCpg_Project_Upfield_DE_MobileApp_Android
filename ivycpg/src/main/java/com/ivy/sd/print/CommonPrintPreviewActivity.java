@@ -854,19 +854,10 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 }
 
                 if (s.contains("#B#")) {
-                    s = s.replace("#B#", " FT \"Swiss 721 Bold BT\"");
+                    //Can't able to set bold in intermec, so just replacing with empty string
+                    s = s.replace("#B#", "");
                     tempsb.append(s);
                     tempsb.append("\n\r");
-                   /* int spaceCount = 0;
-                    for (char c : str.toCharArray()) {
-                        if (c == ' ') {
-                            spaceCount++;
-                        } else {
-                            break;
-                        }
-                    }*/
-
-
 
                 } else {
                         tempsb.append(s);
@@ -874,15 +865,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                 }
             }
-            tempsb=new StringBuilder();
-            tempsb.append("PP40," + 5 + ":AN1\n");
-            tempsb.append("PP40," + 5 + ":FT \"Swiss 721 Bold BT\"\n");
-            tempsb.append("FONTSIZE 7\n");
 
-            tempsb.append("PP30," + 5 + ":PT \""
-                    + getResources().getString(R.string.itemno) + "\"\n");
-            tempsb.append("PP120," + 5 + ":PT \""
-                    + getResources().getString(R.string.description) + "\"\n");
 
             byte[] result;
                 result = String.valueOf(tempsb).getBytes();
