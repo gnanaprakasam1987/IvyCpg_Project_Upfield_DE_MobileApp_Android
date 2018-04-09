@@ -138,7 +138,11 @@ public class UserSettingsActivity extends PreferenceActivity {
 
 
             mpmac = findPreference("pmac");
-            mpmac.setSummary(settings.getString("MAC", ""));
+            String mac_summary=settings.getString("MAC", "");
+            if(mac_summary.trim().equals("")){
+                mac_summary="Enter MAC address";
+            }
+            mpmac.setSummary(mac_summary);
             mpmac.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {

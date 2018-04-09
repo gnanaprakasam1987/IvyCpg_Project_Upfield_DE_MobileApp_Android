@@ -22,7 +22,7 @@
         <com.ivy.sd.png.view.CustomPreference
             android:key="pmac"
             android:layout="@layout/settings_card_layout"
-
+            android:summary="Enter MAC address"
             android:title="MAC"></com.ivy.sd.png.view.CustomPreference>
         <com.ivy.sd.png.view.ThemedListPreference
             android:entries="@array/printerList"
@@ -41,9 +41,9 @@
         <com.ivy.sd.png.view.CustomPreference
             android:key="export_file"
             android:layout="@layout/settings_card_layout"
-
+            android:summary="@string/click_to_export"
             android:title="Log Export">
-            <!--android:summary="Export the logs"-->
+
         </com.ivy.sd.png.view.CustomPreference>
     </com.ivy.sd.png.view.CustomPreferenceCategory>
     <com.ivy.sd.png.view.CustomPreferenceCategory
@@ -53,7 +53,7 @@
         <com.ivy.sd.png.view.CustomPreference
             android:key="clear_data"
             android:layout="@layout/settings_card_layout"
-
+            android:summary="@string/click_to_switch"
             android:title="@string/switch_user">
             <!--android:summary="App Data will be cleared"-->
         </com.ivy.sd.png.view.CustomPreference>
@@ -65,7 +65,7 @@
         <com.ivy.sd.png.view.CustomPreference
             android:key="change_password"
             android:layout="@layout/settings_card_layout"
-
+            android:summary="@string/click_to_change_password"
             android:title="@string/title_chage_password">
             <!--android:summary="App Data will be cleared"-->
         </com.ivy.sd.png.view.CustomPreference>
@@ -77,7 +77,7 @@
         <com.ivy.sd.png.view.CustomPreference
             android:key="device_status"
             android:layout="@layout/settings_card_layout"
-
+            android:summary="@string/click_to_show_device_status"
             android:title="@string/device_status">
             <!--android:summary="App Data will be cleared"-->
         </com.ivy.sd.png.view.CustomPreference>
