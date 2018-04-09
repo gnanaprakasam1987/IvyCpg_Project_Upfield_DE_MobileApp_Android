@@ -3323,8 +3323,14 @@ public class BusinessModel extends Application {
 
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
             try {
-                jsonFormatter.addParameter("UserId", userMasterHelper
-                        .getUserMasterBO().getUserid());
+                if (!"0".equals(userMasterHelper.getUserMasterBO().getBackupSellerID())) {
+                    jsonFormatter.addParameter("UserId", userMasterHelper
+                            .getUserMasterBO().getBackupSellerID());
+                    jsonFormatter.addParameter("WorkingFor", userMasterHelper.getUserMasterBO().getUserid());
+                } else {
+                    jsonFormatter.addParameter("UserId", userMasterHelper
+                            .getUserMasterBO().getUserid());
+                }
                 jsonFormatter.addParameter("DistributorId", userMasterHelper
                         .getUserMasterBO().getDistributorid());
                 jsonFormatter.addParameter("BranchId", userMasterHelper

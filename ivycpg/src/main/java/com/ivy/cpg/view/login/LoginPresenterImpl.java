@@ -465,6 +465,9 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             } else {
                 if (output.equals("E27")) {
                     loginView.showDeviceLockedDialog();
+                } else if (output.equals("E28")) {
+                    businessModel.showAlert(context.getResources().
+                            getString(R.string.user_already_assigned), 0);
                 } else {
 
                     if (output.equals("E25")) {
