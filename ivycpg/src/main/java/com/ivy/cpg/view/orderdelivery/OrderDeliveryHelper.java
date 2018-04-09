@@ -463,7 +463,7 @@ public class OrderDeliveryHelper {
         double totalvalue = 0;
         int totalProdQty = 0;
         //Product wise Tax amount will be calculated according to the tax rate
-        float taxValue = businessModel.productHelper.taxHelper.includeProductWiseTax(getOrderedProductMasterBOS());
+        float taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
         for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
             ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
             if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
@@ -1037,7 +1037,7 @@ public class OrderDeliveryHelper {
                 cursorRpl.close();
             }
 
-            businessModel.productHelper.taxHelper.includeProductWiseTax(mInvoiceDetailsList);
+            businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(mInvoiceDetailsList);
 
             /*Updating master tax value for print purpose*/
             for(ProductMasterBO productMasterBO : mInvoiceDetailsList){

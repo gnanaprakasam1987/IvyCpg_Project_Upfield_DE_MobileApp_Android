@@ -1,17 +1,13 @@
 package com.ivy.cpg.view.order;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.os.AsyncTask;
 import android.util.SparseArray;
-import android.widget.Toast;
 
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHeader;
@@ -21,13 +17,9 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
-import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.TaxHelper;
-import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -713,6 +705,8 @@ public class OrderHelper {
                     .getCsrp())
                     + (productBo.getOrderedPcsQty() * productBo.getSrp())
                     + (productBo.getOrderedOuterQty() * productBo.getOsrp());
+            if(!businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
+                line_total_price = line_total_price + businessModel.productHelper.taxHelper.getTaxAmountByProduct(productBo);
         }
 
 
@@ -1694,7 +1688,7 @@ public class OrderHelper {
                     + product.getProductID()
                     + " and batchid=" + businessModel.QT(batchId));
 
-            if(businessModel.configurationMasterHelper.IS_EXCESS_STOCK_AVAIL){
+            if(businessModel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
                 db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
                         + totalqty
                         + " then ifnull(qty,0)-"
@@ -2274,7 +2268,7 @@ public class OrderHelper {
                                 + product.getProductID());
 
 
-                        if(businessModel.configurationMasterHelper.IS_EXCESS_STOCK_AVAIL){
+                        if(businessModel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
                             db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
                                     + totalqty
                                     + " then ifnull(qty,0)-"
@@ -2389,7 +2383,7 @@ public class OrderHelper {
                                     + productMasterBO.getProductID());
 
 
-                            if(businessModel.configurationMasterHelper.IS_EXCESS_STOCK_AVAIL){
+                            if(businessModel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
                                 db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
                                         + totalQty
                                         + " then ifnull(qty,0)-"

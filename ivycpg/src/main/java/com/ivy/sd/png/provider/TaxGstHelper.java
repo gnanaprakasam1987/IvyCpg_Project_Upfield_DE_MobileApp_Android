@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -488,7 +489,7 @@ public class TaxGstHelper implements TaxInterface {
      * @author rajesh.k Method to use update productwise tax value only object
      * level not DB level
      */
-    public void updateProductWiseTax() {
+    public void updateProductWiseExcludeTax() {
         if (mProductTaxList != null) {
             mTaxBoBatchProduct = new HashMap<>();
             for (String productId : mProductTaxList) {
@@ -904,7 +905,7 @@ public class TaxGstHelper implements TaxInterface {
     }
 
     @Override
-    public float includeProductWiseTax(Vector<ProductMasterBO> productMasterBOS) {
+    public float updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS) {
         float totalTaxAmount = 0;
         if (productMasterBOS != null && productMasterBOS.size()>0) {
             for (ProductMasterBO productMasterBO : productMasterBOS) {
@@ -944,5 +945,22 @@ public class TaxGstHelper implements TaxInterface {
             }
         }
         return totalTaxAmount;
+    }
+
+    @Override
+    public float getTaxAmountByProduct(ProductMasterBO bo) {
+        float taxAmount = 0;
+        try {
+            if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
+                for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
+                    if (taxBO.getParentType().equals("0")) {
+                        taxAmount += taxBO.getTotalTaxAmount();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        return taxAmount;
     }
 }

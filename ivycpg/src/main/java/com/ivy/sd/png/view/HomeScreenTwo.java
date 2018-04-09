@@ -157,7 +157,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_FIT_DASH = "MENU_FIT_DASH";
     public static final String MENU_DISPLAY_SCH = "MENU_DISPLAY_SCH";
     public static final String MENU_DISPLAY_SCH_TRACK = "MENU_DISPLAY_SCH_TRACK";
-    public static final String MENU_ORD_DELIVERY = "MENU_ORD_DELIVERY";
+    public static final String MENU_ORD_DELIVERY = "MENU_DELIVERY_MGMT_ORD";
 
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
@@ -1866,7 +1866,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 OrderHelper orderHelper = OrderHelper.getInstance(this);
 
-                if(bmodel.configurationMasterHelper.IS_EXCESS_STOCK_AVAIL){
+                if(bmodel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
                     bmodel.productHelper.clearOrderTable();
                     OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
                     orderDeliveryHelper.updateProductWithExcessStock(this);

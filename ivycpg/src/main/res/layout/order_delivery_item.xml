@@ -27,7 +27,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.25"
+                android:layout_weight="0.45"
                 android:orientation="vertical">
 
                 <TextView
@@ -40,7 +40,7 @@
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="1234567890" />
+                    android:text="" />
 
                 <TextView
                     android:id="@+id/order_delivery_listview_id_heading"
@@ -58,7 +58,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.25"
+                android:layout_weight="0.2"
                 android:orientation="vertical">
 
                 <TextView
@@ -71,7 +71,7 @@
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="12.35" />
+                    android:text="0.0" />
 
                 <TextView
                     android:id="@+id/order_delivery_listview_value_heading"
@@ -89,7 +89,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.25"
+                android:layout_weight="0.2"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -102,7 +102,7 @@
                     android:layout_marginEnd="@dimen/dimen_2dp"
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:maxLines="1"
-                    android:text="12/03/2018" />
+                    android:text="" />
 
                 <TextView
                     android:id="@+id/order_delivery_listview_date_heading"
@@ -119,7 +119,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.25"
+                android:layout_weight="0.15"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -133,7 +133,7 @@
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="3" />
+                    android:text="0" />
 
                 <TextView
                     android:id="@+id/order_delivery_listview_line_head"
