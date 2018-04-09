@@ -287,13 +287,14 @@ public class OrderHelper {
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
                 updateHangingOrder(mContext, businessModel.getRetailerMasterBO());
             }
+
             businessModel.getRetailerMasterBO()
                     .setTotalLines(businessModel.getOrderHeaderBO().getLinesPerCall());
 
 
             // Save order details
             Vector<ProductMasterBO> finalProductList;
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,totalDiscountedAmt";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
             else
@@ -663,6 +664,7 @@ public class OrderHelper {
         int priceOffId;
         int reasonId;
         double line_total_price;
+        double totalValue;
 
         if (isBatchWise) {
             pieceCount = batchProductBO.getOrderedPcsQty()
@@ -685,6 +687,7 @@ public class OrderHelper {
                     .getCsrp())
                     + (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
                     + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
+            totalValue = batchProductBO.getDiscount_order_value();
         } else {
             pieceCount = productBo.getOrderedPcsQty()
                     + productBo.getOrderedCaseQty() * productBo.getCaseSize()
@@ -705,6 +708,7 @@ public class OrderHelper {
                     .getCsrp())
                     + (productBo.getOrderedPcsQty() * productBo.getSrp())
                     + (productBo.getOrderedOuterQty() * productBo.getOsrp());
+            totalValue = productBo.getDiscount_order_value();
         }
 
 
@@ -732,6 +736,7 @@ public class OrderHelper {
         sb.append("," + productBo.getWeight());
         sb.append("," + reasonId);
         sb.append("," + businessModel.QT(productBo.getHsnCode()));
+        sb.append("," + totalValue);
 
         return sb;
 
@@ -1469,7 +1474,7 @@ public class OrderHelper {
 
             // Save invoice details table and update sih
             ProductMasterBO product;
-            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,RField1,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode";
+            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,RField1,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode,totalDiscountedAmt";
             int siz = businessModel.productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
                 product = businessModel.productHelper.getProductMaster()
@@ -1614,6 +1619,7 @@ public class OrderHelper {
         double schemeDisc;
         double taxAmount;
         double line_total_price;
+        double totalValue;
 
         try {
             if (isBatchWise) {
@@ -1648,6 +1654,7 @@ public class OrderHelper {
                         .getCsrp())
                         + (batchWiseProductBO.getOrderedPcsQty() * batchWiseProductBO.getSrp())
                         + (batchWiseProductBO.getOrderedOuterQty() * batchWiseProductBO.getOsrp());
+                totalValue = batchWiseProductBO.getDiscount_order_value();
 
 
             } else {
@@ -1674,6 +1681,7 @@ public class OrderHelper {
                         .getCsrp())
                         + (productBO.getOrderedPcsQty() * productBO.getSrp())
                         + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                totalValue = productBO.getDiscount_order_value();
 
             }
 
@@ -1714,6 +1722,7 @@ public class OrderHelper {
             sb.append("," + schemeDisc + "," + prodDisc);
             sb.append("," + taxAmount);
             sb.append("," + businessModel.QT(product.getHsnCode()));
+            sb.append("," + totalValue);
 
             return sb;
         } catch (Exception e) {
@@ -1912,7 +1921,7 @@ public class OrderHelper {
             invoiceDetailCursor.close();
         }
 
-        String sql1 = "select productId,sum(pcsQty),sum(CaseQty), ordered_price,d1,d2,d3,DA,sum(totalamount) as totalamount,sum(outerQty),weight,Rate from "
+        String sql1 = "select productId,sum(pcsQty),sum(CaseQty), ordered_price,d1,d2,d3,DA,sum(totalDiscountedAmt) as totalamount,sum(outerQty),weight,Rate from "
                 + DataMembers.tbl_InvoiceDetails
                 + " where invoiceid="
                 + businessModel.QT(invoiceNumber) + " group by productid";

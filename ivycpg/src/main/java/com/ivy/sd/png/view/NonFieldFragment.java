@@ -596,7 +596,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                         Commons.printException(e);
                     }
                 } else {
-                    Toast.makeText(this, reasonName + " " +
+                    Toast.makeText(this,
                             getResources().getString(R.string.selected_date_already_applied), Toast.LENGTH_SHORT).show();
                 }
             } else {
