@@ -9,6 +9,7 @@ import android.support.v4.content.FileProvider;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -97,8 +98,8 @@ public class PhotoCaptureHelper {
             photoTypeMaster = new ArrayList<>();
             typeMasterBO = new PhotoTypeMasterBO();
             typeMasterBO.setPhotoTypeId(0);
-            typeMasterBO.setPhotoTypeDesc("--Select PhotoType--");
-            typeMasterBO.setPhotoTypeCode("--Select PhotoType--");
+            typeMasterBO.setPhotoTypeDesc(mContext.getResources().getString(R.string.select_photo_type));
+            typeMasterBO.setPhotoTypeCode(mContext.getResources().getString(R.string.select_photo_type));
             typeMasterBO.setPhotoCaptureProductList(cloneProductList(getPhotoCaptureProductList()));
 
             for (PhotoCaptureProductBO photoCaptureBO : typeMasterBO.getPhotoCaptureProductList()) {

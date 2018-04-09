@@ -196,7 +196,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 spinnerNoOrderReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if (parent.getSelectedItem().toString().equals("Others")) {
+                        if (parent.getSelectedItem().toString().equalsIgnoreCase(getResources().getString(R.string.other_reason))) {
                             edt_other_remarks.setVisibility(View.VISIBLE);
                         } else {
                             hideKeyboard();

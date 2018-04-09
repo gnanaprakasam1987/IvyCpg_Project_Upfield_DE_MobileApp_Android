@@ -862,7 +862,7 @@ public class CommonPrintHelper {
                             * prod.getCaseSize()
                             + prod.getOrderedOuterQty()
                             * prod.getOutersize();
-                    mProductValue = String.valueOf((prod.getTotalamount() - prod.getApplyValue()) / totalQty);
+                    mProductValue = String.valueOf(prod.getDiscount_order_value() / totalQty);
                 }
 
 
@@ -1028,7 +1028,7 @@ public class CommonPrintHelper {
                                         * prod.getCaseSize()
                                         + prod.getOrderedOuterQty()
                                         * prod.getOutersize();
-                                mProductValue = String.valueOf((prod.getTotalamount() - prod.getApplyValue()) / totalQty);
+                                mProductValue = String.valueOf(prod.getDiscount_order_value() / totalQty);
                             }
 
                             if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME) || product_name_single_line.equalsIgnoreCase("NO")) {

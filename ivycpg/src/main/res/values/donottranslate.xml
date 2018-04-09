@@ -103,7 +103,7 @@
     <string name="authentication_error">Error in authentication</string>
 
     <string name="mock_location_enabled">Disable Mock Location and Login.</string>
-    <string name="profile_updated_scccess">Profile updated successfully.</string>
+
 
     <string name="select_remarks">Select Remarks</string>
     <string name="select_noorder_reason">Enter No Order Reason</string>
@@ -184,7 +184,6 @@
     <string name="cancelled">Cancelled</string>
 
     <string name="exec_rating">Executing Rating</string>
-    <string name="my_gallery">My Gallery</string>
     <string name="previous">Previous</string>
     <string name="pls_etr_bnk_name">Please Enter Bank Name</string>
     <string name="pls_etr_brc_name">Please Enter Branch Name</string>
