@@ -1317,7 +1317,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
     public boolean IS_ORD_SR_VALUE_VALIDATE;
 
-    private static final String CODE_SHOW_DISTRIBUTOR_PROFILE ="PRO10";
+    private static final String CODE_SHOW_DISTRIBUTOR_PROFILE ="PRO27";
     public boolean SHOW_DISTRIBUTOR_PROFILE;
     public int SHOW_DISTRIBUTOR_PROFILE_FROM;
 
