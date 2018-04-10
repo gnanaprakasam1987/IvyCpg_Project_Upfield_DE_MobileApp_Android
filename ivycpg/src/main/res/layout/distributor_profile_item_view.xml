@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/list_margin"
+    android:layout_marginStart="@dimen/list_margin"
+    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="2dp"
+    card_view:cardPreventCornerOverlap="true"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_10dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/distributor_name"
+                style="?attr/customListItemValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:gravity="start|center_vertical"
+                android:text="Distributor Name"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:id="@+id/address_1"
+                style="?attr/customListItemValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:gravity="start|center_vertical"
+                android:text="Tambaram"
+                android:textSize="@dimen/font_micro_small" />
+
+            <TextView
+                android:id="@+id/address_2"
+                style="?attr/customListItemValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dimen_2dp"
+                android:gravity="start|center_vertical"
+                android:text="Nagercoil"
+                android:textSize="@dimen/font_micro_small" />
+
+            <TextView
+                android:id="@+id/address_3"
+                style="?attr/customListItemValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dimen_2dp"
+                android:gravity="start|center_vertical"
+                android:text="Kanyakumari"
+                android:textSize="@dimen/font_micro_small" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/profile_devider_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_20dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/contact_title"
+                    style="?attr/customListItemValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginBottom="@dimen/dimen_2dp"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/contact_no"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_micro_small" />
+
+                <TextView
+                    android:id="@+id/contact"
+                    style="?attr/customListItemValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:gravity="start|center_vertical"
+                    android:text="9941837090122"
+                    android:textSize="@dimen/font_small" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="@dimen/dimen_2dp"
+                android:layout_height="@dimen/list_vertical_seperator"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:layout_marginRight="@dimen/dimen_20dp"
+                android:background="@color/profile_devider_color" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="0.7"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/email_title"
+                    style="?attr/customListItemValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginBottom="@dimen/dimen_2dp"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/email"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_micro_small" />
+
+                <TextView
+                    android:id="@+id/email"
+                    style="?attr/customListItemValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:gravity="start|center_vertical"
+                    android:text="samsonsfsfsf.j@ivymobility.com"
+                    android:textSize="@dimen/font_small" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/dimen_5dp"
+            android:background="@color/profile_devider_color"
+            />
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

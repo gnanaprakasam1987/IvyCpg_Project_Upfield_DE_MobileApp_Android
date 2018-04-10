@@ -3,7 +3,7 @@ package com.ivy.cpg.primarysale.bo;
 public class DistributorMasterBO {
 
     //DId,DName,CNumber,Address1,Address2,Address3,Type,TinNo
-    private String DId = "0", DName, CNumber, Address1, Address2, Address3, Type, TinNo;
+    private String DId = "0", DName, CNumber, Address1, Address2, Address3, Type, TinNo,email;
 
     private String groupId;
     private String parentID;
@@ -115,5 +115,13 @@ public class DistributorMasterBO {
 
     public void setParentID(String parentID) {
         this.parentID = parentID;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
