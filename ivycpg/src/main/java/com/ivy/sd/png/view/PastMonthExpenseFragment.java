@@ -7,13 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -32,6 +37,7 @@ import com.itextpdf.text.List;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ExpenseSheetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
@@ -42,21 +48,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 public class PastMonthExpenseFragment extends IvyBaseFragment {
 
     BusinessModel bmodel;
-    private ExpandedListView list;
-    private TextView tvTotalAmount, tvMonthNamePieChart;
+    private TextView tvTotalAmount;
     BarChart mChart;
     PieChart pieChart;
     ImageView ivClosePieChart;
     RelativeLayout rlPieChart;
-    private String VALUE_PENDING = "Pending"; //R
-    private String VALUE_ACCEPTED = "Accepted"; //S
-    private String VALUE_REJECTED = "Rejected"; //D
 
     private ArrayList<ExpMonthWiseBo> wiseBosmonth;
 
@@ -69,12 +74,11 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        mChart = (BarChart) view.findViewById(R.id.barchart);
-        pieChart = (PieChart) view.findViewById(R.id.pieChart);
-        ivClosePieChart = (ImageView) view.findViewById(R.id.iv_close_piechart);
-        tvMonthNamePieChart = (TextView) view.findViewById(R.id.tv_month_name);
-        rlPieChart = (RelativeLayout) view.findViewById(R.id.rl_piechart);
-        setData(10, 20.2f);
+        mChart = view.findViewById(R.id.barchart);
+        pieChart = view.findViewById(R.id.pieChart);
+        ivClosePieChart = view.findViewById(R.id.iv_close_piechart);
+        rlPieChart = view.findViewById(R.id.rl_piechart);
+        setData();
 
 
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
@@ -87,6 +91,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
                 rlPieChart.setVisibility(View.GONE);
                 mChart.setVisibility(View.VISIBLE);
+                tvTotalAmount.setText(sumExpenses(bmodel.expenseSheetHelper.getPastMonthExpense()));
             }
         });
 
@@ -97,8 +102,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
                 rlPieChart.setVisibility(View.VISIBLE);
                 mChart.setVisibility(View.GONE);
 
-                setDataPieChart(Integer.parseInt(e.getData().toString()));
-                tvMonthNamePieChart.setText(bmodel.expenseSheetHelper.MONTH_NAME[Integer.parseInt(e.getData().toString())]);
+                setDataPieChart(e.getData().toString());
             }
 
             @Override
@@ -113,81 +117,74 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
     public String sumExpenses(ArrayList<ExpenseSheetBO> expenseList) {
         Double sum = 0.0;
         for (ExpenseSheetBO expobj : expenseList) {
-            if (!expobj.isMonthName())
-                sum = sum + Double.parseDouble(expobj.getAmount());
+            sum = sum + Double.parseDouble(expobj.getAmount());
         }
         return bmodel.formatValue(sum);
     }
 
 
-    public ArrayList<ExpMonthWiseBo> sumExpensesMonthWise(ArrayList<ExpenseSheetBO> expenseList) throws ParseException {
+    public ArrayList<ExpMonthWiseBo> sumExpensesMonthWise(ArrayList<ExpenseSheetBO> expenseList) {
 
         ArrayList<ExpMonthWiseBo> expMonthWiseBos = new ArrayList<>();
-        ArrayList<Integer> monthArray = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
 
-        for (int i = 0; i < 3; i++) {
-            calendar.add(Calendar.MONTH, -1);
-            monthArray.add(calendar.get(Calendar.MONTH));
-        }
-        for (Integer integer : monthArray) {
-            Double sum = 0.0;
-            for (ExpenseSheetBO expobj : expenseList) {
+        Double sum = 0.0;
+        String monthName = "";
 
-                String date1 = expobj.getDate() == null ? "2018/04/09" : expobj.getDate();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                Date date = dateFormat.parse(date1);
-                Calendar calendar1 = Calendar.getInstance();
-                calendar1.setTime(date);
+        for (int i = 0; i < expenseList.size(); i++) {
+            ExpenseSheetBO expobj = expenseList.get(i);
 
-                int month = calendar1.get(Calendar.MONTH);
-                if (!expobj.isMonthName() && integer == month)
-                    sum = sum + Double.parseDouble(expobj.getAmount());
+            if (monthName.length() == 0)
+                sum = sum + Double.parseDouble(expobj.getAmount());
 
+            else if (monthName.equals(expobj.getMonth()))
+                sum = sum + Double.parseDouble(expobj.getAmount());
+
+            else if (!monthName.equals(expobj.getMonth())) {
+                expMonthWiseBos.add(new ExpMonthWiseBo(monthName, bmodel.formatValue(sum)));
+                sum = 0.0;
+                sum = sum + Double.parseDouble(expobj.getAmount());
             }
-            expMonthWiseBos.add(new ExpMonthWiseBo("" + integer, sum));
+            monthName = expobj.getMonth();
+
+            if (i == expenseList.size() - 1) {
+                expMonthWiseBos.add(new ExpMonthWiseBo(monthName, bmodel.formatValue(sum)));
+            }
+
 
         }
         return expMonthWiseBos;
     }
 
 
-    public ArrayList<ExpMonthWiseBo> sumExpensesMonthWiseExpence(ArrayList<ExpenseSheetBO> expenseList, int month) throws ParseException {
+    public ArrayList<ExpMonthWiseBo> sumExpensesMonthWiseExpence(ArrayList<ExpenseSheetBO> expenseList) {
 
         ArrayList<ExpMonthWiseBo> expMonthWiseBos = new ArrayList<>();
-        ArrayList<String> expTypeArray = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
+        HashMap<String, Double> expTypeMap = new HashMap<>();
+        for (int i = 0; i < expenseList.size(); i++) {
+            ExpenseSheetBO expobj = expenseList.get(i);
 
-        for (ExpenseSheetBO sheetBO : expenseList) {
-            String name = (sheetBO.getTypeName() == null || sheetBO.getTypeName().isEmpty()) ? "" : sheetBO.getTypeName();
-            expTypeArray.add(name);
-        }
-        for (String expType : new HashSet<String>(expTypeArray)) {
-            Double sum = 0.0;
-            for (ExpenseSheetBO expobj : expenseList) {
+            if (expTypeMap.get(expobj.getTypeName()) == null)
+                expTypeMap.put(expobj.getTypeName(), SDUtil.convertToDouble(expobj.getAmount()));
 
-                String date1 = expobj.getDate() == null ? "2018/04/09" : expobj.getDate();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                Date date = dateFormat.parse(date1);
-                Calendar calendar1 = Calendar.getInstance();
-                calendar1.setTime(date);
-
-                if (expType.equals(expobj.getTypeName()) && calendar1.get(Calendar.MONTH) == month) {
-                    sum = sum + Double.parseDouble(expobj.getAmount());
-                }
+            else if (expTypeMap.get(expobj.getTypeName()) != null) {
+                double amt = expTypeMap.get(expobj.getTypeName());
+                amt = amt + SDUtil.convertToDouble(expobj.getAmount());
+                expTypeMap.put(expobj.getTypeName(), amt);
             }
-            expMonthWiseBos.add(new ExpMonthWiseBo("" + expType, sum));
-
         }
+        for (Map.Entry<String, Double> entry : expTypeMap.entrySet()) {
+            expMonthWiseBos.add(new ExpMonthWiseBo(entry.getKey(), bmodel.formatValue(entry.getValue())));
+        }
+
+
         return expMonthWiseBos;
     }
 
     private class ExpMonthWiseBo {
 
-        private String monthName;
-        private String expType;
+        private String monthName, amount;
 
-        public ExpMonthWiseBo(String monthName, double amount) {
+        public ExpMonthWiseBo(String monthName, String amount) {
             this.monthName = monthName;
             this.amount = amount;
         }
@@ -200,60 +197,70 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
             this.monthName = monthName;
         }
 
-        public double getAmount() {
+        public String getAmount() {
             return amount;
         }
 
-        public void setAmount(double amount) {
+        public void setAmount(String amount) {
             this.amount = amount;
         }
 
-        private double amount;
 
     }
 
-    private void setData(int count, float range) {
+    private void setData() {
 
-        float start = 1f;
         try {
             ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-            DecimalFormat decimalFormat = new DecimalFormat("#");
             wiseBosmonth = sumExpensesMonthWise(bmodel.expenseSheetHelper.getPastMonthExpense());
             int i = 0;
-
+            String[] monthsName = new String[12];
             for (ExpMonthWiseBo expMonthWiseBo : wiseBosmonth) {
-                yVals1.add(new BarEntry(i, Integer.parseInt(decimalFormat.format(expMonthWiseBo.getAmount()) + ""), expMonthWiseBo.getMonthName()));
+                yVals1.add(new BarEntry(i, SDUtil.convertToFloat(expMonthWiseBo.getAmount()), expMonthWiseBo.getMonthName()));
+                monthsName[i] = expMonthWiseBo.getMonthName();
+                monthsName[i] = expMonthWiseBo.getMonthName();
                 i++;
+
             }
 
             BarDataSet set1;
             set1 = new BarDataSet(yVals1, "");
             set1.setDrawIcons(false);
-            ArrayList<String> monthNameList = new ArrayList<>();
-            for (ExpMonthWiseBo expMonthWiseBo : wiseBosmonth) {
-                monthNameList.add(bmodel.expenseSheetHelper.MONTH_NAME[Integer.parseInt(expMonthWiseBo.getMonthName())]);
-            }
-
             set1.setColors(ColorTemplate.MATERIAL_COLORS);
 
-//            set1.setStackLabels(strings);
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set1);
 
             BarData data = new BarData(dataSets);
-            data.setValueTextSize(10f);
-            data.setBarWidth(0.5f);
+            data.setValueTextSize(11f);
+            data.setBarWidth(0.4f);
+
+            mChart.getDescription().setEnabled(false);
+
+
+            YAxis leftAxis = mChart.getAxisLeft();
+            leftAxis.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
 
             mChart.setData(data);
-            mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(monthNameList.toArray(new String[monthNameList.size()])));
+            mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(monthsName));
             mChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+            mChart.getXAxis().setGranularity(1f);
+            mChart.getXAxis().setGranularityEnabled(true);
+            mChart.setDrawGridBackground(false);
+            mChart.setDrawBarShadow(false);
+            mChart.getAxisRight().setEnabled(false);
 
-        } catch (ParseException e) {
+            mChart.getLegend().setEnabled(false);
+            mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void setDataPieChart(int month) {
+    private void setDataPieChart(String month) {
 
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
@@ -261,20 +268,26 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
         for (ExpMonthWiseBo wiseBo : wiseBosmonth) {
             if (wiseBo.getMonthName().equals(month + "")) {
-                total = wiseBo.getAmount();
+                total = SDUtil.convertToDouble(wiseBo.getAmount());
             }
         }
 
         try {
 
-            ArrayList<ExpMonthWiseBo> wiseBos = sumExpensesMonthWiseExpence(bmodel.expenseSheetHelper.getPastMonthExpense(), month);
+            ArrayList<ExpenseSheetBO> monthExpenses = new ArrayList<>();
+            for (ExpenseSheetBO expBp : bmodel.expenseSheetHelper.getPastMonthExpense()) {
+                if (month.equals(expBp.getMonth())) {
+                    monthExpenses.add(expBp);
+                }
+            }
+            ArrayList<ExpMonthWiseBo> wiseBos = sumExpensesMonthWiseExpence(monthExpenses);
             for (ExpMonthWiseBo expMonthWiseBo : wiseBos) {
-                if (expMonthWiseBo.getAmount() > 0) {
-                    double percentage = (expMonthWiseBo.amount / total) * 100;
+                if (SDUtil.convertToDouble(expMonthWiseBo.getAmount()) > 0) {
+                    double percentage = (SDUtil.convertToDouble(expMonthWiseBo.amount) / total) * 100;
                     entries.add(new PieEntry((float) percentage, expMonthWiseBo.getMonthName() + "\n" + expMonthWiseBo.amount));
                 }
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -290,39 +303,35 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
         ArrayList<Integer> colors = new ArrayList<Integer>();
 
 
-        for (int c : ColorTemplate.JOYFUL_COLORS)
+        for (int c : ColorTemplate.MATERIAL_COLORS)
             colors.add(c);
 
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-
-
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-
-
-        colors.add(ColorTemplate.getHoloBlue());
 
         dataSet.setColors(colors);
-        //dataSet.setSelectionShift(0f);
 
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.setEntryLabelTextSize(11f);
+        pieChart.setEntryLabelTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         PieData data = new PieData(dataSet);
         data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
-//        data.setValueTypeface(mTfLight);
+        data.setValueTextSize(12f);
+        data.setValueTextColor(Color.BLACK);
+        data.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         pieChart.setData(data);
 
         // undo all highlights
         pieChart.highlightValues(null);
-
         pieChart.invalidate();
+
+        pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+
+        pieChart.setCenterText(month);
+        pieChart.setCenterTextTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        pieChart.getLegend().setEnabled(false);
+
+        tvTotalAmount.setText(bmodel.formatValue(total));
     }
 
 

@@ -28,7 +28,7 @@ public class ExpenseSheetHelper {
     private ArrayList<ExpenseSheetBO> pastMonthExpense;
     private ArrayList<SpinnerBO> expnenses;
 
-    public static final String MONTH_NAME[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    public static final String MONTH_NAME[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Octr", "Nov", "Dec"};
 
     public ArrayList<ExpenseSheetBO> getCurrentMonthExpense() {
         return currentMonthExpense;
@@ -111,24 +111,17 @@ public class ExpenseSheetHelper {
                     // for add month in the same list
                     int monthValue = Integer.parseInt(c.getString(6));
                     if (monthValue > 0 && monthValue <= 12) {
-                        if (!filterText.equalsIgnoreCase(MONTH_NAME[monthValue - 1] + "-" + c.getString(7))) {
-                            ExpenseSheetBO monthsExp = new ExpenseSheetBO();
-                            monthsExp.setMonthName(true);
-                            monthsExp.setTypeName(MONTH_NAME[monthValue - 1] + "-" + c.getString(7));
-                            filterText = monthsExp.getTypeName();
-                            pastMonthExpense.add(monthsExp);
-                        }
+                        ExpenseSheetBO pastExps = new ExpenseSheetBO();
+                        pastExps.setUserId(c.getInt(0));
+                        pastExps.setTypeId(c.getInt(1));
+                        pastExps.setTypeName(c.getString(2));
+                        pastExps.setDate(c.getString(3));
+                        pastExps.setAmount(c.getString(4));
+                        pastExps.setStatus(c.getString(5));
+                        pastExps.setMonth(MONTH_NAME[monthValue - 1] + "-" + c.getString(7));
+                        pastMonthExpense.add(pastExps);
                     }
-                    ExpenseSheetBO pastExps = new ExpenseSheetBO();
-                    pastExps.setUserId(c.getInt(0));
-                    pastExps.setTypeId(c.getInt(1));
-                    pastExps.setTypeName(c.getString(2));
-                    pastExps.setDate(c.getString(3));
-                    pastExps.setAmount(c.getString(4));
-                    pastExps.setStatus(c.getString(5));
-                    pastExps.setMonthName(false);
 
-                    pastMonthExpense.add(pastExps);
                 }
                 c.close();
             }

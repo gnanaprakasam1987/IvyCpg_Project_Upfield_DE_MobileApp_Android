@@ -38,14 +38,16 @@
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barchart"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/ivy_logo_width"
-        android:layout_below="@+id/ll_first" />
+        android:layout_height="@dimen/first_layout_lv_width"
+        android:layout_below="@+id/ll_first"
+        android:layout_centerInParent="true" />
 
     <RelativeLayout
         android:id="@+id/rl_piechart"
         android:layout_width="match_parent"
         android:layout_height="@dimen/first_layout_lv_width"
         android:layout_below="@+id/barchart"
+        android:layout_centerInParent="true"
         android:visibility="gone">
 
         <com.github.mikephil.charting.charts.PieChart
@@ -56,21 +58,14 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true" />
 
-        <TextView
-            android:id="@+id/tv_month_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/dimen_4dp" />
-
         <ImageView
             android:id="@+id/iv_close_piechart"
-            android:layout_width="30sp"
-            android:layout_height="30sp"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_30dp"
             android:layout_alignEnd="@+id/pieChart"
             android:layout_alignRight="@+id/pieChart"
-            android:src="@drawable/ic_close_black_24dp"
-            android:tint="@color/BLUE" />
+            android:layout_margin="@dimen/dimen_12dp"
+            android:src="@drawable/ic_cross_enable" />
     </RelativeLayout>
 
 </RelativeLayout>
