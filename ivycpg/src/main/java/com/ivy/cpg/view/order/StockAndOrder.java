@@ -1393,7 +1393,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
                         findViewById(R.id.rep_pcsTitle).setVisibility(View.GONE);
                     else {
-                        ((TextView) findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.rep_pcsTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.rep_pcsTitle))
@@ -1803,7 +1803,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_CLEANED_ORDER) {
                     ((LinearLayout) row.findViewById(R.id.llCo)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.co_oc_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.co_oc_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.co_oc_Title).getTag()) != null)
@@ -2058,7 +2058,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.srpTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.srpTitle))
@@ -2122,7 +2122,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS)
                     ((LinearLayout) row.findViewById(R.id.llRepCase)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_caseTitle).getTag()) != null)
@@ -2138,7 +2138,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU)
                     ((LinearLayout) row.findViewById(R.id.llRepOu)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_outerTitle).getTag()) != null)
@@ -2154,7 +2154,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
                     ((LinearLayout) row.findViewById(R.id.llRepPc)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_pcsTitle).getTag()) != null)

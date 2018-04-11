@@ -771,19 +771,19 @@
     <dimen name="highlight_large">24sp</dimen>
 
     <!--Title text in List-->
-    <dimen name="list_primary">12sp</dimen>
-    <dimen name="list_secondary">10sp</dimen>
+    <dimen name="list_primary">14sp</dimen>
+    <dimen name="list_secondary">12sp</dimen>
 
     <dimen name="actionbar_title_text_size">20sp</dimen>
 
 
     <!-- ALL test size -->
 
-    <dimen name="font_nano_small">10sp</dimen>
-    <dimen name="font_micro_small">12sp</dimen>
-    <dimen name="font_small">14sp</dimen>
-    <dimen name="font_medium">16sp</dimen>
-    <dimen name="font_large">18sp</dimen>
+    <dimen name="font_nano_small">12sp</dimen>
+    <dimen name="font_micro_small">14sp</dimen>
+    <dimen name="font_small">16sp</dimen>
+    <dimen name="font_medium">18sp</dimen>
+    <dimen name="font_large">20sp</dimen>
 
 
     <dimen name="menu_name_text_size">15sp</dimen>
@@ -809,8 +809,8 @@
     <dimen name="login_edittext_text_size">14sp</dimen>
 
     <!-- List header text size -->
-    <dimen name="list_header_text_size">10sp</dimen>
-    <dimen name="list_header_secondary_text_size">9sp</dimen>
+    <dimen name="list_header_text_size">12sp</dimen>
+    <dimen name="list_header_secondary_text_size">11sp</dimen>
 
     <!-- Button text size -->
     <dimen name="btn_small_round_corner_text_size">10sp</dimen>
@@ -826,8 +826,8 @@
 
 
     <!-- Activity screen title text -->
-    <dimen name="activity_name_text_size">16sp</dimen>
-    <dimen name="sub_activity_name_text_size">12sp</dimen>
+    <dimen name="activity_name_text_size">18sp</dimen>
+    <dimen name="sub_activity_name_text_size">14sp</dimen>
     <dimen name="activation_edittext_text_size">14sp</dimen>
 
     <dimen name="survey_answer_left">15dp</dimen>

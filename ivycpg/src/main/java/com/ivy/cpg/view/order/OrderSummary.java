@@ -1882,7 +1882,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     if (BModel.configurationMasterHelper.SHOW_STOCK_SC) {
                         (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                        holder.shelfCaseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        holder.shelfCaseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         try {
                             if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfCaseTitle).getTag()) != null)
@@ -1899,7 +1899,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     if (BModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                        holder.shelfOuterQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        holder.shelfOuterQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         try {
                             if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfOuterTitle).getTag()) != null)
@@ -1917,7 +1917,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     if (BModel.configurationMasterHelper.SHOW_STOCK_SP) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                        holder.shelfPieceQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        holder.shelfPieceQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         try {
                             if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfPcsTitle).getTag()) != null)
@@ -1936,7 +1936,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.caseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.caseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
@@ -1954,7 +1954,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llPiece)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.pcsQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.pcsQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
@@ -1970,7 +1970,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.outerQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.outerQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
@@ -1986,7 +1986,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llShelfWeight)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.weighttitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.caseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.caseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.weighttitle).getTag()) != null)
@@ -2002,7 +2002,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.tw_srp.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.tw_srp.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.srpTitle).getTag()) != null)
@@ -2129,7 +2129,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     if (BModel.configurationMasterHelper.SHOW_STOCK_SC) {
                         (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        holder.shelfCaseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        holder.shelfCaseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         try {
                             if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfCaseTitle).getTag()) != null)
@@ -2146,7 +2146,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     if (BModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        holder.shelfOuterQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        holder.shelfOuterQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         try {
                             if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfOuterTitle).getTag()) != null)
@@ -2164,7 +2164,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     if (BModel.configurationMasterHelper.SHOW_STOCK_SP) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        holder.shelfPieceQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        holder.shelfPieceQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         try {
                             if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfPcsTitle).getTag()) != null)
@@ -2184,7 +2184,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.caseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.caseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
@@ -2202,7 +2202,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llPiece)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.pcsQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.pcsQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
@@ -2218,7 +2218,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.outerQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.outerQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
@@ -2234,7 +2234,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llShelfWeight)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.weighttitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.caseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.caseQty.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.weighttitle).getTag()) != null)
@@ -2250,7 +2250,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 } else {
                     ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.tw_srp.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.tw_srp.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.srpTitle).getTag()) != null)
