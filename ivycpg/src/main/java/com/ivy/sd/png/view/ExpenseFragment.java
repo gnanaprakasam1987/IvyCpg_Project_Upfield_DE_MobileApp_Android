@@ -84,6 +84,14 @@ public class ExpenseFragment extends IvyBaseFragment {
 
     private void initializeItem(View view) {
 
+
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        setScreenTitle(bmodel.getMenuName("MENU_EXPENSE"));
+
         et_exp_date = view.findViewById(R.id.et_exp_date);
         et_amount = view.findViewById(R.id.et_amount);
         sp_expenses = view.findViewById(R.id.sp_expenses);

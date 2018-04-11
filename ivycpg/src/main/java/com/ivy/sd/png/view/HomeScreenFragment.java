@@ -2116,11 +2116,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 break;
 
             case MENU_EXPENSE:
-                bndl = new Bundle();
-                bndl.putString("screentitle", menuName);
-                bndl.putString("flag", "0");
                 fragment = new ExpenseFragment();
-                fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_EXPENSE);
                 break;

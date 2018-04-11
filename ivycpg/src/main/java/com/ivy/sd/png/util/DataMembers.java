@@ -21,8 +21,7 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
-    //public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
-    public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_bisleri/Webapi/api";
+    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
@@ -353,7 +352,7 @@ public class DataMembers {
     private static final String tbl_closingStockHeader_cols = "StockID,Date,RetailerID,remark,latitude,longitude,DistributorID,Weightage,Score";
 
     private static final String tbl_closingStockDetails_cols = "StockID,ProductID,Shelfpqty,whpqty,uomid,uomqty,msqqty,Shelfcqty,whcqty,whoqty,shelfoqty,ouomid,ouomqty,LocId,isDistributed,isListed,ReasonID,Facing,IsOwn,PcsUOMId,Rfield1,Rfield2,Rfield3,Score,isAvailable";
-    private static final String tbl_InvoiceHeaderUpload_cols = "InvoiceNo,RetailerId,InvoiceDate,InvoiceAmount,Discount,InvNetAmount,OrderId,remark,ImageName,latitude,longitude,return_amt,imagename,LinesPerCall,totalweight,SalesType,print_count,sid,stype,SchemeAmount,TaxAmount,creditPeriod,PrintFilePath,SParentID,timestampid";
+    private static final String tbl_InvoiceHeaderUpload_cols = "InvoiceNo,RetailerId,InvoiceDate,InvoiceAmount,Discount,InvNetAmount,OrderId,remark,ImageName,latitude,longitude,return_amt,imgName,LinesPerCall,totalweight,SalesType,print_count,sid,stype,SchemeAmount,TaxAmount,creditPeriod,PrintFilePath,SParentID,timestampid";
     private static final String tbl_InvoiceDetailsUpload_cols = "InvoiceId,ProductId,Qty,Rate,UomId,uomCount,pcsQty,caseQty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,batchid,casePrice,outerPrice,pcsUOMId,OrderType,totalamount,PriceOffId,PriceOffValue,isFreeProduct,weight,hasSerial,TaxAmount,SchemeAmount,DiscountAmount,NetAmount,HsnCode,RField1";
     private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath,DistParentID,BankName,BranchName";
     private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath";
