@@ -1210,8 +1210,6 @@ public class CommonPrintHelper {
                 if (schemeBO != null) {
 
                     if (schemeBO.isAmountTypeSelected()) {
-
-                        mSchemeValueByAmountType = mSchemeValueByAmountType + schemeBO.getSelectedAmount();
                         netSchemeAmount += schemeBO.getSelectedAmount();
                     } else if (schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
                         for (SchemeProductBO buyProd : schemeBO.getBuyingProducts()) {
@@ -1234,7 +1232,6 @@ public class CommonPrintHelper {
                 }
             }
 
-            total_line_value_incl_tax = total_line_value_incl_tax - mSchemeValueByAmountType;
         }
     }
 
@@ -1255,7 +1252,6 @@ public class CommonPrintHelper {
                     if (schemeBO.isAmountTypeSelected()) {
                         schemeName = schemeBO.getProductName();
                         schemeValue = schemeBO.getSelectedAmount();
-                        mSchemeValueByAmountType = mSchemeValueByAmountType + schemeValue;
                         netSchemeAmount += schemeValue;
                     } else if (schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
                         schemeName = schemeBO.getProductName();
@@ -1324,7 +1320,6 @@ public class CommonPrintHelper {
                 }
             }
 
-            total_line_value_incl_tax = total_line_value_incl_tax - mSchemeValueByAmountType;
         }
     }
 

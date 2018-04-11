@@ -844,6 +844,21 @@ public class DiscountHelper {
                     int i = 0;
                     boolean isBuyProductAvailable = false;
                     if (schemeProductList != null) {
+
+                        // Getting total order value of buy products
+                        double totalOrderValueOfBuyProducts=0;
+                        if (schemeBO.isAmountTypeSelected()) {
+                            for (SchemeProductBO schemeProductBo : schemeProductList) {
+                                ProductMasterBO productBO = businessModel.productHelper
+                                        .getProductMasterBOById(schemeProductBo
+                                                .getProductId());
+                                totalOrderValueOfBuyProducts += (productBO.getOrderedCaseQty() * productBO.getCsrp())
+                                        + (productBO.getOrderedPcsQty() * productBO.getSrp())
+                                        + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                            }
+                        }
+                        //
+
                         ArrayList<String> productIdList = new ArrayList<>();
                         for (SchemeProductBO schemeProductBo : schemeProductList) {
                             ProductMasterBO productBO = businessModel.productHelper
@@ -859,6 +874,15 @@ public class DiscountHelper {
                                         isBuyProductAvailable = true;
                                         if (schemeBO.isAmountTypeSelected()) {
                                             schemeProductBo.setDiscountValue(schemeBO.getSelectedAmount());
+
+                                            // calculating free amount for current product by contribution to total value of buy products
+                                            double line_value = (productBO.getOrderedCaseQty() * productBO.getCsrp())
+                                                    + (productBO.getOrderedPcsQty() * productBO.getSrp())
+                                                    + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                            double percentage_productContribution=((line_value/totalOrderValueOfBuyProducts)*100);
+                                            double amount_free=schemeBO.getSelectedAmount()*(percentage_productContribution/100);
+                                            //
+
                                             if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
                                                     && businessModel.configurationMasterHelper.IS_SIH_VALIDATION
                                                     && businessModel.configurationMasterHelper.IS_INVOICE) {
@@ -866,21 +890,51 @@ public class DiscountHelper {
                                                         .getBatchwiseProductCount() > 0) {
                                                     ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper.getBatchlistByProductID().get(productBO.getProductID());
                                                     if (batchList != null && !batchList.isEmpty()) {
+
+                                                        // To get total order value of batch buy products
+                                                        double totalOrderValueOfBuyProducts_batch=0;
+                                                        for (ProductMasterBO batchProduct : batchList) {
+                                                            totalOrderValueOfBuyProducts_batch += (batchProduct.getOrderedCaseQty() * productBO.getCsrp())
+                                                                    + (batchProduct.getOrderedPcsQty() * productBO.getSrp())
+                                                                    + (batchProduct.getOrderedOuterQty() * productBO.getOsrp());
+                                                        }
+                                                        //
+
                                                         for (ProductMasterBO batchProduct : batchList) {
                                                             int totalQty = batchProduct.getOrderedPcsQty() + (batchProduct.getOrderedCaseQty() * productBO.getCaseSize())
                                                                     + (batchProduct.getOrderedOuterQty() * productBO.getOutersize());
                                                             if (totalQty > 0) {
 
-                                                                double discProd = schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount();
-                                                                batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + (discProd / productBO.getOrderedBatchCount()));
+                                                                // calculating free amount for current batch product(by contribution to total value(Sum of all line value of batches in a product)).
+                                                                double line_value_batch= (batchProduct.getOrderedCaseQty() * productBO.getCsrp())
+                                                                        + (batchProduct.getOrderedPcsQty() * productBO.getSrp())
+                                                                        + (batchProduct.getOrderedOuterQty() * productBO.getOsrp());
+                                                                double percentage_batchProductContribution=((line_value_batch/totalOrderValueOfBuyProducts_batch)*100);
+                                                                double amount_free_batch=amount_free*(percentage_batchProductContribution/100);
+                                                                //
+
+                                                                batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + amount_free_batch);
+
                                                             }
                                                         }
                                                     }
                                                 } else {
-                                                    productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + (schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount()));
+                                                    productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
+                                                    if (productBO.getDiscount_order_value() > 0) {
+                                                        productBO.setDiscount_order_value(productBO
+                                                                .getDiscount_order_value()
+                                                                - amount_free);
+
+                                                    }
                                                 }
                                             } else {
-                                                productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + (schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount()));
+                                                productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
+                                                if (productBO.getDiscount_order_value() > 0) {
+                                                    productBO.setDiscount_order_value(productBO
+                                                            .getDiscount_order_value()
+                                                            - amount_free);
+
+                                                }
                                             }
                                         } else if (schemeBO.isPriceTypeSeleted()) {
                                             double totalPriceDiscount;
