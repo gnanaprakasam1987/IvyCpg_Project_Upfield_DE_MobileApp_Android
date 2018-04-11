@@ -380,7 +380,6 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE_COMP);
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                bmodel.updateIsVisitedFlag();
 
                 return Boolean.TRUE;
             } catch (Exception e) {

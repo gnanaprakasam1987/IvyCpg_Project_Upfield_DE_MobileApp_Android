@@ -476,6 +476,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FOCUS_PACK_NOT_DONE = "ORDB71";
     public boolean IS_FOCUS_PACK_NOT_DONE;
 
+    private static final String CODE_ORDER_FROM_EXCESS_STOCK= "FUN69";
+    public boolean IS_ORDER_FROM_EXCESS_STOCK;
+
     private static final String CODE_LOAD_SUBD_ONLY = "OFPLAN01";
     public boolean IS_LOAD_ONLY_SUBD;
     private static final String CODE_LOAD_NON_FIELD = "OFPLAN02";
@@ -484,7 +487,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PLAN_RETIALER_NON_FIELD;
 
     private static final String CODE_EXPENSE_DAYS = "EXP01";
-    public int expenseDays =30;
+    public int expenseDays = 30;
 
 
     /**
@@ -895,7 +898,10 @@ public class ConfigurationMasterHelper {
     public boolean IS_WSIH_MASTER;
     public boolean IS_SCHEME_ON_MASTER;
     public boolean IS_SCHEME_SHOW_SCREEN_MASTER;
+
     public boolean SHOW_TAX_MASTER;
+    public boolean IS_EXCLUDE_TAX;
+
     public boolean IS_STOCK_IN_HAND_MASTER;
     public int PSWD_MIN_LEN = 0;
     public int PSWD_MAX_LEN = 0;
@@ -1341,8 +1347,8 @@ public class ConfigurationMasterHelper {
     }
 
     public Vector<ConfigureBO> getProfileModuleConfig() {
-        if(profileConfig==null){
-            profileConfig=new Vector<>();
+        if (profileConfig == null) {
+            profileConfig = new Vector<>();
         }
         return profileConfig;
     }
@@ -2020,6 +2026,14 @@ public class ConfigurationMasterHelper {
         this.SHOW_TAX = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
         this.SHOW_TAX_MASTER = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
 
+        if (hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null) {
+            if (hashMapHHTModuleOrder.get(CODE_TAX_APPLY)!=null && hashMapHHTModuleOrder.get(CODE_TAX_APPLY) == 1)
+                this.IS_EXCLUDE_TAX = false;
+            else
+                this.IS_EXCLUDE_TAX = true;
+        }
+
+
         this.HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST = hashMapHHTModuleConfig.get(CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST) : false;
         this.dashboard = hashMapHHTModuleOrder.get(CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST) != null ? hashMapHHTModuleOrder.get(CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST) : 0;
 
@@ -2232,6 +2246,8 @@ public class ConfigurationMasterHelper {
         this.IS_LOAD_ONLY_SUBD = hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) : false;
         this.IS_LOAD_NON_FIELD = hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) : false;
         this.IS_PLAN_RETIALER_NON_FIELD = hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) != null ? hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) : false;
+
+        this.IS_ORDER_FROM_EXCESS_STOCK = hashMapHHTModuleConfig.get(CODE_ORDER_FROM_EXCESS_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_FROM_EXCESS_STOCK) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG) != null) {
             if (hashMapHHTModuleConfig.get(CODE_ORDER_RPT_CONFIG)) {
@@ -5254,7 +5270,8 @@ public class ConfigurationMasterHelper {
                 || bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN
                 || bmodel.configurationMasterHelper.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN
                 || bmodel.configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN
-                || bmodel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN) {
+                || bmodel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN
+                || bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
             return true;
         }
         return false;

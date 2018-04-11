@@ -6,8 +6,8 @@
     <string name="close">Kapat</string>
     <string name="close_call">Ziyareti Sonlandır</string>
     <string name="next">İleri</string>
-    <string name="ok">OK</string>
-    <string name="cancel">İptal</string>
+    <string name="ok">Tamam</string>
+    <string name="cancel">İptal et</string>
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
     <string name="progress_dialog_title_downloading">İndiriliyor</string>
@@ -43,11 +43,11 @@
     <string name="order_saved_and_print_preview_created_successfully">Sipariş kaydedildi ve çıktı önizlemesi başarıyla oluşturuldu. </string>
     <string name="day_closed">Gün sonlandırıldı.</string>
     <string name="savingquestionanswers">Cevaplar Kaydediliyor...</string>
-    <string name="saved_successfully">Kaydetme Başarılı...</string>
+    <string name="saved_successfully">Başarıyla Kaydedildi...</string>
     <string name="please_take_order_to_create_invoice">Fatura oluşturmak için lütfen başka bir sipariş al.</string>
     <string name="pleaseanswerallthequestions">Lütfen Bütün Soruları Cevaplandır!</string>
     <string name="please_select_anyone_invoice_from_list">Please select anyone invoice from list.</string>
-    <string name="please_select_item">Lütfen bir Ürün seç.</string>
+    <string name="please_select_item">Lütfen bir teşhir seç.</string>
     <string name="please_complete_previous_activity">Lütfen Önceki Aktivite(ler)i Tamamla. </string>
     <string name="please_connect_to_internet">Lütfen İnternete Bağlan.</string>
     <string name="please_redownload">Lütfen verileri tekrar indir.</string>
@@ -126,7 +126,7 @@
     <string name="type">Tip</string>
     <string name="stock_report">Stok Raporu</string>
     <string name="sih">SIH</string>
-    <string name="total">Toplam</string>
+    <string name="total">Toplam Önyüz</string>
     <string name="unit_price">Adet Fiyatı</string>
     <string name="init_qty">Init Qty</string>
     <string name="tot_qty">Toplam Adet</string>
@@ -306,7 +306,7 @@
     <string name="wk3">Hft3</string>
     <string name="wk4">Hft4</string>
     <string name="select">Seç--</string>
-    <string name="select_prod">Ürün Seç--</string>
+    <string name="select_prod">--Kategori Seç--</string>
     <string name="retailer_name">Müşteri İsmi:</string>
     <string name="gross_sales">Brüt Satış:</string>
     <string name="customer">Müşteri:</string>
@@ -329,11 +329,11 @@
     <string name="only_order">Only Order</string>
     <string name="total_amount_due">Total Amount Due:</string>
     <string name="select_no_order_reason">Sipariş Alınmama Sebebi Seçin</string>
-    <string name="select_reason">Gerekçe seç</string>
+    <string name="select_reason">Sebep Seç</string>
     <string name="order_created_successfully">Sipariş başarıyla oluşturuldu</string>
     <string name="done">TAMAM</string>
     <string name="lbl_continue">Devam</string>
-    <string name="brand">Ürün Ailesi</string>
+    <string name="brand">Marka</string>
     <string name="please_finish_mandatory_modules">Lütfen mecburi modülleri tamamlayın.</string>
     <string name="summary">Özet</string>
     <string name="apply_so">Önerilen Miktarı Uygula</string>
@@ -441,7 +441,7 @@
     <string name="chq_no">Chq No</string>
     <string name="ref_no">Ref No</string>
     <string name="enter_remark_to_set">Not Girin</string>
-    <string name="future_date_not_allowed">Gelecek tarihe izin verilmiyor.</string>
+    <string name="future_date_not_allowed">İleri Tarihe izin verilmiyor.</string>
     <string name="expdate_set_after_mfgdate">Exp.date should set after Mfg.date</string>
     <string name="scheme_not_available">Promosyon yok.</string>
     <string name="item_outer">OO</string>
@@ -680,7 +680,7 @@
     <string name="questscore">Soru Puanı</string>
     <string name="surevyscore">Anket Puanı</string>
     <string name="outer_price">Dış Koli Fiyatı</string>
-    <string name="photo_capture_not_saved_go_back">Görüntü Kaydedilemedi. Geri dönmek ister misin?</string>
+    <string name="photo_capture_not_saved_go_back">Görüntü Kaydedilmedi. Geri dönülsün mü?</string>
     <string name="addpromo">Yeni Promosyon Ekle</string>
     <string name="startdate">Başlangıç Tarihi</string>
     <string name="enddate">Bitiş Tarihi</string>
@@ -739,7 +739,7 @@
     <string name="points">Point</string>
     <string name="self">Self</string>
     <string name="socket_time_out_exception">Zaman aşımı, lütfen daha sonra tekrar dene</string>
-    <string name="posm_name">Teşhir İsmi</string>
+    <string name="posm_name">Teşhir</string>
     <string name="designation">Atama</string>
     <string name="region">Bölge</string>
     <string name="select_distributors">Kaydetmek için Bayii seç</string>
@@ -751,7 +751,7 @@
     <string name="data_download_successfully">Bilgiler başarıyla indirildi</string>
     <string name="weight">Ağırlık</string>
     <string name="contact_system_admin">Sistem Yöneticisiyle İletişime Geç</string>
-    <string name="please_select_atleast_one_type">Lütfen görüntü tipi seç</string>
+    <string name="please_select_atleast_one_type">Lütfen Görüntü Tüpü Seç</string>
     <string name="not_registered">Kaydedilmedi</string>
     <string name="enter_current_password">Lütfen şu anki şifreni gir</string>
     <string name="enter_new_password">Lütfen yeni bir şifre gir</string>
@@ -953,7 +953,7 @@
     <string name="max_credit_days_allowed">İzin verilen max Kredi günü:</string>
     <string name="reason_req_for_indicative_order">Reason for un satisfied order</string>
     <string name="exceed_indicative_order">You have exceeded Indicative order.</string>
-    <string name="servicedate_set_after_installdate">Servis Tarihi Yükleme tarihinden yeni olmalı</string>
+    <string name="servicedate_set_after_installdate">Bitiş Tarihi Başlangıç Tarihinden sonra olmalıdır.</string>
     <string name="no_posm_exists">Teşhir mevcut değil</string>
     <string name="exceed_pwd_retry_limit">Şifre deneme limiti aşıldı. Lütfen şifreni sıfırla.</string>
     <string name="discount_amt_cannot_be_higher_than_price">İndirim miktarı ürün fiyatından daha fazla olamaz.</string>
@@ -1007,10 +1007,10 @@
     <string name="click_to_take_pic">GÖRÜNTÜ ALMAK İÇİN TIKLA</string>
     <string name="plano_adherence">Planograma Uygunluk</string>
     <string name="apply">Uygula</string>
-    <string name="s_length">S Uzunluk(m)</string>
-    <string name="s_percent">S Oran(%)</string>
-    <string name="act_tar">Gerçekleşen/Hedef</string>
-    <string name="title_dialog">Bu Değerleri Girin</string>
+    <string name="s_length">Önyüz Sayısı</string>
+    <string name="s_percent">Önyüz Oranı (%)</string>
+    <string name="act_tar">Gerç. /Hedef</string>
+    <string name="title_dialog">Önyüz Sayılarını Giriniz</string>
     <string name="title_visual_sos">Raf Ölçümlerini Girin</string>
     <string name="text_no_rows">Sıra Sayısı</string>
     <string name="text_no_columns">Sütun Sayısı</string>
@@ -1019,8 +1019,8 @@
     <string name="select_brand">Blok yerleştirmek için marka seç</string>
     <string name="blocks_color">Renklendirmek için blok seçin</string>
     <string name="reason_with_photo_title">Görüntülü gerekçe</string>
-    <string name="installed_on">Installed On</string>
-    <string name="serviced_on">Serviced On</string>
+    <string name="installed_on">Başlangıç</string>
+    <string name="serviced_on">Bitiş</string>
     <string name="asset">Malzeme</string>
     <string name="remove">Kaldır</string>
     <string name="nothing_selected_to_remove">Kaldırılmak için herhangi bir şey seçilmedi</string>
@@ -1167,12 +1167,16 @@
         <item>KENDİME AİT</item>
     </string-array>
     <string-array name="days_in_week">
-        <item>Sun</item>
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
-        <item>Sat</item>
+        <item>Paz</item>
+        <item>Pts</item>
+        <item>Sal</item>
+        <item>Çrş</item>
+        <item>Prş</item>
+        <item>Cum</item>
+        <item>Cts</item>
     </string-array>
+    <string name="select_photo_type">Görüntü Tipi Seç</string>
+    <string name="my_gallery">Galeri</string>
+    <string name="select_condition">Durum Seç</string>
+    <string name="profile_updated_scccess">Müşteri Profili başarıyla güncellendi.</string>
 </resources>

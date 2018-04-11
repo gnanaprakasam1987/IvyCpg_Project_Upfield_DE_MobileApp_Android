@@ -14,6 +14,7 @@ import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -282,8 +283,15 @@ public class UploadHelper {
 
             Commons.print("jsonObjData.toString()" + jsonObjData);
             try {
-                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
-                        .getUserMasterBO().getUserid());
+                if (!"0".equals(businessModel.userMasterHelper.getUserMasterBO().getBackupSellerID())) {
+                    jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
+                            .getUserMasterBO().getBackupSellerID());
+                    jsonFormatter.addParameter("WorkingFor", businessModel.userMasterHelper.getUserMasterBO().getUserid());
+                } else {
+                    jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
+                            .getUserMasterBO().getUserid());
+                }
+
                 jsonFormatter.addParameter("DistributorId", businessModel.userMasterHelper
                         .getUserMasterBO().getDistributorid());
                 jsonFormatter.addParameter("BranchId", businessModel.userMasterHelper
@@ -763,8 +771,14 @@ public class UploadHelper {
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
 
             try {
-                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
-                        .getUserMasterBO().getUserid());
+                if (!"0".equals(businessModel.userMasterHelper.getUserMasterBO().getBackupSellerID())) {
+                    jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
+                            .getUserMasterBO().getBackupSellerID());
+                    jsonFormatter.addParameter("WorkingFor", businessModel.userMasterHelper.getUserMasterBO().getUserid());
+                } else {
+                    jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
+                            .getUserMasterBO().getUserid());
+                }
                 jsonFormatter.addParameter("DistributorId", businessModel.userMasterHelper
                         .getUserMasterBO().getDistributorid());
                 jsonFormatter.addParameter("BranchId", businessModel.userMasterHelper
@@ -907,8 +921,14 @@ public class UploadHelper {
                     Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonFormatter.addParameter("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-            jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
-                    .getUserMasterBO().getUserid());
+            if (!"0".equals(businessModel.userMasterHelper.getUserMasterBO().getBackupSellerID())) {
+                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
+                        .getUserMasterBO().getBackupSellerID());
+                jsonFormatter.addParameter("WorkingFor", businessModel.userMasterHelper.getUserMasterBO().getUserid());
+            } else {
+                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
+                        .getUserMasterBO().getUserid());
+            }
             jsonFormatter.addParameter("VanId", businessModel.userMasterHelper
                     .getUserMasterBO().getVanId());
             String LastDayClose = "";
@@ -971,6 +991,97 @@ public class UploadHelper {
             Commons.printException("" + e);
         }
         return rid;
+    }
+
+    public String uploadBackupSeller(String backupSellerId,Handler handler) {
+        String res = "";
+        try {
+            this.handler = handler;
+            JSONObject jsonobj = new JSONObject();
+
+
+                    JSONObject jObject = new JSONObject();
+            jObject.put("UserId", backupSellerId);
+            jObject.put("ReplacementUser", businessModel.userMasterHelper.getUserMasterBO().getUserid());
+            jObject.put("Date", Utils.getDate("yyyy/MM/dd"));
+            jsonobj.put("UserReplacement", jObject);
+
+
+            Commons.print("jsonObjData.toString():0:" + jsonobj.toString());
+
+
+            JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+
+            jsonFormatter.addParameter("DeviceId",
+                    businessModel.activationHelper.getIMEINumber());
+            jsonFormatter.addParameter("LoginId", businessModel.userMasterHelper
+                    .getUserMasterBO().getLoginName());
+            jsonFormatter.addParameter("VersionCode",
+                    businessModel.getApplicationVersionNumber());
+            jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
+            jsonFormatter.addParameter("DistributorId", businessModel.userMasterHelper
+                    .getUserMasterBO().getDistributorid());
+            jsonFormatter.addParameter("OrganisationId", businessModel.userMasterHelper
+                    .getUserMasterBO().getOrganizationId());
+            jsonFormatter.addParameter("MobileDate",
+                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonFormatter.addParameter("MobileUTCDateTime",
+                    Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+            if (!"0".equals(businessModel.userMasterHelper.getUserMasterBO().getBackupSellerID())) {
+                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
+                        .getUserMasterBO().getBackupSellerID());
+                jsonFormatter.addParameter("WorkingFor", businessModel.userMasterHelper.getUserMasterBO().getUserid());
+            } else {
+                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
+                        .getUserMasterBO().getUserid());
+            }
+            jsonFormatter.addParameter("VanId", businessModel.userMasterHelper
+                    .getUserMasterBO().getVanId());
+            String LastDayClose = "";
+            if (businessModel.synchronizationHelper.isDayClosed()) {
+                LastDayClose = businessModel.userMasterHelper.getUserMasterBO()
+                        .getDownloadDate();
+            }
+            jsonFormatter.addParameter("LastDayClose", LastDayClose);
+            jsonFormatter.addParameter("BranchId", businessModel.userMasterHelper
+                    .getUserMasterBO().getBranchId());
+            jsonFormatter.addParameter("DownloadedDataDate", businessModel.userMasterHelper
+                    .getUserMasterBO().getDownloadDate());
+            jsonFormatter.addParameter("DataValidationKey", businessModel.synchronizationHelper.generateChecksum(jsonobj.toString()));
+            jsonFormatter.addParameter("WorkingFor", businessModel.userMasterHelper.getUserMasterBO().getBackupSellerID());
+            Commons.print(jsonFormatter.getDataInJson());
+            String appendurl = businessModel.synchronizationHelper.getUploadUrl("USRREPLACEUPLD");
+            if (appendurl.length() == 0)
+                return 2 + "";
+            Vector<String> responseVector = businessModel.synchronizationHelper
+                    .getUploadResponse(jsonFormatter.getDataInJson(),
+                            jsonobj.toString(), appendurl);
+
+            if (responseVector.size() > 0) {
+
+
+                for (String s : responseVector) {
+                    JSONObject jsonObject = new JSONObject(s);
+
+                    Iterator itr = jsonObject.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals("ErrorCode")) {
+                            res = jsonObject.getString("ErrorCode");
+                        }
+                    }
+
+
+                }
+            } else {
+                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    res = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
+                }
+            }
+        } catch (SQLException | JSONException e) {
+            Commons.printException(e);
+        }
+        return res;
     }
     
 }

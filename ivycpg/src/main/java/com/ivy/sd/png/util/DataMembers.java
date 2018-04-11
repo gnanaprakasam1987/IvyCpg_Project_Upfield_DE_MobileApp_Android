@@ -242,11 +242,11 @@ public class DataMembers {
     public static final int MESSAGE_ENCOUNTERED_ERROR_DC = 1009;
 
     public static final String tbl_beatMaster = "BeatMaster";
-    public static final String tbl_beatMaster_cols = "BeatID,BeatDescription,today";
+    public static final String tbl_beatMaster_cols = "BeatID,BeatDescription,today,BeatCode";
 
 
     public static final String tbl_userMaster = "UserMaster";
-    public static final String tbl_userMaster_cols = "distributorid,distributorTinNumber,distributorName,branchid,vanid,userid,username,Password,loginid,distContactNo,OrganisationId,downloaddate,UserCode,custommsg,accountno,credit_limit,admincno,isJointCall,vanno,SchemeFactor,upliftFactor,usertype,ProfileImagePath";
+    public static final String tbl_userMaster_cols = "distributorid,distributorTinNumber,distributorName,branchid,vanid,userid,username,Password,loginid,distContactNo,OrganisationId,downloaddate,UserCode,custommsg,accountno,credit_limit,admincno,isJointCall,vanno,SchemeFactor,upliftFactor,usertype,ProfileImagePath,BackupUserId";
 
     public static final String tbl_DTPMaster = "DTPMaster";
     public static final String tbl_retailerMaster = "RetailerMaster";
@@ -261,7 +261,7 @@ public class DataMembers {
     private static final String tbl_TaskMaster_cols = "taskid,taskdesc,taskcode,TaskOwner";
 
     public static final String tbl_TaskConfigurationMaster = "TaskConfigurationMaster";
-    private static final String tbl_TaskConfigurationMaster_cols = "taskid,retailerid,uid,date,usercreated";
+    private static final String tbl_TaskConfigurationMaster_cols = "taskid,retailerid,uid,date,usercreated,userid";
 
     public static final String tbl_InvoiceMaster = "InvoiceMaster";
     public static final String tbl_InvoiceDetails = "InvoiceDetails";
@@ -359,7 +359,7 @@ public class DataMembers {
     private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath";
     private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
-    private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VisitFrequency,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate,pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
+    private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate,pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
     private static final String tbl_deviateReasontableupload_cols = "uid,retailerid,date,reasonid,DistributorID,remarks";
     private static final String tbl_SbdMerchandisingHeaderupload_cols = "uid,date,RetailerID,beatid";
     private static final String tbl_SbdMerchandisingDetailupload_cols = "uid,sbdid,brandid,visibilityListid,value,TypeListId,isHit";

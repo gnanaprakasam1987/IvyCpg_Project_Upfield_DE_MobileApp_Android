@@ -267,7 +267,7 @@ public class DamageStockFragment extends Fragment {
                         + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate()) + "," + 0;
                 db.insertSQL(DataMembers.tbl_vanunload_details, columns, values);
-                db.executeQ("update SalesReturnHeader set unload=1");
+                db.executeQ("update SalesReturnHeader set unload=1 where upload!='X'");
             }
 
             db.closeDB();

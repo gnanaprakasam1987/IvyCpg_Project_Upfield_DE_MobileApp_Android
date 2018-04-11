@@ -118,7 +118,7 @@ public class ReportHelper {
                     .selectSQL("SELECT OrderHeader.OrderID ,OrderHeader.RetailerID , RetailerMaster.RetailerName,"
                             + "OrderHeader.OrderValue,OrderHeader.LinesPerCall ,RetailerMaster.sbd_dist_stock,RetailerMaster.sbd_dist_achieve,"
                             + "OrderHeader.upload,OrderHeader.totalweight,OrderHeader.FocusPackLines,OrderHeader.MSPLines,OrderHeader.is_vansales FROM OrderHeader INNER JOIN RetailerMaster "
-                            + "ON OrderHeader.RetailerId = RetailerMaster.RetailerID INNER JOIN OrderDetail OD ON  OD.OrderID = OrderHeader.OrderID "
+                            + "ON OrderHeader.RetailerId = RetailerMaster.RetailerID INNER JOIN OrderDetail OD ON  OD.OrderID = OrderHeader.OrderID where OrderHeader.upload!='X' "
                             + "GROUP BY OrderHeader.OrderID ,OrderHeader.RetailerID,RetailerMaster.RetailerName,"
                             + "OrderHeader.OrderValue, OrderHeader.LinesPerCall");
 
@@ -327,9 +327,9 @@ public class ReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.totalamount from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
+                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.totalDiscountedAmt from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
                             + " WHERE OD.ProductID IN (" + productIds + ")"
-                            + " AND OH.OrderDate="
+                            + " AND OH.upload!='X' and OH.OrderDate="
                             + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
 
             if (c != null) {
@@ -371,7 +371,7 @@ public class ReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,((OD.totalamount)-(OD.totalamount *(OD.d1+OD.d2+OD.d3)/100)) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
+                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,(OD.totalDiscountedAmt) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
                             + " from OrderDetail OD INNER JOIN  ProductMaster PM ON OD.ProductID = PM.PID LEFT JOIN BatchMaster BM ON OD.batchid =  BM.batchid  and BM.pid=OD.productid where OD.OrderID="
                             + bmodel.QT(orderID) + "and OD.OrderType = 0");
             if (c != null) {
@@ -716,7 +716,7 @@ public class ReportHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append(" SELECT IM.orderid, IM.InvoiceNo,RM.RetailerId,RM.RetailerName,IM.invNetamount,(select count (invoiceid) from InvoiceDetails where ");
-            sb.append("InvoiceDetails.invoiceid=IM.InvoiceNo) as LPC,RM.sbd_dist_stock,RM.sbd_dist_achieve,RM.beatId,P.invoiceamount,IM.totalweight,IM.taxamount,(IM.priceoffAmount+IM.discount), ");
+            sb.append("InvoiceDetails.invoiceid=IM.InvoiceNo) as LPC,RM.sbd_dist_stock,RM.sbd_dist_achieve,RM.beatId,P.invoiceamount,IM.totalweight,IM.taxamount,(IM.priceoffAmount+IM.discount+IM.SchemeAmount), ");
             sb.append("(select sum(Qty) from InvoiceDetails where InvoiceDetails.invoiceid=IM.InvoiceNo) FROM InvoiceMaster IM lEFT JOIN ");
             sb.append("payment p on p.Billnumber=IM.invoiceno  INNER JOIN InvoiceDetails ID ON IM.InvoiceNo = ID.invoiceid INNER JOIN RetailerMaster RM ON IM.Retailerid = RM.RetailerID");
             sb.append(" group by IM.InvoiceNo,IM.RetailerId");
@@ -1345,7 +1345,7 @@ public class ReportHelper {
                             + " A.ParentId = B.ListId AND"
                             + " ( B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_NONSALABLE_REASON_TYPE
                             + "' OR B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_SALABLE_REASON_TYPE + "')"
-                            + " AND A.listId = srd.condition WHERE A.ListType = 'REASON' AND"
+                            + " AND A.listId = srd.condition WHERE srd.upload!='X' and A.ListType = 'REASON' AND"
                             + " srd.ProductId = " + bmodel.QT(productId) + " AND srd.RetailerId = " + bmodel.QT(retailerId)
                             + " AND srd.status = 2");
             if (c != null) {
@@ -1378,7 +1378,7 @@ public class ReportHelper {
             Cursor c = db
                     .selectSQL("select distinct srd.ProductId as ProductId,srd.retailerId as RetailerID," +
                             "pm.pname as ProductName, pm.pcode as ProductCode from SalesReturnDetails srd inner join " +
-                            "ProductMaster pm ON srd.ProductID = pm.pid where srd.status = 2");
+                            "ProductMaster pm ON srd.ProductID = pm.pid where sr.upload!='X' and srd.status = 2");
             if (c != null) {
                 while (c.moveToNext()) {
                     SalesReturnReasonBO reasonBO = new SalesReturnReasonBO();
@@ -1874,7 +1874,7 @@ public class ReportHelper {
             sb = new StringBuffer();
             sb.append("select SD.Productid,sum(SD.totalQty),SD.batchid from SalesReturnDetails SD  inner join SalesReturnHeader SH on ");
             sb.append("SD.uid=SH.uid inner join Standardlistmaster SLM on SLM.listid=SD.condition  AND  SLM.ListType = 'REASON'");
-            sb.append(" inner join Standardlistmaster SLM1 on SLM.parentid=SLM1.listid and SLM1.ListCode='SRS'");
+            sb.append(" inner join Standardlistmaster SLM1 on SLM.parentid=SLM1.listid and SLM1.ListCode='SRS' where SH.upload!='X'");
             sb.append(" group by SD.Productid,SD.batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -1887,7 +1887,7 @@ public class ReportHelper {
             // get OrderQty(sold) FROM ORDER DETAIL
             sb = new StringBuffer();
             sb.append("select productid,sum(Qty),batchid as Qty from orderdetail OD inner join Orderheader OH on ");
-            sb.append("OH.orderid =OD.orderid where OH.is_vansales=1 and od.ordertype=0 group by productid,batchid");
+            sb.append("OH.orderid =OD.orderid where OH.is_vansales=1 and od.ordertype=0 and OH.upload!='X' group by productid,batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -1899,7 +1899,7 @@ public class ReportHelper {
             // get freeQty for crown FROM ORDER DETAIL
             sb = new StringBuffer();
             sb.append("select OD.Productid,sum(OD.Qty),batchid from orderDetail OD  inner join OrderHeader OH on ");
-            sb.append("OD.orderid=OH.orderid where OH.is_vansales=1 and OD.Ordertype!=0 group by OD.Productid,batchid ");
+            sb.append("OD.orderid=OH.orderid where OH.upload!='X' and OH.is_vansales=1 and OD.Ordertype!=0 group by OD.Productid,batchid ");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -1922,7 +1922,7 @@ public class ReportHelper {
 
             //load replacement qty
             sb = new StringBuffer();
-            sb.append("select pid,sum(case when uomCount!=0 then qty*UomCount else qty end) as Qty,batchid from SalesReturnReplacementDetails group by pid,batchid");
+            sb.append("select pid,sum(case when uomCount!=0 then qty*UomCount else qty end) as Qty,batchid from SalesReturnReplacementDetails where upload!='X' group by pid,batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -2138,7 +2138,7 @@ public class ReportHelper {
                             "WHERE BM.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand')  GROUP BY  BM.Pid,BM.Pname ) AS B on A. Pid = B.BrandId " +
                             "LEFT JOIN (SELECT ST.Pid,ifnull(ST.Ach,0) as Achieve ,ifnull(ST.Tgt,0) as Target  FROM ProductMaster PM " +
                             "INNER JOIN SkuWiseTarget ST ON PM.PID = ST.Pid where PM.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand')) as C ON C.Pid = A.PID " +
-                            "WHERE A.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand') ORDER BY A.PName");
+                            "WHERE OH.upload!='X' and A.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand') ORDER BY A.PName");
 
             if (c != null) {
                 brandperformancelist = new ArrayList<>();
@@ -2226,7 +2226,7 @@ public class ReportHelper {
                 if (starttime.length() == 1) {
                     starttime = "0" + starttime;
                 }
-                sql.append("SELECT 'Before " + time[0].trim() + ":00' as PERIOD,(SELECT count(DISTINCT RetailerID)  FROM OutletTimestamp  WHERE VisitDate = '" + today + "' AND time(replace(TimeIn,'/','-')) BETWEEN '00:00:00' and '" + starttime + ":59:59') as TC,count(RetailerID) as PC,ifnull(SUM(OrderValue),0) as Value,ifnull(SUM(LinesPerCall),0) as LinesSold FROM OrderHeader WHERE OrderDate = '" + today + "' AND time(replace(orderTakenTime,'/','-')) BETWEEN '00:00:00' and '" + starttime + ":59:59'");
+                sql.append("SELECT 'Before " + time[0].trim() + ":00' as PERIOD,(SELECT count(DISTINCT RetailerID)  FROM OutletTimestamp  WHERE VisitDate = '" + today + "' AND time(replace(TimeIn,'/','-')) BETWEEN '00:00:00' and '" + starttime + ":59:59') as TC,count(RetailerID) as PC,ifnull(SUM(OrderValue),0) as Value,ifnull(SUM(LinesPerCall),0) as LinesSold FROM OrderHeader WHERE upload!='X' and OrderDate = '" + today + "' AND time(replace(orderTakenTime,'/','-')) BETWEEN '00:00:00' and '" + starttime + ":59:59'");
 
 
                 for (int i = 0; i < timelist.size(); i++) {
@@ -2235,7 +2235,7 @@ public class ReportHelper {
                     if (looptime.length() == 1) {
                         looptime = "0" + looptime;
                     }
-                    sql.append("UNION SELECT '" + time[0].trim() + ":00 - " + String.valueOf(Integer.parseInt(looptime) + 1) + ":00' as PERIOD,(SELECT count(DISTINCT RetailerID)  FROM OutletTimestamp  WHERE VisitDate = '" + today + "' AND time(replace(TimeIn,'/','-')) BETWEEN '" + time[0].trim() + ":00:00' and '" + looptime + ":59:59') as TC,count(*) as PC,ifnull(SUM(OrderValue),0) as Value,ifnull(SUM(LinesPerCall),0) as LinesSold FROM OrderHeader WHERE OrderDate = '" + today + "' AND time(replace(orderTakenTime,'/','-')) BETWEEN '" + time[0].trim() + ":00:00' and '" + looptime + ":59:59'");
+                    sql.append("UNION SELECT '" + time[0].trim() + ":00 - " + String.valueOf(Integer.parseInt(looptime) + 1) + ":00' as PERIOD,(SELECT count(DISTINCT RetailerID)  FROM OutletTimestamp  WHERE VisitDate = '" + today + "' AND time(replace(TimeIn,'/','-')) BETWEEN '" + time[0].trim() + ":00:00' and '" + looptime + ":59:59') as TC,count(*) as PC,ifnull(SUM(OrderValue),0) as Value,ifnull(SUM(LinesPerCall),0) as LinesSold FROM OrderHeader WHERE upload!='X' and OrderDate = '" + today + "' AND time(replace(orderTakenTime,'/','-')) BETWEEN '" + time[0].trim() + ":00:00' and '" + looptime + ":59:59'");
 
 
                 }
@@ -2245,7 +2245,7 @@ public class ReportHelper {
                 if (endtime.length() == 1) {
                     endtime = "0" + endtime;
                 }
-                sql.append("UNION SELECT 'After " + time[1].trim() + ":00' as PERIOD,(SELECT count(DISTINCT RetailerID)  FROM OutletTimestamp  WHERE VisitDate = '" + today + "' AND time(replace(TimeIn,'/','-')) BETWEEN '" + endtime + ":00:00' and '23:59:59') as TC,count(*) as PC,ifnull(SUM(OrderValue),0) as Value,ifnull(SUM(LinesPerCall),0) as LinesSold FROM OrderHeader WHERE OrderDate = '" + today + "' AND time(replace(orderTakenTime,'/','-')) BETWEEN '" + endtime + ":00:00' and '23:59:59'");
+                sql.append("UNION SELECT 'After " + time[1].trim() + ":00' as PERIOD,(SELECT count(DISTINCT RetailerID)  FROM OutletTimestamp  WHERE VisitDate = '" + today + "' AND time(replace(TimeIn,'/','-')) BETWEEN '" + endtime + ":00:00' and '23:59:59') as TC,count(*) as PC,ifnull(SUM(OrderValue),0) as Value,ifnull(SUM(LinesPerCall),0) as LinesSold FROM OrderHeader WHERE upload!='X' and OrderDate = '" + today + "' AND time(replace(orderTakenTime,'/','-')) BETWEEN '" + endtime + ":00:00' and '23:59:59'");
             }
 
             Cursor c = db.selectSQL(sql.toString());
@@ -2282,9 +2282,9 @@ public class ReportHelper {
                             "Value FROM StandardListMaster SM " +
                             "INNER JOIN RetailerMaster RM ON RM.classid = SM.ListId " +
                             "LEFT JOIN (SELECT RM.ClassId,COUNT(DISTINCT OH.RetailerId) TotalCount,SUM(OH.OrderValue) TotalOrder FROM RetailerMaster RM " +
-                            "INNER JOIN OrderHeader OH ON OH.RetailerID = RM.RetailerID AND OH.OrderDate = '" + today + "' GROUP BY RM.ClassId) OD ON OD.ClassId=RM.ClassId " +
+                            "INNER JOIN OrderHeader OH ON OH.RetailerID = RM.RetailerID  AND OH.OrderDate = '" + today + "' GROUP BY RM.ClassId) OD ON OD.ClassId=RM.ClassId " +
                             "LEFT JOIN OutletTimestamp OT ON OT.RetailerID = RM.RetailerID AND OT.VisitDate = '" + today + "' " +
-                            "WHERE SM.ListType = 'CLASS_TYPE' GROUP BY SM.ListId");
+                            "WHERE OH.upload!='X' and SM.ListType = 'CLASS_TYPE' GROUP BY SM.ListId");
 
             if (c != null) {
                 mProductivityReportList = new ArrayList<>();
@@ -3163,7 +3163,7 @@ public class ReportHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
-        sb.append("select psname,productid,pcsQty,caseqty,outerqty,totalamount,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
+        sb.append("select psname,productid,pcsQty,caseqty,outerqty,totalDiscountedAmt,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
         sb.append("inner join productmaster PM on ID.productid=PM.pid ");
         sb.append("left join BatchMaster BM on  BM.pid=ID.productid and BM.batchid=ID.batchid ");
         sb.append(" where invoiceid=" + bmodel.QT(invoiceno));
@@ -3432,7 +3432,7 @@ public class ReportHelper {
                     + ".psname,A"
                     + loopEnd
                     + ".isSalable," +
-                    "A1.pname as brandname,A1.parentid,sum(OD.totalamount) from ProductMaster A1";
+                    "A1.pname as brandname,A1.parentid,sum(OD.totalDiscountedAmt) from ProductMaster A1";
 
             for (int i = 2; i <= loopEnd; i++)
                 sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
@@ -3663,8 +3663,8 @@ public class ReportHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db.selectSQL("select sum(ordervalue)from "
-                    + DataMembers.tbl_orderHeader + " where  upload='N'");
+            Cursor c = db.selectSQL("select ifnull(sum(ordervalue),0) from "
+                    + DataMembers.tbl_orderHeader);
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getDouble(0);

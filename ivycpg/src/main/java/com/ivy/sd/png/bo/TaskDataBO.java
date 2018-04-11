@@ -15,6 +15,7 @@ public class TaskDataBO {
     private String createdDate;
     private String plannedDate;
     private boolean isUpload;
+    private int userId;
 
     public String getPlannedDate() {
         return plannedDate;
@@ -145,5 +146,13 @@ public class TaskDataBO {
 
     public void setIsUpload(boolean isUpload) {
         this.isUpload = isUpload;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

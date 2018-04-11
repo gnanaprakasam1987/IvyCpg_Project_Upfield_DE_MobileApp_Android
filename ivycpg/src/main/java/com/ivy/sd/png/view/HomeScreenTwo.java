@@ -49,6 +49,8 @@ import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity;
+import com.ivy.cpg.view.orderdelivery.OrderDeliveryHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
@@ -155,6 +157,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_FIT_DASH = "MENU_FIT_DASH";
     public static final String MENU_DISPLAY_SCH = "MENU_DISPLAY_SCH";
     public static final String MENU_DISPLAY_SCH_TRACK = "MENU_DISPLAY_SCH_TRACK";
+    public static final String MENU_ORD_DELIVERY = "MENU_DELIVERY_MGMT_ORD";
 
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
@@ -1235,10 +1238,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else if (menuDB.get(i).getConfigCode()
                         .equals(MENU_PRESENTATION)) {
                     if (menuDB.get(i).getHasLink() == 1) {
-                        if (bmodel.getRetailerMasterBO().getIsPresentation()
-                                .equals("Y")) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
-                        }
                     } else {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
@@ -1427,6 +1428,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             menuDB.get(i).setDone(true);
                     }
                 } else if (menuDB.get(i).getConfigCode().equals(MENU_DISPLAY_SCH_TRACK)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_ORD_DELIVERY)) {
                     if (menuDB.get(i).getHasLink() == 1) {
                         if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
@@ -1853,6 +1863,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
                 OrderHelper orderHelper = OrderHelper.getInstance(this);
+
+                if(bmodel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
+                    bmodel.productHelper.clearOrderTable();
+                    OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
+                    orderDeliveryHelper.updateProductWithExcessStock(this);
+                }
 
                 if (bmodel.configurationMasterHelper.IS_RESTRICT_ORDER_TAKING
                         && (bmodel.getRetailerMasterBO().getRField4().equals("1")
@@ -3603,7 +3619,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
                 }
-                ;
+
             } else {
                 Toast.makeText(
                         this,
@@ -3633,6 +3649,38 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
                 }
+            } else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+            }
+        }
+        else if (menu.getConfigCode().equals(MENU_ORD_DELIVERY) && hasLink == 1) {
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+
+                OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
+                orderDeliveryHelper.downloadOrderDeliveryHeader(this);
+
+                if(orderDeliveryHelper.getOrderHeaders().size() > 0) {
+                    Intent i = new Intent(this,
+                            OrderDeliveryActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    i.putExtra("menuName", menu.getMenuName());
+                    startActivity(i);
+                    finish();
+                }else {
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.data_not_mapped),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+                }
+
             } else {
                 Toast.makeText(
                         this,

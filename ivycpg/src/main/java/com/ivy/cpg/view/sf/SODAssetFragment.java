@@ -941,7 +941,6 @@ public class SODAssetFragment extends IvyBaseFragment implements
             try {
                 mSODAssetHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOD_ASSET, mAssetsForDialog);
-                mBModel.updateIsVisitedFlag();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD_ASSET);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));

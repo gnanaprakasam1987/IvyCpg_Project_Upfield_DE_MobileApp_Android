@@ -1005,7 +1005,7 @@ public class BusinessModel extends Application {
             Cursor c = db.selectSQL("select orderid from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
                     + QT(getRetailerMasterBO().getRetailerID())
-                    + " and invoicestatus=0");
+                    + " and invoicestatus=0 and upload!='X'");
             if (c != null) {
                 if (c.getCount() > 0) {
                     c.close();
@@ -1042,7 +1042,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select orderid from " + DataMembers.tbl_orderHeader
-                    + " where invoicestatus = 0 and OFlag = 1 ");
+                    + " where invoicestatus = 0 and upload!='X' and OFlag = 1 ");
             if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                 sb.append(" and is_vansales=1");
             }
@@ -1074,7 +1074,7 @@ public class BusinessModel extends Application {
             sql = "select retailerid,invoicestatus from " + DataMembers.tbl_orderHeader;
 
             if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                sql += " where is_vansales=1";
+                sql += " where is_vansales=1 and upload != 'X'";
             }
             Cursor c = db.selectSQL(sql);
             if (c != null) {
@@ -1400,9 +1400,9 @@ public class BusinessModel extends Application {
 
             Cursor c = db
                     .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.TinExpDate, A.channelID,"
-                            + " A.classid, A.categoryid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, A.isAttended, RBM.isDeviated,"
-                            + " ifnull(A.sbdMerchpercent,0) as sbdMerchpercent, ifnull(A.sbdDistPercent,0) as sbdDistPercent,A.is_new,ifnull(A.initiativePercent,0) as initiativePercent,"
-                            + " isOrdered, RBM.isProductive, isInvoiceCreated, isDeliveryReport, isDigitalContent, isReviewPlan, RBM.isVisited,"
+                            + " A.classid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, RBM.isDeviated,"
+                            + " ifnull(A.sbdMerchpercent,0) as sbdMerchpercent, A.is_new,ifnull(A.initiativePercent,0) as initiativePercent,"
+                            + " isOrdered, RBM.isProductive, isInvoiceCreated, isDigitalContent, isReviewPlan, RBM.isVisited,"
                             + " (select count(distinct GrpName) from SbdDistributionMaster where channelid = A.ChannelId) as sbdtgt,"
                             + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                             + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
@@ -1417,15 +1417,12 @@ public class BusinessModel extends Application {
                             + "A.sbdMerchInitAcheived,A.sbdMerchInitPercent, A.initiative_achieved, "
                             + "(select  count(rowid) from InitiativeHeaderMaster B where isParent=1 and B.InitID in "
                             + "(select InitId from InitiativeDetailMaster where LocalChannelId=A.subchannelid))as init_target"
-                            + " , IFNULL(A.RField2,0) as RField2,isPresentation, A.radius as GPS_DIST, " +
+                            + " , IFNULL(A.RField2,0) as RField2, A.radius as GPS_DIST, " +
                             "StoreOTPActivated, SkipOTPActivated,RField3,A.RetCreditLimit," +
                             "TaxTypeId,RField4,locationid,LM.LocName,A.VisitDays,A.accountid,A.NfcTagId,A.contractstatuslovid,A.ProfileImagePath,"
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getBranchId() + " as RetDistributorId,")
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId,")
-
-
                             + "RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
-
                             + " , RC1.contactname as pc_name, RC1.ContactName_LName as pc_LName, RC1.ContactNumber as pc_Number,"
                             + " RC1.CPID as pc_CPID, IFNULL(RC1.DOB,'') as pc_DOB, RC1.contact_title as pc_title, RC1.contact_title_lovid as pc_title_lovid"
                             + " , RC2.contactname as sc_name, RC2.ContactName_LName as sc_LName, RC2.ContactNumber as sc_Number,"
@@ -1475,13 +1472,11 @@ public class BusinessModel extends Application {
                     retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
                     retailer.setChannelID(c.getInt(c.getColumnIndex("channelID")));
                     retailer.setClassid(c.getInt(c.getColumnIndex("classid")));
-                    retailer.setCategoryid(c.getInt(c.getColumnIndex("categoryid")));
                     retailer.setSubchannelid(c.getInt(c.getColumnIndex("subchannelid")));
                     retailer.setDaily_target_planned(c.getDouble(c.getColumnIndex("daily_target_planned")));
                     retailer.setDaily_target_planned_temp(c.getDouble(c.getColumnIndex("daily_target_planned")));
 
                     retailer.setIsPlanned(c.getString(c.getColumnIndex("isPlanned")));
-                    retailer.setIsAttended(c.getString(c.getColumnIndex("isAttended")));
                     retailer.setIsDeviated(c.getString(c.getColumnIndex("isDeviated")));
                     retailer.setIsVisited(c.getString(c.getColumnIndex("isVisited")));
                     retailer.setOrdered(c.getString(c.getColumnIndex("isOrdered")));
@@ -1492,15 +1487,12 @@ public class BusinessModel extends Application {
 
                     // Dist and merch precent
                     retailer.setSbdMercPercent(c.getString(c.getColumnIndex("sbdMerchpercent")));
-                    retailer.setSbdDistpercent(c.getString(c.getColumnIndex("sbdDistPercent")));
 
                     retailer.setInitiativePercent(c.getString(c.getColumnIndex("initiativePercent")));
 
                     retailer.setInvoiceDone(c.getString(c.getColumnIndex("isInvoiceCreated")));
-                    retailer.setIsDeliveryReport(c.getString(c.getColumnIndex("isDeliveryReport")));
                     retailer.setIsDigitalContent(c.getString(c.getColumnIndex("isDigitalContent")));
                     retailer.setIsReviewPlan(c.getString(c.getColumnIndex("isReviewPlan")));
-
 
                     // Dist and merch tgt & acheivement count
                     retailer.setSbd_dist_target(c.getInt(c.getColumnIndex("sbdtgt")));
@@ -1508,10 +1500,8 @@ public class BusinessModel extends Application {
                     retailer.setSBDMerchTarget(c.getInt(c.getColumnIndex("rpstgt")));
                     retailer.setSBDMerchAchieved(c.getInt(c.getColumnIndex("RPS_Merch_Achieved")));
 
-
                     retailer.setWeekNo(c.getString(c.getColumnIndex("weekNo")));
                     retailer.setWalkingSequence(c.getInt(c.getColumnIndex("WalkingSeq")));
-
 
                     retailer.setRpTypeCode(c.getString(c.getColumnIndex("RpTypeCode")));
                     retailer.setSpTarget(c.getFloat(c.getColumnIndex("sptgt")));
@@ -1520,7 +1510,6 @@ public class BusinessModel extends Application {
                     retailer.setIsMerchandisingDone(c.getString(c.getColumnIndex("isMerchandisingDone")));
                     retailer.setIsInitMerchandisingDone(c.getString(c.getColumnIndex("isInitMerchandisingDone")));
 
-
                     retailer.setSbdDistStock(c.getInt(c.getColumnIndex("sbd_dist_stock")));
                     retailer.setSbdMerchInitTarget(c.getInt(c.getColumnIndex("pricetgt")));
                     retailer.setSbdMerchInitAcheived(c.getInt(c.getColumnIndex("sbdMerchInitAcheived")));
@@ -1528,7 +1517,6 @@ public class BusinessModel extends Application {
                     retailer.setInitiative_achieved(c.getInt(c.getColumnIndex("initiative_achieved")));
                     retailer.setInitiative_target(c.getInt(c.getColumnIndex("init_target")));
                     retailer.setRfield2(c.getString(c.getColumnIndex("RField2")));
-                    retailer.setIsPresentation(c.getString(c.getColumnIndex("isPresentation")));
 
 
                     retailer.setGpsDistance(c.getInt(c.getColumnIndex("GPS_DIST")));
@@ -1632,7 +1620,6 @@ public class BusinessModel extends Application {
                     retailer.setFax(c.getString(c.getColumnIndex("FaxNo")));
                     retailer.setRegion(c.getString(c.getColumnIndex("Region")));
                     retailer.setCountry(c.getString(c.getColumnIndex("Country")));
-
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -2292,7 +2279,7 @@ public class BusinessModel extends Application {
 
         if (!configurationMasterHelper.IS_INVOICE) {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-            sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -2320,7 +2307,7 @@ public class BusinessModel extends Application {
         }
         sb = new StringBuffer();
         sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2336,7 +2323,7 @@ public class BusinessModel extends Application {
         sb = new StringBuffer();
         sb.append("select sum(pieceQty),sum(caseQty),sum(outerQty) from OrderDetail OD ");
         sb.append("inner join OrderHeader oh on oh.orderid=od.orderid ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2366,7 +2353,7 @@ public class BusinessModel extends Application {
         sb.append("select count(oh.RetailerID) from OrderHeader oh ");
         sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
         sb.append("LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = rm.RetailerID ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2410,7 +2397,7 @@ public class BusinessModel extends Application {
         sb.append("select count(oh.RetailerID) from OrderHeader oh ");
         sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
         sb.append(" inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid ");
-        sb.append("where OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -2522,7 +2509,7 @@ public class BusinessModel extends Application {
             sb.append(" SELECT RM.RetailerID as rid,RetailerName,beatid,");
             sb.append(configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as DistributorId" : +userMasterHelper.getUserMasterBO().getDistributorid() + " as DistributorId");
             sb.append(" FROM RetailerMaster RM INNER JOIN RetailerMasterInfo RMI on RM.RetailerID = RMI.RetailerID ");
-            sb.append(" where RM.retailerid NOT IN (select oh.retailerid from orderheader oh) and RM.retailerid not in ");
+            sb.append(" where RM.retailerid NOT IN (select oh.retailerid from orderheader oh where oh.upload!='X') and RM.retailerid not in ");
             sb.append("(select np.retailerid from nonproductivereasonmaster np) and RMI.isToday=1");
 
             Cursor c = db.selectSQL(sb.toString());
@@ -2863,7 +2850,7 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("select OrderID from "
-                    + DataMembers.tbl_orderHeader + " where retailerid="
+                    + DataMembers.tbl_orderHeader + " where upload !='X' and retailerid="
                     + QT(getRetailerMasterBO().getRetailerID()));
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -2924,7 +2911,7 @@ public class BusinessModel extends Application {
         String sql = null;
 
         sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
-                + " where RetailerID=" + QT(retailerId);
+                + " where upload !='X' and RetailerID=" + QT(retailerId);
 
         Cursor orderHeaderCursor = db.selectSQL(sql);
         if (orderHeaderCursor != null) {
@@ -3323,8 +3310,14 @@ public class BusinessModel extends Application {
 
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
             try {
-                jsonFormatter.addParameter("UserId", userMasterHelper
-                        .getUserMasterBO().getUserid());
+                if (!"0".equals(userMasterHelper.getUserMasterBO().getBackupSellerID())) {
+                    jsonFormatter.addParameter("UserId", userMasterHelper
+                            .getUserMasterBO().getBackupSellerID());
+                    jsonFormatter.addParameter("WorkingFor", userMasterHelper.getUserMasterBO().getUserid());
+                } else {
+                    jsonFormatter.addParameter("UserId", userMasterHelper
+                            .getUserMasterBO().getUserid());
+                }
                 jsonFormatter.addParameter("DistributorId", userMasterHelper
                         .getUserMasterBO().getDistributorid());
                 jsonFormatter.addParameter("BranchId", userMasterHelper
@@ -4224,19 +4217,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    public void updateOderdetailRetailId() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            db.executeQ("UPDATE OrderDetail SET RetailerId = (SELECT RetailerId FROM OrderHeader WHERE OrderId = OrderDetail .OrderId )");
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
     public void setIsPlannedInDB() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -4261,23 +4241,6 @@ public class BusinessModel extends Application {
                 + QT(getRetailerMasterBO().getRetailerID()));
         db.closeDB();
     }
-
-    public void setDistributionPercent(String percent) {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            db.executeQ("update " + DataMembers.tbl_retailerMaster
-                    + " set sbdDistPercent=" + QT(percent)
-                    + " where retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID()));
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
 
     /**
      * This method will update sbd_dist_achieve feild by value from
@@ -4323,45 +4286,6 @@ public class BusinessModel extends Application {
                             + retailerWiseSBDCovered.get(key)
                             + " where retailerid=" + key);
                 }
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    /**
-     * update the sbd_dist_count value in retailerMaster
-     */
-    public void updateRetailerMasterSBDCount() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = null;
-            HashMap<Integer, Integer> retailerWiseSBDCount = new HashMap<Integer, Integer>();
-            Vector<Integer> keys = new Vector<Integer>();
-            c = db.selectSQL("select  channelid,count(sbdid) from sbdDistributionMaster group by channelid");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    int key = c.getInt(0);
-                    int value = c.getInt(1);
-                    keys.add(key);
-                    retailerWiseSBDCount.put(key, value);
-                }
-            }
-            c.close();
-
-            // Set the sbd covered value in the current retailermaster bo
-
-            int siz = keys.size();
-            for (int i = 0; i < siz; ++i) {
-                int key = keys.get(i);
-                db.executeQ("update " + DataMembers.tbl_retailerMaster
-                        + " set sbd_dist_count= "
-                        + retailerWiseSBDCount.get(key) + " where ChannelId="
-                        + key);
             }
             db.closeDB();
         } catch (Exception e) {
@@ -4569,9 +4493,6 @@ public class BusinessModel extends Application {
             }
             c.close();
 
-            // Cursor c1 = db
-            // .selectSQL("SELECT COUNT(RETAILERID) FROM RETAILERMASTER WHERE sbdMerchpercent=100 AND "
-            // + "sbdDistPercent=100 AND (isToday=1 or ISDEVIATED='Y')");
 
             Cursor c1 = db
                     .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
@@ -4622,9 +4543,6 @@ public class BusinessModel extends Application {
             }
             c.close();
 
-            // Cursor c1 = db
-            // .selectSQL("SELECT COUNT(RETAILERID) FROM RETAILERMASTER WHERE sbdMerchpercent=100 AND "
-            // + "sbdDistPercent=100 AND (isToday=1 or ISDEVIATED='Y')");
 
             Cursor c1 = null;
             if (configurationMasterHelper.IS_INVOICE) {
@@ -4937,10 +4855,10 @@ public class BusinessModel extends Application {
                 if (PRD_FOR_ORDER) {
                     if (beatMasterHealper.getTodayBeatMasterBO() == null
                             || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
-                        c = db.selectSQL("select  distinct(Retailerid) from OrderHeader");
+                        c = db.selectSQL("select  distinct(Retailerid) from OrderHeader where upload!='X'");
                     } else {
                         c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
-                                + "o.retailerid=r.retailerid ");// where
+                                + "o.retailerid=r.retailerid where o.upload!='X' ");// where
                         // r.isdeviated='N'
                     }
                 } else if (PRD_FOR_SKT) {
@@ -5027,7 +4945,7 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.IS_INVOICE) {
                 c = db.selectSQL("select Retailerid, sum(invNetamount) from InvoiceMaster group by retailerid");
             } else {
-                c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader group by retailerid");
+                c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
             }
             if (c != null) {
                 while (c.moveToNext()) {
@@ -5277,6 +5195,7 @@ public class BusinessModel extends Application {
                         int shelfCase = ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase());
                         int shelfPiece = ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece());
                         int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
+                        int availability = ((product.getLocations().get(j).getAvailability() == -1) ? 0 : product.getLocations().get(j).getAvailability());
                         values = (id) + ","
                                 + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                 + QT(product.getProductID()) + ","
@@ -5309,7 +5228,7 @@ public class BusinessModel extends Application {
                                 + "," + rField1
                                 + "," + rField2
                                 + "," + rField3
-                                + "," + product.getLocations().get(j).getAvailability();
+                                + "," + availability;
 
 
                         if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
@@ -9154,7 +9073,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
 
             Cursor c = db.selectSQL("select count(distinct retailerid) from retailermaster" +
-                    " where isvisited='Y' and isPlanned='Y' and isdeviated='N'");
+                    " where isPlanned='Y' and isdeviated='N'");
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {
@@ -9191,7 +9110,7 @@ public class BusinessModel extends Application {
                 }
             } else {
                 c = db.selectSQL("select  distinct(r.Retailerid) from OrderHeader o" +
-                        " inner join retailermaster r on o.retailerid=r.retailerid where r.isdeviated='N' and isPlanned='Y'");
+                        " inner join retailermaster r on o.retailerid=r.retailerid where o.upload!='X' and r.isdeviated='N' and isPlanned='Y'");
             }
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -9297,7 +9216,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader");
+            sb.append("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader where upload!='X'");
             Cursor c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -9323,8 +9242,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
-                                + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
-                                + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
+                    + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
+                    + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
             Cursor c = db
                     .selectSQL(query);
             int loadQty;

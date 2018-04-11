@@ -265,7 +265,7 @@ public class DSRTodayReportFragment extends Fragment {
                             + ",(select count(R.retailerid) from Retailermaster R"
                             + " inner join Retailermasterinfo RMI on Rmi.retailerid= R.retailerid"
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = R.RetailerID"
-                            + " where ((RMI.istoday=1 and isDeadStore = 'N') or (RBM.isdeviated='Y'  and isDeadStore = 'N')))");
+                            + " where o.upload!='X' and ((RMI.istoday=1 and isDeadStore = 'N') or (RBM.isdeviated='Y'  and isDeadStore = 'N')))");
 
             if (c != null) {
                 while (c.moveToNext()) {

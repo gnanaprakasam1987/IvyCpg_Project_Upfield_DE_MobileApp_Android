@@ -287,13 +287,14 @@ public class OrderHelper {
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
                 updateHangingOrder(mContext, businessModel.getRetailerMasterBO());
             }
+
             businessModel.getRetailerMasterBO()
                     .setTotalLines(businessModel.getOrderHeaderBO().getLinesPerCall());
 
 
             // Save order details
             Vector<ProductMasterBO> finalProductList;
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,totalDiscountedAmt";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
             else
@@ -663,6 +664,7 @@ public class OrderHelper {
         int priceOffId;
         int reasonId;
         double line_total_price;
+        double totalValue;
 
         if (isBatchWise) {
             pieceCount = batchProductBO.getOrderedPcsQty()
@@ -685,6 +687,7 @@ public class OrderHelper {
                     .getCsrp())
                     + (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
                     + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
+            totalValue = batchProductBO.getDiscount_order_value();
         } else {
             pieceCount = productBo.getOrderedPcsQty()
                     + productBo.getOrderedCaseQty() * productBo.getCaseSize()
@@ -705,6 +708,9 @@ public class OrderHelper {
                     .getCsrp())
                     + (productBo.getOrderedPcsQty() * productBo.getSrp())
                     + (productBo.getOrderedOuterQty() * productBo.getOsrp());
+            totalValue = productBo.getDiscount_order_value();
+            if(!businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
+                line_total_price = line_total_price + businessModel.productHelper.taxHelper.getTaxAmountByProduct(productBo);
         }
 
 
@@ -732,6 +738,7 @@ public class OrderHelper {
         sb.append("," + productBo.getWeight());
         sb.append("," + reasonId);
         sb.append("," + businessModel.QT(productBo.getHsnCode()));
+        sb.append("," + totalValue);
 
         return sb;
 
@@ -1442,14 +1449,14 @@ public class OrderHelper {
             // update invoice createed in SalesReturnHeader **/
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCreditNoteCreated != 1) {
-                db.executeQ("update SalesReturnHeader set invoicecreated=1 where RetailerID="
+                db.executeQ("update SalesReturnHeader set invoicecreated=1 where upload!='X' and RetailerID="
                         + businessModel.getRetailerMasterBO().getRetailerID());
             }
             // update credit not flag in sales return header **/
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCreditNoteCreated != 1
                     && salesReturnHelper.isValueReturned(mContext)) {
-                db.executeQ("update SalesReturnHeader set credit_flag=2 where RetailerID="
+                db.executeQ("update SalesReturnHeader set credit_flag=2 where upload!='X' and RetailerID="
                         + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()));
             }
             // update credit balance
@@ -1469,7 +1476,7 @@ public class OrderHelper {
 
             // Save invoice details table and update sih
             ProductMasterBO product;
-            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,RField1,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode";
+            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,RField1,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode,totalDiscountedAmt";
             int siz = businessModel.productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
                 product = businessModel.productHelper.getProductMaster()
@@ -1614,6 +1621,7 @@ public class OrderHelper {
         double schemeDisc;
         double taxAmount;
         double line_total_price;
+        double totalValue;
 
         try {
             if (isBatchWise) {
@@ -1648,6 +1656,7 @@ public class OrderHelper {
                         .getCsrp())
                         + (batchWiseProductBO.getOrderedPcsQty() * batchWiseProductBO.getSrp())
                         + (batchWiseProductBO.getOrderedOuterQty() * batchWiseProductBO.getOsrp());
+                totalValue = batchWiseProductBO.getDiscount_order_value();
 
 
             } else {
@@ -1674,6 +1683,7 @@ public class OrderHelper {
                         .getCsrp())
                         + (productBO.getOrderedPcsQty() * productBO.getSrp())
                         + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                totalValue = productBO.getDiscount_order_value();
 
             }
 
@@ -1685,6 +1695,15 @@ public class OrderHelper {
                     + " else 0 end) where pid="
                     + product.getProductID()
                     + " and batchid=" + businessModel.QT(batchId));
+
+            if(businessModel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
+                db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
+                        + totalqty
+                        + " then ifnull(qty,0)-"
+                        + totalqty
+                        + " else 0 end) where pid="
+                        + product.getProductID());
+            }
 
             sb.append(businessModel.QT(invoiceId) + ",");
             sb.append(businessModel.QT(product.getProductID()) + ",");
@@ -1714,6 +1733,7 @@ public class OrderHelper {
             sb.append("," + schemeDisc + "," + prodDisc);
             sb.append("," + taxAmount);
             sb.append("," + businessModel.QT(product.getHsnCode()));
+            sb.append("," + totalValue);
 
             return sb;
         } catch (Exception e) {
@@ -1742,7 +1762,7 @@ public class OrderHelper {
                         + retailerId);
 
             else
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader where retailerid=" + retailerId);
+                c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' retailerid=" + retailerId);
 
 
             if (c != null) {
@@ -1849,7 +1869,7 @@ public class OrderHelper {
             List<String> OrderId = null;
 
             Cursor c = db
-                    .selectSQL("SELECT OrderID FROM OrderHeader WHERE RetailerID = '"
+                    .selectSQL("SELECT OrderID FROM OrderHeader WHERE upload!='X' and RetailerID = '"
                             + retailerId + "'");
             if (c != null) {
                 OrderId = new ArrayList<>();
@@ -1912,7 +1932,7 @@ public class OrderHelper {
             invoiceDetailCursor.close();
         }
 
-        String sql1 = "select productId,sum(pcsQty),sum(CaseQty), ordered_price,d1,d2,d3,DA,sum(totalamount) as totalamount,sum(outerQty),weight,Rate from "
+        String sql1 = "select productId,sum(pcsQty),sum(CaseQty), ordered_price,d1,d2,d3,DA,sum(totalDiscountedAmt) as totalamount,sum(outerQty),weight,Rate from "
                 + DataMembers.tbl_InvoiceDetails
                 + " where invoiceid="
                 + businessModel.QT(invoiceNumber) + " group by productid";
@@ -2257,6 +2277,16 @@ public class OrderHelper {
                                 + product.getProductID());
 
 
+                        if(businessModel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
+                            db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
+                                    + totalqty
+                                    + " then ifnull(qty,0)-"
+                                    + totalqty
+                                    + " else 0 end) where pid="
+                                    + product.getProductID());
+                        }
+
+
                         //updating object
                         product.setSIH(s);
 
@@ -2360,6 +2390,16 @@ public class OrderHelper {
                                     + totalQty
                                     + " else 0 end) where pid="
                                     + productMasterBO.getProductID());
+
+
+                            if(businessModel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK){
+                                db.executeQ("update ExcessStockInHand set qty=(case when  ifnull(qty,0)>"
+                                        + totalQty
+                                        + " then ifnull(qty,0)-"
+                                        + totalQty
+                                        + " else 0 end) where pid="
+                                        + productMasterBO.getProductID());
+                            }
 
 
                             //updating object
@@ -2782,7 +2822,6 @@ public class OrderHelper {
 
     }
 
-
     private String deleteOrderTransactions(DBUtil db, int isVanSales, String uid) {
         StringBuffer sb = new StringBuffer();
         sb.append("select OrderID from OrderHeader where RetailerID=");
@@ -2852,4 +2891,5 @@ public class OrderHelper {
 
         return uid;
     }
+
 }

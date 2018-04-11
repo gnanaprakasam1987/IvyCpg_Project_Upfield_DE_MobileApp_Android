@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by mansoor on 17/1/18.
@@ -513,7 +515,7 @@ public class TaxHelper implements TaxInterface{
      * @author rajesh.k Method to use update productwise tax value only object
      * level not DB level
      */
-    public void updateProductWiseTax() {
+    public void updateProductWiseExcludeTax() {
         if (mProductTaxList != null) {
             mTaxBoBatchProduct = new HashMap<>();
             for (String productId : mProductTaxList) {
@@ -828,5 +830,65 @@ public class TaxHelper implements TaxInterface{
             bo.setDiscount_order_value((bo.getDiscount_order_value() + finalAmount));
         }
 
+    }
+
+    @Override
+    public float updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS) {
+        float totalTaxAmount = 0;
+        if (productMasterBOS != null && productMasterBOS.size()>0) {
+            for (ProductMasterBO productMasterBO : productMasterBOS) {
+                ProductMasterBO productBo = productMasterBO;
+                if (productBo != null) {
+                    if (productBo.getOrderedPcsQty() > 0
+                            || productBo.getOrderedCaseQty() > 0
+                            || productBo.getOrderedOuterQty() > 0) {
+
+                        double temp = (productBo.getOrderedPcsQty() * productBo.getSrp())
+                                + (productBo.getOrderedCaseQty() * productBo.getCsrp())
+                                + productBo.getOrderedOuterQty() * productBo.getOsrp();
+
+                        productBo.setDiscount_order_value(temp);
+
+                        if(mTaxListByProductId!=null && mTaxListByProductId.get(productBo.getProductID())!=null) {
+
+                            ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());
+                            if (taxList != null) {
+                                float taxAmount = 0;
+                                for (TaxBO taxBO : taxList) {
+                                    if (taxBO.getParentType().equals("0")) {
+                                        float calTax = SDUtil.truncateDecimal(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                                        taxBO.setTotalTaxAmount(calTax);
+                                        taxAmount += calTax;
+                                    }
+                                }
+
+                                totalTaxAmount = totalTaxAmount + taxAmount;
+                                productBo.setTaxValue(productBo.getDiscount_order_value());
+
+                                productBo.setDiscount_order_value(productBo.getDiscount_order_value() + taxAmount);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return totalTaxAmount;
+    }
+
+    @Override
+    public float getTaxAmountByProduct(ProductMasterBO bo) {
+        float taxAmount = 0;
+        try {
+            if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
+                for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
+                    if (taxBO.getParentType().equals("0")) {
+                        taxAmount += taxBO.getTotalTaxAmount();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        return taxAmount;
     }
 }

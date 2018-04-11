@@ -46,9 +46,10 @@ public class CatalogImageDownloadProvider {
         return instance;
     }
 
-    public void callCatalogImageDownload(){
+    public void callCatalogImageDownload() {
         callCatalogImageDownload(new DownloadListener(businessModel));
     }
+
     /**
      * Call this method on first time login to initiate the full download.
      */
@@ -58,8 +59,8 @@ public class CatalogImageDownloadProvider {
             // Load last downloaed date from SDCard log file.
             String date = getLastDownloadedDateTime();
 
-            // Initiate only if there is not log file.
-            //if (date.isEmpty()) {
+            //Initiate only if there is not log file.
+            if (date.isEmpty()) {
                 // Set Digital content download path.
                 businessModel.getimageDownloadURL();
                 // Load credentials
@@ -71,7 +72,7 @@ public class CatalogImageDownloadProvider {
                 // Create location file path to store the downloaded file
                 File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
                 // Prepare download URL path.
-                String downloadURL = DataMembers.img_Down_URL + "Product/"+ CatalogDownloadConstants.FILE_NAME;
+                String downloadURL = DataMembers.img_Down_URL + "Product/" + CatalogDownloadConstants.FILE_NAME;
 
                 // Initiate the download
                 TransferObserver observer = transferUtility.download(DataMembers.S3_BUCKET, downloadURL, file);
@@ -79,7 +80,7 @@ public class CatalogImageDownloadProvider {
 
                 // Store download id in shared preference.
                 storeCatalogDownloadStatus(observer.getId(), "DOWNLOADING");
-            //}
+            }
         } catch (Exception e) {
             //TODO: clear the text file. Or call at right palce.
             Commons.printException(e);

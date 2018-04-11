@@ -986,7 +986,7 @@
     <string name="printer_not_connected_check_macaddress">Printer not connected .Please check  Mac Address..</string>
     <string name="please_user_advancepayment">Please use Advance Payment </string>
     <string name="receipt_fragment">Receipt Fragment</string>
-    <string name="selected_date_already_applied">applied for selected date</string>
+    <string name="selected_date_already_applied">Already there is request for selected date</string>
     <string name="download_date_mismatch">Download date Mismatch</string>
     <string name="user_account_locked">Account locked. Please contact system admin.</string>
     <string name="scheme_discount">Scheme Discount</string>
@@ -1198,6 +1198,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="select_photo_type">Select PhotoType</string>
+    <string name="my_gallery">My Gallery</string>
+    <string name="select_condition">Select condition</string>
+    <string name="profile_updated_scccess">Customer Profile updated successfully.</string>
 
 
 </resources>
