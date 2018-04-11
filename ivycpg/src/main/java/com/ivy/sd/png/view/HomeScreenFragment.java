@@ -105,6 +105,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     private static final String MENU_PLANNING = "MENU_PLANNING";
     private static final String MENU_VISIT = "MENU_VISIT";
+    private static final String MENU_EXPENSE = "MENU_EXPENSE";
     private static final String MENU_NEW_RETAILER = "MENU_NEW_RET";
     private static final String MENU_REPORT = "MENU_REPORT";
     private static final String MENU_SYNC = "MENU_SYNC";
@@ -133,7 +134,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_ROAD_ACTIVITY = "MENU_ROAD_ACTIVITY";
     private static final String MENU_COUNTER = "MENU_COUNTER";
     private static final String MENU_MVP = "MENU_MVP";
-    private static final String MENU_EXPENSE = "MENU_EXPENSE";
     private static final String MENU_WVW_PLAN = "MENU_WVW_PLAN";
     private static final String MENU_WEB_VIEW = "MENU_WEB_VIEW";
     private static final String MENU_WEB_VIEW_APPR = "MENU_WVW_APPR";
@@ -1438,9 +1438,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_EXPENSE)) {
             if (!isClicked) {
                 isClicked = false;
-                Intent i = new Intent(getActivity(), ExpenseActivity.class);
-                startActivity(i);
-                getActivity().finish();
+                bmodel.mSelectedActivityName = menuItem.getMenuName();
+                switchFragment(MENU_EXPENSE, menuItem.getMenuName());
             }
         } else if (menuItem.getConfigCode().equals(MENU_TASK_NEW)) {
             if (!isClicked) {
@@ -1652,8 +1651,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_LOAD_REQUEST);
         NewOutletEditFragment newOutletEditFragment = (NewOutletEditFragment) fm
                 .findFragmentByTag(MENU_NEWRET_EDT);
-
-
+        ExpenseFragment expenseFragment = (ExpenseFragment) fm
+                .findFragmentByTag(MENU_EXPENSE);
         GroomingFragment groomingFragment = (GroomingFragment) fm
                 .findFragmentByTag(MENU_GROOM_CS);
         AcknowledgementFragment acknowledgementFragment = (AcknowledgementFragment) fm
@@ -1765,6 +1764,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (planDeviationFragment != null && fragmentName.equals(MENU_NON_FIELD)
                 && planDeviationFragment.isVisible()) {
             return;
+        } else if
+                (expenseFragment != null && (fragmentName.equals(MENU_EXPENSE))
+                        && expenseFragment.isVisible()) {
+            return;
         } else if (taskFragment != null && fragmentName.equals(MENU_TASK_NEW)
                 && taskFragment.isVisible()) {
             return;
@@ -1834,13 +1837,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(stockProposalFragment);
         if (newOutletEditFragment != null)
             ft.remove(newOutletEditFragment);
-
         if (groomingFragment != null)
             ft.remove(groomingFragment);
         if (acknowledgementFragment != null)
             ft.remove(acknowledgementFragment);
         if (planDeviationFragment != null)
             ft.remove(planDeviationFragment);
+        if (expenseFragment != null)
+            ft.remove(expenseFragment);
         if (taskFragment != null)
             ft.remove(taskFragment);
         if (backUpSellerFragment != null)
@@ -2111,6 +2115,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_NEWRET_EDT);
                 break;
 
+            case MENU_EXPENSE:
+                fragment = new ExpenseFragment();
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_EXPENSE);
+                break;
+
             case MENU_COUNTER:
 
                 break;
@@ -2175,6 +2185,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         SubDFragment mSubDFragment = (SubDFragment) fm
                 .findFragmentByTag(MENU_SUBD);
+
+        ExpenseFragment expenseFragment = (ExpenseFragment) fm
+                .findFragmentByTag(MENU_EXPENSE);
 
         VisitFragment mPlanningFragment = (VisitFragment) fm
                 .findFragmentByTag(MENU_PLANNING);
@@ -2258,6 +2271,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
         if (mPlanningFragment != null) {
             ft.detach(mPlanningFragment);
+        }
+        if (expenseFragment != null) {
+            ft.detach(expenseFragment);
         }
 
 

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_first"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_8dp">
+
+        <TextView
+            android:id="@+id/titleTotalamt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:text="@string/total_amount"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/tvTotalAmount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/dimen_6dp"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small" />
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barchart"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/first_layout_lv_width"
+        android:layout_below="@+id/ll_first"
+        android:layout_centerInParent="true" />
+
+    <RelativeLayout
+        android:id="@+id/rl_piechart"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/first_layout_lv_width"
+        android:layout_below="@+id/barchart"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/first_layout_width"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+        <ImageView
+            android:id="@+id/iv_close_piechart"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_30dp"
+            android:layout_alignEnd="@+id/pieChart"
+            android:layout_alignRight="@+id/pieChart"
+            android:layout_margin="@dimen/dimen_12dp"
+            android:src="@drawable/ic_cross_enable" />
+    </RelativeLayout>
+
+</RelativeLayout>

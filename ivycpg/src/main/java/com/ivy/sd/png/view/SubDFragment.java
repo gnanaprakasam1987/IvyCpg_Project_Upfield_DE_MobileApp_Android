@@ -121,8 +121,8 @@ public class SubDFragment extends IvyBaseFragment {
                 convertView = inflater.inflate(R.layout.row_subdid_layout, parent, false);
                 holder = new RetailerSelectionAdapter.ViewHolder();
 
-                holder.retailertNameTextView = (TextView) convertView.findViewById(R.id.retailer_name_subdid);
-                holder.cardViewItem = (CardView) convertView.findViewById(R.id.cardview);
+                holder.retailertNameTextView =  convertView.findViewById(R.id.retailer_name_subdid);
+                holder.cardViewItem =  convertView.findViewById(R.id.cardview);
                 holder.retailertNameTextView.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 convertView.setTag(holder);
