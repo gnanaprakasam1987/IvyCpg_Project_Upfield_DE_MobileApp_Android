@@ -143,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:checked="true"
                             android:text="@string/Seller"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/font_micro_small"
                             android:paddingEnd="@dimen/radio_button_gap"
                             android:layout_weight="3"
                             android:textColor="@color/task_description_color" />
@@ -154,7 +154,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/Channelwise"
                             android:paddingEnd="@dimen/radio_button_gap"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/font_micro_small"
                             android:layout_weight="3"
                             android:textColor="@color/task_description_color" />
                         <RadioButton
@@ -162,7 +162,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="@string/Retailerwise"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/font_micro_small"
                             android:layout_weight="3"
                             android:textColor="@color/task_description_color" />
                     </RadioGroup>

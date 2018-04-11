@@ -33,9 +33,10 @@
                 android:gravity="start"
                 android:maxLines="1"
                 android:text="@string/product_name"
-                android:textSize="@dimen/font_small" />
+                android:textColor="@color/black_bg1" />
 
             <TextView
+                style="?attr/customListItemSecondary"
                 android:id="@+id/TOTAL"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -43,8 +44,8 @@
                 android:gravity="end"
                 android:maxLines="1"
                 android:text="@string/total"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/value_text_size" />
+                android:textColor="@color/black_bg1"
+                android:textSize="@dimen/font_micro_small" />
         </LinearLayout>
 
         <View
@@ -72,6 +73,7 @@
                 android:visibility="gone">
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/shelfPcsTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,31 +81,26 @@
                     android:maxLines="1"
                     android:paddingEnd="5dp"
                     android:tag="sp"
-                    android:text="@string/sp"
-                    android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text="@string/sp" />
 
                 <TextView
-                    style="?attr/customListItemPrimary"
+                    style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text=":" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/sp_quantity"
-                    style="?attr/customListItemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/value_text_size" />
+                    android:text="@string/zero" />
 
                 <TextView
                     android:layout_width="1dp"
@@ -123,6 +120,7 @@
                 android:visibility="gone">
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/shelfCaseTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -130,30 +128,26 @@
                     android:maxLines="1"
                     android:paddingEnd="5dp"
                     android:tag="sc"
-                    android:text="@string/sc"
-                    android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text="@string/sc" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text=":" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/sc_quantity"
-                    style="?attr/customListItemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/value_text_size" />
+                    android:text="@string/zero" />
 
                 <TextView
                     android:layout_width="1dp"
@@ -173,6 +167,7 @@
                 android:visibility="gone">
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/shelfOuterTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -180,30 +175,26 @@
                     android:maxLines="1"
                     android:paddingEnd="5dp"
                     android:tag="souter"
-                    android:text="@string/souter"
-                    android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text="@string/souter" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text=":" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/sho_quantity"
-                    style="?attr/customListItemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/value_text_size" />
+                    android:text="@string/zero" />
 
                 <TextView
                     android:layout_width="1dp"
@@ -221,6 +212,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/weighttitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -228,29 +220,25 @@
                     android:maxLines="1"
                     android:paddingEnd="5dp"
                     android:tag="weighttitle"
-                    android:text="@string/weight"
-                    android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text="@string/weight" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text=":" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/tv_weight"
-                    style="?attr/customListItemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/value_text_size" />
+                    android:text="@string/zero" />
 
             </LinearLayout>
 
@@ -269,6 +257,7 @@
                 android:layout_marginEnd="@dimen/card_margin">
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/pcsTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -276,30 +265,26 @@
                     android:maxLines="1"
                     android:paddingEnd="5dp"
                     android:tag="item_piece"
-                    android:text="@string/item_piece"
-                    android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text="@string/item_piece" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text=":" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/P_QUANTITY"
-                    style="?attr/customListItemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/value_text_size" />
+                    android:text="@string/zero" />
 
                 <TextView
                     android:layout_width="1dp"
@@ -317,6 +302,7 @@
                 android:layout_marginEnd="@dimen/card_margin">
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/caseTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -324,30 +310,26 @@
                     android:maxLines="1"
                     android:paddingEnd="5dp"
                     android:tag="item_case"
-                    android:text="@string/item_case"
-                    android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text="@string/item_case" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text=":" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/C_QUANTITY"
-                    style="?attr/customListItemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/value_text_size" />
+                    android:text="@string/zero" />
 
                 <TextView
                     android:layout_width="1dp"
@@ -366,6 +348,7 @@
                 android:layout_marginEnd="@dimen/card_margin">
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/outercaseTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -373,30 +356,26 @@
                     android:maxLines="1"
                     android:paddingEnd="5dp"
                     android:tag="outer_case"
-                    android:text="@string/item_outer"
-                    android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text="@string/item_outer" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text=":" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/OC_QUANTITY"
-                    style="?attr/customListItemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/value_text_size" />
+                    android:text="@string/zero" />
 
                 <TextView
                     android:layout_width="1dp"
@@ -415,6 +394,7 @@
                 android:layout_marginEnd="@dimen/card_margin">
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/focTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -422,30 +402,26 @@
                     android:maxLines="1"
                     android:paddingEnd="5dp"
                     android:tag="foc"
-                    android:text="@string/foc"
-                    android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text="@string/foc" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text=":" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/FOC_QUANTITY"
-                    style="?attr/customListItemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/value_text_size" />
+                    android:text="@string/zero" />
 
                 <TextView
                     android:layout_width="1dp"
@@ -463,6 +439,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/srpTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -470,29 +447,25 @@
                     android:maxLines="1"
                     android:paddingEnd="5dp"
                     android:tag="srp"
-                    android:text="@string/unit_price"
-                    android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text="@string/unit_price" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:text=":" />
 
                 <TextView
+                    style="?attr/customListItemSecondary"
                     android:id="@+id/MRP"
-                    style="?attr/customListItemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/value_text_size" />
+                    android:text="@string/zero" />
 
             </LinearLayout>
 
