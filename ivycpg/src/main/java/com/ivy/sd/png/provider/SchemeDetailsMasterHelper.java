@@ -2822,27 +2822,20 @@ public class SchemeDetailsMasterHelper {
 
         List<SchemeProductBO> buyProductList = schemeBO.getBuyingProducts();
 
+        double totalOrderValueOfBuyProducts=0;
         if (schemeBO.isAmountTypeSelected()) {
-            schemeIdCount.put(schemeBO.getSchemeId(), 0);
-            if (buyProductList != null) {
-                for (SchemeProductBO schemeProductBO : buyProductList) {
-                    ProductMasterBO productBO;
-                    productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
 
-                    if (productBO != null) {
-                        if (productBO.getOrderedPcsQty() > 0
-                                || productBO.getOrderedCaseQty() > 0
-                                || productBO.getOrderedOuterQty() > 0) {
-                            if (schemeIdCount.containsKey(schemeProductBO.getSchemeId())) {
-                                schemeIdCount.put(schemeProductBO.getSchemeId(), schemeIdCount.get(schemeProductBO.getSchemeId()) + 1);
-                            } else {
-                                count = 1;
-                                schemeIdCount.put(schemeProductBO.getSchemeId(), count);
-                            }
-                        }
-                    }
+            if (schemeBO.isAmountTypeSelected()) {
+                for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
+                    ProductMasterBO productBO = bmodel.productHelper
+                            .getProductMasterBOById(schemeProductBo
+                                    .getProductId());
+                    totalOrderValueOfBuyProducts += (productBO.getOrderedCaseQty() * productBO.getCsrp())
+                            + (productBO.getOrderedPcsQty() * productBO.getSrp())
+                            + (productBO.getOrderedOuterQty() * productBO.getOsrp());
                 }
             }
+
         }
 
         if (buyProductList != null) {
@@ -2864,13 +2857,13 @@ public class SchemeDetailsMasterHelper {
                         } else if (schemeBO.isAmountTypeSelected()) {
                             sb.append(bmodel.QT(SCHEME_AMOUNT));
 
+                            double line_value = (productBO.getOrderedCaseQty() * productBO.getCsrp())
+                                    + (productBO.getOrderedPcsQty() * productBO.getSrp())
+                                    + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                            double percentage_productContribution=((line_value/totalOrderValueOfBuyProducts)*100);
+                            double amount_free=schemeBO.getSelectedAmount()*(percentage_productContribution/100);
 
-                            for (Map.Entry<String, Integer> entry : schemeIdCount.entrySet()) {
-                                if (schemeBO.getSchemeId().equalsIgnoreCase(entry.getKey())) {
-                                    value = entry.getValue();
-                                }
-                            }
-                            sb.append("," + (schemeBO.getSelectedAmount() / value));
+                            sb.append("," + (amount_free));
 
                         } else if (schemeBO.isPriceTypeSeleted()) {
                             sb.append(bmodel.QT(SCHEME_PRICE));
@@ -3205,7 +3198,7 @@ public class SchemeDetailsMasterHelper {
     public void loadOrderedBuyProducts(String id, DBUtil db) {
         mApplySchemeList = new ArrayList<SchemeBO>();
         StringBuffer sb = new StringBuffer();
-        sb.append("select distinct schemeid,SchemeType,value,count(productid) from SchemeDetail where ");
+        sb.append("select distinct schemeid,SchemeType,value,amount,count(productid) from SchemeDetail where ");
 
         sb.append("orderid=" + bmodel.QT(id));
 
@@ -3221,7 +3214,8 @@ public class SchemeDetailsMasterHelper {
                     schemeBO.setOrderedProductCount(c.getInt(3));
                     if (schemeType.equals(SCHEME_AMOUNT)) {
                         schemeBO.setAmountTypeSelected(true);
-                        schemeBO.setSelectedAmount(value);
+                        //only amount column haves full free amount.. so getting from it
+                        schemeBO.setSelectedAmount( c.getDouble(3));
                     } else if (schemeType.equals(SCHEME_FREE_PRODUCT)) {
 
                         schemeBO.setQuantityTypeSelected(true);
@@ -3259,6 +3253,7 @@ public class SchemeDetailsMasterHelper {
                 String schemeID = c.getString(0);
                 String schemeType = c.getString(1);
                 double value = c.getDouble(2);
+
                 SchemeBO schemeBO = mSchemeById.get(schemeID);
                 if (schemeBO != null) {
                     schemeBO.setOrderedProductCount(c.getInt(3));
@@ -3757,7 +3752,8 @@ public class SchemeDetailsMasterHelper {
                         if (buyList != null) {
                             if (schemeType.equals(SCHEME_AMOUNT)) {
                                 schemeBO.setAmountTypeSelected(true);
-                                schemeBO.setSelectedAmount(percentage);
+                                //amount column only have  total scheme amount
+                                schemeBO.setSelectedAmount(c.getDouble(4));
                             } else {
                                 for (SchemeProductBO schProductBO : buyList) {
                                     if (productid.equals(schProductBO.getProductId())) {
