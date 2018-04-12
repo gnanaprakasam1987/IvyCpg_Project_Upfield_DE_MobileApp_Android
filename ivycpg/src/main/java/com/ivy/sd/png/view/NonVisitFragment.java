@@ -5,7 +5,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
@@ -64,7 +63,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     private ArrayList<RetailerMasterBO> retailer;
     private Spinner spinnerbrand;
     private String calledBy;
-    private TypedArray typearr;
     private Spinner spn_mWeek;
     private ArrayList<String> mWeekList;
     private HashMap<String, String> mWeekMap = new HashMap<>();
@@ -87,7 +85,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
         mview = inflater.inflate(R.layout.nonvisit, container, false);
         setHasOptionsMenu(true);
-        typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -95,12 +92,12 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             getActivity().finish();
         }
 
-        spinnerbrand = (Spinner) mview.findViewById(R.id.brandSpinner);
-        filterLayout = (LinearLayout) mview.findViewById(R.id.filter);
-        spn_mWeek = (Spinner) mview.findViewById(R.id.spn_week);
-        spn_mDate = (Spinner) mview.findViewById(R.id.spin_date);
-        spn_mBeat = (Spinner) mview.findViewById(R.id.spin_beat);
-        mWeekRG = (RadioGroup) mview.findViewById(R.id.week_radiogroup);
+        spinnerbrand =  mview.findViewById(R.id.brandSpinner);
+        filterLayout =  mview.findViewById(R.id.filter);
+        spn_mWeek =  mview.findViewById(R.id.spn_week);
+        spn_mDate =  mview.findViewById(R.id.spin_date);
+        spn_mBeat =  mview.findViewById(R.id.spin_beat);
+        mWeekRG =  mview.findViewById(R.id.week_radiogroup);
 
         mWeekRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -121,19 +118,19 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             }
         }
 
-        TextView tvWeekSelection = (TextView) mview.findViewById(R.id.week_title);
+        TextView tvWeekSelection =  mview.findViewById(R.id.week_title);
         tvWeekSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        TextView tvDaySelection = (TextView) mview.findViewById(R.id.day_title);
+        TextView tvDaySelection =  mview.findViewById(R.id.day_title);
         tvDaySelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        TextView tvBeatSelection = (TextView) mview.findViewById(R.id.beat_title);
+        TextView tvBeatSelection =  mview.findViewById(R.id.beat_title);
         tvBeatSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-        LinearLayout dateLL = (LinearLayout) mview
+        LinearLayout dateLL =  mview
                 .findViewById(R.id.ll_datefilter);
-        LinearLayout weekLL = (LinearLayout) mview
+        LinearLayout weekLL =  mview
                 .findViewById(R.id.ll_weekfilter);
-        LinearLayout beatLL = (LinearLayout) mview
+        LinearLayout beatLL =  mview
                 .findViewById(R.id.ll_beatfilter);
         if (bmodel.configurationMasterHelper.SHOW_DATE_ROUTE) {
             mDateList = bmodel.mRetailerHelper.getMaxDaysInRouteSelection();
@@ -165,7 +162,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
             spn_mBeat.setAdapter(beatAdapter);
 
-            ((RelativeLayout) mview.findViewById(R.id.relativeLayout)).
+            ( mview.findViewById(R.id.relativeLayout)).
                     setVisibility(View.GONE);
             filterLayout.setVisibility(View.VISIBLE);
             mDateList.add(0, getResources().getString(R.string.all));
@@ -175,7 +172,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             beatLL.setVisibility(View.GONE);
         }
 
-        listView = (ListView) mview.findViewById(R.id.nonvisitlistView1);
+        listView =  mview.findViewById(R.id.nonvisitlistView1);
         listView.setCacheColorHint(0);
 
         // Add week in list
@@ -487,11 +484,11 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     public void onStart() {
         super.onStart();
         if (getView() != null) {
-            spinnerbrand = (Spinner) getView().findViewById(R.id.brandSpinner);
-            spn_mWeek = (Spinner) getView().findViewById(R.id.spn_week);
+            spinnerbrand =  getView().findViewById(R.id.brandSpinner);
+            spn_mWeek =  getView().findViewById(R.id.spn_week);
         }
 
-        listView = (ListView) getView().findViewById(R.id.nonvisitlistView1);
+        listView =  getView().findViewById(R.id.nonvisitlistView1);
         listView.setCacheColorHint(0);
 
         Commons.print("NOn Visit Fragment ," + "On Start method called ");
@@ -954,21 +951,21 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         parent, false);
                 holder = new ViewHolder();
 
-                holder.outletIV = (ImageView) convertView
+                holder.outletIV =  convertView
                         .findViewById(R.id.outlet_iv);
-                holder.icon = (ImageView) convertView.findViewById(R.id.outlet);
-                holder.outletname = (TextView) convertView
+                holder.icon =  convertView.findViewById(R.id.outlet);
+                holder.outletname =  convertView
                         .findViewById(R.id.outletName_tv);
                 holder.outletname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.outletLocation = (TextView) convertView
+                holder.outletLocation =  convertView
                         .findViewById(R.id.outlet_location_tv);
                 holder.outletLocation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                holder.info = (ImageView) convertView
+                holder.info =  convertView
                         .findViewById(R.id.info_iv);
-                holder.visitFrequency = (TextView) convertView
+                holder.visitFrequency =  convertView
                         .findViewById(R.id.visit_frequency);
-                holder.outletAddress = (TextView) convertView.findViewById(R.id.outlet_address_tv);
+                holder.outletAddress =  convertView.findViewById(R.id.outlet_address_tv);
                 holder.outletAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
@@ -1103,12 +1100,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             holder.ref = position;
 
             holder.visitFrequency.setText(((bmodel.configurationMasterHelper.SHOW_RETAILER_FREQUENCY) ? " - F - " + ((retailerObj.getVisit_frequencey() > 0) ? retailerObj.getVisit_frequencey() : "0") : ""));
-
-        /*    if (position % 2 == 0)
-                convertView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-            else
-                convertView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));*/
-
 
             if (("Y").equals(retailerObj.getIsNew())) {
                 holder.outletIV

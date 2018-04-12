@@ -61,6 +61,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SHOW_MISSED_RETAILER = "RTRS28";
     public static final String CODE_VALIDATE_TRADE_COVERAGE = "RTRS29";
     public static final String CODE_SUBD_RETIALER_SELECTION = "RTRS30";
+    public static final String CODE_SIMPLE_RETAIER_ROW = "RTRS31";
     public static final String CODE_CONTRACT_TYPE = "PROFILE17";
     public static final String CODE_CONTRACT_EXPIRYDATE = "PROFILE18";
     public static final String CODE_VISIT_FREQUENCY = "PROFILE19";
@@ -476,7 +477,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FOCUS_PACK_NOT_DONE = "ORDB71";
     public boolean IS_FOCUS_PACK_NOT_DONE;
 
-    private static final String CODE_ORDER_FROM_EXCESS_STOCK= "FUN69";
+    private static final String CODE_ORDER_FROM_EXCESS_STOCK = "FUN69";
     public boolean IS_ORDER_FROM_EXCESS_STOCK;
 
     private static final String CODE_LOAD_SUBD_ONLY = "OFPLAN01";
@@ -876,6 +877,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MISSED_RETAILER;//RTRS28
     public boolean VALIDATE_TRADE_COVERAGE;//RTRS29
     public boolean SUBD_RETAILER_SELECTION;//RTRS30
+    public boolean IS_SIMPLE_RETIALER;//RTRS31
     public boolean SHOW_CONTRACT_TYPE;
     public boolean SHOW_CONTRACT_EXPIRYDATE;
     public boolean SHOW_VISIT_FREQUENCY;
@@ -1898,6 +1900,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_MISSED_RETAILER = hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) : false;
         this.VALIDATE_TRADE_COVERAGE = hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) : false;
         this.SUBD_RETAILER_SELECTION = hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) != null ? hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) : false;
+        this.IS_SIMPLE_RETIALER = hashMapHHTModuleConfig.get(CODE_SIMPLE_RETAIER_ROW) != null ? hashMapHHTModuleConfig.get(CODE_SIMPLE_RETAIER_ROW) : false;
         this.SHOW_RETAILER_LOCATION = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) : false;
         this.SHOW_PROFILE_LOC2 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) : false;
         this.SHOW_CONTRACT_TYPE = hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) : false;
@@ -2027,7 +2030,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_TAX_MASTER = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null) {
-            if (hashMapHHTModuleOrder.get(CODE_TAX_APPLY)!=null && hashMapHHTModuleOrder.get(CODE_TAX_APPLY) == 1)
+            if (hashMapHHTModuleOrder.get(CODE_TAX_APPLY) != null && hashMapHHTModuleOrder.get(CODE_TAX_APPLY) == 1)
                 this.IS_EXCLUDE_TAX = false;
             else
                 this.IS_EXCLUDE_TAX = true;
@@ -3445,8 +3448,6 @@ public class ConfigurationMasterHelper {
                         SHOW_CLEANED_ORDER = true;
                     else if (temp.equals("SRPEDT"))
                         SHOW_STK_ORD_SRP_EDT = true;
-
-
                 }
             }
 
@@ -3598,9 +3599,7 @@ public class ConfigurationMasterHelper {
                 }
             }
             codeValue = null;
-
             //dashboard
-
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='DASH01'";
             c = db.selectSQL(sql);
