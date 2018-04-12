@@ -14,6 +14,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by dharmapriya.k on 21-09-2015.
@@ -522,5 +523,60 @@ public class DistributorMasterHelper {
 
     public void setIsEditDistributorOrder(boolean isEditDistributorOrder) {
         this.isEditDistributorOrder = isEditDistributorOrder;
+    }
+
+
+    /*Method to download Distributor Data to show in profile screen tab
+        Rfield 0 - distributor id from User master
+        Rfield 1 - distributor id from Retailer master
+        Rfield 2 - distributor id from User master and Retailer master */
+    public Vector<DistributorMasterBO> getDistributorProfileList(){
+        Vector<DistributorMasterBO> distributorMasterBOs  = new Vector<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            int distributorId = bmodel.userMasterHelper.getUserMasterBO().getDistributorid();
+            String retailerId = bmodel.retailerMasterBO.getRetailerID();
+
+            Cursor cursor = null;
+            if(bmodel.configurationMasterHelper.SHOW_DISTRIBUTOR_PROFILE_FROM == 0) {
+                cursor = db.selectSQL("select DId,DName,CNumber,Address1,Address2,Address3," +
+                        "Type,email from DistributorMaster where DId = " + distributorId);
+            }
+            else if(bmodel.configurationMasterHelper.SHOW_DISTRIBUTOR_PROFILE_FROM == 1) {
+                cursor = db.selectSQL("select DId,DName,CNumber,Address1,Address2,Address3," +
+                        "Type,email from DistributorMaster DM left join SupplierMaster SM on SM.sid=DM.DId where SM.rid= " +bmodel.QT(retailerId));
+            }else if(bmodel.configurationMasterHelper.SHOW_DISTRIBUTOR_PROFILE_FROM == 2)
+                cursor = db.selectSQL("select DId,DName,CNumber,Address1,Address2,Address3," +
+                        "Type,email from DistributorMaster DM left join SupplierMaster SM on SM.sid=DM.DId " +
+                        "where SM.rid="+bmodel.QT(retailerId)+" or DM.DId = "+distributorId+ " group by DM.DId");
+
+            if(cursor!=null && cursor.getCount() > 0 ){
+                while( cursor.moveToNext()) {
+                    DistributorMasterBO distributorMasterBO = new DistributorMasterBO();
+                    distributorMasterBO.setDId(cursor.getString(0));
+                    distributorMasterBO.setDName(cursor.getString(1));
+                    distributorMasterBO.setCNumber(cursor.getString(2));
+                    distributorMasterBO.setAddress1(cursor.getString(3));
+                    distributorMasterBO.setAddress2(cursor.getString(4));
+                    distributorMasterBO.setAddress3(cursor.getString(5));
+                    distributorMasterBO.setType(cursor.getString(6));
+                    distributorMasterBO.setEmail(cursor.getString(7));
+
+                    distributorMasterBOs.add(distributorMasterBO);
+
+                }
+                cursor.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.print(""+e);
+        }
+
+        return distributorMasterBOs;
     }
 }

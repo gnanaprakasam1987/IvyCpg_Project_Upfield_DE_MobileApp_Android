@@ -192,6 +192,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private Vector<ConfigureBO> menuDB;
     private DownloadProductsAndPrice downloadProductsAndPrice;
 
+    private String DISTRIBUTOR_PROFILE="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -472,6 +474,22 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 }
             } catch (Exception e) {
                 Commons.printException("Error while setting label for SalesPerLevel Tab", e);
+            }
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_DISTRIBUTOR_PROFILE) {
+            try {
+                if ((bmodel.labelsMasterHelper.applyLabels("distributor_profile") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("distributor_profile").length() > 0)) {
+                    DISTRIBUTOR_PROFILE = bmodel.labelsMasterHelper.applyLabels("distributor_profile");
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(DISTRIBUTOR_PROFILE));
+                } else {
+                    DISTRIBUTOR_PROFILE = "Distributor";
+                    tabLayout.addTab(tabLayout.newTab().setText(DISTRIBUTOR_PROFILE));
+                }
+            } catch (Exception e) {
+                Commons.printException("Error while setting label for DISTRIBUTOR_PROFILE Tab", e);
             }
         }
 
@@ -1290,6 +1308,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 return taskListFragment;
             } else if (tabName.equalsIgnoreCase(SALES_PER_LEVEL)) {
                 return new SalesPerCategory();
+            }
+            else if (tabName.equalsIgnoreCase(DISTRIBUTOR_PROFILE)) {
+                return new DsitributorProfileFragment();
             }
             return null;
         }
