@@ -2,11 +2,12 @@ package com.ivy.ivyretail.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.ivy.sd.png.model.BusinessModel;
@@ -24,61 +25,96 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		bmodel = (BusinessModel) context.getApplicationContext();
 
-		int timeInHrs = getTimeInHrs();
-
-		SharedPreferences pref = context.getSharedPreferences("TimePref", 0); 
-		int start_Time = pref.getInt("StartTime", 0);
-		int end_Time = pref.getInt("EndTime", 0);
-		boolean uplaodloc = pref.getBoolean("UploadUserLoc", false);
-
-		if (timeInHrs > start_Time && timeInHrs < end_Time) { // Check for task
-																// only at day
-			String stopServiceClassStr;
-
-			if (uplaodloc) {
-				stopServiceClassStr = LocationListenerService.class
-						.getName();
-				if (BusinessModel.isMyServiceRunning(context,
-						stopServiceClassStr)) {
-
-					Intent stopServiceIntent = new Intent(
-							context,
-							LocationListenerService.class);
-					context.stopService(stopServiceIntent);
-				}
-
-				// Call the notification downloader service.
-				Intent locationCapture = new Intent(context,
-						LocationListenerService.class);
-				context.startService(locationCapture);
-			}
+		if (intent.getAction()!=null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+			setAlarm(context);
+		}else{
+			setAlarmAgain(context);
 		}
-		setAlarmAgain(context);
+	}
+
+	public static void setAlarm(Context context) {
+
+		SharedPreferences pref = context.getSharedPreferences("TimePref", 0);
+		int alarm_time = pref.getInt("AlarmTime", 0);
+
+		boolean alarmUp = (PendingIntent.getBroadcast(context, 0, new Intent(context,
+				AlarmReceiver.class), PendingIntent.FLAG_NO_CREATE) != null);
+
+		if (!alarmUp) {
+			setPendingIntent(context,alarm_time);
+
+			// Below has been added to enable the receiver manually as we have
+			// disabled in the manifest
+			ComponentName receiver = new ComponentName(context,
+					AlarmReceiver.class);
+			PackageManager pm = context.getPackageManager();
+			pm.setComponentEnabledSetting(receiver,
+					PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+					PackageManager.DONT_KILL_APP);
+		}
+
+	}
+
+	private static void setPendingIntent(Context context,int alarm_time){
+		Intent i = new Intent(context, AlarmReceiver.class);
+		PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		long timeInMillis = System.currentTimeMillis() + (alarm_time * 60 * 1000);
+		Commons.print("Time in millis--> "+timeInMillis);
+
+		if(alarmManager!=null) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
+            }
+        }
 	}
 
 	/**
-	 * Call Alarm manager and set Alarm for Every 15 minutes
+	 * Call Alarm manager and set Alarm for Every X minutes
 	 */
 	private void setAlarmAgain(Context context) {
 		try {
-			SharedPreferences pref = context
-					.getSharedPreferences("TimePref", 0); // 0 - for private
-															// mode
+
+			int timeInHrs = getTimeInHrs();
+			SharedPreferences pref = context.getSharedPreferences("TimePref", 0);
 			int alarm_time = pref.getInt("AlarmTime", 0);
+			int start_Time = pref.getInt("StartTime", 0);
+			int end_Time = pref.getInt("EndTime", 0);
+			boolean uplaodloc = pref.getBoolean("UploadUserLoc", false);
 
-			Intent i = new Intent(context, AlarmReceiver.class);
-			PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
-			AlarmManager alarmManager = (AlarmManager) context
-					.getSystemService(Service.ALARM_SERVICE);
-			long timeInMillis = System.currentTimeMillis() + (alarm_time * 60 * 1000);
+			Commons.print("Start Time--> "+start_Time+" -- End Time--> "+end_Time +" ---- TimeHrs--> "+timeInHrs +" uplaodloc - "+uplaodloc);
 
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-				alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
-			}else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
-				alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
-			}else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-				alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
+			if (timeInHrs > start_Time && timeInHrs < end_Time) { // Check for task only at day
+				String stopServiceClassStr;
+
+				if (uplaodloc) {
+					stopServiceClassStr = LocationListenerService.class
+							.getName();
+					if (BusinessModel.isMyServiceRunning(context,
+							stopServiceClassStr)) {
+
+						Intent stopServiceIntent = new Intent(
+								context,
+								LocationListenerService.class);
+						context.stopService(stopServiceIntent);
+					}
+
+					// Call the notification downloader service.
+					Intent locationCapture = new Intent(context,
+							LocationListenerService.class);
+					context.startService(locationCapture);
+				}
 			}
+			else if(timeInHrs < start_Time)
+                alarm_time = (start_Time - timeInHrs) * 60;
+			else if (timeInHrs > end_Time)
+			    alarm_time = ((24 - timeInHrs) + start_Time) * 60;
+
+			setPendingIntent(context,alarm_time);
 		} catch (Exception e) {
 			Commons.printException(e);
 		}

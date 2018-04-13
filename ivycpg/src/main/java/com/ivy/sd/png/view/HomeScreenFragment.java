@@ -454,7 +454,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
 
         if (bmodel.configurationMasterHelper.ISUPLOADUSERLOC)
-            setAlarm();
+            AlarmReceiver.setAlarm(getActivity());
 
 
         /** Initialising map view **/
@@ -547,41 +547,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         }
     }
-
-    private void setAlarm() {
-        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(
-                "TimePref", 0); // 0 - for private mode
-        int alarm_time = pref.getInt("AlarmTime", 0);
-
-        boolean alarmUp = (PendingIntent.getBroadcast(getActivity(), 0, new Intent(getActivity(),
-                AlarmReceiver.class), PendingIntent.FLAG_NO_CREATE) != null);
-
-        if (!alarmUp) {
-            Intent i = new Intent(getActivity(), AlarmReceiver.class);
-            PendingIntent pi = PendingIntent.getBroadcast(getActivity(), 0, i, 0);
-            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
-            long timeInMillis = System.currentTimeMillis() + (alarm_time * 60 * 1000);
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
-            }
-
-            // Below has been added to enable the receiver manually as we have
-            // disabled in the manifest
-            ComponentName receiver = new ComponentName(getActivity(),
-                    AlarmReceiver.class);
-            PackageManager pm = getActivity().getPackageManager();
-            pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP);
-        }
-
-    }
-
 
     @Override
     public void onResume() {

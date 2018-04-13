@@ -32,6 +32,8 @@
     <!-- Camera - used for photo capture -->
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <uses-feature
         android:name="android.hardware.camera.front"
         android:required="false" />
@@ -112,7 +114,7 @@
 
         <receiver
             android:name="com.ivy.ivyretail.service.AlarmReceiver"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="false"
             android:process=":remote">
             <intent-filter>
