@@ -44,7 +44,7 @@ public class RetailerHelper {
     private String contractExpiryDate;
     private String contractID;
     private String contractStartDate;
-
+    public ArrayList<RetailerMasterBO> masterBOArrayList;
     private ArrayList<StandardListBO> mRetailerSelectionFilter;
 
 

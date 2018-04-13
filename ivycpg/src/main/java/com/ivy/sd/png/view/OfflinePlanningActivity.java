@@ -301,6 +301,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         lvRetailer.setOnDragListener(myDragEventListener);
 
         lvRetailer.setTag("listRsd");
+
         lvRetailer.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override

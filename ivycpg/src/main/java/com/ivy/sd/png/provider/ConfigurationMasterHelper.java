@@ -953,6 +953,9 @@ public class ConfigurationMasterHelper {
     private String loadmanagementtitle;
     private String loadplanningsubttitle;
     private String tradecoveragetitle;
+
+
+    private String expansetitle;
     private String subdtitle;
 
 
@@ -4261,6 +4264,15 @@ public class ConfigurationMasterHelper {
     public void setTradecoveragetitle(String tradecoveragetitle) {
         this.tradecoveragetitle = tradecoveragetitle;
     }
+
+    public String getExpansetitle() {
+        return expansetitle;
+    }
+
+    public void setExpansetitle(String expansetitle) {
+        this.expansetitle = expansetitle;
+    }
+
 
     public String getSubdtitle() {
         return subdtitle;

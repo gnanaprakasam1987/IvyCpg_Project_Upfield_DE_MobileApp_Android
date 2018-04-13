@@ -23,6 +23,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -118,9 +119,21 @@ public class CommonReasonDialog extends Dialog {
                         if (selected_reason.getReasonID().equals("0") && remarks.equals("")) {
                             Toast.makeText(context, context.getResources().getString(R.string.enter_remarks), Toast.LENGTH_LONG).show();
                         } else {
-                            bmodel.reasonHelper.setDeviate(bmodel.retailerMasterBO.getRetailerID(),
-                                    selected_reason, bmodel.retailerMasterBO.getBeatID(), remarks);
-                            addNonVisitListener.addReatailerReason();
+                            if (bmodel.mRetailerHelper.masterBOArrayList!=null)
+                            {
+                                for (RetailerMasterBO masterBO : bmodel.mRetailerHelper.masterBOArrayList) {
+                                    bmodel.reasonHelper.setDeviate(masterBO.getRetailerID(),
+                                            selected_reason, masterBO.getBeatID(), remarks);
+                                    addNonVisitListener.addReatailerReason();
+                                }
+                                bmodel.mRetailerHelper.masterBOArrayList = null;
+                            }else {
+                                bmodel.reasonHelper.setDeviate(bmodel.retailerMasterBO.getRetailerID(),
+                                        selected_reason, bmodel.retailerMasterBO.getBeatID(), remarks);
+                                addNonVisitListener.addReatailerReason();
+                            }
+
+
                             dismiss();
                         }
                     }
