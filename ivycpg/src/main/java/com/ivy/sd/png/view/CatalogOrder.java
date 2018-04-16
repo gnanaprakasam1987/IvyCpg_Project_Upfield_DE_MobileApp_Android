@@ -77,7 +77,7 @@ import java.util.Vector;
 /**
  * Created by dharmapriya.k on 10/14/2016,11:34 AM.
  */
-public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener,MOQHighlightDialog.savePcsValue {
+public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, MOQHighlightDialog.savePcsValue {
     private static final String BRAND = "Brand";
     public static final String GENERAL = "General";
     private final String mCommon = "Filt01";
@@ -160,6 +160,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private File appImageFolderPath;
     public Timer orderTimer;
     private MOQHighlightDialog mMOQHighlightDialog;
+    SearchAsync searchAsync;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -312,7 +313,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         search_txt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                if (search_txt.getText().toString().length() < 3) {
+                    mylist.clear();
+                }
+                if (searchAsync.getStatus() == AsyncTask.Status.RUNNING) {
+                    searchAsync.cancel(true);
+                }
             }
 
             @Override
@@ -326,7 +332,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     btn_search.setVisibility(View.GONE);
                     btn_clear.setVisibility(View.VISIBLE);
                     if (searchedtext.length() >= 3) {
-                        loadSearchedList();
+                        searchAsync = new SearchAsync();
+                        searchAsync.execute();
                     }
                 }
             }
@@ -429,7 +436,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }, 0, timeInterval);
 
         }
-
+        searchAsync = new SearchAsync();
     }
 
 
@@ -469,12 +476,36 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         }
     }
 
+     private class SearchAsync extends
+            AsyncTask<Integer, Integer, Boolean> {
+
+
+        protected void onPreExecute() {
+
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            loadSearchedList();
+
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            adapter = new RecyclerViewAdapter(mylist);
+            pdt_recycler_view.setAdapter(adapter);
+        }
+    }
 
     private void loadSearchedList() {
 
         Commons.print("Search method called.");
 
-        if (searchedtext.length() >= 3) {
             Vector<ProductMasterBO> productMasterList = bmodel.productHelper
                     .getProductMaster();
             if (productMasterList == null) {
@@ -488,6 +519,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             String mSelectedFilter = bmodel.getProductFilter();
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = productMasterList.elementAt(i);
+
+                // For breaking search..
+                if (searchAsync.isCancelled()) {
+                    break;
+                }
 
                 if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                         || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
@@ -543,12 +579,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             }
 
-            adapter = new RecyclerViewAdapter(mylist);
-            pdt_recycler_view.setAdapter(adapter);
-        } else {
-            Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
-                    .show();
-        }
     }
 
     @Override
@@ -1310,7 +1340,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         try {
 
             if (bmodel.configurationMasterHelper.SHOW_STOCK_SP
-                    &&bmodel.configurationMasterHelper.IS_MUST_SELL_STK
+                    && bmodel.configurationMasterHelper.IS_MUST_SELL_STK
                     && !bmodel.productHelper.isMustSellFilledStockCheck(false)) {
                 Toast.makeText(this, R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
                 return;
@@ -1342,8 +1372,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         return;
                     }
                 }
-
-
 
 
                 if (bmodel.getOrderHeaderBO() == null)
@@ -1854,7 +1882,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
             if (holder.list_view_order_btn != null && holder.total != null) {
                 if (holder.productObj.getOrderedPcsQty() != 0) {
-                    holder.list_view_order_btn.setText(getResources().getString(R.string.ordered)+" - " + holder.productObj.getOrderedPcsQty() + "");
+                    holder.list_view_order_btn.setText(getResources().getString(R.string.ordered) + " - " + holder.productObj.getOrderedPcsQty() + "");
                     holder.total.setText("" + bmodel.formatValue(holder.productObj.getTotalamount()));
                 } else {
                     holder.total.setText("0");
@@ -1941,7 +1969,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             private ImageView pdt_image;
             private TextView catalog_order_listview_productname, ppq,
-                    mrp, total, sih, wsih,moq;
+                    mrp, total, sih, wsih, moq;
             private Button list_view_order_btn, list_view_stock_btn;
             private LinearLayout pdt_details_layout;
             private ProductMasterBO productObj;
@@ -2082,7 +2110,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         productIdList = new ArrayList<String>();
                         for (ProductMasterBO product : mylist) {
                             productIdList.add(product.getProductID());
-                        }bottom_layout.setVisibility(View.GONE);
+                        }
+                        bottom_layout.setVisibility(View.GONE);
                         Intent i = new Intent(CatalogOrder.this, ProductDetailsCatalogActivity.class);
                         i.putExtra("FiveFilter", mSelectedIdByLevelId);
                         i.putStringArrayListExtra("ProductIdList", productIdList);
@@ -2100,7 +2129,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             mMOQHighlightDialog.numberPressed(v);
         }
     }
-
 
 
     //if Rfield1 enabled show this dialog
