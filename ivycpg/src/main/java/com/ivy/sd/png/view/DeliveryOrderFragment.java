@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
@@ -66,6 +67,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
     private Button mBtnFilterPopup;
     private Button mBtn_clear;
     private Button btnNext;
+    SearchAsync searchAsync;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -124,14 +126,20 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
             mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
                 public void afterTextChanged(Editable s) {
                     if (s.length() >= 3) {
-                        loadSearchedList();
+                        searchAsync = new SearchAsync();
+                        searchAsync.execute();
                     }
                 }
 
                 @Override
                 public void beforeTextChanged(CharSequence s, int start,
                                               int count, int after) {
-
+                    if (mEdt_searchproductName.getText().toString().length() < 3) {
+                        mylist.clear();
+                    }
+                    if (searchAsync.getStatus() == AsyncTask.Status.RUNNING) {
+                        searchAsync.cancel(true);
+                    }
                 }
 
                 @Override
@@ -141,6 +149,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 }
             });
 
+            searchAsync = new SearchAsync();
 
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -185,72 +194,93 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
         }
     }
 
+    private class SearchAsync extends
+            AsyncTask<Integer, Integer, Boolean> {
+
+
+        protected void onPreExecute() {
+
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            loadSearchedList();
+
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            MyAdapter mSchedule = new MyAdapter(mylist);
+            listView.setAdapter(mSchedule);
+        }
+    }
+
     private void loadSearchedList() {
         try {
 
             mylist = new Vector<>();
-            if (mEdt_searchproductName.getText().length() >= 3) {
-                Vector<ProductMasterBO> items = bmodel.productHelper
-                        .getProductMaster();
-                if (items == null) {
-                    bmodel.showAlert(
-                            getResources().getString(R.string.no_products_exists),
-                            0);
-                    return;
-                }
-
-                String mSelectedFilter = bmodel.getProductFilter();
-
-                for (ProductMasterBO ret : bmodel.productHelper.getProductMaster()) {
-                    if (ret.getOrderedOuterQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedPcsQty() > 0) {
-
-                        if (mSelectedFilter.equals(getResources().getString(
-                                R.string.order_dialog_barcode))) {
-
-                            if (ret.getBarCode() != null
-                                    && (ret.getBarCode().toLowerCase()
-                                    .contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                                    || ret.getCasebarcode().toLowerCase().
-                                    contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                                    || ret.getOuterbarcode().toLowerCase().
-                                    contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
-                                mylist.add(ret);
-
-
-                            }
-                        } else if (mSelectedFilter.equals(getResources().getString(
-                                R.string.order_gcas))) {
-                            if (ret.getRField1() != null && ret.getRField1()
-                                    .toLowerCase()
-                                    .contains(
-                                            mEdt_searchproductName.getText().toString()
-                                                    .toLowerCase()) && ret.getIsSaleable() == 1) {
-                                mylist.add(ret);
-
-                            }
-                        } else if (mSelectedFilter.equals(getResources().getString(
-                                R.string.product_name))) {
-                            if (ret.getProductShortName() != null && ret.getProductShortName()
-                                    .toLowerCase()
-                                    .contains(
-                                            mEdt_searchproductName.getText().toString()
-                                                    .toLowerCase()) && ret.getIsSaleable() == 1)
-                                mylist.add(ret);
-                        }
-
-
-                    }
-                }
-
-
-                MyAdapter mSchedule = new MyAdapter(mylist);
-                listView.setAdapter(mSchedule);
-
-
-            } else {
-                Toast.makeText(getActivity(), "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
-                        .show();
+            Vector<ProductMasterBO> items = bmodel.productHelper
+                    .getProductMaster();
+            if (items == null) {
+                bmodel.showAlert(
+                        getResources().getString(R.string.no_products_exists),
+                        0);
+                return;
             }
+
+            String mSelectedFilter = bmodel.getProductFilter();
+
+            for (ProductMasterBO ret : bmodel.productHelper.getProductMaster()) {
+                // For breaking search..
+                if (searchAsync.isCancelled()) {
+                    break;
+                }
+
+                if (ret.getOrderedOuterQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedPcsQty() > 0) {
+
+                    if (mSelectedFilter.equals(getResources().getString(
+                            R.string.order_dialog_barcode))) {
+
+                        if (ret.getBarCode() != null
+                                && (ret.getBarCode().toLowerCase()
+                                .contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                || ret.getCasebarcode().toLowerCase().
+                                contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                || ret.getOuterbarcode().toLowerCase().
+                                contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+                            mylist.add(ret);
+
+
+                        }
+                    } else if (mSelectedFilter.equals(getResources().getString(
+                            R.string.order_gcas))) {
+                        if (ret.getRField1() != null && ret.getRField1()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()) && ret.getIsSaleable() == 1) {
+                            mylist.add(ret);
+
+                        }
+                    } else if (mSelectedFilter.equals(getResources().getString(
+                            R.string.product_name))) {
+                        if (ret.getProductShortName() != null && ret.getProductShortName()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()) && ret.getIsSaleable() == 1)
+                            mylist.add(ret);
+                    }
+
+
+                }
+            }
+
         } catch (Exception ex) {
             Commons.printException(ex);
         }
@@ -1122,8 +1152,13 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
     @Override
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
         if (i == EditorInfo.IME_ACTION_DONE) {
-            loadSearchedList();
-            return true;
+            if (mEdt_searchproductName.getText().length() >= 3) {
+                searchAsync = new SearchAsync();
+                searchAsync.execute();
+            } else {
+                Toast.makeText(getActivity(), "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
+                        .show();
+            }
         }
         return false;
     }

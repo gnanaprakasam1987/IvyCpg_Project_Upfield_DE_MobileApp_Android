@@ -12,11 +12,13 @@
         card_view:cardBackgroundColor="@color/WHITE"
         card_view:cardCornerRadius="0dp"
         card_view:cardElevation="@dimen/ret_card_elevation"
+
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true"
         card_view:contentPadding="0dp">
 
         <LinearLayout
+            android:id="@+id/ll_first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">

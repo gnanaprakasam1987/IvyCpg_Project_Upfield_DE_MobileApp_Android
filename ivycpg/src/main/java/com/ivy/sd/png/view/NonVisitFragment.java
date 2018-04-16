@@ -8,8 +8,11 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,7 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -26,7 +31,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +47,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.profile.CommonReasonDialog;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 
 import java.util.ArrayList;
@@ -58,7 +63,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     private final String MENU_PLANNING = "Day Planning";
     private final String MENU_VISIT = "Trade Coverage";
     public boolean profileclick;
-    private ListView listView;
+    private AbsListView listView;
     private BusinessModel bmodel;
     private RetailerMasterBO retailerObj;
     private ArrayList<RetailerMasterBO> retailer;
@@ -66,6 +71,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     private String calledBy;
     private TypedArray typearr;
     private Spinner spn_mWeek;
+    private DisplayMetrics displaymetrics;
     private ArrayList<String> mWeekList;
     private HashMap<String, String> mWeekMap = new HashMap<>();
     private String mSelectedDay;
@@ -77,6 +83,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     private String mSelectedWeek = "All";
     private LinearLayout filterLayout;
     ArrayAdapter<BeatMasterBO> beatAdapter;
+    IconicAdapter mSchedule;
+
+    private FloatingActionButton fab;
+    ArrayList<Integer> selectedPosition = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,17 +105,53 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             getActivity().finish();
         }
 
-        spinnerbrand = (Spinner) mview.findViewById(R.id.brandSpinner);
-        filterLayout = (LinearLayout) mview.findViewById(R.id.filter);
-        spn_mWeek = (Spinner) mview.findViewById(R.id.spn_week);
-        spn_mDate = (Spinner) mview.findViewById(R.id.spin_date);
-        spn_mBeat = (Spinner) mview.findViewById(R.id.spin_beat);
-        mWeekRG = (RadioGroup) mview.findViewById(R.id.week_radiogroup);
+        spinnerbrand = mview.findViewById(R.id.brandSpinner);
+        filterLayout = mview.findViewById(R.id.filter);
+        spn_mWeek = mview.findViewById(R.id.spn_week);
+        spn_mDate = mview.findViewById(R.id.spin_date);
+        spn_mBeat = mview.findViewById(R.id.spin_beat);
+        mWeekRG = mview.findViewById(R.id.week_radiogroup);
+        fab = mview.findViewById(R.id.fab);
+
+        displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
+        fab.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ArrayList<RetailerMasterBO> retailerMasterBOS = new ArrayList<>();
+
+                for (Integer integer : selectedPosition) {
+                    retailerMasterBOS.add(retailer.get(integer));
+                }
+
+                bmodel.mRetailerHelper.deviateRetailerList = retailerMasterBOS;
+
+                CommonReasonDialog comReasonDialog = new CommonReasonDialog(getActivity(), "deviate");
+                comReasonDialog.setNonvisitListener(new CommonReasonDialog.AddNonVisitListener() {
+                    @Override
+                    public void addReatailerReason() {
+                        showAlert(getResources().getString(
+                                R.string.saved_successfully));
+                    }
+                });
+                comReasonDialog.show();
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                Window window = comReasonDialog.getWindow();
+                lp.copyFrom(window != null ? window.getAttributes() : null);
+                lp.width = displaymetrics.widthPixels - 100;
+                lp.height = (int) (displaymetrics.heightPixels / 2.5);//WindowManager.LayoutParams.WRAP_CONTENT;
+                if (window != null) {
+                    window.setAttributes(lp);
+                }
+            }
+        });
 
         mWeekRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                RadioButton radioButton = (RadioButton) mWeekRG.findViewById(checkedId);
+                RadioButton radioButton = mWeekRG.findViewById(checkedId);
                 mSelectedWeek = radioButton.getText().toString();
                 loadData(null);
 
@@ -121,26 +167,26 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             }
         }
 
-        TextView tvWeekSelection = (TextView) mview.findViewById(R.id.week_title);
+        TextView tvWeekSelection = mview.findViewById(R.id.week_title);
         tvWeekSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        TextView tvDaySelection = (TextView) mview.findViewById(R.id.day_title);
+        TextView tvDaySelection = mview.findViewById(R.id.day_title);
         tvDaySelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        TextView tvBeatSelection = (TextView) mview.findViewById(R.id.beat_title);
+        TextView tvBeatSelection = mview.findViewById(R.id.beat_title);
         tvBeatSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-        LinearLayout dateLL = (LinearLayout) mview
+        LinearLayout dateLL = mview
                 .findViewById(R.id.ll_datefilter);
-        LinearLayout weekLL = (LinearLayout) mview
+        LinearLayout weekLL = mview
                 .findViewById(R.id.ll_weekfilter);
-        LinearLayout beatLL = (LinearLayout) mview
+        LinearLayout beatLL = mview
                 .findViewById(R.id.ll_beatfilter);
         if (bmodel.configurationMasterHelper.SHOW_DATE_ROUTE) {
             mDateList = bmodel.mRetailerHelper.getMaxDaysInRouteSelection();
             if (mDateList == null) {
                 mDateList = new ArrayList<>();
             }
-            ((RelativeLayout) mview.findViewById(R.id.relativeLayout)).
+            (mview.findViewById(R.id.relativeLayout)).
                     setVisibility(View.GONE);
             filterLayout.setVisibility(View.VISIBLE);
             mDateList.add(0, "ALL");
@@ -165,7 +211,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
             spn_mBeat.setAdapter(beatAdapter);
 
-            ((RelativeLayout) mview.findViewById(R.id.relativeLayout)).
+            (mview.findViewById(R.id.relativeLayout)).
                     setVisibility(View.GONE);
             filterLayout.setVisibility(View.VISIBLE);
             mDateList.add(0, getResources().getString(R.string.all));
@@ -175,8 +221,9 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             beatLL.setVisibility(View.GONE);
         }
 
-        listView = (ListView) mview.findViewById(R.id.nonvisitlistView1);
+        listView = mview.findViewById(R.id.nonvisitlistView1);
         listView.setCacheColorHint(0);
+
 
         // Add week in list
         mWeekList = new ArrayList<>();
@@ -212,6 +259,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+
+
         return mview;
     }
 
@@ -225,6 +274,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         if (calledBy == null)
             calledBy = MENU_VISIT;
     }
+
 
     public void loadData(String filter) {
         try {
@@ -343,7 +393,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
 
             Collections.sort(retailer, RetailerMasterBO.RetailerNameComparator);
-            IconicAdapter mSchedule = new IconicAdapter(retailer);
+            mSchedule = new IconicAdapter(retailer);
             ((PlanningActivity) getActivity()).updateRetailerCount(mSchedule.getCount(), 2);
             if (listView != null) {
                 listView.setAdapter(mSchedule);
@@ -363,7 +413,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         if (retailerMasterBO
                                 .getRetailerName().toLowerCase()
                                 .contains(searchStr.toLowerCase()) ||
-                                ((retailerMasterBO.getRetailerCode() != null)&&
+                                ((retailerMasterBO.getRetailerCode() != null) &&
                                         retailerMasterBO.getRetailerCode().toLowerCase().contains(searchStr.toLowerCase()))) {
                             retailer.add(retailerMasterBO);
                         }
@@ -392,7 +442,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             }
         }
 
-        IconicAdapter mSchedule = new IconicAdapter(retailer);
+        mSchedule = new IconicAdapter(retailer);
         if (listView != null) {
             listView.setAdapter(mSchedule);
             setHasOptionsMenu(true);
@@ -444,7 +494,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             }
         }
 
-        IconicAdapter mSchedule = new IconicAdapter(retailer);
+        mSchedule = new IconicAdapter(retailer);
         if (listView != null) {
             listView.setAdapter(mSchedule);
             setHasOptionsMenu(true);
@@ -480,15 +530,14 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         } else if (bmodel.configurationMasterHelper.SHOW_BEAT_ROUTE) {
             updateBeatFilter();
         }
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if (getView() != null) {
-            spinnerbrand = (Spinner) getView().findViewById(R.id.brandSpinner);
-            spn_mWeek = (Spinner) getView().findViewById(R.id.spn_week);
+            spinnerbrand = getView().findViewById(R.id.brandSpinner);
+            spn_mWeek = getView().findViewById(R.id.spn_week);
         }
 
         listView = (ListView) getView().findViewById(R.id.nonvisitlistView1);
@@ -765,7 +814,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             .get(i));
                                 }
 
-                                IconicAdapter mSchedule = new IconicAdapter(
+                                mSchedule = new IconicAdapter(
                                         retailer);
                                 listView.setAdapter(mSchedule);
                             }
@@ -791,8 +840,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             .get(i));
                                 }
 
-                                IconicAdapter mSchedule = new IconicAdapter(
-                                        retailer);
+                                mSchedule = new IconicAdapter(retailer);
                                 listView.setAdapter(mSchedule);
                             }
                         }
@@ -923,6 +971,31 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         }
     }
 
+    private void showAlert(String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(msg);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                //  updateCancel();
+                if (calledBy.equalsIgnoreCase(MENU_VISIT)) {
+                    Intent i = new Intent(getActivity(), HomeScreenActivity.class);
+                    i.putExtra("menuCode", "MENU_VISIT");
+                    startActivity(i);
+                    getActivity().finish();
+                } else if (calledBy.equalsIgnoreCase(MENU_PLANNING)) {
+                    Intent i = new Intent(getActivity(), PlanningVisitActivity.class);
+                    startActivity(i);
+                    getActivity().finish();
+                }
+
+//                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
+        });
+        bmodel.applyAlertDialogTheme(builder);
+    }
+
     class IconicAdapter extends ArrayAdapter {
         ArrayList items;
 
@@ -943,10 +1016,11 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             return items.size();
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
 
             retailerObj = (RetailerMasterBO) items.get(position);
+
 
             if (convertView == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -954,26 +1028,29 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         parent, false);
                 holder = new ViewHolder();
 
-                holder.outletIV = (ImageView) convertView
+                holder.card_view = convertView.findViewById(R.id.card_view);
+                holder.llFirst = convertView.findViewById(R.id.ll_first);
+                holder.outletIV = convertView
                         .findViewById(R.id.outlet_iv);
-                holder.icon = (ImageView) convertView.findViewById(R.id.outlet);
-                holder.outletname = (TextView) convertView
+                holder.icon = convertView.findViewById(R.id.outlet);
+                holder.outletname = convertView
                         .findViewById(R.id.outletName_tv);
                 holder.outletname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.outletLocation = (TextView) convertView
+                holder.outletLocation = convertView
                         .findViewById(R.id.outlet_location_tv);
                 holder.outletLocation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                holder.info = (ImageView) convertView
+                holder.info = convertView
                         .findViewById(R.id.info_iv);
-                holder.visitFrequency = (TextView) convertView
+                holder.visitFrequency = convertView
                         .findViewById(R.id.visit_frequency);
-                holder.outletAddress = (TextView) convertView.findViewById(R.id.outlet_address_tv);
+                holder.outletAddress = convertView.findViewById(R.id.outlet_address_tv);
                 holder.outletAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
                 if (!bmodel.configurationMasterHelper.HAS_PROFILE_BUTTON_IN_RETAILER_LIST)
                     holder.info.setVisibility(View.GONE);
+
 
                 holder.info.setOnClickListener(new OnClickListener() {
                     @Override
@@ -993,35 +1070,61 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                             startActivityForResult(i, 1);
                         }
 
+
                     }
                 });
 
                 convertView.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
-                        /*retailerObj = retailer.get(holder.ref);
-                        bmodel.setRetailerMasterBO(retailerObj);
-                        Commons.print("-"
-                                + bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION);
-                        Commons.print("-" + calledBy);
-                        bmodel.newOutletHelper.downloadLinkRetailer();
-                        Intent i = new Intent(getActivity(), ProfileActivity.class);
-                        i.putExtra("From", MENU_VISIT);
-                        i.putExtra("non_visit", true);
-                        startActivityForResult(i, 1);*/
 
+                        if (selectedPosition.size() == 0) {
+                            if ((bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION && calledBy
+                                    .equals(MENU_PLANNING)
+                                    || (bmodel.configurationMasterHelper.IS_VISITSCREEN_DEV_ALLOW && bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION))) {
 
-                        if ((bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION && calledBy
-                                .equals(MENU_PLANNING))
-                                || (bmodel.configurationMasterHelper.IS_VISITSCREEN_DEV_ALLOW && bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION)) {
+                                retailerObj = (RetailerMasterBO) items
+                                        .get(holder.ref);
+                                bmodel.setRetailerMasterBO(retailerObj);
 
-                            retailerObj = (RetailerMasterBO) items
-                                    .get(holder.ref);
-                            bmodel.setRetailerMasterBO(retailerObj);
+                                if (bmodel.reasonHelper.getDeviatedReturnMaster()
+                                        .size() != 0) {
 
-                            if (bmodel.reasonHelper.getDeviatedReturnMaster()
-                                    .size() != 0) {
+                                    if (("Y").equals(bmodel.getRetailerMasterBO().getIsNew())) {
 
-                                if (("Y").equals(bmodel.getRetailerMasterBO().getIsNew())) {
+                                        Toast t = Toast
+                                                .makeText(
+                                                        getActivity()
+                                                                .getApplicationContext(),
+                                                        getResources()
+                                                                .getString(
+                                                                        R.string.deviation_not_allowed_for_new_retailer),
+                                                        Toast.LENGTH_SHORT);
+                                        t.show();
+
+                                    } else if (!bmodel
+                                            .isAlreadyExistInToday(retailerObj
+                                                    .getRetailerID())) {
+                                        if ((!isReasonDialogClicked)) {
+                                            isReasonDialogClicked = true;
+                                            Commons.print("-"
+                                                    + bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION);
+                                            Commons.print("-" + calledBy);
+                                            bmodel.newOutletHelper.downloadLinkRetailer();
+                                            Intent i = new Intent(getActivity(), ProfileActivity.class);
+                                            i.putExtra("From", MENU_VISIT);
+                                            i.putExtra("non_visit", true);
+                                            startActivityForResult(i, 1);
+                                        }
+                                    } else {
+                                        Toast.makeText(
+                                                getActivity()
+                                                        .getApplicationContext(),
+                                                getResources()
+                                                        .getString(
+                                                                R.string.retailer_is_already_planned_for_today),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
 
                                     Toast t = Toast
                                             .makeText(
@@ -1029,67 +1132,106 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                                             .getApplicationContext(),
                                                     getResources()
                                                             .getString(
-                                                                    R.string.deviation_not_allowed_for_new_retailer),
+                                                                    R.string.no_deviate_reason_found_plz_redownload),
                                                     Toast.LENGTH_SHORT);
                                     t.show();
-
-                                } else if (!bmodel
-                                        .isAlreadyExistInToday(retailerObj
-                                                .getRetailerID())) {
-                                    if (!isReasonDialogClicked) {
-                                        isReasonDialogClicked = true;
-                                        /*showAlert(
-                                                getResources()
-                                                        .getString(
-                                                                R.string.enter_deviate_reason_to_plan_this_retailer_for_today),
-                                                0);*/
-                                        //retailerObj = retailer.get(holder.ref);
-                                        //bmodel.setRetailerMasterBO(retailerObj);
-                                        Commons.print("-"
-                                                + bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION);
-                                        Commons.print("-" + calledBy);
-                                        bmodel.newOutletHelper.downloadLinkRetailer();
-                                        Intent i = new Intent(getActivity(), ProfileActivity.class);
-                                        i.putExtra("From", MENU_VISIT);
-                                        i.putExtra("non_visit", true);
-                                        startActivityForResult(i, 1);
-                                    }
-                                } else {
-                                    Toast.makeText(
-                                            getActivity()
-                                                    .getApplicationContext(),
-                                            getResources()
-                                                    .getString(
-                                                            R.string.retailer_is_already_planned_for_today),
-                                            Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-
-                                Toast t = Toast
-                                        .makeText(
-                                                getActivity()
-                                                        .getApplicationContext(),
-                                                getResources()
-                                                        .getString(
-                                                                R.string.no_deviate_reason_found_plz_redownload),
-                                                Toast.LENGTH_SHORT);
+                                Toast t = Toast.makeText(getActivity()
+                                                .getApplicationContext(), getResources()
+                                                .getString(R.string.Deviation_not_allowed),
+                                        Toast.LENGTH_SHORT);
                                 t.show();
                             }
-                        } else {
-                            Toast t = Toast.makeText(getActivity()
-                                            .getApplicationContext(), getResources()
-                                            .getString(R.string.Deviation_not_allowed),
-                                    Toast.LENGTH_SHORT);
-                            t.show();
-                        }
 
+                        }
                     }
+
+
                 });
 
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+
+
+            if (selectedPosition.contains(new Integer(position))) {
+                holder.llFirst.setBackgroundColor(getResources().getColor(R.color.colorPrimaryAlpha));
+            } else {
+                holder.llFirst.setBackgroundColor(getResources().getColor(android.R.color.white));
+            }
+
+            convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    if ((bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION && calledBy
+                            .equals(MENU_PLANNING)
+                            || (bmodel.configurationMasterHelper.IS_VISITSCREEN_DEV_ALLOW && bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION))) {
+                        if (bmodel.reasonHelper.getDeviatedReturnMaster()
+                                .size() != 0) {
+
+                            retailerObj = (RetailerMasterBO) items
+                                    .get(holder.ref);
+
+                            if (("Y").equals(bmodel.getRetailerMasterBO().getIsNew())) {
+
+                                Toast.makeText(
+                                        getActivity()
+                                                .getApplicationContext(),
+                                        getResources()
+                                                .getString(
+                                                        R.string.deviation_not_allowed_for_new_retailer),
+                                        Toast.LENGTH_SHORT).show();
+
+                            } else if (bmodel
+                                    .isAlreadyExistInToday(retailerObj
+                                            .getRetailerID())) {
+                                Toast.makeText(
+                                        getActivity()
+                                                .getApplicationContext(),
+                                        getResources()
+                                                .getString(
+                                                        R.string.retailer_is_already_planned_for_today),
+                                        Toast.LENGTH_SHORT).show();
+
+
+                            } else {
+
+                                if (selectedPosition.contains(new Integer(position))) {
+                                    selectedPosition.remove(new Integer(position));
+                                } else {
+                                    selectedPosition.add(position);
+                                }
+
+                                if (selectedPosition.size() > 0) {
+                                    fab.setVisibility(View.VISIBLE);
+                                } else {
+                                    fab.setVisibility(View.GONE);
+                                }
+
+                                notifyDataSetChanged();
+                            }
+                        } else {
+                            Toast.makeText(
+                                    getActivity()
+                                            .getApplicationContext(),
+                                    getResources()
+                                            .getString(
+                                                    R.string.no_deviate_reason_found_plz_redownload),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast t = Toast.makeText(getActivity()
+                                        .getApplicationContext(), getResources()
+                                        .getString(R.string.Deviation_not_allowed),
+                                Toast.LENGTH_SHORT);
+                        t.show();
+                    }
+                    return true;
+                }
+            });
 
             holder.retailerId = retailerObj.getRetailerID();
             holder.outletname.setText(retailerObj.getRetailerName());
@@ -1103,12 +1245,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             holder.ref = position;
 
             holder.visitFrequency.setText(((bmodel.configurationMasterHelper.SHOW_RETAILER_FREQUENCY) ? " - F - " + ((retailerObj.getVisit_frequencey() > 0) ? retailerObj.getVisit_frequencey() : "0") : ""));
-
-        /*    if (position % 2 == 0)
-                convertView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-            else
-                convertView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));*/
-
 
             if (("Y").equals(retailerObj.getIsNew())) {
                 holder.outletIV
@@ -1135,6 +1271,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             TextView outletAddress;
             String retailerId;
             int ref;
+            LinearLayout llFirst;
+            CardView card_view;
             TextView visitFrequency;
         }
 

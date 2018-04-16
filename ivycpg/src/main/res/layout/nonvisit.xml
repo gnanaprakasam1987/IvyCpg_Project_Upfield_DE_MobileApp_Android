@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -22,8 +23,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/dimens_6dp"
-                android:layout_toRightOf="@+id/brandSpinner"
                 android:layout_toEndOf="@+id/brandSpinner"
+                android:layout_toRightOf="@+id/brandSpinner"
                 android:text="@string/select_week"
                 android:textColor="?attr/selectWeekBackground"
                 android:textSize="@dimen/font_small" />
@@ -35,11 +36,11 @@
                 android:layout_below="@+id/week_title"
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="@dimen/margin_week_layout"
-                android:layout_marginStart="@dimen/dimen_5dp"
                 android:layout_marginEnd="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/dimen_12dp"
-                android:layout_toRightOf="@+id/brandSpinner"
                 android:layout_toEndOf="@+id/brandSpinner"
+                android:layout_toRightOf="@+id/brandSpinner"
                 android:overScrollMode="never">
 
                 <RadioGroup
@@ -59,8 +60,8 @@
                         android:button="@android:color/transparent"
                         android:gravity="center"
                         android:text="@string/all"
-                        android:textColor="?attr/selectWeekBackground"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="?attr/selectWeekBackground"
                         android:textStyle="bold" />
 
                     <RadioButton
@@ -72,8 +73,8 @@
                         android:button="@android:color/transparent"
                         android:gravity="center"
                         android:text="@string/week1"
-                        android:textColor="?attr/selectWeekBackground"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="?attr/selectWeekBackground" />
 
                     <RadioButton
                         android:id="@+id/rb_week2"
@@ -84,8 +85,8 @@
                         android:button="@android:color/transparent"
                         android:gravity="center"
                         android:text="@string/week2"
-                        android:textColor="?attr/selectWeekBackground"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="?attr/selectWeekBackground" />
 
                     <RadioButton
                         android:id="@+id/rb_week3"
@@ -96,8 +97,8 @@
                         android:button="@android:color/transparent"
                         android:gravity="center"
                         android:text="@string/week3"
-                        android:textColor="?attr/selectWeekBackground"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="?attr/selectWeekBackground" />
 
                     <RadioButton
                         android:id="@+id/rb_week4"
@@ -108,8 +109,8 @@
                         android:button="@android:color/transparent"
                         android:gravity="center"
                         android:text="@string/week4"
-                        android:textColor="?attr/selectWeekBackground"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="?attr/selectWeekBackground" />
 
                     <RadioButton
                         android:id="@+id/rb_week5"
@@ -120,8 +121,8 @@
                         android:button="@android:color/transparent"
                         android:gravity="center"
                         android:text="@string/week5"
-                        android:textColor="?attr/selectWeekBackground"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="?attr/selectWeekBackground" />
                 </RadioGroup>
 
 
@@ -329,13 +330,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/linearlayout"
-        android:layout_marginStart="@dimen/store_margin_top"
         android:layout_marginEnd="@dimen/store_margin_top"
+        android:layout_marginStart="@dimen/store_margin_top"
         android:layout_marginTop="@dimen/dimen_10dp"
         android:cacheColorHint="@null"
         android:divider="@null"
         android:dividerHeight="@dimen/margin_10px"
         android:fitsSystemWindows="true"
         android:scrollbars="none" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/dimen_14dp"
+        app:backgroundTint="?attr/accentcolor"
+        app:elevation="@dimen/floating_btn_elevation"
+        app:useCompatPadding="false"
+        android:src="@drawable/ic_dashboard_floating_deviation"
+        android:visibility="gone" />
 
 </RelativeLayout>
