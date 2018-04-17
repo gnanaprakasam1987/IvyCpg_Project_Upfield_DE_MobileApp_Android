@@ -476,7 +476,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FOCUS_PACK_NOT_DONE = "ORDB71";
     public boolean IS_FOCUS_PACK_NOT_DONE;
 
-    private static final String CODE_ORDER_FROM_EXCESS_STOCK= "FUN69";
+    private static final String CODE_ORDER_FROM_EXCESS_STOCK = "FUN69";
     public boolean IS_ORDER_FROM_EXCESS_STOCK;
 
     private static final String CODE_LOAD_SUBD_ONLY = "OFPLAN01";
@@ -682,6 +682,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_P3M_DASH;
     public boolean SHOW_YAI_DASH;
     public boolean SHOW_INV_DASH;
+    public boolean SHOW_KPIBARCHART_DASH;
     public boolean SHOW_SMP_DASH;
 
     public boolean SHOW_CHART_DASH;
@@ -1317,7 +1318,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
     public boolean IS_ORD_SR_VALUE_VALIDATE;
 
-    private static final String CODE_SHOW_DISTRIBUTOR_PROFILE ="PRO27";
+    private static final String CODE_SHOW_DISTRIBUTOR_PROFILE = "PRO27";
     public boolean SHOW_DISTRIBUTOR_PROFILE;
     public int SHOW_DISTRIBUTOR_PROFILE_FROM;
 
@@ -2031,7 +2032,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_TAX_MASTER = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null) {
-            if (hashMapHHTModuleOrder.get(CODE_TAX_APPLY)!=null && hashMapHHTModuleOrder.get(CODE_TAX_APPLY) == 1)
+            if (hashMapHHTModuleOrder.get(CODE_TAX_APPLY) != null && hashMapHHTModuleOrder.get(CODE_TAX_APPLY) == 1)
                 this.IS_EXCLUDE_TAX = false;
             else
                 this.IS_EXCLUDE_TAX = true;
@@ -2290,7 +2291,7 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_DISTRIBUTOR_PROFILE = hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) : false;
         if (hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null
-                && hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE) !=null) {
+                && hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null) {
             SHOW_DISTRIBUTOR_PROFILE_FROM = hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE);
         }
     }
@@ -3799,6 +3800,8 @@ public class ConfigurationMasterHelper {
                         SHOW_INV_DASH = true;
                     else if (temp.equals("SMP"))
                         SHOW_SMP_DASH = true;
+                    else if (temp.equals("BAR"))
+                        SHOW_KPIBARCHART_DASH = true;
                 }
             }
 
