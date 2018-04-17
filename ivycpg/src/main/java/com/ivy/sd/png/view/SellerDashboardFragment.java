@@ -1763,6 +1763,19 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 fragment.setArguments(args);
                 fragmentList.add(fragment);
             }
+            if (bmodel.configurationMasterHelper.SHOW_KPIBARCHART_DASH|| true) {
+                NUM_ITEMS++;
+                Fragment fragment = new KpiBarChartFragment(mDashboardList);
+                Bundle args = new Bundle();
+                if (mDashboardList != null && mDashboardList.size() > 0) {
+                    args.putInt("flex1", mDashboardList.get(0).getFlex1());
+                } else {
+                    args.putInt("flex1", 0);
+                }
+                fragment.setArguments(args);
+                fragmentList.add(fragment);
+            }
+
         }
 //        else if (show_trend_chart) {
 //            bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
