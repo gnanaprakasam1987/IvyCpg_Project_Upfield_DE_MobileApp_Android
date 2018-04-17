@@ -683,6 +683,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_P3M_DASH;
     public boolean SHOW_YAI_DASH;
     public boolean SHOW_INV_DASH;
+    public boolean SHOW_KPIBARCHART_DASH;
     public boolean SHOW_SMP_DASH;
 
     public boolean SHOW_CHART_DASH;
@@ -1322,7 +1323,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
     public boolean IS_ORD_SR_VALUE_VALIDATE;
 
-    private static final String CODE_SHOW_DISTRIBUTOR_PROFILE ="PRO27";
+    private static final String CODE_SHOW_DISTRIBUTOR_PROFILE = "PRO27";
     public boolean SHOW_DISTRIBUTOR_PROFILE;
     public int SHOW_DISTRIBUTOR_PROFILE_FROM;
 
@@ -2296,7 +2297,7 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_DISTRIBUTOR_PROFILE = hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) : false;
         if (hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null
-                && hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE) !=null) {
+                && hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null) {
             SHOW_DISTRIBUTOR_PROFILE_FROM = hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE);
         }
     }
@@ -3304,6 +3305,7 @@ public class ConfigurationMasterHelper {
             STOCK_DIST_INV = false;
             SHOW_INV_DASH = false;
             SHOW_SMP_DASH = false;
+            SHOW_KPIBARCHART_DASH = false;
 
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
@@ -3801,6 +3803,8 @@ public class ConfigurationMasterHelper {
                         SHOW_INV_DASH = true;
                     else if (temp.equals("SMP"))
                         SHOW_SMP_DASH = true;
+                    else if (temp.equals("BAR"))
+                        SHOW_KPIBARCHART_DASH = true;
                 }
             }
 
