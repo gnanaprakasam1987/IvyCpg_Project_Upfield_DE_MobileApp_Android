@@ -584,7 +584,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     float mTaxDiscount = (((float) vatAmount * 100) / total);
 
                     double percent = 0;
-                    if (productBO.getIsscheme() == 1) {
+                    if (productBO.isPromo()) {
 
                         percent = productBO.getMschemeper();
 
@@ -608,7 +608,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     } else {
                         mTaxGroup = '0';
                     }
-                    Commons.printException("taxdisc=" + Math.round(mTaxDiscount) + "taxgrp=" + mTaxGroup + " percent=" + -discount + "sku.getIsscheme()=" + productBO.getIsscheme());
+                    Commons.printException("taxdisc=" + Math.round(mTaxDiscount) + "taxgrp=" + mTaxGroup + " percent=" + -discount + "sku.isPromo()=" + productBO.isPromo());
 
 
                     zfp.sellFree(productBO.getProductShortName(), mTaxGroup, productBO.getSrp(), pieceCount, -discount);

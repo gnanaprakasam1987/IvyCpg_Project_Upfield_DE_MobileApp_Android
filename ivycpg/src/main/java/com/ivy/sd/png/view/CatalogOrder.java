@@ -1839,7 +1839,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 holder.sih.setText(getResources().getString(R.string.sih) + ": " + holder.productObj.getSIH());
             }
             if (holder.slant_view != null) {
-                if (holder.productObj.getIsscheme() == 1) {
+                if (holder.productObj.isPromo()) {
                     holder.slant_view.setVisibility(View.VISIBLE);
                 } else {
                     holder.sih.setVisibility(View.GONE);

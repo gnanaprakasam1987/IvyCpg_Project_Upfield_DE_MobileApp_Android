@@ -564,7 +564,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                             batchlist.addView(outerqty);
                             batchlist.addView(pcsqty);
                         }
-                    if (productBO.getIsscheme() == 1
+                    if (productBO.isPromo()
                             && productBO.getSchemeProducts() != null) {
                         int size = productBO.getSchemeProducts().size();
                         for (int i = 0; i < size; i++) {
@@ -1011,7 +1011,7 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                     }
 
                 }
-                if (productBO.getIsscheme() == 1
+                if (productBO.isPromo()
                         && productBO.getSchemeProducts() != null) {
 
                     int size = productBO.getSchemeProducts().size();

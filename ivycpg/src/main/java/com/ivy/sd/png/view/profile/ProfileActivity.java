@@ -2013,7 +2013,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                     .downloadSchemeMethods();
                         }
                     } else {
-                        bmodel.schemeDetailsMasterHelper.setIsScheme();
+                        bmodel.schemeDetailsMasterHelper.setIsScheme(new ArrayList<String>());
                     }
 
                     if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {

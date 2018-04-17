@@ -27,6 +27,11 @@ import java.util.List;
 import java.util.Map;
 
 public class SchemeDetailsMasterHelper {
+
+    private Context context;
+    private BusinessModel bmodel;
+    private static SchemeDetailsMasterHelper instance = null;
+
     private static final String TAG = "SchemeDetailsMasterHelper";
 
     /* SALES_VALUE is used for AmountType(SV) scheme apply */
@@ -44,34 +49,13 @@ public class SchemeDetailsMasterHelper {
     private static final String SCHEME_PRICE = "SCH_PR";
     private static final String SCHEME_FREE_PRODUCT = "SCH_FPRD";
     public static final String SCHEME_PERCENTAGE_BILL = "BPER";
-    private Context context;
 
-    private BusinessModel bmodel;
-    private ArrayList<SchemeBO> mOffInvoiceSchemeList;
-
-    private static SchemeDetailsMasterHelper instance = null;
 
     private static final String PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING = "MTR";
     private static final String PROCESS_TYPE_OTP = "OTP";
     private static final String PROCESS_TYPE_ONE_TIME_WITH_PERCENTAGE = "OTPR";
-
     private static final String PROCESS_TYPE_MTS = "MTS"; //Mulitple Time in Multiple Slab apply within the same scheme
     private static final String PROCESS_TYPE_PRORATA = "MSP"; //PRORATA-
-
-    private ArrayList<SchemeBO> mOffInvoiceAppliedSchemeList;
-
-
-    protected SchemeDetailsMasterHelper(Context context) {
-        this.context = context;
-        bmodel = (BusinessModel) context;
-    }
-
-    public static SchemeDetailsMasterHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new SchemeDetailsMasterHelper(context);
-        }
-        return instance;
-    }
 
     //Scheme Master lists
     private ArrayList<Integer> mParentIDList;
@@ -94,8 +78,8 @@ public class SchemeDetailsMasterHelper {
 
     private HashMap<String, ArrayList<ProductMasterBO>> mSchemeHistoryListByschemeid;
     private SparseArray<ArrayList<String>> mProductidListByAlreadyApplySchemeId;
-    private ArrayList<SchemeProductBO> mOffInvoiceSchemeFreeProductList;
-
+    private ArrayList<SchemeBO> mOffInvoiceSchemeList;
+    private ArrayList<SchemeBO> mOffInvoiceAppliedSchemeList;
     private Map<String, List<SchemeBO>> mSchemeByProductId;
 
 
@@ -103,6 +87,19 @@ public class SchemeDetailsMasterHelper {
     private ArrayList<SchemeBO> mDisplaySchemeMasterList;
     private ArrayList<SchemeBO> mDisplaySchemeSlabs;
     private ArrayList<SchemeBO> mDisplaySchemeTrackingList;
+
+
+    protected SchemeDetailsMasterHelper(Context context) {
+        this.context = context;
+        bmodel = (BusinessModel) context;
+    }
+
+    public static SchemeDetailsMasterHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new SchemeDetailsMasterHelper(context);
+        }
+        return instance;
+    }
 
     /**
      * Method to load all scheme related methods
@@ -130,18 +127,12 @@ public class SchemeDetailsMasterHelper {
             downloadBuySchemeDetails(db, retailerId, userId, distributorId, channelId, locationId, accountId, priorityProductId,mGroupIdList);
             //  update free product
             updateFreeProducts(db);
-            // load free group names
-            downloadFreeGroupName(db);
-
-            //  set sih of free product map from product master
-            updateFreeProductStocks();//
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
                 downloadParentIdListByProduct(db,mGroupIdList);
             }
 
-            applyPeriodWiseScheme(db);
-            setIsScheme(mGroupIdList);//
+            downloadPeriodWiseScheme(db);
 
             db.closeDB();
 
@@ -432,6 +423,12 @@ public class SchemeDetailsMasterHelper {
                     schemeProductBo.setTobuyQty(c.getDouble(18));
                     schemeProductBo.setBatchId(c.getString(20));
 
+                    //updating Promo flag in product master list
+                    ProductMasterBO productMasterBO=bmodel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
+                    if(productMasterBO!=null) {
+                        productMasterBO.setIsPromo(true);
+                    }
+
 
                     mBuyProductBoBySchemeidWithpid.put(schemeBO.getSchemeId() + schemeProductBo.getProductId(), schemeProductBo);
 
@@ -488,14 +485,18 @@ public class SchemeDetailsMasterHelper {
      */
     private void updateFreeProducts(DBUtil db) {
         mFreeGroupTypeByFreeGroupName = new HashMap<>();
+        mFreeGroupNameListBySchemeId=new HashMap<>();
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT distinct FD.SchemeID, SFP.productid, PM.psname, SFP.FreeQty, SFP.MaxQty, FD.Rate,");
+        sb.append("SELECT distinct FD.SchemeID, SFP.productid, PM.psname, SFP.FreeQty, SFP.MaxQty, FD.Rate,");
         sb.append("FD.MaxRate,PM.PName,FD.amount,FD.maxAmount,FD.percent,");
-        sb.append("FD.maxPercent,PM.pCode,SFP.uomid,SFP.GroupName,SFP.GroupType,FD.isFreeCombination,FD.Type,UM.ListName,FD.everyuomid,FD.everyQty FROM SchemeFreeMaster ");
-        sb.append("FD LEFT JOIN SchemeFreeProducts as SFP on SFP.schemeid=FD.schemeid LEFT JOIN ProductMaster PM ");
-        sb.append("ON SFP.ProductID = PM.PID ");
-        sb.append("LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') UM ON SFP.uomid = UM.ListId ");
+        sb.append("FD.maxPercent,PM.pCode,SFP.uomid,SFP.GroupName,SFP.GroupType,FD.isFreeCombination,");
+        sb.append("FD.Type,UM.ListName,FD.everyuomid,FD.everyQty FROM SchemeFreeMaster FD");
+
+        sb.append(" LEFT JOIN SchemeFreeProducts as SFP on SFP.schemeid=FD.schemeid");
+        sb.append(" LEFT JOIN ProductMaster PM ON SFP.ProductID = PM.PID");
+        sb.append(" LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') UM ON SFP.uomid = UM.ListId");
+
         sb.append(" WHERE  ((SFP.FreeQty>0 and SFP.MaxQty>0) OR SFP.productid ISNULL)");
         sb.append(" ORDER BY FD.SchemeID,SFP.GroupName");
 
@@ -542,11 +543,32 @@ public class SchemeDetailsMasterHelper {
                     if (schemeBO.getFreeProducts() == null) {
                         schemeBO.setFreeProducts(new ArrayList<SchemeProductBO>());
                     }
+
+
+                    //updating stock for free products
+                    if (bmodel.productHelper.getProductMasterBOById(productBO.getProductId()) != null) {
+                        productBO.setStock(bmodel.productHelper.getProductMasterBOById(productBO.getProductId()).getSIH());
+                    }
+
                     schemeBO.getFreeProducts().add(productBO);
 
                     mFreeGroupTypeByFreeGroupName.put(
                             schemeID + productBO.getGroupName(),
                             productBO.getGroupBuyType());
+
+                    if(mFreeGroupNameListBySchemeId.get(productBO.getSchemeId())!=null){
+                        ArrayList<String> mGroupNames=mFreeGroupNameListBySchemeId.get(productBO.getSchemeId());
+                        if(!mGroupNames.contains(productBO.getGroupName())) {
+                            mGroupNames.add(productBO.getGroupName());
+                        }
+                        mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(),mGroupNames);
+
+                    }
+                    else {
+                        ArrayList<String> mGroupNames=new ArrayList<>();
+                        mGroupNames.add(productBO.getGroupName());
+                        mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(),mGroupNames);
+                    }
                 }
             }
         }
@@ -561,88 +583,7 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-    /**
-     * Download free group names
-     * @param db
-     */
-    private void downloadFreeGroupName(DBUtil db) {
-        mFreeGroupNameListBySchemeId = new HashMap<>();
-        ArrayList<String> freeGroupNameList = new ArrayList<>();
 
-        Cursor c = db
-                .selectSQL("select distinct SFM.schemeID,SFP.GroupName from schemeFreeMaster SFM inner Join SchemeFreeProducts SFP "
-                        + "on SFM.schemeID=SFP.schemeID where SFP.freeQty>0 and SFP.maxQty>0 order by SFM.schemeid,SFP.GroupName");
-        if (c.getCount() > 0) {
-            String schemeID = "";
-            while (c.moveToNext()) {
-
-                if (!schemeID.equals(c.getString(0))) {
-                    if (!schemeID.equals("")) {
-                        mFreeGroupNameListBySchemeId.put(schemeID,
-                                freeGroupNameList);
-                        freeGroupNameList = new ArrayList<>();
-                        freeGroupNameList.add(c.getString(1));
-                        schemeID = c.getString(0);
-
-                    } else {
-                        freeGroupNameList.add(c.getString(1));
-                        schemeID = c.getString(0);
-
-                    }
-                } else {
-                    freeGroupNameList.add(c.getString(1));
-                }
-
-                if (freeGroupNameList.size() > 0) {
-                    mFreeGroupNameListBySchemeId.put(schemeID,
-                            freeGroupNameList);
-                }
-
-            }
-        }
-        c.close();
-
-    }
-
-    private void downloadOffInvoiceFreeGroupName(DBUtil db) {
-        if (mFreeGroupNameListBySchemeId == null)
-            mFreeGroupNameListBySchemeId = new HashMap<>();
-
-        ArrayList<String> freeBuyNameList = new ArrayList<String>();
-
-        Cursor c = db
-                .selectSQL("select distinct slabid,GroupName from AccumulationSchemeFreeIssues   order by slabid,GroupName");
-        if (c.getCount() > 0) {
-            String schemeID = "";
-            while (c.moveToNext()) {
-
-                if (!schemeID.equals(c.getString(0))) {
-                    if (!schemeID.equals("")) {
-                        mFreeGroupNameListBySchemeId.put(schemeID,
-                                freeBuyNameList);
-                        freeBuyNameList = new ArrayList<String>();
-                        freeBuyNameList.add(c.getString(1));
-                        schemeID = c.getString(0);
-
-                    } else {
-                        freeBuyNameList.add(c.getString(1));
-                        schemeID = c.getString(0);
-
-                    }
-                } else {
-                    freeBuyNameList.add(c.getString(1));
-                }
-
-                if (freeBuyNameList.size() > 0) {
-                    mFreeGroupNameListBySchemeId.put(schemeID,
-                            freeBuyNameList);
-                }
-
-            }
-        }
-        c.close();
-
-    }
 
     public HashMap<String, ArrayList<String>> getFreeGroupNameListBySchemeID() {
         return mFreeGroupNameListBySchemeId;
@@ -739,14 +680,14 @@ public class SchemeDetailsMasterHelper {
 
         List<SchemeProductBO> schemeBuyProducts = schemeBO.getBuyingProducts();
         ArrayList<ProductMasterBO> schemeAccumulationList = null;
-        if (bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeid() != null) {
+        if (bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeId() != null) {
             schemeAccumulationList = bmodel.schemeDetailsMasterHelper
 
-                    .getSchemeHistoryListBySchemeid().get(schemeBO.getParentId() + "");
+                    .getSchemeHistoryListBySchemeId().get(schemeBO.getParentId() + "");
         }
         ArrayList<String> productIdList = null;
-        if (bmodel.schemeDetailsMasterHelper.getProdcutIdListByAlreadyAppliedSchemeId() != null) {
-            productIdList = bmodel.schemeDetailsMasterHelper.getProdcutIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
+        if (bmodel.schemeDetailsMasterHelper.getProductIdListByAlreadyAppliedSchemeId() != null) {
+            productIdList = bmodel.schemeDetailsMasterHelper.getProductIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
         }
         for (SchemeProductBO schemeProductBo : schemeBuyProducts) {
 
@@ -902,15 +843,15 @@ public class SchemeDetailsMasterHelper {
         double totalValue = 0;
         List<SchemeProductBO> schemeBuyProducts = schemeBO.getBuyingProducts();
         ArrayList<ProductMasterBO> schemeAccumulationList = null;
-        if (bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeid() != null) {
+        if (bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeId() != null) {
             schemeAccumulationList = bmodel.schemeDetailsMasterHelper
 
-                    .getSchemeHistoryListBySchemeid().get(schemeBO.getParentId() + "");
+                    .getSchemeHistoryListBySchemeId().get(schemeBO.getParentId() + "");
         }
 
         ArrayList<String> productIdList = null;
-        if (bmodel.schemeDetailsMasterHelper.getProdcutIdListByAlreadyAppliedSchemeId() != null) {
-            productIdList = bmodel.schemeDetailsMasterHelper.getProdcutIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
+        if (bmodel.schemeDetailsMasterHelper.getProductIdListByAlreadyAppliedSchemeId() != null) {
+            productIdList = bmodel.schemeDetailsMasterHelper.getProductIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
         }
         for (SchemeProductBO schemeProductBo : schemeBuyProducts) {
             // already scheme applied in previous days
@@ -1721,12 +1662,12 @@ public class SchemeDetailsMasterHelper {
                 if (productMasterBO != null) {
                     ArrayList<ProductMasterBO> schemeAccumulationList = null;
                     if (bmodel.schemeDetailsMasterHelper
-                            .getSchemeHistoryListBySchemeid() != null) {
+                            .getSchemeHistoryListBySchemeId() != null) {
 
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
 
                         schemeAccumulationList = bmodel.schemeDetailsMasterHelper
-                                .getSchemeHistoryListBySchemeid().get(
+                                .getSchemeHistoryListBySchemeId().get(
                                         schemeBO.getParentId() + "");
                     }
                     int quantity = (productMasterBO.getOrderedCaseQty() * productMasterBO
@@ -1950,11 +1891,11 @@ public class SchemeDetailsMasterHelper {
 					/* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationValueList = null;
                     if (bmodel.schemeDetailsMasterHelper
-                            .getSchemeHistoryListBySchemeid() != null) {
+                            .getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
                         schemeAccumulationValueList = bmodel.schemeDetailsMasterHelper
 
-                                .getSchemeHistoryListBySchemeid().get(
+                                .getSchemeHistoryListBySchemeId().get(
                                         schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationValueList != null) { // Added scheme
@@ -2069,11 +2010,11 @@ public class SchemeDetailsMasterHelper {
 					/* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationList = null;
                     if (bmodel.schemeDetailsMasterHelper
-                            .getSchemeHistoryListBySchemeid() != null) {
+                            .getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
                         schemeAccumulationList = bmodel.schemeDetailsMasterHelper
 
-                                .getSchemeHistoryListBySchemeid().get(
+                                .getSchemeHistoryListBySchemeId().get(
                                         schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationList != null) { // Added scheme
@@ -2332,11 +2273,11 @@ public class SchemeDetailsMasterHelper {
 					/* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationValueList = null;
                     if (bmodel.schemeDetailsMasterHelper
-                            .getSchemeHistoryListBySchemeid() != null) {
+                            .getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
                         schemeAccumulationValueList = bmodel.schemeDetailsMasterHelper
 
-                                .getSchemeHistoryListBySchemeid().get(
+                                .getSchemeHistoryListBySchemeId().get(
                                         schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationValueList != null) { // Added scheme
@@ -2482,21 +2423,21 @@ public class SchemeDetailsMasterHelper {
      * @author rajesh.k Method to use load scheme history list
      */
     public void loadSchemeHistoryDetails() {
-        ProductMasterBO productBO = null;
-        mSchemeHistoryListByschemeid = new HashMap<String, ArrayList<ProductMasterBO>>();
+        ProductMasterBO productBO ;
+        mSchemeHistoryListByschemeid = new HashMap<>();
 
-        DBUtil db = null;
+        DBUtil db ;
         try {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             String query = "SELECT DISTINCT A.pid, A.batchid, A.schid,IFNULL(PieceUOM.Qty,0) AS PieceQty ,IFNULL(OuterUOM.Qty,0) as OouterQty,"
                     + " IFNULL(CaseUOM.Qty,0) as CaseQty" +
-                    ",(IFNULL(PieceUOM.value,0)+IFNULL(OuterUOM.value,0)+IFNULL(CaseUOM.value,0)) " +
-                    " FROM SchemeAchHistory A"
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as PieceUOM ON PieceUOM.Pid = A.pid" +
-                    " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as OuterUOM ON OuterUOM.Pid = A.pid" +
-                    " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
+                        ",(IFNULL(PieceUOM.value,0)+IFNULL(OuterUOM.value,0)+IFNULL(CaseUOM.value,0)) "
+                    + " FROM SchemeAchHistory A"
+                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as PieceUOM ON PieceUOM.Pid = A.pid"
+                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as OuterUOM ON OuterUOM.Pid = A.pid"
+                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
                     + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and invoicestatus=1"
                     + " LEFT JOIN SchemeDetail SD on SD.parentid=A.schid and OH.orderid=SD.orderid"
                     + " where OH.upload!='X' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
@@ -2504,7 +2445,7 @@ public class SchemeDetailsMasterHelper {
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 String schemeID = "";
-                ArrayList<ProductMasterBO> schemeList = new ArrayList<ProductMasterBO>();
+                ArrayList<ProductMasterBO> schemeList = new ArrayList<>();
                 while (c.moveToNext()) {
 
                     productBO = new ProductMasterBO();
@@ -2520,7 +2461,7 @@ public class SchemeDetailsMasterHelper {
                         if (!schemeID.equals("")) {
                             mSchemeHistoryListByschemeid.put(schemeID,
                                     schemeList);
-                            schemeList = new ArrayList<ProductMasterBO>();
+                            schemeList = new ArrayList<>();
                             schemeList.add(productBO);
                             schemeID = c.getString(2);
                         } else {
@@ -2530,7 +2471,6 @@ public class SchemeDetailsMasterHelper {
                     } else {
                         schemeList.add(productBO);
                     }
-                    //schemeList.add(productBO);
 
                 }
                 if (schemeList.size() > 0) {
@@ -2555,7 +2495,7 @@ public class SchemeDetailsMasterHelper {
      * @author rajesh.k method to return hashmap of Schemeachievement history
      * details
      */
-    public HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeid() {
+    public HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeId() {
         return mSchemeHistoryListByschemeid;
     }
 
@@ -4203,7 +4143,7 @@ public class SchemeDetailsMasterHelper {
      *
      * @param db
      */
-    private void applyPeriodWiseScheme(DBUtil db) {
+    private void downloadPeriodWiseScheme(DBUtil db) {
         final String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL_EIPHEN);
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct SM.schemeid,SB.productid,");
@@ -4247,7 +4187,7 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-    private SparseArray<ArrayList<String>> getProdcutIdListByAlreadyAppliedSchemeId() {
+    private SparseArray<ArrayList<String>> getProductIdListByAlreadyAppliedSchemeId() {
         return mProductidListByAlreadyApplySchemeId;
     }
 
@@ -4307,7 +4247,6 @@ public class SchemeDetailsMasterHelper {
                     ProductMasterBO prdBO = bmodel.productHelper.getProductMasterBOById(c
                             .getString(0));
                     if (prdBO != null) {
-                        prdBO.setIsscheme(0);
                         prdBO.setIsPromo(false);
                     }
 
@@ -4341,7 +4280,6 @@ public class SchemeDetailsMasterHelper {
                         ProductMasterBO schemeProductBo = bmodel.productHelper.getProductMasterBOById(schemeCursor.getString(0));
                         if (schemeCursor.getInt(3) == 0 || (schemeCursor.getInt(3) == 1 && mGroupIDList != null && mGroupIDList.contains(schemeCursor.getString(2) + schemeCursor.getString(1)))) {
                             if (schemeProductBo != null) {
-                                schemeProductBo.setIsscheme(1);
                                 schemeProductBo.setIsPromo(true);
                             }
                         }
@@ -4415,7 +4353,6 @@ public class SchemeDetailsMasterHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             mOffInvoiceSchemeList = new ArrayList<>();
-            mOffInvoiceSchemeFreeProductList = new ArrayList<>();
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT distinct productid,Pname,uomid,Qty,ASF.Slabid,ASF.schemeid,ASF.SchemeDesc,ASF.groupName, ASF.groupType,ASF.schemeLogic  from AccumulationSchemeFreeIssues ASF ");
             sb.append("inner join Productmaster PM on PM.pid=ASF.productid ");
@@ -4428,11 +4365,11 @@ public class SchemeDetailsMasterHelper {
 
                     ArrayList<SchemeProductBO> freeProductList = new ArrayList<>();
                     SchemeProductBO schemeProductBO;
-                    int schemeid = 0;
+                    int schemeId = 0;
                     int parentId = 0;
                     String schemeDesc = "";
                     String freeType = "";
-                    SchemeBO schemeBO = null;
+                    SchemeBO schemeBO ;
 
                     if (mFreeGroupTypeByFreeGroupName == null) {
                         mFreeGroupTypeByFreeGroupName = new HashMap<>();
@@ -4448,17 +4385,15 @@ public class SchemeDetailsMasterHelper {
                         schemeProductBO.setQuantityMaximum(freeQty);
                         schemeProductBO.setQuantityActualCalculated(freeQty);
                         schemeProductBO.setQuantityMaxiumCalculated(freeQty);
-                        //schemeProductBO.setQuantitySelected(freeQty);
                         schemeProductBO.setSchemeId(c.getInt(4) + "");
                         schemeProductBO.setAccProductParentId(c.getInt(5) + "");
                         schemeProductBO.setGroupName(c.getString(7));
 
                         schemeProductBO.setGroupBuyType(c.getString(8));
-                        mOffInvoiceSchemeFreeProductList.add(schemeProductBO);
-                        if (schemeid != c.getInt(4)) {
-                            if (schemeid != 0) {
+                        if (schemeId != c.getInt(4)) {
+                            if (schemeId != 0) {
                                 schemeBO = new SchemeBO();
-                                schemeBO.setSchemeId(schemeid + "");
+                                schemeBO.setSchemeId(schemeId + "");
                                 schemeBO.setParentId(parentId);
                                 schemeBO.setFreeType(freeType);
                                 schemeBO.setBuyType("SV");
@@ -4468,15 +4403,15 @@ public class SchemeDetailsMasterHelper {
 
 
                                 schemeBO.setFreeProducts(freeProductList);
-                                freeProductList = new ArrayList<SchemeProductBO>();
+                                freeProductList = new ArrayList<>();
                                 freeProductList.add(schemeProductBO);
-                                schemeid = c.getInt(4);
+                                schemeId = c.getInt(4);
                                 schemeDesc = c.getString(6);
                                 freeType = c.getString(9);
                                 parentId = c.getInt(5);
                             } else {
                                 freeProductList.add(schemeProductBO);
-                                schemeid = c.getInt(4);
+                                schemeId = c.getInt(4);
                                 parentId = c.getInt(5);
                                 schemeDesc = c.getString(6);
                                 freeType = c.getString(9);
@@ -4488,11 +4423,28 @@ public class SchemeDetailsMasterHelper {
 
                         mFreeGroupTypeByFreeGroupName.put(c.getInt(4) + c.getString(7), c.getString(8));
 
+                        //preparing free group name list by scheme id
+                        if(mFreeGroupNameListBySchemeId.get(schemeProductBO.getSchemeId())!=null){
+                            ArrayList<String> mGroupNames=mFreeGroupNameListBySchemeId.get(schemeProductBO.getSchemeId());
+                            if(!mGroupNames.contains(schemeProductBO.getGroupName())) {
+                                mGroupNames.add(schemeProductBO.getGroupName());
+                            }
+                            mFreeGroupNameListBySchemeId.put(schemeProductBO.getSchemeId(),mGroupNames);
+
+                        }
+                        else {
+                            ArrayList<String> mGroupNames=new ArrayList<>();
+                            mGroupNames.add(schemeProductBO.getGroupName());
+                            mFreeGroupNameListBySchemeId.put(schemeProductBO.getSchemeId(),mGroupNames);
+                        }
+                        //
+
+
                     }
                     if (freeProductList.size() > 0) {
 
                         schemeBO = new SchemeBO();
-                        schemeBO.setSchemeId(schemeid + "");
+                        schemeBO.setSchemeId(schemeId + "");
                         schemeBO.setParentId(parentId);
                         schemeBO.setFreeType(freeType);
                         schemeBO.setBuyType("SV");
@@ -4505,9 +4457,7 @@ public class SchemeDetailsMasterHelper {
                 }
                 c.close();
             }
-            downloadOffInvoiceFreeGroupName(db);
             db.closeDB();
-            //updateOffInvoiceFreeProductGroupName();
         } catch (Exception e) {
             Commons.print(e + "");
         }

@@ -869,7 +869,7 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                 // update free product size
                 if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
                     for (ProductMasterBO product : mProductsForAdapter) {
-                        if (product.getIsscheme() == 1) {
+                        if (product.isPromo()) {
                             if (product.getSchemeProducts() != null) {
                                 schemeSize = schemeSize
                                         + product.getSchemeProducts().size();
@@ -1041,7 +1041,7 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                             + bmodel.formatValue(totalProdVal) + "\r\n";
                     x += 10;
                     // print scheme free product starts
-                    if (productBO.getIsscheme() == 1) {
+                    if (productBO.isPromo()) {
                         if (productBO.getSchemeProducts() != null) {
 
                             List<SchemeProductBO> freeProductList = productBO

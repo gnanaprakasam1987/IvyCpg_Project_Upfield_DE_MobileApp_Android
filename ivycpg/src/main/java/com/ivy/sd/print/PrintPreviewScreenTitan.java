@@ -309,7 +309,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
 
 
             for (ProductMasterBO productBO : mOrderedProductList) {
-                if (productBO.getIsscheme() == 1) {
+                if (productBO.isPromo()) {
                     List<SchemeProductBO> schemeFreeList = productBO.getSchemeProducts();
                     if (schemeFreeList != null) {
                         totalFrreProudctCount = totalFrreProudctCount + schemeFreeList.size();
@@ -812,7 +812,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
 
 
                 for (ProductMasterBO productBO : mOrderedProductList) {
-                    if (productBO.getIsscheme() == 1) {
+                    if (productBO.isPromo()) {
                         List<SchemeProductBO> schemeFreeList = productBO.getSchemeProducts();
                         if (schemeFreeList != null) {
                             totalFrreProudctCount = totalFrreProudctCount + schemeFreeList.size();

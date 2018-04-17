@@ -689,14 +689,6 @@ public class ProductMasterBO {
         this.schemeBO = schemeBO;
     }
 
-    public int getIsscheme() {
-        return isscheme;
-    }
-
-    public void setIsscheme(int isscheme) {
-        this.isscheme = isscheme;
-    }
-
     public int getCaseUomId() {
         return caseUomId;
     }

@@ -523,7 +523,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                         } catch (Exception e) {
                             Commons.printException(e);
                         }
-                    } else if (productBO.getIsscheme() == 1) {
+                    } else if (productBO.isPromo()) {
                         SchemeBO schemeBO = productBO.getSchemeBO();
                         if (schemeBO != null) {
 
@@ -640,7 +640,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                             batchlist.addView(outerqty);
                             batchlist.addView(pcsqty);
                         }
-                    if (productBO.getIsscheme() == 1
+                    if (productBO.isPromo()
                             && productBO.getSchemeProducts() != null) {
                         int size = productBO.getSchemeProducts().size();
                         for (int i = 0; i < size; i++) {
@@ -1235,7 +1235,7 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                                         + ")," + "\r\n";
 
                         }
-                    if (productBO.getIsscheme() == 1
+                    if (productBO.isPromo()
                             && productBO.getSchemeProducts() != null) {
                         int size = productBO.getSchemeProducts().size();
                         for (int i = 0; i < size; i++) {

@@ -1679,7 +1679,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     float taxDiscount = (float) vatAmount;
                     double percent = 0;
-                    if (sku.getIsscheme() == 1) {
+                    if (sku.isPromo() ) {
                         percent = sku.getMschemeper();
                     }
 
@@ -2069,7 +2069,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            if (mOrderedProductList.get(groupPosition).getIsscheme() == 1 && mOrderedProductList.get(groupPosition).getSchemeProducts() != null) {
+            if (mOrderedProductList.get(groupPosition).isPromo() && mOrderedProductList.get(groupPosition).getSchemeProducts() != null) {
                 return mOrderedProductList.get(groupPosition)
                         .getSchemeProducts().size();
             }
