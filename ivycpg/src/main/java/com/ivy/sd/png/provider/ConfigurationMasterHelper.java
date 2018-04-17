@@ -3299,6 +3299,7 @@ public class ConfigurationMasterHelper {
             STOCK_DIST_INV = false;
             SHOW_INV_DASH = false;
             SHOW_SMP_DASH = false;
+            SHOW_KPIBARCHART_DASH = false;
 
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;

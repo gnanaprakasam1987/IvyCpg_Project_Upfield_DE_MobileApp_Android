@@ -39,6 +39,10 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         this.dashBoardBOS = mDashboardList;
     }
 
+    public KpiBarChartFragment() {
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,25 +52,27 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        mbarChart = (BarChart) view.findViewById(R.id.bar_chart);
+        mbarChart = view.findViewById(R.id.bar_chart);
         mbarChart.getAxisLeft().setDrawGridLines(false);
         mbarChart.getXAxis().setDrawGridLines(false);
         mbarChart.getDescription().setEnabled(false);
 
-        setData(10, 20.2f);
+        setData();
         return view;
     }
 
-    private void setData(int count, float range) {
+    private void setData() {
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
         for (int i = 0; i < dashBoardBOS.size(); i++) {
             yVals1.add(new BarEntry(i, dashBoardBOS.get(i).getCalculatedPercentage(), dashBoardBOS.get(i).getText()));
         }
         BarDataSet set1;
-        set1 = new BarDataSet(yVals1, "The year 2017");
+        set1 = new BarDataSet(yVals1, "");
 
         set1.setDrawIcons(false);
+        set1.setValueTextColor(Color.WHITE);
+        set1.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         set1.setColors(ColorTemplate.MATERIAL_COLORS);
         ArrayList<String> mStirngList = new ArrayList<>();
@@ -88,15 +94,19 @@ public class KpiBarChartFragment extends IvyBaseFragment {
 
         XAxis xLabels = mbarChart.getXAxis();
         xLabels.setTextColor(Color.WHITE);
+        xLabels.setTextSize(10f);
+        xLabels.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        xLabels.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         YAxis yAxisRight = mbarChart.getAxisRight();
         yAxisRight.setEnabled(false);
 
         YAxis yAxis = mbarChart.getAxisLeft();
-        yAxis.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        yAxis.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         yAxis.setTextColor(Color.WHITE);
+        yAxis.setTextSize(10f);
         yAxis.setAxisMinimum(0f);
+
+        mbarChart.getLegend().setEnabled(false);
     }
 
 }
