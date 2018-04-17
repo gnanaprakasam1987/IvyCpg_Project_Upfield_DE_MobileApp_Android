@@ -429,7 +429,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             for (Integer parentId : parentIdList) {
                 boolean isSameGroupAvailable = bmodel.schemeDetailsMasterHelper.isSameGroupAvailableinDifferentSlab(parentId);
 
-                final ArrayList<String> schemeIdList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(parentId);
+                final ArrayList<String> schemeIdList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(parentId);
                 /*if (schemeIdList.size() == 1) {
                     mSchemeDetailWidth = (mTotalScreenWidth) / 4 - 20;
                     mProductNameWidth = mTotalScreenWidth - mSchemeDetailWidth - 40;
@@ -521,7 +521,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         layoutParams2.gravity = Gravity.CENTER_VERTICAL;
 
 
-                        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(parentId);
+                        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(parentId);
                         if (schemeList != null) {
                             for (int k = schemeList.size() - 1; k >= 0; k--) {
 
@@ -687,7 +687,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             slabNameTV.setText(schemeBO1.getScheme());
                             mainLayout.addView(slabNameTV);
 
-                            ArrayList<String> groupNameList = bmodel.schemeDetailsMasterHelper.getFreeProductBuyNameListBySchemeID().get(schemeId);
+                            ArrayList<String> groupNameList = bmodel.schemeDetailsMasterHelper.getFreeGroupNameListBySchemeID().get(schemeId);
                             if (groupNameList != null) {
                                 int j = 1;
                                 for (String grpName : groupNameList) {
@@ -794,7 +794,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
 
         if (size > 0) {
@@ -933,7 +933,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
         if (schemeList != null && size > 0) {
             SchemeBO schemeBO = null;
@@ -1051,7 +1051,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
         if (schemeList != null && size > 0) {
             SchemeBO schemeBO = null;
@@ -1171,7 +1171,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         final ArrayList<String> productIdList = bmodel.schemeDetailsMasterHelper.getProductIdListByParentId().get(parentId);
         if (productIdList != null) {
 
-            final ArrayList<String> schemeIdList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(parentId);
+            final ArrayList<String> schemeIdList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(parentId);
             int size = schemeIdList.size();
             int j = 0;
 
@@ -1303,7 +1303,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
         if (schemeList != null && size > 0) {
             SchemeBO schemeBO = null;
@@ -1430,7 +1430,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
         if (schemeList != null && size > 0) {
             SchemeBO schemeBO = null;
@@ -1545,7 +1545,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         }
 
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdlistByParentID().get(schemeparentId);
+        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeparentId);
         boolean isPercentageDiscAvailable = false;
         boolean isAmountDiscAvailable = false;
         boolean isPriceDiscAvailable = false;

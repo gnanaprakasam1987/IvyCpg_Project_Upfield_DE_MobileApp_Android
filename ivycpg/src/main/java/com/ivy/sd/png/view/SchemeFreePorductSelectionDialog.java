@@ -112,7 +112,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
 
         if (mSchemeBO.getIsFreeCombination() == 1) {
             mFreeGroupNameList = mBmodel.schemeDetailsMasterHelper
-                    .getFreeProductBuyNameListBySchemeID().get(
+                    .getFreeGroupNameListBySchemeID().get(
                             mSchemeBO.getSchemeId());
         }
 
@@ -166,7 +166,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
 		 * new ArrayList<SchemeProductBO>();
 		 * 
 		 * mFreeGroupNameList = mBmodel.schemeDetailsMasterHelper
-		 * .getFreeProductBuyNameListBySchemeID().get( mSchemeBO.getSchemeId());
+		 * .getFreeGroupNameListBySchemeID().get( mSchemeBO.getSchemeId());
 		 * if (mFreeGroupNameList != null) { Log.d(TAG, "Group Name list size :"
 		 * + mFreeGroupNameList.size()); for (String freeGroupName :
 		 * mFreeGroupNameList) {
