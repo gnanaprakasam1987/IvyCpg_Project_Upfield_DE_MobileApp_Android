@@ -42,7 +42,6 @@ public class SchemeDetailsMasterHelper {
     private static final String ANY_LOGIC = "ANY"; // use ANY type scheme logic
     private static final String AND_LOGIC = "AND"; // use AND type scheme logic
     private static final String ONLY_LOGIC = "ONLY";// use ONLY type scheme
-    // logic
 
     private static final String SCHEME_AMOUNT = "SCH_AMT";
     private static final String SCHEME_PERCENTAGE = "SCH_PER";
@@ -50,38 +49,45 @@ public class SchemeDetailsMasterHelper {
     private static final String SCHEME_FREE_PRODUCT = "SCH_FPRD";
     public static final String SCHEME_PERCENTAGE_BILL = "BPER";
 
-
     private static final String PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING = "MTR";
     private static final String PROCESS_TYPE_OTP = "OTP";
     private static final String PROCESS_TYPE_ONE_TIME_WITH_PERCENTAGE = "OTPR";
     private static final String PROCESS_TYPE_MTS = "MTS"; //Mulitple Time in Multiple Slab apply within the same scheme
     private static final String PROCESS_TYPE_PRORATA = "MSP"; //PRORATA-
 
-    //Scheme Master lists
+    //All applicable schemes
     private ArrayList<Integer> mParentIDList;
+    //Slab ID list by scheme ID
     private HashMap<Integer, ArrayList<String>> mSchemeIDListByParentID;
+    //All scheme object list
     private List<SchemeBO> mSchemeList;
+    //Scheme object by its scheme ID
     private Map<String, SchemeBO> mSchemeById;
-    private HashMap<String, SchemeProductBO> mBuyProductBoBySchemeidWithpid;
+    //Buy product object by its scheme ID and product ID
+    private HashMap<String, SchemeProductBO> mBuyProductBoBySchemeIdWithPid;
 
 
     //Lists used for showing all schemes applicable for the product
     private HashMap<String, ArrayList<Integer>> mParentIdListByProductId;
     private SparseArray<ArrayList<String>> mProductIdListByParentId;
 
-    //
-    private ArrayList<SchemeBO> mApplySchemeList;
-
-    //To show scheme free products in free product dialog and scheme detail screen
+    //To show scheme free products in free product selection dialog and scheme detail screen
     private HashMap<String, ArrayList<String>> mFreeGroupNameListBySchemeId;
     private HashMap<String, String> mFreeGroupTypeByFreeGroupName;
 
-    private HashMap<String, ArrayList<ProductMasterBO>> mSchemeHistoryListByschemeid;
-    private SparseArray<ArrayList<String>> mProductidListByAlreadyApplySchemeId;
-    private ArrayList<SchemeBO> mOffInvoiceSchemeList;
-    private ArrayList<SchemeBO> mOffInvoiceAppliedSchemeList;
-    private Map<String, List<SchemeBO>> mSchemeByProductId;
+    //Accumulation scheme - Ordered product list by its scheme Id
+    private HashMap<String, ArrayList<ProductMasterBO>> mSchemeHistoryListBySchemeId;
+    //Already applied scheme - Buy product list by it scheme Id
+    private SparseArray<ArrayList<String>> mProductIdListByAlreadyApplySchemeId;
 
+    //Accumulation scheme free issues (or) Off invoice scheme list
+    private ArrayList<SchemeBO> mOffInvoiceSchemeList;
+    //Applied Off invoice scheme list
+    private ArrayList<SchemeBO> mOffInvoiceAppliedSchemeList;
+
+
+    //
+    private ArrayList<SchemeBO> mAppliedSchemeList;
 
     //Display Scheme
     private ArrayList<SchemeBO> mDisplaySchemeMasterList;
@@ -126,7 +132,7 @@ public class SchemeDetailsMasterHelper {
             //  load buy product list
             downloadBuySchemeDetails(db, retailerId, userId, distributorId, channelId, locationId, accountId, priorityProductId,mGroupIdList);
             //  update free product
-            updateFreeProducts(db);
+            downloadFreeProducts(db);
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
                 downloadParentIdListByProduct(db,mGroupIdList);
@@ -328,7 +334,7 @@ public class SchemeDetailsMasterHelper {
                                            ,int accountId,int priorityProductId,ArrayList<String> mGroupIDList) {
         mSchemeById = new HashMap<>();
         mSchemeList = new ArrayList<>();
-        mBuyProductBoBySchemeidWithpid = new HashMap<>();
+        mBuyProductBoBySchemeIdWithPid = new HashMap<>();
 
 
 
@@ -430,7 +436,7 @@ public class SchemeDetailsMasterHelper {
                     }
 
 
-                    mBuyProductBoBySchemeidWithpid.put(schemeBO.getSchemeId() + schemeProductBo.getProductId(), schemeProductBo);
+                    mBuyProductBoBySchemeIdWithPid.put(schemeBO.getSchemeId() + schemeProductBo.getProductId(), schemeProductBo);
 
                     if (!schemeID.equals(schemeBO.getSchemeId())) {
                         if (!schemeID.equals("")) {
@@ -476,14 +482,14 @@ public class SchemeDetailsMasterHelper {
     }
 
     public HashMap<String, SchemeProductBO> getBuyProductBOBySchemeidWithPid() {
-        return mBuyProductBoBySchemeidWithpid;
+        return mBuyProductBoBySchemeIdWithPid;
     }
 
     /**
      * updating scheme object with the free product details
      * @param db Database object
      */
-    private void updateFreeProducts(DBUtil db) {
+    private void downloadFreeProducts(DBUtil db) {
         mFreeGroupTypeByFreeGroupName = new HashMap<>();
         mFreeGroupNameListBySchemeId=new HashMap<>();
 
@@ -589,9 +595,6 @@ public class SchemeDetailsMasterHelper {
         return mFreeGroupNameListBySchemeId;
     }
 
-    public List<SchemeBO> getSchemesByProduct(String productId) {
-        return mSchemeByProductId.get(productId);
-    }
 
     /**
      * @param schemeBO                - combination parent schemeBO
@@ -2420,11 +2423,11 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @author rajesh.k Method to use load scheme history list
+     * Download accumulation schemes
      */
-    public void loadSchemeHistoryDetails() {
+    public void downloadSchemeHistoryDetails() {
         ProductMasterBO productBO ;
-        mSchemeHistoryListByschemeid = new HashMap<>();
+        mSchemeHistoryListBySchemeId = new HashMap<>();
 
         DBUtil db ;
         try {
@@ -2459,7 +2462,7 @@ public class SchemeDetailsMasterHelper {
 
                     if (!schemeID.equals(c.getString(2))) {
                         if (!schemeID.equals("")) {
-                            mSchemeHistoryListByschemeid.put(schemeID,
+                            mSchemeHistoryListBySchemeId.put(schemeID,
                                     schemeList);
                             schemeList = new ArrayList<>();
                             schemeList.add(productBO);
@@ -2474,7 +2477,7 @@ public class SchemeDetailsMasterHelper {
 
                 }
                 if (schemeList.size() > 0) {
-                    mSchemeHistoryListByschemeid.put(schemeID, schemeList);
+                    mSchemeHistoryListBySchemeId.put(schemeID, schemeList);
                 }
 
 
@@ -2496,7 +2499,7 @@ public class SchemeDetailsMasterHelper {
      * details
      */
     public HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeId() {
-        return mSchemeHistoryListByschemeid;
+        return mSchemeHistoryListBySchemeId;
     }
 
 
@@ -2509,7 +2512,7 @@ public class SchemeDetailsMasterHelper {
 
         mAchieved_qty_or_salesValue_by_schemeId_nd_productid = new HashMap<>();
         // save applied scheme
-        mApplySchemeList = new ArrayList<SchemeBO>();
+        mAppliedSchemeList = new ArrayList<SchemeBO>();
         if (mParentIDList != null) {
             for (Integer parentID : mParentIDList) {
                 int slabPosition = 0;
@@ -2530,7 +2533,7 @@ public class SchemeDetailsMasterHelper {
                                 boolean flag = isSchemeDone(schemeBO, parentID, (slabPosition == 1 ? true : false));
                                 // if flag is true ,scheme achieved successfully
                                 if (flag) {
-                                    mApplySchemeList.add(schemeBO);
+                                    mAppliedSchemeList.add(schemeBO);
                                     if (schemeBO.isQuantityTypeSelected()) {
                                         List<SchemeProductBO> freeProductList = schemeBO
                                                 .getFreeProducts();
@@ -2562,7 +2565,7 @@ public class SchemeDetailsMasterHelper {
                     schemeBO.setQuantityTypeSelected(true);
                     schemeBO.setApplyCount(1);
                     schemeBO.setIsFreeCombination(1);
-                    mApplySchemeList.add(schemeBO);
+                    mAppliedSchemeList.add(schemeBO);
                 }
 
             }
@@ -2681,8 +2684,8 @@ public class SchemeDetailsMasterHelper {
      */
 
     public ArrayList<SchemeBO> getAppliedSchemeList() {
-        if (mApplySchemeList != null) {
-            return mApplySchemeList;
+        if (mAppliedSchemeList != null) {
+            return mAppliedSchemeList;
         }
         return new ArrayList<SchemeBO>();
     }
@@ -2696,9 +2699,9 @@ public class SchemeDetailsMasterHelper {
      * Method to save all applied scheme details in SQLite
      */
     public void insertScemeDetails(String orderID, DBUtil db, String flag) {
-        if (mApplySchemeList != null) {
+        if (mAppliedSchemeList != null) {
 
-            for (SchemeBO schemeBO : mApplySchemeList) {
+            for (SchemeBO schemeBO : mAppliedSchemeList) {
 
                 if (schemeBO.isAmountTypeSelected()
                         || schemeBO.isPriceTypeSeleted()
@@ -3107,7 +3110,7 @@ public class SchemeDetailsMasterHelper {
      * @author rajesh.k Method to download ordered scheme buy products
      */
     public void loadOrderedBuyProducts(String id, DBUtil db) {
-        mApplySchemeList = new ArrayList<SchemeBO>();
+        mAppliedSchemeList = new ArrayList<SchemeBO>();
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct schemeid,SchemeType,value,amount,count(productid) from SchemeDetail where ");
 
@@ -3140,7 +3143,7 @@ public class SchemeDetailsMasterHelper {
                     }
 
                 }
-                mApplySchemeList.add(schemeBO);
+                mAppliedSchemeList.add(schemeBO);
 
             }
         }
@@ -3235,8 +3238,8 @@ public class SchemeDetailsMasterHelper {
                 + bmodel.QT(invoiceID) + " where orderID=" + orderID);
         db.updateSQL("update SchemeFreeProductDetail set Invoiceid="
                 + bmodel.QT(invoiceID) + " where orderID=" + orderID);
-        if (mApplySchemeList != null) {
-            for (SchemeBO schemeBO : mApplySchemeList) {
+        if (mAppliedSchemeList != null) {
+            for (SchemeBO schemeBO : mAppliedSchemeList) {
                 if (schemeBO.isQuantityTypeSelected()) {
                     List<SchemeProductBO> freeProductList = schemeBO
                             .getFreeProducts();
@@ -3504,7 +3507,7 @@ public class SchemeDetailsMasterHelper {
      * @author rajesh.k method to use show invoice report and order report
      */
     public void loadSchemeReportDetails(String id, boolean flag) {
-        mApplySchemeList = new ArrayList<>();
+        mAppliedSchemeList = new ArrayList<>();
         SchemeProductBO schemeProductBO;
         DBUtil db = null;
         try {
@@ -3596,7 +3599,7 @@ public class SchemeDetailsMasterHelper {
                             }
                         }
                         if (!schemeIdList.contains(schemeid)) {
-                            mApplySchemeList.add(schemeBO);
+                            mAppliedSchemeList.add(schemeBO);
                             schemeIdList.add(schemeid);
                         }
 
@@ -3782,8 +3785,8 @@ public class SchemeDetailsMasterHelper {
      * Method to use update free product empty bottle return
      */
     public void updataFreeproductBottleReturn() {
-        if (mApplySchemeList != null) {
-            for (SchemeBO schemeBO : mApplySchemeList) {
+        if (mAppliedSchemeList != null) {
+            for (SchemeBO schemeBO : mAppliedSchemeList) {
                 if (schemeBO.isQuantityTypeSelected()) {
                     List<SchemeProductBO> freeProductList = schemeBO
                             .getFreeProducts();
@@ -4156,7 +4159,7 @@ public class SchemeDetailsMasterHelper {
         Cursor c = db.selectSQL(sb.toString());
         if (c.getCount() > 0) {
             int schemeId = 0;
-            mProductidListByAlreadyApplySchemeId = new SparseArray<>();
+            mProductIdListByAlreadyApplySchemeId = new SparseArray<>();
             ArrayList<String> productIdList = new ArrayList<>();
             while (c.moveToNext()) {
                 String productId = c.getString(1);
@@ -4164,7 +4167,7 @@ public class SchemeDetailsMasterHelper {
                 if (schemeId != c.getInt(0)) {
                     if (schemeId != 0) {
 
-                        mProductidListByAlreadyApplySchemeId.put(schemeId, productIdList);
+                        mProductIdListByAlreadyApplySchemeId.put(schemeId, productIdList);
                         productIdList = new ArrayList<>();
                         productIdList.add(productId);
                         schemeId = c.getInt(0);
@@ -4180,7 +4183,7 @@ public class SchemeDetailsMasterHelper {
                 }
             }
             if (productIdList.size() > 0) {
-                mProductidListByAlreadyApplySchemeId.put(schemeId, productIdList);
+                mProductIdListByAlreadyApplySchemeId.put(schemeId, productIdList);
             }
 
         }
@@ -4188,7 +4191,7 @@ public class SchemeDetailsMasterHelper {
 
 
     private SparseArray<ArrayList<String>> getProductIdListByAlreadyAppliedSchemeId() {
-        return mProductidListByAlreadyApplySchemeId;
+        return mProductIdListByAlreadyApplySchemeId;
     }
 
     /**
@@ -4347,6 +4350,10 @@ public class SchemeDetailsMasterHelper {
     }
 
 
+    /**
+     * Download accumulation scheme free issues
+     * Validation - Particular scheme should not be in 'SchemeFreeProductDetail' table(To ensure that scheme is already not delivered)
+     */
     public void downloadOffInvoiceSchemeDetails() {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,

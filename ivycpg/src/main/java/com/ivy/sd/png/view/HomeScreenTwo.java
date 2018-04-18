@@ -1733,7 +1733,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.orderAndInvoiceHelper.restoreDiscountAmount(bmodel.getRetailerMasterBO().getRetailerID());
 
                         if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
-                            bmodel.schemeDetailsMasterHelper.loadSchemeHistoryDetails();
+                            bmodel.schemeDetailsMasterHelper.downloadSchemeHistoryDetails();
 
 
                         // Reset the Configuration if Directly goes from
@@ -3764,7 +3764,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             bmodel.productHelper.downloadInStoreLocations();
 
             if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
-                bmodel.schemeDetailsMasterHelper.loadSchemeHistoryDetails();
+                bmodel.schemeDetailsMasterHelper.downloadSchemeHistoryDetails();
 
             //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
             bmodel.schemeDetailsMasterHelper.downloadOffInvoiceSchemeDetails();

@@ -1,67 +1,26 @@
 package com.ivy.sd.png.view;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.asset.AssetTrackingActivity;
-import com.ivy.cpg.view.asset.AssetTrackingHelper;
-import com.ivy.cpg.view.asset.PosmTrackingActivity;
-import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
-import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
-import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
-import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
-import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
-import com.ivy.cpg.view.order.StockAndOrder;
-import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
-import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
-import com.ivy.cpg.view.planogram.PlanoGramActivity;
-import com.ivy.cpg.view.planogram.PlanoGramHelper;
-import com.ivy.cpg.view.price.PriceTrackActivity;
-import com.ivy.cpg.view.price.PriceTrackCompActivity;
-import com.ivy.cpg.view.price.PriceTrackingHelper;
-import com.ivy.cpg.view.promotion.PromotionHelper;
-import com.ivy.cpg.view.promotion.PromotionTrackingActivity;
-import com.ivy.cpg.view.salesreturn.SalesReturnActivity;
-import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
-import com.ivy.cpg.view.sf.SODActivity;
-import com.ivy.cpg.view.sf.SODAssetActivity;
-import com.ivy.cpg.view.sf.SODAssetHelper;
-import com.ivy.cpg.view.sf.SOSActivity;
-import com.ivy.cpg.view.sf.SOSActivity_PRJSpecific;
-import com.ivy.cpg.view.sf.SOSKUActivity;
-import com.ivy.cpg.view.sf.SalesFundamentalHelper;
-import com.ivy.cpg.view.sf.ShelfShareHelper;
-import com.ivy.cpg.view.stockcheck.CombinedStockFragmentActivity;
-import com.ivy.cpg.view.stockcheck.StockCheckActivity;
-import com.ivy.cpg.view.survey.SurveyActivityNew;
-import com.ivy.cpg.view.survey.SurveyHelperNew;
-import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -70,9 +29,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.merch.MerchandisingActivity;
-import com.ivy.sd.print.PrintPreviewScreen;
-import com.ivy.sd.print.PrintPreviewScreenDiageo;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -502,7 +458,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
             bmodel.productHelper.downloadInStoreLocations();
 
             if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
-                bmodel.schemeDetailsMasterHelper.loadSchemeHistoryDetails();
+                bmodel.schemeDetailsMasterHelper.downloadSchemeHistoryDetails();
 
             //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
             bmodel.schemeDetailsMasterHelper.downloadOffInvoiceSchemeDetails();

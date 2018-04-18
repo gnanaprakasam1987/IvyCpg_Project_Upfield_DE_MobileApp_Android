@@ -1025,7 +1025,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             List<SchemeBO> schemeList = null;
                             try {
                                 schemeList = businessModel.schemeDetailsMasterHelper
-                                        .getSchemesByProduct(holder.productId);
+                                        .getmSchemeList();
                             } catch (Exception e) {
                                 Commons.printException(e + "");
                             }
