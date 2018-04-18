@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -10,26 +10,21 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 public class DashBoardActivity extends IvyBaseActivityNoActionBar {
     private Toolbar toolbar;
     private DashboardFragment fragmentObject;
-    private boolean isFormPlanning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.dashboard_viewpager_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            // Used to remove the app logo actionbar icon and set title as home
-            // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getSupportActionBar().setElevation(0);
             }
         }
-
-        String screen = getIntent().getStringExtra("screentitle");
 
         Bundle bundle = new Bundle();
         bundle.putString("retid", getIntent().getStringExtra("retid"));//retailer id is passed to load Retailer Dashboard by re-using DashboardFragment

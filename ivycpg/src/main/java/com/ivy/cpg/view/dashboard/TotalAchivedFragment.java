@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,15 +8,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.DashBoardBO;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
-
-import static com.ivy.sd.png.asean.view.R.string.achieved;
 
 public class TotalAchivedFragment extends Fragment {
 

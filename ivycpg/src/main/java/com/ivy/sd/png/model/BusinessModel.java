@@ -113,7 +113,7 @@ import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.DashBoardHelper;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.provider.DeliveryManagementHelper;
 import com.ivy.sd.png.provider.DynamicReportHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;

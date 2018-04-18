@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard;
 
 import android.graphics.Color;
 import android.graphics.Point;
@@ -18,7 +18,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.DashBoardBO;
+import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;

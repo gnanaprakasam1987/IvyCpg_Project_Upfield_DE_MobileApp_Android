@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.DashBoardBO;
+import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.Vector;

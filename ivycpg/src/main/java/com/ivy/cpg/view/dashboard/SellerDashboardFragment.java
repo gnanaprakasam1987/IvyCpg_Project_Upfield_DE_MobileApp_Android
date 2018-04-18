@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -50,7 +50,6 @@ import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DailyReportBO;
-import com.ivy.sd.png.bo.DashBoardBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.KeyPairBoolData;
@@ -61,6 +60,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1685,7 +1685,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         mFilterUser = "";
         if (distrubutorIds.equals("0"))
             users = bmodel.dashBoardHelper.downloadUserList();
-
         else
             users = bmodel.userMasterHelper.downloadUserList(distrubutorIds);
 
@@ -1763,10 +1762,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 fragment.setArguments(args);
                 fragmentList.add(fragment);
             }
-            if (bmodel.configurationMasterHelper.SHOW_KPIBARCHART_DASH|| true) {
+            if (bmodel.configurationMasterHelper.SHOW_KPIBARCHART_DASH) {
                 NUM_ITEMS++;
-                Fragment fragment = new KpiBarChartFragment(mDashboardList);
-                fragmentList.add(fragment);
+                fragmentList.add(new KpiBarChartFragment());
             }
 
         }
@@ -1848,8 +1846,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle());
                 i.putExtra("from", "4");
                 i.putExtra("flex1", flex1);
-                i.putExtra("pid",
-                        pId);
+                i.putExtra("pid",pId);
                 i.putExtra("isFromDash", true);
                 startActivity(i);
             } else {

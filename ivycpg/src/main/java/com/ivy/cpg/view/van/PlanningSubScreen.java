@@ -32,7 +32,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.DashBoardActivity;
+import com.ivy.cpg.view.dashboard.DashBoardActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.HashMap;

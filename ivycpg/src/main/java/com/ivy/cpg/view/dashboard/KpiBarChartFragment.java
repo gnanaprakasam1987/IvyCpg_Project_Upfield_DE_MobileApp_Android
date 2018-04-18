@@ -1,17 +1,13 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -21,7 +17,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.DashBoardBO;
+import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -30,18 +26,10 @@ import java.util.ArrayList;
 
 public class KpiBarChartFragment extends IvyBaseFragment {
 
-    ArrayList<DashBoardBO> dashBoardBOS;
+    ArrayList<DashBoardBO> dashBoardList;
     BarChart mbarChart;
     private BusinessModel bmodel;
 
-    public KpiBarChartFragment(ArrayList<DashBoardBO> mDashboardList) {
-        super();
-        this.dashBoardBOS = mDashboardList;
-    }
-
-    public KpiBarChartFragment() {
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +39,8 @@ public class KpiBarChartFragment extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        dashBoardList = bmodel.dashBoardHelper.getDashListViewList();
 
         mbarChart = view.findViewById(R.id.bar_chart);
         mbarChart.getAxisLeft().setDrawGridLines(false);
@@ -64,8 +54,8 @@ public class KpiBarChartFragment extends IvyBaseFragment {
     private void setData() {
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-        for (int i = 0; i < dashBoardBOS.size(); i++) {
-            yVals1.add(new BarEntry(i, dashBoardBOS.get(i).getCalculatedPercentage(), dashBoardBOS.get(i).getText()));
+        for (int i = 0; i < dashBoardList.size(); i++) {
+            yVals1.add(new BarEntry(i, dashBoardList.get(i).getCalculatedPercentage(), dashBoardList.get(i).getText()));
         }
         BarDataSet set1;
         set1 = new BarDataSet(yVals1, "");
@@ -76,8 +66,8 @@ public class KpiBarChartFragment extends IvyBaseFragment {
 
         set1.setColors(ColorTemplate.MATERIAL_COLORS);
         ArrayList<String> mStirngList = new ArrayList<>();
-        for (int i = 0; i < dashBoardBOS.size(); i++) {
-            mStirngList.add(dashBoardBOS.get(i).getText().length() > 12 ? dashBoardBOS.get(i).getText().substring(0, 11) + ".." : dashBoardBOS.get(i).getText());
+        for (int i = 0; i < dashBoardList.size(); i++) {
+            mStirngList.add(dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText());
         }
 
 
@@ -107,6 +97,7 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         yAxis.setAxisMinimum(0f);
 
         mbarChart.getLegend().setEnabled(false);
+        mbarChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
     }
 
 }

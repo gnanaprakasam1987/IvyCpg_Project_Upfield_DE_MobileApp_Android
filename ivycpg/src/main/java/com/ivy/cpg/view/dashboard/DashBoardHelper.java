@@ -1,12 +1,10 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.dashboard;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.DashBoardBO;
-import com.ivy.sd.png.bo.IncentiveDashboardBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.PriorityBo;
 import com.ivy.sd.png.bo.RetailerKPIBO;
@@ -61,7 +59,7 @@ public class DashBoardHelper {
     private ArrayList<DashBoardBO> p3mChartList;
     private List<CharSequence> beatList;
 
-    private Vector<DashBoardBO> dashBoardReportList = new Vector<>();
+    private Vector<DashBoardBO> dashBoardReportList ;
 
     public int mMinLevel;
     public int mMaxLevel;
@@ -1751,6 +1749,8 @@ public class DashBoardHelper {
     }
 
     public ArrayList<DashBoardBO> getDashListViewList() {
+        if(dashListViewList == null)
+            return new ArrayList<>();
         return dashListViewList;
     }
 
