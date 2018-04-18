@@ -1210,7 +1210,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         }
 
 
-                        final SchemeProductBO buyProductBO = bmodel.schemeDetailsMasterHelper.getBuyProductBOBySchemeidWithPid().get(schemeid + productId);
+                        final SchemeProductBO buyProductBO = bmodel.schemeDetailsMasterHelper.getBuyProductBOBySchemeIdWithPid().get(schemeid + productId);
                         if (buyProductBO != null && buyProductBO.getGroupName().equals(groupName)) {
                             if (i == size - 1) {
                                 TextView produtNameTV = getTextViewTitle(false, Gravity.LEFT, false);
