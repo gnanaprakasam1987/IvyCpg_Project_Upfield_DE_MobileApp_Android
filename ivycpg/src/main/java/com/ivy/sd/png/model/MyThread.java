@@ -277,8 +277,6 @@ public class MyThread extends Thread {
 
             // Save Order
             if (orderHelper.saveOrder(ctx)) {
-                bmodel.updateSbdDistStockinRetailerMaster();
-
                 // Save Discount
 //            bmodel.saveInvoiceDiscountDetails();
 
@@ -301,13 +299,6 @@ public class MyThread extends Thread {
                         // save near expiry
                         bmodel.saveNearExpiry();
                     }
-                }
-
-                // Calculate and set Distribution percent
-                if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                    String percent = bmodel.getSBDDistributionPrecentNewPhilip();
-                    bmodel.sbdMerchandisingHelper
-                            .setSBDDistributionPercent(percent);
                 }
 
                 // Set Order Flag
@@ -347,7 +338,6 @@ public class MyThread extends Thread {
 
             // Save Order
             if (orderHelper.saveOrder(ctx)) {
-                bmodel.updateSbdDistStockinRetailerMaster();
 
                 bmodel.setOrderHeaderBO(null);
 
@@ -396,12 +386,6 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
             orderHelper.deleteOrder(ctx, bmodel.getRetailerMasterBO().getRetailerID());
 
-            // Calculate and set Distribution percent
-            if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                String percent = bmodel.getSBDDistributionPrecentNewPhilip();
-                bmodel.sbdMerchandisingHelper
-                        .setSBDDistributionPercent(percent);
-            }
 
             if (!bmodel.isOrderTaken()) {
                 bmodel.setIsOrdered("N");
@@ -466,12 +450,6 @@ public class MyThread extends Thread {
 
             orderHelper.deleteOrder(ctx, bmodel.getRetailerMasterBO().getRetailerID());
             bmodel.deleteModuleCompletion("MENU_STK_ORD");
-            // Calculate and set Distribution percent
-            if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                String percent = bmodel.getSBDDistributionPrecentNewPhilip();
-                bmodel.sbdMerchandisingHelper
-                        .setSBDDistributionPercent(percent);
-            }
 
             if (!bmodel.isOrderTaken()) {
                 bmodel.setIsOrdered("N");
@@ -603,10 +581,6 @@ public class MyThread extends Thread {
 //            bmodel.saveInvoiceDiscountDetails();
 
                 bmodel.setOrderHeaderBO(null);
-
-                // Calculate and set Distribution percent
-                String percent = bmodel.getSBDDistributionPrecentNewPhilip();
-                bmodel.sbdMerchandisingHelper.setSBDDistributionPercent(percent);
 
                 bmodel.setIsOrdered("Y");
                 bmodel.setOrderedInDB("Y");

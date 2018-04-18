@@ -331,5 +331,5 @@
     <string name="user_already_assigned">User Already Assigned</string>
     <string name="seller_already_assigned">Seller is assigned to some other backup seller</string>
     <string name="backup_seller_already_assigned">Backup seller is assigned to some other user</string>
-
+    <string name="day_target">Day target</string>
 </resources>

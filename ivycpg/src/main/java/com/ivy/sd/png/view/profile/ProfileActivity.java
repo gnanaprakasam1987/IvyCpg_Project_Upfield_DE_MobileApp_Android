@@ -77,6 +77,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UserDialogInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -89,6 +90,7 @@ import com.ivy.sd.png.view.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
+import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
 import com.ivy.sd.png.view.SellerDashboardFragment;
 import com.ivy.sd.png.view.TargetPlanActivity;
@@ -491,6 +493,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             } catch (Exception e) {
                 Commons.printException("Error while setting label for DISTRIBUTOR_PROFILE Tab", e);
             }
+        }
+
+        if(bmodel.configurationMasterHelper.SHOW_SBD_GAP_IN_PROFILE){
+            tabLayout.addTab(tabLayout.newTab().setText("SBD Gap"));
         }
 
         View root = tabLayout.getChildAt(0);
@@ -1311,6 +1317,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             }
             else if (tabName.equalsIgnoreCase(DISTRIBUTOR_PROFILE)) {
                 return new DsitributorProfileFragment();
+            } else if (tabName.equalsIgnoreCase("SBD Gap")) {
+                return new SBDGapFragment();
             }
             return null;
         }
@@ -1976,7 +1984,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                             .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
                                     .getSubchannelid());
                     if (bmodel.productHelper.isSBDFilterAvaiable())
-                        bmodel.productHelper.loadSBDFocusData();
+                        SBDHelper.getInstance(ProfileActivity.this).loadSBDFocusData();
 
                     if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         bmodel.batchAllocationHelper.downloadBatchDetails(bmodel

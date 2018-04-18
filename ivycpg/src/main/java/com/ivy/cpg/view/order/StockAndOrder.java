@@ -90,6 +90,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
@@ -251,6 +252,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private OrderHelper orderHelper;
 
     private static final int SALES_RETURN = 3;
+    private int sbdHistory = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -346,6 +348,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         mBtnNext.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
+        ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.totalValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lcp)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.distText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.distValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+        if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
+            findViewById(R.id.ll_lpc).setVisibility(View.GONE);
+        }
+
+        if (bmodel.configurationMasterHelper.HIDE_ORDER_DIST) {
+            findViewById(R.id.ll_dist).setVisibility(View.GONE);
+        }
+
         String title;
         if ("MENU_ORDER".equals(screenCode))
             title = bmodel.configurationMasterHelper
@@ -435,6 +452,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
+        SBDHelper.getInstance(this).calculateSBDDistribution(); //sbd calculation
+        sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
         productList = filterWareHouseProducts();
         /* Calculate the SBD Dist Acheivement value */
         loadSBDAchievementLocal();
@@ -3900,21 +3919,27 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     public void updateValue() {
         try {
-            totalAllQty = 0;
-            int lpccount = 0;
-            totalvalue = 0;
-            HashSet<String> sbdAcheived = new HashSet<>();
-            HashSet<String> sbdStockAchieved = new HashSet<>();
-            HashSet<String> sbdStkAndOrderAchieved = new HashSet<>();
+            new UpdateValueTask().execute();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-            Vector<ProductMasterBO> items = productList;
+    class UpdateValueTask extends AsyncTask<Void, Void, Void> {
+        int lpccount;
+        Vector<ProductMasterBO> items;
+        double temp;
+        int sbdAchievement = 0;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
             if (items == null) {
-                return;
+                return null;
             }
             int siz = items.size();
             if (siz == 0)
-                return;
-            double temp;
+                return null;
+
             for (int i = 0; i < siz; i++) {
                 ProductMasterBO ret = items.elementAt(i);
                 if (ret.getOrderedPcsQty() != 0 || ret.getOrderedCaseQty() != 0
@@ -3926,115 +3951,29 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     totalvalue = totalvalue + temp;
 
                     totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
-                }
-                if (ret.isRPS()) {
-                    int size = ret.getLocations().size();
-                    for (int j = 0; j < size; j++) {
-                        if (ret.getLocations().get(j).getWHCase() > 0
-                                || ret.getLocations().get(j).getWHOuter() > 0
-                                || ret.getLocations().get(j).getWHPiece() > 0
-                                || ret.getLocations().get(j).getShelfCase() > -1
-                                || ret.getLocations().get(j).getShelfOuter() > -1
-                                || ret.getLocations().get(j).getShelfPiece() > -1
-                                || ret.getLocations().get(j).getAvailability() > -1) {
-
-                            sbdStockAchieved.add(ret.getSbdGroupName());
-                        }
-
-                        if (bmodel.configurationMasterHelper.SHOW_STK_ACHIEVED_WIHTOUT_HISTORY) {
-                            if (ret.getLocations().get(j).getWHCase() > 0
-                                    || ret.getLocations().get(j).getWHOuter() > 0
-                                    || ret.getLocations().get(j).getWHPiece() > 0
-                                    || ret.getLocations().get(j).getShelfCase() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfOuter() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfPiece() > -1
-                                    || ret.getLocations().get(j).getAvailability() > -1
-                                    || ret.isSBDAcheivedLocal()) {
-                                sbdStkAndOrderAchieved.add(ret
-                                        .getSbdGroupName());
-                            }
-                            if (ret.isSBDAcheivedLocal()) {
-                                sbdAcheived.add(ret.getSbdGroupName());
-                            }
-                        } else {
-                            if (ret.getLocations().get(j).getWHCase() > 0
-                                    || ret.getLocations().get(j).getWHOuter() > 0
-                                    || ret.getLocations().get(j).getWHPiece() > 0
-                                    || ret.getLocations().get(j).getShelfCase() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfOuter() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfPiece() > -1
-                                    || ret.getLocations().get(j).getAvailability() > -1
-                                    || ret.isSBDAcheived()
-                                    || ret.isSBDAcheivedLocal()) {
-                                sbdStkAndOrderAchieved.add(ret
-                                        .getSbdGroupName());
-                            }
-                            if (ret.isSBDAcheived() || ret.isSBDAcheivedLocal()) {
-                                sbdAcheived.add(ret.getSbdGroupName());
-                            }
-                        }
-                    }
+                    sbdAchievement += SBDHelper.getInstance(StockAndOrder.this).getAchievedSBD(ret);
                 }
             }
-            float per;
 
-            SbdDistPre = sbdStockAchieved.size();
+            return null;
+        }
 
-            if (bmodel.configurationMasterHelper.HAS_STOCK_IN_DIST_POST) {
-                per = (float) sbdStkAndOrderAchieved.size()
-                        / bmodel.getRetailerMasterBO()
-                        .getSbdDistributionTarget();
-                sbdDistAchieved = sbdStkAndOrderAchieved.size();
-            } else {
-                per = (float) sbdAcheived.size()
-                        / bmodel.getRetailerMasterBO()
-                        .getSbdDistributionTarget();
-                sbdDistAchieved = sbdAcheived.size();
-            }
+        @Override
+        protected void onPreExecute() {
+            totalAllQty = 0;
+            lpccount = 0;
+            totalvalue = 0;
+            items = productList;
+        }
 
-            String strLpcCouunt = lpccount + "";
-            lpcText.setText(strLpcCouunt);
-            Commons.print("numberpressed=" + totalvalue);
+        @Override
+        protected void onPostExecute(Void voids) {
+            lpcText.setText(lpccount + "");
             String strFormatValue = bmodel.formatValue(totalvalue) + "";
             totalValueText.setText(strFormatValue);
             totalQtyTV.setText("" + totalAllQty);
-
-            if (bmodel.configurationMasterHelper.HIDE_ORDER_DIST) {
-                findViewById(R.id.ll_dist).setVisibility(View.GONE);
-            } else {
-                if (bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
-                    if (bmodel.configurationMasterHelper.HAS_STOCK_IN_DIST_POST) {
-                        String strdistValue = sbdStockAchieved.size() + "/"
-                                + sbdStkAndOrderAchieved.size();
-                        distValue.setText(strdistValue);
-                    } else {
-                        String strDistValue = sbdStockAchieved.size() + "/"
-                                + sbdAcheived.size();
-                        distValue.setText(strDistValue);
-                    }
-                } else {
-                    String strDistValue = Math.round(per * 100) + "";
-                    distValue.setText(strDistValue);
-                }
-            }
-
-            if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
-                findViewById(R.id.ll_lpc).setVisibility(View.GONE);
-            }
-
-            ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.totalValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.lcp)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.distText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.distValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-        } catch (Exception e) {
-            Commons.printException(e + "");
+            distValue.setText((sbdAchievement + sbdHistory) + "/" + bmodel.getRetailerMasterBO()
+                    .getSbdDistributionTarget());
         }
     }
 

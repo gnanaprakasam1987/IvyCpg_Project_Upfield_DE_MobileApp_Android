@@ -1488,6 +1488,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     && retailerObj.getIsGoldStore() == 1) {
                 holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
                 holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
+            } else if ("1".equals(mRetailerProp.get("RTPRTY02")) && retailerObj.getIsVisited().equals("Y")
+                    && retailerObj.getSbdPercent() > ConfigurationMasterHelper.SBD_TARGET_PERCENTAGE) {
+                holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
+                holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
             } else if ("1".equals(mRetailerProp.get("RTPRTY05"))
                     && !retailerObj.getRField4().equals("0")) {// QDVP3 Store
                 holder.imgGoldDeadStore.setVisibility(View.VISIBLE);

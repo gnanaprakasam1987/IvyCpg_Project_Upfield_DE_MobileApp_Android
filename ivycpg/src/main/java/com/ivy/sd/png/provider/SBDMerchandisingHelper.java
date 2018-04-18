@@ -291,22 +291,6 @@ public class SBDMerchandisingHelper {
         }
     }
 
-    public void setSBDDistributionPercent(String sbd) {
-        RetailerMasterBO retailer;
-        int siz = bmodel.getRetailerMaster().size();
-        if (siz == 0)
-            return;
-
-        for (int i = 0; i < siz; ++i) {
-            retailer = (RetailerMasterBO) bmodel.getRetailerMaster().get(i);
-            if (retailer.getRetailerID().equals(
-                    bmodel.getRetailerMasterBO().getRetailerID())) {
-                bmodel.getRetailerMaster().setElementAt(retailer, i);
-            }
-        }
-
-    }
-
     /**
      * Calculate the SBD Merchandising Distribution precentage for a particular
      * retailer and update it to RetailerMaster . Also update RPS_Merch_Achieved

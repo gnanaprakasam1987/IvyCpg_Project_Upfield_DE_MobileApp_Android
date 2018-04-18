@@ -60,6 +60,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CatalogOrderValueUpdate;
 import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.ScreenOrientation;
@@ -160,6 +161,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private File appImageFolderPath;
     public Timer orderTimer;
     private MOQHighlightDialog mMOQHighlightDialog;
+    private int sbdHistory = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -221,6 +223,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         screenCode = HomeScreenTwo.MENU_CATALOG_ORDER;
         OrderedFlag = HomeScreenTwo.MENU_CATALOG_ORDER;
+        SBDHelper.getInstance(this).calculateSBDDistribution(); //sbd calculation
+        sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
 
         Bundle extras = getIntent().getExtras();
         if (savedInstanceState == null) {
@@ -307,6 +311,21 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
         } catch (Exception e) {
             Commons.printException(e);
+        }
+
+        ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.totalValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lcp)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.distText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.distValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+        if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
+            findViewById(R.id.ll_lpc).setVisibility(View.GONE);
+        }
+
+        if (bmodel.configurationMasterHelper.HIDE_ORDER_DIST) {
+            findViewById(R.id.ll_dist).setVisibility(View.GONE);
         }
 
         search_txt.addTextChangedListener(new TextWatcher() {
@@ -1491,8 +1510,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private void updateValue() {
         try {
-
-            int lpccount = 0;
+            new UpdateValueTask().execute();
+            /*int lpccount = 0;
             totalAllQty = 0;
             totalvalue = 0;
             HashSet<String> sbdTarget = new HashSet<>();
@@ -1643,10 +1662,63 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
                 lpcText.setVisibility(View.GONE);
                 findViewById(R.id.lpc_title).setVisibility(View.GONE);
-            }
+            }*/
 
         } catch (Exception e) {
             Commons.printException(e);
+        }
+    }
+
+    class UpdateValueTask extends AsyncTask<Void, Void, Void> {
+        int lpccount;
+        Vector<ProductMasterBO> items;
+        double temp;
+        int sbdAchievement = 0;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (items == null) {
+                return null;
+            }
+            int siz = items.size();
+            if (siz == 0)
+                return null;
+
+            for (int i = 0; i < siz; i++) {
+                ProductMasterBO ret = items.elementAt(i);
+                if (ret.getOrderedPcsQty() != 0 || ret.getOrderedCaseQty() != 0
+                        || ret.getOrderedOuterQty() != 0) {
+                    lpccount = lpccount + 1;
+                    temp = (ret.getOrderedPcsQty() * ret.getSrp())
+                            + (ret.getOrderedCaseQty() * ret.getCsrp())
+                            + ret.getOrderedOuterQty() * ret.getOsrp();
+                    totalvalue = totalvalue + temp;
+
+                    totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
+                    sbdAchievement += SBDHelper.getInstance(CatalogOrder.this).getAchievedSBD(ret);
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            totalAllQty = 0;
+            lpccount = 0;
+            totalvalue = 0;
+            items = bmodel.productHelper
+                    .getProductMaster();
+        }
+
+        @Override
+        protected void onPostExecute(Void voids) {
+            lpcText.setText(lpccount + "");
+            String strFormatValue = bmodel.formatValue(totalvalue) + "";
+            totalValueText.setText(strFormatValue);
+            totalQtyTV.setText("" + totalAllQty);
+            distValue.setText((sbdAchievement + sbdHistory) + "/" + bmodel.getRetailerMasterBO()
+                    .getSbdDistributionTarget());
         }
     }
 
