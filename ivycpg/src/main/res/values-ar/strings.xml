@@ -14,8 +14,7 @@
     <string name="progress_dialog_title_connecting">جارٍ الاتصال</string>
     <string name="progress_dialog_message_prefix_downloading">جارٍ تنزيل الملف</string>
     <string name="progress_dialog_message_prefix_connecting">جارٍ الاتصال بـ</string>
-    <string name="auth_and_downloading_masters">جارٍ المصادقة على الأشكال الرئيسية وتنزيلها.
-</string>
+    <string name="auth_and_downloading_masters">جارٍ المصادقة على الأشكال الرئيسية وتنزيلها.</string>
     <string name="checking_new_version">جارٍ التحقق من الإصدار الجديد.</string>
     <string name="error_message_bad_url">خطأ: عنوان URL غير صالح!</string>
     <string name="error_message_file_not_found">خطأ: الملف غير موجود!</string>
@@ -23,12 +22,10 @@
     <string name="activation_error_try_again">خطأ في التنشيط. أعد المحاولة.</string>
     <string name="communication_error_please_try_again">خطأ في الاتصال. رجاءً أعد المحاولة.</string>
     <string name="sessionout_loginagain">تم الخروج من جلسة العمل. قم بتسجيل الدخول مرة أخرى.</string>
-    <string name="invalid_key_try_with_valid_key">المفتاح غير صالح. أعد المحاولة باستخدام مفتاح صالح.
-</string>
+    <string name="invalid_key_try_with_valid_key">المفتاح غير صالح. أعد المحاولة باستخدام مفتاح صالح.</string>
     <string name="activation_failed">فشل التنشيط.</string>
     <string name="user_message_download_canceled">تم إلغاء التنزيل!</string>
-    <string name="update_available">تحديث هذا التطبيق متاح. انقر موافق للتنزيل.
-</string>
+    <string name="update_available">تحديث هذا التطبيق متاح. انقر موافق للتنزيل.</string>
     <string name="unable_to_access_the_sdcard">تعذر الوصول إلى بطاقة SD</string>
     <string name="do_u_want_logout">هل ترغب في تسجيل الخروج؟</string>
     <string name="do_you_want_to_delete_the_image">هل ترغب في حذف الصورة؟</string>
@@ -40,9 +37,6 @@
     <string name="Noorderreason">لا يوجد سبب للطلب</string>
     <string name="no_unsubmitted_orders">لا توجد طلبات غير مرسلة.</string>
     <string name="nodatadownload">لا يتم تنزيل البيانات.</string>
-    <string name="reason">السبب</string>
-    <string name="loading">جارٍ تنزيل </string>
-    <string name="sdcard_is_not_ready_to_capture_img">بطاقة SD غير جاهزة لالتقاط صورة.</string>
     <string name="no_network_connection">لا يوجد اتصال بالإنترنت.</string>
     <string name="successfully_activated">تم التنشيط بنجاح. رجاء ملاحظة معرف المرجع</string>
     <string name="invoice_created_successfully">تم إنشاء الفاتورة بنجاح.</string>
@@ -60,8 +54,7 @@
     <string name="please_check_username_and_password">رجاء التحقق من اسم المستخدم وكلمة المرور.</string>
     <string name="press_start_sync">رجاء الضغط على /بدء التصديق/قبل التنزيل.</string>
     <string name="enter_activation_id">رجاء إدخال معرف التنشيط.</string>
-    <string name="thirdparty_installation_error">رجاء تمكين "مصادر غير معروفة" في الإعدادات.
-</string>
+    <string name="thirdparty_installation_error">رجاء تمكين "مصادر غير معروفة" في الإعدادات.</string>
     <string name="external_storage_not_available">مساحة التخزين الخارجي غير متاحة. رجاء التحقق من بطاقة SD.</string>
     <string name="no_application_available_to_view_pdf">لا يوجد تطبيق متاح لعرض PDF.</string>
     <string name="no_application_available_to_view_ppt">لا يوجد تطبيق متاح لعرض PPT.</string>
@@ -70,8 +63,7 @@
     <string name="amount_exeeds_the_balance_please_check">المبلغ يتخطى الرصيد، رجاء التحقق.</string>
     <string name="its_highly_recommend_you_to_upload_the_images_before_capturing_new_image">من المستحسن تحميل الصور قبل التقاط صورة جديدة.</string>
     <string name="maximum_number_of_images_has_been_captured_without_upload_Do_upload_or_delete_images">تم التقاط أقصى عدد من الصور دون تحميل. قم بالتحميل أو انقر "معرض الصور" لحذف الصور.</string>
-    <string name="wits_merchandising_already_done_Do_you_want_do_again">تم الترويج بالفعل. هل ترغب في القيام بذلك مرة أخرى؟
-</string>
+    <string name="wits_merchandising_already_done_Do_you_want_do_again">تم الترويج بالفعل. هل ترغب في القيام بذلك مرة أخرى؟</string>
     <string name="order_exist_without_invoice">الطلبات موجودة دون إنشاء فاتورة.</string>
     <string name="password_does_not_match">كلمة المرور غير مطابقة.</string>
     <string name="its_not_possible_to_upload_without_img">لا يمكن التحميل دون وجود صور.</string>
@@ -178,9 +170,12 @@
     <string name="merch">الترويج</string>
     <string name="calls">المكالمات</string>
     <string name="reconnect">إعادة الاتصال</string>
+    <string name="delete">Delete</string>
     <string name="plan">الخطة</string>
     <string name="reference">المرجع</string>
     <string name="base">الأساس</string>
+    <string name="focus_merch">ترويج SBD</string>
+    <string name="focus_dist">توزيع SBD</string>
     <string name="init1">النظام المبدئي 1</string>
     <string name="init2">النظام المبدئي 2</string>
     <string name="init3">النظام المبدئي 3</string>
@@ -192,11 +187,9 @@
     <string name="sum">المجموع</string>
     <string name="sales">المبيعات</string>
     <string name="golden_store">المخزن الذهبي</string>
-    <string name="enter_deviate_reason_to_plan_this_retailer_for_today">أدخل سبب الانحراف لتخطيط بائع التجزئة هذا لليوم.
-</string>
+    <string name="enter_deviate_reason_to_plan_this_retailer_for_today">أدخل سبب الانحراف لتخطيط بائع التجزئة هذا لليوم.</string>
     <string name="retailer_is_already_planned_for_today">تم بالفعل تخطيط بائع التجزئة لليوم.</string>
-    <string name="no_deviate_reason_found_plz_redownload">لم يتم العثور على سبب الانحراف. رجاء إعادة التنزيل.
-</string>
+    <string name="no_deviate_reason_found_plz_redownload">لم يتم العثور على سبب الانحراف. رجاء إعادة التنزيل.</string>
     <string name="Deviation_not_allowed">غير مسموح بالانحراف.</string>
     <string name="deviation_not_allowed_for_new_retailer">غير مسموح بالانحراف لبائع التجزئة الجديد.</string>
     <string name="order_not_saved_go_back">لم يتم حفظ الطلب. هل ترغب في العودة للخلف؟</string>
@@ -224,13 +217,13 @@
     <string name="data_upload_completed_sucessfully">اكتمل تحميل البيانات بنجاح.</string>
     <string name="connected">متصل.</string>
     <string name="saving_sales_return">جارٍ حفظ عائد المبيعات</string>
-    <string name="uploading_data">جارٍ تحميل </string>
+    <string name="uploading_data">جارٍ تحميل</string>
     <string name="image_uploading">جارٍ تحميل الصورة</string>
-    <string name="planning_not_available_for_deviated_retailer">التخطيط غير متاح للبائعين بالتجزئة المنحرفين.
-</string>
+    <string name="planning_not_available_for_deviated_retailer">التخطيط غير متاح للبائعين بالتجزئة المنحرفين.</string>
     <string name="planning_not_available_if_nodata_avail">التخطيط غير متاح.</string>
     <string name="saving_init_merchandising">جارٍ حفظ الترويج المبدئي</string>
     <string name="saving_merchandising">جارٍ حفظ الترويج</string>
+    <string name="focus_merchandising">ترويج SBD</string>
     <string name="merch_initiative">الترويج المبدئي</string>
     <string name="successfully_uploaded">تم التحميل بنجاح.</string>
     <string name="upload_failed_please_try_again">فشل التحميل. رجاء إعادة المحاولة.</string>
@@ -275,30 +268,30 @@
     <string name="sc">SC</string>
     <string name="item_case">OC</string>
     <string name="volume">Volume</string>
-    <string name="title_dsr_heading">مراجعة التخطيط </string>
+    <string name="title_dsr_heading">مراجعة التخطيط</string>
+    <string name="target_plan">صفحة خطة الهدف</string>
     <string name="distribution">Distribution</string>
     <string name="merch_pricing">Pricing</string>
     <string name="order_volume">Value</string>
     <string name="order_report_avg_line">Avg Pre/Post</string>
     <string name="suggest_tgt">اقتراح الهدف</string>
+    <string name="reason">السبب</string>
+    <string name="loading">جارٍ تنزيل</string>
+    <string name="sdcard_is_not_ready_to_capture_img">بطاقة SD غير جاهزة لالتقاط صورة.</string>
     <string name="choose_special_filter">Choose Special Filter</string>
     <string name="filter">Filter</string>
     <string name="no_visit_Planning">Planning</string>
     <string name="order_gcas">GCAS</string>
-    <string name="enter_atleast_3_letters">Enter atleast 3 letters.</string>
     <string name="choose_date">Choose Date</string>
     <string name="exceed">You have exceeded allocation. Only “%1$d” remaining.</string>
     <string name="d1">D1</string>
     <string name="dist_inv">Dist Inv</string>
     <string name="pre_post">Pre/Post</string>
-    <string name="target_plan">صفحة خطة الهدف </string>
     <string name="promotion">Promotion</string>
     <string name="merchandising">ترويج</string>
-    <string name="initiative">النظام المبدئي</string>
-    <string name="focus_merchandising">ترويج SBD</string>
-    <string name="focus_dist">توزيع SBD</string>
-    <string name="focus">SBD</string>
-    <string name="focus_merch">ترويج SBD</string>
+    <string name="focus">النظام المبدئي</string>
+    <string name="initiative">Initiative</string>
+    <string name="credit_note">Credit Note</string>
     <string name="Product_details">تفاصيل المنتج</string>
     <string name="adjusted_sih">Adj.sih</string>
     <string name="new_task_saved">تم حفظ المهمة الجديدة.</string>
@@ -326,7 +319,6 @@
     <string name="about">حول</string>
     <string name="capture">التقاط</string>
     <string name="avail">Avail.</string>
-    <string name="credit_note">Credit Note</string>
     <string name="connecting">Connecting..</string>
     <string name="out_of_memory">Out Of Memory</string>
     <string name="no_error">No Error</string>
@@ -372,13 +364,12 @@
     <string name="outer_label">Outer</string>
     <string name="delivery_date_label">Delivery Date</string>
     <string name="remarks_label">Remarks</string>
+    <string name="p_qty">P Qty</string>
     <string name="lock">Lock</string>
     <string name="golden_points">Golden Points</string>
     <string name="total_lines">Total Lines</string>
     <string name="are_you_sure_you_want_to_download">Are you sure you want to download</string>
     <string name="store_balance">Store Balance</string>
-    <string name="select_close_for_the_day">Select Close for the day</string>
-    <string name="you_are_online_cant_export">You are online can\'t export</string>
     <string name="enter_valid_email_id">Enter valid Email Id</string>
     <string name="exceeded_credit_limit">Exceeded credit limit</string>
     <string name="planogram">Planogram</string>
@@ -393,7 +384,6 @@
     <string name="apply_sih">Apply SIH</string>
     <string name="please_answer_all_mandatory_questions">Please answer all mandatory questions</string>
     <string name="activation_key_should_be_sixteen_character">Activation key should be sixteen character</string>
-    <string name="p_qty">P Qty</string>
     <string name="AP3M">AP3M</string>
     <string name="v_target">V.Target</string>
     <string name="v_actual">V.Actual</string>
@@ -405,10 +395,10 @@
     <string name="measure">Measure</string>
     <string name="mtd_gap_day">MTD Gap/Day</string>
     <string name="act_stores">Act Stores</string>
-    <string name="musername">Seller name: </string>
+    <string name="musername">Seller name:</string>
     <string name="Retailerwise">Retailerwise</string>
     <string name="all_retailer">All Retailer</string>
-    <string name="promotion_name"> Promotion Name</string>
+    <string name="promotion_name">Promotion Name</string>
     <string name="rank">Rank</string>
     <string name="print_order">Print Order</string>
     <string name="no_paired_device">No Paired Device</string>
@@ -420,8 +410,8 @@
     <string name="paper_not_present">Paper end sensor: paper not present</string>
     <string name="bluetooth_connection_not_available">Bluetooth connection not available!</string>
     <string name="total_print">Total</string>
-    <string name="print_footer3"> Total TVA a 20.00%</string>
-    <string name="print_footer4"> Total TTC a payer </string>
+    <string name="print_footer3">Total TVA a 20.00%</string>
+    <string name="print_footer4">Total TTC a payer</string>
     <string name="you_are_closing">You are closing</string>
     <string name="delete_stock_and_order">Del. Stock &amp; Order</string>
     <string name="received_by">Received by:</string>
@@ -441,6 +431,7 @@
     <string name="mfg_date">Mfg. Date</string>
     <string name="exp_date">Exp. Date</string>
     <string name="srp">SRP</string>
+    <string name="sr">SR</string>
     <string name="must_sell">Must Sell</string>
     <string name="max_free_qty">Mx.Fr.Qty</string>
     <string name="buy_qty">BuyQty</string>
@@ -453,7 +444,6 @@
     <string name="scheme_not_available">Scheme not available</string>
     <string name="item_outer">OO</string>
     <string name="asset_name">Asset Name</string>
-    <string name="condition">Condition</string>
     <string name="instaldate">Install Date</string>
     <string name="servicedate">Service Date</string>
     <string name="photo">Photo</string>
@@ -532,7 +522,7 @@
     <string name="km">KM</string>
     <string name="trip_ending_reading">Trip Ending Reading</string>
     <string name="clear">Clear</string>
-    <string name="please_sign_below">Please Sign below ...</string>
+    <string name="please_sign_below">Please Sign below …</string>
     <string name="sc_rate">Sc.Rate</string>
     <string name="sc_qty">Sc.Qty</string>
     <string name="sc_product">Sc.Product</string>
@@ -586,12 +576,12 @@
     <string name="fromdate">From date</string>
     <string name="todate">To date</string>
     <string name="datevalidationmsg">Invalid Date</string>
-    <string name="feedback">Feedback </string>
-    <string name="tracking_list">Tracking List </string>
+    <string name="feedback">Feedback</string>
+    <string name="tracking_list">Tracking List</string>
     <string name="vanno">VanNo:</string>
     <string name="BATCH_NO">BATCH</string>
     <string name="select_reason_skip_seq">Select Reason for Skip Sequence</string>
-    <string name="crown"> Crown Management</string>
+    <string name="crown">Crown Management</string>
     <string name="crown_count_mismatch">Crown Qty mismatch from Product Qty</string>
     <string name="crown_count">Crown Count</string>
     <string name="liableqty">LiableQty</string>
@@ -610,7 +600,7 @@
     <string name="credit_limit_exceed_do_you_wish_to_apply_partially">Credit Limit Exceed! Do you wish to apply partially?</string>
     <string name="advance_payment">Advance Payment</string>
     <string name="vanload_summary">Manual Van Load Summary</string>
-    <string name="vanload_productprice">Loaded Product Price     :</string>
+    <string name="vanload_productprice">Loaded Product Price :</string>
     <string name="vanunload_productprice">Unloaded Product Price :</string>
     <string name="batch_no_already_exist">Batch No. already exist</string>
     <string name="crown_product">Crown Product</string>
@@ -655,7 +645,7 @@
     <string name="rep_sign">Rep. Sign</string>
     <string name="highest_ever_sale">Highest Ever Sale[P3M]</string>
     <string name="invoice_created_dou_wnt_print">Invoice created Successfully. Do you want to print ?</string>
-    <string name="are_you_sure_you_want_to_print"> Do you want to print a copy of your Invoice ?</string>
+    <string name="are_you_sure_you_want_to_print">Do you want to print a copy of your Invoice ?</string>
     <string name="total_distribution">Total Distribution</string>
     <string name="mtd_value">MTD Value</string>
     <string name="choose">Choose</string>
@@ -701,9 +691,9 @@
     <string name="availability">% Availability</string>
     <string name="contracttype">Contract Type</string>
     <string name="trade_offer_code_received">Trade offer code received</string>
-    <string name="timespent">Time spent - </string>
-    <string name="typeOfVisit">Type of visit :  </string>
-    <string name="verify">Verify </string>
+    <string name="timespent">Time spent -</string>
+    <string name="typeOfVisit">Type of visit :</string>
+    <string name="verify">Verify</string>
     <string name="do_u_want_delete_and_redownload_or_cancel">Do you want to delete and redownload data or cancel?</string>
     <string name="delete_and_redownload">Delete&amp;Redownload</string>
     <string name="do_u_want_directly_go_or_redownload">Do you want to directly go or redownlod?</string>
@@ -713,12 +703,13 @@
     <string name="selectoptionforphoto">Select An Option To Take Photo</string>
     <string name="take_photos_to_save">Take Photos To Save</string>
     <string name="saved_Failed">saved Failed</string>
-    <string name="endC">End</string>
     <string name="Error_Authentication">Error in sync</string>
-    <string name="ABVC">%ABV</string>
+    <string name="Authenticating">Authenticating…</string>
     <string name="network_connectionC_Avail">Internet Connection Available</string>
-    <string name="Authenticating">Authenticating...</string>
     <string name="Start_Time">Start Time</string>
+    <string name="ABVC">%ABV</string>
+    <string name="endC">End</string>
+    <string name="Users_not_available">Users not available</string>
     <string name="End_Time">End Time</string>
     <string name="missed_retailer">Missed Retailer</string>
     <string name="province">Province</string>
@@ -751,9 +742,9 @@
     <string name="select_distributors">Select Distributors to Save</string>
     <string name="select_date">Select Date</string>
     <string name="pls_select_feature_date">Please Select Future Date</string>
-    <string name="no_data_download">No Data download </string>
+    <string name="no_data_download">No Data download</string>
     <string name="please_redownload_data">Please redownload data</string>
-    <string name="please_add_retailer_for_download">Please add retailer for download </string>
+    <string name="please_add_retailer_for_download">Please add retailer for download</string>
     <string name="data_download_successfully">Data downloaded successfully</string>
     <string name="weight">Weight</string>
     <string name="contact_system_admin">Contact System Admin</string>
@@ -787,7 +778,7 @@
     <string name="mvpbadges">MVP Images</string>
     <string name="scanned">Scanned</string>
     <string name="downloaded_successfully">Downloaded Successfully</string>
-    <string name="pleaseconfirm">Please confirm you are at </string>
+    <string name="pleaseconfirm">Please confirm you are at</string>
     <string name="retailer_already_available">Retailer already available</string>
     <string name="warehouse_location_mismatch">Warehouse coordinates mismatch</string>
     <string name="need_otp">Need OTP</string>
@@ -815,7 +806,7 @@
     <string name="permission_enable_msg">Go to settings and enable permission</string>
     <string name="focus_brand">Focus Brand</string>
     <string name="external_storage_not_avail">External storage space not available.</string>
-    <string name="enable_auto_date_time"> Enable Network Provided time</string>
+    <string name="enable_auto_date_time">Enable Network Provided time</string>
     <string name="replacement">Replacement</string>
     <string name="in_out">In and Out</string>
     <string name="in_out_reason">Select Reason</string>
@@ -848,10 +839,7 @@
     <string name="psq">PSQ</string>
     <string name="expense_title">Expense Sheet</string>
     <string name="text_expense_type">Expense Type</string>
-    <string name="text_proof">Image Proof</string>
     <string name="text_capture_proof">Capture proof</string>
-    <string name="text_current_dexp">Current Total:</string>
-    <string name="text_current_montexp">Current Month Total :</string>
     <string name="alert_exp_type">Please Select Expense Type !!</string>
     <string name="alert_amount">Please enter amount!!</string>
     <string name="title_image_proof">Image Proof</string>
@@ -882,12 +870,12 @@
     <string name="title_missed">Missed Retailer Detail</string>
     <string name="text_mdate">Missed Date</string>
     <string name="menu_not_available">Menu(s) is not available.</string>
-    <string name="download_url_empty">Download Url is Empty </string>
-    <string name="out_of"> Out of %1$d Masters Downloaded</string>
-    <string name="still_you_can">Still you can take “%1$d” more photos,Do you want to continue ? </string>
-    <string name="table_downloaded">Table “%1$d” Downloaded </string>
-    <string name="error">Error: </string>
-    <string name="data_not_downloaded">Data not downloaded </string>
+    <string name="download_url_empty">Download Url is Empty</string>
+    <string name="out_of">Out of %1$d Masters Downloaded</string>
+    <string name="still_you_can">Still you can take “%1$d” more photos,Do you want to continue ?</string>
+    <string name="table_downloaded">Table “%1$d” Downloaded</string>
+    <string name="error">Error:</string>
+    <string name="data_not_downloaded">Data not downloaded</string>
     <string name="batch_created_successfully">Batch created successfully.</string>
     <string name="error_e01">Server connectivity error</string>
     <string name="error_e02">UserName and Password Not Correct</string>
@@ -910,8 +898,8 @@
     <string name="error_e23">Invalid Authorization-Token</string>
     <string name="error_e24">Invalid Date Time</string>
     <string name="error_e31">Parsing Exception</string>
-    <string name="error_e32">Time out Error </string>
-    <string name="no_items_added">No Items Added </string>
+    <string name="error_e32">Time out Error</string>
+    <string name="no_items_added">No Items Added</string>
     <string name="travel_time">Travel Time</string>
     <string name="is_issued">Is Issued</string>
     <string name="cheque_no">Cheque No</string>
@@ -931,33 +919,15 @@
     <string name="key_battles">KeyBattles</string>
     <string name="lot_number">Lotnumber</string>
     <string name="market_share">Market Share</string>
-
-    <string-array name="task_tab_header">
-        <item>All</item>
-        <item>Assigned</item>
-        <item>My Task</item>
-    </string-array>
-    <string-array name="days_in_week">
-        <item>Sun</item>
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
-        <item>Sat</item>
-    </string-array>
-    <string name="Users_not_available">Users not available</string>
-    <string name="delete">Delete</string>
     <string name="reset">Reset</string>
-
     <string name="cheque_bounced">Cheque Bounced</string>
-    <string name="please_enter_referenceno">enter referenceno </string>
+    <string name="please_enter_referenceno">enter referenceno</string>
     <string name="coupon_amount">Coupon Amount</string>
-    <string name="no_of_coupon">No of Coupons </string>
+    <string name="no_of_coupon">No of Coupons</string>
     <string name="please_select_cheque_date">Please select cheque date</string>
-    <string name="total_days">Total Days -  </string>
-    <string name="absent_days">Absent Days -  </string>
-    <string name="present_days">Present Days -  </string>
+    <string name="total_days">Total Days -</string>
+    <string name="absent_days">Absent Days -</string>
+    <string name="present_days">Present Days -</string>
     <string name="recipt_date">Recipt Date:</string>
     <string name="recipt_no">Recipt No:</string>
     <string name="cust_code">Customer Code:</string>
@@ -969,7 +939,7 @@
     <string name="save_advance_payment">Advance payment saved successfully</string>
     <string name="advance_payment_cannot_be_reveived">Advance Payment can not be received.Due To pending Invoice</string>
     <string name="prev_dated_cheque_notallow">Previous Dated Cheque Not Allowed</string>
-    <string name="advance_payment_title">Advance Payment Print </string>
+    <string name="advance_payment_title">Advance Payment Print</string>
     <string name="advancepayment_saved_do_u_print">Advance Payment Saved.Do you want to Print?</string>
     <string name="primary_supplier">Primary Supplier</string>
     <string name="secondary_supplier">Secondary Supplier</string>
@@ -990,9 +960,9 @@
     <string name="stock_not_available_to_deliver">Stock Not Available to Deliver.</string>
     <string name="duplicate_serialno">Duplicate SerialNo Entered.Please remove</string>
     <string name="mismatch_scanned_products">Mismatch total scanned qty from ordered qty</string>
-    <string name="please_scan_all_products">Please Scan All Products </string>
+    <string name="please_scan_all_products">Please Scan All Products</string>
     <string name="printer_not_connected_check_macaddress">Printer not connected .Please check  Mac Address..</string>
-    <string name="please_user_advancepayment">Please use Advance Payment </string>
+    <string name="please_user_advancepayment">Please use Advance Payment</string>
     <string name="receipt_fragment">Receipt Fragment</string>
     <string name="selected_date_already_applied">Leave applied for selected date</string>
     <string name="download_date_mismatch">Download date Mismatch</string>
@@ -1065,7 +1035,6 @@
     <string name="store_visited">Store Visited</string>
     <string name="percent_of_tot_target_achieved">% of total target is achieved</string>
     <string name="sale">Sale</string>
-    <string name="select_reason_for_no_order">Select Reason for no order</string>
     <string name="select_reason_for_no_collection">Select Reason for no collection</string>
     <string name="select_feedback">Select Feedback</string>
     <string name="add_store">Add Store</string>
@@ -1091,10 +1060,10 @@
     <string name="discounted_amt">Discounted Amount</string>
     <string name="reason_non_visit">Reason for Non visit</string>
     <string name="text_batch_allocated_mismatch">Allocated Qty mismatch with Order</string>
-    <string name ="newretailer_empty">Please enter value for RetailerName and PinCode</string>
-    <string name ="alert_text_accept_Stock">Are you sure to accept stock?</string>
-    <string name ="alert_text_reject_Stock">Are you sure to reject stock?</string>
-    <string name ="move_next_activity">Move to next activity</string>
+    <string name="newretailer_empty">Please enter value for RetailerName and PinCode</string>
+    <string name="alert_text_accept_Stock">Are you sure to accept stock?</string>
+    <string name="alert_text_reject_Stock">Are you sure to reject stock?</string>
+    <string name="move_next_activity">Move to next activity</string>
     <string name="credit_note_not_available">Credit Note not available!!</string>
     <string name="all_products_should_be_ordered">All products should be ordered.</string>
     <string name="atleast_one_product_should_be_ordered">Atleast one product should be ordered.</string>
@@ -1104,43 +1073,51 @@
     <string name="remark">remark</string>
     <string name="rfield1">Enter Field1</string>
     <string name="rfield2">Enter Field2</string>
-    <string name="comments" >Comments</string>
-    <string name="title_activity_payment_mode" >PaymentModeActivity</string>
-    <string name="action_settings" >Settings</string>
-    <string name="pay_now" >Pay Now</string>
-    <string name="rtgs_date" >RTGS Date</string>
-    <string name="cheque_date" >Cheque Date</string>
-    <string name="dd_no_date" >Demand Draft Date</string>
-    <string name="total_sih" >Total Sih</string>
-    <string name="total_cases" >Total Case</string>
-    <string name="total_outer" >Total Outer</string>
-    <string name="total_piece" >Total Piece</string>
-    <string name="title_activity_product_scheme_details" >ProductSchemeDetailsActivity</string>
-    <string name="is_Listed" >Is Listed</string>
-    <string name="is_distributed" >Is Distributed</string>
-    <string name="pls_select_chequeno" >Please Enter ChequeNo </string>
-    <string name="average_lines" >Average Lines</string>
-    <string name="add_plane" >Add To Plan</string>
-    <string name="non_visit" >Non Visit</string>
-    <string name="are_you_sure_you_want_to_logout" > Are you sure want to logout?</string>
-    <string name="vaload_heder_text" >Select quality for each batch</string>
-    <string name="total_items" >Total returned items is “%1$d”.</string>
-    <string name="srp_text" >SRP: </string>
-    <string name="loading_no" >Loading No.</string>
-    <string name="dateend" >End Date</string>
-    <string name="deleted_sucessfully" >deleted successfully</string>
-    <string name="timeend" >End Time</string>
+    <string name="comments">Comments</string>
+    <string name="title_activity_payment_mode">PaymentModeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="pay_now">Pay Now</string>
+    <string name="rtgs_date">RTGS Date</string>
+    <string name="cheque_date">Cheque Date</string>
+    <string name="dd_no_date">Demand Draft Date</string>
+    <string name="total_sih">Total Sih</string>
+    <string name="total_cases">Total Case</string>
+    <string name="total_outer">Total Outer</string>
+    <string name="total_piece">Total Piece</string>
+    <string name="title_activity_product_scheme_details">ProductSchemeDetailsActivity</string>
+    <string name="is_Listed">Is Listed</string>
+    <string name="is_distributed">Is Distributed</string>
+    <string name="pls_select_chequeno">Please Enter ChequeNo</string>
+    <string name="average_lines">Average Lines</string>
+    <string name="add_plane">Add To Plan</string>
+    <string name="non_visit">Non Visit</string>
+    <string name="are_you_sure_you_want_to_logout">Are you sure want to logout?</string>
+    <string name="vaload_heder_text">Select quality for each batch</string>
+    <string name="total_items">Total returned items is “%1$d”.</string>
+    <string name="srp_text">SRP:</string>
+    <string name="loading_no">Loading No.</string>
+    <string name="dateend">End Date</string>
+    <string name="deleted_sucessfully">deleted successfully</string>
+    <string name="timeend">End Time</string>
     <string name="email">Email</string>
     <string name="manual_stock_apply_header_validation">Invoice Number, Date and Stock Type should not be empty</string>
-    <string name = "percentage">Percentage</string>
+    <string name="percentage">Percentage</string>
     <string name="invoice_qty">Invoice Qty</string>
     <string name="delivery_rep_code">Rep Code</string>
     <string name="maximum_count_is_exceed">Maximum count is exceed</string>
-    <!-- Order summary success dialog message -->
-    <string name="delivery_date_is">Delivery Date is: </string>
+    <string name="select_reason_for_no_order">Select Reason for no order</string>
+    <string name="delivery_date_is">Delivery Date is:</string>
     <string name="old_order_volume">Original value</string>
+    <string name="Would_you_like_to_add_this_store_in_today_plan">Would you like to add this store in today’s plan?</string>
+    <string name="reason_for_visit">Reason for visit</string>
+    <string name="enter_remarks">Kindly provide remarks</string>
+    <string name="other_reason">Others</string>
+    <string name="remark_hint">Remarks</string>
+    <string name="catalog_images_download">Download Catalog Images</string>
+    <string name="enter_valid_password">Please enter valid password</string>
+    <string name="profile">Profile</string>
+    <string name="view">View</string>
     <string name="new_retailer">New Retailer</string>
-
     <string name="history">History</string>
     <string name="profile_edit_screen__title">Profile Edit</string>
     <string name="settings">Settings</string>
@@ -1152,13 +1129,12 @@
     <string name="ordered">Ordered</string>
     <string name="moq">MOQ</string>
     <string name="minimum_order_required">Minimum Order Required</string>
-    <string name="foc_piece">Foc Piece</string>
     <string name="piece">Piece</string>
     <string name="multiple_of">Multiple of</string>
     <string name="discounted_price">Discounted Price</string>
     <string name="do_u_want_to_save">هل تريد حفظ ؟</string>
     <string name="this_is_exceptional_order">This is an exceptional order.</string>
-    <string name="this_is_standared_order">This is an Standard order for : </string>
+    <string name="this_is_standared_order">This is an Standard order for :</string>
     <string name="confirm">Confirm</string>
     <string name="enter_email_id">Enter Email ID</string>
     <string name="send">Send</string>
@@ -1176,7 +1152,182 @@
     <string name="my_gallery">My Gallery</string>
     <string name="select_condition">Select condition</string>
     <string name="profile_updated_scccess">Customer Profile updated successfully.</string>
+    <string name="tax_not_availble_for_some_product">Tax not available for some Product.</string>
+    <string name="no_match_found">No Match Found</string>
+    <string name="export_and_share">Export and Share</string>
+    <string name="export_and_email">Export and Email</string>
+    <string name="share">Share</string>
+    <string name="select_beat">Select Beat</string>
+    <string name="exporting_orders">Exporting Orders..</string>
+    <string name="share_order_report_using">Share order report using..</string>
+    <string name="invalid_credentials_mail_not_sent">Invalid Credentials. Email not sent.</string>
+    <string name="export_failed">Export Failed</string>
+    <string name="successfully_exported">Successfully Exported</string>
+    <string name="please_fill_adherence">Please Fill Adherence</string>
+    <string name="attendance_activity_not_completed">Attendance Activity Not Completed</string>
+    <string name="deviceId_change_msg_title">You are already logged in on another device</string>
+    <string name="deviceId_change_msg">Do you want to continue in this device?</string>
+    <string name="authentication_error">Error in authentication</string>
+    <string name="mock_location_enabled">Disable Mock Location and Login.</string>
+    <string name="select_remarks">Select Remarks</string>
+    <string name="select_noorder_reason">Enter No Order Reason</string>
+    <string name="pm">PM</string>
+    <string name="select_location">Select Location</string>
+    <string name="reason_required_for">Reason required for</string>
+    <string name="title_opportunity">Opportunity</string>
+    <string name="date_label">Date</string>
+    <string name="minPhoto">Min.Photo</string>
+    <string name="maxPhoto">Max.Photo</string>
+    <string name="saveTransaction">Do you wish to save the transaction</string>
+    <string name="continuousImageCapturedToast">Photo Captured and Saved Successfully</string>
+    <string name="user">User</string>
+    <string name="call_details">Call Details</string>
+    <string name="incentivetext">Total Incentive</string>
+    <string name="hasannouncer">Has Announcer</string>
+    <string name="exceeds_orderd_qty">Exceeds ordered quantity</string>
+    <string name="are_u_giving_free_products">Deliver free products</string>
+    <string name="stock_not_availble_for_free_product">Stock not available for free products</string>
+    <string name="do_want_to_continue_with_partial_invoice">Do you want to continue with the partial invoice ?</string>
+    <string name="overdue">Overdue</string>
+    <string name="invoiceamt">Invoice Amt</string>
+    <string name="exceed_limt">Exceeds the Limit</string>
+    <string name="executed">Is Executed</string>
+    <string name="share_invoice_using">Share invoice using..</string>
+    <string name="error_in_creating_pdf">Error in creating pdf.</string>
+    <string name="preparing_pdf">Preparing Pdf file</string>
+    <string name="docRefNo">DocRefNo</string>
+    <string name="contact_name">Contact Name</string>
+    <string name="enter_docref_number">Kindly Enter DocRef Number</string>
+    <string name="get_signature">Kindly get Signature</string>
+    <string name="downloading_rpt">Downloading Report</string>
+    <string name="time_in">Time In</string>
+    <string name="time_out">Time out</string>
+    <string name="sales_value">Sales value</string>
+    <string name="duration">Duration</string>
+    <string name="partial_delivery">Partial Delivery</string>
+    <string name="total_vol">Total Volume</string>
+    <string name="order_history_detail">Order History</string>
+    <string name="invoice_history_detail">Invoice History</string>
+    <string name="please_close_the_day_for_current_Distributor">Please close the day for current distributor.</string>
+    <string name="please_select_a_Distributor_to_download">Please select a distributor to download.</string>
+    <string name="invoice_creation">Creation</string>
+    <string name="reason_duplicated">Reason should not be duplicated.</string>
+    <string name="total_mrp">Total MRP</string>
+    <string name="scheme_ucp">Scheme UCP</string>
+    <string name="order_summary_dialog">Order Summary Dialog</string>
+    <string name="bill_payment">Bill Payment</string>
+    <string name="moveAsset">Move Asset</string>
+    <string name="executed_qty">Executed Qty</string>
+    <string name="competitor_qty">Comp Qty</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="exec_rating">Executing Rating</string>
+    <string name="previous">Previous</string>
+    <string name="pls_etr_bnk_name">Please Enter Bank Name</string>
+    <string name="pls_etr_brc_name">Please Enter Branch Name</string>
+    <string name="doc_exchanged">Doc Exchanged</string>
+    <string name="fetching_location">Fetching Location</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="location_not_captured">Location not captured.</string>
+    <string name="location_captured">Location captured.</string>
+    <string name="last_image_download_time">Last downloaded time :</string>
+    <string name="order_not_allowed_for_retailer">Order taking not allowed for this retailer.</string>
+    <string name="competitor_filter">Competitor Filter</string>
+    <string name="error_e26">Unauthorized access</string>
+    <string name="error_e27">DeviceId mismatch</string>
+    <string name="sign_captured_already">Signature already captured. Do you want to delete and re-capture?</string>
+    <string name="post_dated_demand_draft_notallow">Post dated Demand Draft Not Allowed</string>
+    <string name="post_dated_rtgs_notallow">Post dated RTGS Not Allowed</string>
+    <string name="prev_dated_demand_draft_notallow">Previous Dated Demand Draft Not Allowed</string>
+    <string name="prev_dated_rtgs_notallow">Previous Dated RTGS Not Allowed</string>
+    <string name="validating_retailer_visit">Validating Retailer Visit</string>
+    <string name="validation_msg">Contact Supervisor to Visit Retailer</string>
+    <string name="display_period">Display period</string>
+    <string name="booking_period">Booking period</string>
+    <string name="qualifiers">Qualifiers</string>
+    <string name="get_type">Get type</string>
+    <string name="products">Products</string>
+    <string name="free_products">Free products</string>
+    <string name="error_e03">User not allowed to proceed. Contact Admin</string>
+    <string name="validating_sales">Validating Sales..</string>
+    <string name="quantity">Quantity</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="reason_for_ordered_prods">Reason for Ordered Products</string>
+    <string name="select_remarks_type">Select Remark Type</string>
+    <string name="remarks_type_label">Remarks Type</string>
+    <string name="shipment_type_label">Shipment Type</string>
+    <string name="payment_type_label">Payment Type</string>
+    <string name="select_shipment_type">Select Shipment Type</string>
+    <string name="select_pay_term_type">Select PayTerm Type</string>
+    <string name="shipment_mandatory">Please select shipment type</string>
+    <string name="pay_term_mandatory">Please select payterm type</string>
+    <string name="dist_channel_mandatory">Please select Distribution channel</string>
+    <string name="select_channel">Select channel</string>
+    <string name="supplier_label">Supplier</string>
+    <string name="note_label">Note</string>
+    <string name="return_products_price_not_matching_total_replacing_product_price">Return products price not matching total replacing product price</string>
+    <string name="connection_error_please_try_again">Connection error. Please try again.</string>
+    <string name="refreshing">Refreshing</string>
+    <string name="no_space">No space available.</string>
+    <string name="un_zip">Unzipping…</string>
+    <string name="do_u_want_to_take_one_more_print">Click Yes to continue for the 2 nd copy?</string>
+    <string name="supplier_mandatory">Please select Supplier</string>
+    <string name="wk5">wk5</string>
+    <string name="order_save_falied">Order Save Failed !</string>
+    <string name="order_not_placed_focus_pack">Order not placed for Focus pack.</string>
+    <string name="order_delivery_approve">Do you want to proceed ?</string>
+    <string name="ordered_value_exceeds_sih_value_please_edit_the_order">Ordered value exceeds SIH value.Please edit the order</string>
+    <string name="exceed_ordered_value">You have exceeded Ordered Value.</string>
+    <string name="invoice_generated">Invoice Generated</string>
+    <string name="not_able_to_generate_invoice">Not able to generate invoice</string>
+    <string name="no_ordered_products_found">No ordered products found.</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="monthView">Month View</string>
+    <string name="unplannedDay">UnPlanned Day</string>
+    <string name="noPlan">No Plans available</string>
+    <string name="do_you_want_delete_plan">Do you want to delete the plan?</string>
+    <string name="plan_deleted">Plan Deleted Successfully</string>
+    <string name="retailerExists">Outlet Already Exists</string>
+    <string name="notAllowtoPlanOutlet">Not allowed to plan Outlet!</string>
+    <string name="notAllowtoPlannonField">Not allowed to plan Non Field!</string>
+    <string name="nonFieldExists">NonField Already Exists</string>
+    <string name="pastAndCurrentDays">Plan can not be done for past days and current day</string>
+    <string name="endOfPeriod">End of Plan Period</string>
+    <string name="please_complete_order_taking_activity_to_perform_sales_return_activity">Please complete order taking activity to perform sales return activity</string>
+    <string name="sales_return_value_should_not_exceed_order_value">Sales Return Value should not exceed Order Value. Your Order Value is %s RS</string>
+    <string name="order_value_cannot_be_lesser_than_the_sales_return_value">Order Value cannot be lesser than the Sales Return Value, Please re-edit the Order.</string>
+    <string name="are_you_sure_you_want_to_submit">Are you sure you want to submit?</string>
+    <string name="submitted_orders_not_allowed_to_edit">Submitted transactions will not be allowed to edit.</string>
+    <string name="tot_lines_sold">Lines Sold</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+    <string name="click_to_export">Click to export</string>
+    <string name="click_to_switch">Click to switch</string>
+    <string name="click_to_change_password">Click to change password</string>
+    <string name="click_to_show_device_status">Click to show device status</string>
+    <string name="user_already_assigned">User Already Assigned</string>
+    <string name="seller_already_assigned">Seller is assigned to some other backup seller</string>
+    <string name="backup_seller_already_assigned">Backup seller is assigned to some other user</string>
+    <string name="foc">FfoOC</string>
 
-
+    <string-array name="task_tab_header">
+        <item>All</item>
+        <item>Assigned</item>
+        <item>My Task</item>
+    </string-array>
+    <string-array name="days_in_week">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
 
 </resources>

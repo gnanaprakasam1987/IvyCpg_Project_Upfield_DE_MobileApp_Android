@@ -256,7 +256,6 @@
     <!-- non visit spinner color-->
 
     <!-- history carview bg color-->
-    <color name="history_card_bg">#2a2a2a</color>
     <color name="history_invbtn_color">#737373</color>
     <color name="history_list_bg">#F9F9F9</color>
     <color name="history_label_color">#818181</color>
