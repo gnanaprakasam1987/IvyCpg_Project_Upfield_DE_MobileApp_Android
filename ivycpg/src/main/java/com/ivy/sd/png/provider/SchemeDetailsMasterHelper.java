@@ -3971,8 +3971,8 @@ public class SchemeDetailsMasterHelper {
         sb.append(" inner join SchemeMaster SM on SM.Schemeid=SBM.Schemeid ");
         sb.append("inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid ");
         sb.append("left join schemeApplyCountMaster SAC on SBM.schemeid=SAC.schemeID ");
-        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-        sb.append(" OR SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ")");
+        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())+")");
+        sb.append(" AND (SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ")");
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
 
         sb.append(" where SCM.distributorid in(0," + bmodel.getRetailerMasterBO().getDistributorId() + ")");
@@ -4057,8 +4057,8 @@ public class SchemeDetailsMasterHelper {
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct SBM.productid,SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from SchemeMaster SM ");
         sb.append("left join schemeApplyCountMaster SAC on SM.Schemeid=SAC.schemeID ");
-        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-        sb.append(" OR SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ")");
+        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())+")");
+        sb.append(" and (SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ")");
         sb.append(" inner join SchemeBuyMaster SBM on SM.Schemeid=SBM.Schemeid ");
         sb.append("inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid ");
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
