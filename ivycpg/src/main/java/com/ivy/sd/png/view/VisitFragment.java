@@ -85,10 +85,14 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private static final String CODE_GOLDEN_STORE = "FIlt_06";
     private static final String CODE_DEAD_STORE = "Filt_07";
     private static final String CODE_HANGING = "Filt_08";
+
     private static final int PROFILE_REQUEST_CODE = 101;
+
     private static final String MENU_PLANNING = "Day Planning";
     private static final String MENU_VISIT = "Trade Coverage";
     private static final String MENU_STK_ORD = "MENU_STK_ORD";
+    private static final String RETAILER_FILTER_MENU_TYPE = "MENU_VISIT";
+
     private boolean profileClick;
     private BusinessModel bmodel;
     private boolean isClicked;
@@ -107,7 +111,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private boolean isFromPlanning = false;
 
     private ArrayList<StandardListBO> mRetailerSelectionList;
-    private static final String RETAILER_FILTER_MENU_TYPE = "MENU_VISIT";
+
     private TextView tv_storeVisit;
 
     private int mSelectedPostion = -1;
@@ -180,9 +184,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         mRetTgtAchv = new HashMap<>();
 
 
-        listView = (ListView) view.findViewById(R.id.listView1);
+        listView = view.findViewById(R.id.listView1);
         listView.setCacheColorHint(0);
-        LinearLayout switchBtnLty = (LinearLayout) view.findViewById(R.id.ll_view);
+        LinearLayout switchBtnLty = view.findViewById(R.id.ll_view);
 
         //update IsOrderWithoutInvoice flag only if seller is van seller or seller dialog is enabled.
         if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG || bmodel.configurationMasterHelper.IS_INVOICE)
@@ -190,7 +194,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         hasOrderScreen = hasOrderScreenEnabled();
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,15 +202,16 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             }
         });
 
-        ImageView mapImageView = (ImageView) view.findViewById(R.id.map_viewchange);
-        ImageView crossLine = (ImageView) view.findViewById(R.id.cross_line);
-        CardView cardView = (CardView) view.findViewById(R.id.card_view);
-        CardView cardView1 = (CardView) view.findViewById(R.id.card_view1);
-        tv_storeVisit = (TextView) view.findViewById(R.id.tv_store_visit);
+        ImageView mapImageView = view.findViewById(R.id.map_viewchange);
+        ImageView crossLine = view.findViewById(R.id.cross_line);
+        CardView cardView = view.findViewById(R.id.card_view);
+        CardView cardView1 = view.findViewById(R.id.card_view1);
+        tv_storeVisit = view.findViewById(R.id.tv_store_visit);
         tv_storeVisit.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         crossLine.setRotation(-5);
+
         if (getArguments() != null)
             isFromPlanning = getArguments().getBoolean("isPlanning");
 
@@ -357,7 +362,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     .setDropDownViewResource(android.R.layout.simple_spinner_item);
             daySpinner.setAdapter(brandAdapter);
 
-            mBrandAutoCompleteTV = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextView1);
+            mBrandAutoCompleteTV = view.findViewById(R.id.autoCompleteTextView1);
             mBrandAutoCompleteTV.setAdapter(brandAdapter);
             mBrandAutoCompleteTV.setThreshold(1);
             mBrandAutoCompleteTV.setSelection(0);
@@ -418,19 +423,19 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         bmodel.mRetailerHelper.IsRetailerGivenNoVisitReason();
 
-        TextView tvStoreLbl = (TextView) view.findViewById(R.id.tv_label);
+        TextView tvStoreLbl = view.findViewById(R.id.tv_label);
         tvStoreLbl.setTypeface(bmodel.configurationMasterHelper
                 .getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-        TextView lbl_BeatLoc = (TextView) view.findViewById(R.id.label_BeatLoc);
+        TextView lbl_BeatLoc = view.findViewById(R.id.label_BeatLoc);
         lbl_BeatLoc.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        TextView lbl_StoreToVisit = (TextView) view.findViewById(R.id.label_StoreToVisit);
+        TextView lbl_StoreToVisit = view.findViewById(R.id.label_StoreToVisit);
         lbl_StoreToVisit.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        TextView lbl_TodayTgt = (TextView) view.findViewById(R.id.label_TodayTgt);
+        TextView lbl_TodayTgt = view.findViewById(R.id.label_TodayTgt);
         lbl_TodayTgt.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         try {
@@ -456,16 +461,16 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             Commons.printException(e);
         }
 
-        TextView spinnerLabel = (TextView) view.findViewById(R.id.spinnerLabel);
+        TextView spinnerLabel = view.findViewById(R.id.spinnerLabel);
         spinnerLabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        TextView tv_areaLoc = (TextView) view.findViewById(R.id.daytv);
+        TextView tv_areaLoc = view.findViewById(R.id.daytv);
         tv_areaLoc.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         tv_areaLoc.setText(bmodel.getDay(bmodel.userMasterHelper
                 .getUserMasterBO().getDownloadDate()));
 
-        ImageView img_beatloc = (ImageView) view.findViewById(R.id.img_beatloc);
+        ImageView img_beatloc = view.findViewById(R.id.img_beatloc);
         ArrayList<String> weekdays = new ArrayList<>();
         weekdays.add("Sunday");
         weekdays.add("Monday");
@@ -483,14 +488,15 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             img_beatloc.setImageResource(R.drawable.arealocation);
         }
 
-        TextView tv_target = (TextView) view.findViewById(R.id.tv_tgt);
+        TextView tv_target = view.findViewById(R.id.tv_tgt);
         tv_target.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
+
+        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
             tv_target.setText(String.valueOf(getStoreVisited()));
-        } else {
+        else
             tv_target.setText(getTotalVisitActual());
-        }
+
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
@@ -523,7 +529,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         }
 
-        TextView tv_target1 = (TextView) view.findViewById(R.id.tv_tgt1);
+        TextView tv_target1 = view.findViewById(R.id.tv_tgt1);
         tv_target1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
@@ -532,7 +538,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             tv_target1.setText(getTotalVisitActual());
         }
 
-        TextView lbl_TodayTgt1 = (TextView) view.findViewById(R.id.label_TodayTgt1);
+        TextView lbl_TodayTgt1 = view.findViewById(R.id.label_TodayTgt1);
         lbl_TodayTgt1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
@@ -1251,84 +1257,95 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
             if (convertView == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
-                convertView = inflater.inflate(
-                        R.layout.visit_list_child_item, parent, false);
+                if (bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER)
+                    convertView = inflater.inflate(
+                            R.layout.visit_list_simple_item, parent, false);
+                else
+                    convertView = inflater.inflate(
+                            R.layout.visit_list_child_item, parent, false);
+
                 holder = new ViewHolder();
 
-                holder.cardView = (CardView) convertView
+                holder.cardView = convertView
                         .findViewById(R.id.card_view);
 
-                holder.line_order_without_invoice = (ImageView) convertView
+                holder.line_order_without_invoice = convertView
                         .findViewById(R.id.line_order_without_invoice);
 
-                holder.imgGoldDeadStore = (ImageView) convertView
-                        .findViewById(R.id.iv_gold_dead);
-
-                holder.outletNameTextView = (TextView) convertView
+                holder.outletNameTextView = convertView
                         .findViewById(R.id.outletName_tv);
-                holder.outletLocationTextView = (TextView) convertView
+                holder.outletLocationTextView = convertView
                         .findViewById(R.id.outletLocation_tv);
-
-                holder.imgInvoice = (ImageView) convertView
-                        .findViewById(R.id.iv_invoice);
-
-                holder.imgIndicative = (ImageView) convertView
-                        .findViewById(R.id.iv_indicative);
-
-                holder.imgDeviate = (ImageView) convertView
+                holder.imgDeviate = convertView
                         .findViewById(R.id.iv_deviate);
 
-                holder.iv_dead_gold_store = (ImageView) convertView
-                        .findViewById(R.id.iv_dead_gold_store);
 
-                holder.iv_asset_mapped = (ImageView) convertView
-                        .findViewById(R.id.iv_asset_mapped);
-
-                holder.tv_labelTgt1 = (TextView) convertView
-                        .findViewById(R.id.labelTgt1);
-                holder.tv_actualTgt1 = (TextView) convertView
-                        .findViewById(R.id.tv_actualTgt1);
-                holder.tv_achvTgt1 = (TextView) convertView
-                        .findViewById(R.id.tv_achvTgt1);
-
-                holder.tv_labelTgt2 = (TextView) convertView
-                        .findViewById(R.id.labelTgt2);
-                holder.tv_actualTgt2 = (TextView) convertView
-                        .findViewById(R.id.tv_actualTgt2);
-                holder.tv_achvTgt2 = (TextView) convertView
-                        .findViewById(R.id.tv_achvTgt2);
-
-                holder.ll_score1 = (LinearLayout) convertView.findViewById(R.id.ll_score1);
-                holder.ll_score2 = (LinearLayout) convertView.findViewById(R.id.ll_score2);
-                holder.ll_scoreParent = (LinearLayout) convertView.findViewById(R.id.ll_scoreParent);
-                holder.imgLine2 = (ImageView) convertView.findViewById(R.id.img_line2);
-
-                holder.outletNew = (TextView) convertView
-                        .findViewById(R.id.outlet_new);
-                holder.tv_freq = (TextView) convertView
-                        .findViewById(R.id.tv_freq);
-                holder.tv_freq.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.outletNameTextView.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.outletLocationTextView.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                holder.tv_labelTgt1.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_actualTgt1.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_achvTgt1.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
+                    holder.imgGoldDeadStore = convertView
+                            .findViewById(R.id.iv_gold_dead);
 
-                holder.tv_labelTgt2.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_actualTgt2.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_achvTgt2.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-                holder.iv_outlet_color = (ImageView) convertView.findViewById(R.id.iv_outlet_color);
+                    holder.imgInvoice = convertView
+                            .findViewById(R.id.iv_invoice);
+
+                    holder.imgIndicative = convertView
+                            .findViewById(R.id.iv_indicative);
+
+                    holder.iv_dead_gold_store = convertView
+                            .findViewById(R.id.iv_dead_gold_store);
+
+                    holder.iv_asset_mapped = convertView
+                            .findViewById(R.id.iv_asset_mapped);
+
+                    holder.tv_labelTgt1 = convertView
+                            .findViewById(R.id.labelTgt1);
+                    holder.tv_actualTgt1 = convertView
+                            .findViewById(R.id.tv_actualTgt1);
+                    holder.tv_achvTgt1 = convertView
+                            .findViewById(R.id.tv_achvTgt1);
+
+                    holder.tv_labelTgt2 = convertView
+                            .findViewById(R.id.labelTgt2);
+                    holder.tv_actualTgt2 = convertView
+                            .findViewById(R.id.tv_actualTgt2);
+                    holder.tv_achvTgt2 = convertView
+                            .findViewById(R.id.tv_achvTgt2);
+
+                    holder.ll_score1 = convertView.findViewById(R.id.ll_score1);
+                    holder.ll_score2 = convertView.findViewById(R.id.ll_score2);
+                    holder.ll_scoreParent = convertView.findViewById(R.id.ll_scoreParent);
+                    holder.imgLine2 = convertView.findViewById(R.id.img_line2);
+
+                    holder.outletNew = convertView
+                            .findViewById(R.id.outlet_new);
+                    holder.tv_freq = convertView
+                            .findViewById(R.id.tv_freq);
+                    holder.tv_freq.setTypeface(bmodel.configurationMasterHelper
+                            .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+
+                    holder.tv_labelTgt1.setTypeface(bmodel.configurationMasterHelper
+                            .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    holder.tv_actualTgt1.setTypeface(bmodel.configurationMasterHelper
+                            .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.tv_achvTgt1.setTypeface(bmodel.configurationMasterHelper
+                            .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                    holder.tv_labelTgt2.setTypeface(bmodel.configurationMasterHelper
+                            .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    holder.tv_actualTgt2.setTypeface(bmodel.configurationMasterHelper
+                            .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.tv_achvTgt2.setTypeface(bmodel.configurationMasterHelper
+                            .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                    holder.iv_outlet_color = convertView.findViewById(R.id.iv_outlet_color);
+                }
+
 
                 holder.cardView.setOnClickListener(new OnClickListener() {
                     @Override
@@ -1437,13 +1454,19 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                 if (("Y").equals(retailerObj.getIsDeadStore())) {
                     holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_name));
-                    holder.tv_labelTgt1.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
-                    holder.tv_labelTgt2.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                    if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
+                        holder.tv_labelTgt1.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                        holder.tv_labelTgt2.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                    }
                 } else {
+
                     holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.store_title));
-                    holder.tv_labelTgt1.setTextColor(color);
-                    holder.tv_labelTgt2.setTextColor(color);
+                    if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
+                        holder.tv_labelTgt1.setTextColor(color);
+                        holder.tv_labelTgt2.setTextColor(color);
+                    }
                 }
+
 
             } else {
                 if (retailerObj.getLastVisitStatus() != null) {
@@ -1463,22 +1486,21 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
 
                 holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.store_title));
-                holder.tv_labelTgt1.setTextColor(color);
-                holder.tv_labelTgt2.setTextColor(color);
+                if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
+                    holder.tv_labelTgt1.setTextColor(color);
+                    holder.tv_labelTgt2.setTextColor(color);
+                }
             }
 
-            if (("Y").equals(retailerObj.getIsDeviated().toUpperCase()))
-                holder.imgDeviate.setVisibility(View.VISIBLE);
-            else
-                holder.imgDeviate.setVisibility(View.GONE);
+            if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
 
-            if (("Y").equals(retailerObj.getIsNew())) {
-                holder.outletNew.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.outletNew.setVisibility(View.VISIBLE);
-                holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
-            } else {
-                holder.outletNew.setVisibility(View.GONE);
-            }
+                if (("Y").equals(retailerObj.getIsNew())) {
+                    holder.outletNew.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    holder.outletNew.setVisibility(View.VISIBLE);
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
+                } else {
+                    holder.outletNew.setVisibility(View.GONE);
+                }
 
             if ("1".equals(mRetailerProp.get("RTPRTY01"))
                     && ("Y").equals(retailerObj.getIsDeadStore())) {
@@ -1508,48 +1530,47 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 holder.imgGoldDeadStore.setVisibility(View.GONE);
             }
 
-            if ("1".equals(mRetailerProp.get("RTPRTY03"))
-                    && bmodel.configurationMasterHelper.IS_INVOICE
-                    && retailerObj.isHangingOrder()) {
-                holder.imgInvoice.setImageResource(R.drawable.ic_dashboard_invoice);
-                holder.imgInvoice.setVisibility(View.VISIBLE);
-            } else {
-                holder.imgInvoice.setVisibility(View.GONE);
-            }
+                if ("1".equals(mRetailerProp.get("RTPRTY03"))
+                        && bmodel.configurationMasterHelper.IS_INVOICE
+                        && retailerObj.isHangingOrder()) {
+                    holder.imgInvoice.setImageResource(R.drawable.ic_dashboard_invoice);
+                    holder.imgInvoice.setVisibility(View.VISIBLE);
+                } else {
+                    holder.imgInvoice.setVisibility(View.GONE);
+                }
 
-            if ("1".equals(mRetailerProp.get("RTPRTY04"))
-                    && retailerObj.getIndicateFlag() == 1) {
-                holder.imgIndicative.setImageResource(R.drawable.ic_dashboard_indicative);
-                holder.imgIndicative.setVisibility(View.VISIBLE);
-            } else {
-                holder.imgIndicative.setVisibility(View.GONE);
-            }
+                if ("1".equals(mRetailerProp.get("RTPRTY04"))
+                        && retailerObj.getIndicateFlag() == 1) {
+                    holder.imgIndicative.setImageResource(R.drawable.ic_dashboard_indicative);
+                    holder.imgIndicative.setVisibility(View.VISIBLE);
+                } else {
+                    holder.imgIndicative.setVisibility(View.GONE);
+                }
 
-            if ("1".equals(mRetailerProp.get("RTPRTY07"))) {
-                if (Integer.parseInt(retailerObj.getCredit_invoice_count()) > 0) {
-                    holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
-                    holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
-                } else if (retailerObj.isBomAchieved()) {
-                    holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
-                    holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
+                if ("1".equals(mRetailerProp.get("RTPRTY07"))) {
+                    if (Integer.parseInt(retailerObj.getCredit_invoice_count()) > 0) {
+                        holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
+                        holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
+                    } else if (retailerObj.isBomAchieved()) {
+                        holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
+                        holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.iv_dead_gold_store.setVisibility(View.GONE);
+                    }
                 } else {
                     holder.iv_dead_gold_store.setVisibility(View.GONE);
                 }
-            } else {
-                holder.iv_dead_gold_store.setVisibility(View.GONE);
+
+                if ("1".equals(mRetailerProp.get("RTPRTY08"))
+                        && retailerObj.getRField4().equals("1")) {
+                    holder.iv_asset_mapped.setImageResource(R.drawable.ic_action_star_select);
+                    holder.iv_asset_mapped.setVisibility(View.VISIBLE);
+                } else {
+                    holder.iv_asset_mapped.setVisibility(View.GONE);
+                }
+
             }
 
-            if ("1".equals(mRetailerProp.get("RTPRTY08"))
-                    && retailerObj.getRField4().equals("1")) {
-                holder.iv_asset_mapped.setImageResource(R.drawable.ic_action_star_select);
-                holder.iv_asset_mapped.setVisibility(View.VISIBLE);
-            } else {
-                holder.iv_asset_mapped.setVisibility(View.GONE);
-            }
-
-
-            isFirstDone = false;
-            isSecondDone = false;
             holder.retailerObjectHolder = retailerObj;
             String tvText = retailerObj.getRetailerName();
 
@@ -1560,189 +1581,193 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             else
                 holder.outletLocationTextView.setVisibility(View.GONE);
 
-            if (mRetTgtAchv.containsKey("VST01")) {
-                String desc = mRetTgtAchv.get("VST01");
-                holder.tv_labelTgt1.setText(desc);
-                String strActual = "/" + bmodel.formatValue(holder.retailerObjectHolder.getDaily_target());
-                holder.tv_achvTgt1.setText(bmodel.formatValue(holder.retailerObjectHolder.getVisit_Actual()));
-                holder.tv_actualTgt1.setText(strActual);
-                isFirstDone = true;
-            }
-
-            if (mRetTgtAchv.containsKey("VST02")) {
-                String desc = mRetTgtAchv.get("VST02");
-                holder.tv_labelTgt1.setText(desc);
-                String strAchv = bmodel.formatValue(holder.retailerObjectHolder.getVisit_Actual());
-                String strActual = "/" + bmodel.formatValue(holder.retailerObjectHolder.getDaily_target_planned());
-                if (!isFirstDone) {
-                    holder.tv_achvTgt1.setText(strAchv);
+            if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
+                isFirstDone = false;
+                isSecondDone = false;
+                if (mRetTgtAchv.containsKey("VST01")) {
+                    String desc = mRetTgtAchv.get("VST01");
+                    holder.tv_labelTgt1.setText(desc);
+                    String strActual = "/" + bmodel.formatValue(holder.retailerObjectHolder.getDaily_target());
+                    holder.tv_achvTgt1.setText(bmodel.formatValue(holder.retailerObjectHolder.getVisit_Actual()));
                     holder.tv_actualTgt1.setText(strActual);
-                    holder.tv_labelTgt1.setText(desc);
                     isFirstDone = true;
-                } else if (!isSecondDone) {
-                    holder.tv_achvTgt2.setText(strAchv);
-                    holder.tv_actualTgt2.setText(strActual);
-                    holder.tv_labelTgt2.setText(desc);
-                    isSecondDone = true;
                 }
-            }
 
-            if (mRetTgtAchv.containsKey("VST08")) {
-                String desc = mRetTgtAchv.get("VST08");
-                String strAchv = holder.retailerObjectHolder.getMslAch();
-                String strActual = "/" + holder.retailerObjectHolder.getMslTaget();
+                if (mRetTgtAchv.containsKey("VST02")) {
+                    String desc = mRetTgtAchv.get("VST02");
+                    holder.tv_labelTgt1.setText(desc);
+                    String strAchv = bmodel.formatValue(holder.retailerObjectHolder.getVisit_Actual());
+                    String strActual = "/" + bmodel.formatValue(holder.retailerObjectHolder.getDaily_target_planned());
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(strAchv);
+                        holder.tv_actualTgt1.setText(strActual);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(strAchv);
+                        holder.tv_actualTgt2.setText(strActual);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+
+                if (mRetTgtAchv.containsKey("VST08")) {
+                    String desc = mRetTgtAchv.get("VST08");
+                    String strAchv = holder.retailerObjectHolder.getMslAch();
+                    String strActual = "/" + holder.retailerObjectHolder.getMslTaget();
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(strAchv);
+                        holder.tv_actualTgt1.setText(strActual);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(strAchv);
+                        holder.tv_actualTgt2.setText(strActual);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+
+                if (mRetTgtAchv.containsKey("VST09")) {
+                    String strActual = "/" + bmodel.formatValue(holder.retailerObjectHolder.getMonthly_target());
+                    String strAchv = bmodel.formatValue(holder.retailerObjectHolder.getMonthly_acheived());
+                    String desc = mRetTgtAchv.get("VST09");
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(strAchv);
+                        holder.tv_actualTgt1.setText(strActual);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(strAchv);
+                        holder.tv_actualTgt2.setText(strActual);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+
+                if (mRetTgtAchv.containsKey("VST15")) {
+                    String desc = mRetTgtAchv.get("VST15");
+                    String strActual = "/" + holder.retailerObjectHolder.getPlannedVisitCount();
+                    int totAchv = holder.retailerObjectHolder.getVisitDoneCount() + bmodel.getTodaysVisitCount(holder.retailerObjectHolder);
+                    String strAchv = "" + totAchv;
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(strAchv);
+                        holder.tv_actualTgt1.setText(strActual);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(strAchv);
+                        holder.tv_actualTgt2.setText(strActual);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+
+                if (mRetTgtAchv.containsKey("VST11")) {
+                    String desc = mRetTgtAchv.get("VST11");
+                    int valueQDVP = holder.retailerObjectHolder.getSurveyHistoryScore();
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(String.valueOf(valueQDVP));
+                        holder.tv_actualTgt1.setVisibility(View.GONE);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(String.valueOf(valueQDVP));
+                        holder.tv_actualTgt2.setVisibility(View.GONE);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+
+                if (mRetTgtAchv.containsKey("VST17")) {
+                    String desc = mRetTgtAchv.get("VST17");
+                    String value = holder.retailerObjectHolder.getSalesValue();
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(value);
+                        holder.tv_actualTgt1.setVisibility(View.GONE);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(value);
+                        holder.tv_actualTgt2.setVisibility(View.GONE);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+                if (mRetTgtAchv.containsKey("VST18")) {
+                    String desc = mRetTgtAchv.get("VST18");
+                    String value = holder.retailerObjectHolder.getRField5();
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(value);
+                        holder.tv_actualTgt1.setVisibility(View.GONE);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(value);
+                        holder.tv_actualTgt2.setVisibility(View.GONE);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+                if (mRetTgtAchv.containsKey("VST19")) {
+                    String desc = mRetTgtAchv.get("VST19");
+                    String value = holder.retailerObjectHolder.getCurrentFitScore() + "";
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(Utils.formatAsTwoDecimal(value));
+                        holder.tv_actualTgt1.setVisibility(View.GONE);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(Utils.formatAsTwoDecimal(value));
+                        holder.tv_actualTgt2.setVisibility(View.GONE);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+
+                if (mRetTgtAchv.containsKey("VST20")) {
+                    BeatMasterBO beatBo = bmodel.beatMasterHealper.getBeatMasterBOByID(holder.retailerObjectHolder.getBeatID());
+                    String desc = mRetTgtAchv.get("VST20");
+                    String value = beatBo.getBeatDescription();
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(value);
+                        holder.tv_actualTgt1.setVisibility(View.GONE);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(value);
+                        holder.tv_actualTgt2.setVisibility(View.GONE);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+
                 if (!isFirstDone) {
-                    holder.tv_achvTgt1.setText(strAchv);
-                    holder.tv_actualTgt1.setText(strActual);
-                    holder.tv_labelTgt1.setText(desc);
-                    isFirstDone = true;
+                    holder.ll_scoreParent.setVisibility(View.GONE);
                 } else if (!isSecondDone) {
-                    holder.tv_achvTgt2.setText(strAchv);
-                    holder.tv_actualTgt2.setText(strActual);
-                    holder.tv_labelTgt2.setText(desc);
-                    isSecondDone = true;
+                    holder.ll_score2.setVisibility(View.GONE);
+                    holder.imgLine2.setVisibility(View.GONE);
                 }
-            }
-
-            if (mRetTgtAchv.containsKey("VST09")) {
-                String strActual = "/" + bmodel.formatValue(holder.retailerObjectHolder.getMonthly_target());
-                String strAchv = bmodel.formatValue(holder.retailerObjectHolder.getMonthly_acheived());
-                String desc = mRetTgtAchv.get("VST09");
-                if (!isFirstDone) {
-                    holder.tv_achvTgt1.setText(strAchv);
-                    holder.tv_actualTgt1.setText(strActual);
-                    holder.tv_labelTgt1.setText(desc);
-                    isFirstDone = true;
-                } else if (!isSecondDone) {
-                    holder.tv_achvTgt2.setText(strAchv);
-                    holder.tv_actualTgt2.setText(strActual);
-                    holder.tv_labelTgt2.setText(desc);
-                    isSecondDone = true;
-                }
-            }
-
-            if (mRetTgtAchv.containsKey("VST15")) {
-                String desc = mRetTgtAchv.get("VST15");
-                String strActual = "/" + holder.retailerObjectHolder.getPlannedVisitCount();
-                int totAchv = holder.retailerObjectHolder.getVisitDoneCount() + bmodel.getTodaysVisitCount(holder.retailerObjectHolder);
-                String strAchv = "" + totAchv;
-                if (!isFirstDone) {
-                    holder.tv_achvTgt1.setText(strAchv);
-                    holder.tv_actualTgt1.setText(strActual);
-                    holder.tv_labelTgt1.setText(desc);
-                    isFirstDone = true;
-                } else if (!isSecondDone) {
-                    holder.tv_achvTgt2.setText(strAchv);
-                    holder.tv_actualTgt2.setText(strActual);
-                    holder.tv_labelTgt2.setText(desc);
-                    isSecondDone = true;
-                }
-            }
-
-            if (mRetTgtAchv.containsKey("VST11")) {
-                String desc = mRetTgtAchv.get("VST11");
-                int valueQDVP = holder.retailerObjectHolder.getSurveyHistoryScore();
-                if (!isFirstDone) {
-                    holder.tv_achvTgt1.setText(String.valueOf(valueQDVP));
-                    holder.tv_actualTgt1.setVisibility(View.GONE);
-                    holder.tv_labelTgt1.setText(desc);
-                    isFirstDone = true;
-                } else if (!isSecondDone) {
-                    holder.tv_achvTgt2.setText(String.valueOf(valueQDVP));
-                    holder.tv_actualTgt2.setVisibility(View.GONE);
-                    holder.tv_labelTgt2.setText(desc);
-                    isSecondDone = true;
-                }
-            }
-
-            if (mRetTgtAchv.containsKey("VST17")) {
-                String desc = mRetTgtAchv.get("VST17");
-                String value = holder.retailerObjectHolder.getSalesValue();
-                if (!isFirstDone) {
-                    holder.tv_achvTgt1.setText(value);
-                    holder.tv_actualTgt1.setVisibility(View.GONE);
-                    holder.tv_labelTgt1.setText(desc);
-                    isFirstDone = true;
-                } else if (!isSecondDone) {
-                    holder.tv_achvTgt2.setText(value);
-                    holder.tv_actualTgt2.setVisibility(View.GONE);
-                    holder.tv_labelTgt2.setText(desc);
-                    isSecondDone = true;
-                }
-            }
-            if (mRetTgtAchv.containsKey("VST18")) {
-                String desc = mRetTgtAchv.get("VST18");
-                String value = holder.retailerObjectHolder.getRField5();
-                if (!isFirstDone) {
-                    holder.tv_achvTgt1.setText(value);
-                    holder.tv_actualTgt1.setVisibility(View.GONE);
-                    holder.tv_labelTgt1.setText(desc);
-                    isFirstDone = true;
-                } else if (!isSecondDone) {
-                    holder.tv_achvTgt2.setText(value);
-                    holder.tv_actualTgt2.setVisibility(View.GONE);
-                    holder.tv_labelTgt2.setText(desc);
-                    isSecondDone = true;
-                }
-            }
-            if (mRetTgtAchv.containsKey("VST19")) {
-                String desc = mRetTgtAchv.get("VST19");
-                String value = holder.retailerObjectHolder.getCurrentFitScore() + "";
-                if (!isFirstDone) {
-                    holder.tv_achvTgt1.setText(Utils.formatAsTwoDecimal(value));
-                    holder.tv_actualTgt1.setVisibility(View.GONE);
-                    holder.tv_labelTgt1.setText(desc);
-                    isFirstDone = true;
-                } else if (!isSecondDone) {
-                    holder.tv_achvTgt2.setText(Utils.formatAsTwoDecimal(value));
-                    holder.tv_actualTgt2.setVisibility(View.GONE);
-                    holder.tv_labelTgt2.setText(desc);
-                    isSecondDone = true;
-                }
-            }
-
-            if (mRetTgtAchv.containsKey("VST20")) {
-                BeatMasterBO beatBo = bmodel.beatMasterHealper.getBeatMasterBOByID(holder.retailerObjectHolder.getBeatID());
-                String desc = mRetTgtAchv.get("VST20");
-                String value = beatBo.getBeatDescription();
-                if (!isFirstDone) {
-                    holder.tv_achvTgt1.setText(value);
-                    holder.tv_actualTgt1.setVisibility(View.GONE);
-                    holder.tv_labelTgt1.setText(desc);
-                    isFirstDone = true;
-                } else if (!isSecondDone) {
-                    holder.tv_achvTgt2.setText(value);
-                    holder.tv_actualTgt2.setVisibility(View.GONE);
-                    holder.tv_labelTgt2.setText(desc);
-                    isSecondDone = true;
-                }
-            }
-
-            if (!isFirstDone) {
-                holder.ll_scoreParent.setVisibility(View.GONE);
-            } else if (!isSecondDone) {
-                holder.ll_score2.setVisibility(View.GONE);
-                holder.imgLine2.setVisibility(View.GONE);
-            }
 
 
-            if (bmodel.configurationMasterHelper.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER) {
-                try {
-                    if (holder.retailerObjectHolder.getRField5() != null) {
-                        holder.iv_outlet_color.setVisibility(View.VISIBLE);
-                        holder.iv_outlet_color.setColorFilter(Color.parseColor(holder.retailerObjectHolder.getRField5()));
-                    } else {
+                if (bmodel.configurationMasterHelper.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER) {
+                    try {
+                        if (holder.retailerObjectHolder.getRField5() != null) {
+                            holder.iv_outlet_color.setVisibility(View.VISIBLE);
+                            holder.iv_outlet_color.setColorFilter(Color.parseColor(holder.retailerObjectHolder.getRField5()));
+                        } else {
+                            holder.iv_outlet_color.setVisibility(View.GONE);
+                        }
+                    } catch (Exception ex) {
                         holder.iv_outlet_color.setVisibility(View.GONE);
                     }
-                } catch (Exception ex) {
+                } else {
                     holder.iv_outlet_color.setVisibility(View.GONE);
                 }
-            } else {
-                holder.iv_outlet_color.setVisibility(View.GONE);
             }
 
-            if (retailerObj.getIsDeviated()!=null
-                    &&("Y").equalsIgnoreCase((retailerObj.getIsDeviated())))
+            if (retailerObj.getIsDeviated() != null
+                    && ("Y").equalsIgnoreCase((retailerObj.getIsDeviated())))
                 holder.imgDeviate.setVisibility(View.VISIBLE);
             else
                 holder.imgDeviate.setVisibility(View.GONE);
@@ -1856,11 +1881,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             super.onStart();
             getDialog().setTitle(mTitle);
             if (getView() != null) {
-                mTitleTV = (TextView) getView().findViewById(R.id.title);
-                mOkBtn = (Button) getView().findViewById(R.id.btn_ok);
-                mDismisBtn = (Button) getView().findViewById(R.id.btn_dismiss);
+                mTitleTV = getView().findViewById(R.id.title);
+                mOkBtn = getView().findViewById(R.id.btn_ok);
+                mDismisBtn = getView().findViewById(R.id.btn_dismiss);
                 mDismisBtn.setText(getActivity().getResources().getString(R.string.cancel));
-                mCountLV = (ListView) getView().findViewById(R.id.lv_colletion_print);
+                mCountLV = getView().findViewById(R.id.lv_colletion_print);
             }
             mTitleTV.setVisibility(View.GONE);
 
