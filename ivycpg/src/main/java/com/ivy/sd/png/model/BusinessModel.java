@@ -142,6 +142,7 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
+import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
 import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
@@ -1403,12 +1404,11 @@ public class BusinessModel extends Application {
                             + " A.classid, A.subchannelid, ifnull(A.daily_target_planned,0) as daily_target_planned, RBM.isDeviated,"
                             + " ifnull(A.sbdMerchpercent,0) as sbdMerchpercent, A.is_new,ifnull(A.initiativePercent,0) as initiativePercent,"
                             + " isOrdered, RBM.isProductive, isInvoiceCreated, isDigitalContent, isReviewPlan, RBM.isVisited,"
-                            + " (select count(distinct GrpName) from SbdDistributionMaster where channelid = A.ChannelId) as sbdtgt,"
                             + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                             + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
-                            + " ifnull(A.RPS_Merch_Achieved,0) as RPS_Merch_Achieved, ifnull(A.sbd_dist_achieve,0) as sbd_dist_achieve, ifnull(RC.weekNo,0) as weekNo,A.isDeadStore,A.isPlanned,"
+                            + " ifnull(A.RPS_Merch_Achieved,0) as RPS_Merch_Achieved, ifnull(RC.weekNo,0) as weekNo,A.isDeadStore,A.isPlanned,"
                             + " (select ListCode from StandardListMaster where ListID=A.RpTypeId) as RpTypeCode, A.sptgt, A.isOrderMerch,"
-                            + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone, A.IsGoldStore,"
+                            + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone,"
                             + " case when RC.WalkingSeq='' then 9999 else RC.WalkingSeq end as WalkingSeq,"
                             + " A.sbd_dist_stock,A.RField1,"
                             + "(select count (sbdid) from SbdMerchandisingMaster where "
@@ -1431,7 +1431,10 @@ public class BusinessModel extends Application {
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
                             + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
-                            + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country"
+                            + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
+                            + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
+                            + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
+                            + " and IsSystemComputed = 'YES') = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent"
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerClientMappingMaster RC on RC.rid = A.RetailerID"
@@ -1454,7 +1457,8 @@ public class BusinessModel extends Application {
 
                             + " LEFT JOIN LocationMaster LM ON LM.LocId = A.locationid"
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
-                            + " LEFT JOIN RetailerPriorityProducts RPP ON RPP.retailerid = A.RetailerID");
+                            + " LEFT JOIN RetailerPriorityProducts RPP ON RPP.retailerid = A.RetailerID"
+                            + " LEFT JOIN RetailerAttribute RAT ON A.RetailerID = RAT.RetailerId");
 
             // group by A.retailerid
             if (c != null) {
@@ -1483,7 +1487,7 @@ public class BusinessModel extends Application {
                     retailer.setProductive(c.getString(c.getColumnIndex("isProductive")));
                     retailer.setIsNew(c.getString(c.getColumnIndex("is_new")));
                     retailer.setIsDeadStore(c.getString(c.getColumnIndex("isDeadStore")));
-                    retailer.setIsGoldStore(c.getInt(c.getColumnIndex("IsGoldStore")));
+                    retailer.setIsGoldStore(c.getInt(c.getColumnIndex("AttributeCode"))); // To display golden store
 
                     // Dist and merch precent
                     retailer.setSbdMercPercent(c.getString(c.getColumnIndex("sbdMerchpercent")));
@@ -1495,8 +1499,6 @@ public class BusinessModel extends Application {
                     retailer.setIsReviewPlan(c.getString(c.getColumnIndex("isReviewPlan")));
 
                     // Dist and merch tgt & acheivement count
-                    retailer.setSbd_dist_target(c.getInt(c.getColumnIndex("sbdtgt")));
-                    retailer.setSbd_dist_achieve(c.getInt(c.getColumnIndex("sbd_dist_achieve")));
                     retailer.setSBDMerchTarget(c.getInt(c.getColumnIndex("rpstgt")));
                     retailer.setSBDMerchAchieved(c.getInt(c.getColumnIndex("RPS_Merch_Achieved")));
 
@@ -1620,6 +1622,7 @@ public class BusinessModel extends Application {
                     retailer.setFax(c.getString(c.getColumnIndex("FaxNo")));
                     retailer.setRegion(c.getString(c.getColumnIndex("Region")));
                     retailer.setCountry(c.getString(c.getColumnIndex("Country")));
+                    retailer.setSbdPercent(c.getFloat(c.getColumnIndex("sbdDistPercent"))); // updated sbd percentage from history and ordered details
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -4243,278 +4246,6 @@ public class BusinessModel extends Application {
     }
 
     /**
-     * This method will update sbd_dist_achieve feild by value from
-     * SbdDistributionAchivedMaster. Called as soon as user download
-     * RetailerMaster from server. if the argument is true, then target will be
-     * updated for only current day stores.
-     *
-     * @param setTargetForTodayStoresOnly
-     */
-    public void updateRetailerMasterBySBDAcheived(boolean setTargetForTodayStoresOnly) {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = null;
-            HashMap<Integer, Integer> retailerWiseSBDCovered = new HashMap<Integer, Integer>();
-            Vector<Integer> keys = new Vector<Integer>();
-            c = db.selectSQL("select rid,count(distinct gName) from SbdDistributionAchievedMaster group by rid");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    int key = c.getInt(0);
-                    int value = c.getInt(1);
-                    keys.add(key);
-                    retailerWiseSBDCovered.put(key, value);
-                }
-                c.close();
-            }
-
-            // Set the sbd covered value in the current retailermaster bo
-
-            int siz = keys.size();
-            for (int i = 0; i < siz; ++i) {
-                int key = keys.get(i);
-                if (setTargetForTodayStoresOnly) {
-                    db.executeQ("update " + DataMembers.tbl_retailerMaster
-                            + " set sbd_dist_achieve= "
-                            + retailerWiseSBDCovered.get(key)
-                            + " where retailerid=" + key + " and (select istoday from RetailerMasterInfo where  RetailerId=" + key + ")=1");
-                } else {
-                    db.executeQ("update " + DataMembers.tbl_retailerMaster
-                            + " set sbd_dist_achieve= "
-                            + retailerWiseSBDCovered.get(key)
-                            + " where retailerid=" + key);
-                }
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    /**
-     * This method will update RPS_MERCH_achieve field by value from
-     * SbdDistributionAchivedMaster. Called as soon as user download
-     * RetailerMaster from server. if the argument is true, then target will be
-     * updated for only current day stores.
-     *
-     * @param setTargetForTodayStoresOnly
-     */
-    public void updateRetailerMasterBySBDMerchAcheived(
-            boolean setTargetForTodayStoresOnly) {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = null;
-            HashMap<Integer, Integer> retailerWiseSBDCovered = new HashMap<Integer, Integer>();
-            Vector<Integer> keys = new Vector<Integer>();
-            c = db.selectSQL("select retailerid,count(distinct  value || ' ' || brandid ||' ' || VisibilityListId) from SbdMerchandisingAchievedMaster where TypeListid=(select Listid from StandardListMaster where ListCode='MERCH') group by retailerid");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    int key = c.getInt(0);
-                    int value = c.getInt(1);
-                    keys.add(key);
-                    retailerWiseSBDCovered.put(key, value);
-                }
-                c.close();
-            }
-
-            // Set the sbd covered value in the current retailermaster bo
-
-            int siz = keys.size();
-            for (int i = 0; i < siz; ++i) {
-                int key = keys.get(i);
-                if (setTargetForTodayStoresOnly) {
-                    db.executeQ("update " + DataMembers.tbl_retailerMaster
-                            + " set RPS_Merch_Achieved= "
-                            + retailerWiseSBDCovered.get(key)
-                            + " where retailerid=" + key + " and (select istoday from RetailerMasterInfo where RetailerId=" + key + ")=1");
-                } else {
-                    db.executeQ("update " + DataMembers.tbl_retailerMaster
-                            + " set RPS_Merch_Achieved= "
-                            + retailerWiseSBDCovered.get(key)
-                            + " where retailerid=" + key);
-                }
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    /**
-     * Calculate the SBD Distribution precentage for a particular retailer and
-     * update it to RetailerMaster . Also update sbd_dist_acheived count in
-     * retailer master.
-     *
-     * @return precentage
-     */
-    public String getSBDDistributionPrecentNewPhilip() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = null;
-
-            int acheived = 0;
-            //
-            // select count(distinct GrpName) from SbdDistributionMaster where
-            // ChannelId=3112 and
-            // GrpName in (select distinct A.GrpName from SbdDistributionMaster
-            // A inner join
-            // OrderDetail B on A.productid=B.productid where B.retailerid=237
-            // union select distinct A.GrpName from SbdDistributionMaster A
-            // inner join
-            // ClosingStockDetail B on A.productid=B.productid where
-            // B.retailerid=237)
-
-            String stockSql, sql;
-            if (configurationMasterHelper.HAS_STOCK_IN_DIST_POST) {
-                stockSql = " union  select   distinct A.GrpName  from SbdDistributionMaster A inner join"
-                        + " ClosingStockDetail B on A.productid=B.productid where B.retailerid="
-                        + getRetailerMasterBO().getRetailerID();
-            } else {
-                stockSql = "";
-            }
-            // if (!configurationMasterHelper.SHOW_STK_ACHIEVED_WIHTOUT_HISTORY)
-            sql = " union select gname from SbdDistributionAchievedMaster where rid="
-                    + getRetailerMasterBO().getRetailerID();
-            // else
-            // sql = "";
-            if (this.configurationMasterHelper.IS_INVOICE) {
-                c = db.selectSQL("select count(distinct GrpName) from SbdDistributionMaster where ChannelId="
-                        + getRetailerMasterBO().getChannelID()
-                        + " and GrpName in (select distinct A.GrpName  from SbdDistributionMaster A inner join InvoiceDetails B on A.productid=B.productid where B.retailerid="
-                        + getRetailerMasterBO().getRetailerID()
-                        + sql
-                        + stockSql + ")");
-            } else {
-                c = db.selectSQL("select count(distinct GrpName) from SbdDistributionMaster where ChannelId="
-                        + getRetailerMasterBO().getChannelID()
-                        + " and GrpName in (select distinct A.GrpName  from SbdDistributionMaster A inner join OrderDetail B on A.productid=B.productid  where B.retailerid="
-                        + getRetailerMasterBO().getRetailerID()
-                        + sql
-                        + stockSql + ")");
-            }
-            if (c != null) {
-                if (c.moveToNext()) {
-                    acheived = c.getInt(0);
-                }
-            }
-            c.close();
-
-            // Set the acheived in RetailerMaster
-            db.executeQ("update " + DataMembers.tbl_retailerMaster
-                    + " set sbd_dist_achieve= " + acheived
-                    + " where retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID()));
-            db.closeDB();
-
-            // Set the acheived value in Current retailer selection Object
-            getRetailerMasterBO().setSbd_dist_achieve(acheived);
-
-            // Set the acheived value in the current retailermaster bo
-            RetailerMasterBO retailer;
-            int siz = retailerMaster.size();
-            for (int i = 0; i < siz; ++i) {
-                retailer = retailerMaster.get(i);
-                if (retailer.getRetailerID().equals(
-                        getRetailerMasterBO().getRetailerID())) {
-                    retailer.setSbd_dist_achieve(acheived);
-                    retailerMaster.setElementAt(retailer, i);
-                    break;
-                }
-            }
-            float precent;
-            if (getRetailerMasterBO().getSbdDistributionTarget() == 0) {
-                precent = 0;
-            } else {
-                precent = (((float) acheived / (float) getRetailerMasterBO()
-                        .getSbdDistributionTarget()) * 100);
-            }
-            if (getResources().getBoolean(R.bool.config_is_achieved_max_100)) {
-                if (precent <= 100) {
-                    return Math.round(precent) + "";
-                } else
-                    return 100 + "";
-            } else {
-                return Math.round(precent) + "";
-            }
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            return "0";
-        }
-    }
-
-    void updateSbdDistStockinRetailerMaster() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-        db.executeQ("update " + DataMembers.tbl_retailerMaster
-                + " set sbd_dist_stock= "
-                + getRetailerMasterBO().getSbdDistStock()
-                + " where retailerid="
-                + QT(getRetailerMasterBO().getRetailerID()));
-        db.closeDB();
-
-    }
-
-    /**
-     * Get Gold Store acheived count from retailer master and Total number of
-     * retailer planned for today. Value used to display in VisitActivity Screen
-     *
-     * @return String goldStores/TotalStore
-     */
-
-    public String goldStoreValue() {
-
-        int total = 0, acheived = 0;
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            Cursor c = db
-                    .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
-                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
-                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
-                            + " WHERE (RMI.isToday=1 or RBM.isDeviated='Y')");
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    c.moveToNext();
-                    total = c.getInt(0);
-                }
-            }
-            c.close();
-
-
-            Cursor c1 = db
-                    .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
-                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
-                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
-                            + " WHERE IsGoldStore=1 and (RMI.isToday=1 or RBM.isDeviated='Y')");
-            if (c1 != null) {
-                if (c1.getCount() > 0) {
-                    c1.moveToNext();
-                    acheived = c1.getInt(0);
-                }
-                c1.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return acheived + "/" + total;
-    }
-
-    /**
      * Get Gold Store acheived count from retailer master and Total number of
      * retailer planned for today. Value used to display in VisitActivity Screen
      *
@@ -7096,55 +6827,6 @@ public class BusinessModel extends Application {
         return "";
     }
 
-    public void UpdateRetailermasterIsGoldStore() {
-        try {
-            DBUtil db = null;
-            int sbdtargetpercent = 0, merchtargetpercent = 0;
-            float sbdtarget, merchtarget;
-            db = new DBUtil(this, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c1 = db
-                    .selectSQL("select MNumber from HhtMenuMaster where flag=1 and (HHTCode='CallA13' or hhtcode='CallA14')");
-            if (c1 != null) {
-                while (c1.moveToNext()) {
-                    sbdtargetpercent = c1.getInt(0);
-                }
-            }
-            c1.close();
-            Cursor c2 = db
-                    .selectSQL("select MNumber from HhtMenuMaster where flag=1 and HHTCode='CallA6'");
-            if (c2 != null) {
-                while (c2.moveToNext()) {
-                    merchtargetpercent = c2.getInt(0);
-                }
-            }
-            c2.close();
-            Cursor c = db
-                    .selectSQL("select RetailerID, sbd_dist_achieve,"
-                            + " (select count(distinct GrpName) from SbdDistributionMaster where channelid = A.ChannelId) as tgt,"
-                            + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
-                            + " and TypeListId=(select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
-                            + " RPS_Merch_Achieved from RetailerMaster A");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    sbdtarget = c.getInt(2) * (float) sbdtargetpercent / 100;
-                    merchtarget = c.getInt(3) * (float) merchtargetpercent
-                            / 100;
-                    if (sbdtarget <= c.getInt(1) && c.getInt(2) != 0
-                            && merchtarget <= c.getInt(4) && c.getInt(3) != 0)
-                        db.executeQ("update " + DataMembers.tbl_retailerMaster
-                                + " set IsGoldStore=1 where RetailerID="
-                                + c.getInt(0));
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (SQLException e) {
-            Commons.printException(e);
-        }
-
-    }
-
     public Vector<LocationBO> downloadLocationMaster() {
         try {
             locvect = new Vector<LocationBO>();
@@ -9326,6 +9008,64 @@ public class BusinessModel extends Application {
 
     public void setSubDMaster(Vector<RetailerMasterBO> subDMaster) {
         this.subDMaster = subDMaster;
+    }
+
+    public String getChannelids() {
+        String sql;
+        String sql1 = "";
+        String str = "";
+        int channelid = 0;
+        try {
+            if (getRetailerMasterBO() != null)
+                channelid = getRetailerMasterBO().getSubchannelid();
+
+
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            int mChildLevel = 0;
+            int mContentLevel = 0;
+            db.openDataBase();
+            Cursor c = db.selectSQL("select min(Sequence) as childlevel,(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId where ch.ChId=" + channelid + ") as contentlevel  from ChannelLevel");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    mChildLevel = c.getInt(0);
+                    mContentLevel = c.getInt(1);
+                }
+                c.close();
+            }
+
+            int loopEnd = mContentLevel - mChildLevel + 1;
+
+            for (int i = 2; i <= loopEnd; i++) {
+                sql1 = sql1 + " LM" + i + ".ChId";
+                if (i != loopEnd)
+                    sql1 = sql1 + ",";
+            }
+            sql = "select LM1.ChId," + sql1 + "  from ChannelHierarchy LM1";
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN ChannelHierarchy LM" + i + " ON LM" + (i - 1)
+                        + ".ParentId = LM" + i + ".ChId";
+            sql = sql + " where LM1.ChId=" + channelid;
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    for (int i = 0; i < c.getColumnCount(); i++) {
+                        str = str + c.getString(i);
+                        if (c.getColumnCount() > 1 && i != c.getColumnCount())
+                            str = str + ",";
+                    }
+                    if (str.endsWith(","))
+                        str = str.substring(0, str.length() - 1);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return str;
     }
 }
 

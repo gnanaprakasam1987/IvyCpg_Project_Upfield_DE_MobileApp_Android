@@ -224,7 +224,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                 }
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT05")) {
-                con.setMenuNumber(bmodel.goldStoreValue());
+                //con.setMenuNumber(bmodel.goldStoreValue());
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT06")) {
                 con.setMenuNumber(outlet.getTotLines());

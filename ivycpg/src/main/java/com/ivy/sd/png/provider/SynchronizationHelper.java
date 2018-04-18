@@ -3945,10 +3945,6 @@ SynchronizationHelper {
             bmodel.downloadRetailerwiseMerchandiser();
         }
 
-        bmodel.updateRetailerMasterBySBDAcheived(false);
-        bmodel.updateRetailerMasterBySBDMerchAcheived(false);
-        bmodel.UpdateRetailermasterIsGoldStore();
-
         bmodel.configurationMasterHelper.downloadRetailerProperty();
         bmodel.downloadRetailerMaster();
 

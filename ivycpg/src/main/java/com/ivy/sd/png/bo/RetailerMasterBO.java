@@ -198,6 +198,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String fax;
     private String region;
     private String country;
+    private double sbdPercent;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -1524,5 +1525,13 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public double getSbdPercent() {
+        return sbdPercent;
+    }
+
+    public void setSbdPercent(double sbdPercent) {
+        this.sbdPercent = sbdPercent;
     }
 }

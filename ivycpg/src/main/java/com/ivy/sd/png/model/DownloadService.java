@@ -1154,9 +1154,6 @@ public class DownloadService extends IntentService {
     private void loadRetailerDependentMethod() {
 
         bmodel.downloadRetailerwiseMerchandiser();
-        bmodel.updateRetailerMasterBySBDAcheived(false);
-        bmodel.updateRetailerMasterBySBDMerchAcheived(false);
-        bmodel.UpdateRetailermasterIsGoldStore();
         bmodel.downloadRetailerMaster();
         bmodel.updateSurveyScoreHistoryRetailerWise();
         bmodel.initiativeHelper.generateInitiativeCoverageReport();

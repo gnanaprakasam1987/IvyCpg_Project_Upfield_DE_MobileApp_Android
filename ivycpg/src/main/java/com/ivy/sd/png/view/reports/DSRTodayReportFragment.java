@@ -169,7 +169,7 @@ public class DSRTodayReportFragment extends Fragment {
             /** set values for Gold store **/
             gs_mtd.setText(mtdgap.get("DSR_GOLDSTORE") == null ? "0" : bmodel
                     .formatValue(mtdgap.get("DSR_GOLDSTORE")) + "");
-            String[] goldstore = bmodel.goldStoreValue().split("/");
+            String[] goldstore = null;
             gs_obj.setText(totalCalls + "");
             gs_act.setText(goldstore[0]);
             if (goldstore.length == 0 || goldstore[0] == null

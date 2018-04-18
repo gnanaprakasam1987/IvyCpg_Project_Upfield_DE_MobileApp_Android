@@ -114,7 +114,7 @@ public class SBDReportFragment extends Fragment {
         Cursor c = db// distinct GrpName changed by lakshmanan as distinct productId
                 .selectSQL("select A.RetailerID,RetailerName,RBM.isDeviated,(select count(distinct GrpName)"
                         + " from SbdDistributionMaster where channelid = A.ChannelId) "
-                        + "as sbdtgt,sbd_dist_achieve,RPS_Merch_Achieved,IsGoldStore,isToday,(select count (sbdid) " +
+                        + "as sbdtgt,sbd_dist_achieve,RPS_Merch_Achieved,isToday,(select count (sbdid) " +
                         " from SbdMerchandisingMaster where ChannelId = A.ChannelId and TypeListId=(select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt, " +
                         "case when RC.weekno not null  then RC.WalkingSeq else 0 end as sequence, case when RC.Date = " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " then RC.WalkingSeq else 0 end as seq " +
                         " from RetailerMaster A"
@@ -136,7 +136,6 @@ public class SBDReportFragment extends Fragment {
                 retailerbo.setSbd_dist_target(c.getInt(3));
                 retailerbo.setSbd_dist_achieve(c.getInt(4));
 
-                retailerbo.setIsGoldStore(c.getInt(6));
                 retailerbo.setIsToday(c.getInt(7));
                 if (c.getInt(5) != 0 && (c.getInt(5) == c.getInt(8)))
                     retailerbo.setSBDMerchAchieved(1);

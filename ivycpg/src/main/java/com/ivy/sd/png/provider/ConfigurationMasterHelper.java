@@ -1327,6 +1327,12 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_DISTRIBUTOR_PROFILE;
     public int SHOW_DISTRIBUTOR_PROFILE_FROM;
 
+    private static final String CODE_SBD_TARGET_PERCENT = "SBD_PERCENTAGE";
+    public static int SBD_TARGET_PERCENTAGE = 80;
+
+    private static final String CODE_SBD_GAP_PROFILE = "SBD_PROFILE";
+    public boolean SHOW_SBD_GAP_IN_PROFILE = true;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2299,6 +2305,10 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null
                 && hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null) {
             SHOW_DISTRIBUTOR_PROFILE_FROM = hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE);
+        }
+        this.SHOW_SBD_GAP_IN_PROFILE = hashMapHHTModuleConfig.get(CODE_SBD_GAP_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SBD_GAP_PROFILE) : false;
+        if (hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT) != null && hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT)) {
+            SBD_TARGET_PERCENTAGE = hashMapHHTModuleOrder.get(CODE_SBD_TARGET_PERCENT);
         }
     }
 
