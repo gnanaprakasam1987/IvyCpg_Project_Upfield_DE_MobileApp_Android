@@ -53,6 +53,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -327,6 +328,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
             //updating FIT score for current retailer
             bmodel.updateCurrentFITscore(bmodel.getRetailerMasterBO());
+
+            SBDHelper.getInstance(this).calculateSBDDistribution();
         } catch (Exception e) {
             Commons.printException(e);
 
@@ -610,6 +613,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         .equalsIgnoreCase("CallA11")) {
 
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
+                    SBDHelper.getInstance(this).calculateSBDDistribution();
                     con.setMenuNumber(bmodel.getRetailerMasterBO()
                             .getSbdDistributionAchieve()
                             + "/"

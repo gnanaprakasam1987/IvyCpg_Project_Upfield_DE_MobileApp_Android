@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -559,6 +560,17 @@ public class OrderHelper {
             if (businessModel.configurationMasterHelper.SHOW_DISCOUNT)
                 businessModel.productHelper.updateEntryLevelDiscount(db, this.getOrderId(), entryLevelDistSum);
 
+            // update SBD Distribution Percentage based on its history and ordered detail's
+            SBDHelper.getInstance(mContext).calculateSBDDistribution();
+            int sbdTgt = businessModel.getRetailerMasterBO()
+                    .getSbdDistributionTarget();
+            double sbdPercent = 0;
+            if (sbdTgt > 0)
+                sbdPercent = (businessModel.getRetailerMasterBO().getSbdDistributionAchieve() * 100) / sbdTgt;
+            businessModel.getRetailerMasterBO().setSbdPercent(sbdPercent);
+            db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getRetailerMasterBO().getSbdPercent()
+                    + " where retailerid =" + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()));
+
             db.closeDB();
 
             this.invoiceDiscount = businessModel.getOrderHeaderBO().getDiscount() + "";
@@ -880,6 +892,18 @@ public class OrderHelper {
                     + businessModel.QT(orderId) + " and upload='N'", false);
             db.deleteSQL(DataMembers.tbl_OrderDiscountDetail, "OrderID="
                     + businessModel.QT(orderId) + " and upload='N'", false);
+            // update SBD Distribution Percentage based on its history and ordered detail's
+            SBDHelper.getInstance(context).calculateSBDDistribution();
+            int sbdTgt = businessModel.getRetailerMasterBO()
+                    .getSbdDistributionTarget();
+            double sbdPercent = 0;
+            if (sbdTgt > 0)
+                sbdPercent = (businessModel.getRetailerMasterBO().getSbdDistributionAchieve() * 100) / sbdTgt;
+            businessModel.getRetailerMasterBO().setSbdPercent(sbdPercent);
+            db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getRetailerMasterBO().getSbdPercent()
+                    + " where retailerid =" + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()));
+
+            db.closeDB();
             db.closeDB();
             businessModel.downloadIndicativeOrderedRetailer();
             businessModel.updateIndicativeOrderedRetailer(businessModel.getRetailerMasterBO());

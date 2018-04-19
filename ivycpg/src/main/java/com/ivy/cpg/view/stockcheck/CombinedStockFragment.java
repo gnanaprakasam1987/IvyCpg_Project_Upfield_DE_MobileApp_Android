@@ -133,6 +133,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private Object selectedTabTag;
     private int x, y;
     private HorizontalScrollView hscrl_spl_filter;
+    SearchAsync searchAsync;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -331,6 +332,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         searchText();
         hideShemeButton();
         updateFooter();
+        searchAsync = new SearchAsync();
+
     }
 
     private ActionBar getActionBar() {
@@ -344,7 +347,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 public void afterTextChanged(Editable s) {
                     getActivity().supportInvalidateOptionsMenu();
                     if (s.length() >= 3 || s.length() == 0) {
-                        loadSearchedList();
+                        searchAsync = new SearchAsync();
+                        searchAsync.execute();
                     }
 
                 }
@@ -352,7 +356,12 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 @Override
                 public void beforeTextChanged(CharSequence s, int start,
                                               int count, int after) {
-
+                    if (mEdt_searchproductName.getText().toString().length() < 3) {
+                        mylist.clear();
+                    }
+                    if (searchAsync.getStatus() == AsyncTask.Status.RUNNING) {
+                        searchAsync.cancel(true);
+                    }
                 }
 
                 @Override
@@ -366,88 +375,106 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
     }
 
+    private class SearchAsync extends
+            AsyncTask<Integer, Integer, Boolean> {
+
+
+        protected void onPreExecute() {
+
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            loadSearchedList();
+
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            refreshList();
+        }
+    }
+
     private void loadSearchedList() {
         ProductMasterBO ret;
-        if (mEdt_searchproductName.getText().length() >= 3) {
-            Vector<ProductMasterBO> items = new Vector<>();
+        Vector<ProductMasterBO> items = new Vector<>();
 
-            if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
-                for (ProductMasterBO productBo : getTaggedProducts()) {
-                    if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 1)
-                        items.add(productBo);
-                }
-            } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
-                for (ProductMasterBO productBo : getTaggedProducts()) {
-                    if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 0)
-                        items.add(productBo);
-                }
-            } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
-                items = getTaggedProducts();
+        if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
+            for (ProductMasterBO productBo : getTaggedProducts()) {
+                if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 1)
+                    items.add(productBo);
             }
-
-
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
+        } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
+            for (ProductMasterBO productBo : getTaggedProducts()) {
+                if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 0)
+                    items.add(productBo);
             }
-            int siz = items.size();
-            Commons.print("siz" + siz);
-            mylist = new ArrayList<>();
-            String mSelectedFilter = bmodel.getProductFilter();
-            for (int i = 0; i < siz; ++i) {
-                ret = items.elementAt(i);
+        } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
+            items = getTaggedProducts();
+        }
 
-                if (mSelectedFilter.equals(getResources().getString(
-                        R.string.order_dialog_barcode))) {
 
-                    if (ret.getBarCode() != null
-                            && (ret.getBarCode().toLowerCase()
-                            .contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                            || ret.getCasebarcode().toLowerCase().
-                            contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                            || ret.getOuterbarcode().toLowerCase().
-                            contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+        if (items == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.no_products_exists),
+                    0);
+            return;
+        }
+        int siz = items.size();
+        Commons.print("siz" + siz);
+        mylist = new ArrayList<>();
+        String mSelectedFilter = bmodel.getProductFilter();
+        for (int i = 0; i < siz; ++i) {
+            ret = items.elementAt(i);
+            // For breaking search..
+            if (searchAsync.isCancelled()) {
+                break;
+            }
+            if (mSelectedFilter.equals(getResources().getString(
+                    R.string.order_dialog_barcode))) {
 
-                        if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                            mylist.add(ret);
-                        else if (applyProductAndSpecialFilter(ret))
-                            mylist.add(ret);
-                    }
-                } else if (mSelectedFilter.equals(getResources().getString(
-                        R.string.order_gcas))) {
-                    if (ret.getRField1() != null && ret.getRField1()
-                            .toLowerCase()
-                            .contains(
-                                    mEdt_searchproductName.getText().toString()
-                                            .toLowerCase()) && ret.getIsSaleable() == 1) {
-                        if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                            mylist.add(ret);
-                        else if (applyProductAndSpecialFilter(ret))
-                            mylist.add(ret);
-                    }
-                } else if (mSelectedFilter.equals(getResources().getString(
-                        R.string.product_name))) {
-                    if (ret.getProductShortName() != null && ret.getProductShortName()
-                            .toLowerCase()
-                            .contains(
-                                    mEdt_searchproductName.getText().toString()
-                                            .toLowerCase()) && ret.getIsSaleable() == 1)
-                        if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                            mylist.add(ret);
-                        else if (applyProductAndSpecialFilter(ret))
-                            mylist.add(ret);
+                if (ret.getBarCode() != null
+                        && (ret.getBarCode().toLowerCase()
+                        .contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                        || ret.getCasebarcode().toLowerCase().
+                        contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                        || ret.getOuterbarcode().toLowerCase().
+                        contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+
+                    if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                        mylist.add(ret);
+                    else if (applyProductAndSpecialFilter(ret))
+                        mylist.add(ret);
                 }
-
-
+            } else if (mSelectedFilter.equals(getResources().getString(
+                    R.string.order_gcas))) {
+                if (ret.getRField1() != null && ret.getRField1()
+                        .toLowerCase()
+                        .contains(
+                                mEdt_searchproductName.getText().toString()
+                                        .toLowerCase()) && ret.getIsSaleable() == 1) {
+                    if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                        mylist.add(ret);
+                    else if (applyProductAndSpecialFilter(ret))
+                        mylist.add(ret);
+                }
+            } else if (mSelectedFilter.equals(getResources().getString(
+                    R.string.product_name))) {
+                if (ret.getProductShortName() != null && ret.getProductShortName()
+                        .toLowerCase()
+                        .contains(
+                                mEdt_searchproductName.getText().toString()
+                                        .toLowerCase()) && ret.getIsSaleable() == 1)
+                    if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                        mylist.add(ret);
+                    else if (applyProductAndSpecialFilter(ret))
+                        mylist.add(ret);
             }
-            refreshList();
-        } else if (mEdt_searchproductName.getText().length() == 0) {
-            loadProductList();
-        } else {
-            Toast.makeText(getActivity(), getResources().getString(R.string.enter_atleast_three_letters), Toast.LENGTH_SHORT)
-                    .show();
         }
     }
 
@@ -1476,12 +1503,13 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
         if (arg1 == EditorInfo.IME_ACTION_DONE) {
-            if (arg0.getText().length() > 0) {
-                getActivity().supportInvalidateOptionsMenu();
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(mEdt_searchproductName.getWindowToken(), 0);
+            if (mEdt_searchproductName.getText().length() >= 3) {
+                searchAsync = new SearchAsync();
+                searchAsync.execute();
+            } else {
+                Toast.makeText(getActivity(), "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
+                        .show();
             }
-            loadSearchedList();
             return true;
         }
         return false;

@@ -86,6 +86,7 @@ public class ProductMasterBO {
     // To maintain original SRP value given in master, in case of updating @srp with some other values(SRP without tax).
     private float originalSrp;
     private int isDrug;
+    private String parentHierarchy="";
 
     public double getDistiributorSchemeDiscount() {
         return distiributorSchemeDiscount;
@@ -1834,5 +1835,13 @@ public class ProductMasterBO {
 
     public void setDSIH(int DSIH) {
         this.DSIH = DSIH;
+    }
+
+    public String getParentHierarchy() {
+        return parentHierarchy;
+    }
+
+    public void setParentHierarchy(String parentHierarchy) {
+        this.parentHierarchy = parentHierarchy;
     }
 }

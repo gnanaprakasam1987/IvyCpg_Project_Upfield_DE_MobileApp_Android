@@ -119,7 +119,6 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/dimen_16dp"
         android:scaleType="center"
-
         android:src="@drawable/ic_dashboard_floating_deviation"
         android:visibility="visible"
         app:backgroundTint="?attr/primarycolor"

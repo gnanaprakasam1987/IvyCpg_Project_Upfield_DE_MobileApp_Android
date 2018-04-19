@@ -40,6 +40,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
@@ -128,6 +129,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     };
     private EditText quantity;
     private String append = "";
+    SearchAsync searchAsync;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -205,6 +207,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         searchText();
         mDrawerLayout.closeDrawer(GravityCompat.END);
+        searchAsync = new SearchAsync();
     }
 
     private void hideAndSeekViews() {
@@ -412,8 +415,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             mSelectedFilterMap.put("General", "All");
             mSelectedFilterMap.put("Brand", "All");
             mSelectedFilterMap.put("Category", "All");
-            if (mSelectedFilterMap != null)
-                mSelectedIdByLevelId.clear();
+            if (mSelectedFilterMap != null) {
+                if (mSelectedIdByLevelId != null)
+                    mSelectedIdByLevelId.clear();
+            }
 
             try {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -685,7 +690,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                    /* User clicked Cancel so do some stuff */
+                                        /* User clicked Cancel so do some stuff */
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder);
@@ -707,7 +712,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                    /* User clicked Cancel so do some stuff */
+                                        /* User clicked Cancel so do some stuff */
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder1);
@@ -730,14 +735,20 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 public void afterTextChanged(Editable s) {
                     supportInvalidateOptionsMenu();
                     if (s.length() >= 3) {
-                        loadSearchedList();
+                        searchAsync = new SearchAsync();
+                        searchAsync.execute();
                     }
                 }
 
                 @Override
                 public void beforeTextChanged(CharSequence s, int start,
                                               int count, int after) {
-
+                    if (mEdtSearchproductName.getText().toString().length() < 3) {
+                        list.clear();
+                    }
+                    if (searchAsync.getStatus() == AsyncTask.Status.RUNNING) {
+                        searchAsync.cancel(true);
+                    }
                 }
 
                 @Override
@@ -751,52 +762,75 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    public void loadSearchedList() {
-        if (mEdtSearchproductName.getText().length() >= 3) {
-            Vector<LoadManagementBO> items = vanlist;
+    private class SearchAsync extends
+            AsyncTask<Integer, Integer, Boolean> {
 
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-            int siz = items.size();
-            ArrayList<LoadManagementBO> mylist = new ArrayList<>();
-            String mSelectedFilter = bmodel.getProductFilter();
-            for (int i = 0; i < siz; ++i) {
-                LoadManagementBO ret = items.elementAt(i);
-                if (ret.getIssalable() == 1) {
-                    if ("BarCode".equals(mSelectedFilter)) {
-                        if (ret.getBarcode() != null && ret.getBarcode()
-                                .toLowerCase()
-                                .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
-                            mylist.add(ret);
 
-                    } else if ("GCAS Code".equals(mSelectedFilter)) {
-                        if (ret.getRField1() != null && ret.getRField1()
-                                .toLowerCase()
-                                .contains(
-                                        mEdtSearchproductName.getText().toString()
-                                                .toLowerCase()))
-                            mylist.add(ret);
+        protected void onPreExecute() {
 
-                    } else if ((getResources().getString(
-                            R.string.product_name).equals(mSelectedFilter))) {
-                        if (ret.getProductshortname() != null && ret.getProductshortname()
-                                .toLowerCase()
-                                .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
-                            mylist.add(ret);
-                    }
-                }
-            }
-            mSchedule = new MyAdapter(mylist);
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            loadSearchedList();
+
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            mSchedule = new MyAdapter(list);
             lvwplist.setAdapter(mSchedule);
 
-        } else {
-            Toast.makeText(this,
-                    getResources().getString(R.string.enter_atleast_3_letters),
-                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void loadSearchedList() {
+        Vector<LoadManagementBO> items = vanlist;
+
+        if (items == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.no_products_exists),
+                    0);
+            return;
+        }
+        int siz = items.size();
+        list = new ArrayList<>();
+        String mSelectedFilter = bmodel.getProductFilter();
+        for (int i = 0; i < siz; ++i) {
+            LoadManagementBO ret = items.elementAt(i);
+            // For breaking search..
+            if (searchAsync.isCancelled()) {
+                break;
+            }
+
+            if (ret.getIssalable() == 1) {
+                if ("BarCode".equals(mSelectedFilter)) {
+                    if (ret.getBarcode() != null && ret.getBarcode()
+                            .toLowerCase()
+                            .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
+                        list.add(ret);
+
+                } else if ("GCAS Code".equals(mSelectedFilter)) {
+                    if (ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(
+                                    mEdtSearchproductName.getText().toString()
+                                            .toLowerCase()))
+                        list.add(ret);
+
+                } else if ((getResources().getString(
+                        R.string.product_name).equals(mSelectedFilter))) {
+                    if (ret.getProductshortname() != null && ret.getProductshortname()
+                            .toLowerCase()
+                            .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
+                        list.add(ret);
+                }
+            }
         }
     }
 
@@ -903,7 +937,13 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             if (arg0.getText().length() > 0) {
                 supportInvalidateOptionsMenu();
             }
-            loadSearchedList();
+            if (mEdtSearchproductName.getText().length() >= 3) {
+                searchAsync = new SearchAsync();
+                searchAsync.execute();
+            } else {
+                Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
+                        .show();
+            }
             return true;
         }
         return false;
