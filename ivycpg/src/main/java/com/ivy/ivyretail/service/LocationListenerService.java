@@ -4,9 +4,11 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.ivy.sd.png.model.BusinessModel;
@@ -22,12 +24,18 @@ public class LocationListenerService extends Service {
 	private static final long MAX_TIME = 120000;
 	private static final int MAX_COUNT = 50;
 
-	private boolean timeup = false;
+	private boolean timeup = false, isLocationUploaded = false;;
 	private int count = 0;
+	private String INTENT_ACTION ="LOCATION CAPTURED";
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
+	}
+
+	@Override
+	public void onCreate() {
+		LocalBroadcastManager.getInstance(this).registerReceiver(broadCastReceiver,new IntentFilter(INTENT_ACTION));
 	}
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -41,13 +49,10 @@ public class LocationListenerService extends Service {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-
-			context.unregisterReceiver(broadCastReceiver);
-
-			// You can do the processing here update the widget/remote views.
-			StringBuilder msgStr = new StringBuilder("Current time : ");
-
-			Toast.makeText(context, msgStr, Toast.LENGTH_SHORT).show();
+			if(intent.getAction() != null && intent.getAction().equals(INTENT_ACTION)) {
+				Commons.print("Location listener On receive");
+				sendLocation();
+			}
 		}
 	}
 
@@ -66,9 +71,11 @@ public class LocationListenerService extends Service {
 	 * or it will use NERWORK_PROVIDER.
 	 */
 	public void startLocationListener() {
-		timeup = false;
 
-		Commons.print("Start Time LOC Listener--> ");
+		timeup = false;
+		isLocationUploaded = false;
+
+		Commons.print("AlarmManager startLocationListener--> ");
 
 		LocationUtil.getInstance(getApplicationContext()).startLocationListener();
 
@@ -86,11 +93,9 @@ public class LocationListenerService extends Service {
 			}
 
 			public void onFinish() {
-
 				timeup = true;
-
-				sendLocation();
-
+				if (!isLocationUploaded)
+					sendLocation();
 			}
 		}.start();
 
@@ -98,7 +103,6 @@ public class LocationListenerService extends Service {
 
 	private void sendLocation() {
 		try {
-			LocationUtil.getInstance(getApplicationContext()).stopLocationListener();
 			String latitude = String.valueOf(LocationUtil.latitude);
 			String longitude = String.valueOf(LocationUtil.longitude);
 			Float accuracy = LocationUtil.accuracy;
@@ -108,15 +112,19 @@ public class LocationListenerService extends Service {
 			int start_Time = pref.getInt("StartTime", 0);
 			int end_Time = pref.getInt("EndTime", 0);
 
-			Commons.print("Start Time LOC Listener--> "+start_Time+" -- End Time--> "+end_Time +" ---- TimeHrs--> ");
-
 			count = count + 1;
 
-			if ((accuracy) <= 10 || count >= MAX_COUNT || timeup) {
+			Commons.print("AlarmManager Start Time --> "+start_Time+" -- End Time--> "+end_Time);
+			Commons.print("AlarmManager accuracy---"+accuracy+" count-- "+count+" timeup---"+timeup);
+
+			if (((accuracy) <= 10) || (count >= MAX_COUNT || timeup)) {
 				String[] coordinates = {latitude, longitude, accuracy + ""};
 
+				isLocationUploaded = true;
+				LocationUtil.getInstance(getApplicationContext()).stopLocationListener();
+
 				int timeInHrs = getTimeInHrs();
-				if (timeInHrs > start_Time && timeInHrs < end_Time) {
+				if (timeInHrs >= start_Time && timeInHrs < end_Time) {
 					Context stopServiceContext = getApplicationContext();
 					String stopServiceClassStr = LocationUploadService.class
 							.getName();
@@ -143,6 +151,12 @@ public class LocationListenerService extends Service {
 		} catch (Exception e) {
 			Commons.printException(e);
 		}
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(broadCastReceiver);
 	}
 
 	private void stopService(){

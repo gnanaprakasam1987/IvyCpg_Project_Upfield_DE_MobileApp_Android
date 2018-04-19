@@ -42,6 +42,7 @@ import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -628,7 +629,13 @@ public class PlanningMapFragment extends SupportMapFragment implements
         try {
             final ViewGroup nullParent = null;
             if (mMap == null) {
-                mMap = this.getMap();
+                SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.planningmapnew);
+                supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        mMap = googleMap;
+                    }
+                });
                 float pxlDp = 39 + 20;
                 mainLayout.init(mMap, getPixelsFromDp(PlanningMapFragment.this.getActivity(), pxlDp));
                 this.infoWindow = (ViewGroup) layInflater.inflate(

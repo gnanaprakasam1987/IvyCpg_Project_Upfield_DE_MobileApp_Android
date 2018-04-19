@@ -3,6 +3,7 @@ package com.ivy.ivyretail.service;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -10,7 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,8 +26,6 @@ import com.ivy.sd.png.util.Commons;
 import org.jetbrains.annotations.NotNull;
 
 public class LocationUtil implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    private static final String TAG = "LocationUtil";
 
     private Context context;
     private static LocationUtil instance = null;
@@ -45,6 +44,9 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
     public static float accuracy = 0;
     private static String mProviderName;
 
+    private static final int TWO_MINUTES = 1000 * 60 * 2;
+
+    private Location previousBestLocation = null;
 
     protected LocationUtil(Context context) {
         this.context = context;
@@ -78,7 +80,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
             mGoogleApiClient.connect();
             createLocationRequest();
 
-            Log.d(TAG, " Fused Api fired ..............");
+//            Commons.print("AlarmManager Fused Api fired ..............");
 
         } else {
             try {
@@ -101,15 +103,15 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                     nativeLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                             0, 0, nativeLocationListener);
                     mProviderName = LocationManager.GPS_PROVIDER;
-                    Log.d(TAG, "GPS_PROVIDER Listener started");
+//                    Commons.print("AlarmManager GPS_PROVIDER Listener started");
                 } else if (nativeLocationManager
                         .isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                     nativeLocationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER, 0, 0, nativeLocationListener);
                     mProviderName = LocationManager.NETWORK_PROVIDER;
-                    Log.d(TAG, "NETWORK_PROVIDER Listener started");
+//                    Commons.print("AlarmManager NETWORK_PROVIDER Listener started");
                 }
-                Log.d(TAG, "Native Location Manager fired.");
+//                Commons.print("AlarmManager Native Location Manager fired.");
             } catch (SecurityException e) {
                 Commons.printException(e);
             } catch (Exception e) {
@@ -121,11 +123,14 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
     class MyLocationListener implements android.location.LocationListener {
         public void onLocationChanged(Location loc) {
-
-            latitude = loc.getLatitude();
-            longitude = loc.getLongitude();
-            accuracy = loc.getAccuracy();
-            mProviderName = loc.getProvider();
+            if(isBetterLocation(loc,previousBestLocation)) {
+                latitude = loc.getLatitude();
+                longitude = loc.getLongitude();
+                accuracy = loc.getAccuracy();
+                mProviderName = loc.getProvider();
+                Intent locationIntent = new Intent("LOCATION CAPTURED");
+                LocalBroadcastManager.getInstance(context).sendBroadcast(locationIntent);
+            }
 
         }
 
@@ -150,15 +155,11 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
         if (isGooglePlayServicesAvailable()) {
             if (mGoogleApiClient != null) {
                 if (mGoogleApiClient.isConnected()) {
+                    stopLocationUpdates();
                     mGoogleApiClient.disconnect();
                     latitude = 0;
                     longitude = 0;
-                    stopLocationUpdates();
                 }
-                Log.d(TAG,
-                        "isConnected ...............: "
-                                + mGoogleApiClient.isConnected());
-                Log.d(TAG, "onStop fired ..............");
             }
 
 
@@ -169,7 +170,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                 nativeLocationManager = null;
                 latitude = 0;
                 longitude = 0;
-                Log.d(TAG, "Location Manager GPS listener Stopped");
             }
         }
 
@@ -198,8 +198,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d(TAG, "onConnected - isConnected ...............: "
-                + mGoogleApiClient.isConnected());
         if (!mGoogleApiClient.isConnected()) {
             mGoogleApiClient.connect();
         }
@@ -214,10 +212,16 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
     @Override
     public void onLocationChanged(Location location) {
 
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        accuracy = location.getAccuracy();
-        mProviderName = location.getProvider();
+        if(isBetterLocation(location,previousBestLocation)){
+//            Commons.print("AlarmManager Better Location found");
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            accuracy = location.getAccuracy();
+            mProviderName = location.getProvider();
+
+            Intent locationIntent = new Intent("LOCATION CAPTURED");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(locationIntent);
+        }
 
     }
 
@@ -242,9 +246,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
             LocationServices.FusedLocationApi
                     .requestLocationUpdates(mGoogleApiClient, mLocationRequest,
                             this);
-            Log.d(TAG, " Provider===> " + mProviderName + " Location Latitude ===> " + latitude + " Longitude===> " + longitude);
-
-            Log.d(TAG, "Location update started ..............: ");
         }
     }
 
@@ -252,8 +253,71 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(
                     mGoogleApiClient, this);
-            Log.d(TAG, "Location update stopped .......................");
+//            Commons.print("AlarmManager Location update stopped .......................");
         }
+    }
+
+
+    private boolean isBetterLocation(Location location, Location currentBestLocation) {
+        if (currentBestLocation == null) {
+            // A new location is always better than no location
+            previousBestLocation = location;
+            return true;
+        }
+
+        boolean isBetterLocation = false;
+
+        // Check whether the new location fix is newer or older
+        long timeDelta = location.getTime() - currentBestLocation.getTime();
+//        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
+//        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+        boolean isNewer = timeDelta > 0;
+//
+//        // If it's been more than two minutes since the current location, use the new location
+//        // because the user has likely moved
+//        if (isSignificantlyNewer) {
+//            previousBestLocation = location;
+//            isBetterLocation =  true;
+//            // If the new location is more than two minutes older, it must be worse
+//        } else if (isSignificantlyOlder) {
+//            isBetterLocation = false;
+//        }
+
+        // Check whether the new location fix is more or less accurate
+        int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
+        boolean isLessAccurate = accuracyDelta > 0;
+        boolean isMoreAccurate = accuracyDelta < 0;
+        Commons.print("AlarmManager location -- "+location);
+        Commons.print("AlarmManager currentBestLocation -- "+currentBestLocation);
+        Commons.print("AlarmManager isMoreAccurate "+accuracyDelta);
+//        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+        // Check if the old and new location are from the same provider
+//        boolean isFromSameProvider = isSameProvider(location.getProvider(),
+//                currentBestLocation.getProvider());
+
+        // Determine location quality using a combination of timeliness and accuracy
+        if (isMoreAccurate) {
+            isBetterLocation =  true;
+            previousBestLocation = location;
+        }
+        else if (isNewer && !isLessAccurate) {
+            isBetterLocation = true;
+            previousBestLocation = location;
+        }
+//         else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
+//            isBetterLocation = true;
+//        }
+
+        return isBetterLocation;
+    }
+
+    /** Checks whether two providers are the same */
+    private boolean isSameProvider(String provider1, String provider2) {
+        if (provider1 == null) {
+            return provider2 == null;
+        }
+        return provider1.equals(provider2);
     }
 
 

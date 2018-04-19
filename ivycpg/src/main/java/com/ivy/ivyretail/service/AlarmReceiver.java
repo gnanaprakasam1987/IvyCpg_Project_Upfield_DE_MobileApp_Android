@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.ivy.cpg.locationservice.realtime.RealTimeLocationService;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
@@ -25,11 +26,30 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		bmodel = (BusinessModel) context.getApplicationContext();
 
-		if (intent.getAction()!=null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-			setAlarm(context);
-		}else{
-			setAlarmAgain(context);
+		SharedPreferences pref = context.getSharedPreferences("TimePref", 0);
+		boolean isAlarmSet = pref.getBoolean("UploadUserLoc",false);
+		boolean isInWork = pref.getBoolean("INWORK",false);
+
+//		Commons.print("Service isAlarmSet -- "+isAlarmSet+" isInWork -- "+isInWork);
+
+		if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+			if(isAlarmSet)
+				setAlarm(context);
+			else
+			    cancelAlarm(context);
+
+//            Commons.print("Service intent -- ");
+
+			if (isInWork && !BusinessModel.isMyServiceRunning(context, RealTimeLocationService.class.getName())) {
+				context.startService(new Intent(context, RealTimeLocationService.class));
+			}
+		} else {
+			if (isAlarmSet)
+				setAlarmAgain(context);
+			else
+			    cancelAlarm(context);
 		}
+
 	}
 
 	public static void setAlarm(Context context) {
@@ -56,11 +76,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 	}
 
 	private static void setPendingIntent(Context context,int alarm_time){
+
 		Intent i = new Intent(context, AlarmReceiver.class);
 		PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		long timeInMillis = System.currentTimeMillis() + (alarm_time * 60 * 1000);
-		Commons.print("Time in millis--> "+timeInMillis);
+//		Commons.print("AlarmManager Time in millis--> "+timeInMillis);
 
 		if(alarmManager!=null) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
@@ -86,9 +107,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 			int end_Time = pref.getInt("EndTime", 0);
 			boolean uplaodloc = pref.getBoolean("UploadUserLoc", false);
 
-			Commons.print("Start Time--> "+start_Time+" -- End Time--> "+end_Time +" ---- TimeHrs--> "+timeInHrs +" uplaodloc - "+uplaodloc);
+//			Commons.print("AlarmManager Start Time--> "+start_Time+" -- End Time--> "+end_Time +" ---- TimeHrs--> "+timeInHrs +" uplaodloc - "+uplaodloc);
 
-			if (timeInHrs > start_Time && timeInHrs < end_Time) { // Check for task only at day
+			if (timeInHrs >= start_Time && timeInHrs < end_Time) { // Check for task only at day
 				String stopServiceClassStr;
 
 				if (uplaodloc) {
@@ -109,10 +130,14 @@ public class AlarmReceiver extends BroadcastReceiver {
 					context.startService(locationCapture);
 				}
 			}
-			else if(timeInHrs < start_Time)
-                alarm_time = (start_Time - timeInHrs) * 60;
-			else if (timeInHrs > end_Time)
-			    alarm_time = ((24 - timeInHrs) + start_Time) * 60;
+			else if(timeInHrs < start_Time) {
+				alarm_time = (start_Time - timeInHrs) * 60 - getTimeInMints();
+			}
+			else if (timeInHrs >= end_Time) {
+				alarm_time = ((24 - timeInHrs) + start_Time) * 60 - getTimeInMints();
+			}
+
+//			Commons.print("AlarmManager Alarm_Time "+alarm_time);
 
 			setPendingIntent(context,alarm_time);
 		} catch (Exception e) {
@@ -133,6 +158,26 @@ public class AlarmReceiver extends BroadcastReceiver {
 			Commons.printException(""+e);
 		}
 		return 0;
+	}
+
+	private int getTimeInMints() {
+		try {
+			Calendar calendar = new GregorianCalendar();
+			return calendar.get(Calendar.MINUTE);
+		} catch (Exception e) {
+			Commons.printException(""+e);
+		}
+		return 0;
+	}
+
+	private void cancelAlarm(Context context) {
+		AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+		Intent i = new Intent(context, AlarmReceiver.class);
+		PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+        /* cancel any pending alarm */
+        if(alarm!=null)
+            alarm.cancel(pi);
 	}
 
 }

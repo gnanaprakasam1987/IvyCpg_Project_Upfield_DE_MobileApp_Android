@@ -19,6 +19,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -125,7 +126,12 @@ public class TravelOnMap extends IvyBaseFragment {
                             .getApplicationContext());
             if (resultCode == ConnectionResult.SUCCESS) {
                 if (map == null) {
-                    map = fragment.getMap();
+                    fragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            map = googleMap;
+                        }
+                    });
                     map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 }
                 try {

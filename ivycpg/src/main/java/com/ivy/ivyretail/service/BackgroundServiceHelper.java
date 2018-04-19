@@ -1,9 +1,15 @@
 package com.ivy.ivyretail.service;
 
 import android.content.Context;
+import android.database.Cursor;
 
+import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+
+import java.util.ArrayList;
 
 public class BackgroundServiceHelper {
 
@@ -23,7 +29,7 @@ public class BackgroundServiceHelper {
     }
 
     void uploadUserLocation(String[] currentLocation){
-        Commons.print("LOCATION "+currentLocation[0]+" - "+currentLocation[1]+" - "+currentLocation[2]);
+//        Commons.print("AlarmManager LOCATION "+currentLocation[0]+" - "+currentLocation[1]+" - "+currentLocation[2]);
 
         try {
             if(currentLocation.length > 0){
@@ -40,6 +46,29 @@ public class BackgroundServiceHelper {
         } catch (Exception e) {
             Commons.printException(""+e);
         }
+    }
+
+    public UserMasterBO getUserDetail(Context context){
+        UserMasterBO userMasterBO = null;
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor cursor = db.selectSQL("select userid,username from usermaster where isDeviceuser=1");
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToNext()) {
+                userMasterBO = new UserMasterBO();
+                userMasterBO.setUserid(cursor.getInt(0));
+                userMasterBO.setUserName(cursor.getString(1));
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        db.closeDB();
+        return userMasterBO;
     }
 
 }

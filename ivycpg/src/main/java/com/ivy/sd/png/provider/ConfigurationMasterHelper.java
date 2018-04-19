@@ -1317,6 +1317,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
     public boolean IS_ORD_SR_VALUE_VALIDATE;
 
+    private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
+    public boolean IS_REALTIME_LOCATION_CAPTURE ;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2283,6 +2286,35 @@ public class ConfigurationMasterHelper {
         this.IS_ORD_SR_VALUE_VALIDATE = hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) != null ? hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) : false;
 
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
+
+        this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
+
+        if(isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
+            SharedPreferences pref = context.getSharedPreferences("TimePref", 0);
+            Editor editor = pref.edit();
+            editor.putBoolean("REALTIMELOCATION", this.IS_REALTIME_LOCATION_CAPTURE);
+            editor.putBoolean("INWORK", false);
+            editor.apply();
+        }
+
+    }
+
+    private boolean isInOutModule() {
+        boolean isInOutModule = false;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            Cursor c = db.selectSQL("select RField from HhtMenuMaster where hhtCode='MENU_IN_OUT'");
+            if (c.getCount() > 0 && c.moveToNext()) {
+                isInOutModule = true;
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return isInOutModule;
     }
 
     public void loadOrderReportConfiguration() {

@@ -189,8 +189,12 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
             mCustomMapFragment = ((CustomMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map));
             mCustomMapFragment.setOnDragListener(MapDialogue.this);
-            mMap = mCustomMapFragment.getMap();
-            mCustomMapFragment.getMapAsync(this);
+            mCustomMapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    mMap = googleMap;
+                }
+            });
 
             if (mMap != null) {
                 mMap.setMyLocationEnabled(true);
