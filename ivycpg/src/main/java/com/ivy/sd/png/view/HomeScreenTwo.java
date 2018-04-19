@@ -1732,7 +1732,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.productHelper.updateProductColor();
                         bmodel.orderAndInvoiceHelper.restoreDiscountAmount(bmodel.getRetailerMasterBO().getRetailerID());
 
-                        if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
+                        if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER)
                             bmodel.schemeDetailsMasterHelper.downloadSchemeHistoryDetails();
 
 
@@ -3763,7 +3763,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
             bmodel.productHelper.downloadInStoreLocations();
 
-            if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
+            if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER)
                 bmodel.schemeDetailsMasterHelper.downloadSchemeHistoryDetails();
 
             //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
@@ -4235,7 +4235,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
      * vansales,load ordered scheme details
      */
     private void enableSchemeModule() {
-        if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
+        if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON) {
             if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                 if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
 
@@ -4265,8 +4265,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         if (!flag) {
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = flag;
             bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = flag;
-            bmodel.configurationMasterHelper.IS_SCHEME_ON = flag;
-            bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = flag;
+            bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON = flag;
+            bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN = flag;
             bmodel.configurationMasterHelper.SHOW_TAX = flag;
             bmodel.configurationMasterHelper.IS_GST = flag;
             bmodel.configurationMasterHelper.IS_GST_HSN = flag;
@@ -4276,8 +4276,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else {
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
             bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
-            bmodel.configurationMasterHelper.IS_SCHEME_ON = bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER;
-            bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
+            bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON = bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER;
+            bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN = bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
 
             bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
         }

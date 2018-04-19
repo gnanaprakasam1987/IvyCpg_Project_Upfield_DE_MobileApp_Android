@@ -439,8 +439,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                             startActivity(init);
                             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                             getActivity().finish();
-                        } else if (mBModel.configurationMasterHelper.IS_SCHEME_ON
-                                && mBModel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+                        } else if (mBModel.schemeDetailsMasterHelper.IS_SCHEME_ON
+                                && mBModel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
                             Intent init = new Intent(getActivity(),
                                     SchemeApply.class);
                             init.putExtra("ScreenCode", screenCode);

@@ -272,8 +272,8 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
                 init.putExtra("ScreenCode", screenCode);
                 startActivity(init);
 //                finish();
-            } else if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                    && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+            } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
+                    && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
                 Intent intent = new Intent(InitiativeActivity.this,
                         SchemeApply.class);
                 intent.putExtra("ScreenCode", screenCode);

@@ -302,7 +302,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
 
                             @Override
                             public void onClick(View v) {
-                                if (mBmodel.configurationMasterHelper.IS_SCHEME_EDITABLE) {
+                                if (mBmodel.schemeDetailsMasterHelper.IS_SCHEME_EDITABLE) {
                                     QUANTITY = holder.quantityET;
                                     QUANTITY.requestFocus();
                                     QUANTITY.setCursorVisible(false);
@@ -520,7 +520,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                 holder.sihTV.setVisibility(View.GONE);
             }
 
-            if (!mBmodel.configurationMasterHelper.IS_SCHEME_EDITABLE) {
+            if (!mBmodel.schemeDetailsMasterHelper.IS_SCHEME_EDITABLE) {
                 holder.quantityET.setEnabled(false);
             } else {
                 holder.quantityET.setEnabled(true);

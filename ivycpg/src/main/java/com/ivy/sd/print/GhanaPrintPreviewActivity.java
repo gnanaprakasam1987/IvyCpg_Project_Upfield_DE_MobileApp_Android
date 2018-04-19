@@ -432,7 +432,7 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                             + "");
                     mProductContainerLL.addView(v);
                     // free products added to display
-                    if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
+                    if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON) {
                         if (productBO.getSchemeProducts() != null
                                 && productBO.getSchemeProducts().size() > 0) {
                             updatFreeProduct(productBO);
@@ -867,7 +867,7 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                 int x = 340;
                 int schemeSize = 0;
                 // update free product size
-                if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
+                if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON) {
                     for (ProductMasterBO product : mProductsForAdapter) {
                         if (product.isPromo()) {
                             if (product.getSchemeProducts() != null) {

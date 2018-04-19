@@ -457,7 +457,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
 
             bmodel.productHelper.downloadInStoreLocations();
 
-            if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER)
+            if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER)
                 bmodel.schemeDetailsMasterHelper.downloadSchemeHistoryDetails();
 
             //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {

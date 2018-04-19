@@ -2501,8 +2501,8 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);
             finish();
-        } else if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
+                && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(SubDStockCheckActivity.this, SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
             init.putExtra("ForScheme", screenCode);

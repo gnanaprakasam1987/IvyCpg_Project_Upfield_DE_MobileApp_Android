@@ -444,8 +444,8 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
                 intent.putExtra("ScreenCode", screenCode);
                 startActivity(intent);
 //                finish();
-            } else if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                    && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+            } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
+                    && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
                 Intent init = new Intent(BatchAllocation.this, SchemeApply.class);
                 init.putExtra("ScreenCode", screenCode);
                 startActivity(init);

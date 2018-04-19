@@ -805,7 +805,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             TextView txt = getNameTv();
 
-            if (bmodel.configurationMasterHelper.IS_SCHEME_SLAB_ON)
+            if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_SLAB_ON)
                 txt.setText("SLAB");
             else
                 txt.setText("SKU");
@@ -823,7 +823,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
                 //childHeaderView.addView(getHorizontalLine());
-                if (bmodel.configurationMasterHelper.IS_SCHEME_SLAB_ON) {
+                if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_SLAB_ON) {
                     TextView productTV = getTextViewTitle(false, Gravity.LEFT, false);
                     productTV.setText(R.string.qty);
                     productTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));

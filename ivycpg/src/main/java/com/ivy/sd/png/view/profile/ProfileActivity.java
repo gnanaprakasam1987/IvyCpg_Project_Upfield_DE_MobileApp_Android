@@ -112,6 +112,7 @@ import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 import static com.ivy.sd.png.asean.view.R.id.tab_layout;
+import static com.ivy.sd.png.asean.view.R.id.thirdrow;
 
 public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearByRetailerDialog.NearByRetailerInterface, MapWrapperLayout.OnDragListener,
         CommonReasonDialog.AddNonVisitListener, View.OnClickListener {
@@ -2000,8 +2001,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     }
 
                     // load scheme details
-                    if (bmodel.configurationMasterHelper.IS_SCHEME_ON_MASTER) {
-
+                    bmodel.schemeDetailsMasterHelper.loadSchemeConfigs(ProfileActivity.this);
+                    if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER) {
                         if (bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE) {
                             if (!("Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
 

@@ -71,7 +71,7 @@ public class SchemeDetailsMasterHelper {
     private HashMap<String, ArrayList<Integer>> mParentIdListByProductId;
     private SparseArray<ArrayList<String>> mProductIdListByParentId;
 
-    //To show scheme free products in free product selection dialog and scheme detail screen
+    //To show scheme free products in free product selection dialog and product profile screen
     private HashMap<String, ArrayList<String>> mFreeGroupNameListBySchemeId;
     private HashMap<String, String> mFreeGroupTypeByFreeGroupName;
 
@@ -107,6 +107,74 @@ public class SchemeDetailsMasterHelper {
         return instance;
     }
 
+
+    private static final String CODE_SCHEME_ON = "SCH01";
+    private static final String CODE_SCHEME_EDITABLE = "SCH02";
+    private static final String CODE_SCHEME_SHOW_SCREEN = "SCH03";
+    private static final String CODE_FOC_ACCUMULATION_VALIDATION = "SCH04";
+    private static final String CODE_SCHEME_SLAB_ON = "SCH08";
+    private static final String CODE_SCHEME_CHECK = "SCH09";
+
+    public boolean IS_SCHEME_ON;
+    public boolean IS_SCHEME_EDITABLE;
+    public boolean IS_SCHEME_SHOW_SCREEN;
+    public boolean IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE;
+    public boolean IS_SCHEME_SLAB_ON;
+    public boolean IS_SCHEME_CHECK;
+    public boolean IS_SCHEME_CHECK_DISABLED;
+    public boolean IS_SCHEME_ON_MASTER;
+    public boolean IS_SCHEME_SHOW_SCREEN_MASTER;
+
+    /**
+     * Load All Scheme Configurations
+     */
+    public void loadSchemeConfigs(Context mContext) {
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "SELECT hhtCode, RField FROM "
+                    + DataMembers.tbl_HhtModuleMaster;
+                   // + " WHERE menu_type = 'SCHEME' AND flag='1'";
+
+            Cursor c = db.selectSQL(sql);
+
+            if (c != null && c.getCount() != 0) {
+                while (c.moveToNext()) {
+                    if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_ON)) {
+                        IS_SCHEME_ON = true;
+                        IS_SCHEME_ON_MASTER = true;
+                    } else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_EDITABLE))
+                        IS_SCHEME_EDITABLE = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_SHOW_SCREEN)) {
+                        IS_SCHEME_SHOW_SCREEN = true;
+                        IS_SCHEME_SHOW_SCREEN_MASTER = true;
+                    } else if (c.getString(0).equalsIgnoreCase(CODE_FOC_ACCUMULATION_VALIDATION))
+                        IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_SLAB_ON))
+                        IS_SCHEME_SLAB_ON = true;
+
+                    if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_CHECK)) {
+                        IS_SCHEME_CHECK = true;
+                        if (c.getString(1) != null && c.getString(1).equals("1")) {
+                            IS_SCHEME_CHECK_DISABLED = true;
+                        }
+                    }
+
+
+                }
+                c.close();
+            }
+            db.closeDB();
+
+
+        } catch (Exception e) {
+            Commons.printException("loadSchemeConfigs " + e);
+        }
+    }
+
     /**
      * Method to load all scheme related methods
      */
@@ -114,6 +182,7 @@ public class SchemeDetailsMasterHelper {
 
         DBUtil db;
         try {
+
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -764,16 +833,18 @@ public class SchemeDetailsMasterHelper {
             db.createDataBase();
             db.openDataBase();
             String query = "SELECT DISTINCT A.pid, A.batchid, A.schid,IFNULL(PieceUOM.Qty,0) AS PieceQty ,IFNULL(OuterUOM.Qty,0) as OouterQty,"
-                    + " IFNULL(CaseUOM.Qty,0) as CaseQty" +
-                    ",(IFNULL(PieceUOM.value,0)+IFNULL(OuterUOM.value,0)+IFNULL(CaseUOM.value,0)) "
+                    + " IFNULL(CaseUOM.Qty,0) as CaseQty,(IFNULL(PieceUOM.value,0)+IFNULL(OuterUOM.value,0)+IFNULL(CaseUOM.value,0)) "
                     + " FROM SchemeAchHistory A"
+
                     + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as PieceUOM ON PieceUOM.Pid = A.pid"
                     + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as OuterUOM ON OuterUOM.Pid = A.pid"
                     + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
                     + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and invoicestatus=1"
                     + " LEFT JOIN SchemeDetail SD on SD.parentid=A.schid and OH.orderid=SD.orderid"
+
                     + " where OH.upload!='X' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
                     + " and A.schid!=IFNULL(SD.parentid,0) order by schid";
+
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 String schemeID = "";
@@ -834,9 +905,10 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
             mOffInvoiceSchemeList = new ArrayList<>();
             StringBuilder sb = new StringBuilder();
-            sb.append("SELECT distinct productid,Pname,uomid,Qty,ASF.Slabid,ASF.schemeid,ASF.SchemeDesc,ASF.groupName, ASF.groupType,ASF.schemeLogic  from AccumulationSchemeFreeIssues ASF ");
-            sb.append("inner join Productmaster PM on PM.pid=ASF.productid ");
-            sb.append("where ASF.retailerid=");
+            sb.append("SELECT distinct productid,Pname,uomid,Qty,ASF.Slabid,ASF.schemeid,ASF.SchemeDesc,ASF.groupName");
+            sb.append(",ASF.groupType,ASF.schemeLogic  from AccumulationSchemeFreeIssues ASF");
+            sb.append(" inner join Productmaster PM on PM.pid=ASF.productid");
+            sb.append(" where ASF.retailerid=");
             sb.append(bmodel.getRetailerMasterBO().getRetailerID());
             sb.append(" and ASF.slabid not in(select schemeid from SchemeFreeProductDetail where retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + ") order by ASF.schemeid");
             Cursor c = db.selectSQL(sb.toString());
@@ -1430,9 +1502,9 @@ public class SchemeDetailsMasterHelper {
 
                 int maximumQuantity = schemeProductBO.getQuantityMaximum();
 
-                if (bmodel.configurationMasterHelper.SCHEME_APPLY_REM || (schemeBO.getProcessType() != null
+                if (schemeBO.getProcessType() != null
                         && (schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING)
-                        || schemeBO.getProcessType().equals(PROCESS_TYPE_MTS)))) {
+                        || schemeBO.getProcessType().equals(PROCESS_TYPE_MTS))) {
 
 					/* scheme type is Quantity Value */
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
@@ -3122,7 +3194,7 @@ public class SchemeDetailsMasterHelper {
         }
         if (mOffInvoiceAppliedSchemeList != null) {
             for (SchemeBO schemeBO : mOffInvoiceAppliedSchemeList) {
-                if (!bmodel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
+                if (!IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
                         || OrderHelper.getInstance(context).getValidAccumulationSchemes().contains(String.valueOf(schemeBO.getParentId()))) {
 
                     if (schemeBO.isQuantityTypeSelected()) {

@@ -2456,7 +2456,7 @@ public class OrderHelper {
     public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList, double totalOrderValue) {
 
         ArrayList<String> mValidSchemes = null;
-        if (businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE) {
+        if (businessModel.schemeDetailsMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE) {
             mValidSchemes = getValidAccumulationSchemes(totalOrderValue);
         }
 
@@ -2468,7 +2468,7 @@ public class OrderHelper {
             if (offInvoiceSchemeList != null) {
                 for (SchemeBO schemeBO : offInvoiceSchemeList) {
                     if (schemeBO.isQuantityTypeSelected()) {
-                        if (!businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
+                        if (!businessModel.schemeDetailsMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
                                 || mValidSchemes.contains(String.valueOf(schemeBO.getParentId()))) {
                             updateSchemeFreeProduct(schemeBO, productBO);
                         }
@@ -2654,7 +2654,7 @@ public class OrderHelper {
                 }
             }
 
-            if (businessModel.configurationMasterHelper.IS_SCHEME_ON) {
+            if (businessModel.schemeDetailsMasterHelper.IS_SCHEME_ON) {
                 for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
                     if (schemeBO.getFreeProducts() != null) {
                         for (SchemeProductBO freeProductBO : schemeBO.getFreeProducts()) {
@@ -2866,7 +2866,7 @@ public class OrderHelper {
                 }
 
                 // if scheme module enable ,delete tha scheme table
-                if (businessModel.configurationMasterHelper.IS_SCHEME_ON) {
+                if (businessModel.schemeDetailsMasterHelper.IS_SCHEME_ON) {
                     db.deleteSQL(DataMembers.tbl_scheme_details,
                             "OrderID=" + uid, false);
                     db.deleteSQL(DataMembers.tbl_SchemeFreeProductDetail,

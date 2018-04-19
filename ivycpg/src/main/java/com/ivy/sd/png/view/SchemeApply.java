@@ -618,7 +618,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                             QUANTITY = null;
                                     }
                                 }
-                                if (!bmodel.configurationMasterHelper.IS_SCHEME_EDITABLE) {
+                                if (!bmodel.schemeDetailsMasterHelper.IS_SCHEME_EDITABLE) {
                                     holder.priceET.setEnabled(false);
                                 }
 
@@ -694,7 +694,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
                                     }
                                 }
-                                if (!bmodel.configurationMasterHelper.IS_SCHEME_EDITABLE) {
+                                if (!bmodel.schemeDetailsMasterHelper.IS_SCHEME_EDITABLE) {
                                     holder.amountET.setEnabled(false);
                                 }
 
@@ -768,7 +768,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                         QUANTITY = null;
                                     }
                                 }
-                                if (!bmodel.configurationMasterHelper.IS_SCHEME_EDITABLE) {
+                                if (!bmodel.schemeDetailsMasterHelper.IS_SCHEME_EDITABLE) {
                                     holder.percentET.setEnabled(false);
                                 }
                                 holder.schemeBO
@@ -1046,11 +1046,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             // holder.schemeBO.getSelectedFreeProductsQuantity(holder.productBO.getProductID()));
 
             if (holder.schemeBO.isQuantityTypeSelected()) {
-                if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK
-                        && bmodel.configurationMasterHelper.IS_SCHEME_CHECK_DISABLED) {
+                if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK
+                        && bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK_DISABLED) {
                     holder.quantityCB.setChecked(true);
                     holder.quantityCB.setEnabled(false);
-                } else if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK) {
+                } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK) {
                     holder.quantityCB.setChecked(false);
                     holder.schemeBO
                             .setQuantityTypeSelected(false);
@@ -1058,7 +1058,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.quantityCB.setChecked(true);
                 }
                 if (holder.schemeBO.getIsOnInvoice() == 0
-                        || bmodel.configurationMasterHelper.IS_SCHEME_CHECK_DISABLED) {
+                        || bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK_DISABLED) {
                     holder.quantityCB.setEnabled(false);
                 } else {
                     holder.quantityCB.setEnabled(true);
@@ -1088,11 +1088,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.quantityCB.setChecked(false);
                 holder.showFreeBTN.setEnabled(false);
 
-                if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK
-                        && bmodel.configurationMasterHelper.IS_SCHEME_CHECK_DISABLED) {
+                if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK
+                        && bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK_DISABLED) {
                     holder.priceCB.setChecked(true);
                     holder.priceCB.setEnabled(false);
-                } else if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK) {
+                } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK) {
                     holder.priceCB.setChecked(false);
                     holder.schemeBO
                             .setPriceTypeSeleted(false);
@@ -1101,7 +1101,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.priceCB.setChecked(true);
                 }
                 if (holder.schemeBO.getIsOnInvoice() == 0
-                        || bmodel.configurationMasterHelper.IS_SCHEME_CHECK_DISABLED) {
+                        || bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK_DISABLED) {
                     holder.priceCB.setEnabled(false);
                 } else {
                     holder.priceCB.setEnabled(true);
@@ -1132,11 +1132,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.priceET.setEnabled(false);
                 holder.priceET.setClickable(false);
 
-                if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK
-                        && bmodel.configurationMasterHelper.IS_SCHEME_CHECK_DISABLED) {
+                if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK
+                        && bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK_DISABLED) {
                     holder.amountCB.setChecked(true);
                     holder.amountCB.setEnabled(false);
-                } else if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK) {
+                } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK) {
                     holder.amountCB.setChecked(false);
                     holder.schemeBO
                             .setAmountTypeSelected(false);
@@ -1146,7 +1146,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 }
 
                 if (holder.schemeBO.getIsOnInvoice() == 0
-                        || bmodel.configurationMasterHelper.IS_SCHEME_CHECK_DISABLED) {
+                        || bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK_DISABLED) {
                     holder.amountCB.setEnabled(false);
                 } else {
                     holder.amountCB.setEnabled(true);
@@ -1178,11 +1178,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.amountET.setEnabled(false);
                 holder.amountET.setClickable(false);
 
-                if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK
-                        && bmodel.configurationMasterHelper.IS_SCHEME_CHECK_DISABLED) {
+                if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK
+                        && bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK_DISABLED) {
                     holder.percentCB.setChecked(true);
                     holder.percentCB.setEnabled(false);
-                } else if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK) {
+                } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK) {
                     holder.percentCB.setChecked(false);
                     holder.schemeBO
                             .setDiscountPrecentSelected(false);
@@ -1191,7 +1191,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     holder.percentCB.setChecked(true);
                 }
                 if (holder.schemeBO.getIsOnInvoice() == 0
-                        || bmodel.configurationMasterHelper.IS_SCHEME_CHECK_DISABLED) {
+                        || bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK_DISABLED) {
                     holder.percentCB.setEnabled(false);
                 } else {
                     holder.percentCB.setEnabled(true);
@@ -1221,13 +1221,13 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.percentET.setClickable(false);
             }
 
-           /* if (bmodel.configurationMasterHelper.IS_SCHEME_CHECK) {
+           /* if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_CHECK) {
                 holder.quantityCB.setChecked(false);
                 holder.percentCB.setChecked(false);
                 holder.amountCB.setChecked(false);
                 holder.priceCB.setChecked(false);
             }*/
-            if (!bmodel.configurationMasterHelper.IS_SCHEME_EDITABLE) {
+            if (!bmodel.schemeDetailsMasterHelper.IS_SCHEME_EDITABLE) {
 
                 holder.priceET.setEnabled(false);
                 holder.amountET.setEnabled(false);

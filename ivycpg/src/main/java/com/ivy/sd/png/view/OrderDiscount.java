@@ -633,8 +633,8 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
         // Intent returnIntent = new Intent();
         // setResult(RESULT_CANCELED, returnIntent);
         // finish();
-        if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
+                && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent intent = new Intent(OrderDiscount.this, SchemeApply.class);
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);

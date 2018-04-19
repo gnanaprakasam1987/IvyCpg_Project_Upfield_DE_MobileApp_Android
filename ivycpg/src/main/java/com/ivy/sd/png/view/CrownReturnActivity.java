@@ -683,8 +683,8 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
 
     public void nextBtnSubTask() {
 
-        if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
+                && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(CrownReturnActivity.this,
                     SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
