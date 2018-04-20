@@ -99,6 +99,7 @@ public class DashBoardHelper {
         dashBoardReportList = new Vector<>();
         p3mChartList = new ArrayList<>();
         monthList = new Vector<>();
+        this.bmodel = (BusinessModel) context;
 
     }
 
@@ -2352,8 +2353,6 @@ public class DashBoardHelper {
                 }
             }
         }
-
-
     }
 
     private boolean showDaySpinner = false;
