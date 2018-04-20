@@ -3349,15 +3349,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                         if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
                             if (bmodel.schemeDetailsMasterHelper
-                                    .getmSchemeList() == null
+                                    .getSchemeList() == null
                                     || bmodel.schemeDetailsMasterHelper
-                                    .getmSchemeList().size() == 0) {
+                                    .getSchemeList().size() == 0) {
                                 Toast.makeText(StockAndOrder.this,
                                         R.string.scheme_not_available,
                                         Toast.LENGTH_SHORT).show();
                             }
 
-                            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
+                            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -3378,7 +3378,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             SchemeDialog sc = new SchemeDialog(
                                     StockAndOrder.this,
                                     bmodel.schemeDetailsMasterHelper
-                                            .getmSchemeList(), holder.pname,
+                                            .getSchemeList(), holder.pname,
                                     holder.productId, holder.productObj, 1, mTotalScreenWidth);
                             FragmentManager fm = getSupportFragmentManager();
                             sc.show(fm, "");

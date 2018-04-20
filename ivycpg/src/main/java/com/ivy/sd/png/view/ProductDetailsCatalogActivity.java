@@ -87,9 +87,9 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
                 (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND == true ?
                         " SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()) : ""));
 
-        if (bmodel.schemeDetailsMasterHelper.getmSchemeList().size() > 0) {
+        if (bmodel.schemeDetailsMasterHelper.getSchemeList().size() > 0) {
 
-            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
+            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getSchemeList());
             bmodel.productHelper.setPdname(bmodel.selectedPdt.getProductShortName());
             bmodel.productHelper.setProdId(bmodel.selectedPdt.getProductID());
             bmodel.productHelper.setProductObj(bmodel.selectedPdt);

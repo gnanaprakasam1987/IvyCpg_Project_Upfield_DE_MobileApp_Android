@@ -144,8 +144,8 @@ public class DiscountHelper {
             double totalValue;
 
             if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productBO.getBatchwiseProductCount() > 0) {
-                totalValue = businessModel.schemeDetailsMasterHelper
-                        .getbatchWiseTotalValue(productBO);
+                totalValue = orderHelper
+                        .getTotalValueOfAllBatches(productBO);
             } else {
                 totalValue = line_total_price;
 

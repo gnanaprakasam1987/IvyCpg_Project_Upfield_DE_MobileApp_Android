@@ -806,8 +806,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         && BModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                     if (productBO.getBatchwiseProductCount() > 0) {
                         // Apply batch wise price apply
-                        lineValue = BModel.schemeDetailsMasterHelper
-                                .getbatchWiseTotalValue(productBO);
+                        lineValue = orderHelper
+                                .getTotalValueOfAllBatches(productBO);
                     } else {
                         lineValue = (productBO.getOrderedCaseQty() * productBO
                                 .getCsrp())

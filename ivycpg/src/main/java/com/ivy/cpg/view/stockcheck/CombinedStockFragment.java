@@ -714,7 +714,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             SchemeDialog sc = new SchemeDialog(
                                     getActivity(),
                                     bmodel.schemeDetailsMasterHelper
-                                            .getmSchemeList(), holder.pname,
+                                            .getSchemeList(), holder.pname,
                                     holder.productId, holder.productObj, 1, mTotalScreenWidth);
                             FragmentManager fm = getActivity().getSupportFragmentManager();
                             sc.show(fm, "");

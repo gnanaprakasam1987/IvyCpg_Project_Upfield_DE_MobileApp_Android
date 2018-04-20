@@ -2916,4 +2916,31 @@ public class OrderHelper {
         return uid;
     }
 
+    public double getTotalValueOfAllBatches(ProductMasterBO productBO) {
+
+        ArrayList<ProductMasterBO> batchWiseList = businessModel.batchAllocationHelper
+                .getBatchlistByProductID().get(productBO.getProductID());
+        double totalValue = 0.0;
+        if (batchWiseList != null) {
+            for (ProductMasterBO batchProductBO : batchWiseList) {
+                if (batchProductBO.getOrderedPcsQty() > 0
+                        || batchProductBO.getOrderedCaseQty() > 0
+                        || batchProductBO.getOrderedOuterQty() > 0) {
+                    double totalBatchValue = batchProductBO.getOrderedPcsQty()
+                            * batchProductBO.getSrp()
+                            + batchProductBO.getOrderedCaseQty()
+                            * batchProductBO.getCsrp()
+                            + batchProductBO.getOrderedOuterQty()
+                            * batchProductBO.getOsrp();
+                    totalValue = totalValue + totalBatchValue;
+                    batchProductBO.setDiscount_order_value(totalBatchValue);
+                    batchProductBO.setSchemeAppliedValue(totalBatchValue);
+                }
+            }
+        }
+        return totalValue;
+
+    }
+
+
 }

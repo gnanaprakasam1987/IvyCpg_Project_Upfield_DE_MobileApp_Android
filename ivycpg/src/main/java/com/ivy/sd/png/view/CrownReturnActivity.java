@@ -1342,14 +1342,14 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                         bmodel.setContext(CrownReturnActivity.this);
 
                         if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
-                            if (bmodel.schemeDetailsMasterHelper.getmSchemeList() == null || bmodel.schemeDetailsMasterHelper.getmSchemeList().size() == 0) {
+                            if (bmodel.schemeDetailsMasterHelper.getSchemeList() == null || bmodel.schemeDetailsMasterHelper.getSchemeList().size() == 0) {
                                 Toast.makeText(CrownReturnActivity.this,
                                         R.string.scheme_not_available,
                                         Toast.LENGTH_SHORT).show();
                                 return true;
                             }
 
-                            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
+                            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -1368,7 +1368,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                             bmodel.productHelper.setFlag(1);
                             bmodel.productHelper.setTotalScreenSize(0);
                             SchemeDialog sc = new SchemeDialog(
-                                    CrownReturnActivity.this, bmodel.schemeDetailsMasterHelper.getmSchemeList(),
+                                    CrownReturnActivity.this, bmodel.schemeDetailsMasterHelper.getSchemeList(),
                                     holder.pname, holder.productId,
                                     holder.productObj, 1, 0);
 

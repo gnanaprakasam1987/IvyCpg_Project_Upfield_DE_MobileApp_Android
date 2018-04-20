@@ -1025,7 +1025,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             List<SchemeBO> schemeList = null;
                             try {
                                 schemeList = businessModel.schemeDetailsMasterHelper
-                                        .getmSchemeList();
+                                        .getSchemeList();
                             } catch (Exception e) {
                                 Commons.printException(e + "");
                             }
@@ -1037,7 +1037,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             Toast.LENGTH_SHORT).show();
                                     return true;
                                 }
-                                businessModel.productHelper.setSchemes(businessModel.schemeDetailsMasterHelper.getmSchemeList());
+                                businessModel.productHelper.setSchemes(businessModel.schemeDetailsMasterHelper.getSchemeList());
                                 businessModel.productHelper.setPdname(holder.pname);
                                 businessModel.productHelper.setProdId(holder.productId);
                                 businessModel.productHelper.setProductObj(holder.productObj);
