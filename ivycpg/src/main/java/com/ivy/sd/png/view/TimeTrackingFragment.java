@@ -42,6 +42,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.InOutReasonDialog.OnMyDialogResult;
@@ -121,22 +122,24 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             //if CNT01 is disabled
             loadListData();
         }
+
+        if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
+            if (!bmodel.locationUtil.isGPSProviderEnabled()) {
+                GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+                int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
+                if (resultCode == ConnectionResult.SUCCESS) {
+                    bmodel.requestLocation(getActivity());
+                } else {
+                    onCreateDialogNew();
+                }
+            }
+        }
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        /*Checks whether Gps,Location high accuracy, Location Permissions enabled or not*/
-        if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG &&
-                (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE)){
-
-            if (!bmodel.locationUtil.isGPSProviderEnabled() ||
-                    !hasLocationPermissionEnabled(getContext()) ||
-                    !isLocationHighAccuracyEnabled(getContext())) {
-                onCreateDialogNew();
-            }
-        }
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
@@ -161,19 +164,15 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
     //Displayes the dialog if GPS is not enabled
     protected void onCreateDialogNew() {
-        AlertDialog.Builder builderGPS = new AlertDialog.Builder(getActivity())
-                .setIcon(null)
-                .setTitle(getResources().getString(R.string.enable_gps))
-                .setPositiveButton(getResources().getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                                Intent myIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(myIntent);
-                            }
-                        });
-        bmodel.applyAlertDialogTheme(builderGPS);
+        new CommonDialog(getContext().getApplicationContext(), getContext(), "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                Intent myIntent = new Intent(
+                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(myIntent);
+
+            }
+        }).show();
     }
 
 
@@ -534,31 +533,6 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         return false;
     }
 
-    //Check Location Permissions are granted or not
-    boolean hasLocationPermissionEnabled(Context context) {
-        int locationMode = 0;
-        String locationProviders;
-        boolean isAvailable;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            try {
-                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            isAvailable = (locationMode != Settings.Secure.LOCATION_MODE_OFF);
-        } else {
-            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-            isAvailable = !TextUtils.isEmpty(locationProviders);
-        }
-
-        boolean coarsePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-        boolean finePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-
-        return isAvailable && (coarsePermissionCheck || finePermissionCheck);
-    }
-
     /**
      * Starts the service to Track the Realtime Location and uploads in FIREBASE
      *
@@ -579,6 +553,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 if(statusCode == RealTimeLocationTracking.STATUS_SUCCESS)
                     success = true;
 
+        }else{
+            success = true;
         }
         return success;
     }

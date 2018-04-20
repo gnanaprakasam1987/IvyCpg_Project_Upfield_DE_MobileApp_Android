@@ -963,9 +963,9 @@ public class ConfigurationMasterHelper {
     private Vector<ConfigureBO> activitymenuconfig;
     private Vector<ConfigureBO> primarymenus;
 
-    private int alarmTime = 3;
-    private int startTime = 8;
-    private int endTime = 20;
+    public int alarmTime = 3;
+    public int startTime = 8;
+    public int endTime = 20;
     private Vector<ConfigureBO> genFilter, productdetails;
     private Vector<String> SIHApplyById = null;
     private ArrayList<String> mRetailerProperty;
@@ -2153,15 +2153,7 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_BACKDATE_REPORTING = hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) : false;
         this.IS_USER_CAN_SELECT_BILL_WISE_DISCOUNT = hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) : false;
         this.SHOW_ORD_CALC = hashMapHHTModuleConfig.get(CODE_ORD_CALC) != null ? hashMapHHTModuleConfig.get(CODE_ORD_CALC) : false;
-        if (this.ISUPLOADUSERLOC) {
-            SharedPreferences pref = context.getSharedPreferences("TimePref", 0);
-            Editor editor = pref.edit();
-            editor.putInt("AlarmTime", alarmTime); // AlarmTime
-            editor.putInt("StartTime", startTime); // Start Time
-            editor.putInt("EndTime", endTime); // End Time
-            editor.putBoolean("UploadUserLoc", ISUPLOADUSERLOC);
-            editor.apply(); // commit changes
-        }
+
         if (hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_LPC_ORDER) == 0)
                 this.SHOW_LPC_ORDER = true;
@@ -2289,12 +2281,8 @@ public class ConfigurationMasterHelper {
 
         this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
 
-        if(isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
-            SharedPreferences pref = context.getSharedPreferences("TimePref", 0);
-            Editor editor = pref.edit();
-            editor.putBoolean("REALTIMELOCATION", this.IS_REALTIME_LOCATION_CAPTURE);
-            editor.putBoolean("INWORK", false);
-            editor.apply();
+        if(!isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
+            this.IS_REALTIME_LOCATION_CAPTURE = false;
         }
 
     }

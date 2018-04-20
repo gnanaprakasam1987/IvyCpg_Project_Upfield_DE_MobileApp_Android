@@ -28,7 +28,7 @@ public class BackgroundServiceHelper {
         return instance;
     }
 
-    void uploadUserLocation(String[] currentLocation){
+    public void uploadUserLocation(String[] currentLocation){
 //        Commons.print("AlarmManager LOCATION "+currentLocation[0]+" - "+currentLocation[1]+" - "+currentLocation[2]);
 
         try {

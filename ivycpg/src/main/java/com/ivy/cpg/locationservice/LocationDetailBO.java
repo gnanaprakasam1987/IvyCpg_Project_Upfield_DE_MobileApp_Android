@@ -1,9 +1,13 @@
-package com.ivy.ivyretail.service;
+package com.ivy.cpg.locationservice;
 
 
-public class LocationDetailBO {
+import java.io.Serializable;
+
+public class LocationDetailBO implements Serializable {
 
     private String userName,latitude,longitude,accuracy,time,path,userId,activityType;
+    private boolean isGpsEnabled,isMockLocationEnabled;
+    private int batteryStatus;
 
     public String getUserName() {
         return userName;
@@ -67,5 +71,29 @@ public class LocationDetailBO {
 
     public void setActivityType(String activityType) {
         this.activityType = activityType;
+    }
+
+    public boolean isGpsEnabled() {
+        return isGpsEnabled;
+    }
+
+    public void setGpsEnabled(boolean gpsEnabled) {
+        isGpsEnabled = gpsEnabled;
+    }
+
+    public boolean isMockLocationEnabled() {
+        return isMockLocationEnabled;
+    }
+
+    public void setMockLocationEnabled(boolean mockLocationEnabled) {
+        isMockLocationEnabled = mockLocationEnabled;
+    }
+
+    public int getBatteryStatus() {
+        return batteryStatus;
+    }
+
+    public void setBatteryStatus(int batteryStatus) {
+        this.batteryStatus = batteryStatus;
     }
 }

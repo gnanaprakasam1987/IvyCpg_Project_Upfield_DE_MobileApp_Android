@@ -1,4 +1,4 @@
-package com.ivy.ivyretail.service;
+package com.ivy.cpg.locationservice.movementtracking;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -39,10 +39,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
     private MyLocationListener nativeLocationListener;
 
     /* Values from location services */
-    public static double latitude = 0;
-    public static double longitude = 0;
-    public static float accuracy = 0;
-    private static String mProviderName;
+    public static Location location;
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
@@ -99,18 +96,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                         .getSystemService(Context.LOCATION_SERVICE);
                 nativeLocationListener = new MyLocationListener();
 
-                if (nativeLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    nativeLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                            0, 0, nativeLocationListener);
-                    mProviderName = LocationManager.GPS_PROVIDER;
-//                    Commons.print("AlarmManager GPS_PROVIDER Listener started");
-                } else if (nativeLocationManager
-                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    nativeLocationManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER, 0, 0, nativeLocationListener);
-                    mProviderName = LocationManager.NETWORK_PROVIDER;
-//                    Commons.print("AlarmManager NETWORK_PROVIDER Listener started");
-                }
 //                Commons.print("AlarmManager Native Location Manager fired.");
             } catch (SecurityException e) {
                 Commons.printException(e);
@@ -124,10 +109,9 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
     class MyLocationListener implements android.location.LocationListener {
         public void onLocationChanged(Location loc) {
             if(isBetterLocation(loc,previousBestLocation)) {
-                latitude = loc.getLatitude();
-                longitude = loc.getLongitude();
-                accuracy = loc.getAccuracy();
-                mProviderName = loc.getProvider();
+
+                location = loc;
+
                 Intent locationIntent = new Intent("LOCATION CAPTURED");
                 LocalBroadcastManager.getInstance(context).sendBroadcast(locationIntent);
             }
@@ -157,8 +141,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                 if (mGoogleApiClient.isConnected()) {
                     stopLocationUpdates();
                     mGoogleApiClient.disconnect();
-                    latitude = 0;
-                    longitude = 0;
+                    location = null;
                 }
             }
 
@@ -168,8 +151,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                 nativeLocationManager.removeUpdates(nativeLocationListener);
                 nativeLocationListener = null;
                 nativeLocationManager = null;
-                latitude = 0;
-                longitude = 0;
+                location = null;
             }
         }
 
@@ -214,10 +196,8 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
         if(isBetterLocation(location,previousBestLocation)){
 //            Commons.print("AlarmManager Better Location found");
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            accuracy = location.getAccuracy();
-            mProviderName = location.getProvider();
+
+            this.location = location;
 
             Intent locationIntent = new Intent("LOCATION CAPTURED");
             LocalBroadcastManager.getInstance(context).sendBroadcast(locationIntent);

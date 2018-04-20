@@ -19,7 +19,8 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.ivy.ivyretail.service.LocationDetailBO;
+import com.ivy.cpg.locationservice.LocationDetailBO;
+import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 
@@ -92,9 +93,9 @@ public class RealTimeLocationService extends Service {
             public void onLocationResult(LocationResult locationResult) {
 
                 //Notifies if GPS is Disabled
-                RealTimeLocationHelper.getInstance(getApplicationContext()).notifyGPSStatus(getApplicationContext());
+                boolean isGpsEnabled = LocationServiceHelper.getInstance().notifyGPSStatus(getApplicationContext());
                 //Notifies if Mock Location is enabled
-                RealTimeLocationHelper.getInstance(getApplicationContext()).notifyMockLocationStatus(getApplicationContext());
+                boolean isMockLocationEnabled = LocationServiceHelper.getInstance().notifyMockLocationStatus(getApplicationContext());
 
                 Location location = locationResult.getLastLocation();
                 if (location != null) {
@@ -105,6 +106,9 @@ public class RealTimeLocationService extends Service {
                         locationDetailBO.setAccuracy(String.valueOf(location.getAccuracy()));
                         locationDetailBO.setTime(String.valueOf(location.getTime()));
                         locationDetailBO.setActivityType(activityType);
+                        locationDetailBO.setGpsEnabled(isGpsEnabled);
+                        locationDetailBO.setMockLocationEnabled(isMockLocationEnabled);
+                        locationDetailBO.setBatteryStatus(LocationServiceHelper.getInstance().getBatteryPercentage(getApplicationContext()));
                         realTimeLocation.onRealTimeLocationReceived(locationDetailBO,getApplicationContext());
                     }
                 }

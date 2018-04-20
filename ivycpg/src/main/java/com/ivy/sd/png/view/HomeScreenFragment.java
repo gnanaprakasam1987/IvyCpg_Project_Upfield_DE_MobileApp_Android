@@ -1,20 +1,15 @@
 package com.ivy.sd.png.view;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -50,6 +45,9 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
+import com.ivy.cpg.locationservice.movementtracking.PeriodicMovementTrackUpload;
+import com.ivy.cpg.locationservice.movementtracking.PeriodicMovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
@@ -60,7 +58,6 @@ import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.PlanningSubScreenFragment;
 import com.ivy.cpg.view.van.StockProposalFragment;
 import com.ivy.cpg.view.van.VanStockAdjustActivity;
-import com.ivy.ivyretail.service.AlarmReceiver;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.camera.CameraActivity;
@@ -453,8 +450,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         listView.setAdapter(new LeftMenuBaseAdapter(leftmenuDB));
 
 
-        if (bmodel.configurationMasterHelper.ISUPLOADUSERLOC)
-            AlarmReceiver.setAlarm(getActivity());
+        if (bmodel.configurationMasterHelper.ISUPLOADUSERLOC) {
+            MovementTracking movementTracking = new PeriodicMovementTrackUpload();
+
+            PeriodicMovementTracking.startTrackingLocation(movementTracking,getContext(),
+                    bmodel.configurationMasterHelper.startTime,
+                    bmodel.configurationMasterHelper.endTime,
+                    bmodel.configurationMasterHelper.alarmTime);
+
+        }
 
 
         /** Initialising map view **/

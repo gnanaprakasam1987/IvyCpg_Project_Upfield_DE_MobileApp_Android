@@ -1,9 +1,8 @@
 package com.ivy.cpg.locationservice.realtime;
 
 import android.content.Context;
-import android.os.Parcelable;
 
-import com.ivy.ivyretail.service.LocationDetailBO;
+import com.ivy.cpg.locationservice.LocationDetailBO;
 
 import java.io.Serializable;
 

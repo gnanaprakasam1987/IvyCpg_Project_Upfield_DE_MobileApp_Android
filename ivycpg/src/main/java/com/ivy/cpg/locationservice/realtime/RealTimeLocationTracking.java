@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.ivy.cpg.locationservice.LocationServiceHelper;
+import com.ivy.cpg.locationservice.activitytracking.ActivityRecognitionService;
 import com.ivy.sd.png.asean.view.R;
 
 public class RealTimeLocationTracking {
@@ -20,29 +22,29 @@ public class RealTimeLocationTracking {
     public static int startLocationTracking(RealTimeLocation realTimeLocation, Context context){
 
         //Check whether location permission is enabled
-        if(!RealTimeLocationHelper.getInstance(context).hasLocationPermissionEnabled(context)){
+        if(!LocationServiceHelper.getInstance().hasLocationPermissionEnabled(context)){
             Toast.makeText(context,
                     context.getResources().getString(R.string.permission_enable_msg),
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
             return STATUS_LOCATION_PERMISSION;
         }
 
         //Check GPS is Enabled or not
-        if(!RealTimeLocationHelper.getInstance(context).isGpsEnabled(context)) {
+        if(!LocationServiceHelper.getInstance().isGpsEnabled(context)) {
             Toast.makeText(context,
                     context.getString(R.string.enable_gps),
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
             return STATUS_GPS;
         }
 
         //Checks whether if location accuracy is not set as high
-        if (!RealTimeLocationHelper.getInstance(context).isLocationHighAccuracyEnabled(context)) {
+        if (!LocationServiceHelper.getInstance().isLocationHighAccuracyEnabled(context)) {
             Toast.makeText(context, "Change high location Accuracy", Toast.LENGTH_SHORT).show();
             return STATUS_LOCATION_ACCURACY;
         }
 
         //Check whether Mock Location is enabled or not
-        if (!RealTimeLocationHelper.getInstance(context).isMockSettingsON(context)) {
+        if (!LocationServiceHelper.getInstance().isMockSettingsON(context)) {
             Toast.makeText(context, "Mock Location is Enabled", Toast.LENGTH_SHORT).show();
             return STATUS_MOCK_LOCATION;
         }
@@ -52,18 +54,19 @@ public class RealTimeLocationTracking {
         b.putSerializable("REALTIME",realTimeLocation);
         intent.putExtras(b);
 
-        //Check whether service is running or not
-        if(RealTimeLocationHelper.getInstance(context).isMyServiceRunning(context, RealTimeLocationService.class.getName())){
+        //Stops the service if already running
+        if(LocationServiceHelper.getInstance().isMyServiceRunning(context, RealTimeLocationService.class.getName())){
             context.stopService(intent);
         }
 
+        //starts the service
         if(context.startService(intent) != null) {
 
 //        update the status as true if user started work
             updateWorkStatus(context, true);
 
-            //Check whether service is running or not
-            if(!RealTimeLocationHelper.getInstance(context).isMyServiceRunning(context, ActivityRecognitionService.class.getName())){
+
+            if(!LocationServiceHelper.getInstance().isMyServiceRunning(context, ActivityRecognitionService.class.getName())){
                 context.startService(new Intent(context, ActivityRecognitionService.class));
             }
 
@@ -82,6 +85,9 @@ public class RealTimeLocationTracking {
 
     }
 
+    /*
+    * Update the Work Status in preferences
+    */
     private static void updateWorkStatus(Context context, boolean b) {
         SharedPreferences pref = context.getSharedPreferences("TimePref", 0);
         SharedPreferences.Editor editor = pref.edit();

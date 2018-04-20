@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ivy.ivyretail.service.BackgroundServiceHelper;
-import com.ivy.ivyretail.service.LocationDetailBO;
+import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.util.Commons;

@@ -110,11 +110,11 @@
 
         <receiver android:name="com.ivy.sd.png.model.ScreenReceiver" />
 
-        <service android:name="com.ivy.ivyretail.service.LocationListenerService" />
-        <service android:name="com.ivy.ivyretail.service.LocationUploadService" />
+        <service android:name="com.ivy.cpg.locationservice.movementtracking.LocationListenerService" />
+        <service android:name="com.ivy.cpg.locationservice.movementtracking.LocationUploadService" />
 
         <receiver
-            android:name="com.ivy.ivyretail.service.AlarmReceiver"
+            android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingAlarmReceiver"
             android:enabled="true"
             android:exported="false"
             android:process=":remote">
@@ -134,6 +134,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
+         <receiver android:name="com.ivy.cpg.locationservice.realtime.RealtimeLocationReceiver"
+             android:enabled="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                 <category android:name="android.intent.category.DEFAULT" />
+             </intent-filter>
+         </receiver>
 
         <service android:name="com.ivy.sd.png.view.GcmIntentService" />
         <service android:name="com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadService" />
@@ -158,13 +167,13 @@
 
         <service android:name="com.ivy.cpg.locationservice.realtime.RealTimeLocationService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
         </service>
 
-        <service android:name="com.ivy.cpg.locationservice.realtime.ActivityIntentService"
+        <service android:name="com.ivy.cpg.locationservice.activitytracking.ActivityIntentService"
             android:exported="false"/>
 
-        <service android:name="com.ivy.cpg.locationservice.realtime.ActivityRecognitionService"
+        <service android:name="com.ivy.cpg.locationservice.activitytracking.ActivityRecognitionService"
             android:enabled="true"
             android:exported="false"/>
 

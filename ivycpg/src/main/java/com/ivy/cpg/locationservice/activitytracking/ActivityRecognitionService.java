@@ -1,4 +1,4 @@
-package com.ivy.cpg.locationservice.realtime;
+package com.ivy.cpg.locationservice.activitytracking;
 
 import android.app.PendingIntent;
 import android.app.Service;

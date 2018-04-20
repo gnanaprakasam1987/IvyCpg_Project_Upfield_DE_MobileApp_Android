@@ -1,4 +1,4 @@
-package com.ivy.cpg.locationservice.realtime;
+package com.ivy.cpg.locationservice.activitytracking;
 
 
 import android.app.IntentService;
@@ -11,10 +11,8 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.List;
 
-//Extend IntentService//
 public class ActivityIntentService extends IntentService {
     protected static final String TAG = "Activity";
-    private final String BROADCAST_DETECTED_ACTIVITY = "com.ivy.BROADCAST_DETECTED_ACTIVITY";
 
     public ActivityIntentService() {
         super(TAG);
@@ -104,7 +102,7 @@ public class ActivityIntentService extends IntentService {
         }
     }
     private void broadcastActivity(String activityTtype) {
-        Intent intent = new Intent(BROADCAST_DETECTED_ACTIVITY);
+        Intent intent = new Intent("com.ivy.BROADCAST_DETECTED_ACTIVITY");
         intent.putExtra("type", activityTtype);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
