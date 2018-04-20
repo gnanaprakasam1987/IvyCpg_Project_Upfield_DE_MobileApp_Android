@@ -77,8 +77,7 @@ public class DashBoardHelper {
     //for viewpager pie graph used in both kpi and day dashboard
     private ArrayList<SKUWiseTargetBO> skuwiseGraphData;
 
-    private Vector<DashBoardBO> monthList = new Vector<>();
-    private Vector<SKUWiseTargetBO> retailerKpiSku;
+    private Vector<DashBoardBO> monthList ;
 
     private ArrayList<DashBoardBO> kpiList;
     public static final String MONTH_NAME[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -91,14 +90,12 @@ public class DashBoardHelper {
 
     private DashBoardHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
         dashChartDataList = new ArrayList<>();
         dashListViewList = new ArrayList<>();
         dashBoardReportList = new Vector<>();
         p3mChartList = new ArrayList<>();
         monthList = new Vector<>();
-        this.bmodel = (BusinessModel) context;
-
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static DashBoardHelper getInstance(Context context) {
@@ -455,10 +452,6 @@ public class DashBoardHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
-    }
-
-    public Vector<SKUWiseTargetBO> getRetailerKpiSku() {
-        return retailerKpiSku;
     }
 
     public void findMinMaxProductLevelRetailerKPI(int kpiID, int kpiTypeLovID, String interval) {
@@ -887,7 +880,7 @@ public class DashBoardHelper {
             // For putting 0 in values for the non exsisting KPIS
 
             Set kpiListwithValue;
-            for (DashBoardBO kpiResultList : bmodel.dashBoardHelper.getDashBoardReportList()) {
+            for (DashBoardBO kpiResultList : getDashBoardReportList()) {
                 for (DashBoardBO monthList : getMonthList()) {
 
                     Vector<String> tempKpiList = new Vector<>();
@@ -927,7 +920,7 @@ public class DashBoardHelper {
                 String finalTarget, finalAchieved;
 
                 if (kpiList.getKpiCode().equals("CM")) {
-                    for (DashBoardBO kpiResultList : bmodel.dashBoardHelper.getDashBoardReportList()) {
+                    for (DashBoardBO kpiResultList : getDashBoardReportList()) {
 
 
                         kpiListwithValue = kpiResultList.getMonthKpiList().entrySet();
@@ -955,7 +948,7 @@ public class DashBoardHelper {
                     }
                 } else {
 
-                    for (DashBoardBO kpiResultList : bmodel.dashBoardHelper.getDashBoardReportList()) {
+                    for (DashBoardBO kpiResultList : getDashBoardReportList()) {
 
 
                         kpiListwithValue = kpiResultList.getMonthKpiList().entrySet();
@@ -1679,8 +1672,7 @@ public class DashBoardHelper {
     public void getGridData(int routeId) {
         try {
             getDashListViewList().clear();
-            for (DashBoardBO dshObj : bmodel.dashBoardHelper
-                    .getDashChartDataList()) {
+            for (DashBoardBO dshObj : getDashChartDataList()) {
                 if (dshObj.getRouteID() == routeId) {
                     getDashListViewList().add(dshObj);
                 }
@@ -1693,8 +1685,7 @@ public class DashBoardHelper {
     public void getGridData(String beatDesc) {
         try {
             getDashListViewList().clear();
-            for (DashBoardBO dshObj : bmodel.dashBoardHelper
-                    .getDashChartDataList()) {
+            for (DashBoardBO dshObj : getDashChartDataList()) {
                 if (dshObj.getBeatDescription().equalsIgnoreCase(beatDesc)) {
                     getDashListViewList().add(dshObj);
                 }
@@ -1711,8 +1702,7 @@ public class DashBoardHelper {
         try {
             jsonArr = new JSONArray();
             jsonObj = new JSONObject();
-            for (DashBoardBO semichart : bmodel.dashBoardHelper
-                    .getDashListViewList()) {
+            for (DashBoardBO semichart : getDashListViewList()) {
                 JSONObject tempJson = new JSONObject();
                 tempJson.accumulate("chartText", semichart.getText());
                 tempJson.accumulate("chartTargetVal",
@@ -1761,38 +1751,6 @@ public class DashBoardHelper {
     {
         return "'" + data + "'";
     }
-
-    public String getsemiCircleChartData(int selectedDashItem) {
-        JSONArray jsonArr = null;
-        JSONObject jsonObj = null;
-        try {
-            jsonArr = new JSONArray();
-            jsonObj = new JSONObject();
-            DashBoardBO dshObj = bmodel.dashBoardHelper.getDashListViewList()
-                    .get(selectedDashItem);
-            jsonObj.accumulate("chartName", dshObj.getText() + " Tgt/Ach%");
-            jsonObj.accumulate("chartHead", dshObj.getText());
-            JSONObject tempJson = new JSONObject();
-            tempJson.accumulate("chartText", "Achieved");
-            tempJson.accumulate("chartVal", dshObj.getConvAcheivedPercentage());
-            jsonArr.put(tempJson);
-            tempJson = null;
-            tempJson = new JSONObject();
-            tempJson.accumulate("chartText", "Remaining Target ");
-            tempJson.accumulate("chartVal", dshObj.getConvTargetPercentage());
-            jsonArr.put(tempJson);
-            tempJson = null;
-            jsonObj.accumulate("chartData", jsonArr);
-        } catch (JSONException e) {
-            Commons.print(e.toString());
-        }
-        WeakReference<JSONObject> wkJson = new WeakReference<JSONObject>(
-                jsonObj);
-        Commons.print(wkJson.get().toString());
-        jsonObj = null;
-        return wkJson.get().toString();
-    }
-
 
     public Vector<DashBoardBO> downloadDSRMTD() {
         Vector<DashBoardBO> dsrmtdlist = new Vector<>();

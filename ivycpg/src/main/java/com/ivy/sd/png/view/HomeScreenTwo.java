@@ -40,6 +40,7 @@ import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
 import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
 import com.ivy.cpg.view.dashboard.FitScoreDashboardActivity;
 import com.ivy.cpg.view.dashboard.KellogsDashBoardActivity;
@@ -3487,9 +3488,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_RTR_KPI) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
-                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
+                DashBoardHelper.getInstance(this).loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
 
-                if (bmodel.dashBoardHelper.getDashChartDataList().size() > 0) {
+                if (DashBoardHelper.getInstance(this).getDashChartDataList().size() > 0) {
                     Intent i = new Intent(this,
                             SellerDashBoardActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

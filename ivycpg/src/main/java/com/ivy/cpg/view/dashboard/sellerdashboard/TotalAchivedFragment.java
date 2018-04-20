@@ -39,7 +39,7 @@ public class TotalAchivedFragment extends Fragment {
         super.onStart();
         Bundle b = getArguments();
         int flex1 = b.getInt("flex1");
-        skuList = bmodel.dashBoardHelper.getSkuwiseGraphData();
+        skuList = DashBoardHelper.getInstance(getActivity()).getSkuwiseGraphData();
         tvTitle = (TextView) view.findViewById(R.id.tvTitle);
         tvValue = (TextView) view.findViewById(R.id.tvValue);
 
@@ -70,7 +70,7 @@ public class TotalAchivedFragment extends Fragment {
         }
 
         if (flex1 == 1) {
-            tvValue.setText(bmodel.dashBoardHelper.getWhole(total_ach + ""));
+            tvValue.setText(DashBoardHelper.getInstance(getActivity()).getWhole(total_ach + ""));
         } else {
             tvValue.setText(bmodel.formatValue(total_ach));
         }

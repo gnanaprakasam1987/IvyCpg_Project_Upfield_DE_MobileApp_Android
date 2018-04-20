@@ -21,6 +21,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -51,11 +52,11 @@ public class P3MChartFragment extends Fragment implements OnChartValueSelectedLi
     public void onStart() {
         super.onStart();
 
-        dashList = bmodel.dashBoardHelper.getP3mChartList();
+        dashList = DashBoardHelper.getInstance(getActivity()).getP3mChartList();
         computedList = new ArrayList<>();
         if (dashList.size() > 0) {
             for (DashBoardBO dashBoardBO : dashList) {
-                if (dashBoardBO.getKpiTypeLovID() == bmodel.dashBoardHelper.mParamLovId) {
+                if (dashBoardBO.getKpiTypeLovID() == DashBoardHelper.getInstance(getActivity()).mParamLovId) {
                     computedList.add(dashBoardBO);
                 }
             }

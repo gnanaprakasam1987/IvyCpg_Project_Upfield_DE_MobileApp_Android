@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.dashboard;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ public class KlgsHalfPieChartFragement extends Fragment implements OnChartValueS
     private View view;
     private ArrayList<SKUWiseTargetBO> skuList;
 
+    private DashBoardHelper dashBoardHelper;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,10 +54,15 @@ public class KlgsHalfPieChartFragement extends Fragment implements OnChartValueS
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dashBoardHelper = DashBoardHelper.getInstance(context);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-
-        skuList = bmodel.dashBoardHelper.getSkuWiseTargetList();
+        skuList = dashBoardHelper.getSkuWiseTargetList();
         mChart = (PieChart) view.findViewById(R.id.chart1);
         mChart.setOnChartValueSelectedListener(this);
         moveOffScreen();
@@ -108,12 +116,12 @@ public class KlgsHalfPieChartFragement extends Fragment implements OnChartValueS
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
 
-        double achPercent = skuList.get(bmodel.dashBoardHelper.mSelectedSkuIndex).getAchieved();
-        double targetPercent = skuList.get(bmodel.dashBoardHelper.mSelectedSkuIndex).getTarget();
+        double achPercent = skuList.get(dashBoardHelper.mSelectedSkuIndex).getAchieved();
+        double targetPercent = skuList.get(dashBoardHelper.mSelectedSkuIndex).getTarget();
         entries.add(new PieEntry((float) targetPercent, getActivity().getResources().getString(R.string.target)));
         entries.add(new PieEntry((float) achPercent, getActivity().getResources().getString(R.string.achieved)));
 
-        PieDataSet dataSet = new PieDataSet(entries, skuList.get(bmodel.dashBoardHelper.mSelectedSkuIndex).getProductName());
+        PieDataSet dataSet = new PieDataSet(entries, skuList.get(dashBoardHelper.mSelectedSkuIndex).getProductName());
         dataSet.setSliceSpace(0f);
         dataSet.setSelectionShift(5f);
         dataSet.setValueTextSize(getResources().getDimension(R.dimen.font_micro_small));

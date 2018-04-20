@@ -164,7 +164,7 @@ public class DashboardFragment extends IvyBaseFragment implements DashboardContr
                         if (!monthNameList.isEmpty()) {
                             spn_sub_filter.setVisibility(View.VISIBLE);
                             spn_sub_filter.setAdapter(mMonthNameAdapter);
-                            spn_sub_filter.setSelection(bmodel.dashBoardHelper.getCurrentMonthIndex());
+                            spn_sub_filter.setSelection(dashBoardHelper.getCurrentMonthIndex());
                         } else {
                             spn_sub_filter.setVisibility(View.GONE);
                             dashboardPresenter.computeDashboardList(MONTH_TYPE, "");
@@ -320,10 +320,10 @@ public class DashboardFragment extends IvyBaseFragment implements DashboardContr
     @Override
     public void gridListDataLoad(int position) {
         if (position == 0) {
-            bmodel.dashBoardHelper.getGridData(0);
+            dashBoardHelper.getGridData(0);
 
         } else {
-            bmodel.dashBoardHelper.getGridData((String) bmodel.dashBoardHelper
+            dashBoardHelper.getGridData((String) dashBoardHelper
                     .getBeatList().get(position));
         }
     }

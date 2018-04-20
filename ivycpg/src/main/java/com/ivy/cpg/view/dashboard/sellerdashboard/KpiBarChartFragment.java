@@ -16,6 +16,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -40,7 +41,7 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        dashBoardList = bmodel.dashBoardHelper.getDashListViewList();
+        dashBoardList = DashBoardHelper.getInstance(getActivity()).getDashListViewList();
 
         mbarChart = view.findViewById(R.id.bar_chart);
         mbarChart.getAxisLeft().setDrawGridLines(false);

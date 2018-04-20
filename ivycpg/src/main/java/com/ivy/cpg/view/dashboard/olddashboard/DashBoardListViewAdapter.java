@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -51,6 +52,7 @@ public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardList
     View view;
     Context context;
     private BusinessModel bmodel;
+    private DashBoardHelper dashBoardHelper;
 
     public DashBoardListViewAdapter(BusinessModel bmodel, List<DashBoardBO> dashboardList, String type, String retailerId, String monthName) {
         this.dashboardList = dashboardList;
@@ -66,6 +68,7 @@ public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardList
         view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.seller_dashboard_row_layout, parent, false);
         context = parent.getContext();
+        dashBoardHelper = DashBoardHelper.getInstance(context);
         return new DashBoardListViewAdapter.ViewHolder(view);
     }
 
@@ -179,32 +182,32 @@ public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardList
                 String inc;
 
                 dec_target = appendZero(String.valueOf(dashboardData.getTarget()).substring(String.valueOf(dashboardData.getTarget()).indexOf(".")).substring(1));
-                target = bmodel.dashBoardHelper.getWhole(dashboardData.getTarget() + "");
+                target = dashBoardHelper.getWhole(dashboardData.getTarget() + "");
 
                 dec_ach = appendZero(String.valueOf(dashboardData.getAcheived()).substring(String.valueOf(dashboardData.getAcheived()).indexOf(".")).substring(1));
-                ach = bmodel.dashBoardHelper.getWhole(dashboardData.getAcheived() + "");
+                ach = dashBoardHelper.getWhole(dashboardData.getAcheived() + "");
 
                 dec_balance = appendZero(String.valueOf(dashboardData.getTarget() - dashboardData.getAcheived()).substring
                         (String.valueOf(dashboardData.getTarget() - dashboardData.getAcheived()).indexOf(".")).substring(1));
-                balance = bmodel.dashBoardHelper.getWhole((dashboardData.getTarget() - dashboardData.getAcheived()) + "");
+                balance = dashBoardHelper.getWhole((dashboardData.getTarget() - dashboardData.getAcheived()) + "");
 
                 dec_inc = appendZero(String.valueOf(dashboardData.getIncentive()).substring(String.valueOf(dashboardData.getIncentive()).indexOf(".")).substring(1));
-                inc = bmodel.dashBoardHelper.getWhole(dashboardData.getIncentive() + "");
+                inc = dashBoardHelper.getWhole(dashboardData.getIncentive() + "");
 
                 if (Integer.parseInt(dec_target) >= 25)
-                    holder.target.setText(bmodel.dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget()) + ""));
+                    holder.target.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget()) + ""));
                 else
                     holder.target.setText(target);
                 if (Integer.parseInt(dec_ach) >= 25)
-                    holder.acheived.setText(bmodel.dashBoardHelper.getWhole(Math.ceil(dashboardData.getAcheived()) + ""));
+                    holder.acheived.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getAcheived()) + ""));
                 else
                     holder.acheived.setText(ach);
                 if (Integer.parseInt(dec_balance) >= 25)
-                    holder.balance.setText(bmodel.dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget() - dashboardData.getAcheived()) + ""));
+                    holder.balance.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget() - dashboardData.getAcheived()) + ""));
                 else
                     holder.balance.setText(balance);
                 if (Integer.parseInt(dec_inc) >= 25)
-                    holder.incentive.setText(bmodel.dashBoardHelper.getWhole(Math.ceil(dashboardData.getIncentive()) + ""));
+                    holder.incentive.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getIncentive()) + ""));
                 else
                     holder.incentive.setText(inc);
             } else {
@@ -231,32 +234,32 @@ public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardList
                 String inc;
 
                 dec_target = appendZero(String.valueOf(dashboardData.getTarget()).substring(String.valueOf(dashboardData.getTarget()).indexOf(".")).substring(1));
-                target = bmodel.dashBoardHelper.getWhole(dashboardData.getTarget() + "");
+                target = dashBoardHelper.getWhole(dashboardData.getTarget() + "");
 
                 dec_ach = appendZero(String.valueOf(dashboardData.getAcheived()).substring(String.valueOf(dashboardData.getAcheived()).indexOf(".")).substring(1));
-                ach = bmodel.dashBoardHelper.getWhole(dashboardData.getAcheived() + "");
+                ach = dashBoardHelper.getWhole(dashboardData.getAcheived() + "");
 
                 dec_balance = appendZero(String.valueOf(dashboardData.getTarget() - dashboardData.getAcheived()).substring
                         (String.valueOf(dashboardData.getTarget() - dashboardData.getAcheived()).indexOf(".")).substring(1));
-                balance = bmodel.dashBoardHelper.getWhole((dashboardData.getTarget() - dashboardData.getAcheived()) + "");
+                balance = dashBoardHelper.getWhole((dashboardData.getTarget() - dashboardData.getAcheived()) + "");
 
                 dec_inc = appendZero(String.valueOf(dashboardData.getIncentive()).substring(String.valueOf(dashboardData.getIncentive()).indexOf(".")).substring(1));
-                inc = bmodel.dashBoardHelper.getWhole(dashboardData.getIncentive() + "");
+                inc = dashBoardHelper.getWhole(dashboardData.getIncentive() + "");
 
                 if (Integer.parseInt(dec_target) >= 25)
-                    holder.target.setText(bmodel.dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget()) + ""));
+                    holder.target.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget()) + ""));
                 else
                     holder.target.setText(target);
                 if (Integer.parseInt(dec_ach) >= 25)
-                    holder.acheived.setText(bmodel.dashBoardHelper.getWhole(Math.ceil(dashboardData.getAcheived()) + ""));
+                    holder.acheived.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getAcheived()) + ""));
                 else
                     holder.acheived.setText(ach);
                 if (Integer.parseInt(dec_balance) >= 25)
-                    holder.balance.setText(bmodel.dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget() - dashboardData.getAcheived()) + ""));
+                    holder.balance.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget() - dashboardData.getAcheived()) + ""));
                 else
                     holder.balance.setText(balance);
                 if (Integer.parseInt(dec_inc) >= 25)
-                    holder.incentive.setText(bmodel.dashBoardHelper.getWhole(Math.ceil(dashboardData.getIncentive()) + ""));
+                    holder.incentive.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getIncentive()) + ""));
                 else
                     holder.incentive.setText(inc);
             } else {

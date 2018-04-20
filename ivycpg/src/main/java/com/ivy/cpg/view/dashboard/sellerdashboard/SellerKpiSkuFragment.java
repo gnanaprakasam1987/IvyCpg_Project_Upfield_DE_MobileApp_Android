@@ -33,6 +33,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -66,6 +67,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
     CircleIndicator indicator;
     MyPagerAdapter adapterViewPager;
     HorizontalScrollView scr_View;
+    private DashBoardHelper dashBoardHelper;
 
     @Nullable
     @Override
@@ -106,8 +108,8 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         weight2.gravity = Gravity.CENTER;
 
         textview = new TextView[100];
-        mylist = bmodel.dashBoardHelper.getSellerKpiSku();
-        updateList(bmodel.dashBoardHelper.mSellerKpiMinSeqLevel);
+        mylist = dashBoardHelper.getSellerKpiSku();
+        updateList(dashBoardHelper.mSellerKpiMinSeqLevel);
 
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +125,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+        dashBoardHelper = DashBoardHelper.getInstance(getActivity());
     }
 
 
@@ -134,11 +137,11 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         }
         int siz = mylist.size();
         ArrayList<SKUWiseTargetBO> temp = new ArrayList<>();
-        if (bmodel.dashBoardHelper.getKpiSkuMasterBoById(new Integer(mSelectedProductId)) != 0)
-            mSelectedProductId = bmodel.dashBoardHelper.getKpiSkuMasterBoById(new Integer(mSelectedProductId));
+        if (dashBoardHelper.getKpiSkuMasterBoById(new Integer(mSelectedProductId)) != 0)
+            mSelectedProductId = dashBoardHelper.getKpiSkuMasterBoById(new Integer(mSelectedProductId));
         for (int i = 0; i < siz; ++i) {
             SKUWiseTargetBO ret = mylist.get(i);
-            if (bid != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel && bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD) {
+            if (bid != dashBoardHelper.mSellerKpiMinSeqLevel && bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD) {
                 if (ret.getSequence() == bid && ret.getParentID() == mSelectedProductId) {
                     temp.add(ret);
                 }
@@ -149,10 +152,10 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
             }
         }
 
-        if (bid == bmodel.dashBoardHelper.mSellerKpiMinSeqLevel)
+        if (bid == dashBoardHelper.mSellerKpiMinSeqLevel)
             previous.setVisibility(View.GONE);
 
-        if (curSeq != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel && textview[curSeq] != null) {
+        if (curSeq != dashBoardHelper.mSellerKpiMinSeqLevel && textview[curSeq] != null) {
 
             textview[curSeq].setText("");
             ll.removeView(textview[curSeq]);
@@ -162,7 +165,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
 
         MyAdapter mSchedule = new MyAdapter(temp);
         rvwplist.setAdapter(mSchedule);
-        bmodel.dashBoardHelper.setSkuwiseGraphData(temp);
+        dashBoardHelper.setSkuwiseGraphData(temp);
         adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
         vpPager.setAdapter(adapterViewPager);
         indicator.setViewPager(vpPager);
@@ -189,11 +192,11 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         if (!temp.isEmpty()) {
             MyAdapter mSchedule = new MyAdapter(temp);
             rvwplist.setAdapter(mSchedule);
-            bmodel.dashBoardHelper.setSkuwiseGraphData(temp);
+            dashBoardHelper.setSkuwiseGraphData(temp);
             adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
             vpPager.setAdapter(adapterViewPager);
             indicator.setViewPager(vpPager);
-            if (curSeq != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel)
+            if (curSeq != dashBoardHelper.mSellerKpiMinSeqLevel)
                 previous.setVisibility(View.VISIBLE);
             ll.addView(getTextView(curSeq, parentID, pname));
             //Anand Asir
@@ -267,10 +270,10 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
             });
 
             if (flex1 == 1) {
-                holder.target.setText(bmodel.dashBoardHelper.getWhole(product.getTarget() + ""));
+                holder.target.setText(dashBoardHelper.getWhole(product.getTarget() + ""));
                 String strCaluPercentage = bmodel.formatPercent(product.getCalculatedPercentage()) + "%";
                 holder.index.setText(strCaluPercentage);
-                holder.acheived.setText(bmodel.dashBoardHelper.getWhole(product.getAchieved() + ""));
+                holder.acheived.setText(dashBoardHelper.getWhole(product.getAchieved() + ""));
             } else {
                 holder.target.setText(bmodel.formatValue(product.getTarget()));
                 String strCalcPercentage = bmodel.formatPercent(product.getCalculatedPercentage()) + "%";

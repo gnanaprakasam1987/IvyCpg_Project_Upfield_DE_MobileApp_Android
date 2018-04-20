@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -37,6 +38,8 @@ public class DashboardReportFragment extends IvyBaseFragment {
 
 	private TextView tvTemp1,tvTemp2,tvTemp3;
 
+	private DashBoardHelper dashBoardHelper;
+
 	@SuppressLint("InlinedApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +51,8 @@ public class DashboardReportFragment extends IvyBaseFragment {
 
 		bmodel = (BusinessModel) getActivity().getApplicationContext();
 		bmodel.setContext(getActivity());
+
+		dashBoardHelper = DashBoardHelper.getInstance(getActivity());
 
 		if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
 			Toast.makeText(getActivity(),
@@ -68,7 +73,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 
 
 
-		bmodel.dashBoardHelper.loadSellerDashBoardReport(bmodel.userMasterHelper.getUserMasterBO().getUserid() + "");
+		dashBoardHelper.loadSellerDashBoardReport(bmodel.userMasterHelper.getUserMasterBO().getUserid() + "");
 
 
 		loadTitleView(layout_kpi);
@@ -76,7 +81,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 
 		mylist = new ArrayList<DashBoardBO>();
 
-		for (DashBoardBO temp : bmodel.dashBoardHelper.getMonthList()) {
+		for (DashBoardBO temp : dashBoardHelper.getMonthList()) {
 			mylist.add(temp);
 		}
 
@@ -140,7 +145,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 
 			Set kpiListwithValue = new HashSet();
 
-			for (DashBoardBO kpiResultList : bmodel.dashBoardHelper.getDashBoardReportList()) {
+			for (DashBoardBO kpiResultList : dashBoardHelper.getDashBoardReportList()) {
 				if (monthList.getMonthID().equals(kpiResultList.getMonthID())){
 					kpiListwithValue = kpiResultList.getMonthKpiList().entrySet();
 					break;
@@ -149,7 +154,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 
 
 
-			for (DashBoardBO mKPI : bmodel.dashBoardHelper.getKpiList()) {
+			for (DashBoardBO mKPI : dashBoardHelper.getKpiList()) {
 
 				Iterator mapiterator = kpiListwithValue.iterator();
 
@@ -237,10 +242,10 @@ public class DashboardReportFragment extends IvyBaseFragment {
 		try{
 
 
-			if (bmodel.dashBoardHelper.getKpiList() != null
-					&& bmodel.dashBoardHelper.getKpiList().size() > 0) {
-				for (int i = 0; i < bmodel.dashBoardHelper.getKpiList().size(); i++) {
-					DashBoardBO obj = bmodel.dashBoardHelper.getKpiList().get(i);
+			if (dashBoardHelper.getKpiList() != null
+					&& dashBoardHelper.getKpiList().size() > 0) {
+				for (int i = 0; i < dashBoardHelper.getKpiList().size(); i++) {
+					DashBoardBO obj = dashBoardHelper.getKpiList().get(i);
 
 					tvTemp1 = new TextView(getActivity());
 					tvTemp1.setLayoutParams(layout_qty);
@@ -266,10 +271,10 @@ public class DashboardReportFragment extends IvyBaseFragment {
 		try{
 
 
-			if (bmodel.dashBoardHelper.getKpiList() != null
-					&& bmodel.dashBoardHelper.getKpiList().size() > 0) {
-				for (int i = 0; i < bmodel.dashBoardHelper.getKpiList().size(); i++) {
-					DashBoardBO obj = bmodel.dashBoardHelper.getKpiList().get(i);
+			if (dashBoardHelper.getKpiList() != null
+					&& dashBoardHelper.getKpiList().size() > 0) {
+				for (int i = 0; i < dashBoardHelper.getKpiList().size(); i++) {
+					DashBoardBO obj = dashBoardHelper.getKpiList().get(i);
 
 					LinearLayout KPIFooterlinearlayout = new LinearLayout(getActivity());
 					KPIFooterlinearlayout.setOrientation(LinearLayout.VERTICAL);

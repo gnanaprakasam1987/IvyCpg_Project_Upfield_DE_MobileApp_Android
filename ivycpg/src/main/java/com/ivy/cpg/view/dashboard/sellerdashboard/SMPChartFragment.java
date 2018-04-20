@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -41,7 +42,7 @@ public class SMPChartFragment extends Fragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         mChart = (PieChart) view.findViewById(R.id.chart1);
-        mDashboardList = bmodel.dashBoardHelper.getDashboardBO();
+        mDashboardList = DashBoardHelper.getInstance(getActivity()).getDashboardBO();
         if (mDashboardList != null && mDashboardList.getKpiAcheived() != null && mDashboardList.getKpiTarget() != null) {
             isSemiCircleChartRequired = (mDashboardList.getFlex1() == 0);
             //mChart.setOnChartValueSelectedListener(this);
@@ -90,7 +91,7 @@ public class SMPChartFragment extends Fragment {
             //}
             setData();
         }
-        bmodel.dashBoardHelper.setDashboardBO(new DashBoardBO());
+        DashBoardHelper.getInstance(getActivity()).setDashboardBO(new DashBoardBO());
         return view;
     }
 

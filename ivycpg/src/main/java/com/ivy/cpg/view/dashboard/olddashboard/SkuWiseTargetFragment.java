@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.dashboard.olddashboard;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -32,6 +33,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.TotalAchivedFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
@@ -81,6 +83,15 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
     ViewPager vpPager;
     CircleIndicator indicator;
     MyPagerAdapter adapterViewPager;
+
+    private DashBoardHelper dashBoardHelper;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dashBoardHelper = DashBoardHelper.getInstance(context);
+
+    }
 
     @Nullable
     @Override
@@ -161,12 +172,12 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
                 bmodel.productHelper.downloadProductFilter("MENU_DASH");
-                bmodel.dashBoardHelper.findMinMaxProductLevel(rid);
-                bmodel.dashBoardHelper.downloadSKUWiseTarget(rid, type, code);
-                bmodel.dashBoardHelper.downloadDashboardLevelSkip(1);
+                dashBoardHelper.findMinMaxProductLevel(rid);
+                dashBoardHelper.downloadSKUWiseTarget(rid, type, code);
+                dashBoardHelper.downloadDashboardLevelSkip(1);
 
                 if ("DAY".equalsIgnoreCase(type))
-                    bmodel.dashBoardHelper.LoadSKUWiseTarget(rid);
+                    dashBoardHelper.LoadSKUWiseTarget(rid);
 
             } catch (Exception e) {
                 Commons.printException(e);
@@ -184,8 +195,8 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
 
         protected void onPostExecute(Boolean result) {
             alertDialog.dismiss();
-            mylist = bmodel.dashBoardHelper.getSkuWiseTarget();
-            bmodel.dashBoardHelper.setSkuwiseGraphData(mylist);
+            mylist = dashBoardHelper.getSkuWiseTarget();
+            dashBoardHelper.setSkuwiseGraphData(mylist);
             MyAdapter adapter = new MyAdapter(mylist);
             dashboardRv.setAdapter(adapter);
             adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager());
@@ -231,11 +242,11 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
 
 
             if (flex1 == 1) {
-                holder.target.setText(bmodel.dashBoardHelper.getWhole(product.getTarget() + ""));
+                holder.target.setText(dashBoardHelper.getWhole(product.getTarget() + ""));
                 String strCaluPercentage = bmodel.formatPercent(product.getCalculatedPercentage()) + "%";
                 holder.index.setText(strCaluPercentage);
-                holder.acheived.setText(bmodel.dashBoardHelper.getWhole(product.getAchieved() + ""));
-                holder.incentive.setText(bmodel.dashBoardHelper.getWhole(product.getrField() + ""));
+                holder.acheived.setText(dashBoardHelper.getWhole(product.getAchieved() + ""));
+                holder.incentive.setText(dashBoardHelper.getWhole(product.getrField() + ""));
             } else {
                 holder.target.setText(bmodel.formatValue(product.getTarget()));
                 String strCalcPercentage = bmodel.formatPercent(product.getCalculatedPercentage()) + "%";
@@ -435,7 +446,7 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void  onBackButtonClick() {
+    public void onBackButtonClick() {
 
         if ("1".equals(calledBy)) {
             startActivity(new Intent(getActivity(),

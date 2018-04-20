@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -43,7 +44,7 @@ public class DSRMTDReportFragment extends Fragment {
 		}
 		lvwplist = (ListView) view.findViewById(R.id.list);
 		lvwplist.setCacheColorHint(0);
-		dsrmtdlist = bmodel.dashBoardHelper.downloadDSRMTD();
+		dsrmtdlist = DashBoardHelper.getInstance(getActivity()).downloadDSRMTD();
 		// Load listview.
 		MyAdapter mSchedule = new MyAdapter(dsrmtdlist);
 		lvwplist.setAdapter(mSchedule);
