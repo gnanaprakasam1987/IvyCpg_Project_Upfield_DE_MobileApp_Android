@@ -793,46 +793,6 @@ public class DiscountHelper {
                 .getAppliedSchemeList();
         if (appliedSchemeList != null) {
 
-
-            //update scheme ordered product count for Amount type scheme
-
-            for (SchemeBO schemeBO : appliedSchemeList) {
-                if (schemeBO != null) {
-                    if (schemeBO.isAmountTypeSelected()) {
-                        schemeBO.setOrderedProductCount(0);
-                        if (schemeBO.getBuyingProducts() != null) {
-                            ArrayList<String> productIdList = new ArrayList<>();
-                            for (SchemeProductBO bo : schemeBO.getBuyingProducts()) {
-                                ProductMasterBO productBO = businessModel.productHelper
-                                        .getProductMasterBOById(bo
-                                                .getProductId());
-
-                                if (productBO != null) {
-                                    if (!productIdList.contains(productBO.getProductID())) {
-                                        productIdList.add(productBO.getProductID());
-
-                                        if (productBO.getOrderedPcsQty() > 0
-                                                || productBO.getOrderedCaseQty() > 0
-                                                || productBO.getOrderedOuterQty() > 0) {
-
-                                            schemeBO.setOrderedProductCount(schemeBO.getOrderedProductCount() + 1);
-
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-
-            }
-
-
             for (SchemeBO schemeBO : appliedSchemeList) {
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {

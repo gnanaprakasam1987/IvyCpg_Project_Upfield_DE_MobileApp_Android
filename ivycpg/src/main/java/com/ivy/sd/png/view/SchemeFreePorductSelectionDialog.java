@@ -124,7 +124,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
 		 * ArrayList<SchemeProductBO>();
 		 * 
 		 * ProductMasterBO productMasterBO; for (SchemeProductBO schemePdtBO :
-		 * mFreeProducts) { if (schemePdtBO.getGroupBuyType().equals(AND_LOGIC))
+		 * mFreeProducts) { if (schemePdtBO.getGroupLogic().equals(AND_LOGIC))
 		 * { freeQuantity = mSchemeBO.getActualQuantity(); }
 		 * 
 		 * productMasterBO = mBmodel.productHelper
@@ -508,7 +508,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                             .getQuantityMaxiumCalculated() + "");
             if (mSchemeBO.getIsFreeCombination() == 1) {
                 holder.groupTypeTV.setText(""
-                        + holder.schemeProductBO.getGroupBuyType());
+                        + holder.schemeProductBO.getGroupLogic());
             } else {
                 holder.groupTypeTV.setText(""
                         + mSchemeBO.getFreeType());
@@ -755,8 +755,8 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                             for (SchemeProductBO schemeProductBo : mFreeProductsList) {
                                 if (groupName
                                         .equals(schemeProductBo.getGroupName())) {
-                                    if (schemeProductBo.getGroupBuyType().equals(
-                                            AND_LOGIC) || schemeProductBo.getGroupBuyType().equals(ONLY_LOGIC)) {
+                                    if (schemeProductBo.getGroupLogic().equals(
+                                            AND_LOGIC) || schemeProductBo.getGroupLogic().equals(ONLY_LOGIC)) {
 
                                         if (schemeProductBo.getQuantitySelected() < schemeProductBo
                                                 .getQuantityActualCalculated()) {
@@ -764,7 +764,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                                             return false;
                                         }
 
-                                    } else if (schemeProductBo.getGroupBuyType()
+                                    } else if (schemeProductBo.getGroupLogic()
                                             .equals(ANY_LOGIC)) {
                                         totalFreeQty = totalFreeQty
                                                 + schemeProductBo
@@ -801,8 +801,8 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                         int anyLogicMinimumCount = 0;
                         for (SchemeProductBO schemeProductBo : mFreeProductsList) {
                             if (type.equals(schemeProductBo.getGroupName())) {
-                                if (schemeProductBo.getGroupBuyType().equals(
-                                        AND_LOGIC) || schemeProductBo.getGroupBuyType().equals(ONLY_LOGIC)) {
+                                if (schemeProductBo.getGroupLogic().equals(
+                                        AND_LOGIC) || schemeProductBo.getGroupLogic().equals(ONLY_LOGIC)) {
 
                                     if (schemeProductBo.getQuantitySelected() < schemeProductBo
                                             .getQuantityActualCalculated()) {
@@ -810,7 +810,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                                         return false;
                                     }
 
-                                } else if (schemeProductBo.getGroupBuyType()
+                                } else if (schemeProductBo.getGroupLogic()
                                         .equals(ANY_LOGIC)) {
                                     totalFreeQty = totalFreeQty
                                             + schemeProductBo.getQuantitySelected();
@@ -905,13 +905,13 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                                     int qtyEntered) {
         if (mSchemeBO.getIsFreeCombination() == 1) {
             if (mSchemeBO.getFreeType().equals(AND_LOGIC) || mSchemeBO.getFreeType().equals(ONLY_LOGIC)) {
-                if (schemeProductBo.getGroupBuyType().equals(AND_LOGIC) || schemeProductBo.getGroupBuyType().equals(ONLY_LOGIC)) {
+                if (schemeProductBo.getGroupLogic().equals(AND_LOGIC) || schemeProductBo.getGroupLogic().equals(ONLY_LOGIC)) {
                     if (qtyEntered > schemeProductBo
                             .getQuantityMaxiumCalculated()) {
                         return false;
                     }
 
-                } else if (schemeProductBo.getGroupBuyType().equals(ANY_LOGIC)) {
+                } else if (schemeProductBo.getGroupLogic().equals(ANY_LOGIC)) {
 
                     int totalFreeQty = qtyEntered;
                     for (SchemeProductBO schemePrtBO : mFreeProductsList) {
@@ -935,12 +935,12 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
             } else if (mSchemeBO.getFreeType().equals(ANY_LOGIC)) {
                 if (!isAlreadyEnteredOtherChildScheme(schemeProductBo)) {
 
-                    if (schemeProductBo.getGroupBuyType().equals(AND_LOGIC) || schemeProductBo.getGroupBuyType().equals(ONLY_LOGIC)) {
+                    if (schemeProductBo.getGroupLogic().equals(AND_LOGIC) || schemeProductBo.getGroupLogic().equals(ONLY_LOGIC)) {
                         if (qtyEntered > schemeProductBo
                                 .getQuantityMaxiumCalculated()) {
                             return false;
                         }
-                    } else if (schemeProductBo.getGroupBuyType().equals(
+                    } else if (schemeProductBo.getGroupLogic().equals(
                             ANY_LOGIC)) {
                         int totalFreeQty = qtyEntered;
                         for (SchemeProductBO schemePrtBO : mFreeProductsList) {

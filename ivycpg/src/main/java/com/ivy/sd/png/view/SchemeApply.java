@@ -425,7 +425,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
                         bmodel.schemeDetailsMasterHelper.loadSchemePromotion(
                                 holder.schemeBO.getSchemeId(),
-                                holder.schemeBO.getType(),
+                                holder.schemeBO.getParentLogic(),
                                 holder.schemeBO.getChannelId(),
                                 holder.schemeBO.getSubChannelId(),
                                 holder.productBO.getProductID(),
