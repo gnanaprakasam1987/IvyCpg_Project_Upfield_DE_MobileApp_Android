@@ -53,7 +53,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.dashboard.olddashboard.DashboardFragment;
 import com.ivy.cpg.view.dashboard.IncentiveDashboardFragment;
-import com.ivy.cpg.view.dashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.dashboard.olddashboard.SkuWiseTargetFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;

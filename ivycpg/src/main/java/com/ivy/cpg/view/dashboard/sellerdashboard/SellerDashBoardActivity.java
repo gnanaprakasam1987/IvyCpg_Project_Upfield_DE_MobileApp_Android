@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.dashboard;
+package com.ivy.cpg.view.dashboard.sellerdashboard;
 
 import android.os.Build;
 import android.os.Bundle;

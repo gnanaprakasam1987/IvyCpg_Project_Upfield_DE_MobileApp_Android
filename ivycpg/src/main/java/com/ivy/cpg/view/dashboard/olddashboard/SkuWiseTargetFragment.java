@@ -32,7 +32,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.ivy.cpg.view.dashboard.TotalAchivedFragment;
+import com.ivy.cpg.view.dashboard.sellerdashboard.TotalAchivedFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;

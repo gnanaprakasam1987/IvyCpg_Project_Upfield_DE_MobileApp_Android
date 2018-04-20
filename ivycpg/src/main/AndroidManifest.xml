@@ -470,10 +470,10 @@
             android:name="com.ivy.cpg.view.dashboard.KellogsDashBoardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.dashboard.SellerDashBoardActivity"
+            android:name="com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashBoardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.dashboard.SellerKPISKUActivity"
+            android:name="com.ivy.cpg.view.dashboard.sellerdashboard.SellerKPISKUActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.reports.InvoiceReportDetail"

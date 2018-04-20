@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.dashboard;
+package com.ivy.cpg.view.dashboard.sellerdashboard;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -33,7 +33,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.ivy.cpg.view.dashboard.TotalAchivedFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;

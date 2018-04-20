@@ -59,16 +59,14 @@ public class DashBoardHelper {
     private ArrayList<DashBoardBO> p3mChartList;
     private List<CharSequence> beatList;
 
-    private Vector<DashBoardBO> dashBoardReportList ;
+    private Vector<DashBoardBO> dashBoardReportList;
 
     public int mMinLevel;
     public int mMaxLevel;
     public int mSellerKpiMinLevel, mSellerKpiMaxLevel, mSellerKpiMinSeqLevel, mSellerKpiMaxSeqLevel;
-    public int mRetailerKpiMinLevel, mRetailerKpiMaxLevel, mRetailerKpiMinSeqLevel, mRetailerKpiMaxSeqLevel;
     public int mSelectedSkuIndex = 0;
 
     public int mParamLovId = 0;
-    public double mParamAchieved = 0;
 
     public DashBoardBO dashboardBO = new DashBoardBO();
 
@@ -1750,7 +1748,7 @@ public class DashBoardHelper {
     }
 
     public ArrayList<DashBoardBO> getDashListViewList() {
-        if(dashListViewList == null)
+        if (dashListViewList == null)
             return new ArrayList<>();
         return dashListViewList;
     }
@@ -3287,4 +3285,186 @@ public class DashBoardHelper {
 
         }
     }
+
+
+    public int getPromotionDetail(String flag) {
+        DBUtil db = null;
+        int size = bmodel.getRetailerMaster().size();
+        int count = 0;
+        String chIDs = "";
+
+        if (flag.equals("P")) {
+            for (int i = 0; i < size; i++) {
+                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
+                }
+            }
+
+            if (chIDs.endsWith(","))
+                chIDs = chIDs.substring(0, chIDs.length() - 1);
+
+            try {
+                db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                db.createDataBase();
+                db.openDataBase();
+                StringBuffer sb = new StringBuffer();
+                sb.append("SELECT count(PromoID) FROM PromotionMapping where chid in (" + chIDs + ")");
+
+                Cursor c = db.selectSQL(sb.toString());
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        count = c.getInt(0);
+                    }
+                }
+                c.close();
+                db.closeDB();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    count = count + getPromotionExecDetail(bmodel.getRetailerMaster().get(i).getRetailerID());
+                }
+            }
+        }
+
+        return count;
+
+    }
+
+    private int getPromotionExecDetail(String retailerID) {
+        DBUtil db = null;
+        int count = 0;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("SELECT count( distinct PromotionID) FROM PromotionDetail where RetailerID =" + bmodel.QT(retailerID));
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    count = c.getInt(0);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return count;
+
+    }
+
+
+    public int getMSLDetail(String flag) {
+        DBUtil db = null;
+        int size = bmodel.getRetailerMaster().size();
+        int count = 0;
+        String chIDs = "";
+        ArrayList<Integer> mslProdIDs = new ArrayList<>();
+        if (flag.equals("P")) {
+            for (int i = 0; i < size; i++) {
+                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
+                }
+            }
+            if (chIDs.endsWith(","))
+                chIDs = chIDs.substring(0, chIDs.length() - 1);
+
+            try {
+                db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                db.createDataBase();
+                db.openDataBase();
+                StringBuffer sb = new StringBuffer();
+                sb.append("SELECT PTGM.pid FROM ProductTaggingMaster PTM ");
+                sb.append("inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid ");
+                sb.append("inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid ");
+                sb.append("AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') ");
+                sb.append("where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")");
+
+                Cursor c = db.selectSQL(sb.toString());
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        count++;
+                        if (!mslProdIDs.contains(c.getInt(1)))
+                            mslProdIDs.add(c.getInt(1));
+                    }
+                }
+                c.close();
+                db.closeDB();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    count = count + getMslExecDetail(bmodel.getRetailerMaster().get(i).getRetailerID(), mslProdIDs);
+                }
+            }
+        }
+        return count;
+
+    }
+
+    private int getMslExecDetail(String retailerID, ArrayList<Integer> mslProdIDs) {
+        DBUtil db = null;
+        int count = 0;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select count(*) from OrderDetail where retailerid = " + bmodel.QT(retailerID));
+            sb.append("and ProductID in (" + mslProdIDs + ")");
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    count = c.getInt(0);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return count;
+
+    }
+
+    public int transactionPerDay, avgUnitsPerBill, avgSellingPrice, avgBillValue;
+
+    public void getCounterSalesDetail() {
+        DBUtil db = null;
+
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("SELECT count(distinct uid)as TRN,(count(pid)/count(distinct uid)) as avgUnitsBill,");
+            sb.append("(sum(price)/count(pid)) as avgSellBill ,(sum(value)/count(distinct uid)) as avgBill ");
+            sb.append("FROM CS_CustomerSaleDetails");
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    transactionPerDay = c.getInt(0);
+                    avgUnitsPerBill = c.getInt(1);
+                    avgSellingPrice = c.getInt(2);
+                    avgBillValue = c.getInt(3);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+
+    }
+
 }

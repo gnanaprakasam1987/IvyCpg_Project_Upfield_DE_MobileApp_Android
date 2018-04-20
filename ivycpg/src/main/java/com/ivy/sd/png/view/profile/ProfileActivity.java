@@ -90,7 +90,7 @@ import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.SalesPerCategory;
-import com.ivy.cpg.view.dashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.TargetPlanActivity_PH;
 import com.ivy.sd.png.view.TaskListFragment;

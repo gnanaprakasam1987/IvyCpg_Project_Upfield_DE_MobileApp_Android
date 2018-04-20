@@ -44,7 +44,7 @@ import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
 import com.ivy.cpg.view.dashboard.FitScoreDashboardActivity;
 import com.ivy.cpg.view.dashboard.KellogsDashBoardActivity;
 import com.ivy.cpg.view.dashboard.olddashboard.SKUWiseTargetActivity;
-import com.ivy.cpg.view.dashboard.SellerDashBoardActivity;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashBoardActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;

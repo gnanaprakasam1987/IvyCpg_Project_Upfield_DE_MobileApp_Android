@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.dashboard;
+package com.ivy.cpg.view.dashboard.sellerdashboard;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.dashboard.DashBoardBO;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -62,7 +64,9 @@ public class TotalAchivedFragment extends Fragment {
             for (SKUWiseTargetBO skuWiseTargetBO : skuList)
                 total_ach += skuWiseTargetBO.getAchieved();
         } else {
-            total_ach = bmodel.dashBoardHelper.mParamAchieved;
+            for (DashBoardBO dash : DashBoardHelper.getInstance(getActivity()).getDashListViewList()) {
+                total_ach += Double.parseDouble(dash.getKpiIncentive());
+            }
         }
 
         if (flex1 == 1) {

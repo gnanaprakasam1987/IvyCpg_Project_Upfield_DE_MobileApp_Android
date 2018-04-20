@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.dashboard;
+package com.ivy.cpg.view.dashboard.sellerdashboard;
 
 import android.graphics.Color;
 import android.graphics.Point;
