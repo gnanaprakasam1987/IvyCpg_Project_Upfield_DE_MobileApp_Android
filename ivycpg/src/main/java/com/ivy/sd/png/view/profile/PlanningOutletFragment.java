@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view.profile;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.PlanningOutletBO;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
@@ -30,6 +32,7 @@ public class PlanningOutletFragment extends Fragment {
     private ArrayList<SKUWiseTargetBO> list;
     private ArrayList<PlanningOutletBO> skulist;
     private boolean _hasLoadedOnce = false;
+    private DashBoardHelper dashBoardHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,17 +47,23 @@ public class PlanningOutletFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dashBoardHelper = DashBoardHelper.getInstance(context);
+    }
+
     private void initializeViews() {
         planningOutlerListview = (ListView) view.findViewById(R.id.planninglv);
         planningOutlerListview.setCacheColorHint(0);
         productsListView = (ListView) view.findViewById(R.id.planninglv1);
-        bmodel.dashBoardHelper.findMinMaxProductLevel(bmodel
+        dashBoardHelper.findMinMaxProductLevel(bmodel
                 .getRetailerMasterBO().getRetailerID());
 
-        bmodel.dashBoardHelper.downloadSKUWiseTarget(bmodel
+        dashBoardHelper.downloadSKUWiseTarget(bmodel
                 .getRetailerMasterBO().getRetailerID(), "MONTH", "");
-        bmodel.dashBoardHelper.downloadDashboardLevelSkip(1);
-        list = bmodel.dashBoardHelper.getSkuWiseTarget();
+        dashBoardHelper.downloadDashboardLevelSkip(1);
+        list = dashBoardHelper.getSkuWiseTarget();
         MyAdapterForPlanningOutlet adapter = new MyAdapterForPlanningOutlet(
                 bmodel.profilehelper.downloadPlanningOutletCategory());
         planningOutlerListview.setAdapter(adapter);

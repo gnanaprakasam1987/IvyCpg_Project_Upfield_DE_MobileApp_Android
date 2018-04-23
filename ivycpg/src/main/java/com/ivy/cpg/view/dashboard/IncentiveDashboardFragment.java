@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard;
 
 import android.content.Context;
 import android.os.Build;
@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.IncentiveDashboardBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -39,11 +38,14 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
 
     String strFixed = "Fixed", strTopUP = "Top Up";
 
+    private DashBoardHelper dashBoardHelper;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        dashBoardHelper = DashBoardHelper.getInstance(context);
     }
 
     @Override
@@ -75,8 +77,8 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
         tvTopupIncentive.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
-        bmodel.dashBoardHelper.downloadIncentiveList();
-        mIncentiveList = bmodel.dashBoardHelper.getIncentiveList();
+        dashBoardHelper.downloadIncentiveList();
+        mIncentiveList = dashBoardHelper.getIncentiveList();
 
         IncentiveType();
 
@@ -135,7 +137,7 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
             if (mIncentiveList.get(i).getInctype().equalsIgnoreCase("Top Up"))
                 topUpIncentiveList.add(mIncentiveList.get(i));
         }
-        for (String s : bmodel.dashBoardHelper.getIncentiveType()) {
+        for (String s : dashBoardHelper.getIncentiveType()) {
             if (s.equalsIgnoreCase("Fixed"))
                 incentiveHashMap.put(s, fixedIncentiveList);
             if (s.equalsIgnoreCase("Top Up"))
@@ -143,7 +145,7 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
         }
 
 
-        for (String inctype : bmodel.dashBoardHelper.getIncentiveType()) {
+        for (String inctype : dashBoardHelper.getIncentiveType()) {
             if (inctype.equalsIgnoreCase("Fixed")) {
 
                 tvRegularIncentive.setText(R.string.regular_incentive);

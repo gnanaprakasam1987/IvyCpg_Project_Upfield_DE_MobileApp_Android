@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -24,7 +24,7 @@ public class FitScoreDashboardActivity extends IvyBaseActivityNoActionBar {
 
         setContentView(R.layout.activity_fitscore);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -32,13 +32,6 @@ public class FitScoreDashboardActivity extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-    }
-
-    public void numberPressed(View vw) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DeliveryOrderFragment asf = (DeliveryOrderFragment) fm
-                .findFragmentById(R.id.delivery_order_fragment);
-        asf.numberPressed(vw);
     }
 
     @Override

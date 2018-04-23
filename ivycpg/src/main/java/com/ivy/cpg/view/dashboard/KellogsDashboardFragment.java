@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -38,6 +38,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,11 +62,14 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
     private String CODE_PLATFORM = "PLATFORM";
     private String CODE_PRIORITY = "PRIORITY";
 
+    private DashBoardHelper dashBoardHelper;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        dashBoardHelper = DashBoardHelper.getInstance(context);
     }
 
     @Nullable
@@ -124,7 +128,7 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
 
         tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
         float scale = getContext().getResources().getDisplayMetrics().widthPixels;
-        ArrayList<StandardListBO> mTabs = bmodel.dashBoardHelper.getDashTabs();
+        ArrayList<StandardListBO> mTabs = dashBoardHelper.getDashTabs();
         scale = scale / mTabs.size();
         TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         final int color = typearr.getColor(R.styleable.MyTextView_textColor, 0);
@@ -243,7 +247,7 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
 
                 @Override
                 public void onClick(View v) {
-                    bmodel.dashBoardHelper.mSelectedSkuIndex = position;
+                    dashBoardHelper.mSelectedSkuIndex = position;
                     adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager());
                     vpPager.setAdapter(adapterViewPager);
                 }
@@ -315,13 +319,13 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
         protected Boolean doInBackground(String... arg0) {
             try {
                 if (mSelectedTab.equals(CODE_PLATFORM))
-                    bmodel.dashBoardHelper.loadPlatformDashboardData();
+                    dashBoardHelper.loadPlatformDashboardData();
 
                 else if (mSelectedTab.equals(CODE_PRIORITY)) {
-                    bmodel.dashBoardHelper.loadPriorityDashboardData();
+                    dashBoardHelper.loadPriorityDashboardData();
                     initTable();
                 } else {
-                    bmodel.dashBoardHelper.loadKlgsDashboardData(mSelectedTab);
+                    dashBoardHelper.loadKlgsDashboardData(mSelectedTab);
                 }
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -354,8 +358,8 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
                 table_main.removeAllViews();
                 rvwplist.setVisibility(View.VISIBLE);
                 vpPager.setVisibility(View.VISIBLE);
-                bmodel.dashBoardHelper.mSelectedSkuIndex = 0;
-                MyAdapter mSchedule = new MyAdapter(bmodel.dashBoardHelper.getSkuWiseTargetList());
+                dashBoardHelper.mSelectedSkuIndex = 0;
+                MyAdapter mSchedule = new MyAdapter(dashBoardHelper.getSkuWiseTargetList());
                 rvwplist.setAdapter(mSchedule);
                 adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager());
                 vpPager.setAdapter(adapterViewPager);
@@ -408,10 +412,10 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
         tv0.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tv0.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_nano_small));
         tbRowHeader.addView(tv0, params);
-        for (int i = 0; i < bmodel.dashBoardHelper.productsIds.size(); i++) {
+        for (int i = 0; i < dashBoardHelper.productsIds.size(); i++) {
             TextView tv1 = new TextView(getActivity());
             tv1.setId(i + 20);
-            tv1.setText(bmodel.dashBoardHelper.getProductName(bmodel.dashBoardHelper.productsIds.get(i)));
+            tv1.setText(dashBoardHelper.getProductName(dashBoardHelper.productsIds.get(i)));
             tv1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tv1.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_nano_small));
             tv1.setTextColor(Color.WHITE);
@@ -420,21 +424,21 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
         }
         table_main.addView(tbRowHeader);
 
-        Collections.sort(bmodel.dashBoardHelper.priorityIds, bmodel.dashBoardHelper.productIdsComparator);
+        Collections.sort(dashBoardHelper.priorityIds, dashBoardHelper.productIdsComparator);
 
-        for (int i = 0; i < bmodel.dashBoardHelper.priorityIds.size(); i++) {
+        for (int i = 0; i < dashBoardHelper.priorityIds.size(); i++) {
             TableRow tbRowItems = new TableRow(getActivity());
             TextView t1v = new TextView(getActivity());
-            t1v.setText("" + bmodel.dashBoardHelper.priorityIds.get(i));
+            t1v.setText("" + dashBoardHelper.priorityIds.get(i));
             t1v.setTextColor(Color.BLACK);
             t1v.setGravity(Gravity.CENTER);
             t1v.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             t1v.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_micro_small));
             tbRowItems.addView(t1v, params);
-            for (int j = 0; j < bmodel.dashBoardHelper.productsIds.size(); j++) {
+            for (int j = 0; j < dashBoardHelper.productsIds.size(); j++) {
                 TextView t2v = new TextView(getActivity());
                 t2v.setId(j + 25);
-                t2v.setText("" + bmodel.dashBoardHelper.getProductAch(bmodel.dashBoardHelper.productsIds.get(j), bmodel.dashBoardHelper.priorityIds.get(i)));
+                t2v.setText("" + dashBoardHelper.getProductAch(dashBoardHelper.productsIds.get(j), dashBoardHelper.priorityIds.get(i)));
                 t2v.setTextColor(Color.BLACK);
                 t2v.setGravity(Gravity.CENTER);
                 t2v.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

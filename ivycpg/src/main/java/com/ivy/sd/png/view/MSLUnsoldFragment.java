@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -38,7 +39,7 @@ public class MSLUnsoldFragment extends IvyBaseFragment {
     }
 
     private void initializeViews() {
-        mslUnsoldList = bmodel.dashBoardHelper.loadMSLUnsold(bmodel.retailerMasterBO.getRetailerID());
+        mslUnsoldList = DashBoardHelper.getInstance(getActivity()).loadMSLUnsold(bmodel.retailerMasterBO.getRetailerID());
         initialization();
     }
 

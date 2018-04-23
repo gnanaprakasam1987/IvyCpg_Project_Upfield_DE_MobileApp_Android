@@ -1,12 +1,10 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.dashboard;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.DashBoardBO;
-import com.ivy.sd.png.bo.IncentiveDashboardBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.PriorityBo;
 import com.ivy.sd.png.bo.RetailerKPIBO;
@@ -61,16 +59,14 @@ public class DashBoardHelper {
     private ArrayList<DashBoardBO> p3mChartList;
     private List<CharSequence> beatList;
 
-    private Vector<DashBoardBO> dashBoardReportList = new Vector<>();
+    private Vector<DashBoardBO> dashBoardReportList;
 
     public int mMinLevel;
     public int mMaxLevel;
     public int mSellerKpiMinLevel, mSellerKpiMaxLevel, mSellerKpiMinSeqLevel, mSellerKpiMaxSeqLevel;
-    public int mRetailerKpiMinLevel, mRetailerKpiMaxLevel, mRetailerKpiMinSeqLevel, mRetailerKpiMaxSeqLevel;
     public int mSelectedSkuIndex = 0;
 
     public int mParamLovId = 0;
-    public double mParamAchieved = 0;
 
     public DashBoardBO dashboardBO = new DashBoardBO();
 
@@ -81,8 +77,7 @@ public class DashBoardHelper {
     //for viewpager pie graph used in both kpi and day dashboard
     private ArrayList<SKUWiseTargetBO> skuwiseGraphData;
 
-    private Vector<DashBoardBO> monthList = new Vector<>();
-    private Vector<SKUWiseTargetBO> retailerKpiSku;
+    private Vector<DashBoardBO> monthList ;
 
     private ArrayList<DashBoardBO> kpiList;
     public static final String MONTH_NAME[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -95,13 +90,12 @@ public class DashBoardHelper {
 
     private DashBoardHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
         dashChartDataList = new ArrayList<>();
         dashListViewList = new ArrayList<>();
         dashBoardReportList = new Vector<>();
         p3mChartList = new ArrayList<>();
         monthList = new Vector<>();
-
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static DashBoardHelper getInstance(Context context) {
@@ -458,10 +452,6 @@ public class DashBoardHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
-    }
-
-    public Vector<SKUWiseTargetBO> getRetailerKpiSku() {
-        return retailerKpiSku;
     }
 
     public void findMinMaxProductLevelRetailerKPI(int kpiID, int kpiTypeLovID, String interval) {
@@ -890,7 +880,7 @@ public class DashBoardHelper {
             // For putting 0 in values for the non exsisting KPIS
 
             Set kpiListwithValue;
-            for (DashBoardBO kpiResultList : bmodel.dashBoardHelper.getDashBoardReportList()) {
+            for (DashBoardBO kpiResultList : getDashBoardReportList()) {
                 for (DashBoardBO monthList : getMonthList()) {
 
                     Vector<String> tempKpiList = new Vector<>();
@@ -930,7 +920,7 @@ public class DashBoardHelper {
                 String finalTarget, finalAchieved;
 
                 if (kpiList.getKpiCode().equals("CM")) {
-                    for (DashBoardBO kpiResultList : bmodel.dashBoardHelper.getDashBoardReportList()) {
+                    for (DashBoardBO kpiResultList : getDashBoardReportList()) {
 
 
                         kpiListwithValue = kpiResultList.getMonthKpiList().entrySet();
@@ -958,7 +948,7 @@ public class DashBoardHelper {
                     }
                 } else {
 
-                    for (DashBoardBO kpiResultList : bmodel.dashBoardHelper.getDashBoardReportList()) {
+                    for (DashBoardBO kpiResultList : getDashBoardReportList()) {
 
 
                         kpiListwithValue = kpiResultList.getMonthKpiList().entrySet();
@@ -1682,8 +1672,7 @@ public class DashBoardHelper {
     public void getGridData(int routeId) {
         try {
             getDashListViewList().clear();
-            for (DashBoardBO dshObj : bmodel.dashBoardHelper
-                    .getDashChartDataList()) {
+            for (DashBoardBO dshObj : getDashChartDataList()) {
                 if (dshObj.getRouteID() == routeId) {
                     getDashListViewList().add(dshObj);
                 }
@@ -1696,8 +1685,7 @@ public class DashBoardHelper {
     public void getGridData(String beatDesc) {
         try {
             getDashListViewList().clear();
-            for (DashBoardBO dshObj : bmodel.dashBoardHelper
-                    .getDashChartDataList()) {
+            for (DashBoardBO dshObj : getDashChartDataList()) {
                 if (dshObj.getBeatDescription().equalsIgnoreCase(beatDesc)) {
                     getDashListViewList().add(dshObj);
                 }
@@ -1714,8 +1702,7 @@ public class DashBoardHelper {
         try {
             jsonArr = new JSONArray();
             jsonObj = new JSONObject();
-            for (DashBoardBO semichart : bmodel.dashBoardHelper
-                    .getDashListViewList()) {
+            for (DashBoardBO semichart : getDashListViewList()) {
                 JSONObject tempJson = new JSONObject();
                 tempJson.accumulate("chartText", semichart.getText());
                 tempJson.accumulate("chartTargetVal",
@@ -1751,6 +1738,8 @@ public class DashBoardHelper {
     }
 
     public ArrayList<DashBoardBO> getDashListViewList() {
+        if (dashListViewList == null)
+            return new ArrayList<>();
         return dashListViewList;
     }
 
@@ -1762,38 +1751,6 @@ public class DashBoardHelper {
     {
         return "'" + data + "'";
     }
-
-    public String getsemiCircleChartData(int selectedDashItem) {
-        JSONArray jsonArr = null;
-        JSONObject jsonObj = null;
-        try {
-            jsonArr = new JSONArray();
-            jsonObj = new JSONObject();
-            DashBoardBO dshObj = bmodel.dashBoardHelper.getDashListViewList()
-                    .get(selectedDashItem);
-            jsonObj.accumulate("chartName", dshObj.getText() + " Tgt/Ach%");
-            jsonObj.accumulate("chartHead", dshObj.getText());
-            JSONObject tempJson = new JSONObject();
-            tempJson.accumulate("chartText", "Achieved");
-            tempJson.accumulate("chartVal", dshObj.getConvAcheivedPercentage());
-            jsonArr.put(tempJson);
-            tempJson = null;
-            tempJson = new JSONObject();
-            tempJson.accumulate("chartText", "Remaining Target ");
-            tempJson.accumulate("chartVal", dshObj.getConvTargetPercentage());
-            jsonArr.put(tempJson);
-            tempJson = null;
-            jsonObj.accumulate("chartData", jsonArr);
-        } catch (JSONException e) {
-            Commons.print(e.toString());
-        }
-        WeakReference<JSONObject> wkJson = new WeakReference<JSONObject>(
-                jsonObj);
-        Commons.print(wkJson.get().toString());
-        jsonObj = null;
-        return wkJson.get().toString();
-    }
-
 
     public Vector<DashBoardBO> downloadDSRMTD() {
         Vector<DashBoardBO> dsrmtdlist = new Vector<>();
@@ -2352,8 +2309,6 @@ public class DashBoardHelper {
                 }
             }
         }
-
-
     }
 
     private boolean showDaySpinner = false;
@@ -3288,4 +3243,186 @@ public class DashBoardHelper {
 
         }
     }
+
+
+    public int getPromotionDetail(String flag) {
+        DBUtil db = null;
+        int size = bmodel.getRetailerMaster().size();
+        int count = 0;
+        String chIDs = "";
+
+        if (flag.equals("P")) {
+            for (int i = 0; i < size; i++) {
+                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
+                }
+            }
+
+            if (chIDs.endsWith(","))
+                chIDs = chIDs.substring(0, chIDs.length() - 1);
+
+            try {
+                db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                db.createDataBase();
+                db.openDataBase();
+                StringBuffer sb = new StringBuffer();
+                sb.append("SELECT count(PromoID) FROM PromotionMapping where chid in (" + chIDs + ")");
+
+                Cursor c = db.selectSQL(sb.toString());
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        count = c.getInt(0);
+                    }
+                }
+                c.close();
+                db.closeDB();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    count = count + getPromotionExecDetail(bmodel.getRetailerMaster().get(i).getRetailerID());
+                }
+            }
+        }
+
+        return count;
+
+    }
+
+    private int getPromotionExecDetail(String retailerID) {
+        DBUtil db = null;
+        int count = 0;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("SELECT count( distinct PromotionID) FROM PromotionDetail where RetailerID =" + bmodel.QT(retailerID));
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    count = c.getInt(0);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return count;
+
+    }
+
+
+    public int getMSLDetail(String flag) {
+        DBUtil db = null;
+        int size = bmodel.getRetailerMaster().size();
+        int count = 0;
+        String chIDs = "";
+        ArrayList<Integer> mslProdIDs = new ArrayList<>();
+        if (flag.equals("P")) {
+            for (int i = 0; i < size; i++) {
+                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
+                }
+            }
+            if (chIDs.endsWith(","))
+                chIDs = chIDs.substring(0, chIDs.length() - 1);
+
+            try {
+                db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                db.createDataBase();
+                db.openDataBase();
+                StringBuffer sb = new StringBuffer();
+                sb.append("SELECT PTGM.pid FROM ProductTaggingMaster PTM ");
+                sb.append("inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid ");
+                sb.append("inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid ");
+                sb.append("AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') ");
+                sb.append("where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")");
+
+                Cursor c = db.selectSQL(sb.toString());
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        count++;
+                        if (!mslProdIDs.contains(c.getInt(1)))
+                            mslProdIDs.add(c.getInt(1));
+                    }
+                }
+                c.close();
+                db.closeDB();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    count = count + getMslExecDetail(bmodel.getRetailerMaster().get(i).getRetailerID(), mslProdIDs);
+                }
+            }
+        }
+        return count;
+
+    }
+
+    private int getMslExecDetail(String retailerID, ArrayList<Integer> mslProdIDs) {
+        DBUtil db = null;
+        int count = 0;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select count(*) from OrderDetail where retailerid = " + bmodel.QT(retailerID));
+            sb.append("and ProductID in (" + mslProdIDs + ")");
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    count = c.getInt(0);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return count;
+
+    }
+
+    public int transactionPerDay, avgUnitsPerBill, avgSellingPrice, avgBillValue;
+
+    public void getCounterSalesDetail() {
+        DBUtil db = null;
+
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("SELECT count(distinct uid)as TRN,(count(pid)/count(distinct uid)) as avgUnitsBill,");
+            sb.append("(sum(price)/count(pid)) as avgSellBill ,(sum(value)/count(distinct uid)) as avgBill ");
+            sb.append("FROM CS_CustomerSaleDetails");
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    transactionPerDay = c.getInt(0);
+                    avgUnitsPerBill = c.getInt(1);
+                    avgSellingPrice = c.getInt(2);
+                    avgBillValue = c.getInt(3);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+
+    }
+
 }

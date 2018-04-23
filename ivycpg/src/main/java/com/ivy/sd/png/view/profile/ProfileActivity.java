@@ -63,6 +63,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -92,7 +93,7 @@ import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
-import com.ivy.sd.png.view.SellerDashboardFragment;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.TargetPlanActivity_PH;
 import com.ivy.sd.png.view.TaskListFragment;
@@ -114,6 +115,7 @@ import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 import static com.ivy.sd.png.asean.view.R.id.tab_layout;
+import static com.ivy.sd.png.asean.view.R.id.thirdrow;
 
 public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearByRetailerDialog.NearByRetailerInterface, MapWrapperLayout.OnDragListener,
         CommonReasonDialog.AddNonVisitListener, View.OnClickListener {
@@ -1287,9 +1289,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             } else if (tabName.equals(plan_outlet_title)) {
                 return new PlanningOutletFragment();
             } else if (tabName.equals(retailer_kpi_title)) {
+                DashBoardHelper dashBoardHelper = DashBoardHelper.getInstance(ProfileActivity.this);
                 SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner(true);
-                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
+                dashBoardHelper.checkDayAndP3MSpinner(true);
+                dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
                 Bundle bnd = new Bundle();
                 bnd.putString("screentitle", "");
                 bnd.putBoolean("isFromHomeScreenTwo", true);

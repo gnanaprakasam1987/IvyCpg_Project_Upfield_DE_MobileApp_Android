@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard.sellerdashboard;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,16 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.dashboard.DashBoardBO;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.DashBoardBO;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
-
-import static com.ivy.sd.png.asean.view.R.string.achieved;
 
 public class TotalAchivedFragment extends Fragment {
 
@@ -40,7 +39,7 @@ public class TotalAchivedFragment extends Fragment {
         super.onStart();
         Bundle b = getArguments();
         int flex1 = b.getInt("flex1");
-        skuList = bmodel.dashBoardHelper.getSkuwiseGraphData();
+        skuList = DashBoardHelper.getInstance(getActivity()).getSkuwiseGraphData();
         tvTitle = (TextView) view.findViewById(R.id.tvTitle);
         tvValue = (TextView) view.findViewById(R.id.tvValue);
 
@@ -65,11 +64,13 @@ public class TotalAchivedFragment extends Fragment {
             for (SKUWiseTargetBO skuWiseTargetBO : skuList)
                 total_ach += skuWiseTargetBO.getAchieved();
         } else {
-            total_ach = bmodel.dashBoardHelper.mParamAchieved;
+            for (DashBoardBO dash : DashBoardHelper.getInstance(getActivity()).getDashListViewList()) {
+                total_ach += Double.parseDouble(dash.getKpiIncentive());
+            }
         }
 
         if (flex1 == 1) {
-            tvValue.setText(bmodel.dashBoardHelper.getWhole(total_ach + ""));
+            tvValue.setText(DashBoardHelper.getInstance(getActivity()).getWhole(total_ach + ""));
         } else {
             tvValue.setText(bmodel.formatValue(total_ach));
         }

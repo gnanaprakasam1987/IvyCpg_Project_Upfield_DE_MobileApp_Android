@@ -113,7 +113,6 @@ import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.DashBoardHelper;
 import com.ivy.sd.png.provider.DeliveryManagementHelper;
 import com.ivy.sd.png.provider.DynamicReportHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
@@ -268,7 +267,6 @@ public class BusinessModel extends Application {
     public StockProposalModuleHelper stockProposalModuleHelper;
     public SchemeDetailsMasterHelper schemeDetailsMasterHelper;
     public StockReportMasterHelper stockreportmasterhelper;
-    public DashBoardHelper dashBoardHelper;
     public LabelsMasterHelper labelsMasterHelper;
     public LocationUtil locationUtil;
     public OutletTimeStampHelper outletTimeStampHelper;
@@ -423,7 +421,6 @@ public class BusinessModel extends Application {
         stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
         schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(this);
         stockreportmasterhelper = StockReportMasterHelper.getInstance(this);
-        dashBoardHelper = DashBoardHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
         locationUtil = LocationUtil.getInstance(this);
         outletTimeStampHelper = OutletTimeStampHelper.getInstance(this);
