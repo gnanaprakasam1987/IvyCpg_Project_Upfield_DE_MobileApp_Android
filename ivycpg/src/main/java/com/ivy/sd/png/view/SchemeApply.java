@@ -126,14 +126,18 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD") ||
                 fromOrderScreen.equalsIgnoreCase("MENU_ORDER") ||
                 fromOrderScreen.equalsIgnoreCase("MENU_CATALOG_ORDER")) {
-            updateSchemeDetails();
+
+            bmodel.schemeDetailsMasterHelper.schemeApply();
+            mSchemeDoneList = bmodel.schemeDetailsMasterHelper.getAppliedSchemeList();
+            if (mSchemeDoneList.size() > 0) {
+                mExpandableAdapterNew = new SchemeExpandapleAdapterNew();
+                mExpandableLV.setAdapter(mExpandableAdapterNew);
+            }
         } else {
             mSchemeDoneList = bmodel.schemeDetailsMasterHelper.getAppliedSchemeList();
             if (mSchemeDoneList.size() > 0) {
                 mExpandableAdapterNew = new SchemeExpandapleAdapterNew();
                 mExpandableLV.setAdapter(mExpandableAdapterNew);
-            } else {
-                return;
             }
         }
 
@@ -1508,52 +1512,5 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         return true;
     }
 
-    /**
-     * Method to show applied scheme details in scheme apply screen.
-     */
-    private void updateSchemeDetails() {
-        bmodel.schemeDetailsMasterHelper.schemeApply();
-        mSchemeDoneList = bmodel.schemeDetailsMasterHelper.getAppliedSchemeList();
-        if (mSchemeDoneList.size() > 0) {
-            for (SchemeBO schemeBO : mSchemeDoneList) {
-                if (schemeBO != null) {
-                    if (schemeBO.getIsFreeCombination() == 0) {
-                        bmodel.schemeDetailsMasterHelper
-                                .freeCombinationNotAvailable(schemeBO);
-                    } else if (schemeBO.getIsFreeCombination() == 1) {
-                        bmodel.schemeDetailsMasterHelper
-                                .freeCombinationAvailable(schemeBO);
-                    }
-                }
-            }
-
-            // to remove off invoice scheme product wihtout stock
-            ArrayList<SchemeBO> mFilteredSchemeList = new ArrayList<>();
-            for (SchemeBO schemeBO : mSchemeDoneList) {
-                if (schemeBO != null) {
-
-                    if (schemeBO.getIsOnInvoice() == 0) {
-                        if (bmodel.schemeDetailsMasterHelper.isSihAvailableForSchemeGroupFreeProducts(schemeBO, schemeBO.getSchemeId())) {
-//                            if (schemeBO.getIsFreeCombination() == 1)
-                            mFilteredSchemeList.add(schemeBO);
-                        }
-                    } else if (schemeBO.getIsFreeCombination() == 1) {
-                        mFilteredSchemeList.add(schemeBO);
-                    }
-                }
-            }
-
-
-            mSchemeDoneList.clear();
-            mSchemeDoneList.addAll(mFilteredSchemeList);
-
-
-            mExpandableAdapterNew = new SchemeExpandapleAdapterNew();
-            mExpandableLV.setAdapter(mExpandableAdapterNew);
-        } else {
-            return;
-        }
-
-    }
 
 }

@@ -1018,11 +1018,9 @@ public class SchemeDetailsMasterHelper {
 
 ///////////////////////////
 
-
     /**
-     * @author rajesh.k method to use scheme Apply process after take order.Only
-     * one scheme apply in a same parent id. either seller type dialog
-     * configuration disable or seller type selected vansales
+     * Preparing a achieved scheme list to show in the screen
+     *
      */
     public void schemeApply() {
 
@@ -1062,34 +1060,41 @@ public class SchemeDetailsMasterHelper {
             }
         }
 
-        /// add off invoice scheme
+        // Adding Off invoice schemes(Accumulation scheme free issues) to applied scheme list. So that it will be shown in scheme apply screen
         if (mOffInvoiceSchemeList != null) {
             for (SchemeBO schemeBO : mOffInvoiceSchemeList) {
-
                 if (schemeBO != null) {
-                    schemeBO.setIsOnInvoice(0);
-                    schemeBO.setQuantityTypeSelected(true);
-                    schemeBO.setApplyCount(1);
-                    schemeBO.setIsFreeCombination(1);
-                    mAppliedSchemeList.add(schemeBO);
+                    if (isSihAvailableForSchemeGroupFreeProducts(schemeBO, schemeBO.getSchemeId())) {
+                        schemeBO.setIsOnInvoice(0);
+                        schemeBO.setQuantityTypeSelected(true);
+                        schemeBO.setApplyCount(1);
+                        schemeBO.setIsFreeCombination(1);
+                        mAppliedSchemeList.add(schemeBO);
+                    }
                 }
 
             }
         }
 
+        // Updating stock availability for free products
+        updateSIHAvailabilityForFreeProducts();
+
+
     }
 
 
     /**
-     * @param schemeBO - check for this scheme objects apply or not
-     * @return true - scheme achieved , false - not done
-     * @author rajesh.k Method to check scheme done or not.if it return
-     * true,scheme achieved successfully else not done
+     * Checking whether current slab is achieved or not
+     * @param schemeBO Current slab
+     * @param parentID Current Scheme Id
+     * @param iSHighestSlab Is highest slab
+     * @return Is Slab achieved
      */
     private boolean isSchemeDone(SchemeBO schemeBO, Integer parentID, boolean iSHighestSlab) {
 
         int mApplyCount=0;
 
+        // Preparing list of groups available for current slab
         ArrayList<String> mGroupNameList = new ArrayList<>();
         HashMap<String, String> mGroupLogicTypeByGroupName = new HashMap<>();
 
@@ -1103,6 +1108,7 @@ public class SchemeDetailsMasterHelper {
 
         }
 
+        // Checking is slab is achieved or not..
         if (schemeBO.getBuyType() != null) {
 
             if (schemeBO.getParentLogic().equals(ANY_LOGIC)) {
@@ -1125,7 +1131,7 @@ public class SchemeDetailsMasterHelper {
                         schemeBO.setApplyCount(mApplyCount);
                         //over all scheme balance percent value
                         schemeBO.setBalancePercent(getBalancePercent());
-                        calculateSchemePerPieceNew(schemeBO, mApplyCount);
+                        calculateFreeForAchievedScheme(schemeBO, mApplyCount);
                     }
 
                     return true;
@@ -1154,7 +1160,7 @@ public class SchemeDetailsMasterHelper {
                         schemeBO.setApplyCount(mApplyCount);
                         //over all scheme balance percent value
                         schemeBO.setBalancePercent(getBalancePercent());
-                        calculateSchemePerPieceNew(schemeBO, mApplyCount);
+                        calculateFreeForAchievedScheme(schemeBO, mApplyCount);
                     }
 
                     return true;
@@ -1168,17 +1174,14 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-
     /**
-     * @param schemeBO                - combination parent schemeBO
-     * @param groupSchemeName         - ArrayList of child scheme name
-     * @param groupLogicTypeByGroupName - HashMap key - child scheme name and value - child scheme
-     *                                type (ex : AND,ONLY or AND)
-     * @return true - if any one of child scheme done, combination scheme also
-     * done
-     * @author rajesh.k
-     * <p>
-     * Check ANY type of combination scheme
+     * Checking is parent logic(ANY) achieved or not
+     * Parent logic is ANY, So if any one of the group under this slab is achieved then this slab is considered as achieved
+     * @param schemeBO Current slab
+     * @param groupSchemeName list of groups available in current slab
+     * @param groupLogicTypeByGroupName List with group logic type by its group name
+     * @param mParentId Scheme Id
+     * @return Is Slab achieved or not
      */
     private boolean isParentAnyLogicDone(SchemeBO schemeBO, ArrayList<String> groupSchemeName,
                                          HashMap<String, String> groupLogicTypeByGroupName, int mParentId) {
@@ -1201,19 +1204,20 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeBO                - combination parent schemeBO
-     * @param groupSchemeName         - ArrayList of child scheme name
-     * @param groupBuyTypeByGroupName - HashMap key - child scheme name and value - child scheme
-     *                                type (ex : AND,ONLY or ANY)
-     * @return true - if All child scheme done, combination scheme also done
-     * @author rajesh.k Check AND type of combination scheme
+     * Checking is parent logic(AND) achieved or not
+     * Parent logic is AND, So only if all of the groups under this slab is achieved then this slab is considered as achieved
+     * @param schemeBO Current slab
+     * @param groupSchemeName list of groups available in current slab
+     * @param mGroupLogicTypeByGroupName List with group logic type by its group name
+     * @param mParentId Scheme Id
+     * @return Is Slab achieved or not
      */
     private boolean isParentAndLogicDone(SchemeBO schemeBO,
                                          ArrayList<String> groupSchemeName,
-                                         HashMap<String, String> groupBuyTypeByGroupName, int mParentId) {
+                                         HashMap<String, String> mGroupLogicTypeByGroupName, int mParentId) {
 
         for (String groupName : groupSchemeName) {
-            String groupBuyType = groupBuyTypeByGroupName.get(groupName);
+            String groupBuyType = mGroupLogicTypeByGroupName.get(groupName);
             if (groupBuyType.equals(AND_LOGIC)||groupBuyType.equals(ONLY_LOGIC)) {
                 if (!isGroupAndLogicDone(schemeBO, groupName, mParentId)) {
                     return false;
@@ -1229,11 +1233,11 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeBO  - Combination schemeBO
-     * @param groupName - child scheme group name
-     * @return true - if AND and ONLY Logic Done,child scheme Done
-     * @author rajesh.k this method is used to child scheme hit or not,if child
-     * scheme logic is AND or ONLY
+     * Checking is current group is achieved or not
+     * @param schemeBO Current slab
+     * @param groupName Current group name
+     * @param mParentId Scheme Id
+     * @return is Current group achieved or not
      */
     private boolean isGroupAndLogicDone(SchemeBO schemeBO, String groupName, int mParentId) {
 
@@ -1385,10 +1389,11 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeBO  - Combination schemeBO
-     * @param groupName - child scheme group name
-     * @return true - if ANY Logic Done,child scheme Done
-     * @author rajesh.k this method will call,when child scheme buytype is ANY
+     * Checking is current group(ANY) is achieved or not
+     * @param schemeBO Current slab
+     * @param groupName Current group name
+     * @param mParentId Scheme Id
+     * @return is Current group achieved or not
      */
     private boolean isGroupAnyLogicDone(SchemeBO schemeBO, String groupName, int mParentId) {
 
@@ -1592,218 +1597,221 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * After scheme achieved successfully ,this method used to update the scheme
-     * details like free product,percentage,amount and price
-     *
-     * @param schemeBO
-     * @param maxSchemeValue
+     * After scheme achieved successfully ,this method used to update the scheme free
+     * details like product,percentage,amount and price     *
+     * @param schemeBO Current Slab
+     * @param mNumberOfTimesSlabAchieved Number of times slab achieved
      */
-    private void calculateSchemePerPieceNew(SchemeBO schemeBO,
-                                            int maxSchemeValue) {
+    private void calculateFreeForAchievedScheme(SchemeBO schemeBO, int mNumberOfTimesSlabAchieved) {
 
         if (schemeBO.getFreeProducts() != null) {
 
-            int quantityActual = 0;
-            int quantityMax = 0;
-            double priceActual = 0;
-            double priceMax = 0;
-            double minPrecent = 0;
-            double maxPrecent = 0;
-            double minAmount = 0;
-            double maxAmount = 0;
+            int minFreeQuantity = 0;
+            int maxFreeQuantity = 0;
+            double minFreePrice = 0;
+            double maxFreePrice = 0;
+            double minFreePercent = 0;
+            double maxFreePercent = 0;
+            double minFreeAmount = 0;
+            double maxFreeAmount = 0;
 
             for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
-                int minimumQuantity = schemeProductBO.getQuantityMinimum();
 
+                int minimumQuantity = schemeProductBO.getQuantityMinimum();
                 int maximumQuantity = schemeProductBO.getQuantityMaximum();
 
-                if (schemeBO.getProcessType() != null
-                        && (schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING)
+                if (schemeBO.getProcessType() != null && (schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING)
                         || schemeBO.getProcessType().equals(PROCESS_TYPE_MTS))) {
 
-					/* scheme type is Quantity Value */
+					/* scheme Buy type is Quantity */
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
 
-                        /** Calculate for quantity **/
 
-                        quantityActual = minimumQuantity * maxSchemeValue;
-                        quantityMax = maximumQuantity * maxSchemeValue;
+
+                        //Calculating min and max free quantity
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
 
                         /** Calculate for amount discount **/
 
-                        minAmount = schemeProductBO.getMinAmount()
-                                * maxSchemeValue;
-                        maxAmount = schemeProductBO.getMaxAmount()
-                                * maxSchemeValue;
+                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
 
 
                     }
                     /* scheme type is Sales Value */
                     else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
-                        // int qty = (int) (orderedtotalValue / schemeBO
-                        // .getQuantity());
 
                         /** Calculate for quantity **/
 
-                        quantityActual = minimumQuantity * maxSchemeValue;
-                        quantityMax = maximumQuantity * maxSchemeValue;
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
 
                         /** Calculate for amount discount **/
 
-                        minAmount = schemeProductBO.getMinAmount()
-                                * maxSchemeValue;
-                        maxAmount = schemeProductBO.getMaxAmount()
-                                * maxSchemeValue;
+                        minFreeAmount = schemeProductBO.getMinAmount()
+                                * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount()
+                                * mNumberOfTimesSlabAchieved;
 
                     }
 
                 } else if (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_ONE_TIME_WITH_PERCENTAGE)) {
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-                        quantityActual = minimumQuantity * maxSchemeValue;
-                        quantityMax = maximumQuantity * maxSchemeValue;
 
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
+
+                        // adding calculated percent of quantity
                         int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
                         if (remainingActualQty >= 1)
-                            quantityActual += remainingActualQty;
+                            minFreeQuantity += remainingActualQty;
 
                         int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
                         if (remainingMaxQty >= 1)
-                            quantityMax += remainingMaxQty;
+                            maxFreeQuantity += remainingMaxQty;
+                        //
 
-                        minAmount = schemeProductBO.getMinAmount()
-                                * maxSchemeValue;
-                        maxAmount = schemeProductBO.getMaxAmount()
-                                * maxSchemeValue;
-
+                        minFreeAmount = schemeProductBO.getMinAmount()  * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount()  * mNumberOfTimesSlabAchieved;
                         // adding calculated percent of amount
-                        minAmount = minAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
-                        maxAmount = maxAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
+                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
+                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
 
                     } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
-                        quantityActual = minimumQuantity * maxSchemeValue;
-                        quantityMax = maximumQuantity * maxSchemeValue;
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
 
                         int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
                         if (remainingActualQty >= 1)
-                            quantityActual += remainingActualQty;
+                            minFreeQuantity += remainingActualQty;
 
                         int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
                         if (remainingMaxQty >= 1)
-                            quantityMax += remainingMaxQty;
+                            maxFreeQuantity += remainingMaxQty;
 
 
-                        minAmount = schemeProductBO.getMinAmount()
-                                * maxSchemeValue;
-                        maxAmount = schemeProductBO.getMaxAmount()
-                                * maxSchemeValue;
+                        minFreeAmount = schemeProductBO.getMinAmount()   * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount()   * mNumberOfTimesSlabAchieved;
 
                         // adding calculated percent of amount
-                        minAmount = minAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
-                        maxAmount = maxAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
+                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
+                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
 
                     }
                 } else if (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_PRORATA)) {
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-                        quantityActual = minimumQuantity * maxSchemeValue;
-                        quantityMax = maximumQuantity * maxSchemeValue;
+
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
 
                         int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
                         if (remainingActualQty >= 1)
-                            quantityActual += remainingActualQty;
+                            minFreeQuantity += remainingActualQty;
 
                         int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
                         if (remainingMaxQty >= 1)
-                            quantityMax += remainingMaxQty;
+                            maxFreeQuantity += remainingMaxQty;
 
-                        minAmount = schemeProductBO.getMinAmount()
-                                * maxSchemeValue;
-                        maxAmount = schemeProductBO.getMaxAmount()
-                                * maxSchemeValue;
+                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
 
                         // adding calculated percent of amount
-                        minAmount = minAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
-                        maxAmount = maxAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
+                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
+                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
 
                     } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
-                        quantityActual = minimumQuantity * maxSchemeValue;
-                        quantityMax = maximumQuantity * maxSchemeValue;
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
 
                         int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
                         if (remainingActualQty >= 1)
-                            quantityActual += remainingActualQty;
+                            minFreeQuantity += remainingActualQty;
 
                         int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
                         if (remainingMaxQty >= 1)
-                            quantityMax += remainingMaxQty;
+                            maxFreeQuantity += remainingMaxQty;
 
 
-                        minAmount = schemeProductBO.getMinAmount()
-                                * maxSchemeValue;
-                        maxAmount = schemeProductBO.getMaxAmount()
-                                * maxSchemeValue;
+                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
 
                         // adding calculated percent of amount
-                        minAmount = minAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
-                        maxAmount = maxAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
+                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
+                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
 
                     }
                 } else {
-                    quantityActual = Math.round((float) minimumQuantity);
-                    quantityMax = Math.round((float) maximumQuantity);
+                    minFreeQuantity = Math.round((float) minimumQuantity);
+                    maxFreeQuantity = Math.round((float) maximumQuantity);
+
                     if (schemeBO.getEveryQty() != 0) {
                         int count = getAmountBasedSchemeCount(schemeBO);
                         if (count == 0) count = 1; // atleast one time apply
 
-                        minAmount = schemeProductBO.getMinAmount() * count;
-                        maxAmount = schemeProductBO.getMaxAmount() * count;
+                        minFreeAmount = schemeProductBO.getMinAmount() * count;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * count;
 
                     } else {
 
-
-                        minAmount = schemeProductBO
-                                .getMinAmount();
-                        maxAmount = schemeProductBO
-                                .getMaxAmount();
+                        minFreeAmount = schemeProductBO.getMinAmount();
+                        maxFreeAmount = schemeProductBO.getMaxAmount();
                     }
 
                 }
 
-                schemeProductBO.setQuantityActualCalculated(quantityActual);
-                schemeProductBO.setQuantityMaxiumCalculated(quantityMax);
+                schemeProductBO.setQuantityActualCalculated(minFreeQuantity);
+                schemeProductBO.setQuantityMaxiumCalculated(maxFreeQuantity);
 
                 /** no calculation required for Price discount and % discount **/
 
-                priceActual = schemeProductBO.getPriceActual();
-                priceMax = schemeProductBO.getPriceMaximum();
+                minFreePrice = schemeProductBO.getPriceActual();
+                maxFreePrice = schemeProductBO.getPriceMaximum();
 
-                minPrecent = schemeProductBO.getMinPercent();
-                maxPrecent = schemeProductBO.getMaxPercent();
+                minFreePercent = schemeProductBO.getMinPercent();
+                maxFreePercent = schemeProductBO.getMaxPercent();
 
-                schemeProductBO.setMinPercentCalculated(minPrecent);
-                schemeProductBO.setMaxPrecentCalculated(maxPrecent);
+                schemeProductBO.setMinPercentCalculated(minFreePercent);
+                schemeProductBO.setMaxPrecentCalculated(maxFreePercent);
 
-                schemeProductBO.setMinAmountCalculated(minAmount);
-                schemeProductBO.setMaxAmountCalculated(maxAmount);
+                schemeProductBO.setMinAmountCalculated(minFreeAmount);
+                schemeProductBO.setMaxAmountCalculated(maxFreeAmount);
 
             }
 
-            schemeBO.setActualQuantity(quantityActual);
-            schemeBO.setMaximumQuantity(quantityMax);
+            schemeBO.setActualQuantity(minFreeQuantity);
+            schemeBO.setMaximumQuantity(maxFreeQuantity);
 
-            schemeBO.setActualPrice(priceActual);
-            schemeBO.setMaximumPrice(priceMax);
-            schemeBO.setSelectedPrice(priceActual);
+            schemeBO.setActualPrice(minFreePrice);
+            schemeBO.setMaximumPrice(maxFreePrice);
+            schemeBO.setSelectedPrice(minFreePrice);
 
-            schemeBO.setMinimumPrecent(minPrecent);
-            schemeBO.setMaximumPrecent(maxPrecent);
-            schemeBO.setSelectedPrecent(minPrecent);
+            schemeBO.setMinimumPrecent(minFreePercent);
+            schemeBO.setMaximumPrecent(maxFreePercent);
+            schemeBO.setSelectedPrecent(minFreePercent);
 
-            schemeBO.setMinimumAmount(minAmount);
-            schemeBO.setMaximumAmount(maxAmount);
-            schemeBO.setSelectedAmount(minAmount);
+            schemeBO.setMinimumAmount(minFreeAmount);
+            schemeBO.setMaximumAmount(maxFreeAmount);
+            schemeBO.setSelectedAmount(minFreeAmount);
+
+            //Updating flag to show in Scheme Apply Screen
+            if (schemeBO.getActualPrice() > 0  && schemeBO.getMaximumPrice() > 0) {
+                schemeBO.setPriceTypeSeleted(true);
+            } else if (schemeBO.getMinimumAmount() > 0 && schemeBO.getMaximumAmount() > 0) {
+                schemeBO.setAmountTypeSelected(true);
+            } else if (schemeBO.getMinimumPrecent() > 0 && schemeBO.getMaximumPrecent() > 0) {
+                schemeBO.setDiscountPrecentSelected(true);
+            }
+            else if (schemeBO.getMinimumPrecent() > 0 && schemeBO.getMaximumPrecent() > 0) {
+                schemeBO.setDiscountPrecentSelected(true);
+            }
+            else if(schemeBO.getActualQuantity()>0&&schemeBO.getMaximumQuantity()>0){
+                schemeBO.setQuantityTypeSelected(true);
+            }
+
 
         }
     }
@@ -1819,136 +1827,122 @@ public class SchemeDetailsMasterHelper {
 
 
     /**
-     * update scheme with combination
+     * Updating SIH availability for free products
+     * and altering actual value based on the stock availability.
      *
-     * @param schemeBO
      */
-    public void freeCombinationAvailable(SchemeBO schemeBO) {
+    private void updateSIHAvailabilityForFreeProducts() {
 
-        ArrayList<String> freeGroupNameList = bmodel.schemeDetailsMasterHelper
-                .getFreeGroupNameListBySchemeID().get(
-                        schemeBO.getSchemeId());
-        if (freeGroupNameList != null) {
+        for (SchemeBO schemeBO : mAppliedSchemeList) {
 
-            schemeBO.setQuantityTypeSelected(true);
-            if (schemeBO.getFreeType().equals(AND_LOGIC)) {
-                schemeBO.setSihAvailableForFreeProducts(true);
-            } else {
-                schemeBO.setSihAvailableForFreeProducts(false);
-            }
+            ArrayList<String> freeGroupNameList = bmodel.schemeDetailsMasterHelper.getFreeGroupNameListBySchemeID().get(schemeBO.getSchemeId());
+            if (freeGroupNameList != null) {
 
-            List<SchemeProductBO> freeProducts = schemeBO.getFreeProducts();
-            ProductMasterBO productMasterBO;
+                schemeBO.setQuantityTypeSelected(true);
 
-            if (freeProducts != null) {
-                int i = 0;
-                for (String freeGroupName : freeGroupNameList) {
-                    boolean isSihAvailableForFreeProducts = isSihAvailableForSchemeGroupFreeProducts(schemeBO, freeGroupName);
+                if (schemeBO.getFreeType().equals(AND_LOGIC)) {
+                    schemeBO.setSihAvailableForFreeProducts(true);
+                } else {
+                    schemeBO.setSihAvailableForFreeProducts(false);
+                }
 
-                    if (isSihAvailableForFreeProducts) {
-                        if (i == 0 || !schemeBO.getFreeType().equals(AND_LOGIC))
-                            schemeBO.setSihAvailableForFreeProducts(true);
-                    } else {
-                        if (schemeBO.getFreeType().equals(AND_LOGIC)) {
-                            schemeBO.setSihAvailableForFreeProducts(false);
+                List<SchemeProductBO> freeProducts = schemeBO.getFreeProducts();
+                ProductMasterBO productMasterBO;
+
+                if (freeProducts != null) {
+                    int i = 0;
+
+                    for (String freeGroupName : freeGroupNameList) {
+                        boolean isSihAvailableForFreeProducts = isSihAvailableForSchemeGroupFreeProducts(schemeBO, freeGroupName);
+
+                        if (isSihAvailableForFreeProducts) {
+                            if (i == 0 || !schemeBO.getFreeType().equals(AND_LOGIC))
+                                schemeBO.setSihAvailableForFreeProducts(true);
+                        } else {
+                            if (schemeBO.getFreeType().equals(AND_LOGIC)) {
+                                schemeBO.setSihAvailableForFreeProducts(false);
+                            }
                         }
-                    }
 
-                    i++;
+                        i++;
 
-                    if (!bmodel.configurationMasterHelper.IS_SIH_VALIDATION || isSihAvailableForFreeProducts) {
-                        int freeQuantity = 0;
-                        int count = 0;
-                        for (SchemeProductBO schemePdtBO : freeProducts) {
+                        if (!bmodel.configurationMasterHelper.IS_SIH_VALIDATION || isSihAvailableForFreeProducts) {
+                            int freeQuantity = 0;
+                            int count = 0;
 
-                            if (freeGroupName.equals(schemePdtBO.getGroupName())) {
+                            for (SchemeProductBO schemePdtBO : freeProducts) {
 
-                                if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) {//check any logic condition
-                                    if (count == 0) {
-                                        freeQuantity = schemePdtBO
-                                                .getQuantityActualCalculated();
+                                if (freeGroupName.equals(schemePdtBO.getGroupName())) {
+
+                                    if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) {//check any logic condition
+                                        if (count == 0) {
+                                            freeQuantity = schemePdtBO.getQuantityActualCalculated();
+                                        }
+
+                                    } else {
+                                        freeQuantity = schemePdtBO.getQuantityActualCalculated();
+
+                                    }
+                                    count++;
+
+                                    int stock = 0;
+                                    productMasterBO = bmodel.productHelper.getProductMasterBOById(schemePdtBO.getProductId());
+
+                                    if (productMasterBO != null) {
+                                        stock = productMasterBO.getSIH()
+                                                - ((productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                                + (productMasterBO.getOrderedOuterQty() * productMasterBO
+                                                .getOutersize()) + productMasterBO.getOrderedPcsQty());
                                     }
 
-                                } else {
-                                    freeQuantity = schemePdtBO
-                                            .getQuantityActualCalculated();
-
-                                }
-                                count++;
-
-                                int stock = 0;
-                                productMasterBO = bmodel.productHelper
-                                        .getProductMasterBOById(schemePdtBO
-                                                .getProductId());
-
-                                if (productMasterBO != null) {
-                                    stock = productMasterBO.getSIH()
-                                            - ((productMasterBO.getOrderedCaseQty() * productMasterBO
-                                            .getCaseSize())
-                                            + (productMasterBO
-                                            .getOrderedOuterQty() * productMasterBO
-                                            .getOutersize()) + productMasterBO
-                                            .getOrderedPcsQty());
-                                }
-
-                                schemePdtBO.setStock(stock);
-
-                                schemePdtBO.setQuantitySelected(0);
+                                    schemePdtBO.setStock(stock);
+                                    schemePdtBO.setQuantitySelected(0);
 
 
-                                if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                                    if (bmodel.getResources().getBoolean(
-                                            R.bool.config_is_sih_considered)) {
-                                        if (stock > 0) {
+                                    if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                                        if (bmodel.getResources().getBoolean(R.bool.config_is_sih_considered)) {
+                                            if (stock > 0) {
 
-                                            if ((stock - freeQuantity) >= 0) {
-                                                schemePdtBO
-                                                        .setQuantitySelected(freeQuantity);
-                                                freeQuantity = 0;
-                                            } else {
-                                                schemePdtBO
-                                                        .setQuantitySelected(stock);
-                                                freeQuantity -= stock;
+                                                if ((stock - freeQuantity) >= 0) {
+                                                    schemePdtBO
+                                                            .setQuantitySelected(freeQuantity);
+                                                    freeQuantity = 0;
+                                                } else {
+                                                    schemePdtBO
+                                                            .setQuantitySelected(stock);
+                                                    freeQuantity -= stock;
+                                                }
                                             }
+                                        } else {
+                                            schemePdtBO
+                                                    .setQuantitySelected(freeQuantity);
+                                        }
+
+                                        if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) {// child
+                                            // ANY
+                                            // logic
+                                            if (freeQuantity == 0)
+                                                break;
                                         }
                                     } else {
-                                        schemePdtBO
-                                                .setQuantitySelected(freeQuantity);
+                                        schemePdtBO.setQuantitySelected(freeQuantity);
+                                        if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) { // child
+                                            // ANY
+                                            // logic
+                                            break;
+                                        }
                                     }
 
-                                    if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) {// child
-                                        // ANY
-                                        // logic
-                                        if (freeQuantity == 0)
-                                            break;
-                                    }
-                                } else {
-                                    schemePdtBO.setQuantitySelected(freeQuantity);
-                                    if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) { // child
-                                        // ANY
-                                        // logic
-                                        break;
-                                    }
                                 }
 
                             }
-
-                        }
-                        if (schemeBO.getFreeType().equals(ANY_LOGIC)) {
-                            break; // used for parent ANY LOGIC
+                            if (schemeBO.getFreeType().equals(ANY_LOGIC)) {
+                                break; // used for parent ANY LOGIC
+                            }
                         }
                     }
                 }
             }
-        } else if (schemeBO.getActualPrice() > 0
-                && schemeBO.getMaximumPrice() > 0) {
-            schemeBO.setPriceTypeSeleted(true);
-        } else if (schemeBO.getMinimumAmount() > 0
-                && schemeBO.getMaximumAmount() > 0) {
-            schemeBO.setAmountTypeSelected(true);
-        } else if (schemeBO.getMinimumPrecent() > 0
-                && schemeBO.getMaximumPrecent() > 0) {
-            schemeBO.setDiscountPrecentSelected(true);
         }
 
     }
@@ -2017,12 +2011,16 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeProductList
-     * @param schemeGroupName
-     * @param schemeGroupBuyTypeByGroupName
-     * @param isQuantityType                true - qty false- salesvalue
-     * @return
-     * @author rajesh.k Method to use getcombination AND logic buy qty
+     * Getting number of times current slab(Parent logic - AND) is achieved
+     * @param schemeProductList Buy products for current slab
+     * @param schemeGroupName List of groups available under the given slab
+     * @param schemeGroupBuyTypeByGroupName List with group logic by its group name
+     * @param isQuantityType  Buy type is quantity or sales value
+     * @param isBatchWise Is batch wise products available
+     * @param parentId Scheme Id
+     * @param processType Scheme process type
+     * @param isHighestSlab Is current slab is highest slab or not
+     * @return Number of times current slab is achieved
      */
     private int getNumberOfTimesSlabApplied_ForAndLogic(
             List<SchemeProductBO> schemeProductList,
@@ -2097,12 +2095,16 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeProductList
-     * @param schemeGroupName
-     * @param schemeGroupBuyTypeByGroupName
-     * @param isQuantityType                true - qty type ,false - sales value type
-     * @return
-     * @author rajesh.k method to use total buy qty in combination any logic
+     * Getting number of times current slab(Parent logic - ANY) is achieved
+     * @param schemeProductList Buy products for current slab
+     * @param schemeGroupName List of groups available under the given slab
+     * @param schemeGroupBuyTypeByGroupName List with group logic by its group name
+     * @param isQuantityType  Buy type is quantity or sales value
+     * @param isBatchWise Is batch wise products available
+     * @param parentID Scheme Id
+     * @param processType Scheme process type
+     * @param isHighestSlab Is current slab is highest slab or not
+     * @return Number of times current slab is achieved
      */
     private int getNumberOfTimesSlabApplied_ForAnyLogic(
             List<SchemeProductBO> schemeProductList,
@@ -2180,10 +2182,15 @@ public class SchemeDetailsMasterHelper {
     HashMap<String, Integer> mAchieved_qty_or_salesValue_by_schemeId_nd_productid;
 
     /**
-     * @param schemeProductList
-     * @param groupName
-     * @return
-     * @author rajesh.k get count of And logic combination scheme for Qty type
+     * Getting number of times current group(AND) is achieved. Buy Type- Quantity
+     * @param schemeProductList Current slabs buy product list
+     * @param groupName current group name
+     * @param isCombination
+     * @param isBatchWise Is batch wise products available
+     * @param parentID Scheme Id
+     * @param processType Scheme Process type
+     * @param isHighestSlab Is highest slab
+     * @return Total number of times current group achieved
      */
     private int getAndLogicAppliedCountForQuantity(List<SchemeProductBO> schemeProductList,
                                                    String groupName, boolean isCombination, boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
@@ -2381,11 +2388,15 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeProductList
-     * @param groupName
-     * @return
-     * @author rajesh.k get count of And logic combination scheme for Salesvalue
-     * type
+     * Getting number of times current group(AND) is achieved. Buy Type- Sales value
+     * @param schemeProductList Current slabs buy product list
+     * @param groupName current group name
+     * @param isCombination
+     * @param isBatchWise Is batch wise products available
+     * @param parentId Scheme Id
+     * @param processType Scheme Process type
+     * @param isHighestSlab Is highest slab
+     * @return Total number of times current group achieved
      */
     private int getAndLogicAppliedCountForSalesValue(
             List<SchemeProductBO> schemeProductList, String groupName,
@@ -2503,10 +2514,15 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeProductList
-     * @param groupName
-     * @return
-     * @author rajesh.k get count of Any logic combination scheme of QTY type
+     * Getting number of times current group(ANY) is achieved. Buy Type- Quantity
+     * @param schemeProductList Current slabs buy product list
+     * @param groupName current group name
+     * @param isCombination
+     * @param isBatchWise Is batch wise products available
+     * @param parentID Scheme Id
+     * @param processType Scheme Process type
+     * @param isHighestSlab Is highest slab
+     * @return Total number of times current group achieved
      */
     private int getANYLogicAppliedCountForQuantity(List<SchemeProductBO> schemeProductList,
                                                    String groupName, boolean isCombination, boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
@@ -2722,11 +2738,15 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeProductList
-     * @param groupName
-     * @return
-     * @author rajesh.k get count of Any logic combination scheme of salesvalue
-     * type
+     * Getting number of times current group(ANY) is achieved. Buy Type- Sales value
+     * @param schemeProductList Current slabs buy product list
+     * @param groupName current group name
+     * @param isCombination
+     * @param isBatchWise Is batch wise products available
+     * @param parentID Scheme Id
+     * @param processType Scheme Process type
+     * @param isHighestSlab Is highest slab
+     * @return Total number of times current group achieved
      */
     private int getAnyLogicAppliedCountForSalesValue( List<SchemeProductBO> schemeProductList, String groupName,
             boolean isCombination, boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
@@ -4337,18 +4357,17 @@ public class SchemeDetailsMasterHelper {
     public boolean isSihAvailableForSchemeGroupFreeProducts(SchemeBO schemeBO, String groupName) {
         boolean flag = true;
         final List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
+
         if (freeProductList != null) {
             for (SchemeProductBO schemeProductBO : freeProductList) {
                 if (groupName.equals(schemeProductBO.getGroupName())) {
 
-                    int stock = 0;
+                    int stock ;
                     ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                     if (productBO != null) {
+
                         int totalQty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
-                        if (isFromCounterSale)
-                            stock = productBO.getCsFreeSIH() - totalQty;
-                        else
-                            stock = productBO.getSIH() - totalQty;
+                        stock = productBO.getSIH() - totalQty;
 
                         int freeProductQty = 0;
                         if (schemeProductBO.getUomID() == productBO.getPcUomid() || schemeProductBO.getUomID() == 0) {
@@ -4359,6 +4378,7 @@ public class SchemeDetailsMasterHelper {
                             freeProductQty = schemeProductBO.getQuantityMinimum() * productBO.getOutersize();
                         }
                         freeProductQty = freeProductQty * schemeBO.getApplyCount();
+
                         if (stock < freeProductQty) {
                             flag = false;
                         } else {// to check for any logic
