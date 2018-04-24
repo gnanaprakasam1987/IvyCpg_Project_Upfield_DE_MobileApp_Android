@@ -45,7 +45,6 @@ import com.ivy.sd.png.view.HalfPieChartFragement;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.PieChartFragement;
-import com.ivy.sd.png.view.TargetPlanActivity;
 
 import java.util.ArrayList;
 import java.util.List;

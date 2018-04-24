@@ -113,7 +113,6 @@ import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 import static com.ivy.sd.png.asean.view.R.id.tab_layout;
-import static com.ivy.sd.png.asean.view.R.id.thirdrow;
 
 public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearByRetailerDialog.NearByRetailerInterface, MapWrapperLayout.OnDragListener,
         CommonReasonDialog.AddNonVisitListener, View.OnClickListener {

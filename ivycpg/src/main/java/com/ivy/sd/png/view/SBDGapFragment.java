@@ -40,6 +40,7 @@ public class SBDGapFragment extends IvyBaseFragment {
         bmodel.setContext(getActivity());
 
         button_save_target = rootView.findViewById(R.id.button_save_target);
+        button_save_target.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         editText_target = rootView.findViewById(R.id.edittext_target);
         editText_target.setText(String.valueOf(bmodel.formatValue(bmodel.getRetailerMasterBO().getDaily_target())));
 
