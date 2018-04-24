@@ -74,6 +74,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
@@ -1023,9 +1024,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             businessModel = (BusinessModel) getActivity().getApplicationContext();
                             businessModel.setContext(getActivity());
                             List<SchemeBO> schemeList = null;
+                            SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
                             try {
-                                schemeList = businessModel.schemeDetailsMasterHelper
-                                        .getSchemeList();
+                                schemeList = schemeHelper.getSchemeList();
                             } catch (Exception e) {
                                 Commons.printException(e + "");
                             }
@@ -1037,7 +1038,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             Toast.LENGTH_SHORT).show();
                                     return true;
                                 }
-                                businessModel.productHelper.setSchemes(businessModel.schemeDetailsMasterHelper.getSchemeList());
+                                businessModel.productHelper.setSchemes(schemeHelper.getSchemeList());
                                 businessModel.productHelper.setPdname(holder.pname);
                                 businessModel.productHelper.setProdId(holder.productId);
                                 businessModel.productHelper.setProductObj(holder.productObj);

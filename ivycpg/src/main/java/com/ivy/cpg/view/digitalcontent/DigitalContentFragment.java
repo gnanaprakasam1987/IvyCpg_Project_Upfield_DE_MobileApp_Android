@@ -40,6 +40,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -415,6 +416,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             isClicked = true;
             if (action == 1) {
 
+                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
                 mDigitalContentHelper.setIsDigitalContent();
                 mDigitalContentHelper.setDigitalContentInDB(getActivity().getApplicationContext());
                 mBModel.getRetailerMasterBO().setIsDigitalContent("Y");
@@ -439,8 +441,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                             startActivity(init);
                             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                             getActivity().finish();
-                        } else if (mBModel.schemeDetailsMasterHelper.IS_SCHEME_ON
-                                && mBModel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+                        } else if (schemeHelper.IS_SCHEME_ON
+                                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
                             Intent init = new Intent(getActivity(),
                                     SchemeApply.class);
                             init.putExtra("ScreenCode", screenCode);

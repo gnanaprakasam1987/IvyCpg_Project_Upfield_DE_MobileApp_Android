@@ -78,6 +78,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UserDialogInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -2028,7 +2029,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
                                 || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
 
-                                bmodel.schemeDetailsMasterHelper.initializeScheme();
+                                SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme();
 
                         }
 

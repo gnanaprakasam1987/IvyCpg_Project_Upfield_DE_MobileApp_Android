@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 
 public class NextSlabSchemeDialog extends Dialog {
 
@@ -50,20 +51,21 @@ public class NextSlabSchemeDialog extends Dialog {
 	}
 
 	class SchemeAdapter extends ArrayAdapter {
-
+		SchemeDetailsMasterHelper schemeHelper;
 		public SchemeAdapter(Context context) {
 			super(context, R.layout.dialog_nextslab_scheme_listview);
+			schemeHelper=SchemeDetailsMasterHelper.getInstance(context);
 		}
 
 		@Override
 		public int getCount() {
-            return bmodel.schemeDetailsMasterHelper.getmSchemePromotion()
+            return schemeHelper.getmSchemePromotion()
                     .size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-            return bmodel.schemeDetailsMasterHelper.getmSchemePromotion().get(
+            return schemeHelper.getmSchemePromotion().get(
                     position);
 		}
 
@@ -71,7 +73,7 @@ public class NextSlabSchemeDialog extends Dialog {
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			final ViewHolder holder;
-            SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper
+            SchemeBO schemeBO = schemeHelper
                     .getmSchemePromotion().get(position);
 			View row = convertView;
 			if (row == null) {

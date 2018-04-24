@@ -25,6 +25,7 @@ import com.ivy.sd.png.bo.InitiativeHeaderBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 
 import java.util.Vector;
 
@@ -262,6 +263,7 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {// Intent returnIntent = new Intent();
             // setResult(RESULT_CANCELED, returnIntent);
@@ -272,8 +274,8 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
                 init.putExtra("ScreenCode", screenCode);
                 startActivity(init);
 //                finish();
-            } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
-                    && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+            } else if (schemeHelper.IS_SCHEME_ON
+                    && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
                 Intent intent = new Intent(InitiativeActivity.this,
                         SchemeApply.class);
                 intent.putExtra("ScreenCode", screenCode);

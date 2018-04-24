@@ -28,6 +28,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
@@ -456,7 +457,8 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                         businessModel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
                     else businessModel.productHelper.downloadProducts("MENU_STK_ORD");
 
-                    businessModel.schemeDetailsMasterHelper.initializeScheme();
+                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getContext());
+                    schemeHelper.initializeScheme();
 
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
@@ -464,7 +466,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     orderHelper.loadInvoiceProducts(getActivity(), inv.getInvoiceNumber());
 
                     mInvoiceId = inv.getInvoiceNumber();
-                    businessModel.schemeDetailsMasterHelper.loadSchemeReportDetails(inv.getInvoiceNumber(), true);
+                    schemeHelper.loadSchemeReportDetails(inv.getInvoiceNumber(), true);
                     businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
                     businessModel.batchAllocationHelper.loadOrderedBatchProducts(inv.getInvoiceNumber());
                     businessModel.batchAllocationHelper.downloadProductBatchCount();

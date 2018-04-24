@@ -61,6 +61,7 @@ import com.ivy.sd.png.model.CatalogOrderValueUpdate;
 import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.ScreenOrientation;
@@ -1474,6 +1475,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {
                 bmodel.configurationMasterHelper.setBatchAllocationtitle("Batch Allocation");
@@ -1501,8 +1503,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);
             finish();
-        } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
-                && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        } else if (schemeHelper.IS_SCHEME_ON
+                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(CatalogOrder.this, SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
             init.putExtra("ForScheme", screenCode);

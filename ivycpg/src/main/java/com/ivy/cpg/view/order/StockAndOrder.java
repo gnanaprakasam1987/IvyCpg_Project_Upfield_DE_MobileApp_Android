@@ -91,6 +91,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
@@ -3347,17 +3348,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         bmodel = (BusinessModel) getApplicationContext();
                         bmodel.setContext(StockAndOrder.this);
 
+                        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+
                         if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
-                            if (bmodel.schemeDetailsMasterHelper
+                            if (schemeHelper
                                     .getSchemeList() == null
-                                    || bmodel.schemeDetailsMasterHelper
+                                    || schemeHelper
                                     .getSchemeList().size() == 0) {
                                 Toast.makeText(StockAndOrder.this,
                                         R.string.scheme_not_available,
                                         Toast.LENGTH_SHORT).show();
                             }
 
-                            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getSchemeList());
+                            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -3377,7 +3380,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             SchemeDialog sc = new SchemeDialog(
                                     StockAndOrder.this,
-                                    bmodel.schemeDetailsMasterHelper
+                                    schemeHelper
                                             .getSchemeList(), holder.pname,
                                     holder.productId, holder.productObj, 1, mTotalScreenWidth);
                             FragmentManager fm = getSupportFragmentManager();
@@ -4245,6 +4248,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     };
 
     private void nextBtnSubTask() {
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
@@ -4281,8 +4286,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);
             finish();
-        } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
-                && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        } else if (schemeHelper.IS_SCHEME_ON
+                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
             init.putExtra("ForScheme", screenCode);

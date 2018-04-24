@@ -81,6 +81,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 
@@ -2473,6 +2474,8 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
     };
 
     private void nextBtnSubTask() {
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
@@ -2509,8 +2512,8 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);
             finish();
-        } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
-                && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        } else if (schemeHelper.IS_SCHEME_ON
+                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(SubDStockCheckActivity.this, SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
             init.putExtra("ForScheme", screenCode);

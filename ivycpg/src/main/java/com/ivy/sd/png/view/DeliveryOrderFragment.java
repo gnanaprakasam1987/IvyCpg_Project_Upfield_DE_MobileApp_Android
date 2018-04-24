@@ -39,6 +39,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 
@@ -1063,12 +1064,13 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
                 } else {
                     //to
-                    if (bmodel.schemeDetailsMasterHelper.getAppliedSchemeList() != null && bmodel.schemeDetailsMasterHelper.getAppliedSchemeList().size() > 0) {
+                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
+                    if (schemeHelper.getAppliedSchemeList() != null && schemeHelper.getAppliedSchemeList().size() > 0) {
                         //scheme available
 
                         boolean isStockAvailableForScheme = true;
                         boolean isFreeProductsAvailable = false;
-                        for (SchemeBO schemeBO : bmodel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
+                        for (SchemeBO schemeBO : schemeHelper.getAppliedSchemeList()) {
 
                             if (schemeBO.isQuantityTypeSelected()) {
                                 isFreeProductsAvailable = true;

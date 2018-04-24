@@ -51,6 +51,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.model.ScreenReceiver;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -261,7 +262,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 || BModel.configurationMasterHelper.IS_SIH_VALIDATION) {
 
             if (!BModel.isEdit() || !BModel.isDoubleEdit_temp()) {
-                BModel.schemeDetailsMasterHelper
+                SchemeDetailsMasterHelper.getInstance(getApplicationContext())
                         .updataFreeproductBottleReturn();
             }
             // update empty bottle return group wise
@@ -866,7 +867,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         // Scheme calculations
         if (!BModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                 || BModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-            totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList);
+            totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList,getApplicationContext());
             totalOrderValue -= totalSchemeDiscValue;
         }
 
@@ -1487,7 +1488,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if (!isClick) {
             isClick = true;
 
-            if (BModel.configurationMasterHelper.IS_SIH_VALIDATION && !orderHelper.isStockAvailableToDeliver(mOrderedProductList)) {
+            if (BModel.configurationMasterHelper.IS_SIH_VALIDATION && !orderHelper.isStockAvailableToDeliver(mOrderedProductList,getApplicationContext())) {
                 Toast.makeText(
                         this,
                         getResources()
@@ -1780,7 +1781,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
-                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue);
+                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue,getApplicationContext());
 
                 new MyThread(this, DataMembers.SAVEINVOICE).start();
             } else {

@@ -19,6 +19,7 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class DisplaySchemeSlabFragment extends IvyBaseFragment {
                 recyclerView.setLayoutManager(mLayoutManager);
 
                 ArrayList<SchemeBO> mSlabList = new ArrayList<>();
-                for (SchemeBO bo : businessModel.schemeDetailsMasterHelper.getDisplaySchemeSlabs()) {
+                for (SchemeBO bo : SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext()).getDisplaySchemeSlabs()) {
                     if (String.valueOf(bo.getParentId()).equals(mSelectedSchemeId)) {
                         mSlabList.add(bo);
                     }

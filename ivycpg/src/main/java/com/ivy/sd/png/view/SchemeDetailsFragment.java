@@ -32,6 +32,7 @@ import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     private ProductMasterBO productObj;
     private int flag;
     private View rootView;
+    private SchemeDetailsMasterHelper schemeHelper;
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
@@ -94,6 +96,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
 
         this.prodId = bmodel.productHelper.getProdId();
         this.mProductID = bmodel.productHelper.getProdId();
@@ -424,12 +427,12 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     ///// Newly added by rajesh.k
 
     private void updateSchemeView(String productid) {
-        ArrayList<Integer> parentIdList = bmodel.schemeDetailsMasterHelper.getParentIdListByProductId().get(productid);
+        ArrayList<Integer> parentIdList = schemeHelper.getParentIdListByProductId().get(productid);
         if (parentIdList != null) {
             for (Integer parentId : parentIdList) {
-                boolean isSameGroupAvailable = bmodel.schemeDetailsMasterHelper.isSameGroupAvailableinDifferentSlab(parentId);
+                boolean isSameGroupAvailable = schemeHelper.isSameGroupAvailableinDifferentSlab(parentId);
 
-                final ArrayList<String> schemeIdList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(parentId);
+                final ArrayList<String> schemeIdList = schemeHelper.getSchemeIdListByParentID().get(parentId);
                 /*if (schemeIdList.size() == 1) {
                     mSchemeDetailWidth = (mTotalScreenWidth) / 4 - 20;
                     mProductNameWidth = mTotalScreenWidth - mSchemeDetailWidth - 40;
@@ -455,7 +458,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                 SchemeBO schemeBO = null;
 
                 if (schemeIdList != null)
-                    schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeIdList.get(0));
+                    schemeBO = schemeHelper.getSchemeById().get(schemeIdList.get(0));
 
                 if (schemeBO != null) {
                     LinearLayout.LayoutParams layoutParamsSchemeTitile = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -521,7 +524,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         layoutParams2.gravity = Gravity.CENTER_VERTICAL;
 
 
-                        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(parentId);
+                        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(parentId);
                         if (schemeList != null) {
                             for (int k = schemeList.size() - 1; k >= 0; k--) {
 
@@ -530,8 +533,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                 slab.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                                 //slab.setTextSize(((mTotalScreenWidth*2)/100)-2);
                                 slab.setTextSize(mTextViewSize);
-                                if (bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(k)).getScheme() != null)
-                                    slab.setText(bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(k)).getScheme());
+                                if (schemeHelper.getSchemeById().get(schemeList.get(k)).getScheme() != null)
+                                    slab.setText(schemeHelper.getSchemeById().get(schemeList.get(k)).getScheme());
                                 slab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                                 slab.setWidth(mSchemeDetailWidth);
                                 //buyTitleTV.setWidth(150);
@@ -616,7 +619,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                     for (String schemeId : schemeIdList) {
 
-                        final SchemeBO schemeBO1 = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeId);
+                        final SchemeBO schemeBO1 = schemeHelper.getSchemeById().get(schemeId);
 
                         schemeFreeList = schemeBO1.getFreeProducts();
 
@@ -687,11 +690,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             slabNameTV.setText(schemeBO1.getScheme());
                             mainLayout.addView(slabNameTV);
 
-                            ArrayList<String> groupNameList = bmodel.schemeDetailsMasterHelper.getFreeGroupNameListBySchemeID().get(schemeId);
+                            ArrayList<String> groupNameList = schemeHelper.getFreeGroupNameListBySchemeID().get(schemeId);
                             if (groupNameList != null) {
                                 int j = 1;
                                 for (String grpName : groupNameList) {
-                                    String groupLogic = bmodel.schemeDetailsMasterHelper.getGroupBuyTypeByGroupName().get(schemeId + grpName);
+                                    String groupLogic = schemeHelper.getGroupBuyTypeByGroupName().get(schemeId + grpName);
 
                                     if (groupLogic != null) {
                                         if (j > 1) {
@@ -772,7 +775,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
     private HorizontalScrollView addViewANYLogicBUY(int schemeParentId, String groupName) {
-        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
 
         if (maximumLineCount == 0)
             maximumLineCount = 1;
@@ -794,7 +797,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
 
         if (size > 0) {
@@ -805,7 +808,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             TextView txt = getNameTv();
 
-            if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_SLAB_ON)
+            if (schemeHelper.IS_SCHEME_SLAB_ON)
                 txt.setText("SLAB");
             else
                 txt.setText("SKU");
@@ -817,13 +820,13 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             childHeaderView.addView(txt);
 
-            schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(size - 1));
+            schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
             if (schemeBO != null) {
                 List<SchemeProductBO> buyProdList = schemeBO.getBuyingProducts();
 
 
                 //childHeaderView.addView(getHorizontalLine());
-                if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_SLAB_ON) {
+                if (schemeHelper.IS_SCHEME_SLAB_ON) {
                     TextView productTV = getTextViewTitle(false, Gravity.LEFT, false);
                     productTV.setText(R.string.qty);
                     productTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -852,7 +855,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             for (int i = size - 1; i >= 0; i--) {
 
 
-                schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(i));
+                schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
 
                 if (schemeBO != null) {
                     TextView schemeNameTV = getNameTv();
@@ -912,7 +915,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     }
 
     private HorizontalScrollView addViewONLYLogicBuy(int schemeParentId, String groupName) {
-        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
         if (maximumLineCount == 0)
             maximumLineCount = 1;
 
@@ -933,7 +936,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
         if (schemeList != null && size > 0) {
             SchemeBO schemeBO = null;
@@ -948,7 +951,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             childHeaderView.addView(txt);
 
-            schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(size - 1));
+            schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
             if (schemeBO != null) {
                 List<SchemeProductBO> buyProdList = schemeBO.getBuyingProducts();
                 for (SchemeProductBO schemeProductBO : buyProdList) {
@@ -972,7 +975,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             for (int i = size - 1; i >= 0; i--) {
 
 
-                schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(i));
+                schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
 
                 LinearLayout.LayoutParams detailLayout = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                 detailLayout.weight = 0.1f;
@@ -1029,7 +1032,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     }
 
     private HorizontalScrollView addViewANDLogicGET(int schemeParentId, String groupName) {
-        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
 
         if (maximumLineCount == 0)
             maximumLineCount = 1;
@@ -1051,7 +1054,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
         if (schemeList != null && size > 0) {
             SchemeBO schemeBO = null;
@@ -1066,7 +1069,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             childHeaderView.addView(txt);
 
-            schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(size - 1));
+            schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
             if (schemeBO != null) {
                 List<SchemeProductBO> buyProdList = schemeBO.getFreeProducts();
                 for (SchemeProductBO schemeProductBO : buyProdList) {
@@ -1090,7 +1093,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             for (int i = size - 1; i >= 0; i--) {
 
 
-                schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(i));
+                schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
 
                 if (schemeBO != null) {
                     List<SchemeProductBO> buyProductList = schemeBO.getFreeProducts();
@@ -1147,7 +1150,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
     private HorizontalScrollView addViewAndLogicBuyNew(int parentId, String groupName) {
 
-        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, parentId);
+        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, parentId);
 
         if (maximumLineCount == 0)
             maximumLineCount = 1;
@@ -1168,10 +1171,10 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        final ArrayList<String> productIdList = bmodel.schemeDetailsMasterHelper.getProductIdListByParentId().get(parentId);
+        final ArrayList<String> productIdList = schemeHelper.getProductIdListByParentId().get(parentId);
         if (productIdList != null) {
 
-            final ArrayList<String> schemeIdList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(parentId);
+            final ArrayList<String> schemeIdList = schemeHelper.getSchemeIdListByParentID().get(parentId);
             int size = schemeIdList.size();
             int j = 0;
 
@@ -1195,7 +1198,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     for (int i = size - 1; i >= 0; i--) {
 
                         String schemeid = schemeIdList.get(i);
-                        SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeid);
+                        SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeid);
                         if (j == 0) {
 
                             if (schemeBO != null) {
@@ -1210,7 +1213,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         }
 
 
-                        final SchemeProductBO buyProductBO = bmodel.schemeDetailsMasterHelper.getBuyProductBOBySchemeIdWithPid().get(schemeid + productId);
+                        final SchemeProductBO buyProductBO = schemeHelper.getBuyProductBOBySchemeIdWithPid().get(schemeid + productId);
                         if (buyProductBO != null && buyProductBO.getGroupName().equals(groupName)) {
                             if (i == size - 1) {
                                 TextView produtNameTV = getTextViewTitle(false, Gravity.LEFT, false);
@@ -1281,7 +1284,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
     private HorizontalScrollView addViewANYLogicGET(int schemeParentId, String groupName) {
-        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
 
         if (maximumLineCount == 0)
             maximumLineCount = 1;
@@ -1303,7 +1306,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
         if (schemeList != null && size > 0) {
             SchemeBO schemeBO = null;
@@ -1318,7 +1321,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             childHeaderView.addView(txt);
 
-            schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(size - 1));
+            schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
             if (schemeBO != null) {
                 List<SchemeProductBO> buyProdList = schemeBO.getFreeProducts();
                 StringBuffer sb = new StringBuffer();
@@ -1349,7 +1352,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             for (int i = size - 1; i >= 0; i--) {
 
 
-                schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(i));
+                schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
 
                 if (schemeBO != null) {
                     List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
@@ -1408,7 +1411,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     }
 
     private HorizontalScrollView addViewONLYLogicGET(int schemeParentId, String groupName) {
-        int maximumLineCount = bmodel.schemeDetailsMasterHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
+        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
 
         if (maximumLineCount == 0)
             maximumLineCount = 1;
@@ -1430,7 +1433,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             mAddViewLayout.setBackgroundColor(Color.WHITE);
         }
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeParentId);
+        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
         if (schemeList != null && size > 0) {
             SchemeBO schemeBO = null;
@@ -1445,7 +1448,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             childHeaderView.addView(txt);
 
-            schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(size - 1));
+            schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
             if (schemeBO != null) {
                 List<SchemeProductBO> buyProdList = schemeBO.getFreeProducts();
                 for (SchemeProductBO schemeProductBO : buyProdList) {
@@ -1469,7 +1472,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             for (int i = size - 1; i >= 0; i--) {
 
 
-                schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(i));
+                schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
 
                 if (schemeBO != null) {
                     List<SchemeProductBO> freeProductsList = schemeBO.getFreeProducts();
@@ -1545,12 +1548,12 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         }
 
 
-        ArrayList<String> schemeList = bmodel.schemeDetailsMasterHelper.getSchemeIdListByParentID().get(schemeparentId);
+        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeparentId);
         boolean isPercentageDiscAvailable = false;
         boolean isAmountDiscAvailable = false;
         boolean isPriceDiscAvailable = false;
         for (String schemeId : schemeList) {
-            final SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeId);
+            final SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeId);
             if (schemeBO != null) {
                 final List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
                 if (freeProductList != null && freeProductList.size() > 0) {
@@ -1582,7 +1585,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
         for (int i = size - 1; i >= 0; i--) {
-            SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeList.get(i));
+            SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
             if (schemeBO != null) {
 
                 TextView schemeNameTV = getTextViewTitle(false, Gravity.CENTER, false);
@@ -1809,7 +1812,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         childHeaderView.addView(txt);
         TextView schemeNameTV = getNameTv();
-        SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeId);
+        SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeId);
         schemeNameTV.setText(schemeBO.getScheme());
         schemeNameTV.setWidth(mSlabWiseSchemeNameWidth);
         childHeaderView.addView(schemeNameTV);
@@ -1882,7 +1885,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         childHeaderView.addView(txt);
         TextView schemeNameTV = getNameTv();
-        SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeId);
+        SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeId);
         schemeNameTV.setText(schemeBO.getScheme());
         schemeNameTV.setWidth(mSlabWiseSchemeNameWidth);
         childHeaderView.addView(schemeNameTV);
@@ -1962,7 +1965,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         childHeaderView.addView(txt);
         TextView schemeNameTV = getNameTv();
-        SchemeBO schemeBO = bmodel.schemeDetailsMasterHelper.getSchemeById().get(schemeId);
+        SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeId);
         schemeNameTV.setText(schemeBO.getScheme());
         schemeNameTV.setWidth(mSlabWiseSchemeNameWidth);
         childHeaderView.addView(schemeNameTV);

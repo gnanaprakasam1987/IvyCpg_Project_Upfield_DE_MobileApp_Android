@@ -31,6 +31,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
     private SchemeProductBO mSelectedSchemeProductBO;
     private Toolbar toolbar;
     boolean isFromCounterSales=false;
+    SchemeDetailsMasterHelper schemeHelper;
 
     public SchemeFreePorductSelectionDialog(Context context,
                                             SchemeBO schemeBO,
@@ -77,6 +79,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
 
         mContext = context;
         mBmodel = (BusinessModel) mContext.getApplicationContext();
+        schemeHelper=SchemeDetailsMasterHelper.getInstance(context);
 
         if(screenCode.equalsIgnoreCase("CSale")) {
             this.isFromCounterSales = true;
@@ -111,8 +114,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
         mListView = (ListView) findViewById(R.id.lv);
 
         if (mSchemeBO.getIsFreeCombination() == 1) {
-            mFreeGroupNameList = mBmodel.schemeDetailsMasterHelper
-                    .getFreeGroupNameListBySchemeID().get(
+            mFreeGroupNameList = schemeHelper.getFreeGroupNameListBySchemeID().get(
                             mSchemeBO.getSchemeId());
         }
 
@@ -302,7 +304,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
 
                             @Override
                             public void onClick(View v) {
-                                if (mBmodel.schemeDetailsMasterHelper.IS_SCHEME_EDITABLE) {
+                                if (schemeHelper.IS_SCHEME_EDITABLE) {
                                     QUANTITY = holder.quantityET;
                                     QUANTITY.requestFocus();
                                     QUANTITY.setCursorVisible(false);
@@ -520,7 +522,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                 holder.sihTV.setVisibility(View.GONE);
             }
 
-            if (!mBmodel.schemeDetailsMasterHelper.IS_SCHEME_EDITABLE) {
+            if (!schemeHelper.IS_SCHEME_EDITABLE) {
                 holder.quantityET.setEnabled(false);
             } else {
                 holder.quantityET.setEnabled(true);
@@ -780,8 +782,8 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                                 }
 
                             }
-                            if (mBmodel.schemeDetailsMasterHelper.getGroupBuyTypeByGroupName().get(mSchemeBO.getSchemeId() + groupName) != null) {
-                                if (mBmodel.schemeDetailsMasterHelper
+                            if (schemeHelper.getGroupBuyTypeByGroupName().get(mSchemeBO.getSchemeId() + groupName) != null) {
+                                if (schemeHelper
                                         .getGroupBuyTypeByGroupName().get(mSchemeBO.getSchemeId() + groupName)
                                         .equals(ANY_LOGIC)) {
                                     if (anyLogicMinimumCount == 0) {
@@ -825,7 +827,7 @@ public class SchemeFreePorductSelectionDialog extends Dialog {
                             }
 
                         }
-                        if (mBmodel.schemeDetailsMasterHelper
+                        if (schemeHelper
                                 .getGroupBuyTypeByGroupName().get(mSchemeBO.getSchemeId() + type)
                                 .equals(ANY_LOGIC)) {
                             if (anyLogicMinimumCount == 0) {

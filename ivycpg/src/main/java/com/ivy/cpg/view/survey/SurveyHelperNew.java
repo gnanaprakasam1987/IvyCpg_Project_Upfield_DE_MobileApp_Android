@@ -243,10 +243,8 @@ public class SurveyHelperNew {
             String channelId = "";
 
             /* Get location id and its parent id */
-            if (!"".equals(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme()) &&
-                    bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() != null) {
-                locIdScheme = "," + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme();
-            }
+                          locIdScheme = "," + bmodel.channelMasterHelper.getLocationHierarchy(context);
+
 
             /* Get channel id and its parent id */
             if (!"".equals(getChannelidForSurvey()) &&

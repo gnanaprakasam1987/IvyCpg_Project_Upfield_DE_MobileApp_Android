@@ -298,8 +298,7 @@ public class BatchAllocationHelper {
      */
     public void loadFreeProductBatchList() {
         List<SchemeProductBO> schemeList;
-        ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
-                .getAppliedSchemeList();
+        ArrayList<SchemeBO> appliedSchemeList = SchemeDetailsMasterHelper.getInstance(context).getAppliedSchemeList();
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBo : appliedSchemeList) {
                 schemeList = schemeBo.getFreeProducts();

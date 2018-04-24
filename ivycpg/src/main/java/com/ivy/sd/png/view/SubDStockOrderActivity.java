@@ -77,6 +77,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -2523,7 +2524,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
-
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.productHelper.taxHelper.removeTaxFromPrice();
@@ -2556,8 +2557,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);
             finish();
-        } else if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
-                && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        } else if (schemeHelper.IS_SCHEME_ON
+                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(SubDStockOrderActivity.this, SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
             init.putExtra("ForScheme", screenCode);

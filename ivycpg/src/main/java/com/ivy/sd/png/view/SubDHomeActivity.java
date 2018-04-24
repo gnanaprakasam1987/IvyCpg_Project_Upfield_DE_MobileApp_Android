@@ -27,6 +27,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
@@ -457,11 +458,12 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
 
             bmodel.productHelper.downloadInStoreLocations();
 
-            if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER)
-                bmodel.schemeDetailsMasterHelper.downloadSchemeHistoryDetails();
+            SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+            if (schemeHelper.IS_SCHEME_ON_MASTER)
+                schemeHelper.downloadSchemeHistoryDetails();
 
             //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
-            bmodel.schemeDetailsMasterHelper.downloadOffInvoiceSchemeDetails();
+            schemeHelper.downloadOffInvoiceSchemeDetails();
             // }
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {

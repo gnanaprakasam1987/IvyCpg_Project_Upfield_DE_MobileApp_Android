@@ -73,6 +73,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 
@@ -1095,17 +1096,18 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         bmodel = (BusinessModel) getApplicationContext();
                         bmodel.setContext(OrderNewOutlet.this);
 
+                        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
                         if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
-                            if (bmodel.schemeDetailsMasterHelper
+                            if (schemeHelper
                                     .getSchemeList() == null
-                                    || bmodel.schemeDetailsMasterHelper
+                                    || schemeHelper
                                     .getSchemeList().size() == 0) {
                                 Toast.makeText(OrderNewOutlet.this,
                                         R.string.scheme_not_available,
                                         Toast.LENGTH_SHORT).show();
                             }
 
-                            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getSchemeList());
+                            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -1126,7 +1128,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
                             SchemeDialog sc = new SchemeDialog(
                                     OrderNewOutlet.this,
-                                    bmodel.schemeDetailsMasterHelper
+                                    schemeHelper
                                             .getSchemeList(), holder.pname,
                                     holder.productId, holder.productObj, 1, mTotalScreenWidth);
                             FragmentManager fm = getSupportFragmentManager();

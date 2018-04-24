@@ -10,6 +10,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -362,8 +363,8 @@ public class DiscountHelper {
             sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append("where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
-            sb.append(" Channelid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + ") OR ");
-            sb.append(" locationid in(" + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ") OR ");
+            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(),mContext) + ") OR ");
+            sb.append(" locationid in(" + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + businessModel.getRetailerMasterBO().getAccountid() + " and Accountid!=0 ))");
             sb.append(" and dm.moduleid in(select ListId from StandardListMaster where ListCode='INVOICE') ");
             sb.append(" and dm.ApplyLevelid in(select ListId from StandardListMaster where ListCode='BILL') ");
@@ -397,6 +398,8 @@ public class DiscountHelper {
 
 
     }
+
+
 
 
     /**
@@ -600,8 +603,8 @@ public class DiscountHelper {
             sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append("where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
-            sb.append(" Channelid in(" + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + ") OR ");
-            sb.append(" locationid in(" + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ") OR ");
+            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(),mContext) + ") OR ");
+            sb.append(" locationid in(" + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + businessModel.getRetailerMasterBO().getAccountid() + "))");
             sb.append(" and dm.moduleid in(select ListId from StandardListMaster where ListCode='INVOICE') ");
             sb.append(" and dm.ApplyLevelid in(select ListId from StandardListMaster where ListCode='BILL') ");
@@ -785,12 +788,12 @@ public class DiscountHelper {
      * Calculating scheme discounts for applied(Scheme selected in scheme apply screen) scheme and updating those values in product object.
      * If Free products available then it will be added in any one of the buy product to show in print.
      */
-    public double calculateSchemeDiscounts(LinkedList<ProductMasterBO> mOrderedList) {
+    public double calculateSchemeDiscounts(LinkedList<ProductMasterBO> mOrderedList, Context mContext) {
 
         double totalSchemeDiscountValue = 0;
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
 
-        ArrayList<SchemeBO> appliedSchemeList = businessModel.schemeDetailsMasterHelper
-                .getAppliedSchemeList();
+        ArrayList<SchemeBO> appliedSchemeList = schemeHelper.getAppliedSchemeList();
         if (appliedSchemeList != null) {
 
             for (SchemeBO schemeBO : appliedSchemeList) {
@@ -904,13 +907,13 @@ public class DiscountHelper {
                                                     && businessModel.configurationMasterHelper.IS_INVOICE) {
                                                 if (productBO
                                                         .getBatchwiseProductCount() > 0) {
-                                                    totalPriceDiscount = businessModel.schemeDetailsMasterHelper
+                                                    totalPriceDiscount = schemeHelper
                                                             .updateSchemeProducts(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrice(),
                                                                     "SCH_PR", true);
                                                 } else {
-                                                    totalPriceDiscount = businessModel.schemeDetailsMasterHelper
+                                                    totalPriceDiscount = schemeHelper
                                                             .updateSchemeProducts(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrice(),
@@ -918,7 +921,7 @@ public class DiscountHelper {
                                                 }
 
                                             } else {
-                                                totalPriceDiscount = businessModel.schemeDetailsMasterHelper
+                                                totalPriceDiscount = schemeHelper
                                                         .updateSchemeProducts(
                                                                 productBO,
                                                                 schemeBO.getSelectedPrice(),
@@ -949,13 +952,13 @@ public class DiscountHelper {
                                                     && businessModel.configurationMasterHelper.IS_INVOICE) {
                                                 if (productBO
                                                         .getBatchwiseProductCount() > 0) {
-                                                    totalPercentageDiscount = businessModel.schemeDetailsMasterHelper
+                                                    totalPercentageDiscount = schemeHelper
                                                             .updateSchemeProducts(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrecent(),
                                                                     "SCH_PER", true);
                                                 } else {
-                                                    totalPercentageDiscount = businessModel.schemeDetailsMasterHelper
+                                                    totalPercentageDiscount = schemeHelper
                                                             .updateSchemeProducts(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrecent(),
@@ -963,7 +966,7 @@ public class DiscountHelper {
                                                                     false);
                                                 }
                                             } else {
-                                                totalPercentageDiscount = businessModel.schemeDetailsMasterHelper
+                                                totalPercentageDiscount = schemeHelper
                                                         .updateSchemeProducts(
                                                                 productBO,
                                                                 schemeBO.getSelectedPrecent(),

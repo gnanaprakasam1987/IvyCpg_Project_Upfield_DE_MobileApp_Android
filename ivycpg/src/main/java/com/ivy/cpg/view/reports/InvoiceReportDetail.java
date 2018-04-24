@@ -35,6 +35,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.BixolonIIPrint;
@@ -253,7 +254,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 schemeProductList = businessModel.reportHelper.getSchemeProductDetails(mInvoiceId);
             } else {
                 //load accumulation scheme free products
-                schemeProductList = businessModel.schemeDetailsMasterHelper.downLoadAccumulationSchemeDetailReport(mInvoiceId, true);
+                schemeProductList = SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downLoadAccumulationSchemeDetailReport(mInvoiceId, true);
             }
             if (schemeProductList != null &&
                     mProductsForAdapter != null) {
@@ -434,7 +435,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                                             finish();
                                             return;
                                         }
-                                        businessModel.schemeDetailsMasterHelper.loadSchemeReport(mInvoiceId, true);
+                                        SchemeDetailsMasterHelper.getInstance(getApplicationContext()).loadSchemeReport(mInvoiceId, true);
                                         checkBluetoothEnabled();
 
 

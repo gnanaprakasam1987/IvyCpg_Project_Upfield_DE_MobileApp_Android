@@ -187,7 +187,7 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
 
             loadSchemeConfigs(context);
-            if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER) {
+            if (IS_SCHEME_ON_MASTER) {
                 int distributorId = bmodel.getRetailerMasterBO().getDistributorId();
                 String retailerId = bmodel.getRetailerMasterBO().getRetailerID();
                 int channelId = bmodel.getRetailerMasterBO().getSubchannelid();
@@ -212,7 +212,7 @@ public class SchemeDetailsMasterHelper {
                 downloadPeriodWiseScheme(db);
             }
             else {
-                bmodel.schemeDetailsMasterHelper.setIsScheme(new ArrayList<String>());
+                setIsScheme(new ArrayList<String>());
             }
 
             db.closeDB();
@@ -1250,15 +1250,13 @@ public class SchemeDetailsMasterHelper {
         List<SchemeProductBO> schemeBuyProducts = schemeBO.getBuyingProducts();
 
         ArrayList<ProductMasterBO> schemeAccumulationList = null;
-        if (bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeId() != null) {
-            schemeAccumulationList = bmodel.schemeDetailsMasterHelper
-
-                    .getSchemeHistoryListBySchemeId().get(schemeBO.getParentId() + "");
+        if (getSchemeHistoryListBySchemeId() != null) {
+            schemeAccumulationList = getSchemeHistoryListBySchemeId().get(schemeBO.getParentId() + "");
         }
 
         ArrayList<String> mAlreadyAppliedProducts = null;
-        if (bmodel.schemeDetailsMasterHelper.getProductIdListByAlreadyAppliedSchemeId() != null) {
-            mAlreadyAppliedProducts = bmodel.schemeDetailsMasterHelper.getProductIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
+        if (getProductIdListByAlreadyAppliedSchemeId() != null) {
+            mAlreadyAppliedProducts = getProductIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
         }
 
         for (SchemeProductBO schemeProductBo : schemeBuyProducts) {
@@ -1409,14 +1407,13 @@ public class SchemeDetailsMasterHelper {
         List<SchemeProductBO> schemeBuyProducts = schemeBO.getBuyingProducts();
         ArrayList<ProductMasterBO> schemeAccumulationList = null;
 
-        if (bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeId() != null) {
-            schemeAccumulationList = bmodel.schemeDetailsMasterHelper
-                    .getSchemeHistoryListBySchemeId().get(schemeBO.getParentId() + "");
+        if (getSchemeHistoryListBySchemeId() != null) {
+            schemeAccumulationList = getSchemeHistoryListBySchemeId().get(schemeBO.getParentId() + "");
         }
 
         ArrayList<String> mAlreadyAppliedProductList = null;
-        if (bmodel.schemeDetailsMasterHelper.getProductIdListByAlreadyAppliedSchemeId() != null) {
-            mAlreadyAppliedProductList = bmodel.schemeDetailsMasterHelper.getProductIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
+        if (getProductIdListByAlreadyAppliedSchemeId() != null) {
+            mAlreadyAppliedProductList = getProductIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
         }
 
         for (SchemeProductBO schemeProductBo : schemeBuyProducts) {
@@ -1840,7 +1837,7 @@ public class SchemeDetailsMasterHelper {
 
         for (SchemeBO schemeBO : mAppliedSchemeList) {
 
-            ArrayList<String> freeGroupNameList = bmodel.schemeDetailsMasterHelper.getFreeGroupNameListBySchemeID().get(schemeBO.getSchemeId());
+            ArrayList<String> freeGroupNameList = getFreeGroupNameListBySchemeID().get(schemeBO.getSchemeId());
             if (freeGroupNameList != null) {
 
                 schemeBO.setQuantityTypeSelected(true);
@@ -2152,9 +2149,9 @@ public class SchemeDetailsMasterHelper {
 
 					/* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationList = null;
-                    if (bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeId() != null) {
+                    if (getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
-                        schemeAccumulationList = bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeId().get(schemeBO.getParentId() + "");
+                        schemeAccumulationList = getSchemeHistoryListBySchemeId().get(schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationList != null) {
                         //Adding accumulation quantity
@@ -2361,12 +2358,9 @@ public class SchemeDetailsMasterHelper {
 
 					/* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationValueList = null;
-                    if (bmodel.schemeDetailsMasterHelper
-                            .getSchemeHistoryListBySchemeId() != null) {
+                    if (getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
-                        schemeAccumulationValueList = bmodel.schemeDetailsMasterHelper
-
-                                .getSchemeHistoryListBySchemeId().get(
+                        schemeAccumulationValueList = getSchemeHistoryListBySchemeId().get(
                                         schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationValueList != null) {
@@ -2486,10 +2480,9 @@ public class SchemeDetailsMasterHelper {
 
 					/* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationList = null;
-                    if (bmodel.schemeDetailsMasterHelper
-                            .getSchemeHistoryListBySchemeId() != null) {
+                    if (getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
-                        schemeAccumulationList = bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeId().get(
+                        schemeAccumulationList = getSchemeHistoryListBySchemeId().get(
                                         schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationList != null) {
@@ -2718,12 +2711,9 @@ public class SchemeDetailsMasterHelper {
 
 					/* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationValueList = null;
-                    if (bmodel.schemeDetailsMasterHelper
-                            .getSchemeHistoryListBySchemeId() != null) {
+                    if (getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
-                        schemeAccumulationValueList = bmodel.schemeDetailsMasterHelper
-
-                                .getSchemeHistoryListBySchemeId().get(
+                        schemeAccumulationValueList = getSchemeHistoryListBySchemeId().get(
                                         schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationValueList != null) {
@@ -2861,7 +2851,7 @@ public class SchemeDetailsMasterHelper {
         if (mAppliedSchemeList != null) {
             return mAppliedSchemeList;
         }
-        return new ArrayList<SchemeBO>();
+        return new ArrayList<>();
     }
 
     public boolean isFromCounterSale;
@@ -4028,121 +4018,11 @@ public class SchemeDetailsMasterHelper {
         }
     }
 
-    public String getChannelidForScheme(int channelid) {
-        String sql, sql1 = "", str = "";
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            int mChildLevel = 0;
-            int mContentLevel = 0;
-            db.openDataBase();
-            Cursor c = db.selectSQL("select min(Sequence) as childlevel,(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId where ch.ChId=" + channelid + ") as contentlevel  from ChannelLevel");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    mChildLevel = c.getInt(0);
-                    mContentLevel = c.getInt(1);
-                }
-                c.close();
-            }
-
-            int loopEnd = mContentLevel - mChildLevel + 1;
-
-            for (int i = 2; i <= loopEnd; i++) {
-                sql1 = sql1 + " LM" + i + ".ChId";
-                if (i != loopEnd)
-                    sql1 = sql1 + ",";
-            }
-            sql = "select " + sql1 + "  from ChannelHierarchy LM1";
-            for (int i = 2; i <= loopEnd; i++)
-                sql = sql + " INNER JOIN ChannelHierarchy LM" + i + " ON LM" + (i - 1)
-                        + ".ParentId = LM" + i + ".ChId";
-            sql = sql + " where LM1.ChId=" + channelid;
-            c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    int count = c.getCount();
-                    for (int i = 0; i < c.getColumnCount(); i++) {
-                        str = str + c.getString(i);
-                        if (c.getColumnCount() > 1 && i != c.getColumnCount())
-                            str = str + ",";
-                    }
-                    if (str.endsWith(","))
-                        str = str.substring(0, str.length() - 1);
-                }
-                c.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        if (str.length() == 0)
-            str = "0";
-        return str;
-    }
-
-    public String getLocationIdsForScheme() {
-        String sql, sql1 = "", str = bmodel.getRetailerMasterBO().getLocationId() + ",";
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            int mChildLevel = 0;
-            int mContentLevel = 0;
-            db.openDataBase();
-
-            StringBuffer sb = new StringBuffer();
-            sb.append("select min(Sequence) as childlevel,(select Sequence from LocationLevel l1 ");
-            sb.append("inner join locationmaster lm on l1.id=LM.loclevelid where lm.locid=");
-            sb.append(bmodel.getRetailerMasterBO().getLocationId());
-            sb.append(") as contentlevel  from LocationLevel");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c != null) {
-                while (c.moveToNext()) {
-                    mChildLevel = c.getInt(0);
-                    mContentLevel = c.getInt(1);
-                }
-            }
-            c.close();
-
-            int loopEnd = mContentLevel - mChildLevel + 1;
-
-            for (int i = 2; i <= loopEnd; i++) {
-                sql1 = sql1 + " LM" + i + ".Locid";
-                if (i != loopEnd)
-                    sql1 = sql1 + ",";
-            }
-            sql = "select " + sql1 + "  from LocationMaster LM1";
-            for (int i = 2; i <= loopEnd; i++)
-                sql = sql + " INNER JOIN LocationMaster LM" + i + " ON LM" + (i - 1)
-                        + ".LocParentId = LM" + i + ".LocId";
-            sql = sql + " where LM1.LocId=" + bmodel.getRetailerMasterBO().getLocationId();
-            c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    for (int i = 0; i < c.getColumnCount(); i++) {
-                        str = str + c.getString(i);
-                        if (c.getColumnCount() > 1 && i != c.getColumnCount())
-                            str = str + ",";
-                    }
-                }
-            }
-
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        //to remove last character if it  ','
-        if (str.endsWith(","))
-            str = str.substring(0, str.length() - 1);
-        return str;
-    }
 
 
 
-    public int getAmountBasedSchemeCount(SchemeBO schemeBO) {
+
+    private int getAmountBasedSchemeCount(SchemeBO schemeBO) {
         int count = 0;
         List<SchemeProductBO> schemeProductList = schemeBO.getBuyingProducts();
 

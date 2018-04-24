@@ -14,6 +14,7 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -76,7 +77,8 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
                 textView_booking_period.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 textView_qualifier.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList()) {
+                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
+                for (SchemeBO schemeBO : schemeHelper.getmDisplaySchemeMasterList()) {
                     if (schemeBO.getSchemeId().equals(mSelectedSchemeId)) {
                         textView_scheme_desc.setText(schemeBO.getScheme());
                         textView_display_period.setText(schemeBO.getDisplayPeriodStart() + " - " + schemeBO.getDisplayPeriodEnd());
@@ -94,7 +96,7 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
                 final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 listView.setLayoutManager(mLayoutManager);
 
-                ArrayList<String> mProductList = businessModel.schemeDetailsMasterHelper.downloadDisplaySchemeProducts(getActivity().getApplicationContext(), mSelectedSchemeId);
+                ArrayList<String> mProductList = SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext()).downloadDisplaySchemeProducts(getActivity().getApplicationContext(), mSelectedSchemeId);
 
                 RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(mProductList);
                 listView.setAdapter(mAdapter);

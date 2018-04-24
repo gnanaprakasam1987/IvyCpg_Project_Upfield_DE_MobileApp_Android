@@ -1202,8 +1202,8 @@ public class CommonPrintHelper {
 
     private void calculateSchemeAmountDiscountValue() {
 
-        ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
-                .getAppliedSchemeList();
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(context);
+        ArrayList<SchemeBO> appliedSchemeList = schemeHelper.getAppliedSchemeList();
         double mBuyProdDiscountedValue = 0;
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBO : appliedSchemeList) {
@@ -1238,8 +1238,8 @@ public class CommonPrintHelper {
     private void loadSchemeDiscount(Vector<AttributeListBO> mAttrList, String product_name_single_line, StringBuilder sb) {
         int mLengthUptoPName;
 
-        ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
-                .getAppliedSchemeList();
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(context);
+        ArrayList<SchemeBO> appliedSchemeList = schemeHelper.getAppliedSchemeList();
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBO : appliedSchemeList) {
                 if (schemeBO != null) {

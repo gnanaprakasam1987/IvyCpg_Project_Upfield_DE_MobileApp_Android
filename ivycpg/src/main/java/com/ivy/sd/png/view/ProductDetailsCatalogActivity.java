@@ -18,6 +18,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
@@ -87,9 +88,10 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
                 (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND == true ?
                         " SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()) : ""));
 
-        if (bmodel.schemeDetailsMasterHelper.getSchemeList().size() > 0) {
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        if (schemeHelper.getSchemeList().size() > 0) {
 
-            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getSchemeList());
+            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
             bmodel.productHelper.setPdname(bmodel.selectedPdt.getProductShortName());
             bmodel.productHelper.setProdId(bmodel.selectedPdt.getProductID());
             bmodel.productHelper.setProductObj(bmodel.selectedPdt);

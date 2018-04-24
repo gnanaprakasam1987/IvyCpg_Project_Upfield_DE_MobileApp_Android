@@ -266,7 +266,6 @@ public class BusinessModel extends Application {
     public ReportHelper reportHelper;
     public LoadManagementHelper vanmodulehelper;
     public StockProposalModuleHelper stockProposalModuleHelper;
-    public SchemeDetailsMasterHelper schemeDetailsMasterHelper;
     public StockReportMasterHelper stockreportmasterhelper;
     public DashBoardHelper dashBoardHelper;
     public LabelsMasterHelper labelsMasterHelper;
@@ -421,7 +420,6 @@ public class BusinessModel extends Application {
         reportHelper = ReportHelper.getInstance(this);
         vanmodulehelper = LoadManagementHelper.getInstance(this);
         stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
-        schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(this);
         stockreportmasterhelper = StockReportMasterHelper.getInstance(this);
         dashBoardHelper = DashBoardHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
@@ -6407,12 +6405,13 @@ public class BusinessModel extends Application {
                 while (c.moveToNext()) {
                     int flag = c.getInt(0);
 
+                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getContext());
                     if (flag == 1) {
                         configurationMasterHelper.IS_SIH_VALIDATION = configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
                         configurationMasterHelper.IS_STOCK_IN_HAND = configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
                         configurationMasterHelper.IS_WSIH = false;
-                        schemeDetailsMasterHelper.IS_SCHEME_ON = schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER;
-                        schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN = schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
+                        schemeHelper.IS_SCHEME_ON = schemeHelper.IS_SCHEME_ON_MASTER;
+                        schemeHelper.IS_SCHEME_SHOW_SCREEN = schemeHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
                         configurationMasterHelper.SHOW_TAX = configurationMasterHelper.SHOW_TAX_MASTER;
 
 
@@ -6421,8 +6420,8 @@ public class BusinessModel extends Application {
                         configurationMasterHelper.IS_SIH_VALIDATION = false;
                         configurationMasterHelper.IS_STOCK_IN_HAND = false;
                         configurationMasterHelper.IS_WSIH = configurationMasterHelper.IS_WSIH_MASTER;
-                        schemeDetailsMasterHelper.IS_SCHEME_ON = false;
-                        schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN = false;
+                        schemeHelper.IS_SCHEME_ON = false;
+                        schemeHelper.IS_SCHEME_SHOW_SCREEN = false;
                         configurationMasterHelper.SHOW_TAX = false;
 
                         retailerMasterBO.setIsVansales(0);

@@ -25,6 +25,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 
@@ -361,7 +362,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
      * scheme Buy product.
      */
     private void updateSchemeDetails() {
-        ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        ArrayList<SchemeBO> appliedSchemeList = schemeHelper
                 .getAppliedSchemeList();
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBO : appliedSchemeList) {
@@ -472,13 +474,13 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                         && bmodel.configurationMasterHelper.IS_INVOICE) {
                                                     if (productBO
                                                             .getBatchwiseProductCount() > 0) {
-                                                        totalpriceDiscount = bmodel.schemeDetailsMasterHelper
+                                                        totalpriceDiscount = schemeHelper
                                                                 .updateSchemeProducts(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrice(),
                                                                         "SCH_PR", true);
                                                     } else {
-                                                        totalpriceDiscount = bmodel.schemeDetailsMasterHelper
+                                                        totalpriceDiscount = schemeHelper
                                                                 .updateSchemeProducts(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrice(),
@@ -486,7 +488,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                     }
 
                                                 } else {
-                                                    totalpriceDiscount = bmodel.schemeDetailsMasterHelper
+                                                    totalpriceDiscount = schemeHelper
                                                             .updateSchemeProducts(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrice(),
@@ -514,13 +516,13 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                         && bmodel.configurationMasterHelper.IS_INVOICE) {
                                                     if (productBO
                                                             .getBatchwiseProductCount() > 0) {
-                                                        totalPercentageDiscount = bmodel.schemeDetailsMasterHelper
+                                                        totalPercentageDiscount = schemeHelper
                                                                 .updateSchemeProducts(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrecent(),
                                                                         "SCH_PER", true);
                                                     } else {
-                                                        totalPercentageDiscount = bmodel.schemeDetailsMasterHelper
+                                                        totalPercentageDiscount = schemeHelper
                                                                 .updateSchemeProducts(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrecent(),
@@ -528,7 +530,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                                         false);
                                                     }
                                                 } else {
-                                                    totalPercentageDiscount = bmodel.schemeDetailsMasterHelper
+                                                    totalPercentageDiscount = schemeHelper
                                                             .updateSchemeProducts(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrecent(),

@@ -30,6 +30,7 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -633,8 +634,9 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
         // Intent returnIntent = new Intent();
         // setResult(RESULT_CANCELED, returnIntent);
         // finish();
-        if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON
-                && bmodel.schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        if (schemeHelper.IS_SCHEME_ON
+                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent intent = new Intent(OrderDiscount.this, SchemeApply.class);
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);

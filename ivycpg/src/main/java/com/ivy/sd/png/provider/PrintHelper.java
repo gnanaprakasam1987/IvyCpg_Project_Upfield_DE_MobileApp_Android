@@ -1768,7 +1768,7 @@ public class PrintHelper {
                 int x = 340;
                 int schemeSize = 0;
                 // update free product size
-                if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON) {
+                if (SchemeDetailsMasterHelper.getInstance(mContext).IS_SCHEME_ON) {
                     for (ProductMasterBO product : mProductsForAdapter) {
                         if (product.isPromo()) {
                             if (product.getSchemeProducts() != null) {
