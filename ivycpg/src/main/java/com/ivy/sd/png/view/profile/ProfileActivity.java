@@ -2023,23 +2023,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                         bmodel.getRetailerWiseSellerType();
                     }
 
-                    // load scheme details
-                    bmodel.schemeDetailsMasterHelper.loadSchemeConfigs(ProfileActivity.this);
-                    if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER) {
 
-                        if (bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE) {
-                            if (!("Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
 
-                                bmodel.schemeDetailsMasterHelper
-                                        .downloadSchemeMethods();
-                            }
-                        } else {
-                            bmodel.schemeDetailsMasterHelper
-                                    .downloadSchemeMethods();
+                    if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
+                                || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
+
+                                bmodel.schemeDetailsMasterHelper.initializeScheme();
+
                         }
-                    } else {
-                        bmodel.schemeDetailsMasterHelper.setIsScheme(new ArrayList<String>());
-                    }
+
 
                     if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
                         bmodel.productHelper.downloadProductDiscountDetails();
