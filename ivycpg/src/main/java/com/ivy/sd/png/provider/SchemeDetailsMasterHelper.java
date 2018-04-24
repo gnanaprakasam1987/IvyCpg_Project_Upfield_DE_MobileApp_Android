@@ -67,13 +67,14 @@ public class SchemeDetailsMasterHelper {
     private HashMap<String, SchemeProductBO> mBuyProductBoBySchemeIdWithPid;
 
 
+    /* Profile related Objects */
     //Lists used for showing all schemes applicable for the product
     private HashMap<String, ArrayList<Integer>> mParentIdListByProductId;
     private SparseArray<ArrayList<String>> mProductIdListByParentId;
-
     //To show scheme free products in free product selection dialog and product profile screen
     private HashMap<String, ArrayList<String>> mFreeGroupNameListBySchemeId;
     private HashMap<String, String> mFreeGroupTypeByFreeGroupName;
+
 
     //Accumulation scheme - Ordered product list by its scheme Id
     private HashMap<String, ArrayList<ProductMasterBO>> mSchemeHistoryListBySchemeId;
@@ -137,7 +138,7 @@ public class SchemeDetailsMasterHelper {
 
             String sql = "SELECT hhtCode, RField FROM "
                     + DataMembers.tbl_HhtModuleMaster;
-                   // + " WHERE menu_type = 'SCHEME' AND flag='1'";
+            // + " WHERE menu_type = 'SCHEME' AND flag='1'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -186,25 +187,25 @@ public class SchemeDetailsMasterHelper {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            int distributorId=bmodel.getRetailerMasterBO().getDistributorId();
-            String retailerId=bmodel.getRetailerMasterBO().getRetailerID();
-            int channelId=bmodel.getRetailerMasterBO().getSubchannelid();
-            int locationId=bmodel.getRetailerMasterBO().getLocationId();
-            int accountId=bmodel.getRetailerMasterBO().getAccountid();
-            int priorityProductId= bmodel.getRetailerMasterBO().getPrioriryProductId();
-            int userId=bmodel.userMasterHelper.getUserMasterBO().getUserid();
+            int distributorId = bmodel.getRetailerMasterBO().getDistributorId();
+            String retailerId = bmodel.getRetailerMasterBO().getRetailerID();
+            int channelId = bmodel.getRetailerMasterBO().getSubchannelid();
+            int locationId = bmodel.getRetailerMasterBO().getLocationId();
+            int accountId = bmodel.getRetailerMasterBO().getAccountid();
+            int priorityProductId = bmodel.getRetailerMasterBO().getPrioriryProductId();
+            int userId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
 
             //  loading scheme groups based on retailer attributes
-            ArrayList<String> mGroupIdList=downloadValidSchemeGroups(db);
+            ArrayList<String> mGroupIdList = downloadValidSchemeGroups(db);
             //  for loading highest slab parent ids
-            downloadSchemeParentDetails(db, distributorId , retailerId, channelId , locationId, accountId, priorityProductId,mGroupIdList);
+            downloadSchemeParentDetails(db, distributorId, retailerId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
             //  load buy product list
-            downloadBuySchemeDetails(db, retailerId, userId, distributorId, channelId, locationId, accountId, priorityProductId,mGroupIdList);
+            downloadBuySchemeDetails(db, retailerId, userId, distributorId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
             //  update free product
             downloadFreeProducts(db);
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
-                downloadParentIdListByProduct(db,mGroupIdList);
+                downloadParentIdListByProduct(db, mGroupIdList);
             }
 
             downloadPeriodWiseScheme(db);
@@ -221,13 +222,14 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Downloading valid scheme groups
+     *
      * @param db Database object
      * @return
      */
     private ArrayList<String> downloadValidSchemeGroups(DBUtil db) {
 
         StringBuilder sb = new StringBuilder();
-        ArrayList<String> mGroupIDList=new ArrayList<>();
+        ArrayList<String> mGroupIDList = new ArrayList<>();
         ArrayList<String> retailerAttributes = bmodel.getAttributeParentListForCurrentRetailer();
 
         sb.append("select Distinct schemeid,groupid,EA1.AttributeName as ParentName,EA.ParentID from SchemeAttributeMapping  SAM" +
@@ -244,8 +246,8 @@ public class SchemeDetailsMasterHelper {
                     if (lastSchemeId != c.getInt(0) || lastGroupId != c.getInt(1)) {
 
                         if (isGroupSatisfied) {
-                            if (!mGroupIDList.contains(lastGroupId+"" + lastSchemeId)) {
-                                mGroupIDList.add(lastGroupId+"" + lastSchemeId);
+                            if (!mGroupIDList.contains(lastGroupId + "" + lastSchemeId)) {
+                                mGroupIDList.add(lastGroupId + "" + lastSchemeId);
                             }
                         }
 
@@ -276,7 +278,6 @@ public class SchemeDetailsMasterHelper {
 
 
     }
-
 
 
     private boolean isSchemeApplicable(int schemeId, int groupId, int parentId) {
@@ -314,6 +315,7 @@ public class SchemeDetailsMasterHelper {
     /**
      * Preparing scheme list by parentId..
      * List will be ordered based on total Buy quantity(highest slab on top).
+     *
      * @param db
      * @param distributorId
      * @param retailerId
@@ -323,8 +325,8 @@ public class SchemeDetailsMasterHelper {
      * @param priorityProductId
      * @return
      */
-    public void downloadSchemeParentDetails(DBUtil db,int distributorId,String retailerId,int channelId
-            ,int locationId,int accountId,int priorityProductId,ArrayList<String> mGroupIDList) {
+    public void downloadSchemeParentDetails(DBUtil db, int distributorId, String retailerId, int channelId
+            , int locationId, int accountId, int priorityProductId, ArrayList<String> mGroupIDList) {
         mSchemeIDListByParentID = new HashMap<>();
         mParentIDList = new ArrayList<>();
 
@@ -340,10 +342,10 @@ public class SchemeDetailsMasterHelper {
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
 
         sb.append(" where SCM.distributorid in(0," + distributorId + ")");
-        sb.append(" and SCM.RetailerId in(0," +retailerId + ")");
-        sb.append(" and SCM.channelid in(0," +channelId + ")");
+        sb.append(" and SCM.RetailerId in(0," + retailerId + ")");
+        sb.append(" and SCM.channelid in(0," + channelId + ")");
         sb.append(" and SCM.locationid in(0," + locationId + ")");
-        sb.append(" and SCM.accountid in(0," +accountId + ")");
+        sb.append(" and SCM.accountid in(0," + accountId + ")");
         sb.append(" and SCM.PriorityProductId in(0," + priorityProductId + ")");
         sb.append(" group by sm.schemeid,SM.parentid order by SM.parentid,totalQty desc");
 
@@ -390,6 +392,7 @@ public class SchemeDetailsMasterHelper {
     public ArrayList<Integer> getmParentIDList() {
         return mParentIDList;
     }
+
     public HashMap<Integer, ArrayList<String>> getSchemeIdListByParentID() {
         return mSchemeIDListByParentID;
     }
@@ -397,6 +400,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Downloading schemes with their BUY product details
+     *
      * @param db
      * @param retailerId
      * @param userId
@@ -407,15 +411,14 @@ public class SchemeDetailsMasterHelper {
      * @param priorityProductId
      * @return
      */
-    public void downloadBuySchemeDetails(DBUtil db,String retailerId,int userId,int distributorId,int channelId,int locationId
-                                           ,int accountId,int priorityProductId,ArrayList<String> mGroupIDList) {
+    public void downloadBuySchemeDetails(DBUtil db, String retailerId, int userId, int distributorId, int channelId, int locationId
+            , int accountId, int priorityProductId, ArrayList<String> mGroupIDList) {
         mSchemeById = new HashMap<>();
         mSchemeList = new ArrayList<>();
         mBuyProductBoBySchemeIdWithPid = new HashMap<>();
 
 
-
-        SchemeBO schemeBO ;
+        SchemeBO schemeBO;
         SchemeProductBO schemeProductBo;
 
 
@@ -427,7 +430,7 @@ public class SchemeDetailsMasterHelper {
 
         sb.append(" FROM SchemeMaster SM left join schemeApplyCountMaster SAC on SM.schemeid=SAC.schemeID");
 
-        sb.append(" and ((SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(retailerId)+")");
+        sb.append(" and ((SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(retailerId) + ")");
         sb.append(" AND (SAC.userid=0 OR SAC.userid=" + userId + ")) ");
 
         sb.append(" INNER JOIN  SchemeBuyMaster BD ON BD.SchemeID = SM.SchemeID");
@@ -507,8 +510,8 @@ public class SchemeDetailsMasterHelper {
                     schemeProductBo.setBatchId(c.getString(20));
 
                     //updating Promo flag in product master list
-                    ProductMasterBO productMasterBO=bmodel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
-                    if(productMasterBO!=null) {
+                    ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
+                    if (productMasterBO != null) {
                         productMasterBO.setIsPromo(true);
                     }
 
@@ -563,11 +566,12 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * updating scheme object with the free product details
+     *
      * @param db Database object
      */
     private void downloadFreeProducts(DBUtil db) {
         mFreeGroupTypeByFreeGroupName = new HashMap<>();
-        mFreeGroupNameListBySchemeId=new HashMap<>();
+        mFreeGroupNameListBySchemeId = new HashMap<>();
 
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT distinct FD.SchemeID, SFP.productid, PM.psname, SFP.FreeQty, SFP.MaxQty, FD.Rate,");
@@ -588,7 +592,7 @@ public class SchemeDetailsMasterHelper {
         if (c.getCount() > 0) {
             SchemeBO schemeBO;
             SchemeProductBO productBO;
-            String schemeID ;
+            String schemeID;
             while (c.moveToNext()) {
                 schemeID = c.getString(0);
 
@@ -638,18 +642,17 @@ public class SchemeDetailsMasterHelper {
                             schemeID + productBO.getGroupName(),
                             productBO.getGroupLogic());
 
-                    if(mFreeGroupNameListBySchemeId.get(productBO.getSchemeId())!=null){
-                        ArrayList<String> mGroupNames=mFreeGroupNameListBySchemeId.get(productBO.getSchemeId());
-                        if(!mGroupNames.contains(productBO.getGroupName())) {
+                    if (mFreeGroupNameListBySchemeId.get(productBO.getSchemeId()) != null) {
+                        ArrayList<String> mGroupNames = mFreeGroupNameListBySchemeId.get(productBO.getSchemeId());
+                        if (!mGroupNames.contains(productBO.getGroupName())) {
                             mGroupNames.add(productBO.getGroupName());
                         }
-                        mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(),mGroupNames);
+                        mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(), mGroupNames);
 
-                    }
-                    else {
-                        ArrayList<String> mGroupNames=new ArrayList<>();
+                    } else {
+                        ArrayList<String> mGroupNames = new ArrayList<>();
                         mGroupNames.add(productBO.getGroupName());
-                        mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(),mGroupNames);
+                        mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(), mGroupNames);
                     }
                 }
             }
@@ -671,10 +674,11 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Prepare product's scheme details to show in schemes in product profile screen
-     * @param db Database object
+     *
+     * @param db           Database object
      * @param mGroupIDList list of scheme groups allowed
      */
-    private void downloadParentIdListByProduct(DBUtil db,ArrayList<String> mGroupIDList) {
+    private void downloadParentIdListByProduct(DBUtil db, ArrayList<String> mGroupIDList) {
 
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct SBM.productid,SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from SchemeBuyMaster SBM ");
@@ -682,7 +686,7 @@ public class SchemeDetailsMasterHelper {
         sb.append(" inner join SchemeMaster SM on SM.Schemeid=SBM.Schemeid ");
         sb.append("inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid ");
         sb.append("left join schemeApplyCountMaster SAC on SBM.schemeid=SAC.schemeID ");
-        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())+")");
+        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ")");
         sb.append(" AND (SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ")");
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
 
@@ -696,11 +700,11 @@ public class SchemeDetailsMasterHelper {
         Cursor c = db.selectSQL(sb.toString());
         if (c.getCount() > 0) {
             mParentIdListByProductId = new HashMap<>();
-            mProductIdListByParentId=new SparseArray<>();
+            mProductIdListByParentId = new SparseArray<>();
             String productId = "";
             ArrayList<Integer> parentIdList = new ArrayList<>();
             ArrayList<String> productIdList = new ArrayList<>();
-            int parentId=0;
+            int parentId = 0;
             while (c.moveToNext()) {
                 if (c.getInt(3) == 0 || (c.getInt(3) == 1 && mGroupIDList != null && mGroupIDList.contains(c.getString(2) + c.getString(1)))) {
 
@@ -824,10 +828,10 @@ public class SchemeDetailsMasterHelper {
      * Download accumulation schemes
      */
     public void downloadSchemeHistoryDetails() {
-        ProductMasterBO productBO ;
+        ProductMasterBO productBO;
         mSchemeHistoryListBySchemeId = new HashMap<>();
 
-        DBUtil db ;
+        DBUtil db;
         try {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
@@ -922,7 +926,7 @@ public class SchemeDetailsMasterHelper {
                     int parentId = 0;
                     String schemeDesc = "";
                     String freeType = "";
-                    SchemeBO schemeBO ;
+                    SchemeBO schemeBO;
 
                     if (mFreeGroupTypeByFreeGroupName == null) {
                         mFreeGroupTypeByFreeGroupName = new HashMap<>();
@@ -977,18 +981,17 @@ public class SchemeDetailsMasterHelper {
                         mFreeGroupTypeByFreeGroupName.put(c.getInt(4) + c.getString(7), c.getString(8));
 
                         //preparing free group name list by scheme id
-                        if(mFreeGroupNameListBySchemeId.get(schemeProductBO.getSchemeId())!=null){
-                            ArrayList<String> mGroupNames=mFreeGroupNameListBySchemeId.get(schemeProductBO.getSchemeId());
-                            if(!mGroupNames.contains(schemeProductBO.getGroupName())) {
+                        if (mFreeGroupNameListBySchemeId.get(schemeProductBO.getSchemeId()) != null) {
+                            ArrayList<String> mGroupNames = mFreeGroupNameListBySchemeId.get(schemeProductBO.getSchemeId());
+                            if (!mGroupNames.contains(schemeProductBO.getGroupName())) {
                                 mGroupNames.add(schemeProductBO.getGroupName());
                             }
-                            mFreeGroupNameListBySchemeId.put(schemeProductBO.getSchemeId(),mGroupNames);
+                            mFreeGroupNameListBySchemeId.put(schemeProductBO.getSchemeId(), mGroupNames);
 
-                        }
-                        else {
-                            ArrayList<String> mGroupNames=new ArrayList<>();
+                        } else {
+                            ArrayList<String> mGroupNames = new ArrayList<>();
                             mGroupNames.add(schemeProductBO.getGroupName());
-                            mFreeGroupNameListBySchemeId.put(schemeProductBO.getSchemeId(),mGroupNames);
+                            mFreeGroupNameListBySchemeId.put(schemeProductBO.getSchemeId(), mGroupNames);
                         }
                         //
 
@@ -1028,37 +1031,45 @@ public class SchemeDetailsMasterHelper {
         mAchieved_qty_or_salesValue_by_schemeId_nd_productid = new HashMap<>();
         mAppliedSchemeList = new ArrayList<>();
 
-        if (mParentIDList != null) {
-            for (Integer parentID : mParentIDList) {
+        if (mParentIDList == null) {
+            return;
+        }
 
-                int slabPosition = 0;
-                ArrayList<String> schemeIDList = mSchemeIDListByParentID.get(parentID);
+        for (Integer parentID : mParentIDList) {
 
-                if (schemeIDList != null) {
-                    for (String schemeID : schemeIDList) {
+            int slabPosition = 0;
+            ArrayList<String> schemeIDList = mSchemeIDListByParentID.get(parentID);
 
-                        slabPosition += 1;
-                        SchemeBO schemeBO = mSchemeById.get(schemeID);
+            if (schemeIDList == null) {
+                break;
+            }
 
-                        if (schemeBO != null&&!schemeBO.isOffScheme()) {
-                            // only ON scheme will be allowed to apply
+            for (String schemeID : schemeIDList) {
 
-                                if (isSchemeDone(schemeBO, parentID, slabPosition == 1)) {
+                slabPosition += 1;
+                SchemeBO schemeBO = mSchemeById.get(schemeID);
 
-                                    mAppliedSchemeList.add(schemeBO);
+                if (schemeBO == null || schemeBO.isOffScheme()) {
+                    break;
+                }
+                // only ON scheme will be allowed to apply
 
-                                    //MTS-Allowed to next slab if scheme type is MTS
-                                    //MSP(PRORATA)- Allowed to next slab if scheme not fell on highest slab.
-                                    if ((!schemeBO.getProcessType().equals(PROCESS_TYPE_MTS) && !schemeBO.getProcessType().equals(PROCESS_TYPE_PRORATA))
-                                            || (schemeBO.getProcessType().equals(PROCESS_TYPE_PRORATA) && slabPosition == 1)) {
-                                        break;
-                                    }
-                                }
-                        }
+                if (isSchemeDone(schemeBO, parentID, slabPosition == 1)) {
+
+                    mAppliedSchemeList.add(schemeBO);
+
+                    //MTS-Allowed to next slab if scheme type is MTS
+                    //MSP(PRORATA)- Allowed to next slab if scheme not fell on highest slab.
+                    if ((!schemeBO.getProcessType().equals(PROCESS_TYPE_MTS) && !schemeBO.getProcessType().equals(PROCESS_TYPE_PRORATA))
+                            || (schemeBO.getProcessType().equals(PROCESS_TYPE_PRORATA) && slabPosition == 1)) {
+                        break;
                     }
                 }
-            }
-        }
+
+            } // slab loop
+
+        } // scheme loop
+
 
         // Adding Off invoice schemes(Accumulation scheme free issues) to applied scheme list. So that it will be shown in scheme apply screen
         if (mOffInvoiceSchemeList != null) {
@@ -1085,16 +1096,17 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Checking whether current slab is achieved or not
-     * @param schemeBO Current slab
-     * @param parentID Current Scheme Id
+     *
+     * @param schemeBO      Current slab
+     * @param parentID      Current Scheme Id
      * @param iSHighestSlab Is highest slab
      * @return Is Slab achieved
      */
     private boolean isSchemeDone(SchemeBO schemeBO, Integer parentID, boolean iSHighestSlab) {
 
-        int mApplyCount=0;
+        int mApplyCount = 0;
 
-        // Preparing list of groups available for current slab
+        // Preparing list of groups available for current slab and Group logic.
         ArrayList<String> mGroupNameList = new ArrayList<>();
         HashMap<String, String> mGroupLogicTypeByGroupName = new HashMap<>();
 
@@ -1177,10 +1189,11 @@ public class SchemeDetailsMasterHelper {
     /**
      * Checking is parent logic(ANY) achieved or not
      * Parent logic is ANY, So if any one of the group under this slab is achieved then this slab is considered as achieved
-     * @param schemeBO Current slab
-     * @param groupSchemeName list of groups available in current slab
+     *
+     * @param schemeBO                  Current slab
+     * @param groupSchemeName           list of groups available in current slab
      * @param groupLogicTypeByGroupName List with group logic type by its group name
-     * @param mParentId Scheme Id
+     * @param mParentId                 Scheme Id
      * @return Is Slab achieved or not
      */
     private boolean isParentAnyLogicDone(SchemeBO schemeBO, ArrayList<String> groupSchemeName,
@@ -1188,12 +1201,12 @@ public class SchemeDetailsMasterHelper {
 
         for (String groupName : groupSchemeName) {
             String groupLogic = groupLogicTypeByGroupName.get(groupName);
-            if (groupLogic.equals(AND_LOGIC)||groupLogic.equals(ONLY_LOGIC)) {
-                 if(isGroupAndLogicDone(schemeBO, groupName, mParentId))
-                     return true;
+            if (groupLogic.equals(AND_LOGIC) || groupLogic.equals(ONLY_LOGIC)) {
+                if (isGroupAndLogicDone(schemeBO, groupName, mParentId))
+                    return true;
 
             } else if (groupLogic.equals(ANY_LOGIC)) {
-                if(isGroupAnyLogicDone(schemeBO, groupName, mParentId))
+                if (isGroupAnyLogicDone(schemeBO, groupName, mParentId))
                     return true;
 
             }
@@ -1206,10 +1219,11 @@ public class SchemeDetailsMasterHelper {
     /**
      * Checking is parent logic(AND) achieved or not
      * Parent logic is AND, So only if all of the groups under this slab is achieved then this slab is considered as achieved
-     * @param schemeBO Current slab
-     * @param groupSchemeName list of groups available in current slab
+     *
+     * @param schemeBO                   Current slab
+     * @param groupSchemeName            list of groups available in current slab
      * @param mGroupLogicTypeByGroupName List with group logic type by its group name
-     * @param mParentId Scheme Id
+     * @param mParentId                  Scheme Id
      * @return Is Slab achieved or not
      */
     private boolean isParentAndLogicDone(SchemeBO schemeBO,
@@ -1218,7 +1232,7 @@ public class SchemeDetailsMasterHelper {
 
         for (String groupName : groupSchemeName) {
             String groupBuyType = mGroupLogicTypeByGroupName.get(groupName);
-            if (groupBuyType.equals(AND_LOGIC)||groupBuyType.equals(ONLY_LOGIC)) {
+            if (groupBuyType.equals(AND_LOGIC) || groupBuyType.equals(ONLY_LOGIC)) {
                 if (!isGroupAndLogicDone(schemeBO, groupName, mParentId)) {
                     return false;
                 }
@@ -1234,7 +1248,8 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Checking is current group is achieved or not
-     * @param schemeBO Current slab
+     *
+     * @param schemeBO  Current slab
      * @param groupName Current group name
      * @param mParentId Scheme Id
      * @return is Current group achieved or not
@@ -1275,7 +1290,7 @@ public class SchemeDetailsMasterHelper {
                         int totalQty;
                         if (schemeBO.isBatchWise() && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                             // batch wise scheme
-                           totalQty=getBatchTotalQuantity(productBo,schemeProductBo.getBatchId());
+                            totalQty = getBatchTotalQuantity(productBo, schemeProductBo.getBatchId());
 
                         } else {
                             totalQty = productBo.getOrderedPcsQty()
@@ -1390,7 +1405,8 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Checking is current group(ANY) is achieved or not
-     * @param schemeBO Current slab
+     *
+     * @param schemeBO  Current slab
      * @param groupName Current group name
      * @param mParentId Scheme Id
      * @return is Current group achieved or not
@@ -1425,12 +1441,12 @@ public class SchemeDetailsMasterHelper {
 
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
 
-                        int orderedTotalQuantityByUOMWise ;
+                        int orderedTotalQuantityByUOMWise;
                         int totalProductQty = 0;
 
                         if (schemeBO.isBatchWise() && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                             // batch wise scheme
-                            totalQty=getBatchTotalQuantity(productBo,schemeProductBo.getBatchId());
+                            totalQty = getBatchTotalQuantity(productBo, schemeProductBo.getBatchId());
 
                         } else {
                             totalProductQty = productBo.getOrderedPcsQty()
@@ -1497,7 +1513,7 @@ public class SchemeDetailsMasterHelper {
                         }
                     } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
-                        double totalProductValue ;
+                        double totalProductValue;
 
                         if (productBo.getBatchwiseProductCount() > 0 && schemeBO.isBatchWise() && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                             totalProductValue = getBatchTotalValue(productBo, schemeProductBo.getBatchId());
@@ -1577,7 +1593,7 @@ public class SchemeDetailsMasterHelper {
 
         ArrayList<ProductMasterBO> batchWiseList = bmodel.batchAllocationHelper
                 .getBatchlistByProductID().get(productBO.getProductID());
-        int totalQuantity=0;
+        int totalQuantity = 0;
         if (batchWiseList != null) {
             for (ProductMasterBO batchProductBO : batchWiseList) {
                 if (batchProductBO.getBatchid().equals(batchId)) {
@@ -1585,8 +1601,8 @@ public class SchemeDetailsMasterHelper {
                             || batchProductBO.getOrderedCaseQty() > 0
                             || batchProductBO.getOrderedOuterQty() > 0) {
                         totalQuantity = batchProductBO.getOrderedPcsQty()
-                                + (batchProductBO.getOrderedCaseQty()*productBO.getCaseSize())
-                                + (batchProductBO.getOrderedOuterQty()*productBO.getOutersize());
+                                + (batchProductBO.getOrderedCaseQty() * productBO.getCaseSize())
+                                + (batchProductBO.getOrderedOuterQty() * productBO.getOutersize());
 
                     }
                 }
@@ -1599,7 +1615,8 @@ public class SchemeDetailsMasterHelper {
     /**
      * After scheme achieved successfully ,this method used to update the scheme free
      * details like product,percentage,amount and price     *
-     * @param schemeBO Current Slab
+     *
+     * @param schemeBO                   Current Slab
      * @param mNumberOfTimesSlabAchieved Number of times slab achieved
      */
     private void calculateFreeForAchievedScheme(SchemeBO schemeBO, int mNumberOfTimesSlabAchieved) {
@@ -1625,7 +1642,6 @@ public class SchemeDetailsMasterHelper {
 
 					/* scheme Buy type is Quantity */
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-
 
 
                         //Calculating min and max free quantity
@@ -1673,8 +1689,8 @@ public class SchemeDetailsMasterHelper {
                             maxFreeQuantity += remainingMaxQty;
                         //
 
-                        minFreeAmount = schemeProductBO.getMinAmount()  * mNumberOfTimesSlabAchieved;
-                        maxFreeAmount = schemeProductBO.getMaxAmount()  * mNumberOfTimesSlabAchieved;
+                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
                         // adding calculated percent of amount
                         minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
                         maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
@@ -1693,8 +1709,8 @@ public class SchemeDetailsMasterHelper {
                             maxFreeQuantity += remainingMaxQty;
 
 
-                        minFreeAmount = schemeProductBO.getMinAmount()   * mNumberOfTimesSlabAchieved;
-                        maxFreeAmount = schemeProductBO.getMaxAmount()   * mNumberOfTimesSlabAchieved;
+                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
 
                         // adding calculated percent of amount
                         minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
@@ -1798,17 +1814,15 @@ public class SchemeDetailsMasterHelper {
             schemeBO.setSelectedAmount(minFreeAmount);
 
             //Updating flag to show in Scheme Apply Screen
-            if (schemeBO.getActualPrice() > 0  && schemeBO.getMaximumPrice() > 0) {
+            if (schemeBO.getActualPrice() > 0 && schemeBO.getMaximumPrice() > 0) {
                 schemeBO.setPriceTypeSeleted(true);
             } else if (schemeBO.getMinimumAmount() > 0 && schemeBO.getMaximumAmount() > 0) {
                 schemeBO.setAmountTypeSelected(true);
             } else if (schemeBO.getMinimumPrecent() > 0 && schemeBO.getMaximumPrecent() > 0) {
                 schemeBO.setDiscountPrecentSelected(true);
-            }
-            else if (schemeBO.getMinimumPrecent() > 0 && schemeBO.getMaximumPrecent() > 0) {
+            } else if (schemeBO.getMinimumPrecent() > 0 && schemeBO.getMaximumPrecent() > 0) {
                 schemeBO.setDiscountPrecentSelected(true);
-            }
-            else if(schemeBO.getActualQuantity()>0&&schemeBO.getMaximumQuantity()>0){
+            } else if (schemeBO.getActualQuantity() > 0 && schemeBO.getMaximumQuantity() > 0) {
                 schemeBO.setQuantityTypeSelected(true);
             }
 
@@ -1948,14 +1962,15 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Getting number of times current slab(Parent logic - AND) is achieved
-     * @param schemeProductList Buy products for current slab
-     * @param schemeGroupName List of groups available under the given slab
+     *
+     * @param schemeProductList             Buy products for current slab
+     * @param schemeGroupName               List of groups available under the given slab
      * @param schemeGroupBuyTypeByGroupName List with group logic by its group name
-     * @param isQuantityType  Buy type is quantity or sales value
-     * @param isBatchWise Is batch wise products available
-     * @param parentId Scheme Id
-     * @param processType Scheme process type
-     * @param isHighestSlab Is current slab is highest slab or not
+     * @param isQuantityType                Buy type is quantity or sales value
+     * @param isBatchWise                   Is batch wise products available
+     * @param parentId                      Scheme Id
+     * @param processType                   Scheme process type
+     * @param isHighestSlab                 Is current slab is highest slab or not
      * @return Number of times current slab is achieved
      */
     private int getNumberOfTimesSlabApplied_ForAndLogic(
@@ -1972,9 +1987,9 @@ public class SchemeDetailsMasterHelper {
 
                 int count;
                 if (isQuantityType) {
-                    count = getAndLogicAppliedCountForQuantity(schemeProductList, groupName,  isBatchWise, parentId, processType, isHighestSlab);
+                    count = getAndLogicAppliedCountForQuantity(schemeProductList, groupName, isBatchWise, parentId, processType, isHighestSlab);
                 } else {
-                    count = getAndLogicAppliedCountForSalesValue(schemeProductList, groupName,  isBatchWise, parentId, processType, isHighestSlab);
+                    count = getAndLogicAppliedCountForSalesValue(schemeProductList, groupName, isBatchWise, parentId, processType, isHighestSlab);
                 }
 
                 //Getting lowest value as it is a AND/ONLY logic
@@ -1987,9 +2002,9 @@ public class SchemeDetailsMasterHelper {
                 }
 
             } else if (type.equals(ANY_LOGIC)) {
-                int count ;
+                int count;
                 if (isQuantityType) {
-                    count = getANYLogicAppliedCountForQuantity(schemeProductList, groupName,  isBatchWise, parentId, processType, isHighestSlab);
+                    count = getANYLogicAppliedCountForQuantity(schemeProductList, groupName, isBatchWise, parentId, processType, isHighestSlab);
                 } else {
                     count = getAnyLogicAppliedCountForSalesValue(schemeProductList, groupName, isBatchWise, parentId, processType, isHighestSlab);
                 }
@@ -2017,14 +2032,15 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Getting number of times current slab(Parent logic - ANY) is achieved
-     * @param schemeProductList Buy products for current slab
-     * @param schemeGroupName List of groups available under the given slab
+     *
+     * @param schemeProductList             Buy products for current slab
+     * @param schemeGroupName               List of groups available under the given slab
      * @param schemeGroupBuyTypeByGroupName List with group logic by its group name
-     * @param isQuantityType  Buy type is quantity or sales value
-     * @param isBatchWise Is batch wise products available
-     * @param parentID Scheme Id
-     * @param processType Scheme process type
-     * @param isHighestSlab Is current slab is highest slab or not
+     * @param isQuantityType                Buy type is quantity or sales value
+     * @param isBatchWise                   Is batch wise products available
+     * @param parentID                      Scheme Id
+     * @param processType                   Scheme process type
+     * @param isHighestSlab                 Is current slab is highest slab or not
      * @return Number of times current slab is achieved
      */
     private int getNumberOfTimesSlabApplied_ForAnyLogic(
@@ -2045,7 +2061,7 @@ public class SchemeDetailsMasterHelper {
                 if (isQuantityType) {
                     count = getAndLogicAppliedCountForQuantity(schemeProductList, s, isBatchWise, parentID, processType, isHighestSlab);
                 } else {
-                    count = getAndLogicAppliedCountForSalesValue(schemeProductList, s,  isBatchWise, parentID, processType, isHighestSlab);
+                    count = getAndLogicAppliedCountForSalesValue(schemeProductList, s, isBatchWise, parentID, processType, isHighestSlab);
                 }
 
                 //Getting highest value as its parent is ANY logic
@@ -2060,10 +2076,10 @@ public class SchemeDetailsMasterHelper {
                 }
 
             } else if (type.equals(ANY_LOGIC)) {
-                int count ;
+                int count;
 
                 if (isQuantityType) {
-                    count = getANYLogicAppliedCountForQuantity(schemeProductList, s,  isBatchWise, parentID, processType, isHighestSlab);
+                    count = getANYLogicAppliedCountForQuantity(schemeProductList, s, isBatchWise, parentID, processType, isHighestSlab);
                 } else {
                     count = getAnyLogicAppliedCountForSalesValue(schemeProductList, s, isBatchWise, parentID, processType, isHighestSlab);
                 }
@@ -2104,13 +2120,14 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Getting number of times current group(AND) is achieved. Buy Type- Quantity
+     *
      * @param schemeProductList Current slabs buy product list
-     * @param groupName current group name
-     * @param isCombination
-     * @param isBatchWise Is batch wise products available
-     * @param parentID Scheme Id
-     * @param processType Scheme Process type
-     * @param isHighestSlab Is highest slab
+     * @param groupName         current group name
+     * @param isCombination     jh
+     * @param isBatchWise       Is batch wise products available
+     * @param parentID          Scheme Id
+     * @param processType       Scheme Process type
+     * @param isHighestSlab     Is highest slab
      * @return Total number of times current group achieved
      */
     private int getAndLogicAppliedCountForQuantity(List<SchemeProductBO> schemeProductList,
@@ -2223,7 +2240,7 @@ public class SchemeDetailsMasterHelper {
                         //updating used quantity for applying scheme in the list
                         if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null &&
                                 !mAchieved_qty_or_salesValue_by_schemeId_nd_productid.containsKey(parentID + productMasterBO.getProductID())) {
-                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()),  (quantity - balanceQtyInPieces));
+                            mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()), (quantity - balanceQtyInPieces));
                         } else {
                             mAchieved_qty_or_salesValue_by_schemeId_nd_productid.put((parentID + productMasterBO.getProductID()), (mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + productMasterBO.getProductID()) + ((quantity - balanceQtyInPieces))));
                         }
@@ -2310,22 +2327,23 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Getting number of times current group(AND) is achieved. Buy Type- Sales value
+     *
      * @param schemeProductList Current slabs buy product list
-     * @param groupName current group name
-     * @param isCombination
-     * @param isBatchWise Is batch wise products available
-     * @param parentId Scheme Id
-     * @param processType Scheme Process type
-     * @param isHighestSlab Is highest slab
+     * @param groupName         current group name
+     * @param isCombination     ii
+     * @param isBatchWise       Is batch wise products available
+     * @param parentId          Scheme Id
+     * @param processType       Scheme Process type
+     * @param isHighestSlab     Is highest slab
      * @return Total number of times current group achieved
      */
     private int getAndLogicAppliedCountForSalesValue(
             List<SchemeProductBO> schemeProductList, String groupName
-           , boolean isBatchWise, int parentId, String processType, boolean isHighestSlab) {
+            , boolean isBatchWise, int parentId, String processType, boolean isHighestSlab) {
 
         int tempCount = 0;
-        double tempBalancePercent ;
-        double tempBal ;
+        double tempBalancePercent;
+        double tempBal;
         double balancePercent = 0;
 
         for (SchemeProductBO schemeProductBO : schemeProductList) {
@@ -2337,7 +2355,7 @@ public class SchemeDetailsMasterHelper {
 
                 if (productMasterBO != null) {
 
-                    double totalValue ;
+                    double totalValue;
                     if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         totalValue = getBatchTotalValue(productMasterBO, schemeProductBO.getBatchId());
                     } else {
@@ -2379,7 +2397,7 @@ public class SchemeDetailsMasterHelper {
                     /* scheme accumulation ends */
 
                     if (totalValue > 0) {
-                        double balanceValue ;
+                        double balanceValue;
                         if (schemeProductBO.getTobuyQty() > 0
                                 && schemeProductBO.getBuyQty() > 0) {
 
@@ -2436,23 +2454,24 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Getting number of times current group(ANY) is achieved. Buy Type- Quantity
+     *
      * @param schemeProductList Current slabs buy product list
-     * @param groupName current group name
-     * @param isBatchWise Is batch wise products available
-     * @param parentID Scheme Id
-     * @param processType Scheme Process type
-     * @param isHighestSlab Is highest slab
+     * @param groupName         current group name
+     * @param isBatchWise       Is batch wise products available
+     * @param parentID          Scheme Id
+     * @param processType       Scheme Process type
+     * @param isHighestSlab     Is highest slab
      * @return Total number of times current group achieved
      */
     private int getANYLogicAppliedCountForQuantity(List<SchemeProductBO> schemeProductList,
-                                                   String groupName,  boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
+                                                   String groupName, boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
         int count = 0;
         double tempBalancePercent = 0;
         double minimumBuyQuantity = 0;
         double maximumBuyQuantity = 0;
 
         for (SchemeProductBO schemeProductBO : schemeProductList) {
-            if (schemeProductBO.getGroupName().equals(groupName) ) {
+            if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 maximumBuyQuantity = schemeProductBO.getTobuyQty();
                 minimumBuyQuantity = schemeProductBO.getBuyQty();
@@ -2463,8 +2482,7 @@ public class SchemeDetailsMasterHelper {
                     int quantity;
                     if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         quantity = getBatchTotalQuantity(productMasterBO, schemeProductBO.getBatchId());
-                    }
-                    else {
+                    } else {
                         quantity = (productMasterBO.getOrderedCaseQty() * productMasterBO
                                 .getCaseSize())
                                 + (productMasterBO.getOrderedOuterQty() * productMasterBO
@@ -2486,7 +2504,7 @@ public class SchemeDetailsMasterHelper {
                             .getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
                         schemeAccumulationList = bmodel.schemeDetailsMasterHelper.getSchemeHistoryListBySchemeId().get(
-                                        schemeBO.getParentId() + "");
+                                schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationList != null) {
                         // Adding accumulation quantity to the current order quantity
@@ -2555,22 +2573,21 @@ public class SchemeDetailsMasterHelper {
                 // Any Logic- So considered all products
                 if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
 
-                    int orderedQuantity ;
-                    double tempToQty ;
-                    int appliedQuantity ;
+                    int orderedQuantity;
+                    double tempToQty;
+                    int appliedQuantity;
                     tempToQty = maximumBuyQuantity * count;
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
                         ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                         if (productBO != null) {
 
                             if (isBatchWise && productBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                                orderedQuantity=getBatchTotalQuantity(productBO,schemeProductBO.getBatchId());
-                            }
-                            else {
+                                orderedQuantity = getBatchTotalQuantity(productBO, schemeProductBO.getBatchId());
+                            } else {
                                 orderedQuantity = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
                             }
 
-                            if (orderedQuantity>0) {
+                            if (orderedQuantity > 0) {
 
                                 if (schemeProductBO.getUomID() == productBO.getOuUomid()) {
                                     if (productBO.getOutersize() != 0) {
@@ -2659,22 +2676,23 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Getting number of times current group(ANY) is achieved. Buy Type- Sales value
+     *
      * @param schemeProductList Current slabs buy product list
-     * @param groupName current group name
-     * @param isBatchWise Is batch wise products available
-     * @param parentID Scheme Id
-     * @param processType Scheme Process type
-     * @param isHighestSlab Is highest slab
+     * @param groupName         current group name
+     * @param isBatchWise       Is batch wise products available
+     * @param parentID          Scheme Id
+     * @param processType       Scheme Process type
+     * @param isHighestSlab     Is highest slab
      * @return Total number of times current group achieved
      */
-    private int getAnyLogicAppliedCountForSalesValue( List<SchemeProductBO> schemeProductList, String groupName,
-            boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
+    private int getAnyLogicAppliedCountForSalesValue(List<SchemeProductBO> schemeProductList, String groupName,
+                                                     boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
 
         double totalValue = 0;
         double minimumBuyValue = 0;
         double maximumBuyValue = 0;
         double balancePercent = 0;
-        double appliedSchemeValue ;
+        double appliedSchemeValue;
 
         for (SchemeProductBO schemeProductBO : schemeProductList) {
             if (schemeProductBO.getGroupName().equals(groupName)) {
@@ -2758,8 +2776,8 @@ public class SchemeDetailsMasterHelper {
 
                 //Updating list to maintain used(if current slab applied) quantity,scheme wise..
                 if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
-                    double totVal ;
-                    double tempToQty ;
+                    double totVal;
+                    double tempToQty;
                     tempToQty = maximumBuyValue;
 
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
@@ -2844,8 +2862,6 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-
-
     /**
      * @return
      * @author rajesh.k
@@ -2906,7 +2922,7 @@ public class SchemeDetailsMasterHelper {
 
         List<SchemeProductBO> buyProductList = schemeBO.getBuyingProducts();
 
-        double totalOrderValueOfBuyProducts=0;
+        double totalOrderValueOfBuyProducts = 0;
         if (schemeBO.isAmountTypeSelected()) {
 
             if (schemeBO.isAmountTypeSelected()) {
@@ -2944,8 +2960,8 @@ public class SchemeDetailsMasterHelper {
                             double line_value = (productBO.getOrderedCaseQty() * productBO.getCsrp())
                                     + (productBO.getOrderedPcsQty() * productBO.getSrp())
                                     + (productBO.getOrderedOuterQty() * productBO.getOsrp());
-                            double percentage_productContribution=((line_value/totalOrderValueOfBuyProducts)*100);
-                            double amount_free=schemeBO.getSelectedAmount()*(percentage_productContribution/100);
+                            double percentage_productContribution = ((line_value / totalOrderValueOfBuyProducts) * 100);
+                            double amount_free = schemeBO.getSelectedAmount() * (percentage_productContribution / 100);
 
                             sb.append("," + (amount_free));
 
@@ -3299,7 +3315,7 @@ public class SchemeDetailsMasterHelper {
                     if (schemeType.equals(SCHEME_AMOUNT)) {
                         schemeBO.setAmountTypeSelected(true);
                         //only amount column haves full free amount.. so getting from it
-                        schemeBO.setSelectedAmount( c.getDouble(3));
+                        schemeBO.setSelectedAmount(c.getDouble(3));
                     } else if (schemeType.equals(SCHEME_FREE_PRODUCT)) {
 
                         schemeBO.setQuantityTypeSelected(true);
@@ -4137,7 +4153,6 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-
     public int getAmountBasedSchemeCount(SchemeBO schemeBO) {
         int count = 0;
         List<SchemeProductBO> schemeProductList = schemeBO.getBuyingProducts();
@@ -4166,7 +4181,6 @@ public class SchemeDetailsMasterHelper {
 
         return count;
     }
-
 
 
     /**
@@ -4281,7 +4295,7 @@ public class SchemeDetailsMasterHelper {
             for (SchemeProductBO schemeProductBO : freeProductList) {
                 if (groupName.equals(schemeProductBO.getGroupName())) {
 
-                    int stock ;
+                    int stock;
                     ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                     if (productBO != null) {
 
@@ -4323,9 +4337,6 @@ public class SchemeDetailsMasterHelper {
         return flag;
 
     }
-
-
-
 
 
     public int getMaximumLineOfSchemeHeight(int schemeWidth, int parentid) {

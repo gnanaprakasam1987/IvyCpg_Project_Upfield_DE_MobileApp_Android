@@ -114,7 +114,6 @@ import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 import static com.ivy.sd.png.asean.view.R.id.tab_layout;
-import static com.ivy.sd.png.asean.view.R.id.thirdrow;
 
 public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearByRetailerDialog.NearByRetailerInterface, MapWrapperLayout.OnDragListener,
         CommonReasonDialog.AddNonVisitListener, View.OnClickListener {
@@ -192,72 +191,77 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private Timer mLocTimer;
     private LocationFetchTimer timerTask;
     private AlertDialog mLocationAlertDialog;
-    private Vector<ConfigureBO> menuDB;
+
     private DownloadProductsAndPrice downloadProductsAndPrice;
 
-    private String DISTRIBUTOR_PROFILE="";
+    private String DISTRIBUTOR_PROFILE = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Commons.print("activity create");
+
         setContentView(R.layout.activity_profile);
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        basicInitialization();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+        firstLevZoom = true;
+        fromHomeClick = false;
+
+        // Duplicate call - Commented
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        is7InchTablet = this.getResources().getConfiguration()
+                .isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
+
+        otpPasswordDismissListenerNew = new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                dialog.dismiss();
+                validationToProceed();
+            }
+        };
+
+
+        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
+            checkAndRequestPermissionAtRunTime(3);
         }
 
-        mapProgressBar = (ProgressBar) findViewById(R.id.progress_map);
-        retailerNameTxt = (TextView) findViewById(R.id.retailer_name);
-        retailerCodeTxt = (TextView) findViewById(R.id.retailer_code);
-        iconLinearLayout = (LinearLayout) findViewById(R.id.img_layout);
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing);
-        appbar = (AppBarLayout) findViewById(R.id.appbar);
 
-        linearLayout = (LinearLayout) findViewById(R.id.bottom_layout);
-        bottomView = findViewById(R.id.reason_view);
-        tabLayout = (TabLayout) findViewById(tab_layout);
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        retriveIntentValue();
 
-        startVisitBtn = (Button) findViewById(R.id.start_visit);
-        startVisitBtn.setOnClickListener(this);
-        cancelVisitBtn = (Button) findViewById(R.id.cancel_visit);
-        cancelVisitBtn.setOnClickListener(this);
-        deviateBtn = (Button) findViewById(R.id.profile_deviate);
-        deviateBtn.setOnClickListener(this);
-        addPlaneBtn = (Button) findViewById(R.id.add_plane);
-        addPlaneBtn.setOnClickListener(this);
-        profileEditBtn = (ImageView) findViewById(R.id.profile_edit_click);
-        profileEditBtn.setOnClickListener(this);
-        drawRouteBtn = (ImageView) findViewById(R.id.draw_routeimg_btn);
-        drawRouteBtn.setOnClickListener(this);
+        initilizeToolBar();
 
-        startVisitBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        cancelVisitBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        deviateBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        addPlaneBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        initilizeViews();
+
+        setCustomFont();
 
         bundle = new Bundle();
         bundle.putBoolean("fromHomeClick", fromHomeClick);
         bundle.putBoolean("non_visit", non_visit);
         addTabLayout();
-        downloadProductsAndPrice = new DownloadProductsAndPrice();
+
         hideVisibleComponents();
+
+
+        downloadProductsAndPrice = new DownloadProductsAndPrice();
+        new LoadProfileConfigs().execute();
+        bmodel.isModuleDone();
+        new loadActivityMenu().execute();
+
 
         try {
             CustomMapFragment mCustomMapFragment = ((CustomMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.profile_map));
             mCustomMapFragment.setOnDragListener(ProfileActivity.this);
-            //  mMap = mCustomMapFragment.getMap();
             mCustomMapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
@@ -267,7 +271,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
             if (mMap != null) {
                 isLatLong = true;
-                // mCustomMapFragment.getMapAsync(this);
                 markerList = new ArrayList<>();
             }
         } catch (Exception e) {
@@ -283,40 +286,85 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     }
 
-    /**
-     * Method used to basic initialization
-     */
-    private void basicInitialization() {
+    private void setCustomFont() {
 
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        firstLevZoom = true;
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        startVisitBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        cancelVisitBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        deviateBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        addPlaneBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-        otpPasswordDismissListenerNew = new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                dialog.dismiss();
-                validationToProceed();
+        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        retailerCodeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+    }
+
+    private void initilizeViews() {
+        mapProgressBar = findViewById(R.id.progress_map);
+        retailerNameTxt = findViewById(R.id.retailer_name);
+        retailerCodeTxt = findViewById(R.id.retailer_code);
+        iconLinearLayout = findViewById(R.id.img_layout);
+
+        collapsingToolbarLayout = findViewById(R.id.collapsing);
+        collapsingToolbarLayout.setTitleEnabled(false);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+        collapsingToolbarLayout.setCollapsedTitleTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
+        appbar = findViewById(R.id.appbar);
+
+        linearLayout = findViewById(R.id.bottom_layout);
+        bottomView = findViewById(R.id.reason_view);
+        tabLayout = findViewById(tab_layout);
+        viewPager = findViewById(R.id.pager);
+
+        startVisitBtn = findViewById(R.id.start_visit);
+        startVisitBtn.setOnClickListener(this);
+        cancelVisitBtn = findViewById(R.id.cancel_visit);
+        cancelVisitBtn.setOnClickListener(this);
+        deviateBtn = findViewById(R.id.profile_deviate);
+        deviateBtn.setOnClickListener(this);
+        addPlaneBtn = findViewById(R.id.add_plane);
+        addPlaneBtn.setOnClickListener(this);
+        profileEditBtn = findViewById(R.id.profile_edit_click);
+        profileEditBtn.setOnClickListener(this);
+        drawRouteBtn = findViewById(R.id.draw_routeimg_btn);
+        drawRouteBtn.setOnClickListener(this);
+    }
+
+    private void initilizeToolBar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            try {
+                //noinspection ConstantConditions
+                getSupportActionBar().setHomeButtonEnabled(true);
+            } catch (NullPointerException e) {
+                Commons.printException(e);
             }
-        };
-        displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-
-        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
-            checkAndRequestPermissionAtRunTime(3);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+    }
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    /**
+     * This method will retrive the intent value and update the local variable.
+     */
+    private void retriveIntentValue() {
 
-        is7InchTablet = this.getResources().getConfiguration()
-                .isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
-
-        fromHomeClick = false;
         non_visit = getIntent().getBooleanExtra("non_visit", false);
         visitClick = getIntent().getBooleanExtra("locvisit", false);
         fromHomeClick = getIntent().getBooleanExtra("hometwo", false);
         isFromPlanning = getIntent().getBooleanExtra("isPlanning", false);
+
+        try {
+            Intent arg = getIntent();
+            if (arg != null)
+                calledBy = arg.getStringExtra("From");
+
+            if (calledBy == null)
+                calledBy = MENU_VISIT;
+        }catch (Exception e){
+            calledBy = MENU_VISIT;
+        }
     }
 
     /**
@@ -496,7 +544,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             }
         }
 
-        if(bmodel.configurationMasterHelper.SHOW_SBD_GAP_IN_PROFILE){
+        if (bmodel.configurationMasterHelper.SHOW_SBD_GAP_IN_PROFILE) {
             tabLayout.addTab(tabLayout.newTab().setText("SBD Gap"));
         }
 
@@ -630,42 +678,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
 
         retailerObj = bmodel.getRetailerMasterBO();
-        new LoadProfileConfigs().execute();
-        /*Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
-        for (ConfigureBO conBo : profileConfig) {
-            if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
-                isMapView = true;
-                retailerLat = retailerObj.getLatitude();
 
-            } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
-                isMapView = true;
-                retailerLng = retailerObj.getLongitude();
-            } else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
-                isNonVisitReason = true;
-            }
-        }
-
-        if (!isMapView) {
-            View mapFrag = findViewById(R.id.profile_map);
-            mapFrag.setVisibility(View.GONE);
-            retailerCodeTxt.setVisibility(View.GONE);
-        }*/
         upArrow = ContextCompat.getDrawable(this, R.drawable.ic_home_arrow);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
-        bmodel.isModuleDone();
-
-        new loadActivityMenu().execute();
-//        Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
-//                .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
-
-
-        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        retailerCodeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-        collapsingToolbarLayout.setTitleEnabled(false);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
-        collapsingToolbarLayout.setCollapsedTitleTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         try {
             int length = bmodel.retailerMasterBO.getRetailerName().indexOf("/");
@@ -677,6 +693,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             Commons.printException(e);
         }
         retailerNameTxt.setText(title);
+
         if (retailerObj.getAddress3() != null && !retailerObj.getAddress3().isEmpty()) {
             retailerCodeTxt.setVisibility(View.VISIBLE);
             retailerCodeTxt.setText(retailerObj.getAddress3());
@@ -733,14 +750,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             }
         });
 
-        Intent arg = getIntent();
-        if (arg != null)
-            calledBy = arg.getStringExtra("From");
 
-        if (calledBy == null)
-            calledBy = MENU_VISIT;
 
     }
+
 
     /**
      * Method user to load map in store location.
@@ -791,7 +804,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 });
             }
         } catch (Exception e) {
-
+            Commons.printException(e);
         }
 
     }
@@ -1056,6 +1069,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     // load ActivityMenu
     private class loadActivityMenu extends AsyncTask<String, Void, String> {
 
+        private Vector<ConfigureBO> menuDB;
         @Override
         protected String doInBackground(String... strings) {
             menuDB = bmodel.configurationMasterHelper.downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
@@ -1091,7 +1105,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
     }
 
-    // load profile config and map related data
+    /**
+     * load profile config and map related data
+     */
+    @SuppressLint("StaticFieldLeak")
     private class LoadProfileConfigs extends AsyncTask<String, Void, String> {
 
         @Override
@@ -1315,8 +1332,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 return taskListFragment;
             } else if (tabName.equalsIgnoreCase(SALES_PER_LEVEL)) {
                 return new SalesPerCategory();
-            }
-            else if (tabName.equalsIgnoreCase(DISTRIBUTOR_PROFILE)) {
+            } else if (tabName.equalsIgnoreCase(DISTRIBUTOR_PROFILE)) {
                 return new DsitributorProfileFragment();
             } else if (tabName.equalsIgnoreCase("SBD Gap")) {
                 return new SBDGapFragment();
@@ -1440,11 +1456,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             }
         }
     }
-
-    /*public void updateCancel() {
-        setResult(2);
-        finish();
-    }*/
 
     @Override
     public void updateNearByRetailer(Vector<RetailerMasterBO> list) {
@@ -1964,6 +1975,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     private class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
@@ -1981,11 +1993,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                         //to reload product filter if diffrent retailer selected
                         bmodel.productHelper.setmLoadedGlobalProductId(0);
                     }
+
                     bmodel.configurationMasterHelper
                             .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
                                     .getSubchannelid());
+
                     if (bmodel.productHelper.isSBDFilterAvaiable())
                         SBDHelper.getInstance(ProfileActivity.this).loadSBDFocusData();
+
 
                     if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         bmodel.batchAllocationHelper.downloadBatchDetails(bmodel
@@ -2011,6 +2026,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     // load scheme details
                     bmodel.schemeDetailsMasterHelper.loadSchemeConfigs(ProfileActivity.this);
                     if (bmodel.schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER) {
+
                         if (bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE) {
                             if (!("Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
 

@@ -1357,6 +1357,9 @@ public class ConfigurationMasterHelper {
     }
 
 
+    /**
+     * Method will download configuration related to retailer profile view.
+     */
     public void downloadProfileModuleConfig() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
@@ -1389,7 +1392,7 @@ public class ConfigurationMasterHelper {
                         if (str.contains("<") && str.contains(">")) {
 
                             String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
-                            if (minlen != null && !minlen.isEmpty()) {
+                            if (!minlen.isEmpty()) {
                                 try {
                                     con.setMaxLengthNo(Integer.parseInt(minlen));
                                 } catch (Exception ex) {
@@ -1410,8 +1413,7 @@ public class ConfigurationMasterHelper {
 
         } catch (Exception e) {
             Commons.printException("" + e);
-            if (db != null)
-                db.closeDB();
+            db.closeDB();
         }
     }
 

@@ -5997,13 +5997,11 @@ public class BusinessModel extends Application {
 
             mModuleCompletionResult = new HashMap<String, String>();
 
-            if (c != null)
+            if (c != null) {
                 while (c.moveToNext())
                     mModuleCompletionResult.put(c.getString(0), "1");
-
-            Commons.print("HASHMAP VALUES ," +
-                    "" + mModuleCompletionResult.toString());
-            c.close();
+                c.close();
+            }
 
             db.closeDB();
         } catch (Exception e) {
