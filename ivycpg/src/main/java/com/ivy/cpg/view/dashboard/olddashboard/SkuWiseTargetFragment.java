@@ -1,7 +1,10 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard.olddashboard;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,10 +12,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,11 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -33,42 +33,70 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
+import com.ivy.cpg.view.dashboard.sellerdashboard.TotalAchivedFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HalfPieChartFragement;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.PieChartFragement;
+import com.ivy.sd.png.view.TargetPlanActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import me.relex.circleindicator.CircleIndicator;
 
-public class SellerKpiSkuFragment extends IvyBaseFragment {
+public class SkuWiseTargetFragment extends IvyBaseFragment {
 
     private FragmentManager fm;
     private View view;
-    private Vector<SKUWiseTargetBO> mylist;
+    private ArrayList<SKUWiseTargetBO> mylist;
     private BusinessModel bmodel;
-    private int flex1;
-    private LinearLayout ll;
-    private RecyclerView rvwplist;
+    private String calledBy = "0";
+    private String rid = "0";
+    private String type = "";
+    private String code = "0";
+    private String prodName = "";
+    private String from = "";
+    private String monthName = "All";
+    private int pid, flex1;
+    private float acheivedPer = 0;
+    private float targetPer = 0;
+    private RecyclerView dashboardRv;
+    private AlertDialog alertDialog;
     private boolean isFromDash;
-    private Button previous;
-    private TextView textview[] = null;
-    private int curSeq = 0;
-    private int mSelectedProductId = 0;
+
+    private static final String MONTH_TYPE = "MONTH";
+    private static final String YEAR_TYPE = "YEAR";
+    private static final String DAY_TYPE = "DAY";
+
+    private static final String MONTH_TAG = "incentive_month";
+    private static final String YEAR_TAG = "incentive_year";
+
+    private Toolbar toolbar;
     ViewPager vpPager;
     CircleIndicator indicator;
     MyPagerAdapter adapterViewPager;
-    HorizontalScrollView scr_View;
+
+    private DashBoardHelper dashBoardHelper;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dashBoardHelper = DashBoardHelper.getInstance(context);
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_sellers_dash_sku, container, false);
+        view = inflater.inflate(R.layout.fragment_skuwise_target, container, false);
 
 
         getActivity().getWindow().setSoftInputMode(
@@ -77,42 +105,38 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         bmodel.setContext(getActivity());
         fm = getActivity().getSupportFragmentManager();
 
-        Intent i = getActivity().getIntent();
-        flex1 = i.getIntExtra("flex1", 0);
-        isFromDash = i.getExtras().getBoolean("isFromDash");
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(null);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
+
+        //Set Screen Title
+        try {
+            if (getArguments().getString("screentitle") == null)
+                setScreenTitle(bmodel.getMenuName("MENU_SKUWISESTGT"));
+            else
+                setScreenTitle(getArguments().getString("screentitle"));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        from = getArguments().getString("from");
+        rid = getArguments().getString("rid");
+        rid = rid != null ? rid : "0";
+        type = getArguments().getString("type");
+        type = type != null ? type : "MONTH";
+        code = getArguments().getString("code");
+        code = code != null ? code : "0";
+        monthName = getArguments().getString("month_name");
+        monthName = monthName != null ? monthName : "";
+        pid = getArguments().getInt("pid", 0);
+        flex1 = getArguments().getInt("flex1", 0);
+        if (!getArguments().isEmpty())
+            isFromDash = getArguments().getBoolean("isFromDash");
 
         setHasOptionsMenu(true);
-
-        vpPager = (ViewPager) view.findViewById(R.id.viewpager);
-        indicator = (CircleIndicator) view.findViewById(R.id.indicator);
-        previous = (Button) view.findViewById(R.id.previousBTN);
-        ll = (LinearLayout) view.findViewById(R.id.ll);
-        rvwplist = (RecyclerView) view.findViewById(R.id.rvwplist);
-        rvwplist.setHasFixedSize(false);
-        rvwplist.setNestedScrollingEnabled(false);
-        rvwplist.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        scr_View = (HorizontalScrollView) view.findViewById(R.id.scr_View);
-        LinearLayout.LayoutParams weight1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        weight1.weight = 1;
-        weight1.gravity = Gravity.CENTER;
-
-        LinearLayout.LayoutParams weight2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        weight2.weight = 2;
-        weight2.gravity = Gravity.CENTER;
-
-        textview = new TextView[100];
-        mylist = bmodel.dashBoardHelper.getSellerKpiSku();
-        updateList(bmodel.dashBoardHelper.mSellerKpiMinSeqLevel);
-
-        previous.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateList(curSeq - 1);
-            }
-        });
 
 
         return view;
@@ -121,103 +145,65 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-    }
 
+        dashboardRv = (RecyclerView) view.findViewById(R.id.dashboardRv);
+        dashboardRv.setHasFixedSize(false);
+        dashboardRv.setNestedScrollingEnabled(false);
+        dashboardRv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-    private void updateList(int bid) {
-        if (mylist == null) {
-            bmodel.showAlert(
-                    getResources().getString(R.string.no_products_exists), 0);
-            return;
-        }
-        int siz = mylist.size();
-        ArrayList<SKUWiseTargetBO> temp = new ArrayList<>();
-        if (bmodel.dashBoardHelper.getKpiSkuMasterBoById(new Integer(mSelectedProductId)) != 0)
-            mSelectedProductId = bmodel.dashBoardHelper.getKpiSkuMasterBoById(new Integer(mSelectedProductId));
-        for (int i = 0; i < siz; ++i) {
-            SKUWiseTargetBO ret = mylist.get(i);
-            if (bid != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel && bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD) {
-                if (ret.getSequence() == bid && ret.getParentID() == mSelectedProductId) {
-                    temp.add(ret);
-                }
-            } else {
-                if (ret.getSequence() == bid) {
-                    temp.add(ret);
-                }
-            }
-        }
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        vpPager = (ViewPager) view.findViewById(R.id.viewpager);
+        indicator = (CircleIndicator) view.findViewById(R.id.indicator);
+        calledBy = from;
 
-        if (bid == bmodel.dashBoardHelper.mSellerKpiMinSeqLevel)
-            previous.setVisibility(View.GONE);
+        new DownloadSKUWiseTarget().execute();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        if (curSeq != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel && textview[curSeq] != null) {
-
-            textview[curSeq].setText("");
-            ll.removeView(textview[curSeq]);
-        }
-
-        curSeq = bid;
-
-        MyAdapter mSchedule = new MyAdapter(temp);
-        rvwplist.setAdapter(mSchedule);
-        bmodel.dashBoardHelper.setSkuwiseGraphData(temp);
-        adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
-        vpPager.setAdapter(adapterViewPager);
-        indicator.setViewPager(vpPager);
+        customProgressDialog(builder, getResources().getString(R.string.loading_data));
+        alertDialog = builder.create();
 
     }
 
-    private void updateNextList(int parentID, String pname) {
-        // Close the drawer
-        if (mylist == null) {
-            bmodel.showAlert(
-                    getResources().getString(R.string.no_products_exists), 0);
-            return;
-        }
-        int siz = mylist.size();
-        ArrayList<SKUWiseTargetBO> temp = new ArrayList<>();
-        for (int i = 0; i < siz; ++i) {
+    class DownloadSKUWiseTarget extends AsyncTask<Integer, Integer, Boolean> {
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
 
-            SKUWiseTargetBO ret = mylist.get(i);
-            if (ret.getParentID() == parentID) {
-                temp.add(ret);
-                curSeq = ret.getSequence();
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            try {
+                bmodel.productHelper.downloadProductFilter("MENU_DASH");
+                dashBoardHelper.findMinMaxProductLevel(rid);
+                dashBoardHelper.downloadSKUWiseTarget(rid, type, code);
+                dashBoardHelper.downloadDashboardLevelSkip(1);
+
+                if ("DAY".equalsIgnoreCase(type))
+                    dashBoardHelper.LoadSKUWiseTarget(rid);
+
+            } catch (Exception e) {
+                Commons.printException(e);
             }
+            return Boolean.TRUE; // Return your real result here
         }
-        if (!temp.isEmpty()) {
-            MyAdapter mSchedule = new MyAdapter(temp);
-            rvwplist.setAdapter(mSchedule);
-            bmodel.dashBoardHelper.setSkuwiseGraphData(temp);
-            adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
+
+        protected void onPreExecute() {
+            builder = new AlertDialog.Builder(getActivity());
+
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        protected void onPostExecute(Boolean result) {
+            alertDialog.dismiss();
+            mylist = dashBoardHelper.getSkuWiseTarget();
+            dashBoardHelper.setSkuwiseGraphData(mylist);
+            MyAdapter adapter = new MyAdapter(mylist);
+            dashboardRv.setAdapter(adapter);
+            adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager());
             vpPager.setAdapter(adapterViewPager);
             indicator.setViewPager(vpPager);
-            if (curSeq != bmodel.dashBoardHelper.mSellerKpiMinSeqLevel)
-                previous.setVisibility(View.VISIBLE);
-            ll.addView(getTextView(curSeq, parentID, pname));
-            //Anand Asir
-            //For scrolling to the Right
-            scr_View.post(new Runnable() {
-                public void run() {
-                    scr_View.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
-                }
-            });
-        } else {
-            Toast.makeText(getActivity(),
-                    "No  data to Show",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
 
-    private TextView getTextView(final int mNumber
-            , int pid, String textname) {
-        textview[mNumber] = new TextView(getActivity());
-        textview[mNumber].setClickable(true);
-        textview[mNumber].setId(pid);
-        String strText = textname + "  >  ";
-        textview[mNumber].setText(strText);
-        textview[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(R.dimen.font_small));
-        textview[mNumber].setPadding(0, 20, 0, 20);
-        return textview[mNumber];
+        }
     }
 
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -231,7 +217,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.row_sellerskuwisetgt, parent, false);
+                    .inflate(R.layout.row_skuwisetgt, parent, false);
             return new MyAdapter.ViewHolder(v);
         }
 
@@ -241,39 +227,32 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
             SKUWiseTargetBO product = items.get(position);
 
             holder.productbo = product;
-            mSelectedProductId = holder.productbo.getParentID();
 
             //typefaces
             holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
             holder.target.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.acheived.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.index.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.incentiveTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.incentive.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.targetTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.acheivedTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            if (holder.productbo.getProductShortName().equals(""))
-                holder.psname.setText(holder.productbo.getProductName());
-            else
-                holder.psname.setText(holder.productbo.getProductShortName());
+            holder.psname.setText(holder.productbo.getProductShortName());
 
-            holder.psname.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    updateNextList(holder.productbo.getPid(), holder.productbo.getProductShortName());
-                }
-            });
 
             if (flex1 == 1) {
-                holder.target.setText(bmodel.dashBoardHelper.getWhole(product.getTarget() + ""));
+                holder.target.setText(dashBoardHelper.getWhole(product.getTarget() + ""));
                 String strCaluPercentage = bmodel.formatPercent(product.getCalculatedPercentage()) + "%";
                 holder.index.setText(strCaluPercentage);
-                holder.acheived.setText(bmodel.dashBoardHelper.getWhole(product.getAchieved() + ""));
+                holder.acheived.setText(dashBoardHelper.getWhole(product.getAchieved() + ""));
+                holder.incentive.setText(dashBoardHelper.getWhole(product.getrField() + ""));
             } else {
                 holder.target.setText(bmodel.formatValue(product.getTarget()));
                 String strCalcPercentage = bmodel.formatPercent(product.getCalculatedPercentage()) + "%";
                 holder.index.setText(strCalcPercentage);
                 holder.acheived.setText(bmodel.formatValue(product.getAchieved()));
+                holder.incentive.setText(bmodel.formatValue(product.getrField()));
             }
 
             ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
@@ -320,6 +299,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
             TextView psname;
             TextView target, targetTitle;
             TextView acheived, acheivedTitle;
+            TextView incentive, incentiveTitle;
             TextView index;
             PieChart mChart;
             SKUWiseTargetBO productbo;
@@ -333,6 +313,8 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
                         .findViewById(R.id.target_dashboard_tv);
                 acheived = (TextView) row
                         .findViewById(R.id.acheived_dashboard_tv);
+                incentive = (TextView) row
+                        .findViewById(R.id.initiative_dashboard_tv);
 
                 index = (TextView) row
                         .findViewById(R.id.index_dashboard_tv);
@@ -345,6 +327,8 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
                         .findViewById(R.id.target_title);
                 acheivedTitle = (TextView) row
                         .findViewById(R.id.achived_title);
+                incentiveTitle = (TextView) row
+                        .findViewById(R.id.incentive_title);
 
                 rowDotBlue = (View) row
                         .findViewById(R.id.row_dot_blue);
@@ -353,27 +337,56 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
                         .findViewById(R.id.row_dot_green);
                 verticalSeparatorTarget = (View) row
                         .findViewById(R.id.verticalSeparatorTarget);
-                try {
-                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
-                            R.id.target_title).getTag()) != null)
-                        ((TextView) row.findViewById(R.id.target_title))
-                                .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(row.findViewById(R.id.target_title)
-                                                .getTag()));
 
-
-                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
-                            R.id.achived_title).getTag()) != null)
-                        ((TextView) row.findViewById(R.id.achived_title))
-                                .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(row.findViewById(R.id.achived_title)
-                                                .getTag()));
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (!bmodel.configurationMasterHelper.SHOW_SKUWISE_INCENTIVE) {
+                    incentive.setVisibility(View.GONE);
+                    incentiveTitle.setVisibility(View.GONE);
+                } else {
+                    switch (type) {
+                        case DAY_TYPE:
+                            try {
+                                if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                        R.id.incentive_title).getTag()) != null)
+                                    ((TextView) row.findViewById(R.id.incentive_title))
+                                            .setText(bmodel.labelsMasterHelper
+                                                    .applyLabels(row.findViewById(R.id.incentive_title)
+                                                            .getTag()));
+                            } catch (Exception e) {
+                                Commons.printException(e);
+                            }
+                            break;
+                        case MONTH_TYPE:
+                            try {
+                                if (bmodel.labelsMasterHelper.applyLabels(MONTH_TAG) != null)
+                                    ((TextView) row.findViewById(R.id.incentive_title))
+                                            .setText(bmodel.labelsMasterHelper
+                                                    .applyLabels(MONTH_TAG));
+                                else
+                                    ((TextView) row.findViewById(R.id.incentive_title))
+                                            .setText(getResources().getString(R.string.incentive));
+                            } catch (Exception e) {
+                                Commons.printException(e);
+                            }
+                            break;
+                        case YEAR_TYPE:
+                            try {
+                                if (bmodel.labelsMasterHelper.applyLabels(YEAR_TAG) != null)
+                                    ((TextView) row.findViewById(R.id.incentive_title))
+                                            .setText(bmodel.labelsMasterHelper
+                                                    .applyLabels(YEAR_TAG));
+                                else
+                                    ((TextView) row.findViewById(R.id.incentive_title))
+                                            .setText(getResources().getString(R.string.incentive));
+                            } catch (Exception e) {
+                                Commons.printException(e);
+                            }
+                            break;
+                        default:
+                            ((TextView) row.findViewById(R.id.incentivetv))
+                                    .setText(getResources().getString(R.string.incentive));
+                            break;
+                    }
                 }
-
-
                 mChart.setUsePercentValues(true);
                 mChart.getDescription().setEnabled(false);
                 mChart.setExtraOffsets(0, 0, 0, 0);
@@ -406,6 +419,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         }
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_inventory, menu);
@@ -434,18 +448,34 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
 
     public void onBackButtonClick() {
 
+        if ("1".equals(calledBy)) {
+            startActivity(new Intent(getActivity(),
+                    HomeScreenActivity.class));
+            getActivity().finish();
+        }
+
+        // HOME SCREEN TWO
+        if ("2".equals(calledBy)) {
+            bmodel.getRetailerMasterBO().setIsSKUTGT("Y");
+            startActivity(new Intent(getActivity(),
+                    HomeScreenTwo.class));
+            getActivity().finish();
+        }
+        // DashBoardActivity
+        if ("4".equals(calledBy)) {
+         /*   Intent i = new Intent(SKUWiseTargetActivity.this,
+                    DashBoardActivity.class);
+            i.putExtra("from", "1");
+            i.putExtra("retid", rid);
+            i.putExtra("screentitle", screentitlebk);
+            i.putExtra("type", type);
+            startActivity(i);*/
+            getActivity().finish();
+        }
         getActivity().finish();
-
+        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        updateList(curSeq - 1);
-        Toast.makeText(getActivity(),
-                "" + textview[curSeq].getText() + " Id>>" + textview[curSeq].getId(),
-                Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public void onDestroy() {

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.dashboard;
 
 /**
  * Created by rahul.j on 2/28/2018.

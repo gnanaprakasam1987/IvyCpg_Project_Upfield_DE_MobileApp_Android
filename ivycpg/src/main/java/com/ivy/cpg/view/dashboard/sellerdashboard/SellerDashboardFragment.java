@@ -1,7 +1,8 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard.sellerdashboard;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -47,10 +48,12 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.dashboard.DashBoardBO;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
+import com.ivy.cpg.view.dashboard.olddashboard.DashBoardPresenterImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DailyReportBO;
-import com.ivy.sd.png.bo.DashBoardBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.KeyPairBoolData;
@@ -61,13 +64,14 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import me.relex.circleindicator.CircleIndicator;
 
-public class SellerDashboardFragment extends IvyBaseFragment implements AdapterView.OnItemSelectedListener {
+public class SellerDashboardFragment extends IvyBaseFragment implements AdapterView.OnItemSelectedListener, SellerDashboardContractor.SellerDashView {
 
     private BusinessModel bmodel;
     private final int beatPosition = 0;
@@ -80,9 +84,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
     private String selectedInterval = MONTH;
 
-    private AlertDialog alertDialog;
-    private Boolean showinitiavite = true;
-
     /*new spinner configuration*/
     private Spinner dashSpinner;
     private Spinner userSpinner;
@@ -91,31 +92,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private static final String MONTH = "MONTH";
     private static final String DAY = "DAY";
     private static final String P3M = "P3M";
-    private static final String CODE1 = "VAL";
-    private static final String CODE2 = "VIP";
-    private static final String CODE3 = "TLS";
-    private static final String CODE4 = "PDC";
-    private static final String CODE5 = "MSP";
-    private static final String CODE6 = "COV";
-    private static final String CODE7 = "PRM";
-    private static final String CODE8 = "MSL";
-    private static final String CODE9 = "TRN";
-    private static final String CODE10 = "AUB";
-    private static final String CODE11 = "ASP";
-    private static final String CODE12 = "ABV";
-    private static final String CODE13 = "INV";
-    private static final String CODE_EFF_VISIT = "EFV";
-    private static final String CODE_EFF_SALE = "EFS";
-    private static final String CODE_DROP_SIZE_INV = "DSZ_INVOICE";
-    private static final String CODE_DROP_SIZE_ORD = "DSZ_ORDER";
-    private static final String CODE_SALES_VS_WEEKLY_OBJ = "SWO";
-    private static final String CODE_INIT_VS_WEEKLY_OBJ = "IWO";
-    private static final String CODE_RETURN_RATE_INV = "RRA_INVOICE";
-    private static final String CODE_RETURN_RATE_ORD = "RRA_ORDER";
-    private static final String CODE_FULLFILLMENT = "FULL_FILL";
+
 
     private int NUM_ITEMS = 1;
-    private double incentive = 0.0;
     private int chartpositionSMP = 0;
     private ArrayList<Fragment> fragmentList = new ArrayList<>();
     /**************************/
@@ -135,35 +114,40 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private String mFilterUser = "";
     private TextView tvDistributorName;
     private TextView tvUserName;
-    int transactionPerDay;
-    int avgUnitsPerBill;
-    int avgSellingPrice;
-    int avgBillValue;
     boolean isFromHomeScreenTwo = false;
     private String menuCode = "";
-    //boolean isSemiCircleChartRequired = false;
     Bundle bundle;
     private boolean _hasLoadedOnce = false;
     private ArrayList<String> categories;
+
+    private SellerDashboardContractor.SellerDashPresenter dashboardPresenter;
+    private DashBoardHelper dashBoardHelper;
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+        dashBoardHelper = DashBoardHelper.getInstance(getActivity());
+        dashboardPresenter = new SellerDashPresenterImpl(getContext());
+        dashboardPresenter.setView(this);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_seller_dashboard, container, false);
 
-
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         fm = getActivity().getSupportFragmentManager();
-//        if (getActivity().getIntent().getExtras() != null) {
-//            if (getActivity().getIntent().getBooleanExtra("isFromHomeScreenTwo", false)) {
-//                isFromHomeScreenTwo = true;
-//            }
-//        }
+
         bundle = getActivity().getIntent().getExtras();
         boolean isFromTab = false;
+
         if (bundle != null) {
             isFromHomeScreenTwo = bundle.getBoolean("isFromHomeScreenTwo", false);
             menuCode = bundle.getString("menuCode");
@@ -184,7 +168,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     public void setUserVisibleHint(boolean isFragmentVisible_) {
         super.setUserVisibleHint(isFragmentVisible_);
 
-
         if (this.isVisible()) {
             // we check that the fragment is becoming visible
             isFragmentVisible_ = false;
@@ -192,7 +175,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 //run your async task here since the user has just focused on your fragment
                 initializeViews();
                 _hasLoadedOnce = true;
-
             }
         }
     }
@@ -207,15 +189,15 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     }
 
     private void init() {
-        vpPager = (ViewPager) view.findViewById(R.id.viewpager);
-        collapsing = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing);
-        indicator = (CircleIndicator) view.findViewById(R.id.indicator);
+        vpPager = view.findViewById(R.id.viewpager);
+        collapsing = view.findViewById(R.id.collapsing);
+        indicator = view.findViewById(R.id.indicator);
 
-        dashBoardList = (RecyclerView) view.findViewById(R.id.dashboardLv);
+        dashBoardList = view.findViewById(R.id.dashboardLv);
         ((TextView) view.findViewById(R.id.textView)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         categories = new ArrayList<>();
-        categories = bmodel.dashBoardHelper.getDashList(isFromHomeScreenTwo);
+        categories = dashBoardHelper.getDashList(isFromHomeScreenTwo);
         if (categories != null) {
             setpUpSpinner(categories);
             bmodel.downloadDailyReport();
@@ -231,27 +213,27 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             collapsing.setVisibility(View.GONE);
 
         }
-        tvDistributorName = (TextView) view.findViewById(R.id.tv_distributor_title);
-        tvUserName = (TextView) view.findViewById(R.id.tv_username_title);
+        tvDistributorName = view.findViewById(R.id.tv_distributor_title);
+        tvUserName = view.findViewById(R.id.tv_username_title);
 
         tvDistributorName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         tvUserName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        LinearLayout spinner_layout1 = (LinearLayout) view.findViewById(R.id.spinner_layout1);
-        LinearLayout spinner_layout2 = (LinearLayout) view.findViewById(R.id.spinner_layout2);
-        userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
+        LinearLayout spinner_layout1 = view.findViewById(R.id.spinner_layout1);
+        LinearLayout spinner_layout2 = view.findViewById(R.id.spinner_layout2);
+        userSpinner = view.findViewById(R.id.userSpinner);
 
         if (!isFromHomeScreenTwo) {
             if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH && bmodel.configurationMasterHelper.IS_DISTRIBUTOR_BASED_DASH) {
                 if (bmodel.configurationMasterHelper.IS_NIVEA_BASED_DASH) {
                     spinner_layout1.setVisibility(View.GONE);
                     spinner_layout2.setVisibility(View.VISIBLE);
-                    ll_distributor = (LinearLayout) view.findViewById(R.id.ll_distributor);
-                    distrSpinner1 = (MultiSpinner) view.findViewById(R.id.distributorSpinner1);
+                    ll_distributor = view.findViewById(R.id.ll_distributor);
+                    distrSpinner1 = view.findViewById(R.id.distributorSpinner1);
                     ll_distributor.setVisibility(View.VISIBLE);
 
-                    ll_users = (LinearLayout) view.findViewById(R.id.ll_users);
-                    userSpinner1 = (MultiSpinner) view.findViewById(R.id.userSpinner1);
+                    ll_users = view.findViewById(R.id.ll_users);
+                    userSpinner1 = view.findViewById(R.id.userSpinner1);
                     ll_users.setVisibility(View.VISIBLE);
 
                     final List<KeyPairBoolData> distArray = new ArrayList<>();
@@ -286,10 +268,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                                 }
                             } else
                                 mSelectedDistributorId = "0";
-                            loadUserSpinner(mSelectedDistributorId);
+                            dashboardPresenter.updateUserData(mSelectedDistributorId);
                         }
                     });
-                    loadUserSpinner("0");
+                    dashboardPresenter.updateUserData(mSelectedDistributorId);
                     if (!show_trend_chart) {
                         vpPager.setVisibility(View.GONE);
                         collapsing.setVisibility(View.GONE);
@@ -297,10 +279,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 } else {
                     spinner_layout1.setVisibility(View.VISIBLE);
                     spinner_layout2.setVisibility(View.GONE);
-                    Spinner distrSpinner = (Spinner) view.findViewById(R.id.distributorSpinner);
+                    Spinner distrSpinner = view.findViewById(R.id.distributorSpinner);
                     distrSpinner.setVisibility(View.VISIBLE);
 
-                    userSpinner = (Spinner) view.findViewById(R.id.userSpinner);
+                    userSpinner = view.findViewById(R.id.userSpinner);
                     userSpinner.setVisibility(View.VISIBLE);
 
                     distrSpinner.setOnItemSelectedListener(this);
@@ -326,7 +308,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                     if (!isFromHomeScreenTwo) {
                         mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+                        dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
                     }
                 }
             } else if (bmodel.configurationMasterHelper.IS_USER_BASED_DASH) {
@@ -344,7 +326,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 userSpinner.setAdapter(userMasterBOArrayAdapter);
                 if (!isFromHomeScreenTwo) {
                     mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-                    bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+                    dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
                 }
             }
         } else {
@@ -355,7 +337,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
         if (!isFromHomeScreenTwo) {
             mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-            bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
+            dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
         } else {
             vpPager.setVisibility(View.GONE);
             collapsing.setVisibility(View.GONE);
@@ -364,8 +346,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList.setHasFixedSize(false);
         dashBoardList.setNestedScrollingEnabled(false);
         dashBoardList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        bmodel.dashBoardHelper.setDashboardBO(new DashBoardBO());
-        gridListDataLoad(beatPosition);
+        dashBoardHelper.setDashboardBO(new DashBoardBO());
+        dashboardPresenter.gridListDataLoad(beatPosition);
         updateAll();
     }
 
@@ -393,7 +375,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         @Override
         public void onBindViewHolder(final SellerDashboardFragment.DashBoardListViewAdapter.ViewHolder holder, int position) {
             final DashBoardBO dashboardData = dashboardList.get(position);
-            if (!showinitiavite
+            if (bmodel.configurationMasterHelper.SHOW_SCORE_DASH
                     || !bmodel.configurationMasterHelper.SHOW_INCENTIVE_DASH) {
                 holder.incentive.setVisibility(View.GONE);
                 holder.incentiveTitle.setVisibility(View.GONE);
@@ -434,10 +416,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 //                    if (selectedInterval.equals(P3M)) {
                     if (show_trend_chart) {
                         if (mDashboardList != null && mDashboardList.size() > 0) {
-                            bmodel.dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
+                            dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
                         }
 
-                        bmodel.dashBoardHelper.mParamLovId = dashboardData.getKpiTypeLovID();
+                        dashBoardHelper.mParamLovId = dashboardData.getKpiTypeLovID();
                         adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
                         new setAdapterTask().execute();
                         vpPager.setCurrentItem(chartpositionSMP);
@@ -479,10 +461,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             });
 
             if (dashboardData.getFlex1() == 1) {
-                holder.acheived.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiAcheived()));
-                holder.target.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiTarget()));
+                holder.acheived.setText(dashBoardHelper.getWhole(dashboardData.getKpiAcheived()));
+                holder.target.setText(dashBoardHelper.getWhole(dashboardData.getKpiTarget()));
                 double balanceValue = SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived());
-                holder.balance.setText(balanceValue > 0 ? bmodel.dashBoardHelper.getWhole(bmodel.formatValue(balanceValue)) : "0");
+                holder.balance.setText(balanceValue > 0 ? dashBoardHelper.getWhole(bmodel.formatValue(balanceValue)) : "0");
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
                 float temp_ach = SDUtil.convertToFloat(dashboardData.getKpiAcheived()) - SDUtil.convertToFloat(dashboardData.getKpiTarget());
                 if (temp_ach > 0) {
@@ -492,9 +474,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 } else {
                     holder.index.setText(strCalcPercentage);
                 }
-                holder.kpiFlex1.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiFlex()));
-                holder.incentive.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiIncentive()));
-                holder.score.setText(bmodel.dashBoardHelper.getWhole(dashboardData.getKpiScore()));
+                holder.kpiFlex1.setText(dashBoardHelper.getWhole(dashboardData.getKpiFlex()));
+                holder.incentive.setText(dashBoardHelper.getWhole(dashboardData.getKpiIncentive()));
+                holder.score.setText(dashBoardHelper.getWhole(dashboardData.getKpiScore()));
             } else {
                 try {
                     String strKpiAchieved = bmodel.formatValue(SDUtil.convertToDouble(dashboardData.getKpiAcheived())) + "";
@@ -875,27 +857,12 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         }
     }
 
-    private void gridListDataLoad(int position) {
-        if (position == 0) {
-            bmodel.dashBoardHelper.getGridData(0);
-            if (bmodel.configurationMasterHelper.SHOW_INCENTIVE_DASH && !bmodel.configurationMasterHelper.SHOW_SCORE_DASH) {
-                // incentivetv.setVisibility(View.VISIBLE);
-                showinitiavite = true;
-            }
-        } else {
-            bmodel.dashBoardHelper.getGridData((String) bmodel.dashBoardHelper
-                    .getBeatList().get(position));
-            showinitiavite = false;
-        }
-    }
-
 
     private void setpUpSpinner(ArrayList<String> categoriesList) {
         try {
-            dashSpinner = (Spinner) view.findViewById(R.id.dashSpinner);
+            dashSpinner = view.findViewById(R.id.dashSpinner);
             dashSpinner.setVisibility(View.VISIBLE);
             dashSpinner.setOnItemSelectedListener(this);
-            final int dayAndP3MSpinner = bmodel.dashBoardHelper.getShowDayAndP3MSpinner();
 
             if (categoriesList.contains(P3M))
                 show_trend_chart = true;
@@ -907,7 +874,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
             // attaching data adapter to spinner
             dashSpinner.setAdapter(dataAdapter);
-            monthSpinner = (Spinner) view.findViewById(R.id.monthSpinner);
+            monthSpinner = view.findViewById(R.id.monthSpinner);
 
         } catch (Exception e) {
 
@@ -924,434 +891,22 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 selectedInterval = dashSpinner.getSelectedItem().toString();
                 if (!isFromHomeScreenTwo) {
                     if (selectedInterval.equals(P3M))
-                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
+                        dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
                     else
-                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                        dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
                 } else {
-                    bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", selectedInterval);
+                    dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", selectedInterval);
                 }
-                gridListDataLoad(beatPosition);
+                dashboardPresenter.gridListDataLoad(beatPosition);
                 updateAll();
                 monthSpinner.setVisibility(View.GONE);
 
                 if (selectedInterval.equals(DAY) && mSelectedUserId == bmodel.userMasterHelper.getUserMasterBO().getUserid()) {
-                    DailyReportBO outlet = bmodel.getDailyRep();
-                    int totalcalls = bmodel.getTotalCallsForTheDayExcludingDeviatedVisits();
-                    //in getNoOfInvoiceAndValue getTotValues refers sum of invoice amt and getTotLines refers num of invoice
-                    DailyReportBO dailrp = bmodel.getNoOfInvoiceAndValue();
-                    DailyReportBO dailyrp_order = bmodel.getNoOfOrderAndValue();
-
-                    for (DashBoardBO dashBoardBO : bmodel.dashBoardHelper.getDashListViewList()) {
-                        if (dashBoardBO.getCode().equalsIgnoreCase(CODE9) | dashBoardBO.getCode().equalsIgnoreCase(CODE10) || dashBoardBO.getCode().equalsIgnoreCase(CODE11) ||
-                                dashBoardBO.getCode().equalsIgnoreCase(CODE12)) {
-                            getCounterSalesDetail();
-                        }
-                    }
-                    for (DashBoardBO dashBoardBO : bmodel.dashBoardHelper.getDashListViewList()) {
-                        if (dashBoardBO.getCode().equalsIgnoreCase(CODE1)) {
-                            dashBoardBO.setKpiAcheived(outlet.getTotValues());
-
-                            int kpiAcheived = (int) SDUtil.convertToDouble(outlet.getTotValues());
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-                            }
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE2)) {
-                            dashBoardBO.setKpiAcheived(outlet.getEffCoverage());
-                            int kpiAcheived = (int) SDUtil.convertToDouble(outlet.getEffCoverage());
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-                            }
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE3)) {
-                            dashBoardBO.setKpiAcheived(outlet.getTotLines());
-                            int kpiAcheived = (int) SDUtil.convertToDouble(outlet.getTotLines());
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-                            }
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE4)) {
-                            int productivecalls = bmodel.getProductiveCallsForTheDay();
-
-                            dashBoardBO.setKpiAcheived(Integer.toString(productivecalls));
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((productivecalls * 100) / kpiTarget);
-                            }
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE5)) {
-                            dashBoardBO.setKpiAcheived(outlet.getMspValues());
-                            int kpiAcheived = (int) SDUtil.convertToDouble(outlet.getMspValues());
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-                            }
-
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE6)) {
-                            int plannedRetailerCount = getRetailerDetail("P");
-                            int plannedRetailerVisitCount = getRetailerDetail("V");
-
-                            dashBoardBO.setKpiAcheived(plannedRetailerVisitCount + "");
-                            int kpiAcheived = plannedRetailerVisitCount;
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (plannedRetailerCount);
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-                            }
-
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE7)) {
-                            int promotionCount = getPromotionDetail("P");
-                            int promotionAchievedCount = getPromotionDetail("V");
-
-                            dashBoardBO.setKpiAcheived(promotionAchievedCount + "");
-                            int kpiAcheived = promotionAchievedCount;
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (promotionCount);
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-                            }
-
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE8)) {
-                            int mslCount = getMSLDetail("P");
-                            int mslAchievedCount = getMSLDetail("V");
-
-                            dashBoardBO.setKpiAcheived(mslAchievedCount + "");
-                            int kpiAcheived = mslAchievedCount;
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (mslCount);
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-                            }
-
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE9)) {
-
-
-                            dashBoardBO.setKpiAcheived(Integer.toString(transactionPerDay));
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((transactionPerDay * 100) / kpiTarget);
-                            }
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE10)) {
-
-
-                            dashBoardBO.setKpiAcheived(Integer.toString(avgUnitsPerBill));
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((avgUnitsPerBill * 100) / kpiTarget);
-                            }
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE11)) {
-
-
-                            dashBoardBO.setKpiAcheived(Integer.toString(avgSellingPrice));
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((avgSellingPrice * 100) / kpiTarget);
-                            }
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE12)) {
-
-
-                            dashBoardBO.setKpiAcheived(Integer.toString(avgBillValue));
-                            int kpiTarget;
-
-                            try {
-                                kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                            } catch (Exception e) {
-                                kpiTarget = 0;
-                                Commons.printException(e + "");
-                            }
-
-                            if (kpiTarget == 0) {
-                                dashBoardBO.setCalculatedPercentage(0);
-                            } else {
-                                dashBoardBO.setCalculatedPercentage((avgBillValue * 100) / kpiTarget);
-                            }
-                            if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                                dashBoardBO.setConvTargetPercentage(0);
-                                dashBoardBO.setConvAcheivedPercentage(100);
-                            } else {
-                                dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                                        .getCalculatedPercentage());
-                                dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                                        .getCalculatedPercentage());
-                            }
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_VISIT)) {
-                            int visitedcalls = bmodel.getVisitedCallsForTheDayExcludingDeviatedVisits();
-                            if (totalcalls == 0) {
-                                dashBoardBO.setKpiAcheived("0");
-                            } else {
-                                dashBoardBO.setKpiAcheived(((visitedcalls / totalcalls) * 100) + "");
-                            }
-
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_SALE)) {
-                            int productivecalls = bmodel.getProductiveCallsForTheDayExcludingDeviatedVisits();
-                            if (totalcalls == 0) {
-                                dashBoardBO.setKpiAcheived("0");
-                            } else {
-                                dashBoardBO.setKpiAcheived(((productivecalls / totalcalls) * 100) + "");
-                            }
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_DROP_SIZE_INV)) {
-                            if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
-                                dashBoardBO.setKpiAcheived("0");
-                            } else {
-                                dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp.getTotValues()) / SDUtil.convertToDouble(dailrp.getTotLines())) + "");
-                            }
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_DROP_SIZE_ORD)) {
-                            if (SDUtil.convertToDouble(dailyrp_order.getTotLines()) == 0) {
-                                dashBoardBO.setKpiAcheived("0");
-                            } else {
-                                dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailyrp_order.getTotValues()) / SDUtil.convertToDouble(dailyrp_order.getTotLines())) + "");
-                            }
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_SALES_VS_WEEKLY_OBJ)) {
-                            dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp.getTotValues())) + "");
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_INIT_VS_WEEKLY_OBJ)) {
-                            //in getFocusBrandInvoiceAmt getTotValues refers sum of invoice amt of focus brands
-                            DailyReportBO dailrp_focus_brand = bmodel.getFocusBrandInvoiceAmt();
-                            dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp_focus_brand.getTotValues())) + "");
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE_INV)) {
-                            double sales_ret_val = bmodel.getSalesReturnValue();
-                            if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
-                                dashBoardBO.setKpiAcheived("0");
-                            } else {
-                                dashBoardBO.setKpiAcheived(((sales_ret_val / SDUtil.convertToDouble(dailrp.getTotValues())) * 100) + "");
-                            }
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE_ORD)) {
-                            double sales_ret_val = bmodel.getSalesReturnValue();
-                            if (SDUtil.convertToDouble(dailyrp_order.getTotValues()) == 0) {
-                                dashBoardBO.setKpiAcheived("0");
-                            } else {
-                                dashBoardBO.setKpiAcheived(((sales_ret_val / SDUtil.convertToDouble(dailyrp_order.getTotValues())) * 100) + "");
-                            }
-                        } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_FULLFILLMENT)) {
-                            DailyReportBO dailyReportBO = bmodel.getFullFillmentValue();
-                            if (dailyReportBO.getLoaded() == 0) {
-                                dashBoardBO.setKpiAcheived("0");
-                            } else {
-                                dashBoardBO.setKpiAcheived(((dailyReportBO.getDelivered() / dailyReportBO.getLoaded()) * 100) + "");
-                            }
-                        }
-
-                    }
+                    dashboardPresenter.computeDayAchivements();
                     dashBoardListViewAdapter.notifyDataSetChanged();
                 } else if (selectedInterval.equals(P3M)) {
                     monthSpinner.setVisibility(View.VISIBLE);
-
-                    // Creating adapter for spinner
-                    final ArrayList<String> monthNameList = bmodel.dashBoardHelper.getSellerKpiMonthNameList();
+                    final ArrayList<String> monthNameList = dashBoardHelper.getSellerKpiMonthNameList();
                     ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthNameList);
                     monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
                     monthSpinner.setAdapter(monthdapter);
@@ -1365,20 +920,20 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 mSelectedUserId = userMasterBOArrayAdapter.getItem(position).getUserid();
                 if (!isFromHomeScreenTwo) {
                     if (selectedInterval.equals(P3M))
-                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
+                        dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
                     else
-                        bmodel.dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                        dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
                 }
 
-                gridListDataLoad(beatPosition);
-                mDashboardList = bmodel.dashBoardHelper.getDashListViewList();
+                dashboardPresenter.gridListDataLoad(beatPosition);
+                mDashboardList = dashBoardHelper.getDashListViewList();
                 dashBoardListViewAdapter = new DashBoardListViewAdapter(mDashboardList);
                 dashBoardList.setAdapter(dashBoardListViewAdapter);
                 if (show_trend_chart) {
                     if (mDashboardList != null && mDashboardList.size() > 0) {
-                        bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
+                        dashBoardHelper.setDashboardBO(mDashboardList.get(0));
                     }
-                    bmodel.dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
+                    dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
                     adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
                     new setAdapterTask().execute();
                 }
@@ -1414,7 +969,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private void updateMonth(String monthName) {
         mDashboardList = new ArrayList<>();
 
-        for (DashBoardBO dashBoardBO : bmodel.dashBoardHelper.getDashListViewList()) {
+        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
             if (dashBoardBO.getMonthName().equals(monthName)) {
                 mDashboardList.add(dashBoardBO);
             }
@@ -1422,240 +977,29 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
             checkandaddScreens();
-            //calculateIncentive();
             if (mDashboardList != null && mDashboardList.size() > 0) {
-                bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
+                dashBoardHelper.setDashboardBO(mDashboardList.get(0));
             }
-            bmodel.dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
+            dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
             adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
             new setAdapterTask().execute();
         }
     }
 
     private void updateAll() {
-        mDashboardList = bmodel.dashBoardHelper.getDashListViewList();
+        mDashboardList = dashBoardHelper.getDashListViewList();
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
             checkandaddScreens();
-            calculateIncentive();
             if (mDashboardList != null && mDashboardList.size() > 0) {
-                bmodel.dashBoardHelper.setDashboardBO(mDashboardList.get(0));
+                dashBoardHelper.setDashboardBO(mDashboardList.get(0));
             }
-            bmodel.dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
+            dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
             adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
             new setAdapterTask().execute();
         }
     }
 
-    private void calculateIncentive() {
-        incentive = 0;
-        for (DashBoardBO dash : mDashboardList) {
-            incentive = incentive + Double.parseDouble(dash.getKpiIncentive());
-        }
-        bmodel.dashBoardHelper.mParamAchieved = incentive;
-    }
-
-    private int getRetailerDetail(String flag) {
-        int size = bmodel.getRetailerMaster().size();
-        int count = 0;
-        /** Add today's retailers. **/
-        if (flag.equals("P")) {
-            for (int i = 0; i < size; i++) {
-                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    count++;
-                }
-
-            }
-        } else {
-            for (int i = 0; i < size; i++) {
-                if (bmodel.getRetailerMaster().get(i).getIsVisited().equals("Y")) {
-                    count++;
-                }
-            }
-        }
-
-        return count;
-
-    }
-
-    private int getPromotionDetail(String flag) {
-        DBUtil db = null;
-        int size = bmodel.getRetailerMaster().size();
-        int count = 0;
-        String chIDs = "";
-
-        if (flag.equals("P")) {
-            for (int i = 0; i < size; i++) {
-                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
-                }
-            }
-
-            if (chIDs.endsWith(","))
-                chIDs = chIDs.substring(0, chIDs.length() - 1);
-
-            try {
-                db = new DBUtil(getContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
-                db.createDataBase();
-                db.openDataBase();
-                StringBuffer sb = new StringBuffer();
-                sb.append("SELECT count(PromoID) FROM PromotionMapping where chid in (" + chIDs + ")");
-
-                Cursor c = db.selectSQL(sb.toString());
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        count = c.getInt(0);
-                    }
-                }
-                c.close();
-                db.closeDB();
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-        } else {
-            for (int i = 0; i < size; i++) {
-                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    count = count + getPromotionExecDetail(bmodel.getRetailerMaster().get(i).getRetailerID());
-                }
-            }
-        }
-
-        return count;
-
-    }
-
-    private int getPromotionExecDetail(String retailerID) {
-        DBUtil db = null;
-        int count = 0;
-        try {
-            db = new DBUtil(getContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("SELECT count( distinct PromotionID) FROM PromotionDetail where RetailerID =" + bmodel.QT(retailerID));
-
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    count = c.getInt(0);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-        return count;
-
-    }
-
-    ArrayList<Integer> mslProdIDs = new ArrayList<>();
-
-    private int getMSLDetail(String flag) {
-        DBUtil db = null;
-        int size = bmodel.getRetailerMaster().size();
-        int count = 0;
-        String chIDs = "";
-        mslProdIDs = new ArrayList<>();
-        if (flag.equals("P")) {
-            for (int i = 0; i < size; i++) {
-                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
-                }
-            }
-            if (chIDs.endsWith(","))
-                chIDs = chIDs.substring(0, chIDs.length() - 1);
-
-            try {
-                db = new DBUtil(getContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
-                db.createDataBase();
-                db.openDataBase();
-                StringBuffer sb = new StringBuffer();
-                sb.append("SELECT PTGM.pid FROM ProductTaggingMaster PTM ");
-                sb.append("inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid ");
-                sb.append("inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid ");
-                sb.append("AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') ");
-                sb.append("where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")");
-
-                Cursor c = db.selectSQL(sb.toString());
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        count++;
-                        if (!mslProdIDs.contains(c.getInt(1)))
-                            mslProdIDs.add(c.getInt(1));
-                    }
-                }
-                c.close();
-                db.closeDB();
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-        } else {
-            for (int i = 0; i < size; i++) {
-                if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    count = count + getMslExecDetail(bmodel.getRetailerMaster().get(i).getRetailerID());
-                }
-            }
-        }
-        return count;
-
-    }
-
-    private int getMslExecDetail(String retailerID) {
-        DBUtil db = null;
-        int count = 0;
-        try {
-            db = new DBUtil(getContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select count(*) from OrderDetail where retailerid = " + bmodel.QT(retailerID));
-            sb.append("and ProductID in (" + mslProdIDs + ")");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    count = c.getInt(0);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-        return count;
-
-    }
-
-    private void getCounterSalesDetail() {
-        DBUtil db = null;
-
-        try {
-            db = new DBUtil(getContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("SELECT count(distinct uid)as TRN,(count(pid)/count(distinct uid)) as avgUnitsBill,");
-            sb.append("(sum(price)/count(pid)) as avgSellBill ,(sum(value)/count(distinct uid)) as avgBill ");
-            sb.append("FROM CS_CustomerSaleDetails");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    transactionPerDay = c.getInt(0);
-                    avgUnitsPerBill = c.getInt(1);
-                    avgSellingPrice = c.getInt(2);
-                    avgBillValue = c.getInt(3);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-
-    }
 
     public class MyPagerAdapter extends FragmentPagerAdapter {
         private ArrayList<Fragment> fragmentList = new ArrayList<>();
@@ -1679,29 +1023,11 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
     }
 
-    private void loadUserSpinner(String distrubutorIds) {
-        ArrayList<UserMasterBO> users;
-        final List<KeyPairBoolData> userArray = new ArrayList<>();
-        mFilterUser = "";
-        if (distrubutorIds.equals("0"))
-            users = bmodel.dashBoardHelper.downloadUserList();
+    @Override
+    public void loadUserSpinner(String filterUser, List<KeyPairBoolData> userArray) {
 
-        else
-            users = bmodel.userMasterHelper.downloadUserList(distrubutorIds);
+        mFilterUser = filterUser;
 
-        userArray.add(new KeyPairBoolData(0, getResources().getString(R.string.all), true));
-        int count = 0;
-        for (int i = 0; i < users.size(); i++) {
-            KeyPairBoolData h = new KeyPairBoolData();
-            h.setId(users.get(i).getUserid());
-            h.setName(users.get(i).getUserName());
-            h.setSelected(true);
-            userArray.add(h);
-            count++;
-            mFilterUser += bmodel.QT(users.get(i).getUserid() + "");
-            if (count != users.size())
-                mFilterUser += ",";
-        }
         userSpinner1.setItems(userArray, -1, new SpinnerListener() {
             @Override
             public void onItemsSelected(List<KeyPairBoolData> items) {
@@ -1721,9 +1047,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     }
 
     private void loadListChart() {
-        bmodel.dashBoardHelper.loadKpiDashBoard(mFilterUser + "", selectedInterval);
-        gridListDataLoad(beatPosition);
-        mDashboardList = bmodel.dashBoardHelper.getDashListViewList();
+        dashBoardHelper.loadKpiDashBoard(mFilterUser + "", selectedInterval);
+        dashboardPresenter.gridListDataLoad(beatPosition);
+        mDashboardList = dashBoardHelper.getDashListViewList();
         dashBoardListViewAdapter = new DashBoardListViewAdapter(mDashboardList);
         dashBoardList.setAdapter(dashBoardListViewAdapter);
         if (show_trend_chart) {
@@ -1737,13 +1063,12 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
     private void checkandaddScreens() {
         NUM_ITEMS = 1;
-        //bmodel.dashBoardHelper.setDashboardBO(null);
         fragmentList = new ArrayList<>();
 
         if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
             if (bmodel.configurationMasterHelper.SHOW_P3M_DASH) {
                 NUM_ITEMS++;
-                bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
+                dashBoardHelper.loadP3MTrendChaart(mFilterUser);
                 fragmentList.add(new P3MChartFragment());
             }
             if (bmodel.configurationMasterHelper.SHOW_SMP_DASH) {
@@ -1763,17 +1088,12 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 fragment.setArguments(args);
                 fragmentList.add(fragment);
             }
-            if (bmodel.configurationMasterHelper.SHOW_KPIBARCHART_DASH|| true) {
+            if (bmodel.configurationMasterHelper.SHOW_KPIBARCHART_DASH) {
                 NUM_ITEMS++;
-                Fragment fragment = new KpiBarChartFragment(mDashboardList);
-                fragmentList.add(fragment);
+                fragmentList.add(new KpiBarChartFragment());
             }
 
         }
-//        else if (show_trend_chart) {
-//            bmodel.dashBoardHelper.loadP3MTrendChaart(mFilterUser);
-//            fragmentList.add(new P3MChartFragment());
-//        }
     }
 
     private class setAdapterTask extends AsyncTask<Void, Void, Void> {
@@ -1807,13 +1127,11 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             try {
                 if (bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD) {
                     if (!isFromHomeScreenTwo)
-                        bmodel.dashBoardHelper.findMinMaxProductLevelSellerKPI(kpiId, kpiTypeLovId, selectedInterval);
+                        dashBoardHelper.findMinMaxProductLevelSellerKPI(kpiId, kpiTypeLovId, selectedInterval);
                     else
-                        bmodel.dashBoardHelper.findMinMaxProductLevelRetailerKPI(kpiId, kpiTypeLovId, selectedInterval);
-
-                    //for loaeral
+                        dashBoardHelper.findMinMaxProductLevelRetailerKPI(kpiId, kpiTypeLovId, selectedInterval);
                 } else {
-                    bmodel.dashBoardHelper.downloadLorealSkuDetails(kpiId, kpiTypeLovId, selectedInterval);
+                    dashBoardHelper.downloadLorealSkuDetails(kpiId, kpiTypeLovId, selectedInterval);
                 }
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -1838,7 +1156,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
             progressDialogue.dismiss();
 
-            if (bmodel.dashBoardHelper.getSellerKpiSku().size() > 0) {
+            if (dashBoardHelper.getSellerKpiSku().size() > 0) {
                 Intent i = new Intent(getActivity(),
                         SellerKPISKUActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -1848,8 +1166,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle());
                 i.putExtra("from", "4");
                 i.putExtra("flex1", flex1);
-                i.putExtra("pid",
-                        pId);
+                i.putExtra("pid", pId);
                 i.putExtra("isFromDash", true);
                 startActivity(i);
             } else {

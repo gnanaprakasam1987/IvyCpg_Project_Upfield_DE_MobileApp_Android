@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/skuwise_fragment"
-        android:name="com.ivy.sd.png.view.SkuWiseTargetFragment"
+        android:name="com.ivy.cpg.view.dashboard.olddashboard.SkuWiseTargetFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

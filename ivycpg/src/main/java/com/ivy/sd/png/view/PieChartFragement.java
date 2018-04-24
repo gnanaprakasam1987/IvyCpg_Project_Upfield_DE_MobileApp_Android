@@ -20,6 +20,7 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -50,7 +51,7 @@ public class PieChartFragement extends Fragment implements OnChartValueSelectedL
     public void onStart() {
         super.onStart();
 
-        skuList = bmodel.dashBoardHelper.getSkuwiseGraphData();
+        skuList = DashBoardHelper.getInstance(getActivity()).getSkuwiseGraphData();
         mChart = (PieChart) view.findViewById(R.id.chart1);
         mChart.setOnChartValueSelectedListener(this);
 

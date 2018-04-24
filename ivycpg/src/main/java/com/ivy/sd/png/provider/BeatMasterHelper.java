@@ -101,7 +101,7 @@ public class BeatMasterHelper {
             Cursor c = db.selectSQL("SELECT distinct " + beatCols
                     + " FROM " + DataMembers.tbl_beatMaster + " WHERE UserId = " +
                     "ifnull((SELECT UserId FROM" + DataMembers.tbl_beatMaster +
-                    " WHERE UserId=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "),0)");
+                    " WHERE UserId=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "),0) Order by BeatDescription asc");
             if (c != null) {
                 setBeatMaster(new Vector<BeatMasterBO>());
                 while (c.moveToNext()) {

@@ -9,6 +9,7 @@ import android.support.v4.content.FileProvider;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.OrderHistoryBO;
@@ -599,7 +600,7 @@ public class ProfileHelper {
                     .selectSQL("SELECT DISTINCT A.pid,P.PName,RField FROM SkuWiseTarget A inner join ProductMaster P on P.PID=A.Pid  where A.Rid="
                             + bmodel.getRetailerMasterBO().getRetailerID()
                             + "   and A.FreqType LIKE 'MONTH' and A.level="
-                            + bmodel.dashBoardHelper.mMinLevel + "  ORDER BY A.pId");
+                            + DashBoardHelper.getInstance(mContext).mMinLevel + "  ORDER BY A.pId");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     ArrayList<PlanningOutletBO> list = new ArrayList<>();
@@ -656,7 +657,7 @@ public class ProfileHelper {
                         .selectSQL("SELECT DISTINCT A.pid,P.PName FROM SkuWiseTarget A inner join ProductMaster P on P.PID=A.Pid  where A.Rid="
                                 + bmodel.getRetailerMasterBO().getRetailerID()
                                 + "   and A.FreqType LIKE 'MONTH' and A.level="
-                                + bmodel.dashBoardHelper.mMaxLevel
+                                + DashBoardHelper.getInstance(mContext).mMaxLevel
                                 + " and A.pid="
                                 + pids.get(i)
                                 + "  ORDER BY A.pId");

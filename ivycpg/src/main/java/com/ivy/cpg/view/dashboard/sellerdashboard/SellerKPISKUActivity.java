@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.dashboard.sellerdashboard;
 
 import android.content.Intent;
 import android.os.Build;
@@ -8,17 +8,15 @@ import android.support.v7.widget.Toolbar;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 
-public class SKUWiseTargetActivity extends IvyBaseActivityNoActionBar {
+public class SellerKPISKUActivity extends IvyBaseActivityNoActionBar {
     private Toolbar toolbar;
     private String screenTitle = "";
 
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        setContentView(R.layout.skuwisetarget_activity);
+        setContentView(R.layout.sellerkpisku_activity);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -32,11 +30,9 @@ public class SKUWiseTargetActivity extends IvyBaseActivityNoActionBar {
             Intent i = getIntent();
             screenTitle = i.getStringExtra("screentitle");
             if (screenTitle.equals("")) {
-                screenTitle = getResources().getString(R.string.sku_target_title);
+                screenTitle = "SKU Target";
             }
             setScreenTitle(screenTitle);
         }
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
-
 }
