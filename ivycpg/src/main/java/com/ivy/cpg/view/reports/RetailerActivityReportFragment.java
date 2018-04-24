@@ -104,7 +104,9 @@ public class RetailerActivityReportFragment extends Fragment {
                 }
                 c.close();
             }
-            c = db.selectSQL("select RetailerID, DailyTarget from RetailerTargetMaster ");
+            // Below code commented because Retailer Daily Target sets using RetailerKPI table instead of RetailerTargetMaster
+
+            /*c = db.selectSQL("select RetailerID, DailyTarget from RetailerTargetMaster ");
 
             if (c != null) {
                 while (c.moveToNext()) {
@@ -117,7 +119,7 @@ public class RetailerActivityReportFragment extends Fragment {
                     }
                 }
                 c.close();
-            }
+            }*/
             c = db.selectSQL("select retailerid,substr(timeIn,12,5),substr(timeout,12,5),timein,timeout from OutletTimestamp group by retailerid");
 
             if (c != null) {
@@ -295,7 +297,6 @@ public class RetailerActivityReportFragment extends Fragment {
             holder.linesSold.setText(volumereport.getTotalLines() + "");
             holder.startTime.setText(volumereport.getRField1() != null ? volumereport.getRField1().trim() : "-");
             holder.endTime.setText(volumereport.getRfield2() != null ? volumereport.getRfield2().trim() : "-");
-            Commons.print("Percentage" + (((volumereport.getDaily_target() - volumereport.getVisit_Actual()) / volumereport.getDaily_target())) * 100);
 
             holder.vTarget.setText("" + SDUtil.format(volumereport
                     .getDaily_target(), 0, 0));

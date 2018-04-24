@@ -1114,25 +1114,6 @@ negative button and neutral button -->
         <item name="android:background">@color/BLUE</item>
     </style>
 
-    <style name="EditBox" parent="@android:style/Widget.EditText">
-        <item name="android:background">@drawable/edit_text</item>
-        <item name="android:layout_width">@dimen/visit_lst_txtvalue_width</item>
-        <item name="android:layout_height">30dp</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginLeft">5dp</item>
-        <item name="android:layout_marginRight">5dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:inputType">number</item>
-        <item name="android:text">0</item>
-        <item name="android:maxLength">8</item>
-        <item name="android:padding">2dp</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:imeOptions">actionDone</item>
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">@dimen/font_micro_small</item>
-        <item name="android:cursorVisible">false</item>
-    </style>
-
     <style name="EditText" parent="@android:style/Widget.EditText">
         <item name="android:background">@drawable/edit_text</item>
         <item name="android:paddingTop">2dp</item>

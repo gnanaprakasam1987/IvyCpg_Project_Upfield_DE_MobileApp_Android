@@ -2640,39 +2640,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isCreated = false;
             }
 
-        } else if (menu.getConfigCode().equals(MENU_REV) && hasLink == 1) {
-            if (isPreviousDone(menu)
-                    || bmodel.configurationMasterHelper.IS_JUMP
-                    ) {
-                if (bmodel.configurationMasterHelper.IS_TARGET_SCREEN_PH) {
-                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                    Intent i = new Intent(HomeScreenTwo.this,
-                            TargetPlanActivity_PH.class);
-                    i.putExtra("From", "Review");
-                    startActivity(i);
-                    finish();
-                } else {
-                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                    Intent i = new Intent(HomeScreenTwo.this,
-                            TargetPlanActivity.class);
-                    i.putExtra("From", "Review");
-                    i.putExtra("screentitle", menu.getMenuName());
-                    startActivity(i);
-                    finish();
-                }
-            } else {
-                Toast.makeText(
-                        this,
-                        getResources().getString(
-                                R.string.please_complete_previous_activity),
-                        Toast.LENGTH_SHORT).show();
-                isCreated = false;
-            }
-
         } else if (menu.getConfigCode().equals(MENU_CALL_ANLYS)) {
             if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
                     || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
