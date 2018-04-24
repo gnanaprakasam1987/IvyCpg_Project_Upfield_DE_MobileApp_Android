@@ -28,7 +28,7 @@ import java.util.Map;
 public class SchemeDetailsMasterHelper {
 
     private Context context;
-    private BusinessModel bmodel;
+    private BusinessModel bModel;
     private static SchemeDetailsMasterHelper instance = null;
 
     private static final String TAG = "SchemeDetailsMasterHelper";
@@ -97,7 +97,7 @@ public class SchemeDetailsMasterHelper {
 
     protected SchemeDetailsMasterHelper(Context context) {
         this.context = context;
-        bmodel = (BusinessModel) context;
+        bModel = (BusinessModel) context;
     }
 
     public static SchemeDetailsMasterHelper getInstance(Context context) {
@@ -188,13 +188,13 @@ public class SchemeDetailsMasterHelper {
 
             loadSchemeConfigs(context);
             if (IS_SCHEME_ON_MASTER) {
-                int distributorId = bmodel.getRetailerMasterBO().getDistributorId();
-                String retailerId = bmodel.getRetailerMasterBO().getRetailerID();
-                int channelId = bmodel.getRetailerMasterBO().getSubchannelid();
-                int locationId = bmodel.getRetailerMasterBO().getLocationId();
-                int accountId = bmodel.getRetailerMasterBO().getAccountid();
-                int priorityProductId = bmodel.getRetailerMasterBO().getPrioriryProductId();
-                int userId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+                int distributorId = bModel.getRetailerMasterBO().getDistributorId();
+                String retailerId = bModel.getRetailerMasterBO().getRetailerID();
+                int channelId = bModel.getRetailerMasterBO().getSubchannelid();
+                int locationId = bModel.getRetailerMasterBO().getLocationId();
+                int accountId = bModel.getRetailerMasterBO().getAccountid();
+                int priorityProductId = bModel.getRetailerMasterBO().getPrioriryProductId();
+                int userId = bModel.userMasterHelper.getUserMasterBO().getUserid();
 
                 //  loading scheme groups based on retailer attributes
                 ArrayList<String> mGroupIdList = downloadValidSchemeGroups(db);
@@ -205,7 +205,7 @@ public class SchemeDetailsMasterHelper {
                 //  update free product
                 downloadFreeProducts(db);
 
-                if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
+                if (bModel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bModel.configurationMasterHelper.IS_SCHEME_DIALOG) {
                     downloadParentIdListByProduct(db, mGroupIdList);
                 }
 
@@ -234,7 +234,7 @@ public class SchemeDetailsMasterHelper {
 
         StringBuilder sb = new StringBuilder();
         ArrayList<String> mGroupIDList=new ArrayList<>();
-        ArrayList<String> retailerAttributes = bmodel.getAttributeParentListForCurrentRetailer();
+        ArrayList<String> retailerAttributes = bModel.getAttributeParentListForCurrentRetailer();
 
         sb.append("select Distinct schemeid,groupid,EA1.AttributeName as ParentName,EA.ParentID from SchemeAttributeMapping  SAM" +
                 " inner join EntityAttributeMaster EA on EA.AttributeId = SAM.AttributeId" +
@@ -300,7 +300,7 @@ public class SchemeDetailsMasterHelper {
                     " Left join EntityAttributeMaster EA1 on EA1.AttributeId = EA.ParentID ");
             sb.append("where schemeid=" + schemeId + " and groupid=" + groupId + " and SAM.attributeid in(select RA.attributeid from RetailerAttribute RA" +
                     " inner join EntityAttributeMaster EA on EA.Attributeid = RA.Attributeid and EA.PArentid=" + parentId +
-                    " where retailerid = " + bmodel.getRetailerMasterBO().getRetailerID() + ")");
+                    " where retailerid = " + bModel.getRetailerMasterBO().getRetailerID() + ")");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -433,7 +433,7 @@ public class SchemeDetailsMasterHelper {
 
         sb.append(" FROM SchemeMaster SM left join schemeApplyCountMaster SAC on SM.schemeid=SAC.schemeID");
 
-        sb.append(" and ((SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(retailerId)+")");
+        sb.append(" and ((SAC.retailerid=0 OR SAC.retailerid=" + bModel.QT(retailerId)+")");
         sb.append(" AND (SAC.userid=0 OR SAC.userid=" + userId + ")) ");
 
         sb.append(" INNER JOIN  SchemeBuyMaster BD ON BD.SchemeID = SM.SchemeID");
@@ -513,7 +513,7 @@ public class SchemeDetailsMasterHelper {
                     schemeProductBo.setBatchId(c.getString(20));
 
                     //updating Promo flag in product master list
-                    ProductMasterBO productMasterBO=bmodel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
+                    ProductMasterBO productMasterBO= bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
                     if(productMasterBO!=null) {
                         productMasterBO.setIsPromo(true);
                     }
@@ -634,8 +634,8 @@ public class SchemeDetailsMasterHelper {
 
 
                     //updating stock for free products
-                    if (bmodel.productHelper.getProductMasterBOById(productBO.getProductId()) != null) {
-                        productBO.setStock(bmodel.productHelper.getProductMasterBOById(productBO.getProductId()).getSIH());
+                    if (bModel.productHelper.getProductMasterBOById(productBO.getProductId()) != null) {
+                        productBO.setStock(bModel.productHelper.getProductMasterBOById(productBO.getProductId()).getSIH());
                     }
 
                     schemeBO.getFreeProducts().add(productBO);
@@ -688,15 +688,15 @@ public class SchemeDetailsMasterHelper {
         sb.append(" inner join SchemeMaster SM on SM.Schemeid=SBM.Schemeid ");
         sb.append("inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid ");
         sb.append("left join schemeApplyCountMaster SAC on SBM.schemeid=SAC.schemeID ");
-        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())+")");
-        sb.append(" AND (SAC.userid=0 OR SAC.userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ")");
+        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID())+")");
+        sb.append(" AND (SAC.userid=0 OR SAC.userid=" + bModel.userMasterHelper.getUserMasterBO().getUserid() + ")");
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
 
-        sb.append(" where SCM.distributorid in(0," + bmodel.getRetailerMasterBO().getDistributorId() + ")");
-        sb.append(" and SCM.RetailerId in(0," + bmodel.getRetailerMasterBO().getRetailerID() + ")");
-        sb.append(" and SCM.channelid in(0," + bmodel.getRetailerMasterBO().getSubchannelid() + ")");
-        sb.append(" and SCM.locationid in(0," + bmodel.getRetailerMasterBO().getLocationId() + ")");
-        sb.append(" and SCM.accountid in(0," + bmodel.getRetailerMasterBO().getAccountid() + ")");
+        sb.append(" where SCM.distributorid in(0," + bModel.getRetailerMasterBO().getDistributorId() + ")");
+        sb.append(" and SCM.RetailerId in(0," + bModel.getRetailerMasterBO().getRetailerID() + ")");
+        sb.append(" and SCM.channelid in(0," + bModel.getRetailerMasterBO().getSubchannelid() + ")");
+        sb.append(" and SCM.locationid in(0," + bModel.getRetailerMasterBO().getLocationId() + ")");
+        sb.append(" and SCM.accountid in(0," + bModel.getRetailerMasterBO().getAccountid() + ")");
 
         sb.append(" AND SAC.schemeApplyCOunt!=0  AND SM.IsOnInvoice=1 order by SBM.Productid");
         Cursor c = db.selectSQL(sb.toString());
@@ -781,11 +781,11 @@ public class SchemeDetailsMasterHelper {
         final String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL_EIPHEN);
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct SM.schemeid,SB.productid,");
-        sb.append("(julianday(" + bmodel.QT(currentDate) + ")-julianday(replace(date,'/','-') )) as daycount from Schememaster SM ");
+        sb.append("(julianday(" + bModel.QT(currentDate) + ")-julianday(replace(date,'/','-') )) as daycount from Schememaster SM ");
         sb.append("inner join SchemePurchaseHistory SH on SM.parentid=SH.schemeid ");
         sb.append("inner join SchemeBuyMaster SB on SM.schemeid=SB.Schemeid ");
         sb.append("where (isapplied=1 AND SM.Days>=daycount)");
-        sb.append("and SH.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+        sb.append("and SH.retailerid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()));
         sb.append(" order by SM.schemeid ");
         Cursor c = db.selectSQL(sb.toString());
         if (c.getCount() > 0) {
@@ -842,14 +842,14 @@ public class SchemeDetailsMasterHelper {
                     + " IFNULL(CaseUOM.Qty,0) as CaseQty,(IFNULL(PieceUOM.value,0)+IFNULL(OuterUOM.value,0)+IFNULL(CaseUOM.value,0)) "
                     + " FROM SchemeAchHistory A"
 
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as PieceUOM ON PieceUOM.Pid = A.pid"
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as OuterUOM ON OuterUOM.Pid = A.pid"
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
-                    + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and invoicestatus=1"
+                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + ") as PieceUOM ON PieceUOM.Pid = A.pid"
+                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + ") as OuterUOM ON OuterUOM.Pid = A.pid"
+                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
+                    + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + " and invoicestatus=1"
                     + " LEFT JOIN SchemeDetail SD on SD.parentid=A.schid and OH.orderid=SD.orderid"
                     + " LEFT JOIN SchemeFreeProductDetail SPD on SPD.parentid=A.schid and OH.orderid=SPD.orderid"
 
-                    + " where OH.upload!='X' and rid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                    + " where OH.upload!='X' and rid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID())
                     + " and A.schid!=IFNULL(SD.parentid,0) and A.schid!=IFNULL(SPD.parentid,0) order by schid";
 
             Cursor c = db.selectSQL(query);
@@ -916,8 +916,8 @@ public class SchemeDetailsMasterHelper {
             sb.append(",ASF.groupType,ASF.schemeLogic  from AccumulationSchemeFreeIssues ASF");
             sb.append(" inner join Productmaster PM on PM.pid=ASF.productid");
             sb.append(" where ASF.retailerid=");
-            sb.append(bmodel.getRetailerMasterBO().getRetailerID());
-            sb.append(" and ASF.slabid not in(select schemeid from SchemeFreeProductDetail where retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + ") order by ASF.schemeid");
+            sb.append(bModel.getRetailerMasterBO().getRetailerID());
+            sb.append(" and ASF.slabid not in(select schemeid from SchemeFreeProductDetail where retailerid=" + bModel.getRetailerMasterBO().getRetailerID() + ") order by ASF.schemeid");
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -1269,7 +1269,7 @@ public class SchemeDetailsMasterHelper {
 
             if (schemeProductBo.getGroupName().equals(groupName)) {
 
-                ProductMasterBO productBo = bmodel.productHelper
+                ProductMasterBO productBo = bModel.productHelper
                         .getProductMasterBOById(schemeProductBo.getProductId());
                 if (productBo != null) {
 
@@ -1277,7 +1277,7 @@ public class SchemeDetailsMasterHelper {
 
                         int orderedTotalQuantityUomWise = 0;
                         int totalQty;
-                        if (schemeBO.isBatchWise() && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                        if (schemeBO.isBatchWise() && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                             // batch wise scheme
                            totalQty=getBatchTotalQuantity(productBo,schemeProductBo.getBatchId());
 
@@ -1342,7 +1342,7 @@ public class SchemeDetailsMasterHelper {
 
                         double totalValue;
 
-                        if (productBo.getBatchwiseProductCount() > 0 && schemeBO.isBatchWise() && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                        if (productBo.getBatchwiseProductCount() > 0 && schemeBO.isBatchWise() && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                             totalValue = getBatchTotalValue(productBo, schemeProductBo.getBatchId());
                         } else {
                             totalValue = (productBo.getOrderedPcsQty() * productBo
@@ -1423,7 +1423,7 @@ public class SchemeDetailsMasterHelper {
             }
 
             if (schemeProductBo.getGroupName().equals(groupName)) {
-                ProductMasterBO productBo = bmodel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
+                ProductMasterBO productBo = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
                 if (productBo != null) {
 
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
@@ -1431,7 +1431,7 @@ public class SchemeDetailsMasterHelper {
                         int orderedTotalQuantityByUOMWise ;
                         int totalProductQty = 0;
 
-                        if (schemeBO.isBatchWise() && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                        if (schemeBO.isBatchWise() && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                             // batch wise scheme
                             totalQty=getBatchTotalQuantity(productBo,schemeProductBo.getBatchId());
 
@@ -1502,7 +1502,7 @@ public class SchemeDetailsMasterHelper {
 
                         double totalProductValue ;
 
-                        if (productBo.getBatchwiseProductCount() > 0 && schemeBO.isBatchWise() && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                        if (productBo.getBatchwiseProductCount() > 0 && schemeBO.isBatchWise() && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                             totalProductValue = getBatchTotalValue(productBo, schemeProductBo.getBatchId());
                         } else {
                             totalProductValue = (productBo.getOrderedPcsQty() * productBo
@@ -1550,7 +1550,7 @@ public class SchemeDetailsMasterHelper {
 
     private double getBatchTotalValue(ProductMasterBO productBO, String batchId) {
 
-        ArrayList<ProductMasterBO> batchWiseList = bmodel.batchAllocationHelper
+        ArrayList<ProductMasterBO> batchWiseList = bModel.batchAllocationHelper
                 .getBatchlistByProductID().get(productBO.getProductID());
         double totalValue = 0.0;
         if (batchWiseList != null) {
@@ -1578,7 +1578,7 @@ public class SchemeDetailsMasterHelper {
 
     public int getBatchTotalQuantity(ProductMasterBO productBO, String batchId) {
 
-        ArrayList<ProductMasterBO> batchWiseList = bmodel.batchAllocationHelper
+        ArrayList<ProductMasterBO> batchWiseList = bModel.batchAllocationHelper
                 .getBatchlistByProductID().get(productBO.getProductID());
         int totalQuantity=0;
         if (batchWiseList != null) {
@@ -1868,7 +1868,7 @@ public class SchemeDetailsMasterHelper {
 
                         i++;
 
-                        if (!bmodel.configurationMasterHelper.IS_SIH_VALIDATION || isSihAvailableForFreeProducts) {
+                        if (!bModel.configurationMasterHelper.IS_SIH_VALIDATION || isSihAvailableForFreeProducts) {
                             int freeQuantity = 0;
                             int count = 0;
 
@@ -1888,7 +1888,7 @@ public class SchemeDetailsMasterHelper {
                                     count++;
 
                                     int stock = 0;
-                                    productMasterBO = bmodel.productHelper.getProductMasterBOById(schemePdtBO.getProductId());
+                                    productMasterBO = bModel.productHelper.getProductMasterBOById(schemePdtBO.getProductId());
 
                                     if (productMasterBO != null) {
                                         stock = productMasterBO.getSIH()
@@ -1901,8 +1901,8 @@ public class SchemeDetailsMasterHelper {
                                     schemePdtBO.setQuantitySelected(0);
 
 
-                                    if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                                        if (bmodel.getResources().getBoolean(R.bool.config_is_sih_considered)) {
+                                    if (bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                                        if (bModel.getResources().getBoolean(R.bool.config_is_sih_considered)) {
                                             if (stock > 0) {
 
                                                 if ((stock - freeQuantity) >= 0) {
@@ -2124,13 +2124,13 @@ public class SchemeDetailsMasterHelper {
             if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 int count = 0;
-                ProductMasterBO productMasterBO = bmodel.productHelper
+                ProductMasterBO productMasterBO = bModel.productHelper
                         .getProductMasterBOById(schemeProductBO.getProductId());
 
                 if (productMasterBO != null) {
                     int quantity;
 
-                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         quantity = getBatchTotalQuantity(productMasterBO, schemeProductBO.getBatchId());
                     } else {
                         quantity = (productMasterBO.getOrderedCaseQty() * productMasterBO
@@ -2279,9 +2279,9 @@ public class SchemeDetailsMasterHelper {
             // sb.append("on SFD.schemeid=SD.schemeID where ");
             sb.append("select distinct SchemeID ,ProductID ,Value  from SchemeDetail  where ");
             if (flag) { // invoice report
-                sb.append("InvoiceID =" + bmodel.QT(id));
+                sb.append("InvoiceID =" + bModel.QT(id));
             } else {// order report
-                sb.append("OrderID =" + bmodel.QT(id));
+                sb.append("OrderID =" + bModel.QT(id));
             }
             sb.append(" AND SchemeType = '" + SCHEME_PERCENTAGE + "'");
 
@@ -2293,7 +2293,7 @@ public class SchemeDetailsMasterHelper {
                     // schemeProductBO.setUomID(c.getInt(4));
                     String productid = c.getString(1);
                     // productBo is buy product object
-                    ProductMasterBO produBo = bmodel.productHelper
+                    ProductMasterBO produBo = bModel.productHelper
                             .getProductMasterBOById(productid);
                     if (produBo != null) {
                         produBo.setMschemeper(c.getDouble(2));
@@ -2333,13 +2333,13 @@ public class SchemeDetailsMasterHelper {
             if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 int count = 0;
-                ProductMasterBO productMasterBO = bmodel.productHelper
+                ProductMasterBO productMasterBO = bModel.productHelper
                         .getProductMasterBOById(schemeProductBO.getProductId());
 
                 if (productMasterBO != null) {
 
                     double totalValue ;
-                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         totalValue = getBatchTotalValue(productMasterBO, schemeProductBO.getBatchId());
                     } else {
                         totalValue = (productMasterBO.getOrderedCaseQty() * productMasterBO
@@ -2455,11 +2455,11 @@ public class SchemeDetailsMasterHelper {
                 maximumBuyQuantity = schemeProductBO.getTobuyQty();
                 minimumBuyQuantity = schemeProductBO.getBuyQty();
 
-                ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                ProductMasterBO productMasterBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                 if (productMasterBO != null) {
 
                     int quantity;
-                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         quantity = getBatchTotalQuantity(productMasterBO, schemeProductBO.getBatchId());
                     }
                     else {
@@ -2557,10 +2557,10 @@ public class SchemeDetailsMasterHelper {
                     int appliedQuantity ;
                     tempToQty = maximumBuyQuantity * count;
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
-                        ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                        ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                         if (productBO != null) {
 
-                            if (isBatchWise && productBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                            if (isBatchWise && productBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                                 orderedQuantity=getBatchTotalQuantity(productBO,schemeProductBO.getBatchId());
                             }
                             else {
@@ -2679,7 +2679,7 @@ public class SchemeDetailsMasterHelper {
                 minimumBuyValue = schemeProductBO.getBuyQty();
                 maximumBuyValue = schemeProductBO.getTobuyQty();
 
-                ProductMasterBO productMasterBO = bmodel.productHelper
+                ProductMasterBO productMasterBO = bModel.productHelper
                         .getProductMasterBOById(schemeProductBO.getProductId());
                 if (productMasterBO != null) {
 
@@ -2690,7 +2690,7 @@ public class SchemeDetailsMasterHelper {
                             + productMasterBO.getOrderedPcsQty();
 
                     double value;
-                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         value = getBatchTotalValue(productMasterBO, schemeProductBO.getBatchId());
                     } else {
                         value = (productMasterBO.getOrderedCaseQty() * productMasterBO
@@ -2757,10 +2757,10 @@ public class SchemeDetailsMasterHelper {
                     tempToQty = maximumBuyValue;
 
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
-                        ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                        ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                         if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
 
-                            if (isBatchWise && productBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                            if (isBatchWise && productBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                                 totVal = getBatchTotalValue(productBO, schemeProductBO.getBatchId());
                             } else {
                                 totVal = (productBO.getOrderedCaseQty() * productBO
@@ -2905,7 +2905,7 @@ public class SchemeDetailsMasterHelper {
 
             if (schemeBO.isAmountTypeSelected()) {
                 for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
-                    ProductMasterBO productBO = bmodel.productHelper
+                    ProductMasterBO productBO = bModel.productHelper
                             .getProductMasterBOById(schemeProductBo
                                     .getProductId());
                     totalOrderValueOfBuyProducts += (productBO.getOrderedCaseQty() * productBO.getCsrp())
@@ -2919,7 +2919,7 @@ public class SchemeDetailsMasterHelper {
         if (buyProductList != null) {
             for (SchemeProductBO schemeProductBO : buyProductList) {
                 ProductMasterBO productBO;
-                productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
 
                 if (productBO != null) {
                     if (productBO.getOrderedPcsQty() > 0
@@ -2930,10 +2930,10 @@ public class SchemeDetailsMasterHelper {
                         sb.append(orderID + "," + schemeBO.getSchemeId() + ","
                                 + schemeProductBO.getProductId() + ",");
                         if (schemeBO.isQuantityTypeSelected()) {
-                            sb.append(bmodel.QT(SCHEME_FREE_PRODUCT) + ",");
+                            sb.append(bModel.QT(SCHEME_FREE_PRODUCT) + ",");
                             sb.append(+0);
                         } else if (schemeBO.isAmountTypeSelected()) {
-                            sb.append(bmodel.QT(SCHEME_AMOUNT));
+                            sb.append(bModel.QT(SCHEME_AMOUNT));
 
                             double line_value = (productBO.getOrderedCaseQty() * productBO.getCsrp())
                                     + (productBO.getOrderedPcsQty() * productBO.getSrp())
@@ -2944,7 +2944,7 @@ public class SchemeDetailsMasterHelper {
                             sb.append("," + (amount_free));
 
                         } else if (schemeBO.isPriceTypeSeleted()) {
-                            sb.append(bmodel.QT(SCHEME_PRICE));
+                            sb.append(bModel.QT(SCHEME_PRICE));
                             sb.append("," + schemeBO.getSelectedPrice());
 
                         } else if (schemeBO.isDiscountPrecentSelected()) {
@@ -2954,12 +2954,12 @@ public class SchemeDetailsMasterHelper {
                                         + 0 + ",");
                             }
 
-                            sb.append(bmodel.QT(SCHEME_PERCENTAGE));
+                            sb.append(bModel.QT(SCHEME_PERCENTAGE));
                             sb.append("," + schemeBO.getSelectedPrecent());
                         }
                         sb.append("," + schemeBO.getParentId());
-                        sb.append("," + bmodel.getRetailerMasterBO().getRetailerID());
-                        sb.append("," + bmodel.getRetailerMasterBO().getDistributorId());
+                        sb.append("," + bModel.getRetailerMasterBO().getRetailerID());
+                        sb.append("," + bModel.getRetailerMasterBO().getDistributorId());
                         if (schemeBO.isQuantityTypeSelected()) {
                             sb.append(",'Y'");
                         } else {
@@ -3010,7 +3010,7 @@ public class SchemeDetailsMasterHelper {
                         final List<SchemeProductBO> freeProductsList = schemeBO.getFreeProducts();
                         for (SchemeProductBO freeProductBO : freeProductsList) {
                             if (freeProductBO.getQuantitySelected() > 0) {
-                                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+                                ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
 
                                 if (productBO != null) {
                                     StringBuffer sb = new StringBuffer();
@@ -3031,8 +3031,8 @@ public class SchemeDetailsMasterHelper {
                                         sb.append(1 + ",");
                                     }
                                     sb.append(0 + "," + freeProductBO.getAccProductParentId());
-                                    sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-                                    sb.append("," + bmodel.QT(productBO.getHsnCode()));
+                                    sb.append("," + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()));
+                                    sb.append("," + bModel.QT(productBO.getHsnCode()));
 
                                     db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
                                             sb.toString());
@@ -3069,12 +3069,12 @@ public class SchemeDetailsMasterHelper {
             for (SchemeProductBO freeProductBO : freeProductList) {
                 if (freeProductBO.getQuantitySelected() > 0) {
 
-                    ProductMasterBO productBO = bmodel
+                    ProductMasterBO productBO = bModel
                             .getProductbyId(freeProductBO.getProductId());
                     if (productBO != null) {
-                        if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
-                                && bmodel.configurationMasterHelper.IS_SIH_VALIDATION
-                                && bmodel.configurationMasterHelper.IS_INVOICE) {
+                        if (bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                                && bModel.configurationMasterHelper.IS_SIH_VALIDATION
+                                && bModel.configurationMasterHelper.IS_INVOICE) {
                             if (productBO.getBatchwiseProductCount() > 0) {
                                 insertFreeproductWithbatch(schemeBO, db,
                                         orderID, freeProductBO,
@@ -3110,7 +3110,7 @@ public class SchemeDetailsMasterHelper {
                                                String orderID, SchemeProductBO freeProductBO,
                                                String freeDetailColumn, String flag) {
 
-        ProductMasterBO productBO = bmodel.getProductbyId(freeProductBO
+        ProductMasterBO productBO = bModel.getProductbyId(freeProductBO
                 .getProductId());
         if (productBO != null) {
 
@@ -3132,11 +3132,11 @@ public class SchemeDetailsMasterHelper {
                 sb.append(1 + ",");
             }
             sb.append(0 + "," + schemeBO.getParentId());
-            sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",");
+            sb.append("," + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + ",");
 
             if (isFromCounterSale) {
                 sb.append(0 + "," + 0);
-            } else if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
+            } else if (bModel.configurationMasterHelper.IS_GST || bModel.configurationMasterHelper.IS_GST_HSN) {
 
                 if (freeProductBO.getUomID() == productBO.getCaseUomId()
                         && productBO.getCaseUomId() != 0) {
@@ -3148,7 +3148,7 @@ public class SchemeDetailsMasterHelper {
                         || freeProductBO.getUomID() == 0) {
                     sb.append(productBO.getSrp());
                 }
-                sb.append("," + bmodel.formatValue(freeProductBO.getTaxAmount()));
+                sb.append("," + bModel.formatValue(freeProductBO.getTaxAmount()));
             } else {
                 sb.append(0 + "," + 0);
             }
@@ -3157,7 +3157,7 @@ public class SchemeDetailsMasterHelper {
             else if (isFromCounterSale)
                 sb.append(",'N'");
 
-            sb.append("," + bmodel.QT(productBO.getHsnCode()));
+            sb.append("," + bModel.QT(productBO.getHsnCode()));
 
             if (isFromCounterSale) {
                 db.insertSQL(DataMembers.tbl_CS_SchemeFreeProductDetail, freeDetailColumn,
@@ -3185,7 +3185,7 @@ public class SchemeDetailsMasterHelper {
 
         ArrayList<SchemeProductBatchQty> freeProductbatchList = schemeProductBo
                 .getBatchWiseQty();
-        ProductMasterBO productBo = bmodel.productHelper
+        ProductMasterBO productBo = bModel.productHelper
                 .getProductMasterBOById(schemeProductBo.getProductId());
         if (freeProductbatchList != null) {
             StringBuffer sb = null;
@@ -3199,17 +3199,17 @@ public class SchemeDetailsMasterHelper {
                     sb.append(productBo.getPcUomid() + ",1,"
                             + schemeProductBatchQty.getBatchid());
                     sb.append("," + schemeBO.getSchemeId());
-                    sb.append("," + bmodel.getRetailerMasterBO().getRetailerID());
+                    sb.append("," + bModel.getRetailerMasterBO().getRetailerID());
 
-                    if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
+                    if (bModel.configurationMasterHelper.IS_GST || bModel.configurationMasterHelper.IS_GST_HSN) {
 
                         sb.append(productBo.getSrp());
-                        sb.append("," + bmodel.formatValue(schemeProductBo.getTaxAmount()));
+                        sb.append("," + bModel.formatValue(schemeProductBo.getTaxAmount()));
                     } else {
                         sb.append(0 + "," + 0);
                     }
 
-                    sb.append("," + bmodel.QT(productBo.getHsnCode()));
+                    sb.append("," + bModel.QT(productBo.getHsnCode()));
 
                     if (isFromCounterSale) {
                         db.insertSQL(DataMembers.tbl_CS_SchemeFreeProductDetail, freeDetailColumn,
@@ -3238,16 +3238,16 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select orderID from orderHeader where retailerid="
-                    + bmodel.QT(retailerID));
+                    + bModel.QT(retailerID));
             sb.append(" and invoicestatus=0 and upload='N'");
             // if seller type selection dialog enable
-            if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (bModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                 sb.append(" and is_vansales="
-                        + bmodel.getRetailerMasterBO().getIsVansales());
+                        + bModel.getRetailerMasterBO().getIsVansales());
             }
 
 
-            sb.append(" and sid=" + bmodel.getRetailerMasterBO().getDistributorId());
+            sb.append(" and sid=" + bModel.getRetailerMasterBO().getDistributorId());
 
             sb.append(" and orderid not in(select orderid from OrderDeliveryDetail)");// to prevent delivered orders
 
@@ -3278,7 +3278,7 @@ public class SchemeDetailsMasterHelper {
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct schemeid,SchemeType,value,amount,count(productid) from SchemeDetail where ");
 
-        sb.append("orderid=" + bmodel.QT(id));
+        sb.append("orderid=" + bModel.QT(id));
 
         sb.append("  group by schemeid");
         Cursor c = db.selectSQL(sb.toString());
@@ -3324,7 +3324,7 @@ public class SchemeDetailsMasterHelper {
         // clear free product details
         Cursor c1 = db
                 .selectSQL("select distinct schemeid from schemeFreeProductDetail where orderid ="
-                        + bmodel.QT(id) + " and upload='N'");
+                        + bModel.QT(id) + " and upload='N'");
         if (c1.getCount() > 0) {
             while (c1.moveToNext()) {
                 String schemeId = c1.getString(0);
@@ -3338,7 +3338,7 @@ public class SchemeDetailsMasterHelper {
         Cursor c = db
                 .selectSQL("select schemeid,FreeProductID,FreeQty,UomID,batchid from schemeFreeProductDetail "
                         + "where orderID="
-                        + bmodel.QT(id)
+                        + bModel.QT(id)
                         + " and upload='N' order by schemeid");
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -3399,9 +3399,9 @@ public class SchemeDetailsMasterHelper {
     public void updateFreeProductsSIH(String orderID, String invoiceID,
                                       DBUtil db) {
         db.updateSQL("update SchemeDetail set Invoiceid="
-                + bmodel.QT(invoiceID) + " where orderID=" + orderID);
+                + bModel.QT(invoiceID) + " where orderID=" + orderID);
         db.updateSQL("update SchemeFreeProductDetail set Invoiceid="
-                + bmodel.QT(invoiceID) + " where orderID=" + orderID);
+                + bModel.QT(invoiceID) + " where orderID=" + orderID);
         if (mAppliedSchemeList != null) {
             for (SchemeBO schemeBO : mAppliedSchemeList) {
                 if (schemeBO.isQuantityTypeSelected()) {
@@ -3409,7 +3409,7 @@ public class SchemeDetailsMasterHelper {
                             .getFreeProducts();
                     for (SchemeProductBO schemeProductBO : freeProductList) {
                         if (schemeProductBO.getQuantitySelected() > 0) {
-                            ProductMasterBO productBO = bmodel.productHelper
+                            ProductMasterBO productBO = bModel.productHelper
                                     .getProductMasterBOById(schemeProductBO
                                             .getProductId());
                             if (productBO != null) {
@@ -3454,7 +3454,7 @@ public class SchemeDetailsMasterHelper {
                                         + " else 0 end) where pid="
                                         + productBO.getProductID());
 
-                                if (productBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                                if (productBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                                     updateFreeProductSihbatchwise(
                                             schemeProductBO, db);
                                 } else {
@@ -3485,7 +3485,7 @@ public class SchemeDetailsMasterHelper {
                             .getFreeProducts();
                     for (SchemeProductBO schemeProductBO : freeProductList) {
                         if (schemeProductBO.getQuantitySelected() > 0) {
-                            ProductMasterBO productBO = bmodel.productHelper
+                            ProductMasterBO productBO = bModel.productHelper
                                     .getProductMasterBOById(schemeProductBO
                                             .getProductId());
                             if (productBO != null) {
@@ -3530,7 +3530,7 @@ public class SchemeDetailsMasterHelper {
                                         + " else 0 end) where pid="
                                         + productBO.getProductID());
 
-                                if (productBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                                if (productBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                                     updateFreeProductSihbatchwise(
                                             schemeProductBO, db);
                                 } else {
@@ -3566,7 +3566,7 @@ public class SchemeDetailsMasterHelper {
                                                DBUtil db) {
         ArrayList<SchemeProductBatchQty> freeProductbatchList = schemeProductBo
                 .getBatchWiseQty();
-        ProductMasterBO productBo = bmodel.productHelper
+        ProductMasterBO productBo = bModel.productHelper
                 .getProductMasterBOById(schemeProductBo.getProductId());
         if (freeProductbatchList != null) {
             for (SchemeProductBatchQty schemeProductBatchQty : freeProductbatchList) {
@@ -3579,7 +3579,7 @@ public class SchemeDetailsMasterHelper {
                             + schemeProductBo.getProductId()
                             + " and batchid="
                             + schemeProductBatchQty.getBatchid());
-                    bmodel.batchAllocationHelper.setBatchwiseSIH(productBo,
+                    bModel.batchAllocationHelper.setBatchwiseSIH(productBo,
                             schemeProductBatchQty.getBatchid() + "",
                             schemeProductBatchQty.getQty(), false);
                 }
@@ -3607,7 +3607,7 @@ public class SchemeDetailsMasterHelper {
         String freeDetailColumn = "OrderID,invoiceid,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid";
         ArrayList<SchemeProductBatchQty> freeProductbatchList = schemeProductBo
                 .getBatchWiseQty();
-        ProductMasterBO productBo = bmodel.productHelper
+        ProductMasterBO productBo = bModel.productHelper
                 .getProductMasterBOById(schemeProductBo.getProductId());
         if (freeProductbatchList != null) {
             StringBuffer sb = null;
@@ -3631,7 +3631,7 @@ public class SchemeDetailsMasterHelper {
                             + schemeProductBo.getProductId()
                             + " and batchid="
                             + schemeProductBatchQty.getBatchid());
-                    bmodel.batchAllocationHelper.setBatchwiseSIH(productBo,
+                    bModel.batchAllocationHelper.setBatchwiseSIH(productBo,
                             schemeProductBatchQty.getBatchid() + "",
                             schemeProductBatchQty.getQty(), false);
                 }
@@ -3654,13 +3654,13 @@ public class SchemeDetailsMasterHelper {
 
         // update scheme apply count retailer wise
         String query1 = "update schemeApplyCountmaster set schemeApplyCount=schemeApplyCount-1 where Schemeid="
-                + bmodel.QT(schemeid) + " and schemeApplyCount!=-1 and retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID());
+                + bModel.QT(schemeid) + " and schemeApplyCount!=-1 and retailerid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID());
         db.executeQ(query1);
 
         // update scheme apply count seller wise
 
         query1 = "update schemeApplyCountmaster set schemeApplyCount=schemeApplyCount-1 where Schemeid="
-                + bmodel.QT(schemeid) + " and schemeApplyCount!=-1 and userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid();
+                + bModel.QT(schemeid) + " and schemeApplyCount!=-1 and userid=" + bModel.userMasterHelper.getUserMasterBO().getUserid();
         db.executeQ(query1);
 
     }
@@ -3682,11 +3682,11 @@ public class SchemeDetailsMasterHelper {
             sb.append("SFD.uomID,SFD.batchid from SchemeDetail SD  inner join SchemeFreeproductDetail SFD ");
             sb.append("on SFD.schemeid=SD.schemeID where ");
             if (flag) { // invoice report
-                sb.append("SFD.invoiceid=" + bmodel.QT(id));
+                sb.append("SFD.invoiceid=" + bModel.QT(id));
             } else {// order report
-                sb.append("SFD.orderid=" + bmodel.QT(id));
+                sb.append("SFD.orderid=" + bModel.QT(id));
             }
-            sb.append(" AND SD.SCHEMETYPE = " + bmodel.QT(SCHEME_FREE_PRODUCT));
+            sb.append(" AND SD.SCHEMETYPE = " + bModel.QT(SCHEME_FREE_PRODUCT));
             sb.append("GROUP BY  SD.schemeid,SFD.freeproductID,SFD.FreeQty,SFD.uomID,SFD.batchid ");
 
             Cursor c = db.selectSQL(sb.toString());
@@ -3699,14 +3699,14 @@ public class SchemeDetailsMasterHelper {
                     schemeProductBO.setUomID(c.getInt(4));
                     String productid = c.getString(1);
                     // productBo is buy product object
-                    ProductMasterBO produBo = bmodel.productHelper
+                    ProductMasterBO produBo = bModel.productHelper
                             .getProductMasterBOById(productid);
                     if (produBo != null) {
                         if (produBo.getSchemeProducts() == null) {
                             produBo.setSchemeProducts(new ArrayList<SchemeProductBO>());
                         }
                         // scheme product is frree product object
-                        ProductMasterBO schemeProduct = bmodel.productHelper
+                        ProductMasterBO schemeProduct = bModel.productHelper
                                 .getProductMasterBOById(schemeProductBO
                                         .getProductId());
                         if (schemeProduct != null) {
@@ -3723,9 +3723,9 @@ public class SchemeDetailsMasterHelper {
             sb = new StringBuffer();
             sb.append("select schemeid,productid,schemetype,value,amount from SchemeDetail where ");
             if (flag) { // invoice report
-                sb.append(" invoiceid=").append(bmodel.QT(id));
+                sb.append(" invoiceid=").append(bModel.QT(id));
             } else {// order report
-                sb.append(" orderid=" + bmodel.QT(id));
+                sb.append(" orderid=" + bModel.QT(id));
             }
             ArrayList<String> schemeIdList = new ArrayList<>();
 
@@ -3833,7 +3833,7 @@ public class SchemeDetailsMasterHelper {
      */
     private double updateBatchwiseSchemeProducts(ProductMasterBO productBO,
                                                  double value, String type) {
-        ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper
+        ArrayList<ProductMasterBO> batchList = bModel.batchAllocationHelper
                 .getBatchlistByProductID().get(productBO.getProductID());
 
         double totalDisPriceValue = 0.0;
@@ -3956,11 +3956,11 @@ public class SchemeDetailsMasterHelper {
                             .getFreeProducts();
                     for (SchemeProductBO schemeProductBO : freeProductList) {
                         if (schemeProductBO.getQuantitySelected() > 0) {
-                            ProductMasterBO productBO = bmodel.productHelper
+                            ProductMasterBO productBO = bModel.productHelper
                                     .getProductMasterBOById(schemeProductBO
                                             .getProductId());
-                            if (productBO != null && bmodel.productHelper.getBomMaster() != null && bmodel.productHelper.getBomMaster().size() > 0) {
-                                for (BomMasterBO bomMasterBo : bmodel.productHelper
+                            if (productBO != null && bModel.productHelper.getBomMaster() != null && bModel.productHelper.getBomMaster().size() > 0) {
+                                for (BomMasterBO bomMasterBo : bModel.productHelper
                                         .getBomMaster()) {
 
                                     if (productBO.getProductID().equals(
@@ -3995,7 +3995,7 @@ public class SchemeDetailsMasterHelper {
                                                         * schemeProductBO
                                                         .getQuantitySelected());
 
-                                            for (BomReturnBO returnBo : bmodel.productHelper
+                                            for (BomReturnBO returnBo : bModel.productHelper
                                                     .getBomReturnProducts()) {
                                                 if (bomBo.getbPid().equals(
                                                         returnBo.getPid())) {
@@ -4028,7 +4028,7 @@ public class SchemeDetailsMasterHelper {
 
         for (SchemeProductBO schemeProductBO : schemeProductList) {
 
-            ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+            ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
             if (productBO != null) {
 
                 int totalOrderQty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
@@ -4111,7 +4111,7 @@ public class SchemeDetailsMasterHelper {
             if (c != null) {
                 while (c.moveToNext()) {
 
-                    ProductMasterBO prdBO = bmodel.productHelper.getProductMasterBOById(c
+                    ProductMasterBO prdBO = bModel.productHelper.getProductMasterBOById(c
                             .getString(0));
                     if (prdBO != null) {
                         prdBO.setIsPromo(false);
@@ -4133,18 +4133,18 @@ public class SchemeDetailsMasterHelper {
             sb.append(" inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid");
             sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
 
-            sb.append(" where SM.count!=0  and SAC.schemeApplyCount!=0 and SAC.retailerid in(0," + bmodel.getRetailerMasterBO().getRetailerID() + ")");
-            sb.append(" and SCM.distributorid in(0," + bmodel.getRetailerMasterBO().getDistributorId() + ")");
-            sb.append(" and SCM.RetailerId in(0," + bmodel.getRetailerMasterBO().getRetailerID() + ")");
-            sb.append(" and SCM.channelid in(0," + bmodel.getRetailerMasterBO().getSubchannelid() + ")");
-            sb.append(" and SCM.locationid in(0," + bmodel.getRetailerMasterBO().getLocationId() + ")");
-            sb.append(" and SCM.accountid in(0," + bmodel.getRetailerMasterBO().getAccountid() + ")");
+            sb.append(" where SM.count!=0  and SAC.schemeApplyCount!=0 and SAC.retailerid in(0," + bModel.getRetailerMasterBO().getRetailerID() + ")");
+            sb.append(" and SCM.distributorid in(0," + bModel.getRetailerMasterBO().getDistributorId() + ")");
+            sb.append(" and SCM.RetailerId in(0," + bModel.getRetailerMasterBO().getRetailerID() + ")");
+            sb.append(" and SCM.channelid in(0," + bModel.getRetailerMasterBO().getSubchannelid() + ")");
+            sb.append(" and SCM.locationid in(0," + bModel.getRetailerMasterBO().getLocationId() + ")");
+            sb.append(" and SCM.accountid in(0," + bModel.getRetailerMasterBO().getAccountid() + ")");
 
             Cursor schemeCursor = db.selectSQL(sb.toString());
             if (schemeCursor != null) {
                 if (schemeCursor.getCount() > 0) {
                     while (schemeCursor.moveToNext()) {
-                        ProductMasterBO schemeProductBo = bmodel.productHelper.getProductMasterBOById(schemeCursor.getString(0));
+                        ProductMasterBO schemeProductBo = bModel.productHelper.getProductMasterBOById(schemeCursor.getString(0));
                         if (schemeCursor.getInt(3) == 0 || (schemeCursor.getInt(3) == 1 && mGroupIDList != null && mGroupIDList.contains(schemeCursor.getString(2) + schemeCursor.getString(1)))) {
                             if (schemeProductBo != null) {
                                 schemeProductBo.setIsPromo(true);
@@ -4171,7 +4171,7 @@ public class SchemeDetailsMasterHelper {
                 if (groupName.equals(schemeProductBO.getGroupName())) {
 
                     int stock ;
-                    ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                    ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                     if (productBO != null) {
 
                         int totalQty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
@@ -4305,9 +4305,9 @@ public class SchemeDetailsMasterHelper {
                     "and ASF.ProductId=SFD.FreeProductID" +
                     " where ");
             if (flag) { // invoice report
-                sb.append("SFD.invoiceid=" + bmodel.QT(id));
+                sb.append("SFD.invoiceid=" + bModel.QT(id));
             } else {// order report
-                sb.append("SFD.orderid=" + bmodel.QT(id));
+                sb.append("SFD.orderid=" + bModel.QT(id));
             }
 
             Cursor c = db.selectSQL(sb.toString());
@@ -4322,7 +4322,7 @@ public class SchemeDetailsMasterHelper {
 
                     // scheme product is free product object
 
-                    ProductMasterBO schemeProduct = bmodel.productHelper
+                    ProductMasterBO schemeProduct = bModel.productHelper
                             .getProductMasterBOById(schemeProductBO
                                     .getProductId());
                     if (schemeProduct != null) {
@@ -4462,7 +4462,7 @@ public class SchemeDetailsMasterHelper {
 
             sb.append("Select DM.schemeId,schemeShortDesc,schemeDesc,DisplayPeriodStart,DisplayPeriodEnd,BookingPeriodStart,BookingPeriodEnd");
             sb.append(",PayoutFrequency,qualifiers from DisplaySchemeMaster DM INNER JOIN DisplaySchemeMapping DMP ON DMP.schemeId=DM.schemeId");
-            sb.append(" WHERE DMP.retailerId=" + bmodel.getRetailerMasterBO().getRetailerID());
+            sb.append(" WHERE DMP.retailerId=" + bModel.getRetailerMasterBO().getRetailerID());
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -4544,7 +4544,7 @@ public class SchemeDetailsMasterHelper {
 
                                 productBO = new SchemeProductBO();
                                 productBO.setProductId(c.getString(1));
-                                productBO.setProductName(bmodel.productHelper.getProductMasterBOById(c.getString(1)).getProductName());
+                                productBO.setProductName(bModel.productHelper.getProductMasterBOById(c.getString(1)).getProductName());
                                 productBO.setQuantityMaximum(c.getInt(2));
                                 productBO.setUomID(c.getInt(3));
                                 productBO.setUomDescription(c.getString(4));
@@ -4590,7 +4590,7 @@ public class SchemeDetailsMasterHelper {
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    mProductList.add(bmodel.productHelper.getProductMasterBOById((c.getString(0))).getProductName());
+                    mProductList.add(bModel.productHelper.getProductMasterBOById((c.getString(0))).getProductName());
                 }
             }
             c.close();
@@ -4621,11 +4621,11 @@ public class SchemeDetailsMasterHelper {
 
             Cursor cursor = db
                     .selectSQL("SELECT Tid FROM DisplaySchemeEnrollmentHeader WHERE distributorId = "
-                            + bmodel.userMasterHelper.getUserMasterBO().getDistributorid() + " and retailerId=" + bmodel.getRetailerMasterBO().getRetailerID());
+                            + bModel.userMasterHelper.getUserMasterBO().getDistributorid() + " and retailerId=" + bModel.getRetailerMasterBO().getRetailerID());
             if (cursor.getCount() > 0) {
                 db.deleteSQL(DataMembers.tbl_display_scheme_enrollment_header,
-                        "distributorId=" + bmodel.userMasterHelper.getUserMasterBO().getDistributorid()
-                                + " and retailerId=" + bmodel.getRetailerMasterBO().getRetailerID()
+                        "distributorId=" + bModel.userMasterHelper.getUserMasterBO().getDistributorid()
+                                + " and retailerId=" + bModel.getRetailerMasterBO().getRetailerID()
                                 + " and upload='N'", false);
             }
             cursor.close();
@@ -4633,7 +4633,7 @@ public class SchemeDetailsMasterHelper {
 
             String columns = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId";
             StringBuffer sb;
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = bModel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             for (SchemeBO schemeBO : getDisplaySchemeSlabs()) {
@@ -4641,10 +4641,10 @@ public class SchemeDetailsMasterHelper {
 
                     sb = new StringBuffer();
                     sb.append(id + ",");
-                    sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
-                    sb.append(bmodel.userMasterHelper.getUserMasterBO().getUserid() + ",");
-                    sb.append(bmodel.userMasterHelper.getUserMasterBO().getDistributorid() + ",");
-                    sb.append(bmodel.getRetailerMasterBO().getRetailerID() + ",");
+                    sb.append(bModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
+                    sb.append(bModel.userMasterHelper.getUserMasterBO().getUserid() + ",");
+                    sb.append(bModel.userMasterHelper.getUserMasterBO().getDistributorid() + ",");
+                    sb.append(bModel.getRetailerMasterBO().getRetailerID() + ",");
                     sb.append(schemeBO.getParentId() + ",");
                     sb.append(schemeBO.getSchemeId());
 
@@ -4687,7 +4687,7 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
 
             String query = "Select distinct schemeId,schemeDesc,slabId,slabDesc from DisplaySchemeTrackingMaster";
-            query += " WHERE retailerId=" + bmodel.getRetailerMasterBO().getRetailerID();
+            query += " WHERE retailerId=" + bModel.getRetailerMasterBO().getRetailerID();
 
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
@@ -4729,27 +4729,27 @@ public class SchemeDetailsMasterHelper {
 
             Cursor cursor = db
                     .selectSQL("SELECT Tid FROM DisplaySchemeTrackingHeader WHERE distributorId = "
-                            + bmodel.userMasterHelper.getUserMasterBO().getDistributorid() + " and retailerId=" + bmodel.getRetailerMasterBO().getRetailerID());
+                            + bModel.userMasterHelper.getUserMasterBO().getDistributorid() + " and retailerId=" + bModel.getRetailerMasterBO().getRetailerID());
             if (cursor.getCount() > 0) {
                 db.deleteSQL(DataMembers.tbl_display_scheme_tracking_header,
-                        "distributorId=" + bmodel.userMasterHelper.getUserMasterBO().getDistributorid()
-                                + " and retailerId=" + bmodel.getRetailerMasterBO().getRetailerID()
+                        "distributorId=" + bModel.userMasterHelper.getUserMasterBO().getDistributorid()
+                                + " and retailerId=" + bModel.getRetailerMasterBO().getRetailerID()
                                 + " and upload='N'", false);
             }
             cursor.close();
 
             String columns = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId,IsAvailable";
             StringBuffer sb;
-            String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = bModel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             for (SchemeBO schemeBO : getDisplaySchemeTrackingList()) {
                 sb = new StringBuffer();
                 sb.append(id + ",");
-                sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
-                sb.append(bmodel.userMasterHelper.getUserMasterBO().getUserid() + ",");
-                sb.append(bmodel.userMasterHelper.getUserMasterBO().getDistributorid() + ",");
-                sb.append(bmodel.getRetailerMasterBO().getRetailerID() + ",");
+                sb.append(bModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
+                sb.append(bModel.userMasterHelper.getUserMasterBO().getUserid() + ",");
+                sb.append(bModel.userMasterHelper.getUserMasterBO().getDistributorid() + ",");
+                sb.append(bModel.getRetailerMasterBO().getRetailerID() + ",");
                 sb.append(schemeBO.getParentId() + ",");
                 sb.append(schemeBO.getSchemeId() + ",");
                 if (schemeBO.isSchemeSelected())
