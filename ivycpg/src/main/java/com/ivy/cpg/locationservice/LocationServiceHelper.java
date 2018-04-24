@@ -26,24 +26,12 @@ import com.ivy.cpg.locationservice.movementtracking.MovementTrackingAlarmReceive
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import static android.content.Context.LOCATION_SERVICE;
-import static com.ivy.cpg.locationservice.LocationConstants.DATE;
-import static com.ivy.cpg.locationservice.LocationConstants.DATE_GLOBAL;
-import static com.ivy.cpg.locationservice.LocationConstants.DATE_GLOBAL_EIPHEN;
-import static com.ivy.cpg.locationservice.LocationConstants.DATE_GLOBAL_PLAIN;
-import static com.ivy.cpg.locationservice.LocationConstants.DATE_TIME;
-import static com.ivy.cpg.locationservice.LocationConstants.DATE_TIME_ID_MILLIS;
-import static com.ivy.cpg.locationservice.LocationConstants.DATE_TIME_NEW;
-import static com.ivy.cpg.locationservice.LocationConstants.GMT_DATE_TIME;
 import static com.ivy.cpg.locationservice.LocationConstants.GPS_NOTIFICATION_ID;
 import static com.ivy.cpg.locationservice.LocationConstants.MOCK_NOTIFICATION_ID;
-import static com.ivy.cpg.locationservice.LocationConstants.TIME;
 
 public class LocationServiceHelper {
 

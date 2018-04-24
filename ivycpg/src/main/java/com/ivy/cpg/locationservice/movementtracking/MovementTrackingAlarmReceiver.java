@@ -51,9 +51,9 @@ public class MovementTrackingAlarmReceiver extends BroadcastReceiver {
 
 
                 //Starting the Activity tracking service.
-                if(!LocationServiceHelper.getInstance().isMyServiceRunning(context, ActivityRecognitionService.class.getName())){
-                    context.startService(new Intent(context, ActivityRecognitionService.class));
-                }
+//                if(!LocationServiceHelper.getInstance().isMyServiceRunning(context, ActivityRecognitionService.class.getName())){
+//                    context.startService(new Intent(context, ActivityRecognitionService.class));
+//                }
 
             } else if (timeInHrs < start_Time) {
                 alarm_time = (start_Time - timeInHrs) * 60 - timeInMinutes;

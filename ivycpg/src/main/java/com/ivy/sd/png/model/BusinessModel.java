@@ -3198,9 +3198,9 @@ public class BusinessModel extends Application {
     /**
      * Uploads the attendance inTime or outTime
      */
-    public int updateAttendanceTime(Context ctx,String attendanceStr) {
+    public void updateAttendanceTime(Context ctx,String attendanceStr) {
 
-        DBUtil db ;
+        DBUtil db = null;
         try {
 
             db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -3302,12 +3302,12 @@ public class BusinessModel extends Application {
                     }
                 }
             }
+            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
-            return 0;
+            if (db!=null)
+                db.closeDB();
         }
-        db.closeDB();
-        return responceMessage;
     }
 
     public boolean isOnline() {

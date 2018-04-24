@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.ivy.cpg.locationservice.LocationConstants;
+import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.cpg.locationservice.activitytracking.ActivityRecognitionService;
 import com.ivy.sd.png.asean.view.R;
@@ -62,9 +63,9 @@ public class RealTimeLocationTracking {
             updateWorkStatus(context, true);
 
 
-            if(!LocationServiceHelper.getInstance().isMyServiceRunning(context, ActivityRecognitionService.class.getName())){
-                context.startService(new Intent(context, ActivityRecognitionService.class));
-            }
+//            if(!LocationServiceHelper.getInstance().isMyServiceRunning(context, ActivityRecognitionService.class.getName())){
+//                context.startService(new Intent(context, ActivityRecognitionService.class));
+//            }
 
             return STATUS_SUCCESS;
         }
@@ -72,7 +73,7 @@ public class RealTimeLocationTracking {
         return STATUS_SERVICE_ERROR;
     }
 
-    public static void stopLocationTracking(Context context){
+    public static void stopLocationTracking(RealTimeLocation realTimeLocation,Context context){
 //        update the status as false if user Paused or completed
         updateWorkStatus(context, false);
 
@@ -80,7 +81,7 @@ public class RealTimeLocationTracking {
         context.stopService(new Intent(context, RealTimeLocationService.class));
 
         //Stopping Activity Recogniiton Service
-        context.stopService(new Intent(context, ActivityRecognitionService.class));
+//        context.stopService(new Intent(context, ActivityRecognitionService.class));
 
     }
 

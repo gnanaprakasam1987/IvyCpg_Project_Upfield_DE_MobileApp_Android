@@ -96,7 +96,7 @@ public class MovementTrackingUploadHelper {
             db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            String columns = "Tid,Date,Latitude,Longtitude,Accuracy,Activity,Battery,LocationProvider,IsLocationEnabled";
+            String columns = "Tid,Date,Latitude,Longtitude,Accuracy,Activity,Battery,LocationProvider,IsLocationEnabled,SupervisorId";
 
             String Tid = userMasterBO.getUserid() + ""+ SDUtil.now(SDUtil.DATE_TIME_ID);
 
@@ -107,7 +107,8 @@ public class MovementTrackingUploadHelper {
                     + "," + QT(String.valueOf(locationDetailBO.getActivityType()))
                     + "," + locationDetailBO.getBatteryStatus()
                     + "," + QT(String.valueOf(locationDetailBO.getProvider()))
-                    + "," + QT(String.valueOf(locationDetailBO.isGpsEnabled()));
+                    + "," + QT(String.valueOf(locationDetailBO.isGpsEnabled()))
+                    + "," + QT(getSupervisorIds(ctx));
 
             db.insertSQL("LocationTracking", columns, values);
 
@@ -306,6 +307,35 @@ public class MovementTrackingUploadHelper {
 
         }
         return ohRowsArray;
+    }
+
+
+    /**
+     * Get User Id from usermaster with Relation Parent as SupervisorIds
+     */
+    private String getSupervisorIds(Context context) {
+        String supervisorIds = "/";
+
+        DBUtil db;
+        try {
+
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor cursor = db.selectSQL("select userid from usermaster where isDeviceuser=0 and relationship = 'PARENT'");
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    supervisorIds = supervisorIds+cursor.getString(0)+"/";
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return supervisorIds;
     }
 
 

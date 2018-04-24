@@ -5,8 +5,8 @@ import java.io.Serializable;
 
 public class LocationDetailBO implements Serializable {
 
-    private String userName,latitude,longitude,accuracy,time,path,userId,
-            activityType,provider;
+    private String userName,latitude,longitude,accuracy,time,userId,
+            activityType,provider,supervisorId,inTime,outTime,status;
     private boolean isGpsEnabled,isMockLocationEnabled;
     private int batteryStatus;
 
@@ -48,14 +48,6 @@ public class LocationDetailBO implements Serializable {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public String getUserId() {
@@ -104,5 +96,37 @@ public class LocationDetailBO implements Serializable {
 
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+
+    public String getSupervisorId() {
+        return supervisorId;
+    }
+
+    public void setSupervisorId(String supervisorId) {
+        this.supervisorId = supervisorId;
+    }
+
+    public String getInTime() {
+        return inTime;
+    }
+
+    public void setInTime(String inTime) {
+        this.inTime = inTime;
+    }
+
+    public String getOutTime() {
+        return outTime;
+    }
+
+    public void setOutTime(String outTime) {
+        this.outTime = outTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

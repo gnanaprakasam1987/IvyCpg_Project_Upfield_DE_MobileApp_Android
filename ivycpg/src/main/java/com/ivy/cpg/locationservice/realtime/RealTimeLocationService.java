@@ -1,6 +1,7 @@
 package com.ivy.cpg.locationservice.realtime;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,17 +11,23 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.LocationServiceHelper;
+import com.ivy.cpg.locationservice.activitytracking.ActivityIntentService;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 
@@ -35,8 +42,8 @@ public class RealTimeLocationService extends Service {
     private ActivityBroadcastReceiver activityBroadcastReceiver = new ActivityBroadcastReceiver();
     private final String BROADCAST_DETECTED_ACTIVITY = "com.ivy.BROADCAST_DETECTED_ACTIVITY";
     private String activityName = "";
-
-
+    private PendingIntent mPendingIntent;
+    private ActivityRecognitionClient mActivityRecognitionClient;
 
     @Override
     public IBinder onBind(Intent intent) {return null;}
@@ -57,6 +64,11 @@ public class RealTimeLocationService extends Service {
             requestLocationUpdates();
             LocalBroadcastManager.getInstance(this).registerReceiver(activityBroadcastReceiver,
                     new IntentFilter(BROADCAST_DETECTED_ACTIVITY));
+
+            mActivityRecognitionClient = new ActivityRecognitionClient(this);
+            Intent mIntentService = new Intent(this, ActivityIntentService.class);
+            mPendingIntent = PendingIntent.getService(this, 10, mIntentService, PendingIntent.FLAG_UPDATE_CURRENT);
+            requestActivityUpdatesButtonHandler();
         }
 
         return START_STICKY;
@@ -128,13 +140,6 @@ public class RealTimeLocationService extends Service {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stopLocationUpdates();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(activityBroadcastReceiver);
-    }
-
     private boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             // A new location is always better than no location
@@ -177,5 +182,51 @@ public class RealTimeLocationService extends Service {
         }
     }
 
+    public void requestActivityUpdatesButtonHandler() {
+        int DETECTION_INTERVAL_IN_MILLISECONDS = 5000;
+        Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
+                DETECTION_INTERVAL_IN_MILLISECONDS,
+                mPendingIntent);
 
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                Commons.print("Successfully requested activity updates");
+            }
+        });
+
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Commons.print("Requesting activity updates failed to start");
+            }
+        });
+    }
+
+    public void removeActivityUpdatesButtonHandler() {
+        Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(
+                mPendingIntent);
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                Commons.print("Removed activity updates successfully");
+            }
+        });
+
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Commons.print("Failed to remove activity updates");
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopLocationUpdates();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(activityBroadcastReceiver);
+
+        removeActivityUpdatesButtonHandler();
+    }
 }

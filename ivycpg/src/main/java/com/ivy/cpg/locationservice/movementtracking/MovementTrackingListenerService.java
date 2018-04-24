@@ -1,5 +1,6 @@
 package com.ivy.cpg.locationservice.movementtracking;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,10 +11,16 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.google.android.gms.location.ActivityRecognitionClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.LocationServiceHelper;
+import com.ivy.cpg.locationservice.activitytracking.ActivityIntentService;
 import com.ivy.cpg.locationservice.activitytracking.ActivityRecognitionService;
 import com.ivy.sd.png.util.Commons;
 
@@ -37,6 +44,9 @@ public class MovementTrackingListenerService extends Service {
 	UserDefinedBroadcastReceiver broadCastReceiver = new UserDefinedBroadcastReceiver();
 	private final String INTENT_ACTION ="LOCATION CAPTURED";
 
+	private PendingIntent mPendingIntent;
+	private ActivityRecognitionClient mActivityRecognitionClient;
+
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -55,6 +65,11 @@ public class MovementTrackingListenerService extends Service {
 
 		LocalBroadcastManager.getInstance(this).registerReceiver(activityBroadcastReceiver,
 				new IntentFilter(BROADCAST_DETECTED_ACTIVITY));
+
+		mActivityRecognitionClient = new ActivityRecognitionClient(this);
+		Intent mIntentService = new Intent(this, ActivityIntentService.class);
+		mPendingIntent = PendingIntent.getService(this, 11, mIntentService, PendingIntent.FLAG_UPDATE_CURRENT);
+		requestActivityUpdatesButtonHandler();
 
 		return Service.START_STICKY;
 	}
@@ -163,7 +178,7 @@ public class MovementTrackingListenerService extends Service {
 						stopService(new Intent(getApplicationContext(),MovementTrackingListenerService.class));
 
 						//Stoppping Activity Recognition service
-						stopService(new Intent(getApplicationContext(),ActivityRecognitionService.class));
+//						stopService(new Intent(getApplicationContext(),ActivityRecognitionService.class));
 
 					}
 				}
@@ -183,10 +198,50 @@ public class MovementTrackingListenerService extends Service {
 		}
 	}
 
+	public void requestActivityUpdatesButtonHandler() {
+		int DETECTION_INTERVAL_IN_MILLISECONDS = 5000;
+		Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
+				DETECTION_INTERVAL_IN_MILLISECONDS,
+				mPendingIntent);
+
+		task.addOnSuccessListener(new OnSuccessListener<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				Commons.print("Successfully requested activity updates");
+			}
+		});
+
+		task.addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+				Commons.print("Requesting activity updates failed to start");
+			}
+		});
+	}
+
+	public void removeActivityUpdatesButtonHandler() {
+		Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(
+				mPendingIntent);
+		task.addOnSuccessListener(new OnSuccessListener<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				Commons.print("Removed activity updates successfully");
+			}
+		});
+
+		task.addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+				Commons.print("Failed to remove activity updates");
+			}
+		});
+	}
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(broadCastReceiver);
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(activityBroadcastReceiver);
+		removeActivityUpdatesButtonHandler();
 	}
 }

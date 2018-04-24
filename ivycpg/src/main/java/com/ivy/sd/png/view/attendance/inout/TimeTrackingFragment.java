@@ -30,6 +30,7 @@ import android.widget.TimePicker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.locationservice.LocationConstants;
+import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.realtime.FireBaseRealtimeLocationUpload;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
@@ -300,7 +301,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                         bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO);
 
                         loadNonFieldTwoDetails();
-                        uploadAttendance("IN");
+                        if(bmodel.mAttendanceHelper
+                                .getReasonName(holder.nonFieldTwoBO.getReason()).equalsIgnoreCase("Working"))
+                            uploadAttendance("IN");
 
                     }
                 }
@@ -313,7 +316,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                     holder.nonFieldTwoBO.setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
                     bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO);
                     loadNonFieldTwoDetails();
-                    uploadAttendance("OUT");
+                    if(bmodel.mAttendanceHelper
+                            .getReasonName(holder.nonFieldTwoBO.getReason()).equalsIgnoreCase("Working"))
+                        uploadAttendance("OUT");
                 }
             });
 
@@ -396,7 +401,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                             no_data_txt.setVisibility(View.GONE);
                             loadNonFieldTwoDetails();
 
-                            uploadAttendance("IN");
+                            if(bmodel.mAttendanceHelper
+                                    .getReasonName(addNonFieldTwoBo.getReason()).equalsIgnoreCase("Working"))
+                                uploadAttendance("IN");
 
                         }
                     }
@@ -556,6 +563,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         boolean success = false;
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
+            realTimeLocation.movementTrackingAttendanceIn(getContext(),"RealtimeTracking");
             int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation, getContext());
             if (statusCode == LocationConstants.STATUS_SUCCESS)
                 success = true;
@@ -569,21 +577,27 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
     /**
      * Stops the Location Track Service
+     * Updates the outTime when stopped
      */
     private void stopLocationService() {
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
-            RealTimeLocationTracking.stopLocationTracking(getContext());
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
+            realTimeLocation.onRealTimeLocationStopped(getContext());
         }
     }
 
     /**
-     * Start Intent service to upload Attendance data - IN/OUT
+     * Upload Attendance status - IN/OUT with time in Firebase
      */
     private void uploadAttendance(String IN_OUT) {
         if (bmodel.configurationMasterHelper.IS_UPLOAD_ATTENDANCE) {
-            Intent intent = new Intent(getContext(), AttendanceUploadIntentService.class);
-            intent.putExtra("Attendance", IN_OUT);
-            getContext().startService(intent);
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
+
+            if(IN_OUT.equalsIgnoreCase("IN")){
+                realTimeLocation.movementTrackingAttendanceIn(getContext(),"MovementTracking");
+            }else {
+                realTimeLocation.movementTrackingAttendanceOut(getContext(),"MovementTracking");
+            }
         }
     }
 }

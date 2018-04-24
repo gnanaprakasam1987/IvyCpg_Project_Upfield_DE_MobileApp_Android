@@ -159,7 +159,7 @@ public class OutletTimeStampHelper {
 			db.createDataBase();
 			db.openDataBase();
 			
-			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocatioEnabled,IsDeviated,OrderValue";
+			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocatioEnabled,IsDeviated,OrderValue,SupervisorId";
 
 			if(isJointCall(joinCallList)){  // check join call or not
 				joinCallFlag=1;
@@ -183,7 +183,8 @@ public class OutletTimeStampHelper {
 					+","+QT(LocationUtil.mProviderName)
 					+","+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
 					+","+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
-					+","+QT(String.valueOf(bmodel.getOrderValue()));
+					+","+QT(String.valueOf(bmodel.getOrderValue()))
+					+","+QT(getSupervisorIds(context));
 
 			db.insertSQL("OutletTimestamp", columns, values);
 			
@@ -452,7 +453,7 @@ public class OutletTimeStampHelper {
 	/**
 	 * Get current battery percentage
 	 */
-	int getBatteryPercentage(Context context) {
+	private int getBatteryPercentage(Context context) {
 
 		IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 		Intent batteryStatus = context.registerReceiver(null, iFilter);
@@ -463,5 +464,33 @@ public class OutletTimeStampHelper {
 		float batteryPct = level / (float) scale;
 
 		return (int) (batteryPct * 100);
+	}
+
+	/**
+	 * Get User Id from usermaster with Relation Parent as SupervisorIds
+	 */
+	private String getSupervisorIds(Context context) {
+		String supervisorIds = "/";
+
+		DBUtil db;
+		try {
+
+			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+			db.createDataBase();
+			db.openDataBase();
+
+			Cursor cursor = db.selectSQL("select userid from usermaster where isDeviceuser=0 and relationship = 'PARENT'");
+			if (cursor != null && cursor.getCount() > 0) {
+				while (cursor.moveToNext()) {
+					supervisorIds = supervisorIds+cursor.getString(0)+"/";
+				}
+			}
+
+			db.closeDB();
+		} catch (Exception e) {
+			Commons.printException(e);
+		}
+
+		return supervisorIds;
 	}
 }
