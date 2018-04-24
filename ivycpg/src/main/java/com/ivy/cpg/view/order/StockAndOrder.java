@@ -3393,6 +3393,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.productObj = product;
             holder.productId = holder.productObj.getProductID();
 
+            if (holder.productObj.getCaseSize() > 0) {
+                String label = holder.productObj.getCaseSize() > 1 ? getResources().getString(R.string.avail_cases) + "(" + holder.productObj.getCaseSize() + getString(R.string.pcs) + ")" : getResources().getString(R.string.avail_cases) + "(" + holder.productObj.getCaseSize() + getString(R.string.pclabels) + ")";
+                ((TextView) row.findViewById(R.id.caseTitle)).setText(label);
+            } else
+                ((TextView) row.findViewById(R.id.caseTitle)).setText(getResources().getString(R.string.avail_cases));
+
             try {
                 holder.psname.setTextColor(product.getTextColor());
             } catch (Exception e) {
@@ -4687,102 +4693,102 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private void loadSearchedList() {
 
-            Vector<ProductMasterBO> items = productList;
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
+        Vector<ProductMasterBO> items = productList;
+        if (items == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.no_products_exists),
+                    0);
+            return;
+        }
+        int siz = items.size();
+        mylist = new Vector<>();
+        String mSelectedFilter = bmodel.getProductFilter();
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO ret = items.elementAt(i);
+            // For breaking search..
+            if (searchAsync.isCancelled()) {
+                break;
             }
-            int siz = items.size();
-            mylist = new Vector<>();
-            String mSelectedFilter = bmodel.getProductFilter();
-            for (int i = 0; i < siz; ++i) {
-                ProductMasterBO ret = items.elementAt(i);
-                // For breaking search..
-                if (searchAsync.isCancelled()) {
-                    break;
-                }
 
-                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
-                    continue;
+            if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
+                continue;
 
-                if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                        && ret.getSIH() > 0
-                        && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
-                        || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                        && bmodel.getRetailerMasterBO().getIsVansales() == 0
-                        && ret.getWSIH() > 0)
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        && bmodel.configurationMasterHelper.IS_INVOICE
-                        && ret.getSIH() > 0)) {
-                    if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
-                        if (mSelectedFilter.equals(getResources().getString(
-                                R.string.order_dialog_barcode))) {
+            if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                    && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                    && ret.getSIH() > 0
+                    && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
+                    || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                    && bmodel.getRetailerMasterBO().getIsVansales() == 0
+                    && ret.getWSIH() > 0)
+                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                    && bmodel.configurationMasterHelper.IS_INVOICE
+                    && ret.getSIH() > 0)) {
+                if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
+                    if (mSelectedFilter.equals(getResources().getString(
+                            R.string.order_dialog_barcode))) {
 
-                            if (ret.getBarCode() != null
-                                    && (ret.getBarCode().toLowerCase()
-                                    .contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                                    || ret.getCasebarcode().toLowerCase().
-                                    contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                                    || ret.getOuterbarcode().toLowerCase().
-                                    contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+                        if (ret.getBarCode() != null
+                                && (ret.getBarCode().toLowerCase()
+                                .contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                || ret.getCasebarcode().toLowerCase().
+                                contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                || ret.getOuterbarcode().toLowerCase().
+                                contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
 
-                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND)) {//No filters selected
-                                    if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                        if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
-                                            ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                        } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
-                                            ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                        } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
-                                            ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                        }
+                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND)) {//No filters selected
+                                if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                    if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
+                                        ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
+                                        ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
+                                        ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
                                     }
-                                    mylist.add(ret);
-                                } else if (applyProductAndSpecialFilter(ret)) {
-                                    if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                        if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
-                                            ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                        } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
-                                            ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                        } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
-                                            ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                        }
-                                    }
-                                    mylist.add(ret);
                                 }
+                                mylist.add(ret);
+                            } else if (applyProductAndSpecialFilter(ret)) {
+                                if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                    if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
+                                        ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
+                                        ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
+                                        ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                    }
+                                }
+                                mylist.add(ret);
                             }
-                        } else if (mSelectedFilter.equals(getResources().getString(
-                                R.string.prod_code))) {
-                            if (ret.getRField1() != null && ret.getRField1()
-                                    .toLowerCase()
-                                    .contains(
-                                            mEdt_searchproductName.getText().toString()
-                                                    .toLowerCase()) && ret.getIsSaleable() == 1) {
-                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                                    mylist.add(ret);
-                                else if (applyProductAndSpecialFilter(ret))
-                                    mylist.add(ret);
-                            }
-                        } else if (mSelectedFilter.equals(getResources().getString(
-                                R.string.product_name))) {
-                            if (ret.getProductShortName() != null && ret.getProductShortName()
-                                    .toLowerCase()
-                                    .contains(
-                                            mEdt_searchproductName.getText().toString()
-                                                    .toLowerCase()) && ret.getIsSaleable() == 1)
-                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                                    mylist.add(ret);
-                                else if (applyProductAndSpecialFilter(ret))
-                                    mylist.add(ret);
                         }
+                    } else if (mSelectedFilter.equals(getResources().getString(
+                            R.string.prod_code))) {
+                        if (ret.getRField1() != null && ret.getRField1()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()) && ret.getIsSaleable() == 1) {
+                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                mylist.add(ret);
+                            else if (applyProductAndSpecialFilter(ret))
+                                mylist.add(ret);
+                        }
+                    } else if (mSelectedFilter.equals(getResources().getString(
+                            R.string.product_name))) {
+                        if (ret.getProductShortName() != null && ret.getProductShortName()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()) && ret.getIsSaleable() == 1)
+                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                mylist.add(ret);
+                            else if (applyProductAndSpecialFilter(ret))
+                                mylist.add(ret);
                     }
                 }
             }
-            if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
-                getProductBySequence();
+        }
+        if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
+            getProductBySequence();
 
     }
 
