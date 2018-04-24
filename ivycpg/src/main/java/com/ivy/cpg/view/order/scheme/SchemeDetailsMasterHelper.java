@@ -189,9 +189,9 @@ public class SchemeDetailsMasterHelper {
             loadSchemeConfigs(context);
 
             if (IS_SCHEME_ON_MASTER) {
-
+                RetailerInfo retailerInfo=(RetailerInfo)context;
                 int distributorId = bModel.getRetailerMasterBO().getDistributorId();
-                String retailerId = bModel.getRetailerMasterBO().getRetailerID();
+                String retailerId = retailerInfo.getRetailerId();
                 int channelId = bModel.getRetailerMasterBO().getSubchannelid();
                 int locationId = bModel.getRetailerMasterBO().getLocationId();
                 int accountId = bModel.getRetailerMasterBO().getAccountid();
@@ -395,7 +395,7 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    public ArrayList<Integer> getmParentIDList() {
+    public ArrayList<Integer> getParentIDList() {
         return mParentIDList;
     }
     public HashMap<Integer, ArrayList<String>> getSchemeIdListByParentID() {
@@ -2864,7 +2864,7 @@ public class SchemeDetailsMasterHelper {
      * <p>
      * Method to save all applied scheme details in SQLite
      */
-    public void insertScemeDetails(String orderID, DBUtil db, String flag) {
+    public void insertSchemeDetails(String orderID, DBUtil db, String flag) {
         if (mAppliedSchemeList != null) {
 
             for (SchemeBO schemeBO : mAppliedSchemeList) {
@@ -3078,16 +3078,16 @@ public class SchemeDetailsMasterHelper {
                                 && bModel.configurationMasterHelper.IS_SIH_VALIDATION
                                 && bModel.configurationMasterHelper.IS_INVOICE) {
                             if (productBO.getBatchwiseProductCount() > 0) {
-                                insertFreeproductWithbatch(schemeBO, db,
+                                insertFreeProductWithBatch(schemeBO, db,
                                         orderID, freeProductBO,
                                         freeDetailColumn);
                             } else {
-                                insertFreeproductWithoutbatch(schemeBO, db,
+                                insertFreeProductWithoutBatch(schemeBO, db,
                                         orderID, freeProductBO,
                                         freeDetailColumn, flag);
                             }
                         } else {
-                            insertFreeproductWithoutbatch(schemeBO, db,
+                            insertFreeProductWithoutBatch(schemeBO, db,
                                     orderID, freeProductBO, freeDetailColumn, flag);
 
                         }
@@ -3108,7 +3108,7 @@ public class SchemeDetailsMasterHelper {
      * @param freeProductBO
      * @param freeDetailColumn
      */
-    private void insertFreeproductWithoutbatch(SchemeBO schemeBO, DBUtil db,
+    private void insertFreeProductWithoutBatch(SchemeBO schemeBO, DBUtil db,
                                                String orderID, SchemeProductBO freeProductBO,
                                                String freeDetailColumn, String flag) {
 
@@ -3181,7 +3181,7 @@ public class SchemeDetailsMasterHelper {
      * @param schemeProductBo
      * @param freeDetailColumn
      */
-    private void insertFreeproductWithbatch(SchemeBO schemeBO, DBUtil db,
+    private void insertFreeProductWithBatch(SchemeBO schemeBO, DBUtil db,
                                             String orderID, SchemeProductBO schemeProductBo,
                                             String freeDetailColumn) {
 
@@ -3275,8 +3275,8 @@ public class SchemeDetailsMasterHelper {
      * @param db - to retrive data from SQlite
      * @author rajesh.k Method to download ordered scheme buy products
      */
-    public void loadOrderedBuyProducts(String id, DBUtil db) {
-        mAppliedSchemeList = new ArrayList<SchemeBO>();
+    private void loadOrderedBuyProducts(String id, DBUtil db) {
+        mAppliedSchemeList = new ArrayList<>();
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct schemeid,SchemeType,value,amount,count(productid) from SchemeDetail where ");
 
@@ -3322,7 +3322,7 @@ public class SchemeDetailsMasterHelper {
      * @param db - if true, id is OrderID,false Invoiceid
      * @author rajesh.k method to preload free product object from sqlite
      */
-    public void loadOrderedFreeProducts(String id, DBUtil db) {
+    private void loadOrderedFreeProducts(String id, DBUtil db) {
         // clear free product details
         Cursor c1 = db
                 .selectSQL("select distinct schemeid from schemeFreeProductDetail where orderid ="
@@ -3367,15 +3367,15 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeid
+     * @param schemeId
      * @param freeProductID
      * @param qty
      * @author rajesh.k free product value downloaded from sqlite and set in
      * object
      */
-    private void setSchemeFreeProductDetails(String schemeid,
+    private void setSchemeFreeProductDetails(String schemeId,
                                              String freeProductID, int qty) {
-        SchemeBO schemeBO = mSchemeById.get(schemeid);
+        SchemeBO schemeBO = mSchemeById.get(schemeId);
         if (schemeBO != null) {
             List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
             if (freeProductList != null) {
@@ -3591,56 +3591,6 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    /**
-     * @param orderID
-     * @param invoiceID
-     * @param schemeProductBo
-     * @param parentid
-     * @author rajesh.k Method to insert scheme Free product as batch wise in
-     * scheme Free Product Details and at same time delete oldest scheme
-     * free product in scheme Free product Details as same orderID and
-     * update sih batch wise
-     */
-    private void insertFreeProductBatchWise(String orderID, String invoiceID,
-                                            SchemeProductBO schemeProductBo, DBUtil db, int parentid) {
-        db.updateSQL("delete from SchemeFreeProductDetail where orderID="
-                + orderID + " and schemeID=" + schemeProductBo.getSchemeId()
-                + " and freeproductID=" + schemeProductBo.getProductId());
-        String freeDetailColumn = "OrderID,invoiceid,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid";
-        ArrayList<SchemeProductBatchQty> freeProductbatchList = schemeProductBo
-                .getBatchWiseQty();
-        ProductMasterBO productBo = bModel.productHelper
-                .getProductMasterBOById(schemeProductBo.getProductId());
-        if (freeProductbatchList != null) {
-            StringBuffer sb = null;
-            for (SchemeProductBatchQty schemeProductBatchQty : freeProductbatchList) {
-                if (schemeProductBatchQty.getQty() > 0) {
-                    sb = new StringBuffer();
-                    sb.append(orderID + "," + invoiceID + ","
-                            + schemeProductBo.getSchemeId() + ",");
-                    sb.append(schemeProductBo.getProductId() + ","
-                            + schemeProductBatchQty.getQty() + ",");
-                    sb.append(productBo.getPcUomid() + ",1,"
-                            + schemeProductBatchQty.getBatchid());
-                    sb.append("," + parentid);
-                    db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail,
-                            freeDetailColumn, sb.toString());
-                    db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
-                            + schemeProductBatchQty.getQty()
-                            + " then ifnull(qty,0)-"
-                            + schemeProductBatchQty.getQty()
-                            + " else 0 end) where pid="
-                            + schemeProductBo.getProductId()
-                            + " and batchid="
-                            + schemeProductBatchQty.getBatchid());
-                    bModel.batchAllocationHelper.setBatchwiseSIH(productBo,
-                            schemeProductBatchQty.getBatchid() + "",
-                            schemeProductBatchQty.getQty(), false);
-                }
-            }
-        }
-
-    }
 
     /**
      * this method used to reduce scheme count from scheme master table,if how
@@ -3648,7 +3598,6 @@ public class SchemeDetailsMasterHelper {
      *
      * @param parentID - reduce scheme count for this parentID
      */
-
     private void updateSchemeCountApply(int parentID, String schemeid, DBUtil db) {
 
         StringBuffer sb = new StringBuffer();
@@ -3785,10 +3734,10 @@ public class SchemeDetailsMasterHelper {
     }
 
     public double updateSchemeProducts(ProductMasterBO productBo, double value,
-                                       String type, boolean isBatchwise) {
+                                       String type, boolean isBatchWise) {
         double total = 0.0;
-        if (isBatchwise) {
-            total = updateBatchwiseSchemeProducts(productBo, value, type);
+        if (isBatchWise) {
+            total = updateBatchWiseSchemeProducts(productBo, value, type);
 
         } else {
             double totalValue = 0.0;
@@ -3833,7 +3782,7 @@ public class SchemeDetailsMasterHelper {
      *                  PRODUCT_DISC_AMT -product discount by amount,
      * @return
      */
-    private double updateBatchwiseSchemeProducts(ProductMasterBO productBO,
+    private double updateBatchWiseSchemeProducts(ProductMasterBO productBO,
                                                  double value, String type) {
         ArrayList<ProductMasterBO> batchList = bModel.batchAllocationHelper
                 .getBatchlistByProductID().get(productBO.getProductID());
@@ -3950,7 +3899,7 @@ public class SchemeDetailsMasterHelper {
     /**
      * Method to use update free product empty bottle return
      */
-    public void updataFreeproductBottleReturn() {
+    public void updataFreeProductBottleReturn() {
         if (mAppliedSchemeList != null) {
             for (SchemeBO schemeBO : mAppliedSchemeList) {
                 if (schemeBO.isQuantityTypeSelected()) {
@@ -4059,47 +4008,11 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-
-    /**
-     * From server
-     */
-    public void insertSchemeApplyCount() {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            String columns = "Schemeid,SchemeApplyCount";
-
-
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select distinct SCH.schemeid from Schememaster SCH Left join SchemeApplyCountMaster SAM ");
-            sb.append("on SCH.schemeid=SAM.schemeid where SCH.schemeid!=ifnull(SAM.schemeid,0) ");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c != null) {
-                while (c.moveToNext()) {
-                    String schemeid = c.getString(0);
-                    insertSchemeApplyCountDetails(db, schemeid, columns);
-                }
-                c.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-    }
-
-    private void insertSchemeApplyCountDetails(DBUtil db, String schemeid, String columns) {
-        String values = schemeid + ",-1";
-        db.insertSQL("SchemeApplyCountMaster", columns, values);
-    }
-
-
     /**
      * Method to use set product whether scheme available or not if scheme
      * available for a product,'setIsscheme'==1,else 0
      */
-    public void setIsScheme(ArrayList<String> mGroupIDList) {
+    private void setIsScheme(ArrayList<String> mGroupIDList) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -4164,7 +4077,7 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    public boolean isSihAvailableForSchemeGroupFreeProducts(SchemeBO schemeBO, String groupName) {
+    private boolean isSihAvailableForSchemeGroupFreeProducts(SchemeBO schemeBO, String groupName) {
         boolean flag = true;
         final List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
 
