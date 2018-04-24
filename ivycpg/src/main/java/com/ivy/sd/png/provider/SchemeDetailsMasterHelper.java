@@ -1019,8 +1019,9 @@ public class SchemeDetailsMasterHelper {
 ///////////////////////////
 
     /**
-     * Preparing a achieved scheme list to show in the screen
-     *
+     * Preparing a achieved scheme list based on the current order to show in the screen
+     * If Off Invoice is available than it will be added to the applied list directly to show in the screen
+     * And updating stock availability for free products in the scheme object
      */
     public void schemeApply() {
 
@@ -1045,7 +1046,6 @@ public class SchemeDetailsMasterHelper {
                                 if (isSchemeDone(schemeBO, parentID, slabPosition == 1)) {
 
                                     mAppliedSchemeList.add(schemeBO);
-                                    clearSchemeFreeProduct(schemeBO);
 
                                     //MTS-Allowed to next slab if scheme type is MTS
                                     //MSP(PRORATA)- Allowed to next slab if scheme not fell on highest slab.
@@ -1829,7 +1829,6 @@ public class SchemeDetailsMasterHelper {
     /**
      * Updating SIH availability for free products
      * and altering actual value based on the stock availability.
-     *
      */
     private void updateSIHAvailabilityForFreeProducts() {
 
@@ -1948,69 +1947,6 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * update scheme without combination
-     *
-     * @param schemeBO
-     */
-    public void freeCombinationNotAvailable(SchemeBO schemeBO) {
-
-        int freeQuantity = schemeBO.getActualQuantity();
-        schemeBO.setQuantityTypeSelected(true);
-
-        List<SchemeProductBO> freeProducts = schemeBO.getFreeProducts();
-        ProductMasterBO productMasterBO;
-
-        if (freeProducts != null) {
-            for (SchemeProductBO schemePdtBO : freeProducts) {
-                if (schemeBO.getFreeType().equals(AND_LOGIC)) {
-                    freeQuantity = schemePdtBO.getQuantityActualCalculated();
-                }
-
-                int stock = 0;
-                productMasterBO = bmodel.productHelper
-                        .getProductMasterBOById(schemePdtBO.getProductId());
-
-                if (productMasterBO != null) {
-                    stock = productMasterBO.getSIH()
-                            - ((productMasterBO.getOrderedCaseQty() * productMasterBO
-                            .getCaseSize())
-                            + (productMasterBO.getOrderedOuterQty() * productMasterBO
-                            .getOutersize()) + productMasterBO
-                            .getOrderedPcsQty());
-                }
-
-
-                schemePdtBO.setStock(stock);
-
-                schemePdtBO.setQuantitySelected(0);
-                if (bmodel.configurationMasterHelper.IS_INVOICE) {
-                    if (bmodel.getResources().getBoolean(
-                            R.bool.config_is_sih_considered)) {
-                        if (stock > 0) {
-
-                            if ((stock - freeQuantity) >= 0) {
-                                schemePdtBO.setQuantitySelected(freeQuantity);
-                                freeQuantity = 0;
-                            } else {
-                                schemePdtBO.setQuantitySelected(stock);
-                                freeQuantity -= stock;
-                            }
-                        }
-                    } else {
-                        schemePdtBO.setQuantitySelected(freeQuantity);
-                        freeQuantity = 0;
-                    }
-                } else {
-                    schemePdtBO.setQuantitySelected(freeQuantity);
-                    freeQuantity = 0;
-                }
-
-            }
-        }
-
-    }
-
-    /**
      * Getting number of times current slab(Parent logic - AND) is achieved
      * @param schemeProductList Buy products for current slab
      * @param schemeGroupName List of groups available under the given slab
@@ -2027,18 +1963,21 @@ public class SchemeDetailsMasterHelper {
             ArrayList<String> schemeGroupName,
             HashMap<String, String> schemeGroupBuyTypeByGroupName,
             boolean isQuantityType, boolean isBatchWise, int parentId, String processType, boolean isHighestSlab) {
+
         int tempCount = 0;
         double tempBalancePercent = 0;
         for (String groupName : schemeGroupName) {
             String type = schemeGroupBuyTypeByGroupName.get(groupName);
-            if (type.equals(AND_LOGIC)) {
+            if (type.equals(AND_LOGIC) || type.equals(ONLY_LOGIC)) {
 
-                int count = 1;
+                int count;
                 if (isQuantityType) {
-                    count = getAndLogicAppliedCountForQuantity(schemeProductList, groupName, true, isBatchWise, parentId, processType, isHighestSlab);
+                    count = getAndLogicAppliedCountForQuantity(schemeProductList, groupName,  isBatchWise, parentId, processType, isHighestSlab);
                 } else {
-                    count = getAndLogicAppliedCountForSalesValue(schemeProductList, groupName, true, isBatchWise, parentId, processType, isHighestSlab);
+                    count = getAndLogicAppliedCountForSalesValue(schemeProductList, groupName,  isBatchWise, parentId, processType, isHighestSlab);
                 }
+
+                //Getting lowest value as it is a AND/ONLY logic
                 if (tempCount > count || tempCount == 0) {
                     tempCount = count;
                 }
@@ -2048,30 +1987,11 @@ public class SchemeDetailsMasterHelper {
                 }
 
             } else if (type.equals(ANY_LOGIC)) {
-                int count = 1;
+                int count ;
                 if (isQuantityType) {
-                    count = getANYLogicAppliedCountForQuantity(schemeProductList, groupName, true, isBatchWise, parentId, processType, isHighestSlab);
+                    count = getANYLogicAppliedCountForQuantity(schemeProductList, groupName,  isBatchWise, parentId, processType, isHighestSlab);
                 } else {
-                    count = getAnyLogicAppliedCountForSalesValue(schemeProductList, groupName,
-                            true, isBatchWise, parentId, processType, isHighestSlab);
-                }
-
-                if (tempCount > count || tempCount == 0) {
-                    tempCount = count;
-                }
-
-                if (tempBalancePercent == 0 || tempBalancePercent > getBalancePercent()) {
-                    tempBalancePercent = getBalancePercent();
-                }
-
-            } else if (type.equals(ONLY_LOGIC)) {
-                int count = 1;
-
-                if (isQuantityType) {
-                    count = getAndLogicAppliedCountForQuantity(schemeProductList, groupName, true, isBatchWise, parentId, processType, isHighestSlab);
-                } else {
-                    count = getAndLogicAppliedCountForSalesValue(schemeProductList,
-                            groupName, true, isBatchWise, parentId, processType, isHighestSlab);
+                    count = getAnyLogicAppliedCountForSalesValue(schemeProductList, groupName, isBatchWise, parentId, processType, isHighestSlab);
                 }
 
                 if (tempCount > count || tempCount == 0) {
@@ -2087,8 +2007,9 @@ public class SchemeDetailsMasterHelper {
 
         }
 
-        //
+
         setBalancePercent(tempBalancePercent);
+
         if (tempCount == 0) tempCount = 1;
 
         return tempCount;
@@ -2122,9 +2043,9 @@ public class SchemeDetailsMasterHelper {
                 int count;
 
                 if (isQuantityType) {
-                    count = getAndLogicAppliedCountForQuantity(schemeProductList, s, true, isBatchWise, parentID, processType, isHighestSlab);
+                    count = getAndLogicAppliedCountForQuantity(schemeProductList, s, isBatchWise, parentID, processType, isHighestSlab);
                 } else {
-                    count = getAndLogicAppliedCountForSalesValue(schemeProductList, s, true, isBatchWise, parentID, processType, isHighestSlab);
+                    count = getAndLogicAppliedCountForSalesValue(schemeProductList, s,  isBatchWise, parentID, processType, isHighestSlab);
                 }
 
                 //Getting highest value as its parent is ANY logic
@@ -2142,9 +2063,9 @@ public class SchemeDetailsMasterHelper {
                 int count ;
 
                 if (isQuantityType) {
-                    count = getANYLogicAppliedCountForQuantity(schemeProductList, s, true, isBatchWise, parentID, processType, isHighestSlab);
+                    count = getANYLogicAppliedCountForQuantity(schemeProductList, s,  isBatchWise, parentID, processType, isHighestSlab);
                 } else {
-                    count = getAnyLogicAppliedCountForSalesValue(schemeProductList, s,true, isBatchWise, parentID, processType, isHighestSlab);
+                    count = getAnyLogicAppliedCountForSalesValue(schemeProductList, s, isBatchWise, parentID, processType, isHighestSlab);
                 }
 
                 //Getting highest value as its parent is ANY logic
@@ -2160,7 +2081,7 @@ public class SchemeDetailsMasterHelper {
             }
         }
 
-        // (ANY) setting largest balance percent value as final balance
+
         setBalancePercent(balancePercent);
 
         return mAppliedCount;
@@ -2193,12 +2114,12 @@ public class SchemeDetailsMasterHelper {
      * @return Total number of times current group achieved
      */
     private int getAndLogicAppliedCountForQuantity(List<SchemeProductBO> schemeProductList,
-                                                   String groupName, boolean isCombination, boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
+                                                   String groupName, boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
         int tempCount = 0;
         double balancePercent = 0;
 
         for (SchemeProductBO schemeProductBO : schemeProductList) {
-            if (schemeProductBO.getGroupName().equals(groupName) || !isCombination) {
+            if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 int count = 0;
                 ProductMasterBO productMasterBO = bmodel.productHelper
@@ -2399,8 +2320,8 @@ public class SchemeDetailsMasterHelper {
      * @return Total number of times current group achieved
      */
     private int getAndLogicAppliedCountForSalesValue(
-            List<SchemeProductBO> schemeProductList, String groupName,
-            boolean isCombination, boolean isBatchWise, int parentId, String processType, boolean isHighestSlab) {
+            List<SchemeProductBO> schemeProductList, String groupName
+           , boolean isBatchWise, int parentId, String processType, boolean isHighestSlab) {
 
         int tempCount = 0;
         double tempBalancePercent ;
@@ -2408,7 +2329,7 @@ public class SchemeDetailsMasterHelper {
         double balancePercent = 0;
 
         for (SchemeProductBO schemeProductBO : schemeProductList) {
-            if (schemeProductBO.getGroupName().equals(groupName)  || !isCombination) {
+            if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 int count = 0;
                 ProductMasterBO productMasterBO = bmodel.productHelper
@@ -2517,7 +2438,6 @@ public class SchemeDetailsMasterHelper {
      * Getting number of times current group(ANY) is achieved. Buy Type- Quantity
      * @param schemeProductList Current slabs buy product list
      * @param groupName current group name
-     * @param isCombination
      * @param isBatchWise Is batch wise products available
      * @param parentID Scheme Id
      * @param processType Scheme Process type
@@ -2525,14 +2445,14 @@ public class SchemeDetailsMasterHelper {
      * @return Total number of times current group achieved
      */
     private int getANYLogicAppliedCountForQuantity(List<SchemeProductBO> schemeProductList,
-                                                   String groupName, boolean isCombination, boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
+                                                   String groupName,  boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
         int count = 0;
         double tempBalancePercent = 0;
         double minimumBuyQuantity = 0;
         double maximumBuyQuantity = 0;
 
         for (SchemeProductBO schemeProductBO : schemeProductList) {
-            if (schemeProductBO.getGroupName().equals(groupName) || !isCombination) {
+            if (schemeProductBO.getGroupName().equals(groupName) ) {
 
                 maximumBuyQuantity = schemeProductBO.getTobuyQty();
                 minimumBuyQuantity = schemeProductBO.getBuyQty();
@@ -2741,7 +2661,6 @@ public class SchemeDetailsMasterHelper {
      * Getting number of times current group(ANY) is achieved. Buy Type- Sales value
      * @param schemeProductList Current slabs buy product list
      * @param groupName current group name
-     * @param isCombination
      * @param isBatchWise Is batch wise products available
      * @param parentID Scheme Id
      * @param processType Scheme Process type
@@ -2749,7 +2668,7 @@ public class SchemeDetailsMasterHelper {
      * @return Total number of times current group achieved
      */
     private int getAnyLogicAppliedCountForSalesValue( List<SchemeProductBO> schemeProductList, String groupName,
-            boolean isCombination, boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
+            boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
 
         double totalValue = 0;
         double minimumBuyValue = 0;
@@ -2758,7 +2677,7 @@ public class SchemeDetailsMasterHelper {
         double appliedSchemeValue ;
 
         for (SchemeProductBO schemeProductBO : schemeProductList) {
-            if (schemeProductBO.getGroupName().equals(groupName) || !isCombination) {
+            if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 minimumBuyValue = schemeProductBO.getBuyQty();
                 maximumBuyValue = schemeProductBO.getTobuyQty();

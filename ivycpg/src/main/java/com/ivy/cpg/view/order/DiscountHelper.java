@@ -782,8 +782,8 @@ public class DiscountHelper {
 
 
     /**
-     * Calculating scheme discounts for applied(Scheme selected in scheme apply screen) scheme.
-     * If Free products available then it will be added in any one of the buy product.
+     * Calculating scheme discounts for applied(Scheme selected in scheme apply screen) scheme and updating those values in product object.
+     * If Free products available then it will be added in any one of the buy product to show in print.
      */
     public double calculateSchemeDiscounts(LinkedList<ProductMasterBO> mOrderedList) {
 
