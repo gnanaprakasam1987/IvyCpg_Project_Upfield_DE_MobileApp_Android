@@ -27,7 +27,6 @@ public class ActivityIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
 //      Check whether the Intent contains activity recognition data//
-        Commons.print("Service On Handle Intent");
         if (ActivityRecognitionResult.hasResult(intent)) {
 
             // Get the update
@@ -42,7 +41,7 @@ public class ActivityIntentService extends IntentService {
             // Get the type of activity
             int activityType = mostProbableActivity.getType();
 
-            Commons.print( "result " + result.getProbableActivities());
+            Commons.print( "ActivityRecognitionResult -- " + result.getProbableActivities());
 
             if (confidence >= 50) {
                 if (activityType == DetectedActivity.ON_FOOT) {
@@ -54,8 +53,6 @@ public class ActivityIntentService extends IntentService {
             }
 
             broadcastActivity(getNameFromType(activityType));
-
-            Commons.print( "Service acitivty: " + getNameFromType(activityType));
         }
     }
 

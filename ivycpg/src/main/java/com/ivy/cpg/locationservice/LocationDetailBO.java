@@ -5,7 +5,8 @@ import java.io.Serializable;
 
 public class LocationDetailBO implements Serializable {
 
-    private String userName,latitude,longitude,accuracy,time,path,userId,activityType;
+    private String userName,latitude,longitude,accuracy,time,path,userId,
+            activityType,provider;
     private boolean isGpsEnabled,isMockLocationEnabled;
     private int batteryStatus;
 
@@ -95,5 +96,13 @@ public class LocationDetailBO implements Serializable {
 
     public void setBatteryStatus(int batteryStatus) {
         this.batteryStatus = batteryStatus;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 }

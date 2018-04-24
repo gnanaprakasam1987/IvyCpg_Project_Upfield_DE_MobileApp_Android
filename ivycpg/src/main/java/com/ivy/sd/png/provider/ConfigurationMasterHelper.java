@@ -1320,6 +1320,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
     public boolean IS_REALTIME_LOCATION_CAPTURE ;
 
+    private static final String CODE_UPLOAD_ATTENDANCE = "UPLOADATTENDANCE";
+    public boolean IS_UPLOAD_ATTENDANCE ;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2284,6 +2287,8 @@ public class ConfigurationMasterHelper {
         if(!isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
             this.IS_REALTIME_LOCATION_CAPTURE = false;
         }
+
+        this.IS_UPLOAD_ATTENDANCE = hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) != null ? hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) : false;
 
     }
 

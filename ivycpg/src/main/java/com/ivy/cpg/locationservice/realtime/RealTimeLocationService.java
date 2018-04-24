@@ -24,6 +24,8 @@ import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 
+import static com.ivy.cpg.locationservice.LocationConstants.REALTIME_NOTIFICATION_ID;
+
 public class RealTimeLocationService extends Service {
 
     private FusedLocationProviderClient client;
@@ -32,8 +34,9 @@ public class RealTimeLocationService extends Service {
     private RealTimeLocation realTimeLocation;
     private ActivityBroadcastReceiver activityBroadcastReceiver = new ActivityBroadcastReceiver();
     private final String BROADCAST_DETECTED_ACTIVITY = "com.ivy.BROADCAST_DETECTED_ACTIVITY";
-    private String activityType = "";
-    private final int REALTIME_NOTIFICATION_ID = 1112;
+    private String activityName = "";
+
+
 
     @Override
     public IBinder onBind(Intent intent) {return null;}
@@ -104,11 +107,14 @@ public class RealTimeLocationService extends Service {
                         locationDetailBO.setLatitude(String.valueOf(location.getLatitude()));
                         locationDetailBO.setLongitude(String.valueOf(location.getLongitude()));
                         locationDetailBO.setAccuracy(String.valueOf(location.getAccuracy()));
-                        locationDetailBO.setTime(String.valueOf(location.getTime()));
-                        locationDetailBO.setActivityType(activityType);
+                        locationDetailBO.setTime(String.valueOf(System.currentTimeMillis()));
+                        locationDetailBO.setActivityType(activityName);
                         locationDetailBO.setGpsEnabled(isGpsEnabled);
                         locationDetailBO.setMockLocationEnabled(isMockLocationEnabled);
                         locationDetailBO.setBatteryStatus(LocationServiceHelper.getInstance().getBatteryPercentage(getApplicationContext()));
+
+                        Commons.print("Service LocationDetailBO -- "+locationDetailBO);
+
                         realTimeLocation.onRealTimeLocationReceived(locationDetailBO,getApplicationContext());
                     }
                 }
@@ -146,9 +152,6 @@ public class RealTimeLocationService extends Service {
         int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
         boolean isLessAccurate = accuracyDelta > 0;
         boolean isMoreAccurate = accuracyDelta < 0;
-        Commons.print("Service location -- "+location);
-        Commons.print("Service currentBestLocation -- "+currentBestLocation);
-        Commons.print("Service isMoreAccurate "+accuracyDelta);
 
         // Determine location quality using a combination of timeliness and accuracy
         if (isMoreAccurate) {
@@ -169,7 +172,7 @@ public class RealTimeLocationService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() != null && intent.getAction().equals(BROADCAST_DETECTED_ACTIVITY)) {
-                activityType = intent.getStringExtra("type");
+                activityName = intent.getStringExtra("type");
             }
         }
     }

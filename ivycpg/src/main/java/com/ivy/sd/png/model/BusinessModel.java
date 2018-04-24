@@ -3195,118 +3195,29 @@ public class BusinessModel extends Application {
         }
     }
 
-    private JSONArray prepareDataForLocationTrackingUploadJSON(DBUtil db,
-                                                               String tableName, String columns) {
-        JSONArray ohRowsArray = new JSONArray();
-        try {
-            Cursor cursor;
-            String columnArray[] = columns.split(",");
-            String sql = "select " + columns + " from " + tableName
-                    + " where upload = 'N'";
-            cursor = db.selectSQL(sql);
-            if (cursor != null) {
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        JSONObject jsonObjRow = new JSONObject();
-                        int count = 0;
-                        for (String col : columnArray) {
-                            String value = cursor.getString(count);
-                            jsonObjRow.put(col, value);
-                            count++;
-                        }
-                        ohRowsArray.put(jsonObjRow);
-                    }
-                }
-                cursor.close();
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-
-        }
-        return ohRowsArray;
-    }
-
-
     /**
-     * Upload Transaction Sequence Table after Data Upload through seperate
-     * method name Returns the response Success/Failure
-     *
-     * @return
-     * @paramhandler
+     * Uploads the attendance inTime or outTime
      */
+    public int updateAttendanceTime(Context ctx,String attendanceStr) {
 
-
-    public void saveUserLocation(String latitude, String longtitude,
-                                 String accuracy) {
-        DBUtil db = null;
-        try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String columns = "Tid, Date, Latitude, Longtitude";
-
-            String Tid = userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
-
-            String values = QT(Tid) + "," + QT(SDUtil.now(SDUtil.DATE_TIME))
-                    + "," + QT(latitude) + "," + QT(longtitude);
-
-            db.insertSQL("LocationTracking", columns, values);
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public boolean isUserLocationAvailable() {
-        DBUtil db = null;
-        boolean isAvail = false;
-        try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-
-            Cursor c = db.selectSQL("SELECT Tid FROM LocationTracking where upload = 'N'");
-
-            if (c.getCount() > 0) {
-                if (c.moveToNext()) {
-                    isAvail = true;
-                }
-            }
-            c.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        return isAvail;
-    }
-
-    public int uploadLocationTracking() {
-
-        DBUtil db = null;
+        DBUtil db ;
         try {
 
             db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
-            JSONObject jsonObjData = null;
+            JSONObject jObject = new JSONObject();
+            jObject.put("userid", userMasterHelper.getUserMasterBO().getUserid());
+            jObject.put("supervisorid","");
+            if(attendanceStr.equalsIgnoreCase("IN"))
+                jObject.put("time_in",System.currentTimeMillis());
+            else
+                jObject.put("time_out",System.currentTimeMillis());
 
-            Set<String> keys = DataMembers.uploadLocationTrackingColumn
-                    .keySet();
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("attendance",jObject);
 
-            jsonObjData = new JSONObject();
-            for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForLocationTrackingUploadJSON(
-                        db, tableName,
-                        DataMembers.uploadLocationTrackingColumn.get(tableName));
-
-                if (jsonArray.length() > 0)
-                    jsonObjData.put(tableName, jsonArray);
-            }
 
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
             try {
@@ -3343,17 +3254,17 @@ public class BusinessModel extends Application {
                             .getDownloadDate();
                 }
                 jsonFormatter.addParameter("LastDayClose", LastDayClose);
-                jsonFormatter.addParameter("DataValidationKey", synchronizationHelper.generateChecksum(jsonObjData.toString()));
+                jsonFormatter.addParameter("DataValidationKey", synchronizationHelper.generateChecksum(jsonObj.toString()));
                 jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, getApplicationVersionName());
 
-                Commons.print(jsonFormatter.getDataInJson());
+                Commons.print("getDataInJson - "+jsonFormatter.getDataInJson());
             } catch (Exception e) {
                 Commons.printException(e);
             }
             String url = synchronizationHelper.getUploadUrl("UPLDTRAN");
             Vector<String> responseVector = synchronizationHelper
                     .getUploadResponse(jsonFormatter.getDataInJson(),
-                            jsonObjData.toString(), url);
+                            jsonObj.toString(), url);
 
             int response = 0;
 
@@ -3378,12 +3289,8 @@ public class BusinessModel extends Application {
                                 response = 9;
 
                             }
-
                         }
-
                     }
-
-
                 }
             } else {
                 if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
@@ -3395,32 +3302,6 @@ public class BusinessModel extends Application {
                     }
                 }
             }
-           /* if (responseVector != null) {
-
-                for (String s : responseVector) {
-                    JSONObject responseObject = new JSONObject(s);
-                    response = responseObject.getInt("Response");
-                }
-            }*/
-
-            if (response == 1) {
-
-                System.gc();
-                try {
-
-                    db.executeQ("DELETE FROM LocationTracking");
-                    db.closeDB();
-                    responceMessage = 1;
-                } catch (Exception e) {
-
-                    responceMessage = 0;
-                    Commons.printException(e);
-                }
-
-            } else {
-                responceMessage = 9;
-            }
-
         } catch (Exception e) {
             Commons.printException(e);
             return 0;

@@ -31,8 +31,7 @@
 
     <!-- Camera - used for photo capture -->
     <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
     <uses-feature
@@ -93,7 +92,6 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/MVPTheme.Blue">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -110,8 +108,11 @@
 
         <receiver android:name="com.ivy.sd.png.model.ScreenReceiver" />
 
-        <service android:name="com.ivy.cpg.locationservice.movementtracking.LocationListenerService" />
-        <service android:name="com.ivy.cpg.locationservice.movementtracking.LocationUploadService" />
+        <service android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingListenerService"
+            android:enabled="true"
+            android:exported="false"/>
+
+        <service android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingUploadService" />
 
         <receiver
             android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingAlarmReceiver"
@@ -134,15 +135,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name="com.ivy.cpg.locationservice.realtime.RealtimeLocationReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
 
-         <receiver android:name="com.ivy.cpg.locationservice.realtime.RealtimeLocationReceiver"
-             android:enabled="true">
-             <intent-filter>
-                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-
-                 <category android:name="android.intent.category.DEFAULT" />
-             </intent-filter>
-         </receiver>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
 
         <service android:name="com.ivy.sd.png.view.GcmIntentService" />
         <service android:name="com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadService" />
@@ -164,18 +165,23 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
         <service android:name="com.ivy.sd.png.model.DownloadService" />
-
-        <service android:name="com.ivy.cpg.locationservice.realtime.RealTimeLocationService"
-            android:enabled="true"
-            android:exported="false">
-        </service>
-
-        <service android:name="com.ivy.cpg.locationservice.activitytracking.ActivityIntentService"
-            android:exported="false"/>
-
-        <service android:name="com.ivy.cpg.locationservice.activitytracking.ActivityRecognitionService"
+        <service
+            android:name="com.ivy.cpg.locationservice.realtime.RealTimeLocationService"
             android:enabled="true"
             android:exported="false"/>
+
+        <service
+            android:name="com.ivy.cpg.locationservice.activitytracking.ActivityIntentService"
+            android:exported="false" />
+
+        <service
+            android:name="com.ivy.sd.png.view.attendance.inout.AttendanceUploadIntentService"
+            android:exported="false" />
+
+        <service
+            android:name="com.ivy.cpg.locationservice.activitytracking.ActivityRecognitionService"
+            android:enabled="true"
+            android:exported="false" />
 
         <receiver
             android:name="com.ivy.sd.png.model.DownloadReceiver"
@@ -799,12 +805,10 @@
             android:name="com.ivy.sd.png.view.SubDStockCheckActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.png.view.SubDStockOrderActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.png.view.OfflinePlanningActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -812,11 +816,21 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.ivy.sd.png.view.BackUpSellerActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.supervisor.SupervisorHomeActivity"
+            android:screenOrientation="portrait">
 
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity" />
-        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"></activity>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+
+        </activity>
     </application>
 
 </manifest>

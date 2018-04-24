@@ -46,8 +46,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
-import com.ivy.cpg.locationservice.movementtracking.PeriodicMovementTrackUpload;
-import com.ivy.cpg.locationservice.movementtracking.PeriodicMovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
@@ -74,6 +72,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.attendance.inout.TimeTrackingFragment;
 import com.ivy.sd.png.view.reports.ReportMenufragment;
 
 import java.io.File;
@@ -450,17 +449,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         listView.setAdapter(new LeftMenuBaseAdapter(leftmenuDB));
 
 
-        if (bmodel.configurationMasterHelper.ISUPLOADUSERLOC) {
-            MovementTracking movementTracking = new PeriodicMovementTrackUpload();
-
-            PeriodicMovementTracking.startTrackingLocation(movementTracking,getContext(),
-                    bmodel.configurationMasterHelper.startTime,
-                    bmodel.configurationMasterHelper.endTime,
-                    bmodel.configurationMasterHelper.alarmTime);
-
-        }
-
-
         /** Initialising map view **/
         markerList = new ArrayList<>();
         baiduMarkerList = new ArrayList<>();
@@ -475,6 +463,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
         //showDefaultScreen();
         refreshList(true);
+
+        if (bmodel.configurationMasterHelper.ISUPLOADUSERLOC) {
+
+            MovementTracking.startTrackingLocation(getContext(),
+                    bmodel.configurationMasterHelper.startTime,
+                    bmodel.configurationMasterHelper.endTime,
+                    bmodel.configurationMasterHelper.alarmTime);
+
+        }
 
         return view;
 

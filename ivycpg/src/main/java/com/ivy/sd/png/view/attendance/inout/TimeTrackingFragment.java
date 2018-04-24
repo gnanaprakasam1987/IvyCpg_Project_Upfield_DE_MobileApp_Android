@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.attendance.inout;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,14 +7,12 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,9 +29,9 @@ import android.widget.TimePicker;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.cpg.locationservice.realtime.FireBaseRealtimeLocationUpload;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
-import com.ivy.cpg.locationservice.realtime.RealTimeLocationService;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonFieldTwoBo;
@@ -45,7 +43,9 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.view.InOutReasonDialog.OnMyDialogResult;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.attendance.inout.InOutReasonDialog.OnMyDialogResult;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
-            if (permissionStatus == PackageManager.PERMISSION_GRANTED ) {
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
                 bmodel.locationUtil.startLocationListener();
             }
         }
@@ -295,12 +295,14 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             holder.btInTime.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                if(startLocationService()) {
-                    holder.nonFieldTwoBO.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                    bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO);
+                    if (startLocationService()) {
+                        holder.nonFieldTwoBO.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO);
 
-                    loadNonFieldTwoDetails();
-                }
+                        loadNonFieldTwoDetails();
+                        uploadAttendance("IN");
+
+                    }
                 }
             });
 
@@ -311,6 +313,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                     holder.nonFieldTwoBO.setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
                     bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO);
                     loadNonFieldTwoDetails();
+                    uploadAttendance("OUT");
                 }
             });
 
@@ -372,7 +375,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                     public void cancel(String reasonid) {
                         dialog.dismiss();
 
-                        if(startLocationService()) {
+                        if (startLocationService()) {
 
                             NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
                             addNonFieldTwoBo.setId(bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -392,6 +395,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                             listview.setVisibility(View.VISIBLE);
                             no_data_txt.setVisibility(View.GONE);
                             loadNonFieldTwoDetails();
+
+                            uploadAttendance("IN");
+
                         }
                     }
                 });
@@ -517,7 +523,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     }
 
     //Checks whether if location accuracy is not set as high
-    boolean isLocationHighAccuracyEnabled(Context context){
+    boolean isLocationHighAccuracyEnabled(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int locationMode = 0;
             try {
@@ -535,7 +541,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
     /**
      * Starts the service to Track the Realtime Location and uploads in FIREBASE
-     *
+     * <p>
      * Status code --- Realtime Location tracking
      * STATUS_SUCCESS - Service started Successfully
      * STATUS_LOCATION_PERMISSION - Location Permission is not enabled
@@ -543,29 +549,41 @@ public class TimeTrackingFragment extends IvyBaseFragment {
      * STATUS_LOCATION_ACCURACY - Location Accuracy level is low
      * STATUS_MOCK_LOCATION - Mock Location is enabled
      * STATUS_SERVICE_ERROR - Problem in starting Service
+     *
      * @return df
      */
-    private boolean startLocationService(){
+    private boolean startLocationService() {
         boolean success = false;
-        if(bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE){
+        if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
-                int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation,getContext());
-                if(statusCode == RealTimeLocationTracking.STATUS_SUCCESS)
-                    success = true;
+            int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation, getContext());
+            if (statusCode == LocationConstants.STATUS_SUCCESS)
+                success = true;
 
-        }else{
+        } else {
             success = true;
         }
+
         return success;
     }
 
     /**
-     *Stops the Location Track Service
+     * Stops the Location Track Service
      */
-    private void stopLocationService(){
-        if(bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE){
+    private void stopLocationService() {
+        if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
             RealTimeLocationTracking.stopLocationTracking(getContext());
         }
     }
 
+    /**
+     * Start Intent service to upload Attendance data - IN/OUT
+     */
+    private void uploadAttendance(String IN_OUT) {
+        if (bmodel.configurationMasterHelper.IS_UPLOAD_ATTENDANCE) {
+            Intent intent = new Intent(getContext(), AttendanceUploadIntentService.class);
+            intent.putExtra("Attendance", IN_OUT);
+            getContext().startService(intent);
+        }
+    }
 }

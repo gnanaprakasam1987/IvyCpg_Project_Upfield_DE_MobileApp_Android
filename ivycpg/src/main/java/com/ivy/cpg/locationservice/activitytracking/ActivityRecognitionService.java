@@ -12,6 +12,7 @@ import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.ivy.sd.png.util.Commons;
 
 public class ActivityRecognitionService extends Service {
 
@@ -50,20 +51,14 @@ public class ActivityRecognitionService extends Service {
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void result) {
-                Toast.makeText(getApplicationContext(),
-                        "Successfully requested activity updates",
-                        Toast.LENGTH_SHORT)
-                        .show();
+                Commons.print("Successfully requested activity updates");
             }
         });
 
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),
-                        "Requesting activity updates failed to start",
-                        Toast.LENGTH_SHORT)
-                        .show();
+                Commons.print("Requesting activity updates failed to start");
             }
         });
     }
@@ -74,18 +69,14 @@ public class ActivityRecognitionService extends Service {
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void result) {
-                Toast.makeText(getApplicationContext(),
-                        "Removed activity updates successfully!",
-                        Toast.LENGTH_SHORT)
-                        .show();
+                Commons.print("Removed activity updates successfully");
             }
         });
 
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Failed to remove activity updates!",
-                        Toast.LENGTH_SHORT).show();
+                Commons.print("Failed to remove activity updates");
             }
         });
     }

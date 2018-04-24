@@ -14,7 +14,6 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.BatteryManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -24,20 +23,31 @@ import android.text.TextUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.locationservice.movementtracking.MovementTrackingAlarmReceiver;
-import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static com.ivy.cpg.locationservice.LocationConstants.DATE;
+import static com.ivy.cpg.locationservice.LocationConstants.DATE_GLOBAL;
+import static com.ivy.cpg.locationservice.LocationConstants.DATE_GLOBAL_EIPHEN;
+import static com.ivy.cpg.locationservice.LocationConstants.DATE_GLOBAL_PLAIN;
+import static com.ivy.cpg.locationservice.LocationConstants.DATE_TIME;
+import static com.ivy.cpg.locationservice.LocationConstants.DATE_TIME_ID_MILLIS;
+import static com.ivy.cpg.locationservice.LocationConstants.DATE_TIME_NEW;
+import static com.ivy.cpg.locationservice.LocationConstants.GMT_DATE_TIME;
+import static com.ivy.cpg.locationservice.LocationConstants.GPS_NOTIFICATION_ID;
+import static com.ivy.cpg.locationservice.LocationConstants.MOCK_NOTIFICATION_ID;
+import static com.ivy.cpg.locationservice.LocationConstants.TIME;
 
 public class LocationServiceHelper {
 
     private static LocationServiceHelper instance = null;
-    private final int MOCK_NOTIFICATION_ID = 1113;
-    private final int GPS_NOTIFICATION_ID = 1111;
 
     private LocationServiceHelper() {
     }
@@ -211,13 +221,9 @@ public class LocationServiceHelper {
     /**
      * Call Alarm manager and set Alarm for Every X minutes
      */
-    public void setPendingIntent(Context context, int alarm_time, MovementTracking movementTracking) {
+    public void setPendingIntent(Context context, int alarm_time) {
 
         Intent i = new Intent(context, MovementTrackingAlarmReceiver.class);
-
-        Bundle b = new Bundle();
-        b.putSerializable("TRACKING", movementTracking);
-        i.putExtras(b);
 
         PendingIntent pi = PendingIntent.getBroadcast(context, 1001, i, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -236,9 +242,8 @@ public class LocationServiceHelper {
     }
 
     /**
-     * returns integer value to set in alarm
+     * returns interval value to set in alarm
      */
-
     public int getAlarmTime(Context context) {
         int timeInHrs = getCurrentTimeInHrs();
         int timeInMins = getCurrentTimeInMints();
@@ -288,6 +293,7 @@ public class LocationServiceHelper {
         }
         return 0;
     }
+
 
     /**
      * Cancel the registered Alaram class from Alaram manager

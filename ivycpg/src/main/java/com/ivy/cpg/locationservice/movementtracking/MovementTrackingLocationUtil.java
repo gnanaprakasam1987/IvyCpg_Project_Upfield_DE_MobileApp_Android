@@ -20,15 +20,16 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 
 import org.jetbrains.annotations.NotNull;
 
-public class LocationUtil implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MovementTrackingLocationUtil implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private Context context;
-    private static LocationUtil instance = null;
+    private static MovementTrackingLocationUtil instance = null;
 
     /* Fused location provide using Google play service initialisation.*/
     private GoogleApiClient mGoogleApiClient;
@@ -41,17 +42,15 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
     /* Values from location services */
     public static Location location;
 
-    private static final int TWO_MINUTES = 1000 * 60 * 2;
-
     private Location previousBestLocation = null;
 
-    protected LocationUtil(Context context) {
+    protected MovementTrackingLocationUtil(Context context) {
         this.context = context;
     }
 
-    public static LocationUtil getInstance(Context ctx) {
+    public static MovementTrackingLocationUtil getInstance(Context ctx) {
         if (instance == null) {
-            instance = new LocationUtil(ctx);
+            instance = new MovementTrackingLocationUtil(ctx);
         }
         return instance;
     }
@@ -108,9 +107,15 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
     class MyLocationListener implements android.location.LocationListener {
         public void onLocationChanged(Location loc) {
-            if(isBetterLocation(loc,previousBestLocation)) {
 
-                location = loc;
+            //Notifies if GPS is Disabled
+            LocationServiceHelper.getInstance().notifyGPSStatus(context);
+            //Notifies if Mock Location is enabled
+            LocationServiceHelper.getInstance().notifyMockLocationStatus(context);
+
+            location = loc;
+
+            if(isBetterLocation(loc,previousBestLocation)) {
 
                 Intent locationIntent = new Intent("LOCATION CAPTURED");
                 LocalBroadcastManager.getInstance(context).sendBroadcast(locationIntent);
@@ -145,7 +150,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                 }
             }
 
-
         } else {
             if (nativeLocationManager != null && nativeLocationListener != null) {
                 nativeLocationManager.removeUpdates(nativeLocationListener);
@@ -154,8 +158,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                 location = null;
             }
         }
-
-
     }
 
     /**
@@ -194,10 +196,16 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
     @Override
     public void onLocationChanged(Location location) {
 
+        //Notifies if GPS is Disabled
+        LocationServiceHelper.getInstance().notifyGPSStatus(context);
+        //Notifies if Mock Location is enabled
+        LocationServiceHelper.getInstance().notifyMockLocationStatus(context);
+
+
+        this.location = location;
+
         if(isBetterLocation(location,previousBestLocation)){
 //            Commons.print("AlarmManager Better Location found");
-
-            this.location = location;
 
             Intent locationIntent = new Intent("LOCATION CAPTURED");
             LocalBroadcastManager.getInstance(context).sendBroadcast(locationIntent);
@@ -249,19 +257,8 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
         // Check whether the new location fix is newer or older
         long timeDelta = location.getTime() - currentBestLocation.getTime();
-//        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
-//        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+
         boolean isNewer = timeDelta > 0;
-//
-//        // If it's been more than two minutes since the current location, use the new location
-//        // because the user has likely moved
-//        if (isSignificantlyNewer) {
-//            previousBestLocation = location;
-//            isBetterLocation =  true;
-//            // If the new location is more than two minutes older, it must be worse
-//        } else if (isSignificantlyOlder) {
-//            isBetterLocation = false;
-//        }
 
         // Check whether the new location fix is more or less accurate
         int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
@@ -270,11 +267,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
         Commons.print("AlarmManager location -- "+location);
         Commons.print("AlarmManager currentBestLocation -- "+currentBestLocation);
         Commons.print("AlarmManager isMoreAccurate "+accuracyDelta);
-//        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
-
-        // Check if the old and new location are from the same provider
-//        boolean isFromSameProvider = isSameProvider(location.getProvider(),
-//                currentBestLocation.getProvider());
 
         // Determine location quality using a combination of timeliness and accuracy
         if (isMoreAccurate) {
@@ -285,9 +277,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
             isBetterLocation = true;
             previousBestLocation = location;
         }
-//         else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
-//            isBetterLocation = true;
-//        }
 
         return isBetterLocation;
     }
