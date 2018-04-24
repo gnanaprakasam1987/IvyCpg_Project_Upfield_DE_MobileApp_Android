@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order.scheme;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -41,8 +41,14 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.BatchAllocation;
+import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.sd.png.view.CrownReturnActivity;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.InitiativeActivity;
+import com.ivy.sd.png.view.OrderDiscount;
+import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
 import java.util.List;

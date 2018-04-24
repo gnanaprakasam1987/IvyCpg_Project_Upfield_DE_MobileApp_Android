@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.order.scheme;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -187,7 +187,9 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
 
             loadSchemeConfigs(context);
+
             if (IS_SCHEME_ON_MASTER) {
+
                 int distributorId = bModel.getRetailerMasterBO().getDistributorId();
                 String retailerId = bModel.getRetailerMasterBO().getRetailerID();
                 int channelId = bModel.getRetailerMasterBO().getSubchannelid();

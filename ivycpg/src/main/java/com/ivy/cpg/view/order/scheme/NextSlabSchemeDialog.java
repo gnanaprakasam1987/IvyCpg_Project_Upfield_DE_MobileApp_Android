@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order.scheme;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -12,10 +12,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 
 public class NextSlabSchemeDialog extends Dialog {
 
