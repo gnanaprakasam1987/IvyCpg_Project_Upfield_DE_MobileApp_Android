@@ -142,14 +142,12 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
-import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
 import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.StockReportMasterHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.sd.png.provider.TargetPlanHelper;
 import com.ivy.sd.png.provider.TaskHelper;
 import com.ivy.sd.png.provider.TeamLeaderMasterHelper;
 import com.ivy.sd.png.provider.UserFeedBackHelper;
@@ -174,7 +172,6 @@ import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
 import com.ivy.sd.png.view.Synchronization;
-import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
@@ -251,7 +248,6 @@ public class BusinessModel extends Application {
     public static String photoPath;
 
     public InitiativeHelper initiativeHelper;
-    public TargetPlanHelper targetPlanHelper;
     public BeatMasterHelper beatMasterHealper;
     public ChannelMasterHelper channelMasterHelper;
     public SubChannelMasterHelper subChannelMasterHelper;
@@ -406,7 +402,6 @@ public class BusinessModel extends Application {
         /** Create objects for Helpers **/
         mroadActivityHelper = RoadActivityHelper.getInstance(this);
         initiativeHelper = InitiativeHelper.getInstance(this);
-        targetPlanHelper = TargetPlanHelper.getInstance(this);
 
         beatMasterHealper = BeatMasterHelper.getInstance(this);
         channelMasterHelper = ChannelMasterHelper.getInstance(this);
@@ -539,9 +534,6 @@ public class BusinessModel extends Application {
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actactivationscreen)) {
             myIntent = new Intent(ctxx, ScreenActivationActivity.class);
-            ctxx.startActivityForResult(myIntent, 0);
-        } else if (act.equals(DataMembers.actTargetPlan)) {
-            myIntent = new Intent(ctxx, TargetPlanActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actclosingstock)) {
             myIntent = new Intent(ctxx, StockCheckActivity.class);
@@ -1430,14 +1422,17 @@ public class BusinessModel extends Application {
 
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
+                            + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
                             + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 'YES') = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent"
                             + " FROM RetailerMaster A"
 
-                            + " LEFT JOIN RetailerClientMappingMaster RC on RC.rid = A.RetailerID"
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
+
+                            + " LEFT JOIN RetailerClientMappingMaster RC "+(configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING? " on RC.beatID=RBM.beatId" :" on RC.Rid = A.RetailerId")
+
                             + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
 
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
@@ -1451,13 +1446,12 @@ public class BusinessModel extends Application {
 
                             + " LEFT JOIN RetailerVisit RV ON RV.RetailerID = A.RetailerID"
 
-                            + " LEFT JOIN RetailerTargetMaster RTGT ON RTGT.RetailerID = A.RetailerID"
-
                             + " LEFT JOIN RetailerAchievement RACH ON RACH.RetailerID = A.RetailerID"
 
                             + " LEFT JOIN LocationMaster LM ON LM.LocId = A.locationid"
-                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
+
                             + " LEFT JOIN RetailerPriorityProducts RPP ON RPP.retailerid = A.RetailerID"
+
                             + " LEFT JOIN RetailerAttribute RAT ON A.RetailerID = RAT.RetailerId");
 
             // group by A.retailerid
@@ -1593,10 +1587,6 @@ public class BusinessModel extends Application {
                     retailer.setVisitDoneCount(c.getInt(c.getColumnIndex("VisitDoneCount")));
                     retailer.setVisit_frequencey(c.getInt(c.getColumnIndex("VisitFrequency")));
 
-                    //temp_retailer_targetmaster
-                    retailer.setMonthly_target(c.getDouble(c.getColumnIndex("MonthlyTarget")));
-                    retailer.setDaily_target(c.getInt(c.getColumnIndex("DailyTarget")));
-
                     //temp_invoice_monthlyachievement
                     retailer.setMonthly_acheived(c.getDouble(c.getColumnIndex("MonthlyAcheived")));
 
@@ -1680,6 +1670,8 @@ public class BusinessModel extends Application {
 
                 }
             }
+
+            mRetailerHelper.downloadRetailerTarget("SV");
 
             db.closeDB();
         } catch (Exception e) {
@@ -3466,10 +3458,6 @@ public class BusinessModel extends Application {
                     frm.finish();
                     BusinessModel.loadActivity(ctx,
                             DataMembers.actHomeScreenTwo);
-                } else if (idd == 201) {
-                    TargetPlanActivity frm = (TargetPlanActivity) ctx;
-                    frm.finish();
-                    BusinessModel.loadActivity(ctx, DataMembers.actPlanning);
                 } else if (idd == 3333) {
                     ReAllocationActivity frm = (ReAllocationActivity) ctx;
                     frm.finish();

@@ -444,12 +444,6 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
                     HomeScreenTwo.class));
             getActivity().finish();
         }
-        // TargetPlanActivity
-        if ("3".equals(calledBy)) {
-            startActivity(new Intent(getActivity(),
-                    TargetPlanActivity.class));
-            getActivity().finish();
-        }
         // DashBoardActivity
         if ("4".equals(calledBy)) {
          /*   Intent i = new Intent(SKUWiseTargetActivity.this,

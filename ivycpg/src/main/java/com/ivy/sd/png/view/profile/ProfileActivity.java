@@ -93,8 +93,6 @@ import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
 import com.ivy.sd.png.view.SellerDashboardFragment;
-import com.ivy.sd.png.view.TargetPlanActivity;
-import com.ivy.sd.png.view.TargetPlanActivity_PH;
 import com.ivy.sd.png.view.TaskListFragment;
 import com.ivy.sd.png.view.UserDialogue;
 
@@ -1460,45 +1458,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         if (!isClicked && calledBy.equals(MENU_VISIT)) {
             validationToProceed();
-        } else if (!isClicked
-                && calledBy.equals(MENU_PLANNING)
-                && bmodel.configurationMasterHelper.IS_SHOW_TARGET_PLAN) {
-
-            bmodel.setRetailerMasterBO(bmodel.getRetailerMasterBO());
-            isClicked = true;
-            if (bmodel.getRetailerMasterBO().getIsToday() == 1) {
-                bmodel.setRetailerMasterBO(bmodel.getRetailerMasterBO());
-                if (bmodel.targetPlanHelper
-                        .hasDataInDTPMaster()) {
-                    if (bmodel.configurationMasterHelper.IS_TARGET_SCREEN_PH) {
-                        Intent i = new Intent(this,
-                                TargetPlanActivity_PH.class);
-                        i.putExtra("From", "Visit");
-                        startActivity(i);
-                    } else {
-                        Intent i = new Intent(this,
-                                TargetPlanActivity.class);
-                        i.putExtra("From", "Visit");
-                        startActivity(i);
-                    }
-
-                } else {
-                    Toast.makeText(
-                            this,
-                            getResources()
-                                    .getString(
-                                            R.string.planning_not_available_if_nodata_avail),
-                            Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(
-                        this,
-                        getResources()
-                                .getString(
-                                        R.string.planning_not_available_for_deviated_retailer),
-                        Toast.LENGTH_SHORT).show();
-            }
-            isClicked = false;
         }
     }
 

@@ -9,7 +9,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.InitiativeDetailBO;
 import com.ivy.sd.png.bo.InitiativeHeaderBO;
 import com.ivy.sd.png.bo.InitiativeHolder;
-import com.ivy.sd.png.bo.InitiativeReportBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -29,11 +28,8 @@ public class InitiativeHelper {
 
     private Context mContext;
     private Vector<InitiativeHeaderBO> initiativeHeaderBOVector;
-    private ArrayList<InitiativeReportBO> initiativeReportBO;
     private BusinessModel bmodel;
     private List<InitiativeHolder> initativeList;
-    private StringBuilder sb;
-    private Vector<InitiativeReportBO> initlist;
 
     protected InitiativeHelper(Context context) {
         this.mContext = context;
@@ -643,65 +639,6 @@ public class InitiativeHelper {
         return "'" + data + "'";
     }
 
-    /**
-     * This method will load the list of Initiative with number of retailers it
-     * mapped.
-     * <p>
-     * Reports used in VisitScreen
-     */
-    public void loadInitiativeReportTarget() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select initid,initDesc,InitKeyWord from InitiativeHeaderMaster where isParent=1");
-
-            setInitiativeReportBO(new ArrayList<InitiativeReportBO>());
-
-            if (c != null) {
-                while (c.moveToNext()) {
-                    InitiativeReportBO init = new InitiativeReportBO();
-                    init.setInitId(c.getInt(0));
-                    init.setInitDesc(c.getString(1));
-                    init.setInitKeyWord(c.getString(2));
-                    initiativeReportBO.add(init);
-                }
-                c.close();
-            }
-
-            for (InitiativeReportBO initReportBO : initiativeReportBO) {
-
-                String sql = "SELECT count( distinct A.retailerid) FROM InitiativeCoverageReport A "
-                        + " inner join Retailermasterinfo RMI on RMI.retailerid= B.retailerid "
-                        + "inner join RetailerMaster B on A.retailerId=B.retailerid and RMI.isToday=1 where A.initid="
-                        + initReportBO.getInitId();
-                c = db.selectSQL(sql);
-                if (c != null) {
-                    if (c.moveToNext())
-                        initReportBO.setTarget(c.getInt(0));
-                }
-
-                sql = "SELECT count( distinct A.retailerid) FROM InitiativeCoverageReport A "
-                        + " inner join Retailermasterinfo RMI on RMI.retailerid= B.retailerid "
-                        + "inner join RetailerMaster B on A.retailerId=B.retailerid and RMI.isToday=1 where A.initid="
-                        + initReportBO.getInitId() + " and A.isDone=1";
-                c = db.selectSQL(sql);
-                if (c != null) {
-                    if (c.moveToNext())
-                        initReportBO.setAcheived(c.getInt(0));
-                    c.close();
-                }
-
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
     public void updateInitiativeCoverageReport(String retailerId,
                                                boolean calculateBalance) {
         try {
@@ -936,15 +873,6 @@ public class InitiativeHelper {
             return target;
     }
 
-    public ArrayList<InitiativeReportBO> getInitiativeReportBO() {
-        return initiativeReportBO;
-    }
-
-    public void setInitiativeReportBO(
-            ArrayList<InitiativeReportBO> initiativeReportBO) {
-        this.initiativeReportBO = initiativeReportBO;
-    }
-
     public Vector<InitiativeHeaderBO> getInitiativeHeaderBOVector() {
         return initiativeHeaderBOVector;
     }
@@ -1062,175 +990,6 @@ public class InitiativeHelper {
 
             Commons.printException(e);
         }
-    }
-
-    /**
-     * Get the retailer, initiative and initiative hit
-     *
-     * @return Vector<InitiativeReportBO>
-     */
-    public Vector<InitiativeReportBO> downloadInitReport() {
-        initlist = new Vector<InitiativeReportBO>();
-        try {
-            InitiativeReportBO initbo;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            int seq = 1;
-            Cursor c1 = null;
-            sb = new StringBuilder();
-            Cursor c = db
-                    .selectSQL("select distinct(B.RetailerId),B.RetailerName,RBM.isDeviated," +
-                            "when RC.weekno not null  then RC.WalkingSeq when RC.Date='2015/10/05' then RC.WalkingSeq else 0 end as seq,"
-                            + " from Retailermaster  B "
-                            + "  inner join Retailermasterinfo RMI on Rmi.retailerid= B.retailerid"
-                            + " left join RetailerClientMappingMaster RC on RC.rid=B.RetailerID"
-                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = B.RetailerID"
-                            + " where  (RMI.isToday=1 or RBM.isdeviated='Y')  order by seq");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    initbo = new InitiativeReportBO();
-                    int tempInitHit[] = null;
-                    if (initativeList.size() > 0)
-                        tempInitHit = new int[initativeList.size()];
-                    initbo.setRetailerid(c.getInt(0));
-                    initbo.setRetailername(c.getString(1));
-                    sb.append(c.getString(0));
-                    sb.append(",");
-                    if (!c.getString(2).equalsIgnoreCase("Y")) {
-                        initbo.setWalkingSequence(seq);
-                        seq++;
-                    } else {
-                        initbo.setWalkingSequence(1000000);
-                    }
-                    initbo.setIsdeviated(c.getString(2));
-                    c1 = db.selectSQL("SELECT DISTINCT(IHM.InitId), IFNULL(isDone,0) FROM InitiativeHeaderMaster IHM LEFT JOIN  InitiativeCoverageReport "
-                            + "ICR  ON ICR.InitId = IHM.InitId  AND RetailerId="
-                            + initbo.getRetailerid()
-                            + " where IHM.IsParent= 1 order by IHM.InitDesc ASC");
-                    if (c1 != null) {
-                        int itr = 0;
-                        while (c1.moveToNext()) {
-
-                            if (tempInitHit != null) {
-
-                                tempInitHit[itr] = c1.getInt(1);
-                                itr++;
-
-                            }
-                        }
-                        if (tempInitHit != null)
-                            initbo.setInitiativeHit(tempInitHit);
-                        c1.close();
-                    }
-                    initlist.add(initbo);
-
-                }
-            }
-
-            if (sb.length() > 0) {
-                sb.deleteCharAt(sb.length() - 1);
-                Cursor c2 = db
-                        .selectSQL("select initid, sum(isDone) from InitiativeCoverageReport where RetailerId in ("
-                                + sb.toString() + ")  group by initid");
-                if (c2 != null) {
-                    while (c2.moveToNext()) {
-                        for (int z = 0; z < initativeList.size(); z++) {
-                            InitiativeHolder bo = initativeList.get(z);
-                            if (c2.getInt(0) == bo.getInitiativeId()) {
-                                bo.setHitCount(c2.getInt(1));
-                                break;
-                            }
-                        }
-                    }
-                    c2.close();
-                }
-            }
-
-
-            db.closeDB();
-        } catch (SQLException e) {
-            Commons.printException(e);
-        }
-        return initlist;
-
-    }
-
-    /**
-     * Calculates the total of Initiative achieved today and past.
-     */
-    public void downloadInitMTDValue() {
-        try {
-
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            String tableHeader = null;
-            String tableDetail = null;
-            String idOne = null;
-            String idTwo = null;
-            if (bmodel.configurationMasterHelper.IS_INVOICE) {
-                tableHeader = "InvoiceMaster";
-                tableDetail = "InvoiceDetails";
-                idOne = "InvoiceNo";
-                idTwo = "invoiceID";
-            } else {
-                tableHeader = "OrderHeader";
-                tableDetail = "OrderDetail";
-                idOne = "OrderID";
-                idTwo = "OrderID";
-            }
-            Cursor c = db
-                    .selectSQL("SELECT DISTINCT(RM.RetailerID),CASE WHEN IHM.IsCombination = 0 AND IHM.IsParent = 0 THEN"
-                            + " (SELECT DISTINCT(InitId) FROM InitiativeDetailMaster WHERE ProductInitId = IDM.InitId) ELSE IDM.InitId END,"
-                            + " IFNULL(OD.qty,0) AS OrdQty,IFNULL(IAM.qty,0) AS InitQty,"
-                            + " CASE WHEN SLM .listcode='CASH' THEN ifnull(p1.srp1,p2.srp1) ELSE IFNULL(p1.srp2,p2.srp2) END,OD.PRoductId FROM RetailerMaster RM"
-                            + " LEFT JOIN StandardListMaster SLM ON   RM.RPTypeId =SLM.ListId"
-                            + " INNER JOIN InitiativeDetailMaster IDM on RM.SubChannelId = IDM.LocalChannelId"
-                            + " LEFT JOIN " + tableHeader + " OH ON " + "RM.RetailerID = OH.RetailerId"
-                            + " INNER JOIN InitiativeHeaderMaster IHM ON IDM.InitId = IHM.InitId"
-                            + " LEFT JOIN " + tableDetail + " OD ON OH." + idOne + " = OD." + idTwo + " and OD.PRoductId = IDM.ProductInitId"
-                            + " LEFT JOIN InitiativeAchievementMaster IAM ON IAM.Initid = IDM.InitId AND IAM.ProductId = IDM.ProductInitId AND IAM.RetailerId= RM.RetailerId"
-                            + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = RM.RetailerID"
-                            + " LEFT JOIN PriceMaster P1 ON  RPG.GroupId =P1.scid AND P1.pid = IDM.ProductInitId"
-                            + " LEFT JOIN PriceMaster P2 ON  P2.scid = 0 AND  CASE WHEN IHM.IsCombination = 1 THEN P2.pid IN (SELECT A.ProductInitId FROM InitiativeDetailMaster A  "
-                            + "INNER JOIN InitiativeDetailMaster B ON A.InitId = B.ProductInitId AND B.InitId = IDM.InitID AND B.LocalChannelId = RM.SubChannelId ) ELSE P2.pid =IDM.ProductInitId END WHERE (OrdQty>0 OR InitQty>0)");
-
-            double total = 0;
-            if (c != null) {
-                while (c.moveToNext()) {
-                    for (int j = 0; j < initativeList.size(); j++) {
-                        InitiativeHolder bo = initativeList.get(j);
-                        if (c.getInt(1) == bo.getInitiativeId()
-                                && ((c.getDouble(2) > 0 || c.getDouble(3) > 0) && c
-                                .getDouble(4) > 0)) {
-                            total = 0;
-                            total = ((c.getDouble(2) + c.getDouble(3)) * c
-                                    .getDouble(4)) + bo.getTotalMTD();
-
-                            bo.setTotalMTD(total);
-                            break;
-                        }
-                    }
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (SQLException e) {
-
-            Commons.printException(e);
-        }
-    }
-
-    public Vector<InitiativeReportBO> getInitlist() {
-        return initlist;
-    }
-
-    public void setInitlist(Vector<InitiativeReportBO> initlist) {
-        this.initlist = initlist;
     }
 
     public List<InitiativeHolder> getInitativeList() {
