@@ -19,7 +19,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
-    public FireBaseRealtimeLocationUpload(){
+    public FireBaseRealtimeLocationUpload() {
 
     }
 
@@ -50,7 +50,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         locationDetailBO.setOutTime("");
         locationDetailBO.setStatus("IN");
 
-        updateFirebaseData(context,locationDetailBO,"RealtimeTracking");
+        updateFirebaseData(context, locationDetailBO, "RealtimeTracking");
 
     }
 
@@ -63,37 +63,32 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             userId = String.valueOf(userMasterBO.getUserid());
         }
 
-        if(FirebaseDatabase.getInstance()!=null) {
 
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
-                    child(context.getString(R.string.firebase_path)).child("RealtimeTracking").child(userId);
-            databaseReference.child("outTime").setValue(String.valueOf(System.currentTimeMillis()));
-            databaseReference.child("status").setValue("Day Closed");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
+                child(context.getString(R.string.firebase_path)).child("RealtimeTracking").child(userId);
+        databaseReference.child("outTime").setValue(String.valueOf(System.currentTimeMillis()));
+        databaseReference.child("status").setValue("Day Closed");
 //            FirebaseDatabase.getInstance().goOffline();
-        }
     }
 
     @Override
-    public void movementTrackingAttendanceIn(Context context,String pathNode) {
+    public void movementTrackingAttendanceIn(Context context, String pathNode) {
         String userId = "";
         UserMasterBO userMasterBO = getUserDetail(context);
         if (userMasterBO != null) {
             userId = String.valueOf(userMasterBO.getUserid());
         }
 
-        if(FirebaseDatabase.getInstance()!=null) {
-
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
-                    child(context.getString(R.string.firebase_path)).child(pathNode).child(userId);
-            databaseReference.child("inTime").setValue(String.valueOf(System.currentTimeMillis()));
-            databaseReference.child("status").setValue("IN");
-            databaseReference.child("userId").setValue("userId");
-            databaseReference.child("supervisorId").setValue(getSupervisorIds(context));
-        }
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
+                child(context.getString(R.string.firebase_path)).child(pathNode).child(userId);
+        databaseReference.child("inTime").setValue(String.valueOf(System.currentTimeMillis()));
+        databaseReference.child("status").setValue("IN");
+        databaseReference.child("userId").setValue("userId");
+        databaseReference.child("supervisorId").setValue(getSupervisorIds(context));
     }
 
     @Override
-    public void movementTrackingAttendanceOut(Context context,String pathNode) {
+    public void movementTrackingAttendanceOut(Context context, String pathNode) {
 
         String userId = "";
         UserMasterBO userMasterBO = getUserDetail(context);
@@ -101,20 +96,17 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             userId = String.valueOf(userMasterBO.getUserid());
         }
 
-        if(FirebaseDatabase.getInstance()!=null) {
-
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
-                    child(context.getString(R.string.firebase_path)).child(pathNode).child(userId);
-            databaseReference.child("outTime").setValue(String.valueOf(System.currentTimeMillis()));
-            databaseReference.child("status").setValue("Day Closed");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
+                child(context.getString(R.string.firebase_path)).child(pathNode).child(userId);
+        databaseReference.child("outTime").setValue(String.valueOf(System.currentTimeMillis()));
+        databaseReference.child("status").setValue("Day Closed");
 //            FirebaseDatabase.getInstance().goOffline();
-        }
     }
 
     /**
      * Insert or update Location data and attendance data in Firebase Node
      */
-    private void updateFirebaseData(Context context, LocationDetailBO locationDetailBO,String nodePath) {
+    private void updateFirebaseData(Context context, LocationDetailBO locationDetailBO, String nodePath) {
         String userId = "", userName = "";
         UserMasterBO userMasterBO = getUserDetail(context);
         if (userMasterBO != null) {
@@ -125,7 +117,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         locationDetailBO.setUserName(userName);
         locationDetailBO.setSupervisorId(getSupervisorIds(context));
 
-        final String path = context.getString(R.string.firebase_path) + "/"+nodePath+"/"+ userId;
+        final String path = context.getString(R.string.firebase_path) + "/" + nodePath + "/" + userId;
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);
         ref.child("userId").setValue(userId);
         ref.child("userName").setValue(userName);
@@ -185,7 +177,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                 while (cursor.moveToNext()) {
                     supervisorIds.append(cursor.getString(0)).append("/");
                 }
-            }else
+            } else
                 supervisorIds = new StringBuilder();
 
             db.closeDB();

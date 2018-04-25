@@ -73,7 +73,7 @@ public class RealTimeLocationTracking {
         return STATUS_SERVICE_ERROR;
     }
 
-    public static void stopLocationTracking(RealTimeLocation realTimeLocation,Context context){
+    public static void stopLocationTracking(Context context){
 //        update the status as false if user Paused or completed
         updateWorkStatus(context, false);
 

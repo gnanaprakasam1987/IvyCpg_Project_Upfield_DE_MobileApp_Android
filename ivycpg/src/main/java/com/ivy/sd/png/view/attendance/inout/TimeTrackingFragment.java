@@ -582,6 +582,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     private void stopLocationService() {
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
+            RealTimeLocationTracking.stopLocationTracking(getContext());
             realTimeLocation.onRealTimeLocationStopped(getContext());
         }
     }

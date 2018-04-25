@@ -174,9 +174,6 @@
             android:name="com.ivy.cpg.locationservice.activitytracking.ActivityIntentService"
             android:exported="false" />
 
-        <service
-            android:name="com.ivy.sd.png.view.attendance.inout.AttendanceUploadIntentService"
-            android:exported="false" />
 
         <service
             android:name="com.ivy.cpg.locationservice.activitytracking.ActivityRecognitionService"
