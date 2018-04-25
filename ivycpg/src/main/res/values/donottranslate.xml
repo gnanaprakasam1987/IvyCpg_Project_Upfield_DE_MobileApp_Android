@@ -96,4 +96,8 @@
     <string name="max_possible">Max Possible Payout</string>
     <string name="Rs">\u20B9</string>
     <string name="day_target">Day target</string>
+
+    <!--Split Order-->
+    <string name="bill1_value">Bill1 Value</string>
+    <string name="bill2_value">Bill2 Value</string>
 </resources>

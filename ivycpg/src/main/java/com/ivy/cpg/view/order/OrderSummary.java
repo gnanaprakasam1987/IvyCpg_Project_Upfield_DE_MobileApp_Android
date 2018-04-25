@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,12 +33,15 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itextpdf.text.pdf.codec.BmpImage;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
@@ -126,7 +130,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Button button_order;
     private Button button_invoice;
     private TextView text_LPC;
-    private TextView text_totalOrderValue;
+    private TextView text_totalOrderValue, textbill1, textbill2;
     private TextView text_totalOrderedQuantity;
     private Button button_deliveryDate;
     private ExpandableListView listView;
@@ -276,28 +280,32 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             collectionbo = new CollectionBO();
             BModel.collectionHelper.getPaymentList().clear();
         }
-
-
     }
 
     private void initializeViews() {
-        text_LPC = (TextView) findViewById(R.id.lcp);
-        text_totalOrderValue = (TextView) findViewById(R.id.totalValue);
-        button_deliveryDate = (Button) findViewById(R.id.deliveryDate);
-        button_order = (Button) findViewById(R.id.orderSummarySave);
-        listView = (ExpandableListView) findViewById(R.id.elv);
-        button_invoice = (Button) findViewById(R.id.saveAndGoInvoice);
-        text_totalOrderedQuantity = (TextView) findViewById(R.id.tv_totalqty);
-        imageView_amountSplitUp = (ImageView) findViewById(R.id.icAmountSpilitup);
+        text_LPC = findViewById(R.id.lcp);
+        text_totalOrderValue = findViewById(R.id.totalValue);
+        textbill1 = findViewById(R.id.tvBill1Value);
+        textbill2 = findViewById(R.id.tvBill2Value);
+        button_deliveryDate = findViewById(R.id.deliveryDate);
+        button_order = findViewById(R.id.orderSummarySave);
+        listView = findViewById(R.id.elv);
+        button_invoice = findViewById(R.id.saveAndGoInvoice);
+        text_totalOrderedQuantity = findViewById(R.id.tv_totalqty);
+        imageView_amountSplitUp = findViewById(R.id.icAmountSpilitup);
 
         //typefaces
         ((TextView) findViewById(R.id.tv_deliveryDate)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.lpcLabel)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.totalValuelbl)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.title_totalqty)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblbill1)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblbill2)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         button_deliveryDate.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         text_LPC.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         text_totalOrderValue.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        textbill1.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        textbill2.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         text_totalOrderedQuantity.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         button_order.setTypeface(BModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         button_invoice.setTypeface(BModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -306,6 +314,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         button_order.setOnClickListener(this);
         button_invoice.setOnClickListener(this);
         imageView_amountSplitUp.setOnClickListener(this);
+
+        if (BModel.configurationMasterHelper.IS_ORDER_SPLIT) {
+            ((LinearLayout) findViewById(R.id.ll_values)).setVisibility(View.GONE);
+        } else {
+            ((LinearLayout) findViewById(R.id.ll_bill1)).setVisibility(View.GONE);
+            ((LinearLayout) findViewById(R.id.ll_bill2)).setVisibility(View.GONE);
+        }
     }
 
     private void updateLabels() {
@@ -721,7 +736,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 findViewById(R.id.ll_totqty).setVisibility(View.GONE);
             }
 
-            if (BModel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
+            if (BModel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER && !BModel.configurationMasterHelper.IS_ORDER_SPLIT) {
                 findViewById(R.id.ll_values).setVisibility(View.VISIBLE);
             } else {
                 findViewById(R.id.ll_values).setVisibility(View.GONE);
@@ -784,30 +799,39 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         ProductMasterBO productBO;
 
+        if (!BModel.configurationMasterHelper.IS_ORDER_SPLIT) {
 
-        for (int i = 0; i < productsCount; i++) {
-            productBO = productList.elementAt(i);
+            for (int i = 0; i < productsCount; i++) {
+                productBO = productList.elementAt(i);
 
-            if (productBO.getOrderedCaseQty() > 0
-                    || productBO.getOrderedPcsQty() > 0
-                    || productBO.getOrderedOuterQty() > 0) {
+                if (productBO.getOrderedCaseQty() > 0
+                        || productBO.getOrderedPcsQty() > 0
+                        || productBO.getOrderedOuterQty() > 0) {
 
-                int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
+                    int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
-                totalQuantityOrdered = totalQuantityOrdered + totalQuantity;
-                totalWeight = totalWeight + (totalQuantity * productBO.getWeight());
+                    totalQuantityOrdered = totalQuantityOrdered + totalQuantity;
+                    totalWeight = totalWeight + (totalQuantity * productBO.getWeight());
 
-                mOrderedProductList.add(productBO);
+                    mOrderedProductList.add(productBO);
 
-                double lineValue;
+                    double lineValue;
 
-                if (BModel.configurationMasterHelper.IS_SIH_VALIDATION
-                        && BModel.configurationMasterHelper.IS_INVOICE
-                        && BModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                    if (productBO.getBatchwiseProductCount() > 0) {
-                        // Apply batch wise price apply
-                        lineValue = BModel.schemeDetailsMasterHelper
-                                .getbatchWiseTotalValue(productBO);
+                    if (BModel.configurationMasterHelper.IS_SIH_VALIDATION
+                            && BModel.configurationMasterHelper.IS_INVOICE
+                            && BModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                        if (productBO.getBatchwiseProductCount() > 0) {
+                            // Apply batch wise price apply
+                            lineValue = BModel.schemeDetailsMasterHelper
+                                    .getbatchWiseTotalValue(productBO);
+                        } else {
+                            lineValue = (productBO.getOrderedCaseQty() * productBO
+                                    .getCsrp())
+                                    + (productBO.getOrderedPcsQty() * productBO
+                                    .getSrp())
+                                    + (productBO.getOrderedOuterQty() * productBO
+                                    .getOsrp());
+                        }
                     } else {
                         lineValue = (productBO.getOrderedCaseQty() * productBO
                                 .getCsrp())
@@ -816,138 +840,170 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 + (productBO.getOrderedOuterQty() * productBO
                                 .getOsrp());
                     }
-                } else {
-                    lineValue = (productBO.getOrderedCaseQty() * productBO
+
+                    // Set the calculated values in productBO **/
+                    productBO.setDiscount_order_value(lineValue);
+                    productBO.setSchemeAppliedValue(lineValue);
+                    productBO.setOrderPricePiece(productBO.getSrp());
+
+                    productBO.setCompanyTypeDiscount(0);
+                    productBO.setDistributorTypeDiscount(0);
+                    // clear scheme free products stored in product obj
+                    productBO.setSchemeProducts(new ArrayList<SchemeProductBO>());
+
+                    totalOrderValue += lineValue;
+
+                    Commons.print("line value" + lineValue);
+                }
+            }
+
+            if (BModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
+                mSortedList = new Vector<>();
+                mOrderedProductList = orderHelper.organizeProductsByUserEntry();
+                mSortedList.addAll(mOrderedProductList);
+            }
+
+
+            if (BModel.getOrderHeaderBO() != null)
+                BModel.getOrderHeaderBO().setTotalWeight(totalWeight);
+
+            // Empties Management is Enabled, then we have to add totalOrderValue with remaining value(Order return value).
+            if (BModel.configurationMasterHelper.SHOW_PRODUCTRETURN
+                    && !BModel.configurationMasterHelper.SHOW_BOTTLE_CREDITLIMIT
+                    && BModel.configurationMasterHelper.IS_SIH_VALIDATION && BModel.getOrderHeaderBO() != null) {
+                totalOrderValue = totalOrderValue
+                        + BModel.getOrderHeaderBO().getRemainigValue();
+            }
+
+            discountHelper.clearProductDiscountAndTaxValue(mOrderedProductList);
+
+            // Scheme calculations
+            if (!BModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                    || BModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList);
+                totalOrderValue -= totalSchemeDiscValue;
+            }
+
+            if (BModel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+                //applying removed tax..
+                BModel.productHelper.taxHelper.applyRemovedTax(mOrderedProductList);
+            }
+
+            //  Apply product entry level discount
+            if (BModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
+                entryLevelDiscount = discountHelper.calculateUserEntryLevelDiscount(mOrderedProductList);
+                totalOrderValue = totalOrderValue - entryLevelDiscount;
+            }
+
+            // Apply Item  level discount
+            if (BModel.configurationMasterHelper.SHOW_DISCOUNT) {
+                double itemLevelDiscount = discountHelper.calculateItemLevelDiscount();
+                totalOrderValue = totalOrderValue - itemLevelDiscount;
+            }
+
+            // Apply Exclude Item level Tax  in Product
+            if (BModel.configurationMasterHelper.SHOW_TAX) {
+                if (BModel.configurationMasterHelper.IS_EXCLUDE_TAX)
+                    BModel.productHelper.taxHelper.updateProductWiseExcludeTax();
+                else {
+                    float totalTaxVal = BModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
+                    totalOrderValue = totalOrderValue + totalTaxVal;
+                }
+            }
+
+
+            listView.setAdapter(new ProductExpandableAdapter());
+            for (int i = 0; i < mOrderedProductList.size(); i++) {
+                listView.expandGroup(i);
+            }
+
+            if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
+                //find the  range of discount by using total value
+                final double billWiseRangeDiscount = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
+                totalOrderValue = totalOrderValue - billWiseRangeDiscount;
+
+            } else if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
+                // Automatically apply bill wise discount
+                final double billWiseDiscount = discountHelper.calculateBillWiseDiscount(totalOrderValue);
+                if (BModel.getOrderHeaderBO() != null) {
+                    BModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
+                }
+                totalOrderValue = totalOrderValue - billWiseDiscount;
+
+            } else {
+                // user manually enter bill wise discount
+                double discount = BModel.orderAndInvoiceHelper.restoreDiscountAmount(BModel
+                        .getRetailerMasterBO().getRetailerID());
+                double billWiseDiscount = applyDiscountMaxValidation(discount);
+                totalOrderValue = totalOrderValue - billWiseDiscount;
+            }
+
+            // Apply bill wise pay term discount
+            if (discountHelper.getBillWisePayternDiscountList() != null
+                    && discountHelper.getBillWisePayternDiscountList().size() > 0) {
+                final double billWisePayTermDiscount = discountHelper.calculateBillWisePayTermDiscount(totalOrderValue);
+                totalOrderValue = totalOrderValue - billWisePayTermDiscount;
+            }
+            // To open the dialog back while resuming
+            if (!isDiscountDialog() && BModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT && discountDialog != null && discountDialog.isShowing()) {
+                setDiscountDialog(true);
+                discountDialog.dismiss();
+                discountDialog = null;
+                discountDialog = new DiscountDialog(OrderSummary.this, null,
+                        discountDismissListener);
+                discountDialog.show();
+            }
+            //updating footer labels
+            text_totalOrderValue.setText(BModel.formatValue(totalOrderValue));
+            text_LPC.setText(String.valueOf(mOrderedProductList.size()));
+            text_totalOrderedQuantity.setText(String.valueOf(totalQuantityOrdered));
+        }
+        //jnj specific separate bill
+        if (BModel.configurationMasterHelper.IS_ORDER_SPLIT) {
+            Vector<ProductMasterBO> bill1Products = new Vector<>();
+            Vector<ProductMasterBO> bill2Products = new Vector<>();
+            double bill1Value = 0, bill2Value = 0;
+            int totalQunatity = 0;
+
+            for (int i = 0; i < productsCount; i++) {
+                productBO = productList.elementAt(i);
+                if (productBO.getOrderedCaseQty() > 0
+                        || productBO.getOrderedPcsQty() > 0
+                        || productBO.getOrderedOuterQty() > 0) {
+
+                    int qunatity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
+                    totalQunatity += qunatity;
+
+                    mOrderedProductList.add(productBO);
+
+                    double lineValue = (productBO.getOrderedCaseQty() * productBO
                             .getCsrp())
                             + (productBO.getOrderedPcsQty() * productBO
                             .getSrp())
                             + (productBO.getOrderedOuterQty() * productBO
                             .getOsrp());
+
+                    if (productBO.isSeparateBill()) {
+                        bill2Products.add(productBO);
+                        bill2Value += lineValue;
+                    } else {
+                        bill1Products.add(productBO);
+                        bill1Value += lineValue;
+                    }
                 }
-
-                // Set the calculated values in productBO **/
-                productBO.setDiscount_order_value(lineValue);
-                productBO.setSchemeAppliedValue(lineValue);
-                productBO.setOrderPricePiece(productBO.getSrp());
-
-                productBO.setCompanyTypeDiscount(0);
-                productBO.setDistributorTypeDiscount(0);
-                // clear scheme free products stored in product obj
-                productBO.setSchemeProducts(new ArrayList<SchemeProductBO>());
-
-                totalOrderValue += lineValue;
-
-                Commons.print("line value" + lineValue);
             }
-        }
 
+            text_LPC.setText(String.valueOf(bill1Products.size() + bill2Products.size()));
+            textbill1.setText(BModel.formatValue(bill1Value));
+            textbill2.setText(BModel.formatValue(bill2Value));
+            text_totalOrderedQuantity.setText(String.valueOf(totalQunatity));
 
-        if (BModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
-            mSortedList = new Vector<>();
-            mOrderedProductList = orderHelper.organizeProductsByUserEntry();
-            mSortedList.addAll(mOrderedProductList);
-        }
-
-
-        if (BModel.getOrderHeaderBO() != null)
-            BModel.getOrderHeaderBO().setTotalWeight(totalWeight);
-
-        // Empties Management is Enabled, then we have to add totalOrderValue with remaining value(Order return value).
-        if (BModel.configurationMasterHelper.SHOW_PRODUCTRETURN
-                && !BModel.configurationMasterHelper.SHOW_BOTTLE_CREDITLIMIT
-                && BModel.configurationMasterHelper.IS_SIH_VALIDATION && BModel.getOrderHeaderBO() != null) {
-            totalOrderValue = totalOrderValue
-                    + BModel.getOrderHeaderBO().getRemainigValue();
-        }
-
-        discountHelper.clearProductDiscountAndTaxValue(mOrderedProductList);
-
-
-        // Scheme calculations
-        if (!BModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                || BModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-            totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList);
-            totalOrderValue -= totalSchemeDiscValue;
-        }
-
-        if (BModel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
-            //applying removed tax..
-            BModel.productHelper.taxHelper.applyRemovedTax(mOrderedProductList);
-        }
-
-
-        //  Apply product entry level discount
-        if (BModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
-            entryLevelDiscount = discountHelper.calculateUserEntryLevelDiscount(mOrderedProductList);
-            totalOrderValue = totalOrderValue - entryLevelDiscount;
-        }
-
-        // Apply Item  level discount
-        if (BModel.configurationMasterHelper.SHOW_DISCOUNT) {
-            double itemLevelDiscount = discountHelper.calculateItemLevelDiscount();
-            totalOrderValue = totalOrderValue - itemLevelDiscount;
-        }
-
-        // Apply Exclude Item level Tax  in Product
-        if (BModel.configurationMasterHelper.SHOW_TAX) {
-            if(BModel.configurationMasterHelper.IS_EXCLUDE_TAX)
-                BModel.productHelper.taxHelper.updateProductWiseExcludeTax();
-            else {
-                float totalTaxVal = BModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
-                totalOrderValue = totalOrderValue + totalTaxVal;
+            listView.setAdapter(new ProductExpandableAdapter());
+            for (int i = 0; i < mOrderedProductList.size(); i++) {
+                listView.expandGroup(i);
             }
+
         }
-
-
-        listView.setAdapter(new ProductExpandableAdapter());
-        for (int i = 0; i < mOrderedProductList.size(); i++) {
-            listView.expandGroup(i);
-        }
-
-
-        if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
-            //find the  range of discount by using total value
-            final double billWiseRangeDiscount = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
-            totalOrderValue = totalOrderValue - billWiseRangeDiscount;
-
-        } else if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
-            // Automatically apply bill wise discount
-            final double billWiseDiscount = discountHelper.calculateBillWiseDiscount(totalOrderValue);
-            if (BModel.getOrderHeaderBO() != null) {
-                BModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
-            }
-            totalOrderValue = totalOrderValue - billWiseDiscount;
-
-        } else {
-            // user manually enter bill wise discount
-            double discount = BModel.orderAndInvoiceHelper.restoreDiscountAmount(BModel
-                    .getRetailerMasterBO().getRetailerID());
-            double billWiseDiscount = applyDiscountMaxValidation(discount);
-            totalOrderValue = totalOrderValue - billWiseDiscount;
-        }
-
-        // Apply bill wise pay term discount
-        // Apply bill wise payterm discount
-        if (discountHelper.getBillWisePayternDiscountList() != null
-                && discountHelper.getBillWisePayternDiscountList().size() > 0) {
-            final double billWisePayTermDiscount = discountHelper.calculateBillWisePayTermDiscount(totalOrderValue);
-            totalOrderValue = totalOrderValue - billWisePayTermDiscount;
-        }
-
-        // To open the dialog back while resuming
-        if (!isDiscountDialog() && BModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT && discountDialog != null && discountDialog.isShowing()) {
-            setDiscountDialog(true);
-            discountDialog.dismiss();
-            discountDialog = null;
-            discountDialog = new DiscountDialog(OrderSummary.this, null,
-                    discountDismissListener);
-            discountDialog.show();
-        }
-
-        //updating footer labels
-        text_totalOrderValue.setText(BModel.formatValue(totalOrderValue));
-        text_LPC.setText(String.valueOf(mOrderedProductList.size()));
-        text_totalOrderedQuantity.setText(String.valueOf(totalQuantityOrdered));
 
     }
 
@@ -2105,19 +2161,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 row = inflater
                         .inflate(R.layout.row_ordersummary, parent, false);
                 holder = new ViewHolder();
-                holder.text_productName = (TextView) row
+                holder.text_productName = row
                         .findViewById(R.id.PRODUCTNAME);
-                holder.pcsQty = (TextView) row.findViewById(R.id.P_QUANTITY);
-                holder.caseQty = (TextView) row.findViewById(R.id.C_QUANTITY);
-                holder.tw_srp = (TextView) row.findViewById(R.id.MRP);
-                holder.text_total = (TextView) row.findViewById(R.id.TOTAL);
-                holder.outerQty = (TextView) row.findViewById(R.id.OC_QUANTITY);
-                holder.weight = (TextView) row.findViewById(R.id.tv_weight);
+                holder.pcsQty = row.findViewById(R.id.P_QUANTITY);
+                holder.caseQty = row.findViewById(R.id.C_QUANTITY);
+                holder.tw_srp = row.findViewById(R.id.MRP);
+                holder.text_total = row.findViewById(R.id.TOTAL);
+                holder.outerQty = row.findViewById(R.id.OC_QUANTITY);
+                holder.weight = row.findViewById(R.id.tv_weight);
 
-                holder.shelfCaseQty = (TextView) row.findViewById(R.id.sc_quantity);
-                holder.shelfOuterQty = (TextView) row.findViewById(R.id.sho_quantity);
-                holder.shelfPieceQty = (TextView) row.findViewById(R.id.sp_quantity);
-                holder.foc = (TextView) row.findViewById(R.id.FOC_QUANTITY);
+                holder.shelfCaseQty = row.findViewById(R.id.sc_quantity);
+                holder.shelfOuterQty = row.findViewById(R.id.sho_quantity);
+                holder.shelfPieceQty = row.findViewById(R.id.sp_quantity);
+                holder.foc = row.findViewById(R.id.FOC_QUANTITY);
+                holder.cbSeparateBill = row.findViewById(R.id.cbSeparateBill);
                 holder.text_productName.setMaxLines(BModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.text_productName.setTypeface(BModel.configurationMasterHelper.getProductNameFont());
                 (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -2177,6 +2234,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             Commons.printException(e);
                         }
                     }
+                }
+
+                if (!BModel.configurationMasterHelper.IS_ORDER_SPLIT) {
+                    holder.cbSeparateBill.setVisibility(View.GONE);
+                } else {
+                    holder.cbSeparateBill.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            holder.productBO.setSeparateBill(isChecked);
+                            updateFooter();
+                        }
+                    });
                 }
 
                 // On/Off order case and pce
@@ -2351,6 +2420,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         private TextView tw_srp;
         private TextView text_total;
         private TextView foc;
+        private AppCompatCheckBox cbSeparateBill;
     }
 
 
@@ -2976,6 +3046,46 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             } catch (Exception e) {
                 Commons.printException(e);
             }
+        }
+    }
+
+    private void updateFooter() {
+        if (BModel.configurationMasterHelper.IS_ORDER_SPLIT) {
+            Vector<ProductMasterBO> bill1Products = new Vector<>();
+            Vector<ProductMasterBO> bill2Products = new Vector<>();
+            double bill1Value = 0, bill2Value = 0;
+            ProductMasterBO productBO;
+            for (int i = 0; i < BModel.productHelper
+                    .getProductMaster().size(); i++) {
+
+                productBO = BModel.productHelper
+                        .getProductMaster().elementAt(i);
+                if (productBO.getOrderedCaseQty() > 0
+                        || productBO.getOrderedPcsQty() > 0
+                        || productBO.getOrderedOuterQty() > 0) {
+
+
+                    double lineValue = (productBO.getOrderedCaseQty() * productBO
+                            .getCsrp())
+                            + (productBO.getOrderedPcsQty() * productBO
+                            .getSrp())
+                            + (productBO.getOrderedOuterQty() * productBO
+                            .getOsrp());
+
+                    if (productBO.isSeparateBill()) {
+                        bill2Products.add(productBO);
+                        bill2Value += lineValue;
+                    } else {
+                        bill1Products.add(productBO);
+                        bill1Value += lineValue;
+                    }
+                }
+            }
+
+            textbill1.setText(BModel.formatValue(bill1Value));
+            textbill2.setText(BModel.formatValue(bill2Value));
+
+
         }
     }
 

@@ -1333,6 +1333,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SBD_GAP_PROFILE = "SBD_PROFILE";
     public boolean SHOW_SBD_GAP_IN_PROFILE = true;
 
+    private static final String CODE_SPLIT_ORDER = "SPLITORDER";  //jnj project specific
+    public boolean IS_ORDER_SPLIT = true;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2310,6 +2313,8 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT) != null && hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT)) {
             SBD_TARGET_PERCENTAGE = hashMapHHTModuleOrder.get(CODE_SBD_TARGET_PERCENT);
         }
+
+       // this.IS_ORDER_SPLIT = hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) : false;
     }
 
     public void loadOrderReportConfiguration() {
