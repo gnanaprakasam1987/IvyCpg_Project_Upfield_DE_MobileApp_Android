@@ -63,6 +63,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
+import com.ivy.cpg.view.order.scheme.RetailerInfo;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -117,7 +118,7 @@ import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 import static com.ivy.sd.png.asean.view.R.id.tab_layout;
 
 public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearByRetailerDialog.NearByRetailerInterface, MapWrapperLayout.OnDragListener,
-        CommonReasonDialog.AddNonVisitListener, View.OnClickListener {
+        CommonReasonDialog.AddNonVisitListener, View.OnClickListener,RetailerInfo {
 
     private static final String MENU_VISIT = "Trade Coverage";
     private static final String MENU_PLANNING = "Day Planning";
@@ -2029,7 +2030,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
                                 || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
 
-                                SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme();
+                                SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(getApplicationContext());
 
                         }
 
@@ -2344,4 +2345,33 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     }
 
+    @Override
+    public String getRetailerId() {
+        return bmodel.getRetailerMasterBO().getRetailerID();
+    }
+
+    @Override
+    public int getDistributorId() {
+        return bmodel.getRetailerMasterBO().getDistributorId();
+    }
+
+    @Override
+    public int getSubChannelId() {
+        return bmodel.getRetailerMasterBO().getSubchannelid();
+    }
+
+    @Override
+    public int getLocationId() {
+        return bmodel.getRetailerMasterBO().getLocationId();
+    }
+
+    @Override
+    public int getAccountId() {
+        return bmodel.getRetailerMasterBO().getAccountid();
+    }
+
+    @Override
+    public int getPriorityProductId() {
+        return bmodel.getRetailerMasterBO().getPrioriryProductId();
+    }
 }

@@ -8167,7 +8167,7 @@ public class BusinessModel extends Application {
     }
 
 
-    public ArrayList<String> getAttributeParentListForCurrentRetailer() {
+    public ArrayList<String> getAttributeParentListForCurrentRetailer(String retailerId) {
         ArrayList<String> lst = null;
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -8176,7 +8176,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String sql = "select distinct EA.parentid from RetailerAttribute RA" +
                     " inner join EntityAttributeMaster EA on EA.Attributeid = RA.Attributeid" +
-                    " where retailerid =" + getRetailerMasterBO().getRetailerID();
+                    " where retailerid =" + retailerId;
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() > 0) {
                 lst = new ArrayList<>();

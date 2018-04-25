@@ -94,7 +94,6 @@ public class SchemeDetailsMasterHelper {
     private ArrayList<SchemeBO> mDisplaySchemeSlabs;
     private ArrayList<SchemeBO> mDisplaySchemeTrackingList;
 
-
     protected SchemeDetailsMasterHelper(Context context) {
         this.context = context;
         bModel = (BusinessModel) context;
@@ -125,6 +124,78 @@ public class SchemeDetailsMasterHelper {
     public boolean IS_SCHEME_ON_MASTER;
     public boolean IS_SCHEME_SHOW_SCREEN_MASTER;
 
+
+    /**
+     * Method to load all scheme related methods
+     */
+    public void initializeScheme(Context mContext) {
+
+        DBUtil db;
+        try {
+
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+
+            loadSchemeConfigs(mContext);
+
+            RetailerInfo retailerInfo=(RetailerInfo)mContext;
+            int distributorId =retailerInfo.getDistributorId();
+            String retailerId = retailerInfo.getRetailerId();
+            int channelId = retailerInfo.getSubChannelId();
+            int locationId = retailerInfo.getLocationId();
+            int accountId = retailerInfo.getAccountId();
+            int priorityProductId = retailerInfo.getPriorityProductId();
+            int userId = bModel.userMasterHelper.getUserMasterBO().getUserid();
+
+            if (IS_SCHEME_ON_MASTER) {
+
+                //  loading scheme groups based on retailer attributes
+                ArrayList<String> mGroupIdList = downloadValidSchemeGroups(db,retailerId);
+                //  for loading highest slab parent ids
+                downloadSchemeParentDetails(db, distributorId, retailerId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
+                //  load buy product list
+                downloadBuySchemeDetails(db, retailerId, userId, distributorId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
+                //  update free product
+                downloadFreeProducts(db);
+
+                if (bModel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bModel.configurationMasterHelper.IS_SCHEME_DIALOG) {
+                    downloadParentIdListByProduct(db, mGroupIdList,distributorId, retailerId, channelId, locationId, accountId,  userId);
+                }
+
+                downloadPeriodWiseScheme(db,retailerId);
+            }
+            else {
+                setIsScheme(new ArrayList<String>(), distributorId, retailerId, channelId, locationId, accountId);
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.print("" + e);
+        }
+
+
+    }
+
+
+    public void destroyScheme(){
+        mParentIDList=null;
+        mSchemeIDListByParentID=null;
+        mSchemeList=null;
+        mSchemeById=null;
+        mBuyProductBoBySchemeIdWithPid=null;
+        mParentIdListByProductId=null;
+        mProductIdListByParentId=null;
+        mFreeGroupNameListBySchemeId=null;
+        mFreeGroupTypeByFreeGroupName=null;
+        mSchemeHistoryListBySchemeId=null;
+        mProductIdListByAlreadyApplySchemeId=null;
+        mOffInvoiceSchemeList=null;
+        mOffInvoiceAppliedSchemeList=null;
+        mAppliedSchemeList=null;
+    }
+
+
     /**
      * Load All Scheme Configurations
      */
@@ -137,7 +208,7 @@ public class SchemeDetailsMasterHelper {
 
             String sql = "SELECT hhtCode, RField FROM "
                     + DataMembers.tbl_HhtModuleMaster;
-                   // + " WHERE menu_type = 'SCHEME' AND flag='1'";
+            // + " WHERE menu_type = 'SCHEME' AND flag='1'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -175,68 +246,18 @@ public class SchemeDetailsMasterHelper {
         }
     }
 
-    /**
-     * Method to load all scheme related methods
-     */
-    public void initializeScheme() {
-
-        DBUtil db;
-        try {
-
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-
-            loadSchemeConfigs(context);
-
-            if (IS_SCHEME_ON_MASTER) {
-                RetailerInfo retailerInfo=(RetailerInfo)context;
-                int distributorId = bModel.getRetailerMasterBO().getDistributorId();
-                String retailerId = retailerInfo.getRetailerId();
-                int channelId = bModel.getRetailerMasterBO().getSubchannelid();
-                int locationId = bModel.getRetailerMasterBO().getLocationId();
-                int accountId = bModel.getRetailerMasterBO().getAccountid();
-                int priorityProductId = bModel.getRetailerMasterBO().getPrioriryProductId();
-                int userId = bModel.userMasterHelper.getUserMasterBO().getUserid();
-
-                //  loading scheme groups based on retailer attributes
-                ArrayList<String> mGroupIdList = downloadValidSchemeGroups(db);
-                //  for loading highest slab parent ids
-                downloadSchemeParentDetails(db, distributorId, retailerId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
-                //  load buy product list
-                downloadBuySchemeDetails(db, retailerId, userId, distributorId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
-                //  update free product
-                downloadFreeProducts(db);
-
-                if (bModel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bModel.configurationMasterHelper.IS_SCHEME_DIALOG) {
-                    downloadParentIdListByProduct(db, mGroupIdList);
-                }
-
-                downloadPeriodWiseScheme(db);
-            }
-            else {
-                setIsScheme(new ArrayList<String>());
-            }
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.print("" + e);
-        }
-
-
-    }
-
 
     /**
      * Downloading valid scheme groups
      * @param db Database object
-     * @return
+     * @param retailerId retailer Id
+     * @return Valid scheme group Id list
      */
-    private ArrayList<String> downloadValidSchemeGroups(DBUtil db) {
+    private ArrayList<String> downloadValidSchemeGroups(DBUtil db,String retailerId) {
 
         StringBuilder sb = new StringBuilder();
         ArrayList<String> mGroupIDList=new ArrayList<>();
-        ArrayList<String> retailerAttributes = bModel.getAttributeParentListForCurrentRetailer();
+        ArrayList<String> retailerAttributes = bModel.getAttributeParentListForCurrentRetailer(retailerId);
 
         sb.append("select Distinct schemeid,groupid,EA1.AttributeName as ParentName,EA.ParentID from SchemeAttributeMapping  SAM" +
                 " inner join EntityAttributeMaster EA on EA.AttributeId = SAM.AttributeId" +
@@ -259,7 +280,7 @@ public class SchemeDetailsMasterHelper {
 
                     }
 
-                    if (isSchemeApplicable(c.getInt(0), c.getInt(1), c.getInt(3)))
+                    if (isSchemeApplicable(c.getInt(0), c.getInt(1), c.getInt(3),retailerId))
                         isGroupSatisfied = true;
                     else
                         isGroupSatisfied = false;
@@ -286,10 +307,15 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-
-    private boolean isSchemeApplicable(int schemeId, int groupId, int parentId) {
-
-
+    /**
+     * To check is current scheme applicable
+     * @param schemeId Slab Id
+     * @param groupId group Id
+     * @param parentId Scheme ID
+     * @param retailerId retailer ID
+     * @return is Applicable or not
+     */
+    private boolean isSchemeApplicable(int schemeId, int groupId, int parentId,String retailerId) {
         DBUtil db;
         try {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -302,7 +328,7 @@ public class SchemeDetailsMasterHelper {
                     " Left join EntityAttributeMaster EA1 on EA1.AttributeId = EA.ParentID ");
             sb.append("where schemeid=" + schemeId + " and groupid=" + groupId + " and SAM.attributeid in(select RA.attributeid from RetailerAttribute RA" +
                     " inner join EntityAttributeMaster EA on EA.Attributeid = RA.Attributeid and EA.PArentid=" + parentId +
-                    " where retailerid = " + bModel.getRetailerMasterBO().getRetailerID() + ")");
+                    " where retailerid = " + retailerId + ")");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -322,14 +348,13 @@ public class SchemeDetailsMasterHelper {
     /**
      * Preparing scheme list by parentId..
      * List will be ordered based on total Buy quantity(highest slab on top).
-     * @param db
-     * @param distributorId
-     * @param retailerId
-     * @param channelId
-     * @param locationId
-     * @param accountId
-     * @param priorityProductId
-     * @return
+     * @param db Database object
+     * @param distributorId distributor iD
+     * @param retailerId retailer ID
+     * @param channelId channel ID
+     * @param locationId location Id
+     * @param accountId Account Id
+     * @param priorityProductId priority product Id     *
      */
     public void downloadSchemeParentDetails(DBUtil db,int distributorId,String retailerId,int channelId
             ,int locationId,int accountId,int priorityProductId,ArrayList<String> mGroupIDList) {
@@ -359,24 +384,24 @@ public class SchemeDetailsMasterHelper {
         Cursor c = db.selectSQL(sb.toString());
 
         if (c.getCount() > 0) {
-            int parentid = 0;
+            int parentId = 0;
             ArrayList<String> schemeIdList = new ArrayList<>();
             while (c.moveToNext()) {
                 String schemeid = c.getString(0);
 
                 if (c.getInt(4) == 0 || (c.getInt(4) == 1 && mGroupIDList != null && mGroupIDList.contains(c.getString(3) + c.getString(1)))) {
 
-                    if (parentid != c.getInt(1)) {
-                        if (parentid != 0) {
-                            mParentIDList.add(parentid);
-                            mSchemeIDListByParentID.put(parentid, schemeIdList);
+                    if (parentId != c.getInt(1)) {
+                        if (parentId != 0) {
+                            mParentIDList.add(parentId);
+                            mSchemeIDListByParentID.put(parentId, schemeIdList);
                             schemeIdList = new ArrayList<>();
                             schemeIdList.add(schemeid);
-                            parentid = c.getInt(1);
+                            parentId = c.getInt(1);
 
                         } else {
                             schemeIdList.add(schemeid);
-                            parentid = c.getInt(1);
+                            parentId = c.getInt(1);
 
                         }
                     } else {
@@ -386,8 +411,8 @@ public class SchemeDetailsMasterHelper {
                 }
             }
             if (schemeIdList.size() > 0) {
-                mSchemeIDListByParentID.put(parentid, schemeIdList);
-                mParentIDList.add(parentid);
+                mSchemeIDListByParentID.put(parentId, schemeIdList);
+                mParentIDList.add(parentId);
             }
         }
         c.close();
@@ -405,15 +430,15 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Downloading schemes with their BUY product details
-     * @param db
-     * @param retailerId
-     * @param userId
-     * @param distributorId
-     * @param channelId
-     * @param locationId
-     * @param accountId
-     * @param priorityProductId
-     * @return
+     * @param db database object
+     * @param retailerId retailer Id
+     * @param userId user Id
+     * @param distributorId distributorId
+     * @param channelId channel ID
+     * @param locationId location Id
+     * @param accountId Account ID
+     * @param priorityProductId Priority Product Id
+     * @param mGroupIDList  Group Id list     *
      */
     public void downloadBuySchemeDetails(DBUtil db,String retailerId,int userId,int distributorId,int channelId,int locationId
                                            ,int accountId,int priorityProductId,ArrayList<String> mGroupIDList) {
@@ -682,7 +707,8 @@ public class SchemeDetailsMasterHelper {
      * @param db Database object
      * @param mGroupIDList list of scheme groups allowed
      */
-    private void downloadParentIdListByProduct(DBUtil db,ArrayList<String> mGroupIDList) {
+    private void downloadParentIdListByProduct(DBUtil db,ArrayList<String> mGroupIDList,int distributorId,String retailerId,int channelId
+            ,int locationId,int accountId,int userId) {
 
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct SBM.productid,SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from SchemeBuyMaster SBM ");
@@ -690,15 +716,15 @@ public class SchemeDetailsMasterHelper {
         sb.append(" inner join SchemeMaster SM on SM.Schemeid=SBM.Schemeid ");
         sb.append("inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid ");
         sb.append("left join schemeApplyCountMaster SAC on SBM.schemeid=SAC.schemeID ");
-        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID())+")");
-        sb.append(" AND (SAC.userid=0 OR SAC.userid=" + bModel.userMasterHelper.getUserMasterBO().getUserid() + ")");
+        sb.append("and (SAC.retailerid=0 OR SAC.retailerid=" + bModel.QT(retailerId)+")");
+        sb.append(" AND (SAC.userid=0 OR SAC.userid=" + userId + ")");
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
 
-        sb.append(" where SCM.distributorid in(0," + bModel.getRetailerMasterBO().getDistributorId() + ")");
-        sb.append(" and SCM.RetailerId in(0," + bModel.getRetailerMasterBO().getRetailerID() + ")");
-        sb.append(" and SCM.channelid in(0," + bModel.getRetailerMasterBO().getSubchannelid() + ")");
-        sb.append(" and SCM.locationid in(0," + bModel.getRetailerMasterBO().getLocationId() + ")");
-        sb.append(" and SCM.accountid in(0," + bModel.getRetailerMasterBO().getAccountid() + ")");
+        sb.append(" where SCM.distributorid in(0," + distributorId + ")");
+        sb.append(" and SCM.RetailerId in(0," + retailerId + ")");
+        sb.append(" and SCM.channelid in(0," + channelId + ")");
+        sb.append(" and SCM.locationid in(0," + locationId + ")");
+        sb.append(" and SCM.accountid in(0," + accountId + ")");
 
         sb.append(" AND SAC.schemeApplyCOunt!=0  AND SM.IsOnInvoice=1 order by SBM.Productid");
         Cursor c = db.selectSQL(sb.toString());
@@ -778,8 +804,9 @@ public class SchemeDetailsMasterHelper {
      * These schemes are not allowed to apply again until given period.
      *
      * @param db Database object
+     * @param retailerId Retailer Id
      */
-    private void downloadPeriodWiseScheme(DBUtil db) {
+    private void downloadPeriodWiseScheme(DBUtil db,String retailerId) {
         final String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL_EIPHEN);
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct SM.schemeid,SB.productid,");
@@ -787,7 +814,7 @@ public class SchemeDetailsMasterHelper {
         sb.append("inner join SchemePurchaseHistory SH on SM.parentid=SH.schemeid ");
         sb.append("inner join SchemeBuyMaster SB on SM.schemeid=SB.Schemeid ");
         sb.append("where (isapplied=1 AND SM.Days>=daycount)");
-        sb.append("and SH.retailerid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()));
+        sb.append("and SH.retailerid=" + bModel.QT(retailerId));
         sb.append(" order by SM.schemeid ");
         Cursor c = db.selectSQL(sb.toString());
         if (c.getCount() > 0) {
@@ -831,7 +858,7 @@ public class SchemeDetailsMasterHelper {
     /**
      * Download accumulation schemes
      */
-    public void downloadSchemeHistoryDetails() {
+    public void downloadSchemeHistoryDetails(String retailerId) {
         ProductMasterBO productBO ;
         mSchemeHistoryListBySchemeId = new HashMap<>();
 
@@ -844,14 +871,14 @@ public class SchemeDetailsMasterHelper {
                     + " IFNULL(CaseUOM.Qty,0) as CaseQty,(IFNULL(PieceUOM.value,0)+IFNULL(OuterUOM.value,0)+IFNULL(CaseUOM.value,0)) "
                     + " FROM SchemeAchHistory A"
 
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + ") as PieceUOM ON PieceUOM.Pid = A.pid"
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + ") as OuterUOM ON OuterUOM.Pid = A.pid"
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
-                    + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + " and invoicestatus=1"
+                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bModel.QT(retailerId) + ") as PieceUOM ON PieceUOM.Pid = A.pid"
+                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bModel.QT(retailerId) + ") as OuterUOM ON OuterUOM.Pid = A.pid"
+                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bModel.QT(retailerId) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
+                    + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bModel.QT(retailerId) + " and invoicestatus=1"
                     + " LEFT JOIN SchemeDetail SD on SD.parentid=A.schid and OH.orderid=SD.orderid"
                     + " LEFT JOIN SchemeFreeProductDetail SPD on SPD.parentid=A.schid and OH.orderid=SPD.orderid"
 
-                    + " where OH.upload!='X' and rid=" + bModel.QT(bModel.getRetailerMasterBO().getRetailerID())
+                    + " where OH.upload!='X' and rid=" + bModel.QT(retailerId)
                     + " and A.schid!=IFNULL(SD.parentid,0) and A.schid!=IFNULL(SPD.parentid,0) order by schid";
 
             Cursor c = db.selectSQL(query);
@@ -907,7 +934,7 @@ public class SchemeDetailsMasterHelper {
      * Download accumulation scheme free issues
      * Validation - Particular scheme should not be in 'SchemeFreeProductDetail' table(To ensure that scheme is already not delivered)
      */
-    public void downloadOffInvoiceSchemeDetails() {
+    public void downloadOffInvoiceSchemeDetails(String retailerId) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -918,8 +945,8 @@ public class SchemeDetailsMasterHelper {
             sb.append(",ASF.groupType,ASF.schemeLogic  from AccumulationSchemeFreeIssues ASF");
             sb.append(" inner join Productmaster PM on PM.pid=ASF.productid");
             sb.append(" where ASF.retailerid=");
-            sb.append(bModel.getRetailerMasterBO().getRetailerID());
-            sb.append(" and ASF.slabid not in(select schemeid from SchemeFreeProductDetail where retailerid=" + bModel.getRetailerMasterBO().getRetailerID() + ") order by ASF.schemeid");
+            sb.append(retailerId);
+            sb.append(" and ASF.slabid not in(select schemeid from SchemeFreeProductDetail where retailerid=" + retailerId + ") order by ASF.schemeid");
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -1022,6 +1049,76 @@ public class SchemeDetailsMasterHelper {
         } catch (Exception e) {
             Commons.print(e + "");
         }
+    }
+
+    /**
+     * Method to use set product whether scheme available or not if scheme
+     * available for a product,'setIsscheme'==1,else 0
+     */
+    private void setIsScheme(ArrayList<String> mGroupIDList,int distributorId,String retailerId,int channelId
+            ,int locationId,int accountId) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            // before update scheme available or not, first reallocate all
+            // product setIsScheme is zero
+            String sql = "select distinct(PID) from productMaster inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+
+                    ProductMasterBO prdBO = bModel.productHelper.getProductMasterBOById(c
+                            .getString(0));
+                    if (prdBO != null) {
+                        prdBO.setIsPromo(false);
+                    }
+
+                }
+                c.close();
+            }
+
+            /*
+             * update scheme product setIsScheme is one condition - schemeCount
+             * should not be equal zero in Scheme master table
+             */
+            StringBuffer sb = new StringBuffer();
+            sb.append("select  distinct(PID),SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from productMaster");
+            sb.append(" inner join SchemeBuyMaster SB on ProductMaster.pID=ProductID");
+            sb.append(" inner join schememaster SM  on SM. schemeID=SB.schemeID");
+            sb.append(" inner join schemeApplyCountMaster SAC on SAC.schemeid=SB.schemeid");
+            sb.append(" inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid");
+            sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
+
+            sb.append(" where SM.count!=0  and SAC.schemeApplyCount!=0 and SAC.retailerid in(0," + retailerId + ")");
+            sb.append(" and SCM.distributorid in(0," + distributorId + ")");
+            sb.append(" and SCM.RetailerId in(0," + retailerId + ")");
+            sb.append(" and SCM.channelid in(0," + channelId + ")");
+            sb.append(" and SCM.locationid in(0," + locationId + ")");
+            sb.append(" and SCM.accountid in(0," + accountId + ")");
+
+            Cursor schemeCursor = db.selectSQL(sb.toString());
+            if (schemeCursor != null) {
+                if (schemeCursor.getCount() > 0) {
+                    while (schemeCursor.moveToNext()) {
+                        ProductMasterBO schemeProductBo = bModel.productHelper.getProductMasterBOById(schemeCursor.getString(0));
+                        if (schemeCursor.getInt(3) == 0 || (schemeCursor.getInt(3) == 1 && mGroupIDList != null && mGroupIDList.contains(schemeCursor.getString(2) + schemeCursor.getString(1)))) {
+                            if (schemeProductBo != null) {
+                                schemeProductBo.setIsPromo(true);
+                            }
+                        }
+                    }
+                }
+                schemeCursor.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
     }
 
 ///////////////////////////
@@ -4008,74 +4105,7 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-    /**
-     * Method to use set product whether scheme available or not if scheme
-     * available for a product,'setIsscheme'==1,else 0
-     */
-    private void setIsScheme(ArrayList<String> mGroupIDList) {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
 
-            // before update scheme available or not, first reallocate all
-            // product setIsScheme is zero
-            String sql = "select distinct(PID) from productMaster inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-
-                    ProductMasterBO prdBO = bModel.productHelper.getProductMasterBOById(c
-                            .getString(0));
-                    if (prdBO != null) {
-                        prdBO.setIsPromo(false);
-                    }
-
-                }
-                c.close();
-            }
-
-			/*
-             * update scheme product setisScheme is one condition - schemeCount
-			 * should not be equal zero in Schememaster table
-			 */
-            StringBuffer sb = new StringBuffer();
-            sb.append("select  distinct(PID),SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from productMaster");
-            sb.append(" inner join SchemeBuyMaster SB on ProductMaster.pID=ProductID");
-            sb.append(" inner join schememaster SM  on SM. schemeID=SB.schemeID");
-            sb.append(" inner join schemeApplyCountMaster SAC on SAC.schemeid=SB.schemeid");
-            sb.append(" inner join SchemeCriteriaMapping SCM ON SCM.schemeid=SM.parentid");
-            sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
-
-            sb.append(" where SM.count!=0  and SAC.schemeApplyCount!=0 and SAC.retailerid in(0," + bModel.getRetailerMasterBO().getRetailerID() + ")");
-            sb.append(" and SCM.distributorid in(0," + bModel.getRetailerMasterBO().getDistributorId() + ")");
-            sb.append(" and SCM.RetailerId in(0," + bModel.getRetailerMasterBO().getRetailerID() + ")");
-            sb.append(" and SCM.channelid in(0," + bModel.getRetailerMasterBO().getSubchannelid() + ")");
-            sb.append(" and SCM.locationid in(0," + bModel.getRetailerMasterBO().getLocationId() + ")");
-            sb.append(" and SCM.accountid in(0," + bModel.getRetailerMasterBO().getAccountid() + ")");
-
-            Cursor schemeCursor = db.selectSQL(sb.toString());
-            if (schemeCursor != null) {
-                if (schemeCursor.getCount() > 0) {
-                    while (schemeCursor.moveToNext()) {
-                        ProductMasterBO schemeProductBo = bModel.productHelper.getProductMasterBOById(schemeCursor.getString(0));
-                        if (schemeCursor.getInt(3) == 0 || (schemeCursor.getInt(3) == 1 && mGroupIDList != null && mGroupIDList.contains(schemeCursor.getString(2) + schemeCursor.getString(1)))) {
-                            if (schemeProductBo != null) {
-                                schemeProductBo.setIsPromo(true);
-                            }
-                        }
-                    }
-                }
-                schemeCursor.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-    }
 
     private boolean isSihAvailableForSchemeGroupFreeProducts(SchemeBO schemeBO, String groupName) {
         boolean flag = true;

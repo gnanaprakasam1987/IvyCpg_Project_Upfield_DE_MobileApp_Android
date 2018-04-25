@@ -458,7 +458,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     else businessModel.productHelper.downloadProducts("MENU_STK_ORD");
 
                     SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getContext());
-                    schemeHelper.initializeScheme();
+                    schemeHelper.initializeScheme(getActivity().getApplicationContext());
 
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();

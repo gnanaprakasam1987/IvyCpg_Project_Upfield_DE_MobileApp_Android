@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -136,12 +137,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 fromOrderScreen.equalsIgnoreCase("MENU_ORDER") ||
                 fromOrderScreen.equalsIgnoreCase("MENU_CATALOG_ORDER")) {
 
-            schemeHelper.schemeApply();
-            mSchemeDoneList = schemeHelper.getAppliedSchemeList();
-            if (mSchemeDoneList.size() > 0) {
-                mExpandableAdapterNew = new SchemeExpandapleAdapterNew();
-                mExpandableLV.setAdapter(mExpandableAdapterNew);
-            }
+              new SchemeApplyAsync().execute();
+
         } else {
             mSchemeDoneList = schemeHelper.getAppliedSchemeList();
             if (mSchemeDoneList.size() > 0) {
@@ -159,6 +156,35 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         super.onResume();
 //        updateSchemeDetails();
 
+    }
+
+
+    private class SchemeApplyAsync extends AsyncTask<Void,Void,Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            try {
+                schemeHelper.schemeApply();
+            }
+            catch (Exception ex){
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isDone) {
+            super.onPostExecute(isDone);
+            if(isDone){
+                mSchemeDoneList = schemeHelper.getAppliedSchemeList();
+                if (mSchemeDoneList.size() > 0) {
+                    mExpandableAdapterNew = new SchemeExpandapleAdapterNew();
+                    mExpandableLV.setAdapter(mExpandableAdapterNew);
+                }
+            }
+        }
     }
 
 

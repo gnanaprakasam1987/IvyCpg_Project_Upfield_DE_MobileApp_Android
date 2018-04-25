@@ -506,7 +506,7 @@ public class OrderHelper {
                 SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
                 if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                         || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    schemeHelper.insertScemeDetails(uid, db, "N");
+                    schemeHelper.insertSchemeDetails(uid, db, "N");
                 }
                 schemeHelper.insertAccumulationDetails(db, uid);
 

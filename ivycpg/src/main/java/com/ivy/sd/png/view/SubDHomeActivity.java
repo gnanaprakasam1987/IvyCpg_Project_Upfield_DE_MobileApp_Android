@@ -460,10 +460,10 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
 
             SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
             if (schemeHelper.IS_SCHEME_ON_MASTER)
-                schemeHelper.downloadSchemeHistoryDetails();
+                schemeHelper.downloadSchemeHistoryDetails(bmodel.getRetailerMasterBO().getRetailerID());
 
             //  if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
-            schemeHelper.downloadOffInvoiceSchemeDetails();
+            schemeHelper.downloadOffInvoiceSchemeDetails(bmodel.getRetailerMasterBO().getRetailerID());
             // }
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {

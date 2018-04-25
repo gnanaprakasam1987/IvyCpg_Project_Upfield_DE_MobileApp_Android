@@ -263,7 +263,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             if (!BModel.isEdit() || !BModel.isDoubleEdit_temp()) {
                 SchemeDetailsMasterHelper.getInstance(getApplicationContext())
-                        .updataFreeproductBottleReturn();
+                        .updataFreeProductBottleReturn();
             }
             // update empty bottle return group wise
             if (BModel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {

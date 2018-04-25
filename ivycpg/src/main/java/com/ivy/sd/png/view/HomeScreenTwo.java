@@ -3767,8 +3767,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             bmodel.productHelper.downloadInStoreLocations();
 
             if (schemeHelper.IS_SCHEME_ON_MASTER)
-                schemeHelper.downloadSchemeHistoryDetails();
-            schemeHelper.downloadOffInvoiceSchemeDetails();
+                schemeHelper.downloadSchemeHistoryDetails(bmodel.getRetailerMasterBO().getRetailerID());
+            schemeHelper.downloadOffInvoiceSchemeDetails(bmodel.getRetailerMasterBO().getRetailerID());
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
