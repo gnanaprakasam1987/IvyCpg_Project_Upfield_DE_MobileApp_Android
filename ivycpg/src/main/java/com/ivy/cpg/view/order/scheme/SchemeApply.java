@@ -462,7 +462,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     @Override
                     public void onClick(View v) {
 
-                        schemeHelper.loadSchemePromotion(
+                        schemeHelper.loadSchemePromotion(getApplicationContext(),
                                 holder.schemeBO.getSchemeId(),
                                 holder.schemeBO.getParentLogic(),
                                 holder.schemeBO.getChannelId(),

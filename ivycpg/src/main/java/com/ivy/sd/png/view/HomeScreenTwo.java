@@ -1736,7 +1736,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.orderAndInvoiceHelper.restoreDiscountAmount(bmodel.getRetailerMasterBO().getRetailerID());
 
                         if (schemeHelper.IS_SCHEME_ON_MASTER)
-                            schemeHelper.downloadSchemeHistoryDetails();
+                            schemeHelper.downloadSchemeHistoryDetails(getApplicationContext(),bmodel.getRetailerMasterBO().getRetailerID());
 
 
                         // Reset the Configuration if Directly goes from
@@ -3767,8 +3767,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             bmodel.productHelper.downloadInStoreLocations();
 
             if (schemeHelper.IS_SCHEME_ON_MASTER)
-                schemeHelper.downloadSchemeHistoryDetails(bmodel.getRetailerMasterBO().getRetailerID());
-            schemeHelper.downloadOffInvoiceSchemeDetails(bmodel.getRetailerMasterBO().getRetailerID());
+                schemeHelper.downloadSchemeHistoryDetails(getApplicationContext(),bmodel.getRetailerMasterBO().getRetailerID());
+            schemeHelper.downloadOffInvoiceSchemeDetails(getApplicationContext(),bmodel.getRetailerMasterBO().getRetailerID());
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
@@ -4240,11 +4240,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                 if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
 
-                    schemeHelper.loadSchemeDetails(bmodel
+                    schemeHelper.loadSchemeDetails(getApplicationContext(),bmodel
                             .getRetailerMasterBO().getRetailerID());
                 }
             } else {
-                schemeHelper.loadSchemeDetails(bmodel
+                schemeHelper.loadSchemeDetails(getApplicationContext(),bmodel
                         .getRetailerMasterBO().getRetailerID());
             }
         }

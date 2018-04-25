@@ -2030,7 +2030,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
                                 || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
 
-                                SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(getApplicationContext());
+                                SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(getApplicationContext(),
+                                        bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
                         }
 

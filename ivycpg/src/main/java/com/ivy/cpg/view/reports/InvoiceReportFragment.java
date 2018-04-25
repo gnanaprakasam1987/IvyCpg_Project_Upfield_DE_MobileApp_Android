@@ -458,7 +458,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     else businessModel.productHelper.downloadProducts("MENU_STK_ORD");
 
                     SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getContext());
-                    schemeHelper.initializeScheme(getActivity().getApplicationContext());
+                    schemeHelper.initializeScheme(getActivity().getApplicationContext(),businessModel.userMasterHelper.getUserMasterBO().getUserid());
 
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
@@ -466,7 +466,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     orderHelper.loadInvoiceProducts(getActivity(), inv.getInvoiceNumber());
 
                     mInvoiceId = inv.getInvoiceNumber();
-                    schemeHelper.loadSchemeReportDetails(inv.getInvoiceNumber(), true);
+                    schemeHelper.loadSchemeReportDetails(getActivity().getApplicationContext(),inv.getInvoiceNumber(), true);
                     businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
                     businessModel.batchAllocationHelper.loadOrderedBatchProducts(inv.getInvoiceNumber());
                     businessModel.batchAllocationHelper.downloadProductBatchCount();

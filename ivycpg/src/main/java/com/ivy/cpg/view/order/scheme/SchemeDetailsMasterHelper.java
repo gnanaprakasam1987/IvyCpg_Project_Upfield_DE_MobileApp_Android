@@ -27,7 +27,6 @@ import java.util.Map;
 
 public class SchemeDetailsMasterHelper {
 
-    private Context context;
     private BusinessModel bModel;
     private static SchemeDetailsMasterHelper instance = null;
 
@@ -49,10 +48,9 @@ public class SchemeDetailsMasterHelper {
     private static final String SCHEME_PERCENTAGE_BILL = "BPER";
 
     private static final String PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING = "MTR";
-    private static final String PROCESS_TYPE_OTP = "OTP";
     private static final String PROCESS_TYPE_ONE_TIME_WITH_PERCENTAGE = "OTPR";
-    private static final String PROCESS_TYPE_MTS = "MTS"; //Mulitple Time in Multiple Slab apply within the same scheme
-    private static final String PROCESS_TYPE_PRORATA = "MSP"; //PRORATA-
+    private static final String PROCESS_TYPE_MTS = "MTS";
+    private static final String PROCESS_TYPE_PRORATA = "MSP";//(Emami Specific)
 
 
     //All applicable schemes
@@ -86,8 +84,14 @@ public class SchemeDetailsMasterHelper {
     private ArrayList<SchemeBO> mOffInvoiceAppliedSchemeList;
 
 
+    private double balancePercent = 0;
+    //key: (parentid+productid)  value: Total (qty or sales) value already used to apply scheme
+    private HashMap<String, Integer> mAchieved_qty_or_salesValue_by_schemeId_nd_productid;
+
     // List of schemes applied for the current order
     private ArrayList<SchemeBO> mAppliedSchemeList;
+
+
 
     //Display Scheme
     private ArrayList<SchemeBO> mDisplaySchemeMasterList;
@@ -95,8 +99,7 @@ public class SchemeDetailsMasterHelper {
     private ArrayList<SchemeBO> mDisplaySchemeTrackingList;
 
     protected SchemeDetailsMasterHelper(Context context) {
-        this.context = context;
-        bModel = (BusinessModel) context;
+        bModel = (BusinessModel) context.getApplicationContext();
     }
 
     public static SchemeDetailsMasterHelper getInstance(Context context) {
@@ -128,7 +131,7 @@ public class SchemeDetailsMasterHelper {
     /**
      * Method to load all scheme related methods
      */
-    public void initializeScheme(Context mContext) {
+    public void initializeScheme(Context mContext,int mUserId) {
 
         DBUtil db;
         try {
@@ -145,7 +148,6 @@ public class SchemeDetailsMasterHelper {
             int locationId = retailerInfo.getLocationId();
             int accountId = retailerInfo.getAccountId();
             int priorityProductId = retailerInfo.getPriorityProductId();
-            int userId = bModel.userMasterHelper.getUserMasterBO().getUserid();
 
             if (IS_SCHEME_ON_MASTER) {
 
@@ -154,18 +156,18 @@ public class SchemeDetailsMasterHelper {
                 //  for loading highest slab parent ids
                 downloadSchemeParentDetails(db, distributorId, retailerId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
                 //  load buy product list
-                downloadBuySchemeDetails(db, retailerId, userId, distributorId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
+                downloadBuySchemeDetails(db, retailerId, mUserId, distributorId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
                 //  update free product
                 downloadFreeProducts(db);
 
                 if (bModel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bModel.configurationMasterHelper.IS_SCHEME_DIALOG) {
-                    downloadParentIdListByProduct(db, mGroupIdList,distributorId, retailerId, channelId, locationId, accountId,  userId);
+                    downloadParentIdListByProduct(db, mGroupIdList,distributorId, retailerId, channelId, locationId, accountId,  mUserId);
                 }
 
                 downloadPeriodWiseScheme(db,retailerId);
             }
             else {
-                setIsScheme(new ArrayList<String>(), distributorId, retailerId, channelId, locationId, accountId);
+                setIsScheme(mContext,new ArrayList<String>(), distributorId, retailerId, channelId, locationId, accountId);
             }
 
             db.closeDB();
@@ -280,7 +282,7 @@ public class SchemeDetailsMasterHelper {
 
                     }
 
-                    if (isSchemeApplicable(c.getInt(0), c.getInt(1), c.getInt(3),retailerId))
+                    if (isSchemeApplicable(db,c.getInt(0), c.getInt(1), c.getInt(3),retailerId))
                         isGroupSatisfied = true;
                     else
                         isGroupSatisfied = false;
@@ -315,11 +317,8 @@ public class SchemeDetailsMasterHelper {
      * @param retailerId retailer ID
      * @return is Applicable or not
      */
-    private boolean isSchemeApplicable(int schemeId, int groupId, int parentId,String retailerId) {
-        DBUtil db;
+    private boolean isSchemeApplicable(DBUtil db,int schemeId, int groupId, int parentId,String retailerId) {
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
 
             StringBuilder sb = new StringBuilder();
 
@@ -594,6 +593,13 @@ public class SchemeDetailsMasterHelper {
         return mBuyProductBoBySchemeIdWithPid;
     }
 
+    public List<SchemeBO> getSchemeList() {
+        return mSchemeList;
+    }
+    public Map<String, SchemeBO> getSchemeById() {
+        return mSchemeById;
+    }
+
     /**
      * updating scheme object with the free product details
      * @param db Database object
@@ -858,13 +864,13 @@ public class SchemeDetailsMasterHelper {
     /**
      * Download accumulation schemes
      */
-    public void downloadSchemeHistoryDetails(String retailerId) {
+    public void downloadSchemeHistoryDetails(Context mContext,String retailerId) {
         ProductMasterBO productBO ;
         mSchemeHistoryListBySchemeId = new HashMap<>();
 
         DBUtil db ;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             String query = "SELECT DISTINCT A.pid, A.batchid, A.schid,IFNULL(PieceUOM.Qty,0) AS PieceQty ,IFNULL(OuterUOM.Qty,0) as OouterQty,"
@@ -934,9 +940,9 @@ public class SchemeDetailsMasterHelper {
      * Download accumulation scheme free issues
      * Validation - Particular scheme should not be in 'SchemeFreeProductDetail' table(To ensure that scheme is already not delivered)
      */
-    public void downloadOffInvoiceSchemeDetails(String retailerId) {
+    public void downloadOffInvoiceSchemeDetails(Context mContext,String retailerId) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             mOffInvoiceSchemeList = new ArrayList<>();
@@ -1055,10 +1061,10 @@ public class SchemeDetailsMasterHelper {
      * Method to use set product whether scheme available or not if scheme
      * available for a product,'setIsscheme'==1,else 0
      */
-    private void setIsScheme(ArrayList<String> mGroupIDList,int distributorId,String retailerId,int channelId
+    private void setIsScheme(Context mContext,ArrayList<String> mGroupIDList,int distributorId,String retailerId,int channelId
             ,int locationId,int accountId) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -1120,6 +1126,45 @@ public class SchemeDetailsMasterHelper {
         }
 
     }
+
+    public void downloadSchemeReport(Context mContext,String id, boolean flag) {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select distinct SchemeID ,ProductID ,Value  from SchemeDetail  where ");
+            if (flag) { // invoice report
+                sb.append("InvoiceID =" + bModel.QT(id));
+            } else {// order report
+                sb.append("OrderID =" + bModel.QT(id));
+            }
+            sb.append(" AND SchemeType = '" + SCHEME_PERCENTAGE + "'");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+
+                    String productId = c.getString(1);
+                    // productBo is buy product object
+                    ProductMasterBO productBO = bModel.productHelper
+                            .getProductMasterBOById(productId);
+                    if (productBO != null) {
+                        productBO.setMschemeper(c.getDouble(2));
+                    }
+                }
+            }
+
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            if(db!=null)
+                db.closeDB();
+            Commons.printException("" + e);
+        }
+
+    }
+
 
 ///////////////////////////
 
@@ -1187,6 +1232,12 @@ public class SchemeDetailsMasterHelper {
 
     }
 
+    public ArrayList<SchemeBO> getAppliedSchemeList() {
+        if (mAppliedSchemeList != null) {
+            return mAppliedSchemeList;
+        }
+        return new ArrayList<>();
+    }
 
     /**
      * Checking whether current slab is achieved or not
@@ -1368,8 +1419,7 @@ public class SchemeDetailsMasterHelper {
 
             if (schemeProductBo.getGroupName().equals(groupName)) {
 
-                ProductMasterBO productBo = bModel.productHelper
-                        .getProductMasterBOById(schemeProductBo.getProductId());
+                ProductMasterBO productBo = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
                 if (productBo != null) {
 
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
@@ -1698,355 +1748,7 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    /**
-     * After scheme achieved successfully ,this method used to update the scheme free
-     * details like product,percentage,amount and price     *
-     * @param schemeBO Current Slab
-     * @param mNumberOfTimesSlabAchieved Number of times slab achieved
-     */
-    private void calculateFreeForAchievedScheme(SchemeBO schemeBO, int mNumberOfTimesSlabAchieved) {
 
-        if (schemeBO.getFreeProducts() != null) {
-
-            int minFreeQuantity = 0;
-            int maxFreeQuantity = 0;
-            double minFreePrice = 0;
-            double maxFreePrice = 0;
-            double minFreePercent = 0;
-            double maxFreePercent = 0;
-            double minFreeAmount = 0;
-            double maxFreeAmount = 0;
-
-            for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
-
-                int minimumQuantity = schemeProductBO.getQuantityMinimum();
-                int maximumQuantity = schemeProductBO.getQuantityMaximum();
-
-                if (schemeBO.getProcessType() != null && (schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING)
-                        || schemeBO.getProcessType().equals(PROCESS_TYPE_MTS))) {
-
-					/* scheme Buy type is Quantity */
-                    if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-
-
-
-                        //Calculating min and max free quantity
-                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
-                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
-
-                        /** Calculate for amount discount **/
-
-                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
-                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
-
-
-                    }
-                    /* scheme type is Sales Value */
-                    else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
-
-
-                        /** Calculate for quantity **/
-
-                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
-                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
-
-                        /** Calculate for amount discount **/
-
-                        minFreeAmount = schemeProductBO.getMinAmount()
-                                * mNumberOfTimesSlabAchieved;
-                        maxFreeAmount = schemeProductBO.getMaxAmount()
-                                * mNumberOfTimesSlabAchieved;
-
-                    }
-
-                } else if (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_ONE_TIME_WITH_PERCENTAGE)) {
-                    if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-
-                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
-                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
-
-                        // adding calculated percent of quantity
-                        int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
-                        if (remainingActualQty >= 1)
-                            minFreeQuantity += remainingActualQty;
-
-                        int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
-                        if (remainingMaxQty >= 1)
-                            maxFreeQuantity += remainingMaxQty;
-                        //
-
-                        minFreeAmount = schemeProductBO.getMinAmount()  * mNumberOfTimesSlabAchieved;
-                        maxFreeAmount = schemeProductBO.getMaxAmount()  * mNumberOfTimesSlabAchieved;
-                        // adding calculated percent of amount
-                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
-                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
-
-                    } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
-
-                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
-                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
-
-                        int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
-                        if (remainingActualQty >= 1)
-                            minFreeQuantity += remainingActualQty;
-
-                        int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
-                        if (remainingMaxQty >= 1)
-                            maxFreeQuantity += remainingMaxQty;
-
-
-                        minFreeAmount = schemeProductBO.getMinAmount()   * mNumberOfTimesSlabAchieved;
-                        maxFreeAmount = schemeProductBO.getMaxAmount()   * mNumberOfTimesSlabAchieved;
-
-                        // adding calculated percent of amount
-                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
-                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
-
-                    }
-                } else if (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_PRORATA)) {
-                    if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-
-                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
-                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
-
-                        int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
-                        if (remainingActualQty >= 1)
-                            minFreeQuantity += remainingActualQty;
-
-                        int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
-                        if (remainingMaxQty >= 1)
-                            maxFreeQuantity += remainingMaxQty;
-
-                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
-                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
-
-                        // adding calculated percent of amount
-                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
-                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
-
-                    } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
-
-                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
-                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
-
-                        int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
-                        if (remainingActualQty >= 1)
-                            minFreeQuantity += remainingActualQty;
-
-                        int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
-                        if (remainingMaxQty >= 1)
-                            maxFreeQuantity += remainingMaxQty;
-
-
-                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
-                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
-
-                        // adding calculated percent of amount
-                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
-                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
-
-                    }
-                } else {
-                    minFreeQuantity = Math.round((float) minimumQuantity);
-                    maxFreeQuantity = Math.round((float) maximumQuantity);
-
-                    if (schemeBO.getEveryQty() != 0) {
-                        int count = getAmountBasedSchemeCount(schemeBO);
-                        if (count == 0) count = 1; // atleast one time apply
-
-                        minFreeAmount = schemeProductBO.getMinAmount() * count;
-                        maxFreeAmount = schemeProductBO.getMaxAmount() * count;
-
-                    } else {
-
-                        minFreeAmount = schemeProductBO.getMinAmount();
-                        maxFreeAmount = schemeProductBO.getMaxAmount();
-                    }
-
-                }
-
-                schemeProductBO.setQuantityActualCalculated(minFreeQuantity);
-                schemeProductBO.setQuantityMaxiumCalculated(maxFreeQuantity);
-
-                /** no calculation required for Price discount and % discount **/
-
-                minFreePrice = schemeProductBO.getPriceActual();
-                maxFreePrice = schemeProductBO.getPriceMaximum();
-
-                minFreePercent = schemeProductBO.getMinPercent();
-                maxFreePercent = schemeProductBO.getMaxPercent();
-
-                schemeProductBO.setMinPercentCalculated(minFreePercent);
-                schemeProductBO.setMaxPrecentCalculated(maxFreePercent);
-
-                schemeProductBO.setMinAmountCalculated(minFreeAmount);
-                schemeProductBO.setMaxAmountCalculated(maxFreeAmount);
-
-            }
-
-            schemeBO.setActualQuantity(minFreeQuantity);
-            schemeBO.setMaximumQuantity(maxFreeQuantity);
-
-            schemeBO.setActualPrice(minFreePrice);
-            schemeBO.setMaximumPrice(maxFreePrice);
-            schemeBO.setSelectedPrice(minFreePrice);
-
-            schemeBO.setMinimumPrecent(minFreePercent);
-            schemeBO.setMaximumPrecent(maxFreePercent);
-            schemeBO.setSelectedPrecent(minFreePercent);
-
-            schemeBO.setMinimumAmount(minFreeAmount);
-            schemeBO.setMaximumAmount(maxFreeAmount);
-            schemeBO.setSelectedAmount(minFreeAmount);
-
-            //Updating flag to show in Scheme Apply Screen
-            if (schemeBO.getActualPrice() > 0  && schemeBO.getMaximumPrice() > 0) {
-                schemeBO.setPriceTypeSeleted(true);
-            } else if (schemeBO.getMinimumAmount() > 0 && schemeBO.getMaximumAmount() > 0) {
-                schemeBO.setAmountTypeSelected(true);
-            } else if (schemeBO.getMinimumPrecent() > 0 && schemeBO.getMaximumPrecent() > 0) {
-                schemeBO.setDiscountPrecentSelected(true);
-            }
-            else if (schemeBO.getMinimumPrecent() > 0 && schemeBO.getMaximumPrecent() > 0) {
-                schemeBO.setDiscountPrecentSelected(true);
-            }
-            else if(schemeBO.getActualQuantity()>0&&schemeBO.getMaximumQuantity()>0){
-                schemeBO.setQuantityTypeSelected(true);
-            }
-
-
-        }
-    }
-
-    public List<SchemeBO> getSchemeList() {
-        return mSchemeList;
-    }
-
-
-    public Map<String, SchemeBO> getSchemeById() {
-        return mSchemeById;
-    }
-
-
-    /**
-     * Updating SIH availability for free products
-     * and altering actual value based on the stock availability.
-     */
-    private void updateSIHAvailabilityForFreeProducts() {
-
-        for (SchemeBO schemeBO : mAppliedSchemeList) {
-
-            ArrayList<String> freeGroupNameList = getFreeGroupNameListBySchemeID().get(schemeBO.getSchemeId());
-            if (freeGroupNameList != null) {
-
-                schemeBO.setQuantityTypeSelected(true);
-
-                if (schemeBO.getFreeType().equals(AND_LOGIC)) {
-                    schemeBO.setSihAvailableForFreeProducts(true);
-                } else {
-                    schemeBO.setSihAvailableForFreeProducts(false);
-                }
-
-                List<SchemeProductBO> freeProducts = schemeBO.getFreeProducts();
-                ProductMasterBO productMasterBO;
-
-                if (freeProducts != null) {
-                    int i = 0;
-
-                    for (String freeGroupName : freeGroupNameList) {
-                        boolean isSihAvailableForFreeProducts = isSihAvailableForSchemeGroupFreeProducts(schemeBO, freeGroupName);
-
-                        if (isSihAvailableForFreeProducts) {
-                            if (i == 0 || !schemeBO.getFreeType().equals(AND_LOGIC))
-                                schemeBO.setSihAvailableForFreeProducts(true);
-                        } else {
-                            if (schemeBO.getFreeType().equals(AND_LOGIC)) {
-                                schemeBO.setSihAvailableForFreeProducts(false);
-                            }
-                        }
-
-                        i++;
-
-                        if (!bModel.configurationMasterHelper.IS_SIH_VALIDATION || isSihAvailableForFreeProducts) {
-                            int freeQuantity = 0;
-                            int count = 0;
-
-                            for (SchemeProductBO schemePdtBO : freeProducts) {
-
-                                if (freeGroupName.equals(schemePdtBO.getGroupName())) {
-
-                                    if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) {//check any logic condition
-                                        if (count == 0) {
-                                            freeQuantity = schemePdtBO.getQuantityActualCalculated();
-                                        }
-
-                                    } else {
-                                        freeQuantity = schemePdtBO.getQuantityActualCalculated();
-
-                                    }
-                                    count++;
-
-                                    int stock = 0;
-                                    productMasterBO = bModel.productHelper.getProductMasterBOById(schemePdtBO.getProductId());
-
-                                    if (productMasterBO != null) {
-                                        stock = productMasterBO.getSIH()
-                                                - ((productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
-                                                + (productMasterBO.getOrderedOuterQty() * productMasterBO
-                                                .getOutersize()) + productMasterBO.getOrderedPcsQty());
-                                    }
-
-                                    schemePdtBO.setStock(stock);
-                                    schemePdtBO.setQuantitySelected(0);
-
-
-                                    if (bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                                        if (bModel.getResources().getBoolean(R.bool.config_is_sih_considered)) {
-                                            if (stock > 0) {
-
-                                                if ((stock - freeQuantity) >= 0) {
-                                                    schemePdtBO
-                                                            .setQuantitySelected(freeQuantity);
-                                                    freeQuantity = 0;
-                                                } else {
-                                                    schemePdtBO
-                                                            .setQuantitySelected(stock);
-                                                    freeQuantity -= stock;
-                                                }
-                                            }
-                                        } else {
-                                            schemePdtBO
-                                                    .setQuantitySelected(freeQuantity);
-                                        }
-
-                                        if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) {// child
-                                            // ANY
-                                            // logic
-                                            if (freeQuantity == 0)
-                                                break;
-                                        }
-                                    } else {
-                                        schemePdtBO.setQuantitySelected(freeQuantity);
-                                        if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) { // child
-                                            // ANY
-                                            // logic
-                                            break;
-                                        }
-                                    }
-
-                                }
-
-                            }
-                            if (schemeBO.getFreeType().equals(ANY_LOGIC)) {
-                                break; // used for parent ANY LOGIC
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-    }
 
     /**
      * Getting number of times current slab(Parent logic - AND) is achieved
@@ -2190,20 +1892,6 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-    public double getBalancePercent() {
-        return balancePercent;
-    }
-
-    public void setBalancePercent(double balancePercent) {
-        this.balancePercent = balancePercent;
-    }
-
-    double balancePercent = 0;
-
-
-    //key: (parentid+productid)  value: Total (qty or sales) value already used to apply scheme
-    HashMap<String, Integer> mAchieved_qty_or_salesValue_by_schemeId_nd_productid;
-
     /**
      * Getting number of times current group(AND) is achieved. Buy Type- Quantity
      * @param schemeProductList Current slabs buy product list
@@ -2223,8 +1911,7 @@ public class SchemeDetailsMasterHelper {
             if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 int count = 0;
-                ProductMasterBO productMasterBO = bModel.productHelper
-                        .getProductMasterBOById(schemeProductBO.getProductId());
+                ProductMasterBO productMasterBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
 
                 if (productMasterBO != null) {
                     int quantity;
@@ -2232,10 +1919,8 @@ public class SchemeDetailsMasterHelper {
                     if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         quantity = getBatchTotalQuantity(productMasterBO, schemeProductBO.getBatchId());
                     } else {
-                        quantity = (productMasterBO.getOrderedCaseQty() * productMasterBO
-                                .getCaseSize())
-                                + (productMasterBO.getOrderedOuterQty() * productMasterBO
-                                .getOutersize())
+                        quantity = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize())
                                 + productMasterBO.getOrderedPcsQty();
                     }
 
@@ -2246,7 +1931,7 @@ public class SchemeDetailsMasterHelper {
                         }
                     }
 
-					/* scheme accumulation starts */
+                    /* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationList = null;
                     if (getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
@@ -2259,10 +1944,8 @@ public class SchemeDetailsMasterHelper {
                                     schemeAccBO.getProductID()) && (!isBatchWise || (isBatchWise && schemeProductBO.getBatchId().equals(schemeAccBO.getBatchid())))) {
                                 quantity = quantity
                                         + schemeAccBO.getOrderedPcsQty()
-                                        + (schemeAccBO.getOrderedCaseQty() * productMasterBO
-                                        .getCaseSize())
-                                        + (schemeAccBO.getOrderedOuterQty() * productMasterBO
-                                        .getOutersize());
+                                        + (schemeAccBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                        + (schemeAccBO.getOrderedOuterQty() * productMasterBO.getOutersize());
                                 break;
                             }
                         }
@@ -2358,56 +2041,14 @@ public class SchemeDetailsMasterHelper {
         } else {
             /*
              * Now we are apply range wise scheme.so maximum buy qty only using
-			 * for computation to how many times scheme achived. but minimum buy
-			 * qty used to apply scheme or not.
-			 */
+             * for computation to how many times scheme achieved. but minimum buy
+             * qty used to apply scheme or not.
+             */
             return 1;
         }
 
     }
 
-    public void loadSchemeReport(String id, boolean flag) {
-        // SchemeProductBO schemeProductBO;
-        DBUtil db = null;
-        try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            // sb.append("select distinct SD.schemeid,MIN(SD.productid),SFD.freeproductID,SFD.FreeQty,");
-            // sb.append("SFD.uomID,SFD.batchid from SchemeDetail SD  inner join SchemeFreeproductDetail SFD ");
-            // sb.append("on SFD.schemeid=SD.schemeID where ");
-            sb.append("select distinct SchemeID ,ProductID ,Value  from SchemeDetail  where ");
-            if (flag) { // invoice report
-                sb.append("InvoiceID =" + bModel.QT(id));
-            } else {// order report
-                sb.append("OrderID =" + bModel.QT(id));
-            }
-            sb.append(" AND SchemeType = '" + SCHEME_PERCENTAGE + "'");
-
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-
-                    // schemeProductBO.setQuantitySelected(c.getInt(3));
-                    // schemeProductBO.setUomID(c.getInt(4));
-                    String productid = c.getString(1);
-                    // productBo is buy product object
-                    ProductMasterBO produBo = bModel.productHelper
-                            .getProductMasterBOById(productid);
-                    if (produBo != null) {
-                        produBo.setMschemeper(c.getDouble(2));
-                    }
-                }
-            }
-
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            db.closeDB();
-            Commons.printException("" + e);
-        }
-
-    }
 
     /**
      * Getting number of times current group(AND) is achieved. Buy Type- Sales value
@@ -2421,7 +2062,7 @@ public class SchemeDetailsMasterHelper {
      */
     private int getAndLogicAppliedCountForSalesValue(
             List<SchemeProductBO> schemeProductList, String groupName
-           , boolean isBatchWise, int parentId, String processType, boolean isHighestSlab) {
+            , boolean isBatchWise, int parentId, String processType, boolean isHighestSlab) {
 
         int tempCount = 0;
         double tempBalancePercent ;
@@ -2432,8 +2073,7 @@ public class SchemeDetailsMasterHelper {
             if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 int count = 0;
-                ProductMasterBO productMasterBO = bModel.productHelper
-                        .getProductMasterBOById(schemeProductBO.getProductId());
+                ProductMasterBO productMasterBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
 
                 if (productMasterBO != null) {
 
@@ -2441,12 +2081,9 @@ public class SchemeDetailsMasterHelper {
                     if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         totalValue = getBatchTotalValue(productMasterBO, schemeProductBO.getBatchId());
                     } else {
-                        totalValue = (productMasterBO.getOrderedCaseQty() * productMasterBO
-                                .getCsrp())
-                                + (productMasterBO.getOrderedOuterQty() * productMasterBO
-                                .getOsrp())
-                                + productMasterBO.getOrderedPcsQty()
-                                * productMasterBO.getSrp();
+                        totalValue = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp())
+                                + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp())
+                                + productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp();
                     }
 
                     if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
@@ -2455,12 +2092,12 @@ public class SchemeDetailsMasterHelper {
                         }
                     }
 
-					/* scheme accumulation starts */
+                    /* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationValueList = null;
                     if (getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
                         schemeAccumulationValueList = getSchemeHistoryListBySchemeId().get(
-                                        schemeBO.getParentId() + "");
+                                schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationValueList != null) {
                         //Adding accumulation amount to the current order amount
@@ -2523,9 +2160,9 @@ public class SchemeDetailsMasterHelper {
         } else {
             /*
              * Now we are apply range wise scheme.so maximum buy qty only using
-			 * for computation to how many times scheme achieved. but minimum buy
-			 * qty used to apply scheme or not.
-			 */
+             * for computation to how many times scheme achieved. but minimum buy
+             * qty used to apply scheme or not.
+             */
             return 1;
         }
 
@@ -2577,18 +2214,18 @@ public class SchemeDetailsMasterHelper {
                     }
 
 
-					/* scheme accumulation starts */
+                    /* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationList = null;
                     if (getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
                         schemeAccumulationList = getSchemeHistoryListBySchemeId().get(
-                                        schemeBO.getParentId() + "");
+                                schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationList != null) {
                         // Adding accumulation quantity to the current order quantity
                         for (ProductMasterBO schemeAccBO : schemeAccumulationList) {
                             if (schemeProductBO.getProductId().equals(
-                                    schemeAccBO.getProductID()) && (!isBatchWise || (isBatchWise && schemeProductBO.getBatchId().equals(schemeAccBO.getBatchid())))) {
+                                    schemeAccBO.getProductID()) && (!isBatchWise || (schemeProductBO.getBatchId().equals(schemeAccBO.getBatchid())))) {
                                 quantity = quantity
                                         + schemeAccBO.getOrderedPcsQty()
                                         + (schemeAccBO.getOrderedCaseQty() * productMasterBO
@@ -2764,7 +2401,7 @@ public class SchemeDetailsMasterHelper {
      * @return Total number of times current group achieved
      */
     private int getAnyLogicAppliedCountForSalesValue( List<SchemeProductBO> schemeProductList, String groupName,
-            boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
+                                                      boolean isBatchWise, int parentID, String processType, boolean isHighestSlab) {
 
         double totalValue = 0;
         double minimumBuyValue = 0;
@@ -2808,12 +2445,12 @@ public class SchemeDetailsMasterHelper {
                     }
 
 
-					/* scheme accumulation starts */
+                    /* scheme accumulation starts */
                     ArrayList<ProductMasterBO> schemeAccumulationValueList = null;
                     if (getSchemeHistoryListBySchemeId() != null) {
                         SchemeBO schemeBO = mSchemeById.get(schemeProductBO.getSchemeId());
                         schemeAccumulationValueList = getSchemeHistoryListBySchemeId().get(
-                                        schemeBO.getParentId() + "");
+                                schemeBO.getParentId() + "");
                     }
                     if (schemeAccumulationValueList != null) {
                         for (ProductMasterBO schemeAccBO : schemeAccumulationValueList) {
@@ -2914,8 +2551,8 @@ public class SchemeDetailsMasterHelper {
                 } else {
                     /*
                      * Now we are apply range wise scheme.so maximum qty only
-					 * using for computation to how many times scheme achived
-					 */
+                     * using for computation to how many times scheme achieved
+                     */
                     return 1;
                 }
             }
@@ -2928,32 +2565,368 @@ public class SchemeDetailsMasterHelper {
 
 
     /**
+     * After scheme achieved successfully ,this method used to update the scheme free
+     * details like product,percentage,amount and price     *
+     * @param schemeBO Current Slab
+     * @param mNumberOfTimesSlabAchieved Number of times slab achieved
+     */
+    private void calculateFreeForAchievedScheme(SchemeBO schemeBO, int mNumberOfTimesSlabAchieved) {
+
+        if (schemeBO.getFreeProducts() != null) {
+
+            int minFreeQuantity = 0;
+            int maxFreeQuantity = 0;
+            double minFreePrice = 0;
+            double maxFreePrice = 0;
+            double minFreePercent = 0;
+            double maxFreePercent = 0;
+            double minFreeAmount = 0;
+            double maxFreeAmount = 0;
+
+            for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
+
+                int minimumQuantity = schemeProductBO.getQuantityMinimum();
+                int maximumQuantity = schemeProductBO.getQuantityMaximum();
+
+                if (schemeBO.getProcessType() != null && (schemeBO.getProcessType().equals(PROCESS_TYPE_MULTIPLE_TIME_FOR_REMAINING)
+                        || schemeBO.getProcessType().equals(PROCESS_TYPE_MTS))) {
+
+                    /* scheme Buy type is Quantity */
+                    if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
+
+
+
+                        //Calculating min and max free quantity
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
+
+                        /** Calculate for amount discount **/
+
+                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
+
+
+                    }
+                    /* scheme type is Sales Value */
+                    else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
+
+
+                        /** Calculate for quantity **/
+
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
+
+                        /** Calculate for amount discount **/
+
+                        minFreeAmount = schemeProductBO.getMinAmount()
+                                * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount()
+                                * mNumberOfTimesSlabAchieved;
+
+                    }
+
+                } else if (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_ONE_TIME_WITH_PERCENTAGE)) {
+                    if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
+
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
+
+                        // adding calculated percent of quantity
+                        int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
+                        if (remainingActualQty >= 1)
+                            minFreeQuantity += remainingActualQty;
+
+                        int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
+                        if (remainingMaxQty >= 1)
+                            maxFreeQuantity += remainingMaxQty;
+                        //
+
+                        minFreeAmount = schemeProductBO.getMinAmount()  * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount()  * mNumberOfTimesSlabAchieved;
+                        // adding calculated percent of amount
+                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
+                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
+
+                    } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
+
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
+
+                        int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
+                        if (remainingActualQty >= 1)
+                            minFreeQuantity += remainingActualQty;
+
+                        int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
+                        if (remainingMaxQty >= 1)
+                            maxFreeQuantity += remainingMaxQty;
+
+
+                        minFreeAmount = schemeProductBO.getMinAmount()   * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount()   * mNumberOfTimesSlabAchieved;
+
+                        // adding calculated percent of amount
+                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
+                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
+
+                    }
+                } else if (schemeBO.getProcessType() != null && schemeBO.getProcessType().equals(PROCESS_TYPE_PRORATA)) {
+                    if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
+
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
+
+                        int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
+                        if (remainingActualQty >= 1)
+                            minFreeQuantity += remainingActualQty;
+
+                        int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
+                        if (remainingMaxQty >= 1)
+                            maxFreeQuantity += remainingMaxQty;
+
+                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
+
+                        // adding calculated percent of amount
+                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
+                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
+
+                    } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
+
+                        minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
+                        maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
+
+                        int remainingActualQty = (int) ((schemeBO.getBalancePercent() / 100) * minimumQuantity);
+                        if (remainingActualQty >= 1)
+                            minFreeQuantity += remainingActualQty;
+
+                        int remainingMaxQty = (int) ((schemeBO.getBalancePercent() / 100) * maximumQuantity);
+                        if (remainingMaxQty >= 1)
+                            maxFreeQuantity += remainingMaxQty;
+
+
+                        minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
+
+                        // adding calculated percent of amount
+                        minFreeAmount = minFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMinAmount());
+                        maxFreeAmount = maxFreeAmount + ((schemeBO.getBalancePercent() / 100) * schemeProductBO.getMaxAmount());
+
+                    }
+                } else {
+                    minFreeQuantity = Math.round((float) minimumQuantity);
+                    maxFreeQuantity = Math.round((float) maximumQuantity);
+
+                    if (schemeBO.getEveryQty() != 0) {
+                        int count = getAmountBasedSchemeCount(schemeBO);
+                        if (count == 0) count = 1; // at least one time apply
+
+                        minFreeAmount = schemeProductBO.getMinAmount() * count;
+                        maxFreeAmount = schemeProductBO.getMaxAmount() * count;
+
+                    } else {
+
+                        minFreeAmount = schemeProductBO.getMinAmount();
+                        maxFreeAmount = schemeProductBO.getMaxAmount();
+                    }
+
+                }
+
+                schemeProductBO.setQuantityActualCalculated(minFreeQuantity);
+                schemeProductBO.setQuantityMaxiumCalculated(maxFreeQuantity);
+
+                /** no calculation required for Price discount and % discount **/
+
+                minFreePrice = schemeProductBO.getPriceActual();
+                maxFreePrice = schemeProductBO.getPriceMaximum();
+
+                minFreePercent = schemeProductBO.getMinPercent();
+                maxFreePercent = schemeProductBO.getMaxPercent();
+
+                schemeProductBO.setMinPercentCalculated(minFreePercent);
+                schemeProductBO.setMaxPrecentCalculated(maxFreePercent);
+
+                schemeProductBO.setMinAmountCalculated(minFreeAmount);
+                schemeProductBO.setMaxAmountCalculated(maxFreeAmount);
+
+            }
+
+            schemeBO.setActualQuantity(minFreeQuantity);
+            schemeBO.setMaximumQuantity(maxFreeQuantity);
+
+            schemeBO.setActualPrice(minFreePrice);
+            schemeBO.setMaximumPrice(maxFreePrice);
+            schemeBO.setSelectedPrice(minFreePrice);
+
+            schemeBO.setMinimumPrecent(minFreePercent);
+            schemeBO.setMaximumPrecent(maxFreePercent);
+            schemeBO.setSelectedPrecent(minFreePercent);
+
+            schemeBO.setMinimumAmount(minFreeAmount);
+            schemeBO.setMaximumAmount(maxFreeAmount);
+            schemeBO.setSelectedAmount(minFreeAmount);
+
+            //Updating flag to show in Scheme Apply Screen
+            if (schemeBO.getActualPrice() > 0  && schemeBO.getMaximumPrice() > 0) {
+                schemeBO.setPriceTypeSeleted(true);
+            } else if (schemeBO.getMinimumAmount() > 0 && schemeBO.getMaximumAmount() > 0) {
+                schemeBO.setAmountTypeSelected(true);
+            } else if (schemeBO.getMinimumPrecent() > 0 && schemeBO.getMaximumPrecent() > 0) {
+                schemeBO.setDiscountPrecentSelected(true);
+            }
+            else if(schemeBO.getActualQuantity()>0&&schemeBO.getMaximumQuantity()>0){
+                schemeBO.setQuantityTypeSelected(true);
+            }
+
+
+        }
+    }
+
+    /**
+     * Updating SIH availability for free products
+     * and altering actual value based on the stock availability.
+     */
+    private void updateSIHAvailabilityForFreeProducts() {
+
+        for (SchemeBO schemeBO : mAppliedSchemeList) {
+
+            ArrayList<String> freeGroupNameList = getFreeGroupNameListBySchemeID().get(schemeBO.getSchemeId());
+            if (freeGroupNameList != null) {
+
+                schemeBO.setQuantityTypeSelected(true);
+
+                if (schemeBO.getFreeType().equals(AND_LOGIC)) {
+                    schemeBO.setSihAvailableForFreeProducts(true);
+                } else {
+                    schemeBO.setSihAvailableForFreeProducts(false);
+                }
+
+                List<SchemeProductBO> freeProducts = schemeBO.getFreeProducts();
+                ProductMasterBO productMasterBO;
+
+                if (freeProducts != null) {
+                    int i = 0;
+
+                    for (String freeGroupName : freeGroupNameList) {
+                        boolean isSihAvailableForFreeProducts = isSihAvailableForSchemeGroupFreeProducts(schemeBO, freeGroupName);
+
+                        if (isSihAvailableForFreeProducts) {
+                            if (i == 0 || !schemeBO.getFreeType().equals(AND_LOGIC))
+                                schemeBO.setSihAvailableForFreeProducts(true);
+                        } else {
+                            if (schemeBO.getFreeType().equals(AND_LOGIC)) {
+                                schemeBO.setSihAvailableForFreeProducts(false);
+                            }
+                        }
+
+                        i++;
+
+                        if (!bModel.configurationMasterHelper.IS_SIH_VALIDATION || isSihAvailableForFreeProducts) {
+                            int freeQuantity = 0;
+                            int count = 0;
+
+                            for (SchemeProductBO schemePdtBO : freeProducts) {
+
+                                if (freeGroupName.equals(schemePdtBO.getGroupName())) {
+
+                                    if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) {//check any logic condition
+                                        if (count == 0) {
+                                            freeQuantity = schemePdtBO.getQuantityActualCalculated();
+                                        }
+
+                                    } else {
+                                        freeQuantity = schemePdtBO.getQuantityActualCalculated();
+
+                                    }
+                                    count++;
+
+                                    int stock = 0;
+                                    productMasterBO = bModel.productHelper.getProductMasterBOById(schemePdtBO.getProductId());
+
+                                    if (productMasterBO != null) {
+                                        stock = productMasterBO.getSIH()
+                                                - ((productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                                + (productMasterBO.getOrderedOuterQty() * productMasterBO
+                                                .getOutersize()) + productMasterBO.getOrderedPcsQty());
+                                    }
+
+                                    schemePdtBO.setStock(stock);
+                                    schemePdtBO.setQuantitySelected(0);
+
+
+                                    if (bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                                        if (bModel.getResources().getBoolean(R.bool.config_is_sih_considered)) {
+                                            if (stock > 0) {
+
+                                                if ((stock - freeQuantity) >= 0) {
+                                                    schemePdtBO
+                                                            .setQuantitySelected(freeQuantity);
+                                                    freeQuantity = 0;
+                                                } else {
+                                                    schemePdtBO
+                                                            .setQuantitySelected(stock);
+                                                    freeQuantity -= stock;
+                                                }
+                                            }
+                                        } else {
+                                            schemePdtBO
+                                                    .setQuantitySelected(freeQuantity);
+                                        }
+
+                                        if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) {// child
+                                            // ANY
+                                            // logic
+                                            if (freeQuantity == 0)
+                                                break;
+                                        }
+                                    } else {
+                                        schemePdtBO.setQuantitySelected(freeQuantity);
+                                        if (schemePdtBO.getGroupLogic().equals(ANY_LOGIC)) { // child
+                                            // ANY
+                                            // logic
+                                            break;
+                                        }
+                                    }
+
+                                }
+
+                            }
+                            if (schemeBO.getFreeType().equals(ANY_LOGIC)) {
+                                break; // used for parent ANY LOGIC
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+
+
+
+    private double getBalancePercent() {
+        return balancePercent;
+    }
+
+    private void setBalancePercent(double balancePercent) {
+        this.balancePercent = balancePercent;
+    }
+
+
+    /**
      * @return
      * @author rajesh.k method to return hashmap of Schemeachievement history
      * details
      */
-    public HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeId() {
+    private HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeId() {
         return mSchemeHistoryListBySchemeId;
     }
 
 
 
 
-    /**
-     * @return
-     * @author rajesh.k
-     * <p>
-     * method to retrieve applied scheme list.
-     */
 
-    public ArrayList<SchemeBO> getAppliedSchemeList() {
-        if (mAppliedSchemeList != null) {
-            return mAppliedSchemeList;
-        }
-        return new ArrayList<>();
-    }
 
-    public boolean isFromCounterSale;
 
     /**
      * @param orderID - mapping to orderID
@@ -2993,9 +2966,6 @@ public class SchemeDetailsMasterHelper {
                                                String orderID, String flag) {
         String schemeDetailColumn = "OrderID,SchemeID,ProductID,SchemeType,Value,parentid,Retailerid,distributorid,upload,Amount";
 
-        if (isFromCounterSale) {
-            schemeDetailColumn = "Uid,SlabId,ProductId,SchemeType,Value,SchemeId,Retailerid,distributorid,upload,Amount";
-        }
 
         List<SchemeProductBO> buyProductList = schemeBO.getBuyingProducts();
 
@@ -3076,13 +3046,9 @@ public class SchemeDetailsMasterHelper {
                             sb.append("," + schemeProductBO.getDiscountValue());
                         }
 
-                        if (isFromCounterSale) {
-                            db.insertSQL(DataMembers.tbl_CS_scheme_details,
-                                    schemeDetailColumn, sb.toString());
-                        } else {
                             db.insertSQL(DataMembers.tbl_scheme_details,
                                     schemeDetailColumn, sb.toString());
-                        }
+
 
 
                     }
@@ -3093,17 +3059,15 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    public void insertAccumulationDetails(DBUtil db, String orderID) {
+    public void insertAccumulationDetails(Context mContext,DBUtil db, String orderID) {
 
 
         String freeDetailColumn = "OrderID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,RetailerId,HsnCode";
-        if (isFromCounterSale) {
-            freeDetailColumn = "uid,SlabId,ProductId,Qty,UomID,UomCount,BatchId,SchemeId,RetailerId,price,taxAmount";
-        }
+
         if (mOffInvoiceAppliedSchemeList != null) {
             for (SchemeBO schemeBO : mOffInvoiceAppliedSchemeList) {
                 if (!IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
-                        || OrderHelper.getInstance(context).getValidAccumulationSchemes().contains(String.valueOf(schemeBO.getParentId()))) {
+                        || OrderHelper.getInstance(mContext).getValidAccumulationSchemes().contains(String.valueOf(schemeBO.getParentId()))) {
 
                     if (schemeBO.isQuantityTypeSelected()) {
                         final List<SchemeProductBO> freeProductsList = schemeBO.getFreeProducts();
@@ -3159,9 +3123,6 @@ public class SchemeDetailsMasterHelper {
                                           String orderID, String flag) {
         String freeDetailColumn = "OrderID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,RetailerId,price,taxAmount,HsnCode";
 
-        if (isFromCounterSale) {
-            freeDetailColumn = "uid,SlabId,ProductId,Qty,UomID,UomCount,BatchId,SchemeId,RetailerId,price,taxAmount,upload";
-        }
 
         List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
         if (freeProductList != null) {
@@ -3233,9 +3194,7 @@ public class SchemeDetailsMasterHelper {
             sb.append(0 + "," + schemeBO.getParentId());
             sb.append("," + bModel.QT(bModel.getRetailerMasterBO().getRetailerID()) + ",");
 
-            if (isFromCounterSale) {
-                sb.append(0 + "," + 0);
-            } else if (bModel.configurationMasterHelper.IS_GST || bModel.configurationMasterHelper.IS_GST_HSN) {
+            if (bModel.configurationMasterHelper.IS_GST || bModel.configurationMasterHelper.IS_GST_HSN) {
 
                 if (freeProductBO.getUomID() == productBO.getCaseUomId()
                         && productBO.getCaseUomId() != 0) {
@@ -3251,20 +3210,13 @@ public class SchemeDetailsMasterHelper {
             } else {
                 sb.append(0 + "," + 0);
             }
-            if (isFromCounterSale && flag.equals("I"))
-                sb.append(",'I'");
-            else if (isFromCounterSale)
-                sb.append(",'N'");
+            sb.append(",'N'");
 
             sb.append("," + bModel.QT(productBO.getHsnCode()));
 
-            if (isFromCounterSale) {
-                db.insertSQL(DataMembers.tbl_CS_SchemeFreeProductDetail, freeDetailColumn,
-                        sb.toString());
-            } else {
                 db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
                         sb.toString());
-            }
+
 
         }
     }
@@ -3310,13 +3262,9 @@ public class SchemeDetailsMasterHelper {
 
                     sb.append("," + bModel.QT(productBo.getHsnCode()));
 
-                    if (isFromCounterSale) {
-                        db.insertSQL(DataMembers.tbl_CS_SchemeFreeProductDetail, freeDetailColumn,
-                                sb.toString());
-                    } else {
                         db.insertSQL(DataMembers.tbl_SchemeFreeProductDetail, freeDetailColumn,
                                 sb.toString());
-                    }
+
 
                 }
             }
@@ -3329,11 +3277,11 @@ public class SchemeDetailsMasterHelper {
      * @param retailerID
      * @author rajesh.k Method to use reload applied scheme objects
      */
-    public void loadSchemeDetails(String retailerID) {
+    public void loadSchemeDetails(Context mContext,String retailerID) {
 
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select orderID from orderHeader where retailerid="
@@ -3718,12 +3666,12 @@ public class SchemeDetailsMasterHelper {
      * @param flag - true - invoice,false - order
      * @author rajesh.k method to use show invoice report and order report
      */
-    public void loadSchemeReportDetails(String id, boolean flag) {
+    public void loadSchemeReportDetails(Context mContext,String id, boolean flag) {
         mAppliedSchemeList = new ArrayList<>();
         SchemeProductBO schemeProductBO;
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct SD.schemeid,MIN(SD.productid),SFD.freeproductID,SFD.FreeQty,");
@@ -4235,12 +4183,12 @@ public class SchemeDetailsMasterHelper {
      * @author Hanifa.M method to use show invoice report and order report
      * load Accumulation Free Product's to show in Report print screen
      */
-    public ArrayList<SchemeProductBO> downLoadAccumulationSchemeDetailReport(String id, boolean flag) {
+    public ArrayList<SchemeProductBO> downLoadAccumulationSchemeDetailReport(Context mContext,String id, boolean flag) {
         ArrayList<SchemeProductBO> mAccumulationFreePrdList = null;
         SchemeProductBO schemeProductBO;
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
 
@@ -4302,7 +4250,7 @@ public class SchemeDetailsMasterHelper {
      * @param productID    product id
      * @param quantity     quantity
      */
-    public void loadSchemePromotion(String schemeId, String type,
+    public void loadSchemePromotion(Context mContext,String schemeId, String type,
                                     String channelId, String subChannelId, String productID,
                                     int quantity) {
         if (mSchemePromotion == null) {
@@ -4310,7 +4258,7 @@ public class SchemeDetailsMasterHelper {
         } else {
             mSchemePromotion.clear();
         }
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
         StringBuilder sb = new StringBuilder("");

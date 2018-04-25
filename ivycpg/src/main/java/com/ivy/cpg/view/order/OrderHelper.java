@@ -508,7 +508,7 @@ public class OrderHelper {
                         || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     schemeHelper.insertSchemeDetails(uid, db, "N");
                 }
-                schemeHelper.insertAccumulationDetails(db, uid);
+                schemeHelper.insertAccumulationDetails(mContext,db, uid);
 
 
             } catch (Exception e1) {
