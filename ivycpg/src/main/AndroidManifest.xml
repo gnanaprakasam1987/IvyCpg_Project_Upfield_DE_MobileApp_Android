@@ -281,12 +281,6 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name="com.ivy.sd.png.view.TargetPlanActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.TargetPlanActivity_PH"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.sd.png.view.merch.MerchandisingActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -395,7 +389,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.ivy.sd.png.view.SKUWiseTargetActivity"
+            android:name="com.ivy.cpg.view.dashboard.olddashboard.SKUWiseTargetActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.reports.OrderReportDetail"
@@ -491,22 +485,16 @@
             android:name="com.ivy.sd.png.view.InvoicePrintZebraNew"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DashBoardActivity"
+            android:name="com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.KellogsDashBoardActivity"
+            android:name="com.ivy.cpg.view.dashboard.KellogsDashBoardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SellerDashBoardActivity"
+            android:name="com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashBoardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SellerKPISKUActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.RetailerDashBoardActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.RetailerKPISKUActivity"
+            android:name="com.ivy.cpg.view.dashboard.sellerdashboard.SellerKPISKUActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.reports.InvoiceReportDetail"
@@ -762,7 +750,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.FitScoreDashboardActivity"
+            android:name="com.ivy.cpg.view.dashboard.FitScoreDashboardActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
 

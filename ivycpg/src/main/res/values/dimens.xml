@@ -72,7 +72,6 @@
     <!-- Visit Targe Screen -->
     <dimen name="visit_lst_img_width">20dp</dimen>
     <dimen name="visit_info_img_width">28dp</dimen>
-    <dimen name="visit_lst_txtvalue_width">50dp</dimen>
 
     <!-- New Visit List Screen -->
     <dimen name="non_visit_list_item_height_width">40dp</dimen>
@@ -92,8 +91,6 @@
     <!--Distributor StockCheck Screen-->
 
     <!-- Target Plan Screen -->
-    <dimen name="target_plan_name_width">220dp</dimen>
-    <dimen name="target_plan_reference_width">100dp</dimen>
     <dimen name="target_plan_editbox_width">90dp</dimen>
     <!-- Order Split -->
     <dimen name="ordersplit_heder_name_width">150dp</dimen>

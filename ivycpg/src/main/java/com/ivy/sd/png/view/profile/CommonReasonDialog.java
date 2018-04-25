@@ -23,6 +23,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -110,17 +111,27 @@ public class CommonReasonDialog extends Dialog {
                         addNonVisitListener.addReatailerReason();
                         dismiss();
                     } else if (listLoad.equals("deviate")) {
-                        if(isReasonRemarksNA())
-                        {
-                            if(selected_reason.getReasonID().equals("0"))
-                                remarks="NA";
+                        if (isReasonRemarksNA()) {
+                            if (selected_reason.getReasonID().equals("0"))
+                                remarks = "NA";
                         }
                         if (selected_reason.getReasonID().equals("0") && remarks.equals("")) {
                             Toast.makeText(context, context.getResources().getString(R.string.enter_remarks), Toast.LENGTH_LONG).show();
                         } else {
-                            bmodel.reasonHelper.setDeviate(bmodel.retailerMasterBO.getRetailerID(),
-                                    selected_reason, bmodel.retailerMasterBO.getBeatID(), remarks);
-                            addNonVisitListener.addReatailerReason();
+                            if (bmodel.mRetailerHelper.deviateRetailerList != null) {
+                                for (RetailerMasterBO masterBO : bmodel.mRetailerHelper.deviateRetailerList)
+                                    bmodel.reasonHelper.setDeviate(masterBO.getRetailerID(),
+                                            selected_reason, masterBO.getBeatID(), remarks);
+
+                                addNonVisitListener.addReatailerReason();
+                                bmodel.mRetailerHelper.deviateRetailerList = null;
+                            } else {
+                                bmodel.reasonHelper.setDeviate(bmodel.retailerMasterBO.getRetailerID(),
+                                        selected_reason, bmodel.retailerMasterBO.getBeatID(), remarks);
+                                addNonVisitListener.addReatailerReason();
+                            }
+
+
                             dismiss();
                         }
                     }
@@ -138,7 +149,7 @@ public class CommonReasonDialog extends Dialog {
             reasonVisitTxt.setVisibility(View.GONE);
             reason_recycler.setAdapter(new ReasonAdapter(bmodel.reasonHelper.getNonVisitReasonMaster()));
         } else if (listLoad.equals("deviate")) {
-            if(!isReasonRemarksNA()) {
+            if (!isReasonRemarksNA()) {
                 ArrayList<ReasonMaster> deviateReasons = new ArrayList<>();
                 deviateReasons.addAll(bmodel.reasonHelper.getDeviatedReturnMaster());
                 reasonVisitTxt.setVisibility(View.VISIBLE);
@@ -147,9 +158,7 @@ public class CommonReasonDialog extends Dialog {
                 reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
                 deviateReasons.add(reason);
                 reason_recycler.setAdapter(new ReasonAdapter(deviateReasons));
-            }
-            else
-            {
+            } else {
                 ArrayList<ReasonMaster> deviateReasons = new ArrayList<>();
                 reasonVisitTxt.setVisibility(View.GONE);
                 reason_recycler.setVisibility(View.GONE);
@@ -157,7 +166,7 @@ public class CommonReasonDialog extends Dialog {
                 reason.setReasonID("0");
                 reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
                 deviateReasons.add(reason);
-                selected_reason=reason;
+                selected_reason = reason;
                 reason_recycler.setAdapter(new ReasonAdapter(deviateReasons));
                 addReason1.setVisibility(View.GONE);
                 addReason.setVisibility(View.VISIBLE);
@@ -292,15 +301,14 @@ public class CommonReasonDialog extends Dialog {
     }
 
     // Used to Reason Not Applicable for Others LOV
-    private boolean isReasonRemarksNA()
-    {
+    private boolean isReasonRemarksNA() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
 
         String sql = "SELECT hhtCode, RField FROM "
                 + DataMembers.tbl_HhtModuleMaster
-                + " WHERE flag='1' AND hhtCode='RTRS01'" ;
+                + " WHERE flag='1' AND hhtCode='RTRS01'";
         Cursor c = db.selectSQL(sql);
         if (c != null && c.getCount() != 0) {
             while (c.moveToNext()) {

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="fill_vertical"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_target"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dimen_100dp"
+        android:layout_margin="@dimen/dimen_5dp"
+        android:layout_alignParentTop="true"
+        >
+        <LinearLayout
+            android:id="@+id/layout_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:weightSum="10"
+            android:gravity="center_vertical"
+            >
+            <TextView
+                android:id="@+id/text_title"
+                style="?attr/customListItemPrimary"
+                android:layout_width="@dimen/dimen_0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/target"
+                android:layout_weight="4"
+                android:paddingLeft="@dimen/dimen_2dp"/>
+                <EditText
+                    android:id="@+id/edittext_target"
+                    style="@style/EditText"
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center_vertical"
+                    android:hint="@string/day_target"
+                    android:inputType="number"
+                    android:layout_weight="4"/>
+
+            <Button
+                android:id="@+id/button_save_target"
+                style="?attr/roundedCustomButtonSmall"
+                android:layout_width="@dimen/dimen_0dp"
+                android:layout_margin="@dimen/target_top_margin"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                android:layout_weight="2"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/card_target">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_5dp">
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

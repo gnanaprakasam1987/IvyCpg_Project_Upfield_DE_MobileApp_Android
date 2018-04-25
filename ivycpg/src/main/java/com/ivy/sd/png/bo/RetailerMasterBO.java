@@ -198,6 +198,12 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String fax;
     private String region;
     private String country;
+    private double sbdPercent;
+    private String interval;
+    private int kpiid_month;
+    private int kpiid_day;
+    private int kpi_param_day;
+    private int kpi_param_month;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -1525,4 +1531,37 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    public double getSbdPercent() {
+        return sbdPercent;
+    }
+
+    public void setSbdPercent(double sbdPercent) {
+        this.sbdPercent = sbdPercent;
+    }
+
+    public String getInterval() {
+        return interval;
+    }
+
+    public void setInterval(String interval) {
+        this.interval = interval;
+    }
+
+    public int getKpiid_day() {
+        return kpiid_day;
+    }
+
+    public void setKpiid_day(int kpiid_day) {
+        this.kpiid_day = kpiid_day;
+    }
+
+    public int getKpi_param_day() {
+        return kpi_param_day;
+    }
+
+    public void setKpi_param_day(int kpi_param_day) {
+        this.kpi_param_day = kpi_param_day;
+    }
+
 }

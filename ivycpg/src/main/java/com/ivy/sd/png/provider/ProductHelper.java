@@ -1579,6 +1579,7 @@ public class ProductHelper {
                         + "A" + loopEnd + ".HSNId as HSNId,"
                         + "HSN.HSNCode as HSNCode,"
                         + "A" + loopEnd + ".IsDrug as IsDrug,"
+                        + "A" + loopEnd + ".ParentHierarchy as ParentHierarchy,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -1713,7 +1714,7 @@ public class ProductHelper {
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
                     product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
-
+                    product.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
 
@@ -2132,7 +2133,7 @@ public class ProductHelper {
                         + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A.tagDescription as tagDescription,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
-                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
+                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.ParentHierarchy"
                         + " from ProductMaster A";
 
                 if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -2247,7 +2248,7 @@ public class ProductHelper {
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP, ")
                         + "A" + loopEnd + ".tagDescription as tagDescription,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
-                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse"
+                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse,A.ParentHierarchy"
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + " from ProductMaster A1 ";
 
@@ -2368,6 +2369,7 @@ public class ProductHelper {
 
                     product.setIsNearExpiryTaggedProduct(c.getInt(c.getColumnIndex("isNearExpiry")));
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
+                    product.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
                 }
@@ -2935,71 +2937,6 @@ public class ProductHelper {
         if (mTaggedProductById == null)
             return null;
         return mTaggedProductById.get(productId);
-    }
-
-
-    /**
-     * This method will set weather product is RPS product or not. Since its
-     * based on the subchannel we are setting this after selecting the retailer.
-     */
-    public void loadSBDFocusData() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            Vector<Integer> sbdDist = new Vector<Integer>();
-            // Order Header
-            String sql = "select productid from SbdDistributionMaster where Channelid="
-                    + bmodel.retailerMasterBO.getChannelID() + "";
-            Cursor c = db.selectSQL(sql);
-
-            if (c != null) {
-                // c.moveToFirst();
-                while (c.moveToNext()) {
-                    sbdDist.add(c.getInt(0));
-                }
-                c.close();
-            }
-
-            Vector<Integer> sbdDistAcheived = new Vector<Integer>();
-            // Order Header
-            String sql1 = "select productid from SbdDistributionMaster where Channelid="
-                    + bmodel.retailerMasterBO.getChannelID()
-                    + " and grpName in (select gname from SbdDistributionAchievedMaster where rid="
-                    + bmodel.retailerMasterBO.getRetailerID() + ")";
-            Cursor c1 = db.selectSQL(sql1);
-
-            if (c1 != null) {
-                while (c1.moveToNext()) {
-                    sbdDistAcheived.add(c1.getInt(0));
-                }
-                c1.close();
-            }
-
-            db.closeDB();
-
-            for (int i = 0; i < productMaster.size(); i++) {
-                ProductMasterBO p = productMaster.get(i);
-                Commons.print("sbdDist : " + sbdDist + "sbdDistAcheived : "
-                        + sbdDistAcheived + "getProductID :  "
-                        + p.getProductID());
-
-                if (sbdDist.contains(Integer.valueOf(p.getProductID()))) {
-                    p.setSBDProduct(true);
-                    productMaster.setElementAt(p, i);
-                }
-                if (sbdDistAcheived.contains(Integer.valueOf(p.getProductID()))) {
-                    p.setSBDAcheived(true);
-                    productMaster.setElementAt(p, i);
-                }
-
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
     }
 
     public void clearOrderTableForInitiative() {
@@ -7042,6 +6979,7 @@ public class ProductHelper {
                         + "A" + loopEnd + ".HSNId as HSNId,"
                         + "HSN.HSNCode as HSNCode,"
                         + "A" + loopEnd + ".IsDrug as IsDrug,"
+                        + "A" + loopEnd + ".ParentHierarchy as ParentHierarchy,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
@@ -7155,7 +7093,7 @@ public class ProductHelper {
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
                     product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
-
+                    product.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
 

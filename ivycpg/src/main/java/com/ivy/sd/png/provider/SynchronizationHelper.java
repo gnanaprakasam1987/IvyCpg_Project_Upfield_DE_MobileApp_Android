@@ -1094,7 +1094,8 @@ SynchronizationHelper {
                     "union select count(UID) from NonFieldActivity where upload='N'" +
                     "union select count(Tid) from DisplaySchemeEnrollmentHeader where upload='N'" +
                     "union select count(Tid) from DisplaySchemeTrackingHeader where upload='N'" +
-                    "union select count(PlanId) from DatewisePlan where upload='N'";
+                    "union select count(PlanId) from DatewisePlan where upload='N'" +
+                    "union select count(KPIId) from RetailerKPIModifiedDetail where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -3944,10 +3945,6 @@ SynchronizationHelper {
         if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
             bmodel.downloadRetailerwiseMerchandiser();
         }
-
-        bmodel.updateRetailerMasterBySBDAcheived(false);
-        bmodel.updateRetailerMasterBySBDMerchAcheived(false);
-        bmodel.UpdateRetailermasterIsGoldStore();
 
         bmodel.configurationMasterHelper.downloadRetailerProperty();
         bmodel.downloadRetailerMaster();

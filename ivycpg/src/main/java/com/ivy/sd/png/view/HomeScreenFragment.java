@@ -47,6 +47,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
+import com.ivy.cpg.view.dashboard.olddashboard.DashboardFragment;
+import com.ivy.cpg.view.dashboard.IncentiveDashboardFragment;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.dashboard.olddashboard.SkuWiseTargetFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
@@ -970,7 +975,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner(false);
+                DashBoardHelper.getInstance(getActivity()).checkDayAndP3MSpinner(false);
                 bmodel.distributorMasterHelper.downloadDistributorsList();
 
                 switchFragment(MENU_DASH_KPI, menuItem.getMenuName());

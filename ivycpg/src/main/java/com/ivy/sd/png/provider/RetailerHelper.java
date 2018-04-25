@@ -44,8 +44,9 @@ public class RetailerHelper {
     private String contractExpiryDate;
     private String contractID;
     private String contractStartDate;
-
+    public ArrayList<RetailerMasterBO> deviateRetailerList;
     private ArrayList<StandardListBO> mRetailerSelectionFilter;
+    public ArrayList<RetailerMasterBO> retailerTargetList;
 
 
     protected RetailerHelper(Context context) {
@@ -703,6 +704,102 @@ public class RetailerHelper {
         }
 
         return url;
+    }
+
+    private ArrayList<RetailerMasterBO> getRetailerTargetList() {
+        return retailerTargetList;
+    }
+
+    private void setRetailerTargetList(ArrayList<RetailerMasterBO> retailerTargetList) {
+        this.retailerTargetList = retailerTargetList;
+    }
+
+    public void downloadRetailerTarget(String code) {
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sb = "select rk.retailerid,rk.interval,rkd.target,rk.kpiid,rkd.kpiparamlovid from RetailerKPI rk" +
+                    " inner join RetailerKPIDetail rkd on rk.kpiid = rkd.kpiid INNER JOIN StandardListMaster SM" +
+                    " ON SM.listid = rkd.KPIParamLovId where SM.listcode=" + bmodel.QT(code);
+
+            Cursor c = db.selectSQL(sb);
+            setRetailerTargetList(new ArrayList<RetailerMasterBO>());
+            if (c != null) {
+                while (c.moveToNext()) {
+
+                    RetailerMasterBO retailerMasterBO = new RetailerMasterBO();
+                    retailerMasterBO.setRetailerID(c.getString(0));
+                    retailerMasterBO.setInterval(c.getString(1));
+                    retailerMasterBO.setDaily_target(c.getDouble(2));
+                    retailerMasterBO.setKpiid_day(c.getInt(3));
+                    retailerMasterBO.setKpi_param_day(c.getInt(4));
+                    getRetailerTargetList().add(retailerMasterBO);
+                }
+            }
+
+            sb = "select rk.retailerid,rk.interval,rkmd.target,rk.kpiid,rkmd.kpiparamlovid from RetailerKPI rk" +
+                    " inner join RetailerKPIModifiedDetail rkmd on rk.kpiid = rkmd.kpiid INNER JOIN StandardListMaster SM" +
+                    " ON SM.listid = rkmd.KPIParamLovId where SM.listcode=" + bmodel.QT(code);
+
+            c = db.selectSQL(sb);
+            ArrayList<RetailerMasterBO> tempList = new ArrayList<>();
+            if (c != null) {
+                while (c.moveToNext()) {
+
+                    RetailerMasterBO retailerMasterBO = new RetailerMasterBO();
+                    retailerMasterBO.setRetailerID(c.getString(0));
+                    retailerMasterBO.setInterval(c.getString(1));
+                    retailerMasterBO.setDaily_target(c.getDouble(2));
+                    retailerMasterBO.setKpiid_day(c.getInt(3));
+                    retailerMasterBO.setKpi_param_day(c.getInt(4));
+                    tempList.add(retailerMasterBO);
+                }
+            }
+
+            for (RetailerMasterBO masterBO : getRetailerTargetList()) {
+
+                for (RetailerMasterBO retailerMasterBO : tempList) {
+                    if (masterBO.getRetailerID().equals(retailerMasterBO.getRetailerID())) {
+                        masterBO.setDaily_target(retailerMasterBO.getDaily_target());
+                        break;
+                    }
+
+                }
+            }
+
+            setRetailerTarget();
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+    }
+
+    private void setRetailerTarget(){
+        double dailyTgt;
+        double monthlyTgt;
+
+        for (RetailerMasterBO masterBO : bmodel.getRetailerMaster()){
+            dailyTgt = 0;
+            monthlyTgt = 0;
+            masterBO.setKpiid_day(0);
+            for (RetailerMasterBO retailerMasterBO : getRetailerTargetList()){
+                if (masterBO.getRetailerID().equals(retailerMasterBO.getRetailerID())) {
+                    if ("DAY".equals(retailerMasterBO.getInterval())) {
+                        dailyTgt = retailerMasterBO.getDaily_target();
+                        masterBO.setKpiid_day(retailerMasterBO.getKpiid_day());
+                        masterBO.setKpi_param_day(retailerMasterBO.getKpi_param_day());
+                    } else if ("MONTH".equals(retailerMasterBO.getInterval()))
+                        monthlyTgt = retailerMasterBO.getDaily_target();
+
+                    if (dailyTgt > 0 && monthlyTgt > 0)
+                        break;
+                }
+            }
+
+            masterBO.setDaily_target(dailyTgt);
+            masterBO.setMonthly_target(monthlyTgt);
+        }
     }
 }
 

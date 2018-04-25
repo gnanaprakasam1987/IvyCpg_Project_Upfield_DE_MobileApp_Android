@@ -61,6 +61,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SHOW_MISSED_RETAILER = "RTRS28";
     public static final String CODE_VALIDATE_TRADE_COVERAGE = "RTRS29";
     public static final String CODE_SUBD_RETIALER_SELECTION = "RTRS30";
+    public static final String CODE_SIMPLE_RETAIER_ROW = "RTRS31";
     public static final String CODE_CONTRACT_TYPE = "PROFILE17";
     public static final String CODE_CONTRACT_EXPIRYDATE = "PROFILE18";
     public static final String CODE_VISIT_FREQUENCY = "PROFILE19";
@@ -476,7 +477,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FOCUS_PACK_NOT_DONE = "ORDB71";
     public boolean IS_FOCUS_PACK_NOT_DONE;
 
-    private static final String CODE_ORDER_FROM_EXCESS_STOCK= "FUN69";
+    private static final String CODE_ORDER_FROM_EXCESS_STOCK = "FUN69";
     public boolean IS_ORDER_FROM_EXCESS_STOCK;
 
     private static final String CODE_LOAD_SUBD_ONLY = "OFPLAN01";
@@ -682,6 +683,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_P3M_DASH;
     public boolean SHOW_YAI_DASH;
     public boolean SHOW_INV_DASH;
+    public boolean SHOW_KPIBARCHART_DASH;
     public boolean SHOW_SMP_DASH;
 
     public boolean SHOW_CHART_DASH;
@@ -876,6 +878,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MISSED_RETAILER;//RTRS28
     public boolean VALIDATE_TRADE_COVERAGE;//RTRS29
     public boolean SUBD_RETAILER_SELECTION;//RTRS30
+    public boolean IS_SIMPLE_RETIALER;//RTRS31
     public boolean SHOW_CONTRACT_TYPE;
     public boolean SHOW_CONTRACT_EXPIRYDATE;
     public boolean SHOW_VISIT_FREQUENCY;
@@ -951,6 +954,9 @@ public class ConfigurationMasterHelper {
     private String loadmanagementtitle;
     private String loadplanningsubttitle;
     private String tradecoveragetitle;
+
+
+    private String expansetitle;
     private String subdtitle;
 
 
@@ -1322,6 +1328,19 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_UPLOAD_ATTENDANCE = "UPLOADATTENDANCE";
     public boolean IS_UPLOAD_ATTENDANCE ;
+
+    private static final String CODE_SHOW_DISTRIBUTOR_PROFILE = "PRO27";
+    public boolean SHOW_DISTRIBUTOR_PROFILE;
+    public int SHOW_DISTRIBUTOR_PROFILE_FROM;
+
+    private static final String CODE_SBD_TARGET_PERCENT = "SBD_DIST_ACH";
+    public static int SBD_TARGET_PERCENTAGE = 100;
+
+    private static final String CODE_SBD_GAP_PROFILE = "SBD_PROFILE";
+    public boolean SHOW_SBD_GAP_IN_PROFILE = true;
+
+    public boolean IS_BEAT_WISE_RETAILER_MAPPING = true;
+    private static final String CODE_BEAT_WISE_RETAILER = "FIELD_USER_PLAN";
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1904,6 +1923,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_MISSED_RETAILER = hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MISSED_RETAILER) : false;
         this.VALIDATE_TRADE_COVERAGE = hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) : false;
         this.SUBD_RETAILER_SELECTION = hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) != null ? hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) : false;
+        this.IS_SIMPLE_RETIALER = hashMapHHTModuleConfig.get(CODE_SIMPLE_RETAIER_ROW) != null ? hashMapHHTModuleConfig.get(CODE_SIMPLE_RETAIER_ROW) : false;
         this.SHOW_RETAILER_LOCATION = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) : false;
         this.SHOW_PROFILE_LOC2 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) : false;
         this.SHOW_CONTRACT_TYPE = hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) : false;
@@ -2033,7 +2053,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_TAX_MASTER = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null) {
-            if (hashMapHHTModuleOrder.get(CODE_TAX_APPLY)!=null && hashMapHHTModuleOrder.get(CODE_TAX_APPLY) == 1)
+            if (hashMapHHTModuleOrder.get(CODE_TAX_APPLY) != null && hashMapHHTModuleOrder.get(CODE_TAX_APPLY) == 1)
                 this.IS_EXCLUDE_TAX = false;
             else
                 this.IS_EXCLUDE_TAX = true;
@@ -2289,6 +2309,18 @@ public class ConfigurationMasterHelper {
         }
 
         this.IS_UPLOAD_ATTENDANCE = hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) != null ? hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) : false;
+
+        this.SHOW_DISTRIBUTOR_PROFILE = hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) : false;
+        if (hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null
+                && hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null) {
+            SHOW_DISTRIBUTOR_PROFILE_FROM = hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE);
+        }
+        this.SHOW_SBD_GAP_IN_PROFILE = hashMapHHTModuleConfig.get(CODE_SBD_GAP_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SBD_GAP_PROFILE) : false;
+        if (hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT) != null && hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT)) {
+            SBD_TARGET_PERCENTAGE = hashMapHHTModuleOrder.get(CODE_SBD_TARGET_PERCENT);
+        }
+
+        this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
 
     }
 
@@ -3313,6 +3345,7 @@ public class ConfigurationMasterHelper {
             STOCK_DIST_INV = false;
             SHOW_INV_DASH = false;
             SHOW_SMP_DASH = false;
+            SHOW_KPIBARCHART_DASH = false;
 
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
@@ -3470,8 +3503,6 @@ public class ConfigurationMasterHelper {
                         SHOW_CLEANED_ORDER = true;
                     else if (temp.equals("SRPEDT"))
                         SHOW_STK_ORD_SRP_EDT = true;
-
-
                 }
             }
 
@@ -3623,9 +3654,7 @@ public class ConfigurationMasterHelper {
                 }
             }
             codeValue = null;
-
             //dashboard
-
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='DASH01'";
             c = db.selectSQL(sql);
@@ -3814,6 +3843,8 @@ public class ConfigurationMasterHelper {
                         SHOW_INV_DASH = true;
                     else if (temp.equals("SMP"))
                         SHOW_SMP_DASH = true;
+                    else if (temp.equals("BAR"))
+                        SHOW_KPIBARCHART_DASH = true;
                 }
             }
 
@@ -4287,6 +4318,15 @@ public class ConfigurationMasterHelper {
     public void setTradecoveragetitle(String tradecoveragetitle) {
         this.tradecoveragetitle = tradecoveragetitle;
     }
+
+    public String getExpansetitle() {
+        return expansetitle;
+    }
+
+    public void setExpansetitle(String expansetitle) {
+        this.expansetitle = expansetitle;
+    }
+
 
     public String getSubdtitle() {
         return subdtitle;

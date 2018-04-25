@@ -307,7 +307,6 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
     }
 
 
-
     private void takePhoto() {
         if (bmodel.isExternalStorageAvailable()) {
 
@@ -436,5 +435,6 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
         }
 
     }
+
 }
 

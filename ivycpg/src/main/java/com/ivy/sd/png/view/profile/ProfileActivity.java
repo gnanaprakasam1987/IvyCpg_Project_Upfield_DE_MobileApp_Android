@@ -63,6 +63,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -77,6 +78,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UserDialogInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -89,10 +91,9 @@ import com.ivy.sd.png.view.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
+import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
-import com.ivy.sd.png.view.SellerDashboardFragment;
-import com.ivy.sd.png.view.TargetPlanActivity;
-import com.ivy.sd.png.view.TargetPlanActivity_PH;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.sd.png.view.TaskListFragment;
 import com.ivy.sd.png.view.UserDialogue;
 
@@ -191,6 +192,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     private AlertDialog mLocationAlertDialog;
     private Vector<ConfigureBO> menuDB;
     private DownloadProductsAndPrice downloadProductsAndPrice;
+
+    private String DISTRIBUTOR_PROFILE="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -473,6 +476,26 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             } catch (Exception e) {
                 Commons.printException("Error while setting label for SalesPerLevel Tab", e);
             }
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_DISTRIBUTOR_PROFILE) {
+            try {
+                if ((bmodel.labelsMasterHelper.applyLabels("distributor_profile") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("distributor_profile").length() > 0)) {
+                    DISTRIBUTOR_PROFILE = bmodel.labelsMasterHelper.applyLabels("distributor_profile");
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(DISTRIBUTOR_PROFILE));
+                } else {
+                    DISTRIBUTOR_PROFILE = "Distributor";
+                    tabLayout.addTab(tabLayout.newTab().setText(DISTRIBUTOR_PROFILE));
+                }
+            } catch (Exception e) {
+                Commons.printException("Error while setting label for DISTRIBUTOR_PROFILE Tab", e);
+            }
+        }
+
+        if(bmodel.configurationMasterHelper.SHOW_SBD_GAP_IN_PROFILE){
+            tabLayout.addTab(tabLayout.newTab().setText("SBD Gap"));
         }
 
         View root = tabLayout.getChildAt(0);
@@ -1263,9 +1286,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             } else if (tabName.equals(plan_outlet_title)) {
                 return new PlanningOutletFragment();
             } else if (tabName.equals(retailer_kpi_title)) {
+                DashBoardHelper dashBoardHelper = DashBoardHelper.getInstance(ProfileActivity.this);
                 SellerDashboardFragment retailerKpiFragment = new SellerDashboardFragment();
-                bmodel.dashBoardHelper.checkDayAndP3MSpinner(true);
-                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
+                dashBoardHelper.checkDayAndP3MSpinner(true);
+                dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
                 Bundle bnd = new Bundle();
                 bnd.putString("screentitle", "");
                 bnd.putBoolean("isFromHomeScreenTwo", true);
@@ -1290,6 +1314,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 return taskListFragment;
             } else if (tabName.equalsIgnoreCase(SALES_PER_LEVEL)) {
                 return new SalesPerCategory();
+            }
+            else if (tabName.equalsIgnoreCase(DISTRIBUTOR_PROFILE)) {
+                return new DsitributorProfileFragment();
+            } else if (tabName.equalsIgnoreCase("SBD Gap")) {
+                return new SBDGapFragment();
             }
             return null;
         }
@@ -1431,45 +1460,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         if (!isClicked && calledBy.equals(MENU_VISIT)) {
             validationToProceed();
-        } else if (!isClicked
-                && calledBy.equals(MENU_PLANNING)
-                && bmodel.configurationMasterHelper.IS_SHOW_TARGET_PLAN) {
-
-            bmodel.setRetailerMasterBO(bmodel.getRetailerMasterBO());
-            isClicked = true;
-            if (bmodel.getRetailerMasterBO().getIsToday() == 1) {
-                bmodel.setRetailerMasterBO(bmodel.getRetailerMasterBO());
-                if (bmodel.targetPlanHelper
-                        .hasDataInDTPMaster()) {
-                    if (bmodel.configurationMasterHelper.IS_TARGET_SCREEN_PH) {
-                        Intent i = new Intent(this,
-                                TargetPlanActivity_PH.class);
-                        i.putExtra("From", "Visit");
-                        startActivity(i);
-                    } else {
-                        Intent i = new Intent(this,
-                                TargetPlanActivity.class);
-                        i.putExtra("From", "Visit");
-                        startActivity(i);
-                    }
-
-                } else {
-                    Toast.makeText(
-                            this,
-                            getResources()
-                                    .getString(
-                                            R.string.planning_not_available_if_nodata_avail),
-                            Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(
-                        this,
-                        getResources()
-                                .getString(
-                                        R.string.planning_not_available_for_deviated_retailer),
-                        Toast.LENGTH_SHORT).show();
-            }
-            isClicked = false;
         }
     }
 
@@ -1955,7 +1945,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                             .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
                                     .getSubchannelid());
                     if (bmodel.productHelper.isSBDFilterAvaiable())
-                        bmodel.productHelper.loadSBDFocusData();
+                        SBDHelper.getInstance(ProfileActivity.this).loadSBDFocusData();
 
                     if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         bmodel.batchAllocationHelper.downloadBatchDetails(bmodel
