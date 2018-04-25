@@ -3,14 +3,11 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.SchemeBO;
-import com.ivy.sd.png.model.ApplicationConfigs;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -21,15 +18,15 @@ public class SchemeDetailsMasterHelperTest {
     public void downloadSchemeParentDetails() {
 
         mContext = InstrumentationRegistry.getContext();
-        BusinessModel businessModel=new BusinessModel();//(BusinessModel)InstrumentationRegistry.getTargetContext();
-        businessModel.schemeDetailsMasterHelper= SchemeDetailsMasterHelper.getInstance(mContext);
+       // BusinessModel businessModel=new BusinessModel();//(BusinessModel)InstrumentationRegistry.getTargetContext();
+       // businessModel.schemeDetailsMasterHelper= SchemeDetailsMasterHelper.getInstance(mContext);
 
         DBUtil db=new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
 
 
         SchemeDetailsMasterHelper schemeDetailsMasterHelper=SchemeDetailsMasterHelper.getInstance(mContext);
-        ArrayList<Integer> list=schemeDetailsMasterHelper.downloadSchemeParentDetails(db,0,"0",618,0,0,0,new ArrayList<String>());
+        schemeDetailsMasterHelper.downloadSchemeParentDetails(db,0,"0",618,0,0,0,new ArrayList<String>());
         ArrayList<Integer> originalList=new ArrayList<>();
         originalList.add(12);
         originalList.add(13);
@@ -37,7 +34,9 @@ public class SchemeDetailsMasterHelperTest {
         originalList.add(15);
         originalList.add(16);
         originalList.add(17);
-        assertEquals(originalList,list);
+
+        assertEquals(originalList,schemeDetailsMasterHelper.getParentIDList());
+
 
     }
 
@@ -46,15 +45,15 @@ public class SchemeDetailsMasterHelperTest {
 
 
         mContext = InstrumentationRegistry.getContext();
-        BusinessModel businessModel=new BusinessModel();//(BusinessModel)InstrumentationRegistry.getTargetContext();
-        businessModel.schemeDetailsMasterHelper= SchemeDetailsMasterHelper.getInstance(mContext);
+       // BusinessModel businessModel=new BusinessModel();//(BusinessModel)InstrumentationRegistry.getTargetContext();
+       // businessModel.schemeDetailsMasterHelper= SchemeDetailsMasterHelper.getInstance(mContext);
 
         DBUtil db=new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
 
 
         SchemeDetailsMasterHelper schemeDetailsMasterHelper=SchemeDetailsMasterHelper.getInstance(mContext);
-        List<SchemeBO> list=schemeDetailsMasterHelper.downloadBuySchemeDetails(db,"0",12,0,618,0,0,0,new ArrayList<String>());
+        schemeDetailsMasterHelper.downloadBuySchemeDetails(db,"0",12,0,618,0,0,0,new ArrayList<String>());
         ArrayList<Integer> originalList=new ArrayList<>();
         originalList.add(12);
         originalList.add(13);
@@ -62,6 +61,21 @@ public class SchemeDetailsMasterHelperTest {
         originalList.add(15);
         originalList.add(16);
         originalList.add(17);
-        assertEquals(originalList,list);
+        assertEquals(originalList,schemeDetailsMasterHelper.getSchemeList());
+    }
+
+    public void checkFreeProducts(){
+
+        mContext = InstrumentationRegistry.getContext();
+       // BusinessModel businessModel=new BusinessModel();//(BusinessModel)InstrumentationRegistry.getTargetContext();
+       // businessModel.schemeDetailsMasterHelper= SchemeDetailsMasterHelper.getInstance(mContext);
+
+        DBUtil db=new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+
+        SchemeDetailsMasterHelper schemeDetailsMasterHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+       // schemeDetailsMasterHelper.downloadf
+
+
     }
 }

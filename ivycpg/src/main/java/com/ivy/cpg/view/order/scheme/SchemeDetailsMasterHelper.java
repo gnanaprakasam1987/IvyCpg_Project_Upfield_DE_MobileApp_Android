@@ -180,8 +180,8 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-    public void destroyScheme(){
-        mParentIDList=null;
+    public void clearScheme(){
+        /*mParentIDList=null;
         mSchemeIDListByParentID=null;
         mSchemeList=null;
         mSchemeById=null;
@@ -194,7 +194,8 @@ public class SchemeDetailsMasterHelper {
         mProductIdListByAlreadyApplySchemeId=null;
         mOffInvoiceSchemeList=null;
         mOffInvoiceAppliedSchemeList=null;
-        mAppliedSchemeList=null;
+        mAppliedSchemeList=null;*/
+        instance=null;
     }
 
 
@@ -282,10 +283,8 @@ public class SchemeDetailsMasterHelper {
 
                     }
 
-                    if (isSchemeApplicable(db,c.getInt(0), c.getInt(1), c.getInt(3),retailerId))
-                        isGroupSatisfied = true;
-                    else
-                        isGroupSatisfied = false;
+                    isGroupSatisfied = isSchemeApplicable(db,c.getInt(0), c.getInt(1), c.getInt(3),retailerId);
+
 
                     lastSchemeId = c.getInt(0);
                     lastGroupId = c.getInt(1);
@@ -1725,7 +1724,7 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    public int getBatchTotalQuantity(ProductMasterBO productBO, String batchId) {
+    private int getBatchTotalQuantity(ProductMasterBO productBO, String batchId) {
 
         ArrayList<ProductMasterBO> batchWiseList = bModel.batchAllocationHelper
                 .getBatchlistByProductID().get(productBO.getProductID());
@@ -1941,7 +1940,7 @@ public class SchemeDetailsMasterHelper {
                         //Adding accumulation quantity
                         for (ProductMasterBO schemeAccBO : schemeAccumulationList) {
                             if (schemeProductBO.getProductId().equals(
-                                    schemeAccBO.getProductID()) && (!isBatchWise || (isBatchWise && schemeProductBO.getBatchId().equals(schemeAccBO.getBatchid())))) {
+                                    schemeAccBO.getProductID()) && (!isBatchWise || (schemeProductBO.getBatchId().equals(schemeAccBO.getBatchid())))) {
                                 quantity = quantity
                                         + schemeAccBO.getOrderedPcsQty()
                                         + (schemeAccBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
@@ -2103,7 +2102,7 @@ public class SchemeDetailsMasterHelper {
                         //Adding accumulation amount to the current order amount
                         for (ProductMasterBO schemeAccBO : schemeAccumulationValueList) {
                             if (schemeProductBO.getProductId().equals(
-                                    schemeAccBO.getProductID()) && (!isBatchWise || (isBatchWise && schemeProductBO.getBatchId().equals(schemeAccBO.getBatchid())))) {
+                                    schemeAccBO.getProductID()) && (!isBatchWise || (schemeProductBO.getBatchId().equals(schemeAccBO.getBatchid())))) {
                                 totalValue = totalValue
                                         + schemeAccBO.getTotalamount();
                                 break;
@@ -2455,7 +2454,7 @@ public class SchemeDetailsMasterHelper {
                     if (schemeAccumulationValueList != null) {
                         for (ProductMasterBO schemeAccBO : schemeAccumulationValueList) {
                             if (schemeProductBO.getProductId().equals(
-                                    schemeAccBO.getProductID()) && (!isBatchWise || (isBatchWise && schemeProductBO.getBatchId().equals(schemeAccBO.getBatchid())))) {
+                                    schemeAccBO.getProductID()) && (!isBatchWise || (schemeProductBO.getBatchId().equals(schemeAccBO.getBatchid())))) {
                                 value = value
                                         + schemeAccBO.getTotalamount();
                                 break;
@@ -2600,8 +2599,7 @@ public class SchemeDetailsMasterHelper {
                         minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
                         maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
 
-                        /** Calculate for amount discount **/
-
+                        // Calculate for amount discount
                         minFreeAmount = schemeProductBO.getMinAmount() * mNumberOfTimesSlabAchieved;
                         maxFreeAmount = schemeProductBO.getMaxAmount() * mNumberOfTimesSlabAchieved;
 
@@ -2611,13 +2609,11 @@ public class SchemeDetailsMasterHelper {
                     else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
 
-                        /** Calculate for quantity **/
-
+                        // Calculate for quantity
                         minFreeQuantity = minimumQuantity * mNumberOfTimesSlabAchieved;
                         maxFreeQuantity = maximumQuantity * mNumberOfTimesSlabAchieved;
 
-                        /** Calculate for amount discount **/
-
+                        // Calculate for amount discount
                         minFreeAmount = schemeProductBO.getMinAmount()
                                 * mNumberOfTimesSlabAchieved;
                         maxFreeAmount = schemeProductBO.getMaxAmount()
@@ -2734,7 +2730,7 @@ public class SchemeDetailsMasterHelper {
                 schemeProductBO.setQuantityActualCalculated(minFreeQuantity);
                 schemeProductBO.setQuantityMaxiumCalculated(maxFreeQuantity);
 
-                /** no calculation required for Price discount and % discount **/
+                // no calculation required for Price discount and % discount
 
                 minFreePrice = schemeProductBO.getPriceActual();
                 maxFreePrice = schemeProductBO.getPriceMaximum();
@@ -2913,11 +2909,6 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-    /**
-     * @return
-     * @author rajesh.k method to return hashmap of Schemeachievement history
-     * details
-     */
     private HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeId() {
         return mSchemeHistoryListBySchemeId;
     }
@@ -2956,8 +2947,8 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     * @param schemeBO
-     * @param db
+     * @param schemeBO Scheme object
+     * @param db Database object
      * @param orderID  - mapping for this orderID
      * @author rajesh.k Method to insert scheme buy product in scheme detail
      * table
@@ -3114,7 +3105,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * @param schemeBO - applied schemeBO
-     * @param db
+     * @param db Database Object
      * @param orderID  - mapping for this orderid with order header table
      * @author rajesh.k Method to insert scheme free porduct in
      * schemefreeproductdetail table
@@ -3142,11 +3133,11 @@ public class SchemeDetailsMasterHelper {
                             } else {
                                 insertFreeProductWithoutBatch(schemeBO, db,
                                         orderID, freeProductBO,
-                                        freeDetailColumn, flag);
+                                        freeDetailColumn);
                             }
                         } else {
                             insertFreeProductWithoutBatch(schemeBO, db,
-                                    orderID, freeProductBO, freeDetailColumn, flag);
+                                    orderID, freeProductBO, freeDetailColumn);
 
                         }
                     }
@@ -3160,15 +3151,15 @@ public class SchemeDetailsMasterHelper {
     /**
      * Method to use insert free product in with out batch
      *
-     * @param schemeBO
-     * @param db
-     * @param orderID
-     * @param freeProductBO
-     * @param freeDetailColumn
+     * @param schemeBO Scheme Object
+     * @param db Database Object
+     * @param orderID Order Id
+     * @param freeProductBO Free Product Object
+     * @param freeDetailColumn ColumnNames
      */
     private void insertFreeProductWithoutBatch(SchemeBO schemeBO, DBUtil db,
                                                String orderID, SchemeProductBO freeProductBO,
-                                               String freeDetailColumn, String flag) {
+                                               String freeDetailColumn) {
 
         ProductMasterBO productBO = bModel.getProductbyId(freeProductBO
                 .getProductId());
@@ -3234,13 +3225,13 @@ public class SchemeDetailsMasterHelper {
                                             String orderID, SchemeProductBO schemeProductBo,
                                             String freeDetailColumn) {
 
-        ArrayList<SchemeProductBatchQty> freeProductbatchList = schemeProductBo
+        ArrayList<SchemeProductBatchQty> freeProductBatchList = schemeProductBo
                 .getBatchWiseQty();
         ProductMasterBO productBo = bModel.productHelper
                 .getProductMasterBOById(schemeProductBo.getProductId());
-        if (freeProductbatchList != null) {
-            StringBuffer sb = null;
-            for (SchemeProductBatchQty schemeProductBatchQty : freeProductbatchList) {
+        if (freeProductBatchList != null) {
+            StringBuffer sb ;
+            for (SchemeProductBatchQty schemeProductBatchQty : freeProductBatchList) {
                 if (schemeProductBatchQty.getQty() > 0) {
                     sb = new StringBuffer();
                     sb.append(orderID + "," + schemeProductBo.getSchemeId()
@@ -3274,7 +3265,7 @@ public class SchemeDetailsMasterHelper {
 
 
     /**
-     * @param retailerID
+     * @param retailerID Retailer Id
      * @author rajesh.k Method to use reload applied scheme objects
      */
     public void loadSchemeDetails(Context mContext,String retailerID) {
@@ -3311,6 +3302,7 @@ public class SchemeDetailsMasterHelper {
             db.closeDB();
 
         } catch (Exception e) {
+            if(db!=null)
             db.closeDB();
         }
     }
@@ -3363,7 +3355,7 @@ public class SchemeDetailsMasterHelper {
 
 
     /**
-     * @param id
+     * @param id Order Id
      * @param db - if true, id is OrderID,false Invoiceid
      * @author rajesh.k method to preload free product object from sqlite
      */
@@ -3641,11 +3633,9 @@ public class SchemeDetailsMasterHelper {
      * this method used to reduce scheme count from scheme master table,if how
      * many times scheme apply
      *
-     * @param parentID - reduce scheme count for this parentID
+     * @param mParentId - reduce scheme count for this parentID
      */
-    private void updateSchemeCountApply(int parentID, String schemeid, DBUtil db) {
-
-        StringBuffer sb = new StringBuffer();
+    private void updateSchemeCountApply(int mParentId, String schemeid, DBUtil db) {
 
 
         // update scheme apply count retailer wise
@@ -3734,7 +3724,6 @@ public class SchemeDetailsMasterHelper {
                         List<SchemeProductBO> buyList = schemeBO.getBuyingProducts();
                         String productid = c.getString(1);
                         String schemeType = c.getString(2);
-                        double percentage = c.getDouble(3);
                         double discountValue = c.getDouble(4);
 
                         if (buyList != null) {
@@ -3772,6 +3761,7 @@ public class SchemeDetailsMasterHelper {
             c.close();
             db.closeDB();
         } catch (Exception e) {
+            if(db!=null)
             db.closeDB();
             Commons.printException("" + e);
         }
@@ -3785,7 +3775,7 @@ public class SchemeDetailsMasterHelper {
             total = updateBatchWiseSchemeProducts(productBo, value, type);
 
         } else {
-            double totalValue = 0.0;
+            double totalValue ;
             totalValue = productBo.getOrderedPcsQty() * productBo.getSrp()
                     + productBo.getOrderedCaseQty() * productBo.getCsrp()
                     + productBo.getOrderedOuterQty() * productBo.getOsrp();
@@ -3838,7 +3828,7 @@ public class SchemeDetailsMasterHelper {
                 if (batchProductBo.getOrderedPcsQty() > 0
                         || batchProductBo.getOrderedCaseQty() > 0
                         || batchProductBo.getOrderedOuterQty() > 0) {
-                    double totalValue = 0.0;
+                    double totalValue;
                     if (batchProductBo.getDiscount_order_value() > 0) {
                         totalValue = batchProductBo.getDiscount_order_value();
                     } else {
@@ -3912,10 +3902,10 @@ public class SchemeDetailsMasterHelper {
                         }
 
                     } else if (type.equals("PRODUCT_DISC")) {
-                        double totalpercentageValue = totalValue * value / 100;
+                        double totalPercentageValue = totalValue * value / 100;
 
                         totalDisPriceValue = totalDisPriceValue
-                                + totalpercentageValue;
+                                + totalPercentageValue;
 
                     } else if (type.equals("PRODUCT_DISC_AMT")) {
                         double totalAmountValue = value;
@@ -4157,7 +4147,7 @@ public class SchemeDetailsMasterHelper {
 
     public boolean isSameGroupAvailableinDifferentSlab(int parentId) {
 
-        ArrayList<String> groupNameList = null;
+        ArrayList<String> groupNameList ;
         ArrayList<String> previousGroupNameList = null;
         ArrayList<String> schemeIdList = mSchemeIDListByParentID.get(parentId);
         if (schemeIdList != null) {
@@ -4231,6 +4221,7 @@ public class SchemeDetailsMasterHelper {
             c.close();
             db.closeDB();
         } catch (Exception e) {
+            if(db!=null)
             db.closeDB();
             Commons.printException("" + e);
         }
@@ -4395,7 +4386,7 @@ public class SchemeDetailsMasterHelper {
     /**
      * Download display scheme applicable products
      */
-    public ArrayList<SchemeBO> downloadDisplaySchemeSlabs(Context mContext) {
+    public void downloadDisplaySchemeSlabs(Context mContext) {
         mDisplaySchemeSlabs = new ArrayList<>();
         DBUtil db = null;
         try {
@@ -4462,7 +4453,6 @@ public class SchemeDetailsMasterHelper {
             Commons.printException("" + e);
         }
 
-        return mDisplaySchemeSlabs;
     }
 
     /**
