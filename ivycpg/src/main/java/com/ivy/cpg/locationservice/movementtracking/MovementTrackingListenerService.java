@@ -21,7 +21,6 @@ import com.google.android.gms.tasks.Task;
 import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.cpg.locationservice.activitytracking.ActivityIntentService;
-import com.ivy.cpg.locationservice.activitytracking.ActivityRecognitionService;
 import com.ivy.sd.png.util.Commons;
 
 public class MovementTrackingListenerService extends Service {
@@ -44,6 +43,7 @@ public class MovementTrackingListenerService extends Service {
 	UserDefinedBroadcastReceiver broadCastReceiver = new UserDefinedBroadcastReceiver();
 	private final String INTENT_ACTION ="LOCATION CAPTURED";
 
+	//Activity Recognition Declaration
 	private PendingIntent mPendingIntent;
 	private ActivityRecognitionClient mActivityRecognitionClient;
 
@@ -66,6 +66,7 @@ public class MovementTrackingListenerService extends Service {
 		LocalBroadcastManager.getInstance(this).registerReceiver(activityBroadcastReceiver,
 				new IntentFilter(BROADCAST_DETECTED_ACTIVITY));
 
+		//Activity Recognition client initialization and registering pending intent to receive result
 		mActivityRecognitionClient = new ActivityRecognitionClient(this);
 		Intent mIntentService = new Intent(this, ActivityIntentService.class);
 		mPendingIntent = PendingIntent.getService(this, 11, mIntentService, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -177,9 +178,6 @@ public class MovementTrackingListenerService extends Service {
 						//Stop the Movement track listener service after location send
 						stopService(new Intent(getApplicationContext(),MovementTrackingListenerService.class));
 
-						//Stoppping Activity Recognition service
-//						stopService(new Intent(getApplicationContext(),ActivityRecognitionService.class));
-
 					}
 				}
 			}
@@ -198,6 +196,9 @@ public class MovementTrackingListenerService extends Service {
 		}
 	}
 
+	/**
+	 * Starting the Activity Recognition Listener
+	 */
 	public void requestActivityUpdatesButtonHandler() {
 		int DETECTION_INTERVAL_IN_MILLISECONDS = 5000;
 		Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
@@ -219,6 +220,9 @@ public class MovementTrackingListenerService extends Service {
 		});
 	}
 
+	/**
+	 * Stopping the Activity Recognition Listener
+	 */
 	public void removeActivityUpdatesButtonHandler() {
 		Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(
 				mPendingIntent);

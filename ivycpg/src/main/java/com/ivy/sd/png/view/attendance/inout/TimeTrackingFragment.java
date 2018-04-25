@@ -30,7 +30,6 @@ import android.widget.TimePicker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.locationservice.LocationConstants;
-import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.realtime.FireBaseRealtimeLocationUpload;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
@@ -296,15 +295,11 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             holder.btInTime.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (startLocationService()) {
+                    if(startLocationService(holder.nonFieldTwoBO.getReason())) {
                         holder.nonFieldTwoBO.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
                         bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO);
 
                         loadNonFieldTwoDetails();
-                        if(bmodel.mAttendanceHelper
-                                .getReasonName(holder.nonFieldTwoBO.getReason()).equalsIgnoreCase("Working"))
-                            uploadAttendance("IN");
-
                     }
                 }
             });
@@ -312,13 +307,13 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             holder.btOutTime.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    stopLocationService();
+
                     holder.nonFieldTwoBO.setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
                     bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO);
                     loadNonFieldTwoDetails();
-                    if(bmodel.mAttendanceHelper
-                            .getReasonName(holder.nonFieldTwoBO.getReason()).equalsIgnoreCase("Working"))
-                        uploadAttendance("OUT");
+
+                    stopLocationService(holder.nonFieldTwoBO.getReason());
+
                 }
             });
 
@@ -376,35 +371,29 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 dialog = new InOutReasonDialog(getActivity(), onmydailogresult);
                 dialog.setDialogResult(new InOutReasonDialog.OnMyDialogResult() {
 
-
                     public void cancel(String reasonid) {
                         dialog.dismiss();
 
-                        if (startLocationService()) {
+                        NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
+                        addNonFieldTwoBo.setId(bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                + SDUtil.now(SDUtil.DATE_TIME_ID) + "");
+                        addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
+                        addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        addNonFieldTwoBo.setOutTime(null);
+                        addNonFieldTwoBo.setRemarks("");
+                        addNonFieldTwoBo.setReason(reasonid);
 
-                            NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
-                            addNonFieldTwoBo.setId(bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                    + SDUtil.now(SDUtil.DATE_TIME_ID) + "");
-                            addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
-                            addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                            addNonFieldTwoBo.setOutTime(null);
-                            addNonFieldTwoBo.setRemarks("");
-                            addNonFieldTwoBo.setReason(reasonid);
+                        if(startLocationService(addNonFieldTwoBo.getReason())) {
+
                             bmodel.mAttendanceHelper.saveNonFieldWorkTwoDetail(addNonFieldTwoBo);
                             if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE) {
                                 HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance();
                             }
 
-
                             //}
                             listview.setVisibility(View.VISIBLE);
                             no_data_txt.setVisibility(View.GONE);
                             loadNonFieldTwoDetails();
-
-                            if(bmodel.mAttendanceHelper
-                                    .getReasonName(addNonFieldTwoBo.getReason()).equalsIgnoreCase("Working"))
-                                uploadAttendance("IN");
-
                         }
                     }
                 });
@@ -529,23 +518,6 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
     }
 
-    //Checks whether if location accuracy is not set as high
-    boolean isLocationHighAccuracyEnabled(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int locationMode = 0;
-            try {
-                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return (locationMode != Settings.Secure.LOCATION_MODE_OFF && locationMode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY); //check location mode
-
-        }
-        return false;
-    }
-
     /**
      * Starts the service to Track the Realtime Location and uploads in FIREBASE
      * <p>
@@ -559,11 +531,12 @@ public class TimeTrackingFragment extends IvyBaseFragment {
      *
      * @return df
      */
-    private boolean startLocationService() {
+    private boolean startLocationService(String reasonId) {
+
         boolean success = false;
-        if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
+        if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE && reasonId.equalsIgnoreCase("10454")) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
-            realTimeLocation.movementTrackingAttendanceIn(getContext(),"RealtimeTracking");
+            realTimeLocation.updateAttendanceIn(getContext(),"RealtimeTracking");
             int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation, getContext());
             if (statusCode == LocationConstants.STATUS_SUCCESS)
                 success = true;
@@ -572,6 +545,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             success = true;
         }
 
+        uploadAttendance("IN",reasonId);
+
         return success;
     }
 
@@ -579,25 +554,28 @@ public class TimeTrackingFragment extends IvyBaseFragment {
      * Stops the Location Track Service
      * Updates the outTime when stopped
      */
-    private void stopLocationService() {
-        if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
+    private void stopLocationService(String reasonId) {
+
+        if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE && reasonId.equalsIgnoreCase("10454")) {
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
             RealTimeLocationTracking.stopLocationTracking(getContext());
-            realTimeLocation.onRealTimeLocationStopped(getContext());
+            realTimeLocation.updateAttendanceOut(getContext(),"RealtimeTracking");
         }
+
+        uploadAttendance("OUT",reasonId);
     }
 
     /**
-     * Upload Attendance status - IN/OUT with time in Firebase
+     * Upload Attendance status - IN/OUT with Time in Firebase
      */
-    private void uploadAttendance(String IN_OUT) {
-        if (bmodel.configurationMasterHelper.IS_UPLOAD_ATTENDANCE) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
+    private void uploadAttendance(String IN_OUT,String reasonId) {
+        if (bmodel.configurationMasterHelper.IS_UPLOAD_ATTENDANCE && reasonId.equalsIgnoreCase("10454")) {
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
 
             if(IN_OUT.equalsIgnoreCase("IN")){
-                realTimeLocation.movementTrackingAttendanceIn(getContext(),"MovementTracking");
+                realTimeLocation.updateAttendanceIn(getContext(),"Attendance");
             }else {
-                realTimeLocation.movementTrackingAttendanceOut(getContext(),"MovementTracking");
+                realTimeLocation.updateAttendanceOut(getContext(),"Attendance");
             }
         }
     }

@@ -216,7 +216,7 @@ public class LocationServiceHelper {
         PendingIntent pi = PendingIntent.getBroadcast(context, 1001, i, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long timeInMillis = System.currentTimeMillis() + (alarm_time * 60 * 1000);
-        Commons.print("AlarmManager Time in millis--> " + timeInMillis);
+//        Commons.print("AlarmManager Time in millis--> " + timeInMillis);
 
         if (alarmManager != null) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {

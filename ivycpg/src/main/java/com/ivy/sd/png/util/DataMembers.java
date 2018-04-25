@@ -356,7 +356,7 @@ public class DataMembers {
     private static final String tbl_InvoiceDetailsUpload_cols = "InvoiceId,ProductId,Qty,Rate,UomId,uomCount,pcsQty,caseQty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,batchid,casePrice,outerPrice,pcsUOMId,OrderType,totalamount,PriceOffId,PriceOffValue,isFreeProduct,weight,hasSerial,TaxAmount,SchemeAmount,DiscountAmount,NetAmount,HsnCode,RField1";
     private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath,DistParentID,BankName,BranchName";
     private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath";
-    private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID,Battery,LocationProvider,IsLocatioEnabled,IsDeviated,SupervisorId";
+    private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID,Battery,LocationProvider,IsLocatioEnabled,IsDeviated";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
     private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate,pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
     private static final String tbl_deviateReasontableupload_cols = "uid,retailerid,date,reasonid,DistributorID,remarks";
@@ -416,7 +416,7 @@ public class DataMembers {
     public static final String tbl_credit_note_cols = "id,refno,amount,retailerid,date,creditnotetype,isused,Appliedamount,Actualamount";
 
     private static final String tbl_location_tracking = "LocationTracking";
-    private static final String tbl_location_tracking_cols = "Tid,Date,Latitude,Longtitude,Accuracy,Activity,Battery,LocationProvider,IsLocationEnabled,SupervisorId";
+    private static final String tbl_location_tracking_cols = "Tid,Date,Latitude,Longtitude,Accuracy,Activity,Battery,LocationProvider,IsLocationEnabled";
 
     public static final String tbl_PriceHeader = "PriceCheckHeader";
     private static final String tbl_PriceHeader_cols = "Tid,RetailerId,Date,TimeZone,distributorid,Weightage,Score";

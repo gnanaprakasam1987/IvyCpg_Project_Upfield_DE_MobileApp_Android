@@ -19,26 +19,30 @@ import com.ivy.sd.png.util.DataMembers;
 
 public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
-    public FireBaseRealtimeLocationUpload() {
-
-    }
-
-    /*Firebase Authentication Method*/
+    /**
+     * Firebase Authentication Method
+     * Authenticate with Firebase, and request location updates
+     */
     public FireBaseRealtimeLocationUpload(Context context) {
-        // Authenticate with Firebase, and request location updates
-        String email = context.getString(R.string.firebase_email);
-        String password = context.getString(R.string.firebase_password);
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Commons.print("Service Firebase Uth Success");
-                } else {
-                    Commons.print("Service firebase onComplete: Failed=");
+
+        if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+
+            String email = context.getString(R.string.firebase_email);
+            String password = context.getString(R.string.firebase_password);
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                    email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        Commons.print("Service Firebase Uth Success");
+                    } else {
+                        Commons.print("Service firebase onComplete: Failed=");
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            Commons.print("Firebase : User already Online");
+        }
     }
 
     /**
@@ -54,25 +58,11 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
     }
 
+    /**
+     * Update Firebase Attendance InTime and Status in Specified Node
+     */
     @Override
-    public void onRealTimeLocationStopped(Context context) {
-
-        String userId = "";
-        UserMasterBO userMasterBO = getUserDetail(context);
-        if (userMasterBO != null) {
-            userId = String.valueOf(userMasterBO.getUserid());
-        }
-
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
-                child(context.getString(R.string.firebase_path)).child("RealtimeTracking").child(userId);
-        databaseReference.child("outTime").setValue(String.valueOf(System.currentTimeMillis()));
-        databaseReference.child("status").setValue("Day Closed");
-//            FirebaseDatabase.getInstance().goOffline();
-    }
-
-    @Override
-    public void movementTrackingAttendanceIn(Context context, String pathNode) {
+    public void updateAttendanceIn(Context context, String pathNode) {
         String userId = "";
         UserMasterBO userMasterBO = getUserDetail(context);
         if (userMasterBO != null) {
@@ -87,8 +77,11 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         databaseReference.child("supervisorId").setValue(getSupervisorIds(context));
     }
 
+    /**
+     * Update Firebase Attendance OutTime and Status in Specified Node
+     */
     @Override
-    public void movementTrackingAttendanceOut(Context context, String pathNode) {
+    public void updateAttendanceOut(Context context, String pathNode) {
 
         String userId = "";
         UserMasterBO userMasterBO = getUserDetail(context);
@@ -113,9 +106,6 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             userId = String.valueOf(userMasterBO.getUserid());
             userName = String.valueOf(userMasterBO.getUserName());
         }
-        locationDetailBO.setUserId(userId);
-        locationDetailBO.setUserName(userName);
-        locationDetailBO.setSupervisorId(getSupervisorIds(context));
 
         final String path = context.getString(R.string.firebase_path) + "/" + nodePath + "/" + userId;
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.ivy.cpg.locationservice.LocationServiceHelper;
-import com.ivy.cpg.locationservice.activitytracking.ActivityRecognitionService;
 import com.ivy.sd.png.util.Commons;
 
 public class MovementTrackingAlarmReceiver extends BroadcastReceiver {

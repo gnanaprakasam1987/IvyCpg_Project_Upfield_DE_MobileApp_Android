@@ -264,9 +264,9 @@ public class MovementTrackingLocationUtil implements LocationListener, GoogleApi
         int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
         boolean isLessAccurate = accuracyDelta > 0;
         boolean isMoreAccurate = accuracyDelta < 0;
-        Commons.print("AlarmManager location -- "+location);
-        Commons.print("AlarmManager currentBestLocation -- "+currentBestLocation);
-        Commons.print("AlarmManager isMoreAccurate "+accuracyDelta);
+//        Commons.print("AlarmManager location -- "+location);
+//        Commons.print("AlarmManager currentBestLocation -- "+currentBestLocation);
+//        Commons.print("AlarmManager isMoreAccurate "+accuracyDelta);
 
         // Determine location quality using a combination of timeliness and accuracy
         if (isMoreAccurate) {
