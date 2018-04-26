@@ -2011,8 +2011,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     .setText(bmodel.labelsMasterHelper
                                             .applyLabels(row.findViewById(
                                                     R.id.caseTitle).getTag()));
+                        holder.caseTitleText = bmodel.labelsMasterHelper
+                                .applyLabels(row.findViewById(
+                                        R.id.caseTitle).getTag());
                     } catch (Exception e) {
                         Commons.printException(e + "");
+                        holder.caseTitleText = getResources().getString(R.string.item_case);
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
@@ -3393,19 +3397,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.productObj = product;
             holder.productId = holder.productObj.getProductID();
 
-            if (holder.productObj.getCaseSize() > 0) {
-                String label = holder.productObj.getCaseSize() > 1 ? getResources().getString(R.string.avail_cases) + "(" + holder.productObj.getCaseSize() + getString(R.string.pcs) + ")" : getResources().getString(R.string.avail_cases) + "(" + holder.productObj.getCaseSize() + getString(R.string.pclabels) + ")";
-                ((TextView) row.findViewById(R.id.caseTitle)).setText(label);
-            } else
-                ((TextView) row.findViewById(R.id.caseTitle)).setText(getResources().getString(R.string.avail_cases));
-
             try {
                 holder.psname.setTextColor(product.getTextColor());
             } catch (Exception e) {
                 Commons.printException(e);
                 holder.psname.setTextColor(ContextCompat.getColor(getApplicationContext(),
                         android.R.color.black));
-
             }
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISPLAY_FOR_PIRAMAL) {
@@ -3418,6 +3415,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             android.R.color.black));
 
                 }
+            }
+
+            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE && holder.productObj.getCaseSize() > 0) {
+                String label = holder.caseTitleText +"(" + holder.productObj.getCaseSize() + getResources().getQuantityString(R.plurals.pcs,holder.productObj.getCaseSize()) + ")";
+                ((TextView) row.findViewById(R.id.caseTitle)).setText(label);
             }
 
             holder.tvbarcode.setText(holder.productObj.getBarCode());
@@ -3788,6 +3790,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     class ViewHolder {
         private AppCompatCheckBox imageButton_availability;
         private String productId;
+        private String caseTitleText;
         private String pname;
         private ProductMasterBO productObj;
         private TextView tvbarcode;
