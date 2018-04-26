@@ -52,59 +52,54 @@ import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * This screen will show list of schemes applied for current order from that user can select/Reject/Modify
+ */
 public class SchemeApply extends IvyBaseActivityNoActionBar {
     private static final String TAG = "Scheme Apply";
 
-
-    private List<ProductMasterBO> mOrderedSchemeProducts;
-
     private SchemeDetailsMasterHelper schemeHelper;
-
-    /**
-     * Called when the activity is first created.
-     */
     private ExpandableListView mExpandableLV;
-    private BusinessModel bmodel;
+    private BusinessModel bModel;
 
     private boolean isClick;
-
     private EditText QUANTITY;
-
     private String append = "";
     private String screenCode = "MENU_STK_ORD";
-    private SchemeExpandapleAdapterNew mExpandableAdapterNew;
-    // ArrayList used to store scheme achieved list
+    private SchemeExpandableAdapter mExpandableAdapterNew;
     private ArrayList<SchemeBO> mSchemeDoneList;
-    private Toolbar toolbar;
-    private Button btnNext;
     private String fromOrderScreen = "";
     private String schemeViewTxt = "View";
+    private SchemeFreeProductSelectionDialog mSchemeDialog;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.apply_scheme);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar =findViewById(R.id.toolbar);
+
         if (toolbar != null)
             setSupportActionBar(toolbar);
+        if(getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(getResources().getString(R.string.Scheme_apply));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
-        // Set title to toolbar
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        setScreenTitle(getResources().getString(R.string.Scheme_apply));
-        // Used to on / off the back arrow icon
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Used to remove the app logo actionbar icon and set title as home
-        // (title support click)
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        // Used to hide the app logo icon from actionbar
-        // getSupportActionBar().setDisplayUseLogoEnabled(false);
-
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
+        bModel = (BusinessModel) getApplicationContext();
+        bModel.setContext(this);
         schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+
+        mExpandableLV = findViewById(R.id.elv);
+        Button btnNext =  findViewById(R.id.btn_next);
+        btnNext.setTypeface(bModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
+
         Bundle extras = getIntent().getExtras();
         if (savedInstanceState == null) {
             if (extras != null) {
@@ -114,17 +109,14 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         }
 
         try {
-            if (bmodel.labelsMasterHelper.applyLabels("scheme_view") != null)
-                schemeViewTxt = bmodel.labelsMasterHelper.applyLabels("scheme_view");
+            if (bModel.labelsMasterHelper.applyLabels("scheme_view") != null)
+                schemeViewTxt = bModel.labelsMasterHelper.applyLabels("scheme_view");
             else schemeViewTxt=getResources().getString(R.string.view);
         } catch (Exception e) {
             Commons.printException(e);
         }
 
-        mExpandableLV = (ExpandableListView) findViewById(R.id.elv);
-        btnNext = (Button) findViewById(R.id.btn_next);
-        btnNext.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        ((Button) findViewById(R.id.calcdot)).setVisibility(View.VISIBLE);
+
         btnNext.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -136,25 +128,21 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD") ||
                 fromOrderScreen.equalsIgnoreCase("MENU_ORDER") ||
                 fromOrderScreen.equalsIgnoreCase("MENU_CATALOG_ORDER")) {
-
               new SchemeApplyAsync().execute();
 
         } else {
             mSchemeDoneList = schemeHelper.getAppliedSchemeList();
             if (mSchemeDoneList.size() > 0) {
-                mExpandableAdapterNew = new SchemeExpandapleAdapterNew();
+                mExpandableAdapterNew = new SchemeExpandableAdapter();
                 mExpandableLV.setAdapter(mExpandableAdapterNew);
             }
         }
 
-        // updateOrder();
     }
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
-//        updateSchemeDetails();
 
     }
 
@@ -180,7 +168,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             if(isDone){
                 mSchemeDoneList = schemeHelper.getAppliedSchemeList();
                 if (mSchemeDoneList.size() > 0) {
-                    mExpandableAdapterNew = new SchemeExpandapleAdapterNew();
+                    mExpandableAdapterNew = new SchemeExpandableAdapter();
                     mExpandableLV.setAdapter(mExpandableAdapterNew);
                 }
             }
@@ -199,7 +187,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_only_next, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -218,14 +205,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
         int i = item.getItemId();
         if (i == android.R.id.home) {
             click(1);
-            return true;
-        } else if (i == R.id.menu_next) {
-            schemeHelper.clearOffInvoiceSchemeList();
-            click(2);
             return true;
         } else if (i == R.id.menu_counter_remark) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -241,18 +223,15 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         if (!isClick) {
 
             if (action == 1) {
-                isClick = true;
-                // Intent returnIntent = new Intent();
-                // setResult(RESULT_CANCELED, returnIntent);
-                // super.onDestroy();
-                if ((bmodel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bmodel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
-                        && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                isClick = true;             
+                if ((bModel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bModel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
+                        && bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     Intent intent = new Intent(SchemeApply.this,
                             CrownReturnActivity.class);
                     intent.putExtra("OrderFlag", "Nothing");
                     intent.putExtra("ScreenCode", screenCode);
                     startActivity(intent);
-                } else if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                } else if (bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     Intent intent = new Intent(SchemeApply.this,
                             BatchAllocation.class);
                     intent.putExtra("OrderFlag", "Nothing");
@@ -275,41 +254,39 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
             } else if (action == 2) {
 
-                if (!isRangeWiseSchemeValidateDone()) {
-
+                if (!schemeHelper.isValuesAppliedBetweenTheRange(mSchemeDoneList)) {
+                    showAlert(getResources().getString(R.string.not_in_range_reset));
 
                     return;
                 }
-                if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
+                if (bModel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
                     Intent init = new Intent(SchemeApply.this,
                             OrderDiscount.class);
                     init.putExtra("ScreenCode", screenCode);
                     startActivity(init);
-//                    finish();
-                } else if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
+
+                } else if (bModel.configurationMasterHelper.IS_INITIATIVE) {
 
                     Intent init = new Intent(SchemeApply.this,
                             InitiativeActivity.class);
                     init.putExtra("ScreenCode", screenCode);
                     startActivity(init);
-//                    finish();
-                } else if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
+
+                } else if (bModel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
                     Intent i = new Intent(SchemeApply.this,
                             DigitalContentActivity.class);
                     i.putExtra("FromInit", "Initiative");
                     i.putExtra("ScreenCode", screenCode);
                     startActivity(i);
-//                    finish();
+
                 } else {
                     Intent i = new Intent(SchemeApply.this, OrderSummary.class);
                     i.putExtra("ScreenCode", screenCode);
                     startActivity(i);
-//                    finish();
+
                 }
                 overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                finish();
-                // Intent i = new Intent(SchemeApply.this, OrderSummary.class);
-                // startActivityForResult(i, 0);
+                finish();      
 
             }
         }
@@ -333,11 +310,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
     NextSlabSchemeDialog mSchemePromDialog;
 
 
-    class SchemeExpandapleAdapterNew extends BaseExpandableListAdapter {
+    class SchemeExpandableAdapter extends BaseExpandableListAdapter {
 
         LayoutInflater mInflater;
 
-        public SchemeExpandapleAdapterNew() {
+        public SchemeExpandableAdapter() {
             mInflater = getLayoutInflater();
         }
 
@@ -392,68 +369,68 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 view = mInflater.inflate(R.layout.row_scheme_product, parent,
                         false);
 
-                holder.productNameTV = (TextView) view
+                holder.productNameTV =  view
                         .findViewById(R.id.tv_product_name);
-                holder.orderQuantityTV = (TextView) view
+                holder.orderQuantityTV =  view
                         .findViewById(R.id.tv_buying_qty);
-                holder.schemeTV = (TextView) view.findViewById(R.id.tv_scheme);
+                holder.schemeTV =  view.findViewById(R.id.tv_scheme);
 
-                holder.quantityRangeTV = (TextView) view
+                holder.quantityRangeTV =  view
                         .findViewById(R.id.tv_quantity_range);
-                holder.priceRangeTV = (TextView) view
+                holder.priceRangeTV =  view
                         .findViewById(R.id.tv_price_range);
-                holder.amountRangeTV = (TextView) view
+                holder.amountRangeTV =  view
                         .findViewById(R.id.tv_amount_range);
-                holder.percentRangeTV = (TextView) view
+                holder.percentRangeTV =  view
                         .findViewById(R.id.tv_percent_range);
 
-                holder.quantityCB = (CheckBox) view
+                holder.quantityCB =  view
                         .findViewById(R.id.cb_quantity);
-                holder.priceCB = (CheckBox) view.findViewById(R.id.cb_price);
-                holder.amountCB = (CheckBox) view.findViewById(R.id.cb_amount);
-                holder.percentCB = (CheckBox) view
+                holder.priceCB =  view.findViewById(R.id.cb_price);
+                holder.amountCB =  view.findViewById(R.id.cb_amount);
+                holder.percentCB =  view
                         .findViewById(R.id.cb_percent);
 
-                holder.priceET = (EditText) view
+                holder.priceET =  view
                         .findViewById(R.id.et_selected_price);
-                holder.amountET = (EditText) view
+                holder.amountET =  view
                         .findViewById(R.id.et_selected_amount);
-                holder.percentET = (EditText) view
+                holder.percentET =  view
                         .findViewById(R.id.et_selected_percent);
 
-                holder.showFreeBTN = (Button) view
+                holder.showFreeBTN =  view
                         .findViewById(R.id.btn_show_free_products);
 
-                holder.rateRL = (RelativeLayout) view
+                holder.rateRL =  view
                         .findViewById(R.id.priceLayout);
-                holder.amountRL = (RelativeLayout) view
+                holder.amountRL =  view
                         .findViewById(R.id.amountLayout);
-                holder.percentRL = (RelativeLayout) view
+                holder.percentRL =  view
                         .findViewById(R.id.percentLayout);
-                holder.qtyRL = (RelativeLayout) view
+                holder.qtyRL =  view
                         .findViewById(R.id.qtyLayout);
-                holder.upArrow = (Button) view.findViewById(R.id.uparrow);
-                holder.tv_label_qtytitle = (TextView) view.findViewById(R.id.tv_qtytitle);
+                holder.upArrow =  view.findViewById(R.id.uparrow);
+                holder.tv_label_qtytitle =  view.findViewById(R.id.tv_qtytitle);
 
                 //typeface
-                holder.productNameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.schemeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.orderQuantityTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.productNameTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.schemeTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.orderQuantityTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                holder.quantityRangeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.priceRangeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.amountRangeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.percentRangeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.showFreeBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.priceET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.amountET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.percentET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_label_qtytitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.quantityRangeTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.priceRangeTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.amountRangeTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.percentRangeTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.showFreeBTN.setTypeface(bModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.priceET.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.amountET.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.percentET.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tv_label_qtytitle.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                ((TextView) view.findViewById(R.id.tv_qtytitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                ((TextView) view.findViewById(R.id.tv_pricetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                ((TextView) view.findViewById(R.id.tv_amounttitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                ((TextView) view.findViewById(R.id.tv_percenttitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                ((TextView) view.findViewById(R.id.tv_qtytitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                ((TextView) view.findViewById(R.id.tv_pricetitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                ((TextView) view.findViewById(R.id.tv_amounttitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                ((TextView) view.findViewById(R.id.tv_percenttitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 holder.showFreeBTN.setText(schemeViewTxt);
 
@@ -492,15 +469,14 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
                     @Override
                     public void onClick(View v) {
-                        mCanShowSchemeDialog = true;
 
-                        if (mCanShowSchemeDialog) {
 
                             if (mSchemeDialog == null) {
 
-                                mSchemeDialog = new SchemeFreePorductSelectionDialog(
+                                mSchemeDialog = new SchemeFreeProductSelectionDialog(
                                         SchemeApply.this, holder.schemeBO,
-                                        null, screenCode);
+                                        null);
+                                if(mSchemeDialog.getWindow()!=null)
                                 mSchemeDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
                                 mSchemeDialog.show();
                                 mSchemeDialog.setCancelable(false);
@@ -516,9 +492,10 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                         });
                             } else {
                                 if (!mSchemeDialog.isShowing()) {
-                                    mSchemeDialog = new SchemeFreePorductSelectionDialog(
+                                    mSchemeDialog = new SchemeFreeProductSelectionDialog(
                                             SchemeApply.this, holder.schemeBO,
-                                            null, screenCode);
+                                            null);
+                                    if(mSchemeDialog.getWindow()!=null)
                                     mSchemeDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
                                     mSchemeDialog.show();
                                     mSchemeDialog.setCancelable(false);
@@ -533,7 +510,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                             });
                                 }
                             }
-                        }
                     }
                 });
 
@@ -543,17 +519,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             @Override
                             public void onCheckedChanged(
                                     CompoundButton buttonView, boolean isChecked) {
-//								showFullName(holder.productBO.getProductName());
 
                                 QUANTITY = null;
                                 if (isChecked) {
-
-									/*
-                                     * if (!isValidatePriceEntered()) {
-									 * holder.quantityCB.setChecked(false);
-									 * holder.showFreeBTN.setEnabled(false);
-									 * return; }
-									 */
 
                                     if (holder.schemeBO.isPriceTypeSeleted()) {
                                         holder.priceCB.setChecked(false);
@@ -598,18 +566,12 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             @Override
                             public void onCheckedChanged(
                                     CompoundButton buttonView, boolean isChecked) {
-//								showFullName(holder.productBO.getProductName());
 
-								/*
-                                 * if (!isValidatePriceEntered()) {
-								 * holder.priceCB.setChecked(!isChecked);
-								 * return; }
-								 */
                                 QUANTITY = null;
                                 if (isChecked) {
 
-                                    holder.priceET.setText(holder.schemeBO
-                                            .getActualPrice() + "");
+                                    holder.priceET.setText(String.valueOf(holder.schemeBO
+                                            .getActualPrice()));
 
                                     if (holder.schemeBO
                                             .isQuantityTypeSelected()) {
@@ -646,7 +608,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                     holder.priceET.setClickable(false);
 
                                 }
-                                //  if(holder.schemeBO.getIsFreeCombination()==1) {
+
                                 SchemeProductBO schemeProductBO = holder.schemeBO
                                         .getFreeProducts().get(0);
                                 if (schemeProductBO != null) {
@@ -662,8 +624,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                 }
 
                                 holder.schemeBO.setPriceTypeSeleted(isChecked);
-                                //  }
-                                // mExpandableAdapter.notifyDataSetChanged();
+
                             }
                         });
 
@@ -673,18 +634,12 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             @Override
                             public void onCheckedChanged(
                                     CompoundButton buttonView, boolean isChecked) {
-//								showFullName(holder.productBO.getProductName());
 
-								/*
-                                 * if (!isValidatePriceEntered()) {
-								 * holder.amountCB.setChecked(!isChecked);
-								 * return; }
-								 */
                                 QUANTITY = null;
                                 if (isChecked) {
 
-                                    holder.amountET.setText(holder.schemeBO
-                                            .getMinimumAmount() + "");
+                                    holder.amountET.setText(String.valueOf(holder.schemeBO
+                                            .getMinimumAmount()));
 
                                     if (holder.schemeBO
                                             .isQuantityTypeSelected()) {
@@ -721,7 +676,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                     holder.amountET.setEnabled(false);
                                     holder.amountET.setClickable(false);
                                 }
-                                //   if(holder.schemeBO.getIsFreeCombination()==1) {
+
                                 SchemeProductBO schemeProductBO = holder.schemeBO.getFreeProducts().get(0);
                                 if (schemeProductBO != null) {
                                     if (schemeProductBO
@@ -739,8 +694,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
                                 holder.schemeBO
                                         .setAmountTypeSelected(isChecked);
-                                // mExpandableAdapter.notifyDataSetChanged();
-                                //   }
+
                             }
                         });
 
@@ -750,18 +704,12 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             @Override
                             public void onCheckedChanged(
                                     CompoundButton buttonView, boolean isChecked) {
-//								showFullName(holder.productBO.getProductName());
 
-								/*
-                                 * if (!isValidatePriceEntered()) {
-								 * holder.percentCB.setChecked(!isChecked);
-								 * return; }
-								 */
                                 QUANTITY = null;
                                 if (isChecked) {
 
-                                    holder.percentET.setText(holder.schemeBO
-                                            .getMinimumPrecent() + "");
+                                    holder.percentET.setText(String.valueOf(holder.schemeBO
+                                            .getMinimumPrecent()));
 
                                     if (holder.schemeBO
                                             .isQuantityTypeSelected()) {
@@ -797,7 +745,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                     holder.percentET.setEnabled(false);
                                     holder.percentET.setClickable(false);
                                 }
-                                //   if(holder.schemeBO.getIsFreeCombination()==1) {
+
                                 SchemeProductBO schemeProductBO = holder.schemeBO
                                         .getFreeProducts().get(0);
                                 if (schemeProductBO.getMaxPrecentCalculated() == schemeProductBO
@@ -812,8 +760,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                 }
                                 holder.schemeBO
                                         .setDiscountPrecentSelected(isChecked);
-                                // mExpandableAdapter.notifyDataSetChanged();
-                                //   }
+
                             }
                         });
 
@@ -839,7 +786,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
                                 priceEntered = Double.parseDouble(s.toString());
-//                                Log.e("PriceValue",groupPosition+s.toString().trim());
                                 holder.schemeBO.setActualPrice(Double.parseDouble(s.toString().trim()));
                             }
                         }
@@ -871,7 +817,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
                                 amountEntered = Double.parseDouble(s.toString());
-                                //  Log.e("AmountValue",s.toString().trim());
                                 holder.schemeBO.setMinimumAmount(Double.parseDouble(s.toString().trim()));
                             }
                         }
@@ -898,18 +843,17 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     @Override
                     public void afterTextChanged(Editable s) {
 
-                        double precentEntered = 0;
+                        double percentEntered = 0;
                         if (s != null) {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
-                                precentEntered = Double.parseDouble(s
+                                percentEntered = Double.parseDouble(s
                                         .toString());
                                 holder.schemeBO.setMinimumPrecent(Double.parseDouble(s.toString().trim()));
-                                //  Log.e("PercentValue",s.toString().trim());
                             }
                         }
 
-                        holder.schemeBO.setSelectedPrecent(precentEntered);
+                        holder.schemeBO.setSelectedPrecent(percentEntered);
 
                     }
                 });
@@ -978,8 +922,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     + 0 + " Outer : "
                     + 0);
 
-            // holder.priceET.setText(SDUtil.roundIt(
-            // holder.schemeBO.getSelectedPrice(), 2));
 
             holder.priceET.setTag(holder.schemeBO);
             holder.amountET.setTag(holder.schemeBO);
@@ -1081,8 +1023,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
             }
 
-            // holder.showFreeBTN.setText("Selected\n" +
-            // holder.schemeBO.getSelectedFreeProductsQuantity(holder.productBO.getProductID()));
 
             if (holder.schemeBO.isQuantityTypeSelected()) {
                 if (schemeHelper.IS_SCHEME_CHECK
@@ -1260,12 +1200,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.percentET.setClickable(false);
             }
 
-           /* if (schemeHelper.IS_SCHEME_CHECK) {
-                holder.quantityCB.setChecked(false);
-                holder.percentCB.setChecked(false);
-                holder.amountCB.setChecked(false);
-                holder.priceCB.setChecked(false);
-            }*/
             if (!schemeHelper.IS_SCHEME_EDITABLE) {
 
                 holder.priceET.setEnabled(false);
@@ -1278,12 +1212,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             }
 
 
-            // holder.priceTV.setText("");
-
             return view;
         }
 
         @Override
+
         public boolean hasStableIds() {
             return false;
         }
@@ -1297,7 +1230,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
     }
 
 
-    class SchemeProductHolder {
+    private class SchemeProductHolder {
         private ProductMasterBO productBO;
         private SchemeBO schemeBO;
         // Info
@@ -1317,54 +1250,32 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         private RelativeLayout rateRL, percentRL, amountRL, qtyRL;
     }
 
-    private SchemeFreePorductSelectionDialog mSchemeDialog;
-    private boolean mCanShowSchemeDialog = false;
 
 
     private void showAlert(String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Scheme Apply");
+        dialog.setTitle(getResources().getString(R.string.scheme_apply));
         dialog.setMessage(message);
         dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mExpandableAdapterNew = new SchemeExpandapleAdapterNew();
-                mExpandableLV.setAdapter(mExpandableAdapterNew);
-                if (mOrderedSchemeProducts != null) {
-                    int size = mOrderedSchemeProducts.size();
-                    Commons.print("SchemeApply" + ",mOrderedSchemeProducts.size() "
-                            + mOrderedSchemeProducts.size());
-                    for (int i = 0; i < size; i++) {
-                        mExpandableLV.expandGroup(i);
-                    }
-
-                }
-                dialog.dismiss();
 
 
             }
         });
 
-        bmodel.applyAlertDialogTheme(dialog);
+        bModel.applyAlertDialogTheme(dialog);
     }
 
     public void eff() {
-        // String s = (String) QUANTITY.getText().toString();
-        // if (!s.equals("0")) {
-        // QUANTITY.setText(QUANTITY.getText() + append);
-        // } else
-        // QUANTITY.setText(append);
 
-        String s = (String) QUANTITY.getText().toString();
+        String s = QUANTITY.getText().toString();
         int maxLength = 5;
 
-        // if (QUANTITY.getInputType() == InputType.TYPE_NUMBER_FLAG_DECIMAL) {
         if (QUANTITY.getText().toString().contains(".")) {
             maxLength = 8;
 
         }
-        // }
 
         if (s.length() < maxLength) {
             if (!s.equals("0") && !s.equals("0.0"))
@@ -1374,8 +1285,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         }
 
     }
-
-    public void numberPressed(View vw) {
+     public void numberPressed(View vw) {
 
         if (QUANTITY == null) {
 
@@ -1440,112 +1350,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
     @Override
     public void onBackPressed() {
-        // TODO Auto-generated method stub
         super.onBackPressed();
     }
-
-    /**
-     * Method to use correctly range applied between min and max value for
-     * scheme products
-     *
-     * @return true if all value should be in range,else false
-     */
-    private boolean isRangeWiseSchemeValidateDone() {
-        for (SchemeBO schemeBO : mSchemeDoneList) {
-
-            if (schemeBO != null) {
-
-                if (schemeBO.isPriceTypeSeleted()) {
-                    if (!isValidateSchemePriceEntered(schemeBO)) {
-                        return false;
-                    }
-                } else if (schemeBO.isAmountTypeSelected()) {
-                    if (!isValidateSchemeAmountEntered(schemeBO)) {
-                        return false;
-                    }
-
-                } else if (schemeBO.isDiscountPrecentSelected()) {
-                    if (!isValidateSchemeDiscountEntered(schemeBO)) {
-                        return false;
-                    }
-                }
-
-
-            }
-
-        }
-        return true;
-
-    }
-
-    /**
-     * @param schemeBO ,this is free product schemeBO
-     * @return if scheme entered price between min and max price return
-     * true,else false
-     */
-    private boolean isValidateSchemePriceEntered(SchemeBO schemeBO) {
-
-        if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) >= Double.parseDouble(SDUtil.format(schemeBO.getActualPrice(), 2, 0))
-                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumPrice(), 2, 0))
-                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) > 0)) {
-            /*
-             * if ((priceEntered < schemeBO.getMaximumPrice() && priceEntered >
-			 * 0) || (priceEntered > schemeBO.getActualPrice())) {
-			 */
-
-            showAlert(getResources().getString(R.string.not_in_range_reset));
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param schemeBO ,this is free product schemeBO
-     * @return if scheme entered discount between min and max discount return
-     * true,else false
-     */
-    private boolean isValidateSchemeDiscountEntered(SchemeBO schemeBO) {
-
-        if (!(schemeBO.getSelectedPrecent() >= schemeBO.getMinimumPrecent()
-                && schemeBO.getSelectedPrecent() <= schemeBO
-                .getMaximumPrecent() && schemeBO.getSelectedPrecent() > 0)) {
-            /*
-             * if ((priceEntered < schemeBO.getMaximumPrice() && priceEntered >
-			 * 0) || (priceEntered > schemeBO.getActualPrice())) {
-			 */
-
-            showAlert("Not in Range, Resetted to default.");
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param schemeBO ,this is free product schemeBO
-     * @return if scheme entered amount between min and max amount return
-     * true,else false
-     */
-    private boolean isValidateSchemeAmountEntered(SchemeBO schemeBO) {
-
-        if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) >= Double.parseDouble(SDUtil.format(schemeBO.getMinimumAmount(), 2, 0))
-                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumAmount(), 2, 0))
-                && Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) > 0)) {
-            /*
-             * if ((priceEntered < schemeBO.getMaximumPrice() && priceEntered >
-			 * 0) || (priceEntered > schemeBO.getActualPrice())) {
-			 */
-
-            showAlert("Not in Range, Resetted to default.");
-
-            return false;
-        }
-
-        return true;
-    }
-
 
 }

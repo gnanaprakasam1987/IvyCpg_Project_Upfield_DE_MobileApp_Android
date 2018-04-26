@@ -4655,6 +4655,249 @@ public class SchemeDetailsMasterHelper {
 
 
     }
+
+
+    ////////////////////////////////////////////////////////////
+
+
+    /**
+     * Is value applied between minimum and maximum value
+     * @param mSchemeDoneList List of applied schemes
+     * @return Is all selected scheme value is between the range or not
+     */
+    public boolean isValuesAppliedBetweenTheRange(ArrayList<SchemeBO> mSchemeDoneList) {
+        for (SchemeBO schemeBO : mSchemeDoneList) {
+            if (schemeBO != null) {
+
+                if (schemeBO.isPriceTypeSeleted()) {
+
+                    if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) >= Double.parseDouble(SDUtil.format(schemeBO.getActualPrice(), 2, 0))
+                            && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumPrice(), 2, 0))
+                            && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) > 0)) {
+                        return false;
+                    }
+
+                } else if (schemeBO.isAmountTypeSelected()) {
+                    if (!(schemeBO.getSelectedPrecent() >= schemeBO.getMinimumPrecent()
+                            && schemeBO.getSelectedPrecent() <= schemeBO
+                            .getMaximumPrecent() && schemeBO.getSelectedPrecent() > 0)) {
+                        return false;
+                    }
+
+                } else if (schemeBO.isDiscountPrecentSelected()) {
+                    if (!(schemeBO.getSelectedPrecent() >= schemeBO.getMinimumPrecent()
+                            && schemeBO.getSelectedPrecent() <= schemeBO
+                            .getMaximumPrecent() && schemeBO.getSelectedPrecent() > 0)) {
+                        return false;
+                    }
+                }
+
+
+            }
+
+        }
+        return true;
+
+    }
+
+    /**
+     * Checking at least minimum offered quantity is entered or not
+     * @param mSchemeBO Scheme Object
+     * @param mFreeProductsList Free product list
+     * @return Invalid group name or 0 if all groups are valid
+     */
+    public String isEnteredMinimumOffered(SchemeBO mSchemeBO,List<SchemeProductBO> mFreeProductsList
+            ) {
+
+        ArrayList<String> mFreeGroupNameList=getFreeGroupNameListBySchemeID().get( mSchemeBO.getSchemeId());
+
+        if (mSchemeBO.isSihAvailableForFreeProducts()) {
+
+            if (mSchemeBO.getFreeType().equals(AND_LOGIC) || mSchemeBO.getFreeType().equals(ONLY_LOGIC)) {
+
+                String tempGroupName="";
+
+                if (mFreeGroupNameList != null) {
+                    for (String groupName : mFreeGroupNameList) {
+
+                        int totalFreeQty = 0;
+                        int anyLogicMinimumCount = 0;
+
+                        for (SchemeProductBO schemeProductBo : mFreeProductsList) {
+                            if (groupName.equals(schemeProductBo.getGroupName())) {
+
+                                if (schemeProductBo.getGroupLogic().equals(
+                                        AND_LOGIC) || schemeProductBo.getGroupLogic().equals(ONLY_LOGIC)) {
+
+                                    if (schemeProductBo.getQuantitySelected() < schemeProductBo
+                                            .getQuantityActualCalculated()) {
+
+                                        return schemeProductBo.getGroupName();
+                                    }
+
+                                } else if (schemeProductBo.getGroupLogic()
+                                        .equals(ANY_LOGIC)) {
+
+                                    totalFreeQty = totalFreeQty
+                                            + schemeProductBo
+                                            .getQuantitySelected();
+
+                                    tempGroupName=schemeProductBo.getGroupName();
+
+                                    if (totalFreeQty >= schemeProductBo
+                                            .getQuantityActualCalculated()) {
+                                        anyLogicMinimumCount = anyLogicMinimumCount + 1;
+
+                                    }
+
+                                }
+                            }
+
+                        }
+                        if (getGroupBuyTypeByGroupName().get(mSchemeBO.getSchemeId() + groupName) != null) {
+                            if (getGroupBuyTypeByGroupName().get(mSchemeBO.getSchemeId() + groupName)
+                                    .equals(ANY_LOGIC)) {
+                                if (anyLogicMinimumCount == 0) {
+                                    return  tempGroupName;
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+            } else if (mSchemeBO.getFreeType().equals(ANY_LOGIC)) {
+
+                String type="";
+                for (SchemeProductBO schemeProductBO : mFreeProductsList) {
+                    if (schemeProductBO.getQuantitySelected() > 0) {
+                        type=schemeProductBO.getGroupName();
+                        break;
+                    }
+                }
+                //
+                String tempGroupName="";
+                if (!type.equals("")) {
+
+                    int totalFreeQty = 0;
+                    int anyLogicMinimumCount = 0;
+                    for (SchemeProductBO schemeProductBo : mFreeProductsList) {
+                        if (type.equals(schemeProductBo.getGroupName())) {
+                            if (schemeProductBo.getGroupLogic().equals(
+                                    AND_LOGIC) || schemeProductBo.getGroupLogic().equals(ONLY_LOGIC)) {
+
+                                if (schemeProductBo.getQuantitySelected() < schemeProductBo
+                                        .getQuantityActualCalculated()) {
+                                    return schemeProductBo.getGroupName();
+                                }
+
+                            } else if (schemeProductBo.getGroupLogic()
+                                    .equals(ANY_LOGIC)) {
+                                totalFreeQty = totalFreeQty
+                                        + schemeProductBo.getQuantitySelected();
+                                tempGroupName = schemeProductBo.getGroupName();
+                                if (totalFreeQty >= schemeProductBo
+                                        .getQuantityActualCalculated()) {
+                                    anyLogicMinimumCount = anyLogicMinimumCount + 1;
+
+                                }
+
+                            }
+                        }
+
+                    }
+                    if (getGroupBuyTypeByGroupName().get(mSchemeBO.getSchemeId() + type)
+                            .equals(ANY_LOGIC)) {
+                        if (anyLogicMinimumCount == 0) {
+                            return  tempGroupName;
+                        }
+                    }
+
+                } else {
+                    return "";
+                }
+
+            }
+        }
+
+        return "0";
+
+    }
+
+
+
+    /**
+     * Checking entered quantity exceeds maximum offered or not
+     * @param mSchemeBO  Scheme object
+     * @param schemeProductBo Scheme Product BO
+     * @param qtyEntered quantity entered
+     * @return is Exceeds
+     */
+    public boolean isEnteredQuantityExceedsMaximumOffered(SchemeBO mSchemeBO, SchemeProductBO schemeProductBo,
+                                                          int qtyEntered, List<SchemeProductBO> mFreeProductsList) {
+
+            if (mSchemeBO.getFreeType().equals(AND_LOGIC) || mSchemeBO.getFreeType().equals(ONLY_LOGIC)) {
+
+                if (schemeProductBo.getGroupLogic().equals(AND_LOGIC) || schemeProductBo.getGroupLogic().equals(ONLY_LOGIC)) {
+
+                    return (qtyEntered > schemeProductBo.getQuantityMaxiumCalculated());
+
+                } else if (schemeProductBo.getGroupLogic().equals(ANY_LOGIC)) {
+
+                    int totalFreeQty = qtyEntered;
+                    for (SchemeProductBO schemePrtBO : mFreeProductsList) {
+                        if (schemeProductBo.getGroupName().equals(schemePrtBO.getGroupName())) {
+
+                            if (!schemeProductBo.getProductId().equals(schemePrtBO.getProductId())) {
+                                totalFreeQty = totalFreeQty+ schemePrtBO.getQuantitySelected();
+                            }
+
+                        }
+                    }
+
+                    return (totalFreeQty > schemeProductBo.getQuantityMaxiumCalculated()) ;
+                }
+            } else if (mSchemeBO.getFreeType().equals(ANY_LOGIC)) {
+
+                boolean isOtherChildSchemeAlreadyEntered=false;
+                for (SchemeProductBO schemeProductBO : mFreeProductsList) {
+                    if (!schemeProductBo.getGroupName().equals(schemeProductBO.getGroupName())) {
+                        if (schemeProductBO.getQuantitySelected() > 0) {
+                            isOtherChildSchemeAlreadyEntered= true;
+                        }
+                    }
+                }
+
+                if (!isOtherChildSchemeAlreadyEntered) {
+
+                    if (schemeProductBo.getGroupLogic().equals(AND_LOGIC) || schemeProductBo.getGroupLogic().equals(ONLY_LOGIC)) {
+                        return(qtyEntered > schemeProductBo.getQuantityMaxiumCalculated());
+
+                    } else if (schemeProductBo.getGroupLogic().equals(ANY_LOGIC)) {
+
+                        int totalFreeQty = qtyEntered;
+                        for (SchemeProductBO schemePrtBO : mFreeProductsList) {
+                            if (schemeProductBo.getGroupName().equals(schemePrtBO.getGroupName())) {
+
+                                if (!schemeProductBo.getProductId().equals(schemePrtBO.getProductId())) {
+                                    totalFreeQty = totalFreeQty + schemePrtBO.getQuantitySelected();
+                                }
+
+                            }
+                        }
+
+                        return (totalFreeQty > schemeProductBo.getQuantityMaxiumCalculated()) ;
+
+                    }
+
+                } else {
+                    return (qtyEntered > 0) ;
+                }
+            }
+
+                return true;
+    }
+
 }
 
 
