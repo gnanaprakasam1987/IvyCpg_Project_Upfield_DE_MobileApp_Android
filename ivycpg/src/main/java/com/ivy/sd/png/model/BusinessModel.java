@@ -3061,7 +3061,7 @@ public class BusinessModel extends Application {
         ProductMasterBO product = null;
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
             product = productHelper.getTaggedProductBOById(productid);
-        } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER")) {
+        } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
 
