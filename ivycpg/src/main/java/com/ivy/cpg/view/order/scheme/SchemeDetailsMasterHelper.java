@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class SchemeDetailsMasterHelper {
 
@@ -1168,7 +1169,7 @@ public class SchemeDetailsMasterHelper {
 ///////////////////////////
 
     /**
-     * Preparing a achieved scheme list based on the current order to show in the screen
+     * Preparing a achieved scheme list based on the current order to show in the screen.
      * If Off Invoice is available than it will be added to the applied list directly to show in the screen
      * And updating stock availability for free products in the scheme object
      */
@@ -1230,6 +1231,140 @@ public class SchemeDetailsMasterHelper {
 
 
     }
+
+    public String upSelling(){
+
+        mAchieved_qty_or_salesValue_by_schemeId_nd_productid=new HashMap<>();
+        //ArrayList<String> nextSchemes=new ArrayList<>();
+
+        HashMap<String,Double> schemeIdByPercentage=new HashMap<>();
+
+        if (mParentIDList != null) {
+            for (Integer parentID : mParentIDList) {
+
+                ArrayList<String> schemeIDList = mSchemeIDListByParentID.get(parentID);
+
+                if (schemeIDList != null) {
+                    for (String schemeID : schemeIDList) {
+
+
+                        SchemeBO schemeBO = mSchemeById.get(schemeID);
+
+                        if (schemeBO==null)
+                            break;
+
+                        if(!schemeBO.getParentLogic().equals(ONLY_LOGIC))
+                            break;
+
+                       /* boolean isBuyProductOrdered=false;
+                        for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
+                            if(mOrderedProducts.contains(schemeProductBo.getProductId())){
+                                isBuyProductOrdered=true; break;}
+                        }*/
+
+                      //  if(true ||isBuyProductOrdered) {
+
+
+                            if (!schemeBO.isOffScheme()) {
+                                // only ON scheme will be allowed to apply
+
+                                ArrayList<String> mGroupNameList = new ArrayList<>();
+                                HashMap<String, String> mGroupLogicTypeByGroupName = new HashMap<>();
+
+                                for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
+                                    if (!mGroupNameList.contains(schemeProductBo.getGroupName())) {
+
+                                        mGroupNameList.add(schemeProductBo.getGroupName());
+                                        mGroupLogicTypeByGroupName.put(schemeProductBo.getGroupName(),
+                                                schemeProductBo.getGroupLogic());
+                                    }
+
+                                }
+
+                                if (isParentAndLogicDone(schemeBO, mGroupNameList, mGroupLogicTypeByGroupName, parentID))
+                                    break;
+
+                             //   nextSchemes.add(schemeBO.getSchemeId());
+
+
+                                for (String groupName : mGroupNameList) {
+                                    String groupBuyType = mGroupLogicTypeByGroupName.get(groupName);
+                                    if (groupBuyType.equals(AND_LOGIC) || groupBuyType.equals(ONLY_LOGIC)) {
+                                        double totalProductPercentage = 0;
+
+                                        for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
+
+                                            double toBuy = schemeProductBo.getBuyQty();
+                                            double bought=0;
+                                            ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
+
+                                            if(schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
+                                                bought = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize())+ (productBO.getOrderedOuterQty() * productBO.getOutersize());
+                                            }
+                                            else if(schemeBO.getBuyType().equals(SALES_VALUE)){
+                                                bought = (productBO.getOrderedPcsQty() * productBO.getSrp()) + (productBO.getOrderedCaseQty() * productBO.getCsrp()) + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                            }
+
+
+                                            totalProductPercentage += ((bought / toBuy) * 100);
+
+                                        }
+
+                                        double group_percentage = (totalProductPercentage / (schemeBO.getBuyingProducts().size()*100)) * 100;
+                                        schemeIdByPercentage.put(schemeBO.getSchemeId(), group_percentage);
+
+                                    } else if (groupBuyType.equals(ANY_LOGIC)) {
+
+                                        double total_bought = 0;
+                                        double total_toBuy = 0;
+
+                                        for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
+
+                                            total_toBuy += schemeProductBo.getBuyQty();
+                                            ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
+
+                                            if(schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
+                                                total_bought += productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
+                                            }
+                                            else if(schemeBO.getBuyType().equals(SALES_VALUE)){
+                                                total_bought = (productBO.getOrderedPcsQty() * productBO.getSrp()) + (productBO.getOrderedCaseQty() * productBO.getCsrp()) + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                            }
+
+                                        }
+
+                                        double group_percentage = (total_bought / total_toBuy) * 100;
+                                        schemeIdByPercentage.put(schemeBO.getSchemeId(), group_percentage);
+
+                                    }
+                                }
+
+
+                            }
+                        //}
+                    }
+                }
+            }
+        }
+
+        //
+
+        double highestPercentage=0;
+        String nextPossibleSchemeId="0";
+        for(String schemeId:schemeIdByPercentage.keySet()){
+            if(highestPercentage<schemeIdByPercentage.get(schemeId)) {
+                highestPercentage = schemeIdByPercentage.get(schemeId);
+                nextPossibleSchemeId=schemeId;
+            }
+        }
+
+
+
+   return  nextPossibleSchemeId;
+
+
+    }
+
+
 
     public ArrayList<SchemeBO> getAppliedSchemeList() {
         if (mAppliedSchemeList != null) {
@@ -1327,6 +1462,7 @@ public class SchemeDetailsMasterHelper {
 
         return false;
     }
+
 
 
     /**
