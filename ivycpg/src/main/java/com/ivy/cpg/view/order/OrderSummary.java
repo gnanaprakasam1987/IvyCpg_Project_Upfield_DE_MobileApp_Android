@@ -130,7 +130,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Button button_order;
     private Button button_invoice;
     private TextView text_LPC;
-    private TextView text_totalOrderValue, textbill1, textbill2;
+    private TextView text_totalOrderValue, textbill1, textbill2, linesBill1, linesBill2;
     private TextView text_totalOrderedQuantity;
     private Button button_deliveryDate;
     private ExpandableListView listView;
@@ -287,6 +287,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         text_totalOrderValue = findViewById(R.id.totalValue);
         textbill1 = findViewById(R.id.tvBill1Value);
         textbill2 = findViewById(R.id.tvBill2Value);
+        linesBill1 = findViewById(R.id.tvBill1Line);
+        linesBill2 = findViewById(R.id.tvBill2Line);
         button_deliveryDate = findViewById(R.id.deliveryDate);
         button_order = findViewById(R.id.orderSummarySave);
         listView = findViewById(R.id.elv);
@@ -301,11 +303,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         ((TextView) findViewById(R.id.title_totalqty)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.lblbill1)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.lblbill2)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblbill1Line)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblbill2Line)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         button_deliveryDate.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         text_LPC.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         text_totalOrderValue.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         textbill1.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         textbill2.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        linesBill1.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        linesBill2.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         text_totalOrderedQuantity.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         button_order.setTypeface(BModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         button_invoice.setTypeface(BModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -316,10 +322,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         imageView_amountSplitUp.setOnClickListener(this);
 
         if (BModel.configurationMasterHelper.IS_ORDER_SPLIT) {
-            ((LinearLayout) findViewById(R.id.ll_values)).setVisibility(View.GONE);
+            findViewById(R.id.ll_values).setVisibility(View.GONE);
+            findViewById(R.id.ll_lines).setVisibility(View.GONE);
         } else {
-            ((LinearLayout) findViewById(R.id.ll_bill1)).setVisibility(View.GONE);
-            ((LinearLayout) findViewById(R.id.ll_bill2)).setVisibility(View.GONE);
+            findViewById(R.id.ll_bill1).setVisibility(View.GONE);
+            findViewById(R.id.ll_bill2).setVisibility(View.GONE);
+            findViewById(R.id.ll_bill1Line).setVisibility(View.GONE);
+            findViewById(R.id.ll_bill2Line).setVisibility(View.GONE);
         }
     }
 
@@ -726,7 +735,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 findViewById(R.id.layoutDelivery).setVisibility(View.GONE);
             }
 
-            if (!BModel.configurationMasterHelper.SHOW_LPC_ORDER) {
+            if (!BModel.configurationMasterHelper.SHOW_LPC_ORDER || BModel.configurationMasterHelper.IS_ORDER_SPLIT) {
                 findViewById(R.id.ll_lines).setVisibility(View.GONE);
             }
 
@@ -996,6 +1005,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             text_LPC.setText(String.valueOf(bill1Products.size() + bill2Products.size()));
             textbill1.setText(BModel.formatValue(bill1Value));
             textbill2.setText(BModel.formatValue(bill2Value));
+            linesBill1.setText(String.valueOf(bill1Products.size()));
+            linesBill2.setText(String.valueOf(bill2Products.size()));
             text_totalOrderedQuantity.setText(String.valueOf(totalQunatity));
 
             listView.setAdapter(new ProductExpandableAdapter());
@@ -3084,6 +3095,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             textbill1.setText(BModel.formatValue(bill1Value));
             textbill2.setText(BModel.formatValue(bill2Value));
+            linesBill1.setText(String.valueOf(bill1Products.size()));
+            linesBill2.setText(String.valueOf(bill2Products.size()));
 
 
         }
