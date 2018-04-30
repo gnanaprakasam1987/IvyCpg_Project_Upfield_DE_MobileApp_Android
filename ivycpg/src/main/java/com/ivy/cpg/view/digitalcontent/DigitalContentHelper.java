@@ -84,8 +84,7 @@ public class DigitalContentHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            sb.append("SELECT " +
-                    "Distinct DigitalContent.imgid,DigitalContent.GroupId," +
+            sb.append("SELECT Distinct DigitalContent.imgid,DigitalContent.GroupId," +
                     "IfNull(LocationId,0) AS LocationId," +
                     "IfNull(ChannelId,0) AS ChannelId,Case  IFNULL(AttributeID ,-1) when -1  then '0' else '1' END as flag," +
                     "IfNull(PriorityBiD,0) AS PriorityBiD," +
@@ -98,7 +97,7 @@ public class DigitalContentHelper {
 
                     "LEFT JOIN (SELECT imgid,GroupId,mappingid ChannelId FROM DigitalContentMapping " +
                     " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode in ('CHANNEL','SUBCHANNEL') " +
-                    "and listtype='DIGITAL_CRITERIA_TYPE') CS ON  DigitalContent.imgid=CS.imgid and DigitalContent.GroupId=CS.GroupId " +
+                    " and listtype='DIGITAL_CRITERIA_TYPE') CS ON  DigitalContent.imgid=CS.imgid and DigitalContent.GroupId=CS.GroupId " +
 
                     " LEFT JOIN (SELECT imgid,GroupId,mappingid AttributeID FROM DigitalContentMapping " +
                     " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode='RTR_ATTRIBUTES' " +
