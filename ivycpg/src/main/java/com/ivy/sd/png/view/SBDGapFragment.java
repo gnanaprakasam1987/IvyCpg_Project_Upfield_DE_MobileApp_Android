@@ -1,12 +1,14 @@
 package com.ivy.sd.png.view;
 
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -24,6 +26,8 @@ public class SBDGapFragment extends IvyBaseFragment {
 
 
     BusinessModel bmodel;
+    Button button_save_target;
+    EditText editText_target;
 
 
     @Override
@@ -35,8 +39,29 @@ public class SBDGapFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        CardView card_target = rootView.findViewById(R.id.card_target);
-        card_target.setVisibility(View.GONE); // Dev yet not completed, after completion have to make it visible
+        button_save_target = rootView.findViewById(R.id.button_save_target);
+        button_save_target.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        editText_target = rootView.findViewById(R.id.edittext_target);
+        editText_target.setText(String.valueOf(bmodel.formatValue(bmodel.getRetailerMasterBO().getDaily_target())));
+
+        button_save_target.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!editText_target.getText().toString().isEmpty()) {
+                    if (bmodel.getRetailerMasterBO().getKpiid_day() != 0) {
+                        SBDHelper.getInstance(getActivity()).saveDayTarget(bmodel.getRetailerMasterBO().getKpiid_day(),
+                                Double.valueOf(editText_target.getText().toString()));
+                        Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.retailer_kpi_not_available), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    editText_target.setError("Please Enter");
+                    editText_target.requestFocus();
+                }
+
+            }
+        });
 
         prepareScreen(rootView);
 
@@ -47,8 +72,6 @@ public class SBDGapFragment extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-
-
     }
 
 

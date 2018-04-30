@@ -1327,14 +1327,17 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_DISTRIBUTOR_PROFILE;
     public int SHOW_DISTRIBUTOR_PROFILE_FROM;
 
-    private static final String CODE_SBD_TARGET_PERCENT = "SBD_PERCENTAGE";
-    public static int SBD_TARGET_PERCENTAGE = 80;
+    private static final String CODE_SBD_TARGET_PERCENT = "SBD_DIST_ACH";
+    public static int SBD_TARGET_PERCENTAGE = 100;
 
     private static final String CODE_SBD_GAP_PROFILE = "SBD_PROFILE";
     public boolean SHOW_SBD_GAP_IN_PROFILE = true;
 
     private static final String CODE_SPLIT_ORDER = "SPLIT_ORDER";  //jnj project specific
     public boolean IS_ORDER_SPLIT;
+
+    public boolean IS_BEAT_WISE_RETAILER_MAPPING = true;
+    private static final String CODE_BEAT_WISE_RETAILER = "FIELD_USER_PLAN";
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2315,6 +2318,8 @@ public class ConfigurationMasterHelper {
         }
 
         this.IS_ORDER_SPLIT = hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) : false;
+
+        this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
     }
 
     public void loadOrderReportConfiguration() {

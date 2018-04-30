@@ -45,7 +45,6 @@ import com.ivy.sd.png.view.HalfPieChartFragement;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.PieChartFragement;
-import com.ivy.sd.png.view.TargetPlanActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -459,12 +458,6 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
             bmodel.getRetailerMasterBO().setIsSKUTGT("Y");
             startActivity(new Intent(getActivity(),
                     HomeScreenTwo.class));
-            getActivity().finish();
-        }
-        // TargetPlanActivity
-        if ("3".equals(calledBy)) {
-            startActivity(new Intent(getActivity(),
-                    TargetPlanActivity.class));
             getActivity().finish();
         }
         // DashBoardActivity

@@ -254,12 +254,6 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name="com.ivy.sd.png.view.TargetPlanActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.TargetPlanActivity_PH"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.sd.png.view.merch.MerchandisingActivity"
             android:screenOrientation="portrait" />
         <activity
