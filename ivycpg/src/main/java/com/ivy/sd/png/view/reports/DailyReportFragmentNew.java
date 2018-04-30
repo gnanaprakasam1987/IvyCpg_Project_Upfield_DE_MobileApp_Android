@@ -28,7 +28,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.DailyReportBO;
-import com.ivy.sd.png.bo.InitiativeReportBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.MerchandisingposmBO;
 import com.ivy.sd.png.bo.OrderDetail;
@@ -56,7 +55,6 @@ import java.util.Vector;
 public class DailyReportFragmentNew extends IvyBaseFragment {
     private static final String TAG = "DailyReportFragmentNew";
     private BusinessModel bmodel;
-    private ArrayList<InitiativeReportBO> items;
     private View view;
     private GridView dayReportgrid;
 
@@ -187,7 +185,6 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
         bmodel.downloadDailyReport();
         DailyReportBO outlet = bmodel.getDailyRep();
-        bmodel.initiativeHelper.loadInitiativeReportTarget();
 
         int totalcalls = bmodel.getTotalCallsForTheDay();
         int visitedcalls = bmodel.getVisitedCallsForTheDay();
@@ -438,31 +435,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             }
         }
 
-
-        for (ConfigureBO configureBO : removable_config) {
-            mDayList.remove(configureBO);
-        }
-
-        if (hasInititative) {
-            items = bmodel.initiativeHelper.getInitiativeReportBO();
-            InitiativeReportBO initiativebo;
-
-            ConfigureBO con = new ConfigureBO();
-            con.setMenuName("Initiatives");
-            con.setMenuNumber("Heading");
-            mDayList.add(con);
-
-            if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
-                for (int i = 0; i < items.size() && i < 5; i++) {
-                    con = new ConfigureBO();
-                    initiativebo = (InitiativeReportBO) items.get(i);
-                    con.setMenuName(initiativebo.getInitDesc());
-                    con.setMenuNumber(initiativebo.getAcheived() + "/"
-                            + initiativebo.getTarget());
-                    mDayList.add(con);
-                }
-            }
-        }
+            mDayList.remove(removable_config);
 
         if (hasMerchandising) {
             ConfigureBO con = new ConfigureBO();

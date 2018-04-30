@@ -1133,64 +1133,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
     }
 
-    private void retailerClick() {
-        if (!isClicked
-                && calledBy.equals(MENU_PLANNING)
-                && bmodel.configurationMasterHelper.IS_SHOW_TARGET_PLAN) {
-
-            bmodel.setRetailerMasterBO(mSelectedRetailer.retailerObjectHolder);
-            isClicked = true;
-            if (mSelectedRetailer.retailerObjectHolder.getIsToday() == 1) {
-                bmodel.setRetailerMasterBO(mSelectedRetailer.retailerObjectHolder);
-                if (bmodel.targetPlanHelper
-                        .hasDataInDTPMaster()) {
-                    if (bmodel.configurationMasterHelper.IS_TARGET_SCREEN_PH) {
-                        Intent i = new Intent(getActivity(),
-                                TargetPlanActivity_PH.class);
-                        i.putExtra("From", "Visit");
-                        startActivity(i);
-                    } else {
-                        Intent i = new Intent(getActivity(),
-                                TargetPlanActivity.class);
-                        i.putExtra("From", "Visit");
-                        startActivity(i);
-                    }
-
-                } else {
-                    Toast.makeText(
-                            getActivity(),
-                            getResources()
-                                    .getString(
-                                            R.string.planning_not_available_if_nodata_avail),
-                            Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(
-                        getActivity(),
-                        getResources()
-                                .getString(
-                                        R.string.planning_not_available_for_deviated_retailer),
-                        Toast.LENGTH_SHORT).show();
-            }
-            isClicked = false;
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PROFILE_REQUEST_CODE) {
-            if (resultCode == 1) {
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        retailerClick();
-                    }
-                }, 1500);
-
-            } else if (resultCode == 2)
+        if (requestCode == PROFILE_REQUEST_CODE && resultCode == 2) {
                 updateCancel();
         }
     }

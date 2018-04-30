@@ -59,7 +59,6 @@
     <!-- Visit List Item Screen -->
     <dimen name="visit_lst_img_width">22.4dp</dimen>
     <dimen name="visit_info_img_width">31.2dp</dimen>
-    <dimen name="visit_lst_txtvalue_width">80dp</dimen>
 
     <dimen name="non_visit_list_item_height_width">48dp</dimen>
 
@@ -78,8 +77,6 @@
     <!--Distributor StockCheck Screen-->
 
     <!-- Target Plan Screen -->
-    <dimen name="target_plan_name_width">304dp</dimen>
-    <dimen name="target_plan_reference_width">176dp</dimen>
     <dimen name="target_plan_editbox_width">104dp</dimen>
 
     <!-- Order Split -->

@@ -28,7 +28,6 @@ import com.ivy.cpg.view.reports.InvoiceReportFragment;
 import com.ivy.cpg.view.reports.OrderReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.InitiativeReportBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -68,11 +67,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private CollectionReportFragment collectionReportFragment;
     private TaskExecutionReportFragment taskReportFragment;
     private EODStockReportFragment mEODStockReportFragment;
-    private VolumeReportFragment volumeReportFragment;
-    private SBDReportFragment sbdreportfragment;
-    private DSRTodayReportFragment dsrtodayreportfragment;
-    private DSRMTDReportFragment dsrmtdreportfragment;
-    private InitiativeReportFragment initiativereportfragment;
     private TaskReportFragment taskreportfragment;
     private QuestionReportFragment questionReportFragment;
     private CurrentStockBatchViewFragment currentStockBatchViewFragment;
@@ -203,11 +197,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         taskReportFragment.setArguments(getIntent().getExtras());
         mEODStockReportFragment = new EODStockReportFragment();
         mEODStockReportFragment.setArguments(getIntent().getExtras());
-        volumeReportFragment = new VolumeReportFragment();
-        sbdreportfragment = new SBDReportFragment();
-        dsrtodayreportfragment = new DSRTodayReportFragment();
-        dsrmtdreportfragment = new DSRMTDReportFragment();
-        initiativereportfragment = new InitiativeReportFragment();
         taskreportfragment = new TaskReportFragment();
         questionReportFragment = new QuestionReportFragment();
         currentStockBatchViewFragment = new CurrentStockBatchViewFragment();
@@ -452,44 +441,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
             startActivity(new Intent(this, HomeScreenActivity.class));
             finish();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_VOLUME_REPORT)) {
-            transaction.replace(R.id.fragment_content, volumeReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_SBD_REPORT)) {
-            transaction.replace(R.id.fragment_content, sbdreportfragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_DSRTODAY_REPORT)) {
-            transaction.replace(R.id.fragment_content, dsrtodayreportfragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_DSRMTD_REPORT)) {
-            transaction.replace(R.id.fragment_content, dsrmtdreportfragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_INITIATIVE_REPORT)) {
-
-            this.transaction = transaction;
-            menuTitle = config.getMenuName();
-            new DownloadInitiative().execute();
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_TASK_REPORT)) {
 
@@ -792,69 +743,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
     }
 
-
-    class DownloadInitiative extends AsyncTask<Integer, Integer, Integer> {
-
-        //private ProgressDialog progressDialogue;
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            /*progressDialogue = ProgressDialog.show(
-                    ReportMenuFragmentActivity.this, DataMembers.SD, "Loading",
-					true, false);*/
-            builder = new AlertDialog.Builder(ReportActivity.this);
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            try {
-                bmodel.initiativeHelper.generateIntiativeView();
-                bmodel.initiativeHelper.setInitlist(bmodel.initiativeHelper
-                        .downloadInitReport());
-                Collections.sort(bmodel.initiativeHelper.getInitlist(),
-                        new Comparator<InitiativeReportBO>() {
-                            @Override
-                            public int compare(
-                                    final InitiativeReportBO object1,
-                                    final InitiativeReportBO object2) {
-
-                                return object1.getWalkingSequence()
-                                        - object2.getWalkingSequence();
-                            }
-                        });
-                bmodel.initiativeHelper.downloadInitTotalValue();
-                bmodel.initiativeHelper.downloadInitMTDValue();
-
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-            return 0; // Return your real result here
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Integer result) {
-            // result is the value returned from doInBackground
-            /*if (progressDialogue != null)
-                progressDialogue.dismiss();*/
-            if (alertDialog != null)
-                alertDialog.dismiss();
-            transaction
-                    .replace(R.id.fragment_content, initiativereportfragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setTitle(menuTitle);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
-        }
-
-    }
 
     @Override
     public void updateUserSelection(ArrayList<Integer> mSelectedUsers, boolean isAllUser) {

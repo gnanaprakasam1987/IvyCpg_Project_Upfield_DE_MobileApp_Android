@@ -402,4 +402,38 @@ public class SBDHelper {
     private void setmParentHierarchyByProductId(HashMap<String, String> mParentHierarchyByProductId) {
         this.mParentHierarchyByProductId = mParentHierarchyByProductId;
     }
+
+    public void saveDayTarget(int kpiid, double target){
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db.selectSQL("select kpiid from RetailerKPIModifiedDetail where kpiid =" + kpiid);
+            String columnName = "KPIId,KPIParamLovId,Target";
+            boolean flag = false;
+
+            if (c != null){
+                if (c.moveToNext())
+                    flag = true;
+            }
+
+            if (flag)
+            db.updateSQL("update RetailerKPIModifiedDetail set target =" + target + " where kpiid =" + kpiid);
+            else {
+                String values = bmodel.getRetailerMasterBO().getKpiid_day()
+                                + ","
+                                + bmodel.getRetailerMasterBO().getKpi_param_day()
+                                + ","
+                                + target;
+                db.insertSQL("RetailerKPIModifiedDetail", columnName, values);
+            }
+            bmodel.getRetailerMasterBO().setDaily_target(target);
+            db.closeDB();
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
 }
