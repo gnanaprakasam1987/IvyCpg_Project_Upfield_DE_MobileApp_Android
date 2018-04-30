@@ -69,7 +69,7 @@ public class DigitalContentHelper {
             db.openDataBase();
 //            Cursor c1 = db.selectSQL("SELECT mappingtype  FROM DigitalContentMapping WHERE mappingtype != 'SELLER'");
             // addded new
-
+// hii
             sb.append("SELECT " +
                     "Distinct DigitalContent.imgid,DigitalContent.GroupId,IfNull(LocationId,0) AS LocationId,IfNull(ChannelId,0) AS ChannelId,Case  IFNULL(AttributeID ,-1) when -1  then '0' else '1' END as flag,IfNull(PriorityBiD,0) AS " +
                     " PriorityBiD,IfNull(RetailerID,0) AS RetailerID, IfNull(AccountID,0) AS AccountID " +
