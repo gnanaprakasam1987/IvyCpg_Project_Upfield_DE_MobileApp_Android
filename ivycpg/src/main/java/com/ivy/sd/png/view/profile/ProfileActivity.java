@@ -48,6 +48,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.platform.comapi.map.A;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
@@ -2030,7 +2031,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
                                 || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
 
-                                SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(getApplicationContext(),
+                                SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(ProfileActivity.this,
                                         bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
                         }

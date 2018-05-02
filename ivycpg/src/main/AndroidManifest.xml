@@ -421,7 +421,7 @@
             android:theme="@style/PreferencesTheme" />
         <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
         <activity
-            android:name="com.ivy.sd.png.view.SchemeApply"
+            android:name="com.ivy.cpg.view.order.scheme.SchemeApply"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnSummery"
@@ -788,6 +788,9 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.ivy.sd.png.view.BackUpSellerActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"
             android:screenOrientation="portrait"/>
 
 

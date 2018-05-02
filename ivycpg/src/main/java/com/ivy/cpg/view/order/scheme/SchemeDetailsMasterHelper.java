@@ -1232,7 +1232,9 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    public String upSelling(){
+    public ArrayList<String> upSelling(){
+
+        ArrayList<String> nearestSchemes=new ArrayList<>();
 
         mAchieved_qty_or_salesValue_by_schemeId_nd_productid=new HashMap<>();
         //ArrayList<String> nextSchemes=new ArrayList<>();
@@ -1348,18 +1350,23 @@ public class SchemeDetailsMasterHelper {
 
         //
 
+
         double highestPercentage=0;
         String nextPossibleSchemeId="0";
         for(String schemeId:schemeIdByPercentage.keySet()){
-            if(highestPercentage<schemeIdByPercentage.get(schemeId)) {
+            /*if(highestPercentage<schemeIdByPercentage.get(schemeId)) {
                 highestPercentage = schemeIdByPercentage.get(schemeId);
                 nextPossibleSchemeId=schemeId;
+            }*/
+            if(schemeIdByPercentage.get(schemeId)>=10){
+                nearestSchemes.add(schemeId);
+
             }
         }
 
 
 
-   return  nextPossibleSchemeId;
+   return  nearestSchemes;
 
 
     }

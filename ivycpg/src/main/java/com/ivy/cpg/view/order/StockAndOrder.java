@@ -70,6 +70,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.order.scheme.UpSellingActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -252,6 +253,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private OrderHelper orderHelper;
 
     private static final int SALES_RETURN = 3;
+    private static final int REQUEST_CODE_UPSELLING = 4;
+
     SearchAsync searchAsync;
     private int sbdHistory = 0;
 
@@ -4042,14 +4045,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (vw == mBtnNext) {
 
-            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
-                if (!orderHelper.isPendingReplaceAmt()) {
+                if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
+                    if (!orderHelper.isPendingReplaceAmt()) {
+                        onnext();
+                    } else {
+                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
+                    }
+                } else
                     onnext();
-                } else {
-                    Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
-                }
-            } else
-                onnext();
+
 
         } else if (vw == mBtnGuidedSelling_next) {
             boolean isAllDone = true;
@@ -4145,6 +4149,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private void nextButtonClick() {
         try {
+
             if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                 bmodel.isDeadGoldenAchieved();
             }
@@ -4234,6 +4239,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             getResources().getString(
                                     R.string.no_items_added), 0);
             }
+
+
         } catch (Exception e) {
             Commons.printException(e + "");
         }
@@ -4248,16 +4255,36 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     };
 
     private void nextBtnSubTask() {
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
-
-        if (bmodel.mSelectedModule != 3)
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
-
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.productHelper.taxHelper.removeTaxFromPrice();
         }
+
+        ArrayList<String> nearestSchemes=SchemeDetailsMasterHelper.getInstance(this).upSelling();
+        if(nearestSchemes.size()>0) {
+            Intent intent = new Intent(this, UpSellingActivity.class);
+            intent.putStringArrayListExtra("nearestSchemes", nearestSchemes);
+            startActivityForResult(intent,REQUEST_CODE_UPSELLING);
+            return;
+            //  finish();
+        }
+
+        moveToNextScreen();
+
+    }
+
+
+    /**
+     * Moving to next screen based on the config
+     * NOTE: Please don't add any validations inside this method. This method should only contain intents
+     */
+    private void moveToNextScreen(){
+
+
+        if (bmodel.mSelectedModule != 3)
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {
@@ -4568,7 +4595,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (mylist.size() > 0)
                     lvwplist.setSelectionFromTop(holderPosition, holderTop);
             }
-        } else {
+        }
+        else if(requestCode==REQUEST_CODE_UPSELLING){
+            if (resultCode == RESULT_OK) {
+              moveToNextScreen();
+            }
+
+        }
+        else {
             if (result != null) {
                 if (result.getContents() == null) {
                     Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();

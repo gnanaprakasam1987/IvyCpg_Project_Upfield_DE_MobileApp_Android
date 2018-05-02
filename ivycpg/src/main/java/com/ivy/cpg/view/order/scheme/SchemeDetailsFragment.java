@@ -190,12 +190,12 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     schemeTitleTV.setWidth(outMetrics.widthPixels);
                     if (uniqueSchemes != null && !uniqueSchemes.isEmpty())
                         uniqueSchemes.clear();
-                    updateSchemeView(mProductID);
+                    updateSchemeView(mProductID,"1");
                 }
             } else if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
                 if (schemes != null && schemes.size() > 0 && isSchemeAvailable) {
                     schemeTitleTV.setWidth(outMetrics.widthPixels);
-                    updateSchemeView(mProductID);
+                    updateSchemeView(mProductID,"1");
                 }
             }
         } else if (flag == 0) {
@@ -426,7 +426,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     }
     ///// Newly added by rajesh.k
 
-    private void updateSchemeView(String productid) {
+    private void updateSchemeView(String productid,String givenSchemeID) {
         ArrayList<Integer> parentIdList = schemeHelper.getParentIdListByProductId().get(productid);
         if (parentIdList != null) {
             for (Integer parentId : parentIdList) {
@@ -528,18 +528,21 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         if (schemeList != null) {
                             for (int k = schemeList.size() - 1; k >= 0; k--) {
 
-                                TextView slab = getTextViewTitle(true, Gravity.CENTER, false);
-                                slab.setLayoutParams(layoutParams2);
-                                slab.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
-                                //slab.setTextSize(((mTotalScreenWidth*2)/100)-2);
-                                slab.setTextSize(mTextViewSize);
-                                if (schemeHelper.getSchemeById().get(schemeList.get(k)).getScheme() != null)
-                                    slab.setText(schemeHelper.getSchemeById().get(schemeList.get(k)).getScheme());
-                                slab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                                slab.setWidth(mSchemeDetailWidth);
-                                //buyTitleTV.setWidth(150);
-                                slab.setTextColor(getResources().getColor(R.color.FullBlack));
-                                buyLayout.addView(slab);
+                                if(givenSchemeID.equals("0")||schemeList.get(k).equals(givenSchemeID)) {
+
+                                    TextView slab = getTextViewTitle(true, Gravity.CENTER, false);
+                                    slab.setLayoutParams(layoutParams2);
+                                    slab.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
+                                    //slab.setTextSize(((mTotalScreenWidth*2)/100)-2);
+                                    slab.setTextSize(mTextViewSize);
+                                    if (schemeHelper.getSchemeById().get(schemeList.get(k)).getScheme() != null)
+                                        slab.setText(schemeHelper.getSchemeById().get(schemeList.get(k)).getScheme());
+                                    slab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                                    slab.setWidth(mSchemeDetailWidth);
+                                    //buyTitleTV.setWidth(150);
+                                    slab.setTextColor(getResources().getColor(R.color.FullBlack));
+                                    buyLayout.addView(slab);
+                                }
                             }
                         }
 
