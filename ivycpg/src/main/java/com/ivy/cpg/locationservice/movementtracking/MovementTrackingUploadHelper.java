@@ -142,11 +142,9 @@ public class MovementTrackingUploadHelper {
         return isAvail;
     }
 
-    int uploadLocationTracking(Context ctx,UserMasterBO userMasterBO) {
+    void uploadLocationTracking(Context ctx,UserMasterBO userMasterBO) {
 
-        int responceMessage;
-
-        DBUtil db;
+        DBUtil db = null;
         try {
 
             SynchronizationHelper synchronizationHelper = SynchronizationHelper.getInstance(ctx);
@@ -237,9 +235,11 @@ public class MovementTrackingUploadHelper {
                 if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
                     if (errorMsg != null) {
-                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
+                        Commons.print("errorMsg "+errorMsg);
+//                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(ctx, ctx.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                        Commons.print("errorMsg "+ctx.getResources().getString(R.string.data_not_downloaded));
+//                        Toast.makeText(ctx, ctx.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -255,26 +255,21 @@ public class MovementTrackingUploadHelper {
 
                 System.gc();
                 try {
-
                     db.executeQ("DELETE FROM LocationTracking");
                     db.closeDB();
-                    responceMessage = 1;
                 } catch (Exception e) {
-
-                    responceMessage = 0;
                     Commons.printException(e);
                 }
 
-            } else {
-                responceMessage = 9;
-            }
+            }else
+                db.closeDB();
 
         } catch (Exception e) {
+            if(db!=null)
+                db.closeDB();
             Commons.printException(e);
-            return 0;
         }
-        db.closeDB();
-        return responceMessage;
+
     }
 
     private JSONArray prepareDataForLocationTrackingUploadJSON(DBUtil db,

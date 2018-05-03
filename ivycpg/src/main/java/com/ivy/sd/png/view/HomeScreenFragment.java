@@ -55,6 +55,7 @@ import com.ivy.cpg.view.dashboard.olddashboard.SkuWiseTargetFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.supervisor.SupervisorMapFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.LoadManagementFragment;
@@ -143,6 +144,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_TASK_NEW = "MENU_TASK_NEW";
     private static final String MENU_PLANE_MAP = "MENU_PLANE_MAP";
     private static final String MENU_BACKUP_SELLER = "MENU_BACKUP_SELLER";
+    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
 
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_GROOM_CS = "MENU_GROOM_CS";
@@ -270,6 +272,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_OFLNE_PLAN, R.drawable.ic_expense_icon);
         menuIcons.put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
         menuIcons.put(MENU_BACKUP_SELLER, R.drawable.ic_reallocation_icon);
+        menuIcons.put(MENU_SUPERVISOR, R.drawable.ic_new_retailer_icon);
 
         // Load the HHTMenuTable
         bmodel.configurationMasterHelper.downloadMainMenu();
@@ -1537,6 +1540,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 switchFragment(MENU_BACKUP_SELLER, menuItem.getMenuName());
             }
         }
+        else if (menuItem.getConfigCode().equals(MENU_SUPERVISOR)) {
+            switchFragment(MENU_SUPERVISOR, menuItem.getMenuName());
+        }
 
     }
 
@@ -1632,6 +1638,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_NON_FIELD);
         TaskFragment taskFragment = (TaskFragment) fm.findFragmentByTag(MENU_TASK_NEW);
         BackUpSellerFragment backUpSellerFragment = (BackUpSellerFragment) fm.findFragmentByTag(MENU_BACKUP_SELLER);
+
+        SupervisorMapFragment supervisorMapFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1745,6 +1753,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (backUpSellerFragment != null && fragmentName.equals(MENU_BACKUP_SELLER)
                 && backUpSellerFragment.isVisible()) {
             return;
+        } else if (supervisorMapFragment != null && fragmentName.equals(MENU_SUPERVISOR)
+                && supervisorMapFragment.isVisible()) {
+            return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
@@ -1820,6 +1831,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(taskFragment);
         if (backUpSellerFragment != null)
             ft.remove(backUpSellerFragment);
+        if(supervisorMapFragment!=null)
+            ft.remove(supervisorMapFragment);
 
         Bundle bndl;
         Fragment fragment;
@@ -2137,6 +2150,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_BACKUP_SELLER);
+                break;
+
+            case MENU_SUPERVISOR:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                fragment = new SupervisorMapFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_SUPERVISOR);
                 break;
         }
         ft.commit();

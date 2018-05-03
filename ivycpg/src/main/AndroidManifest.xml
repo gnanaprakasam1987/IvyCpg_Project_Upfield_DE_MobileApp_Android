@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1280"
+    android:versionCode="1290"
     android:versionName="2.128.0.1425">
 
     <supports-screens
@@ -108,10 +108,10 @@
 
         <receiver android:name="com.ivy.sd.png.model.ScreenReceiver" />
 
-        <service android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingListenerService"
+        <service
+            android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingListenerService"
             android:enabled="true"
-            android:exported="false"/>
-
+            android:exported="false" />
         <service android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingUploadService" />
 
         <receiver
@@ -168,8 +168,7 @@
         <service
             android:name="com.ivy.cpg.locationservice.realtime.RealTimeLocationService"
             android:enabled="true"
-            android:exported="false"/>
-
+            android:exported="false" />
         <service
             android:name="com.ivy.cpg.locationservice.activitytracking.ActivityIntentService"
             android:exported="false" />
@@ -796,20 +795,13 @@
         <activity
             android:name="com.ivy.sd.png.view.BackUpSellerActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.supervisor.SupervisorHomeActivity"
-            android:screenOrientation="portrait">
-
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-
-        </activity>
+        <activity
+            android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity"></activity>
     </application>
 
 </manifest>

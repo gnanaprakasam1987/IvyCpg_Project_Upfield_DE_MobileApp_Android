@@ -54,7 +54,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         locationDetailBO.setOutTime("");
         locationDetailBO.setStatus("IN");
 
-        updateFirebaseData(context, locationDetailBO, "RealtimeTracking");
+        updateFirebaseData(context, locationDetailBO, "movement_tracking");
 
     }
 
@@ -72,6 +72,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
                 child(context.getString(R.string.firebase_path)).child(pathNode).child(userId);
         databaseReference.child("inTime").setValue(String.valueOf(System.currentTimeMillis()));
+        databaseReference.child("outTime").setValue("");
         databaseReference.child("status").setValue("IN");
         databaseReference.child("userId").setValue("userId");
         databaseReference.child("supervisorId").setValue(getSupervisorIds(context));

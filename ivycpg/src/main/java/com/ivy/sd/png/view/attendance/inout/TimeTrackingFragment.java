@@ -536,7 +536,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         boolean success = false;
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE && reasonId.equalsIgnoreCase("10454")) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
-            realTimeLocation.updateAttendanceIn(getContext(),"RealtimeTracking");
+            realTimeLocation.updateAttendanceIn(getContext(),"movement_tracking");
             int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation, getContext());
             if (statusCode == LocationConstants.STATUS_SUCCESS)
                 success = true;
@@ -559,7 +559,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE && reasonId.equalsIgnoreCase("10454")) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
             RealTimeLocationTracking.stopLocationTracking(getContext());
-            realTimeLocation.updateAttendanceOut(getContext(),"RealtimeTracking");
+            realTimeLocation.updateAttendanceOut(getContext(),"movement_tracking");
         }
 
         uploadAttendance("OUT",reasonId);

@@ -7,9 +7,18 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
+import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.List;
+
+import static com.ivy.cpg.locationservice.LocationConstants.IN_VEHICLE;
+import static com.ivy.cpg.locationservice.LocationConstants.ON_FOOT;
+import static com.ivy.cpg.locationservice.LocationConstants.RUNNING;
+import static com.ivy.cpg.locationservice.LocationConstants.STILL;
+import static com.ivy.cpg.locationservice.LocationConstants.TILTING;
+import static com.ivy.cpg.locationservice.LocationConstants.UNKNOWN;
+import static com.ivy.cpg.locationservice.LocationConstants.WALKING;
 
 public class ActivityIntentService extends IntentService {
     protected static final String TAG = "Activity";
@@ -81,21 +90,21 @@ public class ActivityIntentService extends IntentService {
     private String getNameFromType(int activityType) {
         switch (activityType) {
             case DetectedActivity.IN_VEHICLE:
-                return "in_vehicle";
+                return IN_VEHICLE;
             case DetectedActivity.ON_BICYCLE:
-                return "RIDE";
+                return LocationConstants.ON_BICYCLE;
             case DetectedActivity.RUNNING:
-                return "RUN";
+                return RUNNING;
             case DetectedActivity.WALKING:
-                return "walking";
+                return WALKING;
             case DetectedActivity.ON_FOOT:
-                return "on_foot";
+                return ON_FOOT;
             case DetectedActivity.STILL:
-                return "still";
+                return STILL;
             case DetectedActivity.TILTING:
-                return "tilting";
+                return TILTING;
             default:
-                return "unknown";
+                return UNKNOWN;
         }
     }
     private void broadcastActivity(String activityTtype) {

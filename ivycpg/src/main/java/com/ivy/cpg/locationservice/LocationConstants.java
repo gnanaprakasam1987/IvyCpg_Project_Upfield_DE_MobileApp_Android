@@ -16,4 +16,15 @@ public class LocationConstants {
     public static final int MOCK_NOTIFICATION_ID = 1113; // Mock Location notification id
     public static final int GPS_NOTIFICATION_ID = 1111; // GPS Notification Id
 
+
+    public static final String IN_VEHICLE = "IN VEHICLE";
+    public static final String ON_BICYCLE = "ON BICYCLE";
+    public static final String RUNNING = "RUNNING";
+    public static final String WALKING = "WALKING";
+    public static final String ON_FOOT = "ON FOOT";
+    public static final String STILL = "STILL";
+    public static final String TILTING = "TILTING";
+    public static final String UNKNOWN = "UNKNOWN";
+
+
 }
