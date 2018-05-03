@@ -31,7 +31,7 @@ import java.util.List;
 
 
 /**
- * This fragment will show the list of schemes available for the product
+ * This fragment will show the list of schemes available for the given product
  */
 public class SchemeDetailsFragment extends IvyBaseFragment {
 
@@ -50,6 +50,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     private static final String ONLY_LOGIC = "ONLY";
     private String mProductID = "0";
     private String mProductName;
+    private String mSelectedSlabId="0";
 
     private int mProductNameWidth = 0;
     private int mSchemeDetailWidth = 0;
@@ -59,11 +60,6 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     private int mSlabWiseProductNameWidth = 0;
     private int mSlabWiseSchemeNameWidth = 0;
 
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,8 +97,15 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         if(getArguments()!=null&&getArguments().getString("productId")!=null)
             mProductID=getArguments().getString("productId");
+        if(getArguments()!=null&&getArguments().getString("slabId")!=null)
+            mSelectedSlabId=getArguments().getString("slabId");
+
         ProductMasterBO productBO=bModel.productHelper.getProductMasterBOById(mProductID);
-        if(productBO!=null) {
+
+        if(!mSelectedSlabId.equals("0")){
+            prepareView(rootView, mProductID, mSelectedSlabId);
+        }
+        else if(productBO!=null) {
             mProductName = productBO.getProductShortName();
             List<SchemeBO> schemes = schemeHelper.getSchemeList();
 
@@ -127,14 +130,22 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             if (schemes != null && schemes.size() > 0 && isSchemeAvailable) {
                 schemeTitleTV.setWidth(outMetrics.widthPixels);
-                updateSchemeView(rootView, mProductID, "0");
+                prepareView(rootView, mProductID, "0");
             }
         }
+
 
         return rootView;
     }
 
-    private void updateSchemeView(View rootView,String mProductId,String givenSchemeID) {
+
+    /**
+     * Preparing view to list schemes
+     * @param rootView Root view
+     * @param mProductId product Id
+     * @param mSelectedSlabId If this value not zero then only scheme with this Id will be listed.
+     */
+    private void prepareView(View rootView, String mProductId, String mSelectedSlabId) {
 
         LinearLayout mainLayout =  rootView.findViewById(R.id.schemeDialogwidget);
 
@@ -161,7 +172,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                 if (schemeIdList != null)
                     schemeBO = schemeHelper.getSchemeById().get(schemeIdList.get(0));
 
-                if (schemeBO != null) {
+
+                if (schemeBO != null&&(mSelectedSlabId.equals("0")||schemeBO.getSchemeId().equals(mSelectedSlabId))) {
 
                     LinearLayout.LayoutParams layoutParamsSchemeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParamsSchemeTitle.setMargins(0, 20, 0, 10);
@@ -221,7 +233,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         if (mSlabList != null) {
                             for (int k = mSlabList.size() - 1; k >= 0; k--) {
 
-                                if(givenSchemeID.equals("0")||mSlabList.get(k).equals(givenSchemeID)) {
+                                if(mSelectedSlabId.equals("0")||mSlabList.get(k).equals(mSelectedSlabId)) {
 
                                     TextView slab = getTextView(true, Gravity.CENTER, false);
                                     slab.setLayoutParams(layoutParams_slab);
@@ -287,9 +299,9 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     boolean isAlreadyAddedFreeProduct = false;
                     boolean isAlreadyAddedOtherDisc = false;
 
-                    // If same group not available in other slab, then single title is enough
                     boolean isSameGroupAvailableInOtherSlab = schemeHelper.isSameGroupAvailableInOtherSlab(parentId);
                     if (!isSameGroupAvailableInOtherSlab) {
+                        // If same group not available in other slab, then single title is enough
 
                         TextView freeTitleTV = getTextView(true, Gravity.LEFT, true);
                         freeTitleTV.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
@@ -413,7 +425,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                             mainLayout.addView(groupLogicType);
                                         }
 
-                                        //Adding products
+                                        //Adding free products
                                         if (groupLogic.equals(AND_LOGIC)) {
                                             final LinearLayout ll = addSlabWiseFreeProductANDLogic(schemeId, grpName);
                                             mainLayout.addView(ll);

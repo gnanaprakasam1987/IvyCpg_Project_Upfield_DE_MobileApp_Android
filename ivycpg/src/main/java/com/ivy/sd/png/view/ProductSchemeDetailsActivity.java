@@ -202,10 +202,15 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
         mSelectFragment = new SchemeDetailsFragment();
         Bundle bundle =new Bundle();
         bundle.putString("productId",productId);
+        if(getIntent()!=null&&getIntent().getStringExtra("slabId")!=null)
+          bundle.putString("slabId",getIntent().getStringExtra("slabId"));
+
         mSelectFragment.setArguments(bundle);
         mFragmentList.add(mSelectFragment);
 
-        if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
+        boolean isFromUpSelling=getIntent().getBooleanExtra("isFromUpSelling",false);
+
+        if (!isFromUpSelling&&bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
             mSelectFragment = new ProductDetailsFragment();
             mFragmentList.add(mSelectFragment);
         }

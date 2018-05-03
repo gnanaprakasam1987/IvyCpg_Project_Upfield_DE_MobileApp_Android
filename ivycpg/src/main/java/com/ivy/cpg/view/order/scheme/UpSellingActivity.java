@@ -27,6 +27,7 @@ import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CrownReturnActivity;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
+import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -82,7 +83,7 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
         LayoutInflater inflater = LayoutInflater.from(this);
         View view_parent;
         for(String schemeId:nearestSchemes){
-            SchemeBO schemeBO=schemeHelper.getSchemeById().get(schemeId);
+            final SchemeBO schemeBO=schemeHelper.getSchemeById().get(schemeId);
             if(schemeBO!=null){
 
                 view_parent = inflater.inflate(R.layout.row_upselling, null);
@@ -93,6 +94,22 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
                 TextView label_text_any=view_parent.findViewById(R.id.text_any);updateFont(label_text_any,1);
                 (view_parent.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 text_slabName.setText(schemeBO.getScheme());updateFont(text_slabName,0);
+
+                View view=view_parent.findViewById(R.id.image_view_info);
+               // view.setTag(1,schemeBO.getSchemeId());
+               // view.setTag(2,schemeBO.getBuyingProducts().get(0).getProductId());
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(UpSellingActivity.this, ProductSchemeDetailsActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("slabId",schemeBO.getSchemeId());
+                        intent.putExtra("productId",schemeBO.getBuyingProducts().get(0).getProductId());
+                        intent.putExtra("isFromUpSelling",true);
+                        startActivity(intent);
+                    }
+                });
+               // view.setOnClickListener(this);
 
                 LinearLayout layout_products=view_parent.findViewById(R.id.layout_products);
 
@@ -185,6 +202,14 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
         }
         else if(view.getId()==button_edit.getId()){
             finish();
+        }
+        else if(view.getId()==R.id.image_view_info){
+            Intent intent = new Intent(UpSellingActivity.this, ProductSchemeDetailsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("slabId",(String)view.getTag(1));
+            intent.putExtra("productId",(String)view.getTag(2));
+            intent.putExtra("isFromUpSelling",true);
+            startActivity(intent);
         }
     }
 }
