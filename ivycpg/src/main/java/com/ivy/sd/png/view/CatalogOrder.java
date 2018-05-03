@@ -1781,7 +1781,15 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 holder.moq.setText(strMoqQty);
             }
             if (holder.ssrp != null) {
-                final String price = "Price : " + bmodel.formatValue(holder.productObj.getSrp());
+                String price = "";
+                if (bmodel.labelsMasterHelper
+                        .applyLabels("catalog_srp") != null) {
+                    price = bmodel.labelsMasterHelper
+                            .applyLabels("catalog_srp") + ": "
+                            + bmodel.formatValue(holder.productObj.getSrp()) + "";
+                } else {
+                    price = "Price : " + bmodel.formatValue(holder.productObj.getSrp());
+                }
                 holder.ssrp.setText(price);
             }
             if (holder.mrp != null) {
