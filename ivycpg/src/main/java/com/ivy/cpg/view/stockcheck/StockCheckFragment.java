@@ -1046,6 +1046,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 businessModel.productHelper.setTotalScreenSize(0);
 
                                 Intent intent = new Intent(getActivity(), ProductSchemeDetailsActivity.class);
+                                intent.putExtra("productId",holder.productId);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
 

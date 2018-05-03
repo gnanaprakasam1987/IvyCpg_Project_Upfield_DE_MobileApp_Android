@@ -100,6 +100,9 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
             bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
             SchemeDetailsFragment fragment = new SchemeDetailsFragment();
+            Bundle bundle =new Bundle();
+            bundle.putString("productId",bmodel.selectedPdt.getProductID());
+            fragment.setArguments(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frame, fragment);
             transaction.commit();

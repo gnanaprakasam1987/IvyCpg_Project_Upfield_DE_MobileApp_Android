@@ -1360,6 +1360,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                             bmodel.productHelper.setTotalScreenSize(0);
 
                             Intent intent = new Intent(CrownReturnActivity.this, ProductSchemeDetailsActivity.class);
+                            intent.putExtra("productId",holder.productId);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);

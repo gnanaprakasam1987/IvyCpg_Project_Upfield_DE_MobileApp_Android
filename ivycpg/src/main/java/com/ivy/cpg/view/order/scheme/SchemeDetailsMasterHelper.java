@@ -4288,7 +4288,7 @@ public class SchemeDetailsMasterHelper {
         return new ArrayList<>();
     }
 
-    public boolean isSameGroupAvailableinDifferentSlab(int parentId) {
+    public boolean isSameGroupAvailableInOtherSlab(int parentId) {
 
         ArrayList<String> groupNameList ;
         ArrayList<String> previousGroupNameList = null;

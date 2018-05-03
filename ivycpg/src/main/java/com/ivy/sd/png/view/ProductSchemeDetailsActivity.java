@@ -38,6 +38,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
     private ViewPager viewPager;
     private Bundle instate;
     private BusinessModel bmodel;
+    private String productId="0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,10 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+
+        if(getIntent()!=null&&getIntent().getStringExtra("productId")!=null){
+            productId=String.valueOf(getIntent().getStringExtra("productId"));
+        }
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         addFragments();
@@ -195,6 +200,9 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
         mFragmentList = new ArrayList<>();
         mSelectFragment = new SchemeDetailsFragment();
+        Bundle bundle =new Bundle();
+        bundle.putString("productId",productId);
+        mSelectFragment.setArguments(bundle);
         mFragmentList.add(mSelectFragment);
 
         if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {

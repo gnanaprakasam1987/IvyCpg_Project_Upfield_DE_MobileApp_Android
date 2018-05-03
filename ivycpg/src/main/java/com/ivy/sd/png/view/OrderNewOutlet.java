@@ -1115,6 +1115,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
                             Intent intent = new Intent(OrderNewOutlet.this, ProductSchemeDetailsActivity.class);
+                            intent.putExtra("productId",holder.productId);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
 

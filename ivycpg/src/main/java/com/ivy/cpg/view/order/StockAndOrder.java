@@ -3363,6 +3363,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                         Toast.LENGTH_SHORT).show();
                             }
 
+                            //This objects reference is used only in Product Detail screen.
+                            // This should be removed while cleaning product detail screen
                             bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
@@ -3372,6 +3374,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             Intent intent = new Intent(StockAndOrder.this, ProductSchemeDetailsActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("productId",holder.productId);
                             startActivity(intent);
 
                         } else {

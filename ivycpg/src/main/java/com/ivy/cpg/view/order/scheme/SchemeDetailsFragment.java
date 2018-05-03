@@ -2,25 +2,19 @@ package com.ivy.cpg.view.order.scheme;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -28,47 +22,35 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
-import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
+/**
+ * This fragment will show the list of schemes available for the product
+ */
 public class SchemeDetailsFragment extends IvyBaseFragment {
 
-    private BusinessModel bmodel;
+    private BusinessModel bModel;
+    private Context mContext;
+    private SchemeDetailsMasterHelper schemeHelper;
 
-    private LinearLayout mainLayout;
-    private LinearLayout.LayoutParams linearlprams, linearlpramsHSL, linearlpramsVSL,
-            linearlpramsSub1, linearlpramsSub2, linearlpramsSub3,
-            linearlpramsSub4;
-    private LinearLayout.LayoutParams lprams;
-    private Set<SchemeBO> uniqueSchemes;
-    private List<TempSchemeBO> selectAllList;
-    private LinearLayout linearWidgetSchemeReport;
-    private Context ctxt;
-
-
-    private LinearLayout mAddViewLayout;
-    private LinearLayout mAddViewHorizontalLayout;
-    private static final String PIECE = "Pcs";
-    private static final String CASES = "Cases";
-    private static final String OUTER = "Outer";
     private String rupeesLabel = "Rs";
-    private static final String CURRENCT_LABEL = "currency";
+    private static final String CURRENCY_LABEL = "currency";
+    private static final String BUY_PRODUCT_TITLE_LABEL="scheme_buy";
+    private static final String FREE_PRODUCT_TITLE_LABEL="scheme_get";
     private static final String SCHEME_BUY_TYPE_QTY = "QTY";
     private static final String SCHEME_BUY_TYPE_VALUE = "SV";
     private static final String AND_LOGIC = "AND";
     private static final String ANY_LOGIC = "ANY";
     private static final String ONLY_LOGIC = "ONLY";
-    private String mProductID = "";
-    // scheme dialog product width and height
+    private String mProductID = "0";
+    private String mProductName;
+
     private int mProductNameWidth = 0;
     private int mSchemeDetailWidth = 0;
     private int mTotalScreenWidth = 0;
@@ -77,13 +59,6 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     private int mSlabWiseProductNameWidth = 0;
     private int mSlabWiseSchemeNameWidth = 0;
 
-    private List<SchemeBO> schemes;
-    private String pdname;
-    private String prodId;
-    private ProductMasterBO productObj;
-    private int flag;
-    private View rootView;
-    private SchemeDetailsMasterHelper schemeHelper;
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
@@ -94,20 +69,15 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        bModel = (BusinessModel) getActivity().getApplicationContext();
+        bModel.setContext(getActivity());
+        mContext = getActivity().getApplicationContext();
         schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
 
-        this.prodId = bmodel.productHelper.getProdId();
-        this.mProductID = bmodel.productHelper.getProdId();
-        this.mTotalScreenWidth = bmodel.productHelper.getTotalScreenSize();
-        ;
 
-        ctxt = getActivity().getApplicationContext();
-        this.schemes = bmodel.productHelper.getSchemes();
-        this.productObj = bmodel.productHelper.getProductObj();
-        this.flag = bmodel.productHelper.getFlag();
-        this.pdname = bmodel.productHelper.getPdname();
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        mTotalScreenWidth = dm.widthPixels;
 
         if (mTotalScreenWidth > 1000) {
             mTextViewSize = mTextViewSize - 2;
@@ -117,334 +87,65 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //getActivity().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        rootView = inflater.inflate(R.layout.fragment_scheme_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_scheme_details, container, false);
 
         setHasOptionsMenu(true);
         if (getActivity().getActionBar() != null) {
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
-        setScreenTitle("" + bmodel.productHelper.getPdname());
+        setScreenTitle(mProductName);
 
-
-        if (bmodel.labelsMasterHelper.applyLabels(CURRENCT_LABEL) != null) {
-            rupeesLabel = bmodel.labelsMasterHelper
-                    .applyLabels(CURRENCT_LABEL);
-        }
-        TextView schemeTitleTV = (TextView) rootView.findViewById(R.id.scheme_info_title);
-        mainLayout = (LinearLayout) rootView.findViewById(R.id.schemeDialogwidget);
-        linearlpramsSub3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearWidgetSchemeReport = new LinearLayout(getActivity());
-        linearWidgetSchemeReport.setLayoutParams(linearlpramsSub3);
-        linearWidgetSchemeReport
-                .setBackgroundColor(Color.parseColor("#9CE7F9"));
-        linearWidgetSchemeReport.setOrientation(LinearLayout.VERTICAL);
-        linearlprams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearlpramsSub1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearlpramsSub1.setMargins(3, 3, 3, 3);
-        linearlpramsSub2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearlpramsSub2.setMargins(1, 1, 1, 1);
-
-        linearlpramsSub4 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearlpramsSub4.setMargins(3, 3, 3, 10);
-
-        linearlpramsHSL = new LinearLayout.LayoutParams(1,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearlpramsHSL.setMargins(0, 2, 0, 2);
-        linearlpramsHSL.setMargins(1, 0, 1, 0);
-        linearlpramsVSL = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 1);
-        linearlpramsVSL.setMargins(2, 0, 2, 0);
-        lprams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        lprams.weight = 1;
         DisplayMetrics outMetrics = new DisplayMetrics();
-        getActivity().getWindow().getWindowManager().getDefaultDisplay()
-                .getMetrics(outMetrics);
+        getActivity().getWindow().getWindowManager().getDefaultDisplay() .getMetrics(outMetrics);
 
-        Spinner schemeSpinner = (Spinner) rootView.findViewById(R.id.scheme_spnr);
-        if (flag == 1) {
 
-            TextView productTitleTV = (TextView) rootView.findViewById(R.id.product_info_title);
+        if(getArguments()!=null&&getArguments().getString("productId")!=null)
+            mProductID=getArguments().getString("productId");
+        ProductMasterBO productBO=bModel.productHelper.getProductMasterBOById(mProductID);
+        if(productBO!=null) {
+            mProductName = productBO.getProductShortName();
+            List<SchemeBO> schemes = schemeHelper.getSchemeList();
 
-            productTitleTV.setText(pdname);
+
+            if (bModel.labelsMasterHelper.applyLabels(CURRENCY_LABEL) != null) {
+                rupeesLabel = bModel.labelsMasterHelper.applyLabels(CURRENCY_LABEL);
+            }
+
+            TextView schemeTitleTV = rootView.findViewById(R.id.scheme_info_title);
+            schemeTitleTV.setText(mProductName);
+
+
             boolean isSchemeAvailable = false;
             if (schemes != null && schemes.size() > 0) {
-                for (SchemeBO scbo : schemes) {
-                    for (SchemeProductBO isSchemeHavingProd : scbo
-                            .getBuyingProducts()) {
-                        if (isSchemeHavingProd.getProductId().equals(prodId))
+                for (SchemeBO schemeBO : schemes) {
+                    for (SchemeProductBO isSchemeHavingProd : schemeBO.getBuyingProducts()) {
+                        if (isSchemeHavingProd.getProductId().equals(mProductID))
                             isSchemeAvailable = true;
                     }
                 }
             }
-            schemeTitleTV.setText(pdname);
-            if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
-                if (schemes != null && schemes.size() > 0 && isSchemeAvailable) {
-                    //tabHost.addTab(setContent1);
-                    schemeTitleTV.setWidth(outMetrics.widthPixels);
-                    if (uniqueSchemes != null && !uniqueSchemes.isEmpty())
-                        uniqueSchemes.clear();
-                    updateSchemeView(mProductID,"1");
-                }
-            } else if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
-                if (schemes != null && schemes.size() > 0 && isSchemeAvailable) {
-                    schemeTitleTV.setWidth(outMetrics.widthPixels);
-                    updateSchemeView(mProductID,"1");
-                }
-            }
-        } else if (flag == 0) {
-            schemeTitleTV.setVisibility(View.GONE);
-            LinearLayout temp = (LinearLayout) rootView.findViewById(R.id.scheme_info_layout);
-            temp.setVisibility(View.GONE);
-            schemeSpinner.setVisibility(View.VISIBLE);
-            LinearLayout lr = (LinearLayout) rootView.findViewById(R.id.spinner_tab_widget);
-            android.view.ViewGroup.LayoutParams lp = lr.getLayoutParams();
-            lp.width = outMetrics.widthPixels;
-            lr.setLayoutParams(lp);
 
-            // schemeTitleTV.setWidth(outMetrics.widthPixels);
-            ArrayAdapter<SpinnerBO> schemeAdapter = new ArrayAdapter<SpinnerBO>(ctxt,
-                    android.R.layout.simple_spinner_item);
-            schemeAdapter
-                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            schemeAdapter.add(new SpinnerBO(0, ctxt.getResources()
-                    .getString(R.string.select)));
-            schemeAdapter.add(new SpinnerBO(1, ctxt.getResources()
-                    .getString(R.string.all)));
-            for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
-                if (bo.isPromo())
-                    schemeAdapter.add(new SpinnerBO(Integer.parseInt(bo
-                            .getProductID()), bo.getProductName()));
+            if (schemes != null && schemes.size() > 0 && isSchemeAvailable) {
+                schemeTitleTV.setWidth(outMetrics.widthPixels);
+                updateSchemeView(rootView, mProductID, "0");
             }
-            schemeSpinner.setAdapter(schemeAdapter);
         }
-
-        rootView.findViewById(R.id.scheme_tab_widget).setVisibility(
-                View.VISIBLE);
 
         return rootView;
     }
 
+    private void updateSchemeView(View rootView,String mProductId,String givenSchemeID) {
 
-    public void onClick(View v) {
-    }
+        LinearLayout mainLayout =  rootView.findViewById(R.id.schemeDialogwidget);
 
-    class TempSchemeBO {
-        private int parentId;
-        private String parentDesc;
-        private String type;
-        List<TempSlabBO> slabList;
+        ArrayList<Integer> parentIdList = schemeHelper.getParentIdListByProductId().get(mProductId);
 
-        public int getParentId() {
-            return parentId;
-        }
-
-        public void setParentId(int parentId) {
-            this.parentId = parentId;
-        }
-
-        public String getParentDesc() {
-            return parentDesc;
-        }
-
-        public void setParentDesc(String parentDesc) {
-            this.parentDesc = parentDesc;
-        }
-
-        public List<TempSlabBO> getSlabList() {
-            return slabList;
-        }
-
-        public void setSlabList(List<TempSlabBO> slabList) {
-            this.slabList = slabList;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-    }
-
-    class TempSlabBO {
-        private String slabId;
-        private String SlabDescription;
-        List<TempBuyProductBO> buyproductList;
-        private int buyQty;
-
-        public String getSlabId() {
-            return slabId;
-        }
-
-        public void setSlabId(String slabId) {
-            this.slabId = slabId;
-        }
-
-        public String getSlabDescription() {
-            return SlabDescription;
-        }
-
-        public void setSlabDescription(String slabDescription) {
-            SlabDescription = slabDescription;
-        }
-
-        public List<TempBuyProductBO> getBuyproductList() {
-            return buyproductList;
-        }
-
-        public void setBuyproductList(List<TempBuyProductBO> buyproductList) {
-            this.buyproductList = buyproductList;
-        }
-
-        public int getBuyQty() {
-            return buyQty;
-        }
-
-        public void setBuyQty(int buyQty) {
-            this.buyQty = buyQty;
-        }
-    }
-
-    class TempBuyProductBO {
-        private String buyproductId;
-        private String buyproductDescription;
-        private int applycount;
-        private String buyType;
-        private String GroupName;
-        private String GroupType;
-        private int isCombination;
-        private String uomDescription;
-        private String buyQty;
-        private int freeQtyMin, freeQtyMax;
-
-        public String getBuyQty() {
-            return buyQty;
-        }
-
-        public String getBuyproductId() {
-            return buyproductId;
-        }
-
-        public void setBuyproductId(String buyproductId) {
-            this.buyproductId = buyproductId;
-        }
-
-        public String getBuyproductDescription() {
-            return buyproductDescription;
-        }
-
-        public void setBuyproductDescription(String buyproductDescription) {
-            this.buyproductDescription = buyproductDescription;
-        }
-
-        public int getApplycount() {
-            return applycount;
-        }
-
-        public void setApplycount(int applycount) {
-            this.applycount = applycount;
-        }
-
-        public String getBuyType() {
-            return buyType;
-        }
-
-        public void setBuyType(String buyType) {
-            this.buyType = buyType;
-        }
-
-        public String getGroupName() {
-            return GroupName;
-        }
-
-        public void setGroupName(String groupName) {
-            GroupName = groupName;
-        }
-
-        public String getGroupType() {
-            return GroupType;
-        }
-
-        public void setGroupType(String groupType) {
-            GroupType = groupType;
-        }
-
-        public int getIsCombination() {
-            return isCombination;
-        }
-
-        public void setIsCombination(int isCombination) {
-            this.isCombination = isCombination;
-        }
-
-        public String getUomDescription() {
-            return uomDescription;
-        }
-
-        public void setUomDescription(String uomDescription) {
-            this.uomDescription = uomDescription;
-        }
-
-        public int getFreeQtyMin() {
-            return freeQtyMin;
-        }
-
-        public void setFreeQtyMin(int freeQtyMin) {
-            this.freeQtyMin = freeQtyMin;
-        }
-
-        public int getFreeQtyMax() {
-            return freeQtyMax;
-        }
-
-        public void setFreeQtyMax(int freeQtyMax) {
-            this.freeQtyMax = freeQtyMax;
-        }
-
-    }
-
-
-    private static View createTabView(final Context context, final String text) {
-        View view = LayoutInflater.from(context)
-                .inflate(R.layout.tabs_bg, null);
-        TextView tv = (TextView) view.findViewById(R.id.tabsText);
-        tv.setText(text);
-        return view;
-    }
-
-    public int convertSpToPixels(float sp, Context context) {
-        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.getResources().getDisplayMetrics());
-        return px;
-    }
-    ///// Newly added by rajesh.k
-
-    private void updateSchemeView(String productid,String givenSchemeID) {
-        ArrayList<Integer> parentIdList = schemeHelper.getParentIdListByProductId().get(productid);
         if (parentIdList != null) {
             for (Integer parentId : parentIdList) {
-                boolean isSameGroupAvailable = schemeHelper.isSameGroupAvailableinDifferentSlab(parentId);
+
 
                 final ArrayList<String> schemeIdList = schemeHelper.getSchemeIdListByParentID().get(parentId);
-                /*if (schemeIdList.size() == 1) {
-                    mSchemeDetailWidth = (mTotalScreenWidth) / 4 - 20;
-                    mProductNameWidth = mTotalScreenWidth - mSchemeDetailWidth - 40;
 
-
-                } else {
-                    mProductNameWidth = 350;
-                    mSchemeDetailWidth = 100;
-                }*/
-
-                //int prodWidth = getResources().getInteger(R.integer.product_width);
-                //int slabWidth = getResources().getInteger(R.integer.slab_width);
                 int prodWidth = ((mTotalScreenWidth) * 40) / 100;
                 int slabWidth = ((mTotalScreenWidth) * 30) / 100;
 
@@ -461,100 +162,91 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     schemeBO = schemeHelper.getSchemeById().get(schemeIdList.get(0));
 
                 if (schemeBO != null) {
-                    LinearLayout.LayoutParams layoutParamsSchemeTitile = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                    //layoutParamsSchemeTitile.weight=0.1f;
-                    layoutParamsSchemeTitile.setMargins(0, 20, 0, 10);
-                    layoutParamsSchemeTitile.gravity = Gravity.LEFT | Gravity.CENTER;
-                    TextView schemeTitleTV = getTextViewTitle(false, Gravity.LEFT, true);
-                    schemeTitleTV.setText(schemeBO.getProductName());
-                    schemeTitleTV.setTextColor(getResources().getColor(R.color.FullBlack));
-                    schemeTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    //schemeTitleTV.setTextSize(((mTotalScreenWidth*2)/100));
-                    schemeTitleTV.setTextSize(mTextViewSize);
-                    schemeTitleTV.setGravity(Gravity.LEFT | Gravity.BOTTOM);
-                    schemeTitleTV.setLayoutParams(layoutParamsSchemeTitile);
-                    mainLayout.addView(schemeTitleTV);
-                    final List<SchemeProductBO> schemeBuyList = schemeBO.getBuyingProducts();
-                    List<SchemeProductBO> schemeFreeList = schemeBO.getFreeProducts();
+
+                    LinearLayout.LayoutParams layoutParamsSchemeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParamsSchemeTitle.setMargins(0, 20, 0, 10);
+                    layoutParamsSchemeTitle.gravity = Gravity.LEFT | Gravity.CENTER;
+
+                    TextView textSchemeTitle = getTextView(false, Gravity.LEFT, true);
+                    textSchemeTitle.setText(schemeBO.getProductName());
+                    textSchemeTitle.setTextColor(getResources().getColor(R.color.FullBlack));
+                    textSchemeTitle.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    textSchemeTitle.setTextSize(mTextViewSize);
+                    textSchemeTitle.setGravity(Gravity.START | Gravity.BOTTOM);
+                    textSchemeTitle.setLayoutParams(layoutParamsSchemeTitle);
+
+                    mainLayout.addView(textSchemeTitle);
+
+
+                    final List<SchemeProductBO> schemeBuyProducts = schemeBO.getBuyingProducts();
 
 
                     ArrayList<String> groupName = new ArrayList<>();
-                    if (schemeBuyList != null && schemeBuyList.size() > 0) {
+                    if (schemeBuyProducts != null && schemeBuyProducts.size() > 0) {
 
-                        LinearLayout.LayoutParams buyParentLayout = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 9) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                        LinearLayout buyParent = new LinearLayout(ctxt);
-                        buyParent.setLayoutParams(buyParentLayout);
-                        buyParent.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
-                        //buyParent.setAlpha(0.2f);
+                        LinearLayout.LayoutParams layoutParam_BuyProductParent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 9) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout layout_BuyProductParent = new LinearLayout(mContext);
+                        layout_BuyProductParent.setLayoutParams(layoutParam_BuyProductParent);
+                        layout_BuyProductParent.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
 
-                        TextView buyTitleTV = getTextViewTitle(true, Gravity.LEFT, false);
-                        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                        //layoutParams1.weight=0.1f;
-                        layoutParams1.setMargins(0, 10, 0, 10);
-                        layoutParams1.gravity = Gravity.CENTER_VERTICAL;
-                        buyTitleTV.setLayoutParams(layoutParams1);
-                        buyTitleTV.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
-                        //buyTitleTV.setTextSize(((mTotalScreenWidth*2)/100)-2);
-                        //float size1 =convertSpToPixels(getResources().getDimension(R.dimen.dimens_font_12dp),getActivity());
-                        //buyTitleTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getDimension(R.dimen.dimens_font_12dp));
-                        buyTitleTV.setTextSize(mTextViewSize);
-                        try {
-                            if (bmodel.labelsMasterHelper.applyLabels("scheme_buy") != null)
-                                buyTitleTV.setText(bmodel.labelsMasterHelper.applyLabels("scheme_buy"));
-                            else
-                                buyTitleTV.setText("BUY");
-                        } catch (Exception e) {
-                            Commons.printException(e);
-                            buyTitleTV.setText("BUY");
-                        }
-                        buyTitleTV.setWidth(mProductNameWidth);
-                        buyTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                        buyTitleTV.setGravity(Gravity.LEFT | Gravity.CENTER);
-                        //buyTitleTV.setWidth(150);
-                        buyTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-                        //mainLayout.addView(buyTitleTV);
+                        TextView text_BuyProductsTitle = getTextView(true, Gravity.LEFT, false);
+                        LinearLayout.LayoutParams layoutParams_BuyProductTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        layoutParams_BuyProductTitle.setMargins(0, 10, 0, 10);
+                        layoutParams_BuyProductTitle.gravity = Gravity.CENTER_VERTICAL;
+                        text_BuyProductsTitle.setLayoutParams(layoutParams_BuyProductTitle);
+                        text_BuyProductsTitle.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
+                        text_BuyProductsTitle.setTextSize(mTextViewSize);
 
-                        LinearLayout buyLayout = null;
-                        buyLayout = new LinearLayout(ctxt);
-                        buyLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        buyLayout.setLayoutParams(layoutParams1);
-                        buyLayout.addView(buyTitleTV);
+                        if (bModel.labelsMasterHelper.applyLabels(BUY_PRODUCT_TITLE_LABEL) != null)
+                            text_BuyProductsTitle.setText(bModel.labelsMasterHelper.applyLabels(BUY_PRODUCT_TITLE_LABEL));
+                        else
+                            text_BuyProductsTitle.setText(mContext.getResources().getString(R.string.buy));
 
-                        LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 8) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                        layoutParams2.gravity = Gravity.CENTER_VERTICAL;
+                        text_BuyProductsTitle.setWidth(mProductNameWidth);
+                        text_BuyProductsTitle.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        text_BuyProductsTitle.setGravity(Gravity.LEFT | Gravity.CENTER);
+                        text_BuyProductsTitle.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+
+                        LinearLayout layout_Slab ;
+                        layout_Slab = new LinearLayout(mContext);
+                        layout_Slab.setOrientation(LinearLayout.HORIZONTAL);
+                        layout_Slab.setLayoutParams(layoutParams_BuyProductTitle);
+                        layout_Slab.addView(text_BuyProductsTitle);
+
+                        LinearLayout.LayoutParams layoutParams_slab = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 8) / 100);
+                        layoutParams_slab.gravity = Gravity.CENTER_VERTICAL;
 
 
-                        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(parentId);
-                        if (schemeList != null) {
-                            for (int k = schemeList.size() - 1; k >= 0; k--) {
+                        ArrayList<String> mSlabList = schemeHelper.getSchemeIdListByParentID().get(parentId);
+                        if (mSlabList != null) {
+                            for (int k = mSlabList.size() - 1; k >= 0; k--) {
 
-                                if(givenSchemeID.equals("0")||schemeList.get(k).equals(givenSchemeID)) {
+                                if(givenSchemeID.equals("0")||mSlabList.get(k).equals(givenSchemeID)) {
 
-                                    TextView slab = getTextViewTitle(true, Gravity.CENTER, false);
-                                    slab.setLayoutParams(layoutParams2);
+                                    TextView slab = getTextView(true, Gravity.CENTER, false);
+                                    slab.setLayoutParams(layoutParams_slab);
                                     slab.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
-                                    //slab.setTextSize(((mTotalScreenWidth*2)/100)-2);
                                     slab.setTextSize(mTextViewSize);
-                                    if (schemeHelper.getSchemeById().get(schemeList.get(k)).getScheme() != null)
-                                        slab.setText(schemeHelper.getSchemeById().get(schemeList.get(k)).getScheme());
-                                    slab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                                    if (schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme() != null)
+                                        slab.setText(schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme());
+                                    slab.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                                     slab.setWidth(mSchemeDetailWidth);
-                                    //buyTitleTV.setWidth(150);
                                     slab.setTextColor(getResources().getColor(R.color.FullBlack));
-                                    buyLayout.addView(slab);
+                                    layout_Slab.addView(slab);
                                 }
                             }
                         }
 
-                        buyParent.addView(buyLayout);
-                        mainLayout.addView(buyParent);
+                        layout_BuyProductParent.addView(layout_Slab);
+                        mainLayout.addView(layout_BuyProductParent);
 
                         int i = 0;
-                        for (SchemeProductBO buyProductBO : schemeBuyList) {
+                        for (SchemeProductBO buyProductBO : schemeBuyProducts) {
                             if (!groupName.contains(buyProductBO.getGroupName())) {
                                 i = i + 1;
                                 if (i > 1) {
-                                    TextView groupLogicType = getTextViewTitle(false, Gravity.LEFT, false);
+
+                                    TextView groupLogicType = getTextView(false, Gravity.LEFT, false);
                                     groupLogicType.setTextColor(getResources().getColor(R.color.FullBlack));
 
                                     if (schemeBO.getParentLogic().equalsIgnoreCase("AND")) {
@@ -570,7 +262,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                 }
 
                                 if (buyProductBO.getGroupLogic().equals(AND_LOGIC)) {
-                                    final HorizontalScrollView ll = addViewAndLogicBuyNew(parentId, buyProductBO.getGroupName());
+                                    final HorizontalScrollView ll = addViewAndLogicBUY(parentId, buyProductBO.getGroupName());
                                     mainLayout.addView(ll);
 
                                 } else if (buyProductBO.getGroupLogic().equals(ANY_LOGIC)) {
@@ -589,74 +281,79 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                         }
                     }
+
+
+                    // Adding Discounts view ///////////
                     boolean isAlreadyAddedFreeProduct = false;
                     boolean isAlreadyAddedOtherDisc = false;
 
-                    if (!isSameGroupAvailable) {
-                        TextView freeTitleTV = getTextViewTitle(true, Gravity.LEFT, true);
+                    // If same group not available in other slab, then single title is enough
+                    boolean isSameGroupAvailableInOtherSlab = schemeHelper.isSameGroupAvailableInOtherSlab(parentId);
+                    if (!isSameGroupAvailableInOtherSlab) {
+
+                        TextView freeTitleTV = getTextView(true, Gravity.LEFT, true);
                         freeTitleTV.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                         freeTitleTV.setTextColor(getResources().getColor(R.color.FullBlack));
-                        //freeTitleTV.setTextSize(((mTotalScreenWidth*2)/100)-2);
                         freeTitleTV.setTextSize(mTextViewSize);
-                        try {
-                            if (bmodel.labelsMasterHelper.applyLabels("scheme_get") != null)
-                                freeTitleTV.setText(bmodel.labelsMasterHelper.applyLabels("scheme_get"));
-                            else
-                                freeTitleTV.setText("GET FreeProduct");
-                        } catch (Exception e) {
-                            Commons.printException(e);
+
+                        if (bModel.labelsMasterHelper.applyLabels(FREE_PRODUCT_TITLE_LABEL) != null)
+                            freeTitleTV.setText(bModel.labelsMasterHelper.applyLabels(FREE_PRODUCT_TITLE_LABEL));
+                        else
                             freeTitleTV.setText("GET FreeProduct");
-                        }
-                        freeTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+                        freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         freeTitleTV.setWidth(150);
 
-                        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                        layoutParams1.setMargins(0, 10, 0, 10);
-                        freeTitleTV.setLayoutParams(layoutParams1);
+                        LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        layoutParam_FreeTitle.setMargins(0, 10, 0, 10);
+                        freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                         freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                         freeTitleTV.setGravity(Gravity.LEFT | Gravity.CENTER);
+
                         mainLayout.addView(freeTitleTV);
                     }
 
 
                     for (String schemeId : schemeIdList) {
 
-                        final SchemeBO schemeBO1 = schemeHelper.getSchemeById().get(schemeId);
+                        final SchemeBO slabBO = schemeHelper.getSchemeById().get(schemeId);
+                        List<SchemeProductBO> schemeFreeList = slabBO.getFreeProducts();
 
-                        schemeFreeList = schemeBO1.getFreeProducts();
+                        if (isSameGroupAvailableInOtherSlab) {
+                            // Same group available in other slab
 
-                        if (isSameGroupAvailable) {
                             if (schemeFreeList != null && schemeFreeList.size() > 0 && !isAlreadyAddedFreeProduct) {
 
                                 int i = 0;
                                 for (SchemeProductBO freeProductBO : schemeFreeList) {
                                     if (freeProductBO.getGroupName() != null) {
+
                                         if (!groupName.contains(schemeId + freeProductBO.getGroupName())) {
                                             if (i == 0) {
+
                                                 isAlreadyAddedFreeProduct = true;
-                                                TextView freeTitleTV = getTextViewTitle(true, Gravity.LEFT, true);
+
+                                                TextView freeTitleTV = getTextView(true, Gravity.LEFT, true);
                                                 freeTitleTV.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                                                 freeTitleTV.setTextColor(getResources().getColor(R.color.FullBlack));
-                                                //freeTitleTV.setTextSize(((mTotalScreenWidth*2)/100)-2);
                                                 freeTitleTV.setTextSize(mTextViewSize);
                                                 freeTitleTV.setText("GET FreeProduct");
                                                 freeTitleTV.setGravity(Gravity.LEFT | Gravity.CENTER);
-                                                freeTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                                                freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                                                 freeTitleTV.setWidth(150);
 
-                                                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                                                layoutParams1.setMargins(0, 20, 0, 10);
-                                                freeTitleTV.setLayoutParams(layoutParams1);
+                                                LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                                                layoutParam_FreeTitle.setMargins(0, 20, 0, 10);
+                                                freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                                                 freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+
                                                 mainLayout.addView(freeTitleTV);
                                             }
                                             i++;
-                                            if (i > 1) {
-                                                TextView groupLogicType = getTextViewTitle(false, Gravity.LEFT, false);
 
-                                                //groupLogicType.setText(schemeBO.getFreeType());
+                                            if (i > 1) {
+
+                                                TextView groupLogicType = getTextView(false, Gravity.LEFT, false);
                                                 groupLogicType.setTextColor(getResources().getColor(R.color.FullBlack));
 
                                                 if (schemeBO.getParentLogic().equalsIgnoreCase("AND")) {
@@ -668,8 +365,12 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                                 }
 
                                                 groupLogicType.setTypeface(null, Typeface.ITALIC);
+
                                                 mainLayout.addView(groupLogicType);
                                             }
+
+
+                                            //Adding  free products
                                             if (freeProductBO.getGroupLogic().equals(AND_LOGIC)) {
                                                 final HorizontalScrollView ll = addViewANDLogicGET(parentId, freeProductBO.getGroupName());
                                                 mainLayout.addView(ll);
@@ -689,25 +390,30 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                             }
                         } else {
-                            TextView slabNameTV = getNameTv();
-                            slabNameTV.setText(schemeBO1.getScheme());
+                            // Same group not available in other slab
+                            TextView slabNameTV = getDefaultTextView();
+                            slabNameTV.setText(slabBO.getScheme());
                             mainLayout.addView(slabNameTV);
 
                             ArrayList<String> groupNameList = schemeHelper.getFreeGroupNameListBySchemeID().get(schemeId);
                             if (groupNameList != null) {
+
                                 int j = 1;
                                 for (String grpName : groupNameList) {
                                     String groupLogic = schemeHelper.getGroupBuyTypeByGroupName().get(schemeId + grpName);
 
                                     if (groupLogic != null) {
-                                        if (j > 1) {
-                                            TextView groupLogicType = getTextViewTitle(false, Gravity.CENTER, false);
 
-                                            groupLogicType.setText(schemeBO1.getFreeType());
+                                        if (j > 1) {
+
+                                            TextView groupLogicType = getTextView(false, Gravity.CENTER, false);
+
+                                            groupLogicType.setText(slabBO.getFreeType());
                                             groupLogicType.setTypeface(null, Typeface.ITALIC);
                                             mainLayout.addView(groupLogicType);
                                         }
 
+                                        //Adding products
                                         if (groupLogic.equals(AND_LOGIC)) {
                                             final LinearLayout ll = addSlabWiseFreeProductANDLogic(schemeId, grpName);
                                             mainLayout.addView(ll);
@@ -729,18 +435,20 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             }
 
                         }
-                        //mainLayout.addView(getHorizontalLine());
+
+                        //Adding free discounts(Except free products)
                         if (schemeFreeList != null && schemeFreeList.size() > 0 && !isAlreadyAddedOtherDisc) {
+
                             SchemeProductBO freeProductBO = schemeFreeList.get(0);
                             if (freeProductBO != null && (freeProductBO.getMaxPercent() > 0 || freeProductBO.getMaxAmount() > 0 || freeProductBO.getPriceMaximum() > 0)) {
-                                TextView freeTitleTV = getTextViewTitle(true, Gravity.LEFT, true);
+
+                                TextView freeTitleTV = getTextView(true, Gravity.LEFT, true);
                                 freeTitleTV.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
-                                //freeTitleTV.setTextSize(((mTotalScreenWidth*2)/100)-2);
                                 freeTitleTV.setTextSize(mTextViewSize);
                                 freeTitleTV.setText("GET Discount");
                                 freeTitleTV.setWidth(150);
-                                freeTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                                freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);
 
                                 layoutParams1.setMargins(0, 20, 0, 10);
                                 freeTitleTV.setLayoutParams(layoutParams1);
@@ -750,7 +458,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                                 isAlreadyAddedOtherDisc = true;
 
-                                final HorizontalScrollView ll = addViewSchemeFreeeLogicNew(parentId);
+                                final HorizontalScrollView ll = addViewSchemeDiscounts(parentId);
                                 mainLayout.addView(ll);
 
 
@@ -762,7 +470,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     LinearLayout.LayoutParams lineLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 30);
                     lineLayoutParams.setMargins(0, 5, 0, 5);
                     lineLayoutParams.gravity = Gravity.CENTER;
-                    LinearLayout lineLayouts = new LinearLayout(ctxt);
+                    LinearLayout lineLayouts = new LinearLayout(mContext);
                     lineLayouts.setGravity(Gravity.CENTER);
 
                     lineLayouts.setLayoutParams(lineLayoutParams);
@@ -778,71 +486,71 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
     private HorizontalScrollView addViewANYLogicBUY(int schemeParentId, String groupName) {
+
         int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
 
         if (maximumLineCount == 0)
             maximumLineCount = 1;
-        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
-        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams1.setMargins(0, 5, 0, 0);
 
-        mAddViewLayout = new LinearLayout(ctxt);
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(mContext);
+        LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams_parent.setMargins(0, 5, 0, 0);
+        layoutParams_parent.gravity = Gravity.LEFT;
+        horizontalScrollView.setLayoutParams(layoutParams_parent);
 
-        layoutParams1.gravity = Gravity.LEFT;
-        horizontalScrollView.setLayoutParams(layoutParams1);
-
-
-        mAddViewLayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.HORIZONTAL);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         } else {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         }
 
         ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
 
         if (size > 0) {
-            SchemeBO schemeBO = null;
-            LinearLayout childHeaderView = new LinearLayout(ctxt);
+
+            LinearLayout childHeaderView = new LinearLayout(mContext);
             childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
             childHeaderView.setOrientation(LinearLayout.VERTICAL);
 
-            TextView txt = getNameTv();
-
+            TextView txt = getDefaultTextView();
+            txt.setMaxLines(maximumLineCount);
+            txt.setHeight(maximumLineCount * mTextViewHeight);
             if (schemeHelper.IS_SCHEME_SLAB_ON)
                 txt.setText("SLAB");
             else
                 txt.setText("SKU");
-            txt.setMaxLines(maximumLineCount);
-
-
-            txt.setHeight(maximumLineCount * mTextViewHeight);
-
 
             childHeaderView.addView(txt);
 
-            schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
+            SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
+            //Adding buy products to the view
             if (schemeBO != null) {
-                List<SchemeProductBO> buyProdList = schemeBO.getBuyingProducts();
+                List<SchemeProductBO> buyProductList = schemeBO.getBuyingProducts();
 
-
-                //childHeaderView.addView(getHorizontalLine());
                 if (schemeHelper.IS_SCHEME_SLAB_ON) {
-                    TextView productTV = getTextViewTitle(false, Gravity.LEFT, false);
+
+                    TextView productTV = getTextView(false, Gravity.LEFT, false);
                     productTV.setText(R.string.qty);
-                    productTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    productTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     productTV.setTextColor(getResources().getColor(R.color.FullBlack));
                     productTV.setWidth(mProductNameWidth);
                     childHeaderView.addView(productTV);
+
                 } else {
-                    for (SchemeProductBO schemeProductBO : buyProdList) {
+
+                    for (SchemeProductBO schemeProductBO : buyProductList) {
+
                         if (groupName.equals(schemeProductBO.getGroupName())) {
-                            ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+
+                            ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                             if (productBO != null) {
-                                TextView productTV = getTextViewTitle(false, Gravity.LEFT, false);
-                                productTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                                TextView productTV = getTextView(false, Gravity.LEFT, false);
+                                productTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                                 productTV.setTextColor(getResources().getColor(R.color.FullBlack));
                                 productTV.setText(productBO.getProductShortName());
                                 productTV.setWidth(mProductNameWidth);
@@ -853,7 +561,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                 }
             }
 
-            mAddViewLayout.addView(childHeaderView);
+            layout_parent.addView(childHeaderView);
 
             for (int i = size - 1; i >= 0; i--) {
 
@@ -861,27 +569,31 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                 schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
 
                 if (schemeBO != null) {
-                    TextView schemeNameTV = getNameTv();
+
+                    TextView schemeNameTV = getDefaultTextView();
                     schemeNameTV.setText(schemeBO.getScheme());
-
                     schemeNameTV.setWidth(mSchemeDetailWidth);
-
                     schemeNameTV.setMaxLines(maximumLineCount);
                     schemeNameTV.setHeight(maximumLineCount * mTextViewHeight);
 
-                    //schemeNameTV.setSingleLine(true);
-                    LinearLayout schemeChildView = new LinearLayout(ctxt);
+                    LinearLayout schemeChildView = new LinearLayout(mContext);
                     schemeChildView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                     schemeChildView.setOrientation(LinearLayout.VERTICAL);
                     schemeChildView.addView(schemeNameTV);
+
+
                     List<SchemeProductBO> buyProductList = schemeBO.getBuyingProducts();
                     for (SchemeProductBO schemeProductBO : buyProductList) {
                         if (groupName.equals(schemeProductBO.getGroupName())) {
-                            TextView tv = getNameTv();
-                            tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                            TextView tv = getDefaultTextView();
+                            tv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             tv.setTextColor(getResources().getColor(R.color.FullBlack));
-                            ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                            tv.setWidth(mSchemeDetailWidth);
+
+                            ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                             if (productBO != null) {
+
                                 if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
                                     if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
                                         tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
@@ -893,7 +605,6 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                 } else if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_VALUE)) {
                                     tv.setText(schemeProductBO.getBuyQty() + "-" + schemeProductBO.getTobuyQty() + " " + rupeesLabel);
                                 }
-                                tv.setWidth(mSchemeDetailWidth);
 
                                 schemeChildView.addView(tv);
                                 break;
@@ -903,7 +614,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
                     }
-                    mAddViewLayout.addView(schemeChildView);
+                    layout_parent.addView(schemeChildView);
 
 
                 }
@@ -911,44 +622,41 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
         }
-        horizontalScrollView.addView(mAddViewLayout);
-
+        horizontalScrollView.addView(layout_parent);
 
         return horizontalScrollView;
     }
 
     private HorizontalScrollView addViewONLYLogicBuy(int schemeParentId, String groupName) {
+
         int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
         if (maximumLineCount == 0)
             maximumLineCount = 1;
 
-        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
-        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams1.setMargins(0, 5, 0, 0);
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(mContext);
+        LinearLayout.LayoutParams layoutParam_parent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParam_parent.setMargins(0, 5, 0, 0);
+        layoutParam_parent.gravity = Gravity.LEFT;
+        horizontalScrollView.setLayoutParams(layoutParam_parent);
 
-        mAddViewLayout = new LinearLayout(ctxt);
-
-        layoutParams1.gravity = Gravity.LEFT;
-        horizontalScrollView.setLayoutParams(layoutParams1);
-
-
-        mAddViewLayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.HORIZONTAL);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         } else {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         }
 
         ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
-        if (schemeList != null && size > 0) {
-            SchemeBO schemeBO = null;
-            LinearLayout childHeaderView = new LinearLayout(ctxt);
+        if (size > 0) {
+
+            SchemeBO schemeBO ;
+            LinearLayout childHeaderView = new LinearLayout(mContext);
             childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
             childHeaderView.setOrientation(LinearLayout.VERTICAL);
 
-            TextView txt = getNameTv();
-
+            TextView txt = getDefaultTextView();
             txt.setText("SKU");
             txt.setHeight(maximumLineCount * mTextViewHeight);
 
@@ -956,13 +664,16 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
             if (schemeBO != null) {
+
                 List<SchemeProductBO> buyProdList = schemeBO.getBuyingProducts();
                 for (SchemeProductBO schemeProductBO : buyProdList) {
+
                     if (groupName.equals(schemeProductBO.getGroupName())) {
-                        TextView productTV = getTextViewTitle(false, Gravity.LEFT, false);
-                        productTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                        TextView productTV = getTextView(false, Gravity.LEFT, false);
+                        productTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         productTV.setTextColor(Color.BLACK);
-                        ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                        ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                         if (productBO != null) {
                             productTV.setText(productBO.getProductShortName());
                         }
@@ -973,34 +684,39 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             }
 
 
-            mAddViewLayout.addView(childHeaderView);
+            layout_parent.addView(childHeaderView);
 
             for (int i = size - 1; i >= 0; i--) {
-
 
                 schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
 
                 LinearLayout.LayoutParams detailLayout = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                 detailLayout.weight = 0.1f;
-                //layoutParams2.setMargins(0, 10, 0, 10);
                 detailLayout.gravity = Gravity.CENTER_VERTICAL;
 
                 if (schemeBO != null) {
-                    TextView schemeNameTV = getNameTv();
+
+                    TextView schemeNameTV = getDefaultTextView();
                     schemeNameTV.setText(schemeBO.getScheme());
                     schemeNameTV.setWidth(mSchemeDetailWidth);
                     schemeNameTV.setHeight(maximumLineCount * mTextViewHeight);
-                    LinearLayout schemeChildView = new LinearLayout(ctxt);
+
+                    LinearLayout schemeChildView = new LinearLayout(mContext);
                     schemeChildView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
                     schemeChildView.setOrientation(LinearLayout.VERTICAL);
                     schemeChildView.addView(schemeNameTV);
+
                     List<SchemeProductBO> buyProductList = schemeBO.getBuyingProducts();
                     for (SchemeProductBO schemeProductBO : buyProductList) {
+
                         if (groupName.equals(schemeProductBO.getGroupName())) {
-                            TextView tv = getNameTv();
+
+                            TextView tv = getDefaultTextView();
                             tv.setTextColor(Color.BLACK);
-                            ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+
+                            ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                             if (productBO != null) {
+
                                 if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
                                     if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
                                         tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
@@ -1021,7 +737,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             schemeChildView.addView(tv);
                         }
                     }
-                    mAddViewLayout.addView(schemeChildView);
+                    layout_parent.addView(schemeChildView);
 
 
                 }
@@ -1030,8 +746,148 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         }
 
-        horizontalScrollView.addView(mAddViewLayout);
+        horizontalScrollView.addView(layout_parent);
         return horizontalScrollView;
+    }
+
+    private HorizontalScrollView addViewAndLogicBUY(int parentId, String groupName) {
+
+        LinearLayout mAddViewHorizontalLayout;
+
+        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, parentId);
+        if (maximumLineCount == 0)
+            maximumLineCount = 1;
+
+        LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams_parent.setMargins(0, 5, 0, 0);
+        layoutParams_parent.gravity = Gravity.LEFT;
+
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(mContext);
+        horizontalScrollView.setLayoutParams(layoutParams_parent);
+
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.VERTICAL);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            layout_parent.setBackgroundColor(Color.WHITE);
+        } else {
+            layout_parent.setBackgroundColor(Color.WHITE);
+        }
+
+        final ArrayList<String> productIdList = schemeHelper.getProductIdListByParentId().get(parentId);
+        if (productIdList != null) {
+
+            final ArrayList<String> schemeIdList = schemeHelper.getSchemeIdListByParentID().get(parentId);
+            int size = schemeIdList.size();
+            int j = 0;
+
+            for (String productId : productIdList) {
+
+                LinearLayout headerLayout = new LinearLayout(mContext);
+                headerLayout.setOrientation(LinearLayout.HORIZONTAL);
+                headerLayout.setLayoutParams(layoutParams_parent);
+                mAddViewHorizontalLayout = new LinearLayout(mContext);
+                mAddViewHorizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
+                mAddViewHorizontalLayout.setLayoutParams(layoutParams_parent);
+
+                ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(productId);
+                if (productBO != null) {
+
+                    if (j == 0) {
+
+                        TextView headerTV = getTextView(false, Gravity.CENTER, false);
+                        headerTV.setText("SKU");
+                        headerTV.setWidth(mProductNameWidth);
+                        headerTV.setHeight(maximumLineCount * mTextViewHeight);
+                        headerLayout.addView(headerTV);
+                    }
+
+                    for (int i = size - 1; i >= 0; i--) {
+
+                        String schemeId = schemeIdList.get(i);
+                        SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeId);
+                        if(schemeBO!=null) {
+                            if (j == 0) {
+
+                                    TextView schemeNameTV = getDefaultTextView();
+                                    schemeNameTV.setText(schemeBO.getScheme());
+                                    schemeNameTV.setWidth(mSchemeDetailWidth);
+                                    schemeNameTV.setHeight(maximumLineCount * mTextViewHeight);
+                                    headerLayout.addView(schemeNameTV);
+
+                            }
+
+
+                            final SchemeProductBO buyProductBO = schemeHelper.getBuyProductBOBySchemeIdWithPid().get(schemeId + productId);
+                            if (buyProductBO != null && buyProductBO.getGroupName().equals(groupName)) {
+
+                                if (i == size - 1) {
+
+                                    TextView text_ProductName = getTextView(false, Gravity.LEFT, false);
+                                    text_ProductName.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                                    text_ProductName.setTextColor(Color.BLACK);
+                                    text_ProductName.setText(productBO.getProductShortName());
+                                    text_ProductName.setWidth(mProductNameWidth);
+                                    mAddViewHorizontalLayout.addView(text_ProductName);
+                                }
+
+                                TextView schemeDetailsTV = getDefaultTextView();
+                                StringBuffer sb = new StringBuffer();
+
+                                if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
+
+                                    if (buyProductBO.getBuyQty() == buyProductBO.getTobuyQty()) {
+                                        sb.append((int) buyProductBO.getBuyQty());
+                                    } else {
+                                        sb.append((int) buyProductBO.getBuyQty() + " - " + (int) buyProductBO.getTobuyQty());
+                                    }
+                                    if (buyProductBO.getUomID() == productBO.getCaseUomId()) {
+                                        sb.append(" " + buyProductBO.getUomDescription());
+
+                                    } else if (buyProductBO.getUomID() == productBO.getOuUomid()) {
+                                        sb.append(" " + buyProductBO.getUomDescription());
+
+                                    } else {
+                                        sb.append(" " + buyProductBO.getUomDescription());
+                                    }
+                                } else if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_VALUE)) {
+
+                                    if (buyProductBO.getBuyQty() == buyProductBO.getTobuyQty()) {
+                                        sb.append(buyProductBO.getBuyQty());
+                                    } else {
+                                        sb.append(buyProductBO.getBuyQty() + " - " + buyProductBO.getTobuyQty());
+                                    }
+                                    sb.append(" " + rupeesLabel);
+                                }
+
+                                schemeDetailsTV.setTextColor(getResources().getColor(R.color.FullBlack));
+                                schemeDetailsTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                                schemeDetailsTV.setText(sb.toString());
+                                schemeDetailsTV.setWidth(mSchemeDetailWidth);
+                                mAddViewHorizontalLayout.addView(schemeDetailsTV);
+
+                            }
+                        }
+
+
+                    }
+
+                    if (j == 0) {
+                        layout_parent.addView(headerLayout);
+                    }
+
+                    layout_parent.addView(mAddViewHorizontalLayout);
+                    j++;
+
+
+                }
+
+
+            }
+        }
+        horizontalScrollView.addView(layout_parent);
+        return horizontalScrollView;
+
     }
 
     private HorizontalScrollView addViewANDLogicGET(int schemeParentId, String groupName) {
@@ -1040,33 +896,33 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         if (maximumLineCount == 0)
             maximumLineCount = 1;
 
-        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
-        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mAddViewLayout = new LinearLayout(ctxt);
-        layoutParams1.bottomMargin = 10;
-        //layoutParams1.setMargins(0,10,0,10);
-        layoutParams1.gravity = Gravity.LEFT | Gravity.CENTER;
-        horizontalScrollView.setLayoutParams(layoutParams1);
+        LinearLayout.LayoutParams layoutParam_parent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParam_parent.bottomMargin = 10;
+        layoutParam_parent.gravity = Gravity.LEFT | Gravity.CENTER;
 
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(mContext);
+        horizontalScrollView.setLayoutParams(layoutParam_parent);
 
-        mAddViewLayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.HORIZONTAL);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         } else {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         }
 
         ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
-        if (schemeList != null && size > 0) {
-            SchemeBO schemeBO = null;
-            LinearLayout childHeaderView = new LinearLayout(ctxt);
+        if (size > 0) {
+
+            SchemeBO schemeBO ;
+
+            LinearLayout childHeaderView = new LinearLayout(mContext);
             childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
             childHeaderView.setOrientation(LinearLayout.VERTICAL);
 
-            TextView txt = getNameTv();
-
+            TextView txt = getDefaultTextView();
             txt.setText("SKU");
             txt.setHeight(maximumLineCount * mTextViewHeight);
 
@@ -1074,13 +930,17 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
             if (schemeBO != null) {
+
                 List<SchemeProductBO> buyProdList = schemeBO.getFreeProducts();
                 for (SchemeProductBO schemeProductBO : buyProdList) {
                     if (groupName.equals(schemeProductBO.getGroupName())) {
-                        TextView productTV = getTextViewTitle(false, Gravity.LEFT, false);
-                        productTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+
+                        TextView productTV = getTextView(false, Gravity.LEFT, false);
+                        productTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                        ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                         if (productBO != null) {
+
                             productTV.setText(productBO.getProductShortName());
                             productTV.setWidth(mProductNameWidth);
                             childHeaderView.addView(productTV);
@@ -1091,33 +951,37 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             }
 
 
-            mAddViewLayout.addView(childHeaderView);
+            layout_parent.addView(childHeaderView);
 
             for (int i = size - 1; i >= 0; i--) {
 
-
                 schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
-
                 if (schemeBO != null) {
+
                     List<SchemeProductBO> buyProductList = schemeBO.getFreeProducts();
                     if (buyProductList != null && buyProductList.size() > 0) {
+
                         SchemeProductBO freeProductBO = buyProductList.get(0);
                         if (freeProductBO.getProductId() != null && !freeProductBO.getProductId().equals("")) {
-                            LinearLayout schemeChildView = new LinearLayout(ctxt);
+
+                            TextView text_schemeName = getDefaultTextView();
+                            text_schemeName.setText(schemeBO.getScheme());
+                            text_schemeName.setWidth(mSchemeDetailWidth);
+                            text_schemeName.setHeight(maximumLineCount * mTextViewHeight);
+
+                            LinearLayout schemeChildView = new LinearLayout(mContext);
                             schemeChildView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
                             schemeChildView.setOrientation(LinearLayout.VERTICAL);
-                            TextView schemeNameTV = getNameTv();
-                            schemeNameTV.setText(schemeBO.getScheme());
-                            schemeNameTV.setWidth(mSchemeDetailWidth);
-                            schemeNameTV.setHeight(maximumLineCount * mTextViewHeight);
-                            schemeChildView.addView(schemeNameTV);
+                            schemeChildView.addView(text_schemeName);
 
                             for (SchemeProductBO schemeProductBO : buyProductList) {
                                 if (groupName.equals(schemeProductBO.getGroupName())) {
-                                    TextView tv = getNameTv();
-                                    tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                                    TextView tv = getDefaultTextView();
+                                    tv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                                     tv.setTextColor(getResources().getColor(R.color.FullBlack));
-                                    ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+
+                                    ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                                     if (productBO != null) {
 
                                         if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
@@ -1135,8 +999,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                                 }
                             }
-                            mAddViewLayout.addView(schemeChildView);
 
+                            layout_parent.addView(schemeChildView);
 
                         }
                     }
@@ -1146,179 +1010,44 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         }
 
-        horizontalScrollView.addView(mAddViewLayout);
+        horizontalScrollView.addView(layout_parent);
         return horizontalScrollView;
-    }
-
-
-    private HorizontalScrollView addViewAndLogicBuyNew(int parentId, String groupName) {
-
-        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, parentId);
-
-        if (maximumLineCount == 0)
-            maximumLineCount = 1;
-        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
-        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams1.setMargins(0, 5, 0, 0);
-        mAddViewLayout = new LinearLayout(ctxt);
-
-        layoutParams1.gravity = Gravity.LEFT;
-        horizontalScrollView.setLayoutParams(layoutParams1);
-
-
-        mAddViewLayout.setOrientation(LinearLayout.VERTICAL);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
-        } else {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
-        }
-
-        final ArrayList<String> productIdList = schemeHelper.getProductIdListByParentId().get(parentId);
-        if (productIdList != null) {
-
-            final ArrayList<String> schemeIdList = schemeHelper.getSchemeIdListByParentID().get(parentId);
-            int size = schemeIdList.size();
-            int j = 0;
-
-            for (String productId : productIdList) {
-                LinearLayout headerLayout = new LinearLayout(ctxt);
-                headerLayout.setOrientation(LinearLayout.HORIZONTAL);
-                headerLayout.setLayoutParams(layoutParams1);
-                mAddViewHorizontalLayout = new LinearLayout(ctxt);
-                mAddViewHorizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
-                mAddViewHorizontalLayout.setLayoutParams(layoutParams1);
-                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(productId);
-                if (productBO != null) {
-                    if (j == 0) {
-                        TextView headerTV = getTextViewTitle(false, Gravity.CENTER, false);
-                        headerTV.setText("SKU");
-                        headerTV.setWidth(mProductNameWidth);
-                        headerTV.setHeight(maximumLineCount * mTextViewHeight);
-                        headerLayout.addView(headerTV);
-                    }
-
-                    for (int i = size - 1; i >= 0; i--) {
-
-                        String schemeid = schemeIdList.get(i);
-                        SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeid);
-                        if (j == 0) {
-
-                            if (schemeBO != null) {
-                                TextView schemeNameTV = getNameTv();
-                                schemeNameTV.setText(schemeBO.getScheme());
-                                schemeNameTV.setWidth(mSchemeDetailWidth);
-                                schemeNameTV.setHeight(maximumLineCount * mTextViewHeight);
-                                //headerLayout.addView(getVerticalLine());
-                                headerLayout.addView(schemeNameTV);
-
-                            }
-                        }
-
-
-                        final SchemeProductBO buyProductBO = schemeHelper.getBuyProductBOBySchemeIdWithPid().get(schemeid + productId);
-                        if (buyProductBO != null && buyProductBO.getGroupName().equals(groupName)) {
-                            if (i == size - 1) {
-                                TextView produtNameTV = getTextViewTitle(false, Gravity.LEFT, false);
-                                produtNameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                                produtNameTV.setTextColor(Color.BLACK);
-                                produtNameTV.setText(productBO.getProductShortName());
-                                produtNameTV.setWidth(mProductNameWidth);
-                                mAddViewHorizontalLayout.addView(produtNameTV);
-                            }
-
-                            TextView schemeDetailsTV = getNameTv();
-                            StringBuffer sb = new StringBuffer();
-                         /*   if (buyProductBO.getBuyQty() == buyProductBO.getTobuyQty()) {
-                                sb.append((int) buyProductBO.getBuyQty());
-                            } else {
-                                sb.append((int) buyProductBO.getBuyQty() + " - " + (int) buyProductBO.getTobuyQty());
-                            }*/
-                            if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
-                                if (buyProductBO.getBuyQty() == buyProductBO.getTobuyQty()) {
-                                    sb.append((int) buyProductBO.getBuyQty());
-                                } else {
-                                    sb.append((int) buyProductBO.getBuyQty() + " - " + (int) buyProductBO.getTobuyQty());
-                                }
-                                if (buyProductBO.getUomID() == productBO.getCaseUomId()) {
-                                    sb.append(" " + buyProductBO.getUomDescription());
-
-                                } else if (buyProductBO.getUomID() == productBO.getOuUomid()) {
-                                    sb.append(" " + buyProductBO.getUomDescription());
-
-                                } else {
-                                    sb.append(" " + buyProductBO.getUomDescription());
-                                }
-                            } else if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_VALUE)) {
-                                if (buyProductBO.getBuyQty() == buyProductBO.getTobuyQty()) {
-                                    sb.append(buyProductBO.getBuyQty());
-                                } else {
-                                    sb.append(buyProductBO.getBuyQty() + " - " + buyProductBO.getTobuyQty());
-                                }
-                                sb.append(" " + rupeesLabel);
-                            }
-
-                            schemeDetailsTV.setTextColor(getResources().getColor(R.color.FullBlack));
-                            schemeDetailsTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                            schemeDetailsTV.setText(sb.toString());
-                            schemeDetailsTV.setWidth(mSchemeDetailWidth);
-                            mAddViewHorizontalLayout.addView(schemeDetailsTV);
-
-                        }
-
-
-                    }
-                    if (j == 0) {
-                        mAddViewLayout.addView(headerLayout);
-                    }
-                    mAddViewLayout.addView(mAddViewHorizontalLayout);
-                    j++;
-
-
-                }
-
-
-            }
-        }
-        horizontalScrollView.addView(mAddViewLayout);
-        return horizontalScrollView;
-
     }
 
 
     private HorizontalScrollView addViewANYLogicGET(int schemeParentId, String groupName) {
-        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
 
+        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
         if (maximumLineCount == 0)
             maximumLineCount = 1;
-        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
-        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams1.bottomMargin = 20;
 
-        mAddViewLayout = new LinearLayout(ctxt);
+        LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams_parent.bottomMargin = 20;
+        layoutParams_parent.gravity = Gravity.LEFT;
 
-        layoutParams1.gravity = Gravity.LEFT;
-        horizontalScrollView.setLayoutParams(layoutParams1);
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(mContext);
+        horizontalScrollView.setLayoutParams(layoutParams_parent);
 
-
-        mAddViewLayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.HORIZONTAL);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         } else {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         }
 
         ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
-        if (schemeList != null && size > 0) {
-            SchemeBO schemeBO = null;
-            LinearLayout childHeaderView = new LinearLayout(ctxt);
+        if (size > 0) {
+
+            SchemeBO schemeBO ;
+
+            LinearLayout childHeaderView = new LinearLayout(mContext);
             childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
             childHeaderView.setOrientation(LinearLayout.VERTICAL);
 
-            TextView txt = getNameTv();
-
+            TextView txt = getDefaultTextView();
             txt.setText("SKU");
             txt.setHeight(maximumLineCount * mTextViewHeight);
 
@@ -1326,18 +1055,19 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
             if (schemeBO != null) {
-                List<SchemeProductBO> buyProdList = schemeBO.getFreeProducts();
-                StringBuffer sb = new StringBuffer();
 
+                List<SchemeProductBO> buyProdList = schemeBO.getFreeProducts();
 
                 for (SchemeProductBO schemeProductBO : buyProdList) {
                     if (groupName.equals(schemeProductBO.getGroupName())) {
-                        TextView productTV = getTextViewTitle(false, Gravity.LEFT, false);
 
-                        ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                        TextView productTV = getTextView(false, Gravity.LEFT, false);
+
+                        ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                         if (productBO != null) {
+
                             productTV.setTextColor(Color.BLACK);
-                            productTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            productTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             productTV.setText(productBO.getProductShortName());
                             productTV.setWidth(mProductNameWidth);
                             childHeaderView.addView(productTV);
@@ -1349,34 +1079,38 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             }
 
-
-            mAddViewLayout.addView(childHeaderView);
+            layout_parent.addView(childHeaderView);
 
             for (int i = size - 1; i >= 0; i--) {
 
 
                 schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
-
                 if (schemeBO != null) {
+
                     List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
                     if (freeProductList != null && freeProductList.size() > 0) {
+
                         SchemeProductBO freeProductBO = freeProductList.get(0);
                         if (freeProductBO.getProductId() != null && !freeProductBO.getProductId().equals("")) {
-                            LinearLayout schemeChildView = new LinearLayout(ctxt);
-                            schemeChildView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-                            schemeChildView.setOrientation(LinearLayout.VERTICAL);
-                            TextView schemeNameTV = getNameTv();
+
+                            TextView schemeNameTV = getDefaultTextView();
                             schemeNameTV.setText(schemeBO.getScheme());
                             schemeNameTV.setWidth(mSchemeDetailWidth);
                             schemeNameTV.setHeight(maximumLineCount * mTextViewHeight);
+
+                            LinearLayout schemeChildView = new LinearLayout(mContext);
+                            schemeChildView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+                            schemeChildView.setOrientation(LinearLayout.VERTICAL);
                             schemeChildView.addView(schemeNameTV);
 
                             for (SchemeProductBO schemeProductBO : freeProductList) {
                                 if (groupName.equals(schemeProductBO.getGroupName())) {
-                                    TextView tv = getNameTv();
+
+                                    TextView tv = getDefaultTextView();
                                     tv.setTextColor(getResources().getColor(R.color.FullBlack));
-                                    tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                                    ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                                    tv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                                    ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                                     if (productBO != null) {
 
                                         if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
@@ -1389,7 +1123,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                         tv.setWidth(mSchemeDetailWidth);
 
                                         tv.setTextColor(getResources().getColor(R.color.FullBlack));
-                                        tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                                        tv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                                         schemeChildView.addView(tv);
                                         break;
                                     }
@@ -1398,7 +1132,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
 
                             }
-                            mAddViewLayout.addView(schemeChildView);
+                            layout_parent.addView(schemeChildView);
 
 
                         }
@@ -1409,43 +1143,43 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         }
 
-        horizontalScrollView.addView(mAddViewLayout);
+        horizontalScrollView.addView(layout_parent);
         return horizontalScrollView;
     }
 
     private HorizontalScrollView addViewONLYLogicGET(int schemeParentId, String groupName) {
-        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
 
+        int maximumLineCount = schemeHelper.getMaximumLineOfSchemeHeight(mSchemeDetailWidth, schemeParentId);
         if (maximumLineCount == 0)
             maximumLineCount = 1;
 
-        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
-        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams1.bottomMargin = 20;
+        LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams_parent.bottomMargin = 20;
+        layoutParams_parent.gravity = Gravity.LEFT;
 
-        mAddViewLayout = new LinearLayout(ctxt);
-
-        layoutParams1.gravity = Gravity.LEFT;
-        horizontalScrollView.setLayoutParams(layoutParams1);
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(mContext);
+        horizontalScrollView.setLayoutParams(layoutParams_parent);
 
 
-        mAddViewLayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.HORIZONTAL);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         } else {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         }
 
         ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeParentId);
         final int size = schemeList.size();
-        if (schemeList != null && size > 0) {
-            SchemeBO schemeBO = null;
-            LinearLayout childHeaderView = new LinearLayout(ctxt);
+        if (size > 0) {
+
+            SchemeBO schemeBO ;
+
+            LinearLayout childHeaderView = new LinearLayout(mContext);
             childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
             childHeaderView.setOrientation(LinearLayout.VERTICAL);
 
-            TextView txt = getNameTv();
-
+            TextView txt = getDefaultTextView();
             txt.setText("SKU");
             txt.setHeight(maximumLineCount * mTextViewHeight);
 
@@ -1453,13 +1187,15 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             schemeBO = schemeHelper.getSchemeById().get(schemeList.get(size - 1));
             if (schemeBO != null) {
+
                 List<SchemeProductBO> buyProdList = schemeBO.getFreeProducts();
                 for (SchemeProductBO schemeProductBO : buyProdList) {
                     if (groupName.equals(schemeProductBO.getGroupName())) {
-                        TextView productTV = getTextViewTitle(false, Gravity.LEFT, false);
+
+                        TextView productTV = getTextView(false, Gravity.LEFT, false);
                         productTV.setTextColor(Color.BLACK);
-                        productTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                        productTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                         if (productBO != null) {
                             productTV.setText(productBO.getProductShortName());
                         }
@@ -1470,31 +1206,36 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             }
 
 
-            mAddViewLayout.addView(childHeaderView);
+            layout_parent.addView(childHeaderView);
 
             for (int i = size - 1; i >= 0; i--) {
 
 
                 schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
-
                 if (schemeBO != null) {
+
                     List<SchemeProductBO> freeProductsList = schemeBO.getFreeProducts();
                     if (freeProductsList != null && freeProductsList.size() > 0) {
+
                         SchemeProductBO freeProductBO = freeProductsList.get(0);
                         if (freeProductBO.getProductId() != null && !freeProductBO.getProductId().equals("")) {
-                            LinearLayout schemeChildView = new LinearLayout(ctxt);
-                            schemeChildView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-                            schemeChildView.setOrientation(LinearLayout.VERTICAL);
-                            TextView schemeNameTV = getNameTv();
+
+                            TextView schemeNameTV = getDefaultTextView();
                             schemeNameTV.setText(schemeBO.getScheme());
                             schemeNameTV.setWidth(mSchemeDetailWidth);
                             schemeNameTV.setHeight(maximumLineCount * mTextViewHeight);
+
+                            LinearLayout schemeChildView = new LinearLayout(mContext);
+                            schemeChildView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+                            schemeChildView.setOrientation(LinearLayout.VERTICAL);
                             schemeChildView.addView(schemeNameTV);
 
                             for (SchemeProductBO schemeProductBO : freeProductsList) {
                                 if (groupName.equals(schemeProductBO.getGroupName())) {
-                                    TextView tv = getNameTv();
-                                    ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+
+                                    TextView tv = getDefaultTextView();
+
+                                    ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                                     if (productBO != null) {
 
                                         if (productBO.getCaseUomId() == schemeProductBO.getUomID()) {
@@ -1510,11 +1251,11 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
                                     }
                                     tv.setTextColor(getResources().getColor(R.color.FullBlack));
-                                    tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                                    tv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                                     schemeChildView.addView(tv);
                                 }
                             }
-                            mAddViewLayout.addView(schemeChildView);
+                            layout_parent.addView(schemeChildView);
                         }
                     }
 
@@ -1523,35 +1264,36 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         }
 
-        horizontalScrollView.addView(mAddViewLayout);
+        horizontalScrollView.addView(layout_parent);
         return horizontalScrollView;
     }
 
 
-    private HorizontalScrollView addViewSchemeFreeeLogicNew(int schemeparentId) {
-        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    private HorizontalScrollView addViewSchemeDiscounts(int mParentId) {
 
-        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(ctxt);
+        LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(mContext);
         LinearLayout childView1 = null;
         LinearLayout childView2 = null;
         LinearLayout childView3 = null;
-        layoutParams1.setMargins(0, 5, 0, 0);
-        layoutParams1.gravity = Gravity.LEFT;
-        horizontalScrollView.setLayoutParams(layoutParams1);
+        layoutParams_parent.setMargins(0, 5, 0, 0);
+        layoutParams_parent.gravity = Gravity.START;
+        horizontalScrollView.setLayoutParams(layoutParams_parent);
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        mAddViewLayout = new LinearLayout(ctxt);
-
-        mAddViewLayout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.VERTICAL);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundDrawable(ctxt.getResources().getDrawable(R.drawable.border));
+            layout_parent.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.border));
         } else {
-            mAddViewLayout.setBackground(ctxt.getResources().getDrawable(R.drawable.border));
+            layout_parent.setBackground(mContext.getResources().getDrawable(R.drawable.border));
         }
 
 
-        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(schemeparentId);
+        ArrayList<String> schemeList = schemeHelper.getSchemeIdListByParentID().get(mParentId);
         boolean isPercentageDiscAvailable = false;
         boolean isAmountDiscAvailable = false;
         boolean isPriceDiscAvailable = false;
@@ -1576,12 +1318,12 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
         final int size = schemeList.size();
 
-        LinearLayout headerView = new LinearLayout(ctxt);
+        LinearLayout headerView = new LinearLayout(mContext);
         LinearLayout.LayoutParams layoutParamsMatchparent = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(layoutParamsMatchparent);
         headerView.setOrientation(LinearLayout.HORIZONTAL);
 
-        TextView tv = getTextViewTitle(false, Gravity.CENTER, false);
+        TextView tv = getTextView(false, Gravity.CENTER, false);
         tv.setText("Type");
         tv.setWidth(mSchemeDetailWidth);
         tv.setLayoutParams(layoutParams);
@@ -1591,106 +1333,106 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
             SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeList.get(i));
             if (schemeBO != null) {
 
-                TextView schemeNameTV = getTextViewTitle(false, Gravity.CENTER, false);
+                TextView schemeNameTV = getTextView(false, Gravity.CENTER, false);
                 schemeNameTV.setText(schemeBO.getScheme());
                 schemeNameTV.setLayoutParams(layoutParamsMatchparent);
                 schemeNameTV.setWidth(mSchemeDetailWidth);
                 if (i == 0) {
-                    mAddViewLayout.addView(headerView);
+                    layout_parent.addView(headerView);
                 }
 
                 final List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
                 if (freeProductList != null && freeProductList.size() > 0) {
-                    SchemeProductBO freeproductBO = freeProductList.get(0);
+                    SchemeProductBO freeProductBO = freeProductList.get(0);
 
                     if (isAmountDiscAvailable) {
                         if (childView1 == null) {
-                            childView1 = new LinearLayout(ctxt);
+                            childView1 = new LinearLayout(mContext);
                             childView1.setOrientation(LinearLayout.HORIZONTAL);
                             childView1.setLayoutParams(layoutParams);
-                            TextView amountTitleTV = getTextViewTitle(false, Gravity.LEFT, false);
+                            TextView amountTitleTV = getTextView(false, Gravity.LEFT, false);
                             amountTitleTV.setText("Amount");
-                            amountTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            amountTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             amountTitleTV.setTextColor(Color.BLACK);
                             amountTitleTV.setWidth(mProductNameWidth);
                             amountTitleTV.setLayoutParams(layoutParams);
                             childView1.addView(amountTitleTV);
                         }
 
-                        TextView amountTV = getTextViewTitle(false, Gravity.CENTER, false);
-                        amountTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        TextView amountTV = getTextView(false, Gravity.CENTER, false);
+                        amountTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         amountTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
                         amountTV.setWidth(mSchemeDetailWidth);
 
-                        if (freeproductBO.getMinAmount() == freeproductBO.getMaxAmount()) {
-                            amountTV.setText(bmodel.formatValue(freeproductBO.getMinAmount()));
+                        if (freeProductBO.getMinAmount() == freeProductBO.getMaxAmount()) {
+                            amountTV.setText(bModel.formatValue(freeProductBO.getMinAmount()));
 
                         } else {
-                            amountTV.setText(bmodel.formatValue(freeproductBO.getMinAmount()) + " - " + bmodel.formatValue(freeproductBO.getMaxAmount()));
+                            amountTV.setText(bModel.formatValue(freeProductBO.getMinAmount()) + " - " + bModel.formatValue(freeProductBO.getMaxAmount()));
                         }
 
                         amountTV.setLayoutParams(layoutParams);
                         childView1.addView(amountTV);
 
                         if (i == 0) {
-                            mAddViewLayout.addView(childView1);
+                            layout_parent.addView(childView1);
                         }
 
 
                     }
                     if (isPercentageDiscAvailable) {
                         if (childView2 == null) {
-                            childView2 = new LinearLayout(ctxt);
+                            childView2 = new LinearLayout(mContext);
                             childView2.setOrientation(LinearLayout.HORIZONTAL);
                             childView2.setLayoutParams(layoutParams);
-                            TextView distTitleTV = getTextViewTitle(false, Gravity.LEFT, false);
+                            TextView distTitleTV = getTextView(false, Gravity.LEFT, false);
                             distTitleTV.setTextColor(Color.BLACK);
-                            distTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            distTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             distTitleTV.setText("%Disc");
                             distTitleTV.setWidth(mProductNameWidth);
                             childView2.addView(distTitleTV);
                         }
 
-                        TextView percentTV = getTextViewTitle(false, Gravity.CENTER, false);
+                        TextView percentTV = getTextView(false, Gravity.CENTER, false);
                         percentTV.setTextColor(Color.BLACK);
 
-                        if (freeproductBO.getMinPercent() == freeproductBO.getMaxPercent()) {
-                            percentTV.setText(freeproductBO.getMinPercent() + "");
+                        if (freeProductBO.getMinPercent() == freeProductBO.getMaxPercent()) {
+                            percentTV.setText(freeProductBO.getMinPercent() + "");
                         } else {
-                            percentTV.setText(freeproductBO.getMinPercent() + " - " + freeproductBO.getMaxPercent());
+                            percentTV.setText(freeProductBO.getMinPercent() + " - " + freeProductBO.getMaxPercent());
                         }
 
                         percentTV.setLayoutParams(layoutParams);
                         percentTV.setWidth(mSchemeDetailWidth);
                         childView2.addView(percentTV);
                         if (i == 0) {
-                            mAddViewLayout.addView(childView2);
+                            layout_parent.addView(childView2);
                         }
 
 
                     }
                     if (isPriceDiscAvailable) {
                         if (childView3 == null) {
-                            childView3 = new LinearLayout(ctxt);
+                            childView3 = new LinearLayout(mContext);
                             childView3.setOrientation(LinearLayout.HORIZONTAL);
 
-                            TextView priceTitleTV = getTextViewTitle(false, Gravity.LEFT, false);
+                            TextView priceTitleTV = getTextView(false, Gravity.LEFT, false);
                             priceTitleTV.setTextColor(Color.BLACK);
-                            priceTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                            priceTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                             priceTitleTV.setText("Price");
                             priceTitleTV.setLayoutParams(layoutParams);
                             priceTitleTV.setWidth(mProductNameWidth);
                             childView3.addView(priceTitleTV);
                         }
 
-                        TextView priceTV = getTextViewTitle(false, Gravity.CENTER, false);
+                        TextView priceTV = getTextView(false, Gravity.CENTER, false);
                         priceTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
-                        priceTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        if (freeproductBO.getPriceActual() > 0) {
-                            if (freeproductBO.getPriceActual() == freeproductBO.getPriceMaximum()) {
-                                priceTV.setText(freeproductBO.getPriceActual() + "");
+                        priceTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        if (freeProductBO.getPriceActual() > 0) {
+                            if (freeProductBO.getPriceActual() == freeProductBO.getPriceMaximum()) {
+                                priceTV.setText(String.valueOf(freeProductBO.getPriceActual()));
                             } else {
-                                priceTV.setText(freeproductBO.getPriceActual() + " - " + freeproductBO.getPriceMaximum());
+                                priceTV.setText(freeProductBO.getPriceActual() + " - " + freeProductBO.getPriceMaximum());
                             }
                         } else {
                             priceTV.setText("-");
@@ -1699,7 +1441,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         priceTV.setWidth(mSchemeDetailWidth);
                         childView3.addView(priceTV);
                         if (i == 0) {
-                            mAddViewLayout.addView(childView3);
+                            layout_parent.addView(childView3);
                         }
                     }
 
@@ -1708,139 +1450,106 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             }
         }
-        horizontalScrollView.addView(mAddViewLayout);
+        horizontalScrollView.addView(layout_parent);
         return horizontalScrollView;
     }
 
 
-    private TextView getTextViewTitle(boolean isBackGround, int aligntment, boolean isTextColor) {
-        TextView tvMatchparent = new TextView(
-                ctxt);
-        tvMatchparent.setLayoutParams(linearlprams);
-        tvMatchparent.setGravity(aligntment);
-        tvMatchparent.setPadding(10, 4, 0, 4);
-        tvMatchparent.setBackgroundColor(ctxt.getResources().getColor(R.color.white));
+    private TextView getTextView(boolean isBackGround, int gravity, boolean isTextColor) {
+
+        LinearLayout.LayoutParams layoutParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        TextView textView = new TextView(mContext);
+        textView.setLayoutParams(layoutParam);
+        textView.setGravity(gravity);
+        textView.setPadding(10, 4, 0, 4);
+        textView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
 
         if (isBackGround)
-            tvMatchparent.setBackgroundColor(ctxt.getResources().getColor(R.color.BLUE));
+            textView.setBackgroundColor(mContext.getResources().getColor(R.color.BLUE));
         if (isTextColor)
-            tvMatchparent.setTextColor(ctxt.getResources().getColor(R.color.BLUE));
+            textView.setTextColor(mContext.getResources().getColor(R.color.BLUE));
 
 
-        return tvMatchparent;
+        return textView;
     }
 
-    private TextView getNameTv() {
-        final TextView verticalSeperator6 = new TextView(getActivity());
-
-        verticalSeperator6
-                .setGravity(Gravity.CENTER_VERTICAL
-                        | Gravity.CENTER_HORIZONTAL);
-        verticalSeperator6.setTextSize(mTextViewSize);
-
-        verticalSeperator6.setPadding(10, 4, 0, 4);
-        verticalSeperator6.setSingleLine(false);
+    private TextView getDefaultTextView() {
+        final TextView textView = new TextView(getActivity());
+        textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+        textView.setTextSize(mTextViewSize);
+        textView.setPadding(10, 4, 0, 4);
+        textView.setSingleLine(false);
 
 
-        return verticalSeperator6;
-    }
-
-
-    private TextView getVerticalLine() {
-        TextView verticalLineTV = new TextView(ctxt);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT);
-        verticalLineTV.setLayoutParams(layoutParams);
-        verticalLineTV.setBackgroundColor(ctxt.getResources().getColor(R.color.BLUE));
-        return verticalLineTV;
+        return textView;
     }
 
     private TextView getHorizontalLine() {
-        TextView horizontalLine = new TextView(ctxt);
+        TextView horizontalLine = new TextView(mContext);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((mTotalScreenWidth * 97) / (100), 1);
         horizontalLine.setLayoutParams(layoutParams);
-        horizontalLine.setBackgroundColor(ctxt.getResources().getColor(R.color.edit_text_grey));
+        horizontalLine.setBackgroundColor(mContext.getResources().getColor(R.color.edit_text_grey));
         horizontalLine.setPadding(0, 20, 0, 20);
         horizontalLine.setGravity(Gravity.CENTER);
         return horizontalLine;
     }
 
-    /**
-     * Get the TextView height before the TextView will render
-     *
-     * @param textView the TextView to measure
-     * @return the height of the textView
-     */
-    public static int getTextViewHeight(TextView textView) {
-        WindowManager wm =
-                (WindowManager) textView.getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-
-        int deviceWidth;
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            Point size = new Point();
-            display.getSize(size);
-            deviceWidth = size.x;
-        } else {
-            deviceWidth = display.getWidth();
-        }
-
-        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(deviceWidth, View.MeasureSpec.AT_MOST);
-        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        textView.measure(widthMeasureSpec, heightMeasureSpec);
-        return textView.getMeasuredHeight();
-    }
 
     private LinearLayout addSlabWiseFreeProductANDLogic(String schemeId, String groupName) {
 
-        TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
-        mAddViewLayout = new LinearLayout(ctxt);
-
-        mAddViewLayout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.VERTICAL);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         } else {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         }
-        LinearLayout childHeaderView = new LinearLayout(ctxt);
-        childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        childHeaderView.setOrientation(LinearLayout.HORIZONTAL);
 
-        TextView txt = getNameTv();
+        LinearLayout layout_child = new LinearLayout(mContext);
+        layout_child.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        layout_child.setOrientation(LinearLayout.HORIZONTAL);
+
+        TextView txt = getDefaultTextView();
         txt.setWidth(mSlabWiseProductNameWidth);
-
         txt.setText("SKU");
 
-        childHeaderView.addView(txt);
-        TextView schemeNameTV = getNameTv();
+        layout_child.addView(txt);
+
+        TextView schemeNameTV = getDefaultTextView();
         SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeId);
         schemeNameTV.setText(schemeBO.getScheme());
         schemeNameTV.setWidth(mSlabWiseSchemeNameWidth);
-        childHeaderView.addView(schemeNameTV);
-        mAddViewLayout.addView(childHeaderView);
+
+        layout_child.addView(schemeNameTV);
+
+        layout_parent.addView(layout_child);
+
         List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
         for (SchemeProductBO freeProductBO : freeProductList) {
             if (groupName.equals(freeProductBO.getGroupName())) {
 
-
-                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+                ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
                 if (productBO != null) {
-                    childHeaderView = new LinearLayout(ctxt);
-                    childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-                    childHeaderView.setOrientation(LinearLayout.HORIZONTAL);
-                    TextView productNameTV = getNameTv();
-                    productNameTV.setText(productBO.getProductShortName());
-                    productNameTV.setWidth(mSlabWiseProductNameWidth);
-                    childHeaderView.addView(productNameTV);
 
-                    String freeQty = "";
+                    layout_child = new LinearLayout(mContext);
+                    layout_child.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+                    layout_child.setOrientation(LinearLayout.HORIZONTAL);
+
+                    TextView text_ProductName = getDefaultTextView();
+                    text_ProductName.setText(productBO.getProductShortName());
+                    text_ProductName.setWidth(mSlabWiseProductNameWidth);
+                    layout_child.addView(text_ProductName);
+
+                    String freeQty ;
                     if (freeProductBO.getQuantityMinimum() == freeProductBO.getQuantityMaximum()) {
                         freeQty = freeProductBO.getQuantityMinimum() + "";
                     } else {
                         freeQty = freeProductBO.getQuantityMinimum() + "-" + freeProductBO.getQuantityMaximum();
                     }
+
                     if (freeProductBO.getUomID() == productBO.getCaseUomId()) {
                         freeQty += freeProductBO.getUomDescription();
                     } else if (freeProductBO.getUomID() == productBO.getOuUomid()) {
@@ -1848,145 +1557,158 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     } else if (freeProductBO.getUomID() == productBO.getPcUomid()) {
                         freeQty += freeProductBO.getUomDescription();
                     }
-                    TextView slabValueTV = getNameTv();
+
+                    TextView slabValueTV = getDefaultTextView();
                     slabValueTV.setWidth(mSlabWiseSchemeNameWidth);
                     slabValueTV.setText(freeQty);
 
-                    childHeaderView.addView(slabValueTV);
-                    mAddViewLayout.addView(childHeaderView);
+                    layout_child.addView(slabValueTV);
+                    layout_parent.addView(layout_child);
                 }
 
             }
         }
 
 
-        return mAddViewLayout;
+        return layout_parent;
 
 
     }
 
     private LinearLayout addSlabWiseFreeProductANYLogic(String schemeId, String groupName) {
-        TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
-        mAddViewLayout = new LinearLayout(ctxt);
-
-        mAddViewLayout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.VERTICAL);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         } else {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         }
-        LinearLayout childHeaderView = new LinearLayout(ctxt);
-        childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        childHeaderView.setOrientation(LinearLayout.HORIZONTAL);
 
-        TextView txt = getNameTv();
+        LinearLayout layout_child = new LinearLayout(mContext);
+        layout_child.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        layout_child.setOrientation(LinearLayout.HORIZONTAL);
 
+        TextView txt = getDefaultTextView();
         txt.setText("SKU");
         txt.setWidth(mSlabWiseProductNameWidth);
 
-        childHeaderView.addView(txt);
-        TextView schemeNameTV = getNameTv();
+        layout_child.addView(txt);
+
+        TextView schemeNameTV = getDefaultTextView();
         SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeId);
         schemeNameTV.setText(schemeBO.getScheme());
         schemeNameTV.setWidth(mSlabWiseSchemeNameWidth);
-        childHeaderView.addView(schemeNameTV);
-        mAddViewLayout.addView(childHeaderView);
+
+        layout_child.addView(schemeNameTV);
+        layout_parent.addView(layout_child);
+
         List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
         StringBuffer sb = new StringBuffer();
-        childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        childHeaderView.setOrientation(LinearLayout.VERTICAL);
-        TextView productNameTV = getNameTv();
+
+        layout_child.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        layout_child.setOrientation(LinearLayout.VERTICAL);
+
+        TextView productNameTV = getDefaultTextView();
         int fromQty = 0, toQty = 0;
         String uomDes = "";
+
         for (SchemeProductBO freeProductBO : freeProductList) {
             if (freeProductBO.getGroupName().equals(groupName)) {
 
-
-                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+                ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
                 if (productBO != null) {
+
                     sb.append(productBO.getProductShortName());
                     sb.append("\n");
 
+                    fromQty = (int) freeProductBO.getBuyQty();
+                    toQty = (int) freeProductBO.getTobuyQty();
+                    if (freeProductBO.getUomID() == productBO.getCaseUomId()) {
+                        uomDes = freeProductBO.getUomDescription();
+                    } else if (freeProductBO.getUomID() == productBO.getOuUomid()) {
+                        uomDes = freeProductBO.getUomDescription();
+                    } else if (freeProductBO.getUomID() == productBO.getPcUomid()) {
+                        uomDes = freeProductBO.getUomDescription();
+                    }
 
                 }
-                fromQty = (int) freeProductBO.getBuyQty();
-                toQty = (int) freeProductBO.getTobuyQty();
-                if (freeProductBO.getUomID() == productBO.getCaseUomId()) {
-                    uomDes = freeProductBO.getUomDescription();
-                } else if (freeProductBO.getUomID() == productBO.getOuUomid()) {
-                    uomDes = freeProductBO.getUomDescription();
-                } else if (freeProductBO.getUomID() == productBO.getPcUomid()) {
-                    uomDes = freeProductBO.getUomDescription();
-                }
+
             }
 
 
         }
-        String freeQty = "";
+
+        String freeQty ;
         if (fromQty == toQty) {
             freeQty = fromQty + " " + uomDes;
         } else {
             freeQty = fromQty + "-" + toQty + " " + uomDes;
         }
-        childHeaderView = new LinearLayout(ctxt);
-        childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        childHeaderView.setOrientation(LinearLayout.HORIZONTAL);
+
+        layout_child = new LinearLayout(mContext);
+        layout_child.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        layout_child.setOrientation(LinearLayout.HORIZONTAL);
 
         productNameTV.setText(sb.toString());
         productNameTV.setWidth(mSlabWiseProductNameWidth);
-        childHeaderView.addView(productNameTV);
-        TextView slabTV = getNameTv();
+        layout_child.addView(productNameTV);
+
+        TextView slabTV = getDefaultTextView();
         slabTV.setText(freeQty);
         slabTV.setWidth(mSlabWiseSchemeNameWidth);
-        childHeaderView.addView(slabTV);
-        mAddViewLayout.addView(childHeaderView);
-        return mAddViewLayout;
+
+        layout_child.addView(slabTV);
+        layout_parent.addView(layout_child);
+        return layout_parent;
     }
 
     private LinearLayout addSlabWiseFreeProductONLYLogic(String schemeId, String groupName) {
-        TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
-        mAddViewLayout = new LinearLayout(ctxt);
-
-        mAddViewLayout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout layout_parent = new LinearLayout(mContext);
+        layout_parent.setOrientation(LinearLayout.VERTICAL);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         } else {
-            mAddViewLayout.setBackgroundColor(Color.WHITE);
+            layout_parent.setBackgroundColor(Color.WHITE);
         }
-        LinearLayout childHeaderView = new LinearLayout(ctxt);
-        childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        childHeaderView.setOrientation(LinearLayout.HORIZONTAL);
 
-        TextView txt = getNameTv();
+        LinearLayout layout_child = new LinearLayout(mContext);
+        layout_child.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        layout_child.setOrientation(LinearLayout.HORIZONTAL);
 
+        TextView txt = getDefaultTextView();
         txt.setText("SKU");
         txt.setWidth(mSlabWiseProductNameWidth);
 
-        childHeaderView.addView(txt);
-        TextView schemeNameTV = getNameTv();
+        layout_child.addView(txt);
+
+        TextView schemeNameTV = getDefaultTextView();
         SchemeBO schemeBO = schemeHelper.getSchemeById().get(schemeId);
         schemeNameTV.setText(schemeBO.getScheme());
         schemeNameTV.setWidth(mSlabWiseSchemeNameWidth);
-        childHeaderView.addView(schemeNameTV);
-        mAddViewLayout.addView(childHeaderView);
+
+        layout_child.addView(schemeNameTV);
+        layout_parent.addView(layout_child);
+
         List<SchemeProductBO> freeProductList = schemeBO.getFreeProducts();
         for (SchemeProductBO freeProductBO : freeProductList) {
 
             if (freeProductBO.getGroupName().equals(groupName)) {
-                ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
+                ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(freeProductBO.getProductId());
                 if (productBO != null) {
-                    childHeaderView = new LinearLayout(ctxt);
-                    childHeaderView.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-                    childHeaderView.setOrientation(LinearLayout.HORIZONTAL);
-                    TextView productNameTV = getNameTv();
-                    productNameTV.setWidth(mSlabWiseProductNameWidth);
-                    childHeaderView.addView(productNameTV);
 
-                    String freeQty = "";
+                    layout_child = new LinearLayout(mContext);
+                    layout_child.setLayoutParams(new TableLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+                    layout_child.setOrientation(LinearLayout.HORIZONTAL);
+                    TextView productNameTV = getDefaultTextView();
+                    productNameTV.setWidth(mSlabWiseProductNameWidth);
+
+                    layout_child.addView(productNameTV);
+
+                    String freeQty ;
                     if (freeProductBO.getQuantityMinimum() == freeProductBO.getQuantityMaximum()) {
                         freeQty = freeProductBO.getQuantityMinimum() + "";
                     } else {
@@ -1999,16 +1721,17 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     } else if (freeProductBO.getUomID() == productBO.getPcUomid()) {
                         freeQty += " " + freeProductBO.getUomDescription();
                     }
-                    TextView slabValueTV = getNameTv();
-                    slabValueTV.setText(freeQty);
-                    slabValueTV.setWidth(mSlabWiseSchemeNameWidth);
 
-                    childHeaderView.addView(slabValueTV);
-                    mAddViewLayout.addView(childHeaderView);
+                    TextView text_freeQuantity = getDefaultTextView();
+                    text_freeQuantity.setText(freeQty);
+                    text_freeQuantity.setWidth(mSlabWiseSchemeNameWidth);
+
+                    layout_child.addView(text_freeQuantity);
+                    layout_parent.addView(layout_child);
                 }
 
             }
         }
-        return mAddViewLayout;
+        return layout_parent;
     }
 }
