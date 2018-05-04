@@ -862,9 +862,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         || configCode.equalsIgnoreCase("COUNTRY")
                         ) {
 
-                    totalView.addView(getEditTextView(i, mName,
-                            InputType.TYPE_TEXT_VARIATION_PERSON_NAME, mandatory),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                        totalView.addView(getEditTextView(i, mName, InputType.TYPE_TEXT_VARIATION_PERSON_NAME, mandatory), commonsparams);
+                    else
+                        totalView.addView(getEditTextView(i, mName, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS, mandatory), commonsparams);
+
 
                 } else if (configCode.equalsIgnoreCase("EMAIL")) {
                     totalView.addView(
@@ -2251,7 +2253,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
 
                 editText[mNumber + 50 + 5] = new AppCompatEditText(getActivity());
-                editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                    editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                else
+                    editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
                 editText[mNumber + 50 + 5].setHint("Titile");
                 editText[mNumber + 50 + 5].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                 editText[mNumber + 50 + 5].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2306,7 +2314,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             editText[mNumber] = new AppCompatEditText(getActivity());
             editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            else
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             if (isContactTitle)
                 editText[mNumber].setHint(getResources().getString(R.string.contact_person_first_name));
@@ -2315,7 +2329,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             editText[mNumber + 50] = new AppCompatEditText(getActivity());
             editText[mNumber + 50].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber + 50].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                editText[mNumber + 50].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            else
+                editText[mNumber + 50].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             editText[mNumber + 50].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             if (isContactTitle)
                 editText[mNumber + 50].setHint(getResources().getString(R.string.contact_person_last_name));
@@ -2385,7 +2405,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 editText[mNumber + 51 + 5] = new AppCompatEditText(getActivity());
                 editText[mNumber + 51 + 5].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-                editText[mNumber + 51 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                    editText[mNumber + 51 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                else
+                    editText[mNumber + 51 + 5].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
                 editText[mNumber + 51 + 5].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 editText[mNumber + 51 + 5].setHint("Title");
 
@@ -2437,7 +2463,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             editText[mNumber] = new AppCompatEditText(getActivity());
             editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            else
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             //for title displaying
             if (isContactTitle)
@@ -2447,7 +2479,14 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             editText[mNumber + 51] = new AppCompatEditText(getActivity());
             editText[mNumber + 51].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber + 51].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                editText[mNumber + 51].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            else
+                editText[mNumber + 51].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             editText[mNumber + 51].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             //for title displaying
             if (isContactTitle)
@@ -2511,25 +2550,46 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                 editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-                if (edittexttype == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_CLASS_NUMBER) {
-                    editText[mNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_CLASS_TEXT) {
-                    editText[mNumber].setInputType(InputType.TYPE_CLASS_TEXT);
-                    editText[mNumber].setHint(MName);
-                }
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                    if (edittexttype == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_CLASS_NUMBER) {
+                        editText[mNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_CLASS_TEXT) {
+                        editText[mNumber].setInputType(InputType.TYPE_CLASS_TEXT);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_CLASS_NUMBER) {
+                        editText[mNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) {
+                        editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                        editText[mNumber].setHint(MName);
+                    }
+
 
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
@@ -2601,25 +2661,46 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                 editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-                if (edittexttype == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_CLASS_NUMBER) {
-                    editText[mNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_CLASS_TEXT) {
-                    editText[mNumber].setInputType(InputType.TYPE_CLASS_TEXT);
-                    editText[mNumber].setHint(MName);
-                }
+
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                    if (edittexttype == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_CLASS_NUMBER) {
+                        editText[mNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_CLASS_TEXT) {
+                        editText[mNumber].setInputType(InputType.TYPE_CLASS_TEXT);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) {
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_CLASS_NUMBER) {
+                        editText[mNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
+                        editText[mNumber].setHint(MName);
+                    } else if (edittexttype == InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) {
+                        editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                        editText[mNumber].setHint(MName);
+                    }
+
                 //cmd for not apply inputfilter value for email id
                 if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("EMAIL"))
                     if (inputFilters != null && inputFilters.size() > 0) {

@@ -490,6 +490,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_EXPENSE_DAYS = "EXP01";
     public int expenseDays = 30;
 
+    private static final String CODE_UPPERCASE_LETTER = "UPPERCASELETTER";
+    public boolean IS_UPPERCASE_LETTER;
 
     /**
      * RoadActivity config *
@@ -2234,6 +2236,8 @@ public class ConfigurationMasterHelper {
         this.expenseDays = this.expenseDays >= 30 ? this.expenseDays : 30;
 
         this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
+
+        this.IS_UPPERCASE_LETTER = hashMapHHTModuleConfig.get(CODE_UPPERCASE_LETTER) != null ? hashMapHHTModuleConfig.get(CODE_UPPERCASE_LETTER) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_VALUE_ORDER) == 1)
