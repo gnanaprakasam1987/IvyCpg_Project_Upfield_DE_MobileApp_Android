@@ -131,7 +131,7 @@ public class SchemeDetailsMasterHelper {
     public boolean IS_SCHEME_CHECK_DISABLED;
     public boolean IS_SCHEME_ON_MASTER;
     public boolean IS_SCHEME_SHOW_SCREEN_MASTER;
-    private boolean IS_UP_SELLING;
+    public boolean IS_UP_SELLING;
     private int UP_SELLING_PERCENTAGE=70;
 
 

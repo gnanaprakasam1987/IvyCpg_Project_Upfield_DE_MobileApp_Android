@@ -4265,13 +4265,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             bmodel.productHelper.taxHelper.removeTaxFromPrice();
         }
 
-        ArrayList<String> nearestSchemes=SchemeDetailsMasterHelper.getInstance(this).upSelling(bmodel.productHelper.getProductMaster());
-        if(nearestSchemes.size()>0) {
-            Intent intent = new Intent(this, UpSellingActivity.class);
-            intent.putStringArrayListExtra("nearestSchemes", nearestSchemes);
-            startActivityForResult(intent,REQUEST_CODE_UPSELLING);
-            return;
-            //  finish();
+        if(SchemeDetailsMasterHelper.getInstance(this).IS_UP_SELLING) {
+            ArrayList<String> nearestSchemes = SchemeDetailsMasterHelper.getInstance(this).upSelling(bmodel.productHelper.getProductMaster());
+            if (nearestSchemes.size() > 0) {
+                Intent intent = new Intent(this, UpSellingActivity.class);
+                intent.putStringArrayListExtra("nearestSchemes", nearestSchemes);
+                startActivityForResult(intent, REQUEST_CODE_UPSELLING);
+                return;
+                //  finish();
+            }
         }
 
         moveToNextScreen();
