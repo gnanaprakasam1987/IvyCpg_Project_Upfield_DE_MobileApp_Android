@@ -103,6 +103,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         ProductMasterBO productBO=bModel.productHelper.getProductMasterBOById(mProductID);
 
         if(!mSelectedSlabId.equals("0")){
+            setScreenTitle(getResources().getString(R.string.scheme_details));
+            rootView.findViewById(R.id.layout_title).setVisibility(View.GONE);
             prepareView(rootView, mProductID, mSelectedSlabId);
         }
         else if(productBO!=null) {
@@ -154,6 +156,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         if (parentIdList != null) {
             for (Integer parentId : parentIdList) {
 
+                if (mSelectedSlabId.equals("0")||String.valueOf(parentId).equals(mSelectedSlabId)) {
 
                 final ArrayList<String> schemeIdList = schemeHelper.getSchemeIdListByParentID().get(parentId);
 
@@ -173,7 +176,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     schemeBO = schemeHelper.getSchemeById().get(schemeIdList.get(0));
 
 
-                if (schemeBO != null&&(mSelectedSlabId.equals("0")||schemeBO.getSchemeId().equals(mSelectedSlabId))) {
+
 
                     LinearLayout.LayoutParams layoutParamsSchemeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParamsSchemeTitle.setMargins(0, 20, 0, 10);
@@ -233,7 +236,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         if (mSlabList != null) {
                             for (int k = mSlabList.size() - 1; k >= 0; k--) {
 
-                                if(mSelectedSlabId.equals("0")||mSlabList.get(k).equals(mSelectedSlabId)) {
+                                //if(mSelectedSlabId.equals("0")||mSlabList.get(k).equals(mSelectedSlabId)) {
 
                                     TextView slab = getTextView(true, Gravity.CENTER, false);
                                     slab.setLayoutParams(layoutParams_slab);
@@ -245,7 +248,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                     slab.setWidth(mSchemeDetailWidth);
                                     slab.setTextColor(getResources().getColor(R.color.FullBlack));
                                     layout_Slab.addView(slab);
-                                }
+                                //}
                             }
                         }
 

@@ -98,5 +98,6 @@
     <string name="day_target">Day target</string>
 
     <string name="scheme_apply">Scheme Apply</string>
+    <string name="scheme_details">Scheme Details</string>
     <string name="buy">buy</string>
 </resources>

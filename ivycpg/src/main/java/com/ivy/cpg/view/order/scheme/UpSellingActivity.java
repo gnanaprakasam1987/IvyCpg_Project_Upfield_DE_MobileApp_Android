@@ -65,7 +65,6 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
         bModel=(BusinessModel)getApplicationContext();
         layout_parent=findViewById(R.id.layout_parent);
         button_next=findViewById(R.id.btn_next);button_next.setOnClickListener(this);
-        button_edit=findViewById(R.id.btn_edit_order);button_edit.setOnClickListener(this);
 
         schemeHelper=SchemeDetailsMasterHelper.getInstance(this);
         productList=new Vector<>();
@@ -87,13 +86,16 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
             if(schemeBO!=null){
 
                 view_parent = inflater.inflate(R.layout.row_upselling, null);
+                TextView text_schemeName=view_parent.findViewById(R.id.text_scheme_name);
                 TextView text_slabName=view_parent.findViewById(R.id.text_slab_name);
-                TextView label_product=view_parent.findViewById(R.id.label_product);updateFont(label_product,0);
-                TextView label_ordered=view_parent.findViewById(R.id.label_ordered);updateFont(label_ordered,0);
-                TextView label_to_add=view_parent.findViewById(R.id.label_to_add);updateFont(label_to_add,0);
+                TextView label_product=view_parent.findViewById(R.id.label_product);updateFont(label_product,1);
+                TextView label_ordered=view_parent.findViewById(R.id.label_ordered);updateFont(label_ordered,1);
+                TextView label_to_add=view_parent.findViewById(R.id.label_to_add);updateFont(label_to_add,1);
                 TextView label_text_any=view_parent.findViewById(R.id.text_any);updateFont(label_text_any,1);
                 (view_parent.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 text_slabName.setText(schemeBO.getScheme());updateFont(text_slabName,0);
+                text_schemeName.setText(schemeBO.getProductName());
+                text_schemeName.setTypeface(bModel.configurationMasterHelper.getProductNameFont());
 
                 View view=view_parent.findViewById(R.id.image_view_info);
                // view.setTag(1,schemeBO.getSchemeId());
@@ -103,10 +105,20 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
                     public void onClick(View view) {
                         Intent intent = new Intent(UpSellingActivity.this, ProductSchemeDetailsActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("slabId",schemeBO.getSchemeId());
+                        intent.putExtra("slabId",String.valueOf(schemeBO.getParentId()));
                         intent.putExtra("productId",schemeBO.getBuyingProducts().get(0).getProductId());
                         intent.putExtra("isFromUpSelling",true);
                         startActivity(intent);
+                        overridePendingTransition(R.anim.zoom_enter, R.anim.zoom_exit);
+                    }
+                });
+                view_parent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent=new Intent();
+                        intent.putExtra("slabId",schemeBO.getSchemeId());
+                         setResult(2,intent);
+                         finish();
                     }
                 });
                // view.setOnClickListener(this);
@@ -116,9 +128,9 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
                 for(SchemeProductBO schemeProductBO:schemeBO.getBuyingProducts()) {
                     View view_products = inflater.inflate(R.layout.row_upselling_products, null);
 
-                    TextView text_productName=view_products.findViewById(R.id.text_product);updateFont(text_productName,1);
-                    TextView text_ordered=view_products.findViewById(R.id.text_ordered);updateFont(text_ordered,1);
-                    TextView text_toAdd=view_products.findViewById(R.id.text_add);updateFont(text_toAdd,1);
+                    TextView text_productName=view_products.findViewById(R.id.text_product);updateFont(text_productName,0);
+                    TextView text_ordered=view_products.findViewById(R.id.text_ordered);updateFont(text_ordered,0);
+                    TextView text_toAdd=view_products.findViewById(R.id.text_add);updateFont(text_toAdd,0);
 
                     ProductMasterBO productMasterBO=bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                     text_productName.setText(productMasterBO.getProductShortName());
@@ -196,20 +208,9 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
     @Override
     public void onClick(View view) {
         if(view.getId()==button_next.getId()){
-           setResult(RESULT_OK);
+           setResult(1);
            finish();
 
-        }
-        else if(view.getId()==button_edit.getId()){
-            finish();
-        }
-        else if(view.getId()==R.id.image_view_info){
-            Intent intent = new Intent(UpSellingActivity.this, ProductSchemeDetailsActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("slabId",(String)view.getTag(1));
-            intent.putExtra("productId",(String)view.getTag(2));
-            intent.putExtra("isFromUpSelling",true);
-            startActivity(intent);
         }
     }
 }

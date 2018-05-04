@@ -91,7 +91,10 @@ public class SchemeDetailsMasterHelper {
 
     // List of schemes applied for the current order
     private ArrayList<SchemeBO> mAppliedSchemeList;
-
+    private Vector<ProductMasterBO> mOrderedProductList;
+    private HashMap<String,ArrayList<ProductMasterBO>> mBatchListByProductId;
+    private HashMap<String,ProductMasterBO> mOrderedProductBOById;
+    private HashMap<String,ProductMasterBO> mProductMasterBOById;
 
 
     //Display Scheme
@@ -1168,30 +1171,71 @@ public class SchemeDetailsMasterHelper {
 
 ///////////////////////////
 
+    private void prepareNescessaryLists(Vector<ProductMasterBO> mProductMasterList){
+        int totalQuantity=0;
+        mOrderedProductList=new Vector<>();
+        mOrderedProductBOById=new HashMap<>();
+        mProductMasterBOById=new HashMap<>();
+
+     for(ProductMasterBO productMasterBO:mProductMasterList){
+
+         if(bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+             ArrayList<ProductMasterBO> batchWiseList = bModel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
+
+             if (batchWiseList != null) {
+                 for (ProductMasterBO batchProductBO : batchWiseList) {
+
+                     if (batchProductBO.getOrderedPcsQty() > 0 || batchProductBO.getOrderedCaseQty() > 0 || batchProductBO.getOrderedOuterQty() > 0) {
+                         totalQuantity += batchProductBO.getOrderedPcsQty()
+                                 + (batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                 + (batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize());
+
+                     }
+
+                 }
+             }
+         }
+         else {
+             totalQuantity = productMasterBO.getOrderedPcsQty() + (productMasterBO.getOrderedCaseQty() * productMasterBO .getCaseSize())
+                     + (productMasterBO.getOrderedOuterQty() * productMasterBO .getOutersize());
+         }
+
+         if(totalQuantity>0) {
+             mOrderedProductList.add(productMasterBO);
+             mOrderedProductBOById.put(productMasterBO.getProductID(),productMasterBO);
+         }
+         mProductMasterBOById.put(productMasterBO.getProductID(),productMasterBO);
+     }
+    }
+
     /**
      * Preparing a achieved scheme list based on the current order to show in the screen.
      * If Off Invoice is available than it will be added to the applied list directly to show in the screen
      * And updating stock availability for free products in the scheme object
      */
-    public void schemeApply() {
+    public void schemeApply(Vector<ProductMasterBO> mProductMasterList) {
 
-        mAchieved_qty_or_salesValue_by_schemeId_nd_productid = new HashMap<>();
-        mAppliedSchemeList = new ArrayList<>();
+        prepareNescessaryLists(mProductMasterList);
 
-        if (mParentIDList != null) {
-            for (Integer parentID : mParentIDList) {
+        if(mOrderedProductList!=null&&mOrderedProductList.size()>0) {
 
-                int slabPosition = 0;
-                ArrayList<String> schemeIDList = mSchemeIDListByParentID.get(parentID);
+            mAchieved_qty_or_salesValue_by_schemeId_nd_productid = new HashMap<>();
+            mAppliedSchemeList = new ArrayList<>();
 
-                if (schemeIDList != null) {
-                    for (String schemeID : schemeIDList) {
+            if (mParentIDList != null) {
+                for (Integer parentID : mParentIDList) {
 
-                        slabPosition += 1;
-                        SchemeBO schemeBO = mSchemeById.get(schemeID);
+                    int slabPosition = 0;
+                    ArrayList<String> schemeIDList = mSchemeIDListByParentID.get(parentID);
 
-                        if (schemeBO != null&&!schemeBO.isOffScheme()) {
-                            // only ON scheme will be allowed to apply
+                    if (schemeIDList != null) {
+                        for (String schemeID : schemeIDList) {
+
+                            slabPosition += 1;
+                            SchemeBO schemeBO = mSchemeById.get(schemeID);
+
+                            if (schemeBO != null && !schemeBO.isOffScheme()) {
+                                // only ON scheme will be allowed to apply
 
                                 if (isSchemeDone(schemeBO, parentID, slabPosition == 1)) {
 
@@ -1204,6 +1248,7 @@ public class SchemeDetailsMasterHelper {
                                         break;
                                     }
                                 }
+                            }
                         }
                     }
                 }
@@ -1232,7 +1277,9 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    public ArrayList<String> upSelling(){
+    public ArrayList<String> upSelling(Vector<ProductMasterBO>mProductMasterList){
+
+        prepareNescessaryLists(mProductMasterList);
 
         ArrayList<String> nearestSchemes=new ArrayList<>();
 
@@ -1298,13 +1345,15 @@ public class SchemeDetailsMasterHelper {
 
                                             double toBuy = schemeProductBo.getBuyQty();
                                             double bought=0;
-                                            ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
+                                            //ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
 
                                             if(schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-                                                bought = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize())+ (productBO.getOrderedOuterQty() * productBO.getOutersize());
+                                               // bought = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize())+ (productBO.getOrderedOuterQty() * productBO.getOutersize());
+                                                bought+= getTotalOrderedQuantity(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
                                             }
                                             else if(schemeBO.getBuyType().equals(SALES_VALUE)){
-                                                bought = (productBO.getOrderedPcsQty() * productBO.getSrp()) + (productBO.getOrderedCaseQty() * productBO.getCsrp()) + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                                //bought = (productBO.getOrderedPcsQty() * productBO.getSrp()) + (productBO.getOrderedCaseQty() * productBO.getCsrp()) + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                                bought+= getTotalOrderedValue(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
                                             }
 
 
@@ -1323,13 +1372,15 @@ public class SchemeDetailsMasterHelper {
                                         for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
 
                                             total_toBuy += schemeProductBo.getBuyQty();
-                                            ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
+                                            //ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
 
                                             if(schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-                                                total_bought += productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
+                                                //total_bought += productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
+                                                total_bought+= getTotalOrderedQuantity(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
                                             }
                                             else if(schemeBO.getBuyType().equals(SALES_VALUE)){
-                                                total_bought = (productBO.getOrderedPcsQty() * productBO.getSrp()) + (productBO.getOrderedCaseQty() * productBO.getCsrp()) + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                               // total_bought = (productBO.getOrderedPcsQty() * productBO.getSrp()) + (productBO.getOrderedCaseQty() * productBO.getCsrp()) + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                                total_bought+= getTotalOrderedValue(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
                                             }
 
                                         }
@@ -1561,24 +1612,15 @@ public class SchemeDetailsMasterHelper {
 
             if (schemeProductBo.getGroupName().equals(groupName)) {
 
-                ProductMasterBO productBo = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
+                ProductMasterBO productBo = mOrderedProductBOById.get((schemeProductBo.getProductId()));
                 if (productBo != null) {
 
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
 
                         int orderedTotalQuantityUomWise = 0;
                         int totalQty;
-                        if (schemeBO.isBatchWise() && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                            // batch wise scheme
-                           totalQty=getBatchTotalQuantity(productBo,schemeProductBo.getBatchId());
 
-                        } else {
-                            totalQty = productBo.getOrderedPcsQty()
-                                    + (productBo.getOrderedCaseQty() * productBo
-                                    .getCaseSize())
-                                    + (productBo.getOrderedOuterQty() * productBo
-                                    .getOutersize());
-                        }
+                        totalQty= getTotalOrderedQuantity(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
 
 
                         /* scheme accumulation starts */
@@ -1632,17 +1674,7 @@ public class SchemeDetailsMasterHelper {
                     } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
                         double totalValue;
-
-                        if (productBo.getBatchwiseProductCount() > 0 && schemeBO.isBatchWise() && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                            totalValue = getBatchTotalValue(productBo, schemeProductBo.getBatchId());
-                        } else {
-                            totalValue = (productBo.getOrderedPcsQty() * productBo
-                                    .getSrp())
-                                    + (productBo.getOrderedCaseQty() * productBo
-                                    .getCsrp())
-                                    + (productBo.getOrderedOuterQty() * productBo
-                                    .getOsrp());
-                        }
+                        totalValue=getTotalOrderedValue(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
 
 
                         /* scheme accumulation starts */
@@ -1713,40 +1745,26 @@ public class SchemeDetailsMasterHelper {
                 break;
             }
 
-            if (schemeProductBo.getGroupName().equals(groupName)) {
-                ProductMasterBO productBo = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
-                if (productBo != null) {
+            ProductMasterBO productMasterBO=mOrderedProductBOById.get(schemeProductBo.getProductId());
+            if(productMasterBO!=null) {
+
+                if (schemeProductBo.getGroupName().equals(groupName)) {
 
                     if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
 
-                        int orderedTotalQuantityByUOMWise ;
-                        int totalProductQty = 0;
+                        int orderedTotalQuantityByUOMWise;
+                        int totalProductQty;
 
-                        if (schemeBO.isBatchWise() && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                            // batch wise scheme
-                            totalQty=getBatchTotalQuantity(productBo,schemeProductBo.getBatchId());
+                        totalProductQty = getTotalOrderedQuantity(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId());
 
-                        } else {
-                            totalProductQty = productBo.getOrderedPcsQty()
-                                    + (productBo.getOrderedCaseQty() * productBo
-                                    .getCaseSize())
-                                    + (productBo.getOrderedOuterQty() * productBo
-                                    .getOutersize());
-                        }
-
-
-						/* scheme accumulation starts */
+                        /* scheme accumulation starts */
                         if (schemeAccumulationList != null) {
                             //Adding accumulation product quantities
                             for (ProductMasterBO schemeAccBO : schemeAccumulationList) {
-                                if (schemeProductBo.getProductId().equals(
-                                        schemeAccBO.getProductID())) {
-                                    totalProductQty = totalProductQty
-                                            + schemeAccBO.getOrderedPcsQty()
-                                            + (schemeAccBO.getOrderedCaseQty() * productBo
-                                            .getCaseSize())
-                                            + (schemeAccBO.getOrderedOuterQty() * productBo
-                                            .getOutersize());
+                                if (schemeProductBo.getProductId().equals(schemeAccBO.getProductID())) {
+                                    totalProductQty = totalProductQty + schemeAccBO.getOrderedPcsQty()
+                                            + (schemeAccBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                            + (schemeAccBO.getOrderedOuterQty() * productMasterBO.getOutersize());
                                     break;
                                 }
                             }
@@ -1760,21 +1778,15 @@ public class SchemeDetailsMasterHelper {
                         }
 
                         if (schemeProductBo.getUomID() != 0) {
-                            if (productBo.getCaseUomId() == schemeProductBo
-                                    .getUomID()) { // check case wise scheme
-                                if (productBo.getCaseSize() != 0) {
-                                    orderedTotalQuantityByUOMWise = totalProductQty
-                                            / productBo.getCaseSize();
-                                    totalQty = totalQty
-                                            + orderedTotalQuantityByUOMWise;
+                            if (productMasterBO.getCaseUomId() == schemeProductBo.getUomID()) { // check case wise scheme
+                                if (productMasterBO.getCaseSize() != 0) {
+                                    orderedTotalQuantityByUOMWise = totalProductQty / productMasterBO.getCaseSize();
+                                    totalQty = totalQty + orderedTotalQuantityByUOMWise;
                                 }
-                            } else if (productBo.getOuUomid() == schemeProductBo
-                                    .getUomID()) { // check outer wise scheme
-                                if (productBo.getOutersize() != 0) {
-                                    orderedTotalQuantityByUOMWise = totalProductQty
-                                            / productBo.getOutersize();
-                                    totalQty = totalQty
-                                            + orderedTotalQuantityByUOMWise;
+                            } else if (productMasterBO.getOuUomid() == schemeProductBo.getUomID()) { // check outer wise scheme
+                                if (productMasterBO.getOutersize() != 0) {
+                                    orderedTotalQuantityByUOMWise = totalProductQty / productMasterBO.getOutersize();
+                                    totalQty = totalQty + orderedTotalQuantityByUOMWise;
                                 }
                             } else { // check piece wise scheme
                                 orderedTotalQuantityByUOMWise = totalProductQty;
@@ -1791,23 +1803,13 @@ public class SchemeDetailsMasterHelper {
                         }
                     } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
-                        double totalProductValue ;
-
-                        if (productBo.getBatchwiseProductCount() > 0 && schemeBO.isBatchWise() && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                            totalProductValue = getBatchTotalValue(productBo, schemeProductBo.getBatchId());
-                        } else {
-                            totalProductValue = (productBo.getOrderedPcsQty() * productBo
-                                    .getSrp())
-                                    + (productBo.getOrderedCaseQty() * productBo
-                                    .getCsrp())
-                                    + (productBo.getOrderedOuterQty() * productBo
-                                    .getOsrp());
-                        }
+                        double totalProductValue;
+                        totalProductValue = getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId());
 
                         /* scheme accumulation starts */
                         if (schemeAccumulationList != null) {
                             for (ProductMasterBO schemeAccBO : schemeAccumulationList) {
-                                if (productBo.getProductID().equals(
+                                if (productMasterBO.getProductID().equals(
                                         schemeAccBO.getProductID()) && (!schemeBO.isBatchWise() || (schemeBO.isBatchWise() && schemeProductBo.getBatchId().equals(schemeAccBO.getBatchid())))) {
                                     totalProductValue = totalProductValue
                                             + schemeAccBO.getTotalamount();
@@ -1830,6 +1832,7 @@ public class SchemeDetailsMasterHelper {
                             return true;
                         }
                     }
+
                 }
             }
         }
@@ -1837,59 +1840,6 @@ public class SchemeDetailsMasterHelper {
         return false;
 
     }
-
-
-    private double getBatchTotalValue(ProductMasterBO productBO, String batchId) {
-
-        ArrayList<ProductMasterBO> batchWiseList = bModel.batchAllocationHelper
-                .getBatchlistByProductID().get(productBO.getProductID());
-        double totalValue = 0.0;
-        if (batchWiseList != null) {
-            for (ProductMasterBO batchProductBO : batchWiseList) {
-                if (batchProductBO.getBatchid().equals(batchId)) {
-                    if (batchProductBO.getOrderedPcsQty() > 0
-                            || batchProductBO.getOrderedCaseQty() > 0
-                            || batchProductBO.getOrderedOuterQty() > 0) {
-                        double totalBatchValue = batchProductBO.getOrderedPcsQty()
-                                * batchProductBO.getSrp()
-                                + batchProductBO.getOrderedCaseQty()
-                                * batchProductBO.getCsrp()
-                                + batchProductBO.getOrderedOuterQty()
-                                * batchProductBO.getOsrp();
-                        totalValue = totalValue + totalBatchValue;
-                        batchProductBO.setDiscount_order_value(totalBatchValue);
-                        batchProductBO.setSchemeAppliedValue(totalBatchValue);
-                    }
-                }
-            }
-        }
-        return totalValue;
-
-    }
-
-    private int getBatchTotalQuantity(ProductMasterBO productBO, String batchId) {
-
-        ArrayList<ProductMasterBO> batchWiseList = bModel.batchAllocationHelper
-                .getBatchlistByProductID().get(productBO.getProductID());
-        int totalQuantity=0;
-        if (batchWiseList != null) {
-            for (ProductMasterBO batchProductBO : batchWiseList) {
-                if (batchProductBO.getBatchid().equals(batchId)) {
-                    if (batchProductBO.getOrderedPcsQty() > 0
-                            || batchProductBO.getOrderedCaseQty() > 0
-                            || batchProductBO.getOrderedOuterQty() > 0) {
-                        totalQuantity = batchProductBO.getOrderedPcsQty()
-                                + (batchProductBO.getOrderedCaseQty()*productBO.getCaseSize())
-                                + (batchProductBO.getOrderedOuterQty()*productBO.getOutersize());
-
-                    }
-                }
-            }
-        }
-        return totalQuantity;
-
-    }
-
 
 
     /**
@@ -2053,18 +2003,11 @@ public class SchemeDetailsMasterHelper {
             if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 int count = 0;
-                ProductMasterBO productMasterBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                ProductMasterBO productMasterBO =mOrderedProductBOById.get(schemeProductBO.getProductId());
 
                 if (productMasterBO != null) {
                     int quantity;
-
-                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                        quantity = getBatchTotalQuantity(productMasterBO, schemeProductBO.getBatchId());
-                    } else {
-                        quantity = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
-                                + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize())
-                                + productMasterBO.getOrderedPcsQty();
-                    }
+                    quantity= getTotalOrderedQuantity(schemeProductBO.getProductId(),isBatchWise,schemeProductBO.getBatchId());
 
                     //Removing already used quantity if any
                     if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
@@ -2215,18 +2158,12 @@ public class SchemeDetailsMasterHelper {
             if (schemeProductBO.getGroupName().equals(groupName)) {
 
                 int count = 0;
-                ProductMasterBO productMasterBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                ProductMasterBO productMasterBO = mOrderedProductBOById.get(schemeProductBO.getProductId());
 
                 if (productMasterBO != null) {
 
                     double totalValue ;
-                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                        totalValue = getBatchTotalValue(productMasterBO, schemeProductBO.getBatchId());
-                    } else {
-                        totalValue = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp())
-                                + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp())
-                                + productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp();
-                    }
+                    totalValue = getTotalOrderedValue(schemeProductBO.getProductId(), isBatchWise, schemeProductBO.getBatchId());
 
                     if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
                         if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentId + productMasterBO.getProductID()) != null) {
@@ -2333,20 +2270,11 @@ public class SchemeDetailsMasterHelper {
                 maximumBuyQuantity = schemeProductBO.getTobuyQty();
                 minimumBuyQuantity = schemeProductBO.getBuyQty();
 
-                ProductMasterBO productMasterBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                ProductMasterBO productMasterBO = mOrderedProductBOById.get(schemeProductBO.getProductId());
                 if (productMasterBO != null) {
 
                     int quantity;
-                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                        quantity = getBatchTotalQuantity(productMasterBO, schemeProductBO.getBatchId());
-                    }
-                    else {
-                        quantity = (productMasterBO.getOrderedCaseQty() * productMasterBO
-                                .getCaseSize())
-                                + (productMasterBO.getOrderedOuterQty() * productMasterBO
-                                .getOutersize())
-                                + productMasterBO.getOrderedPcsQty();
-                    }
+                    quantity= getTotalOrderedQuantity(schemeProductBO.getProductId(),isBatchWise ,schemeProductBO.getBatchId());
 
                     //Quantity used(if previous slab applied) for scheme are reduced here.
                     if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
@@ -2435,15 +2363,10 @@ public class SchemeDetailsMasterHelper {
                     int appliedQuantity ;
                     tempToQty = maximumBuyQuantity * count;
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
-                        ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                        ProductMasterBO productBO =mOrderedProductBOById.get((schemeProductBO.getProductId()));
                         if (productBO != null) {
 
-                            if (isBatchWise && productBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                                orderedQuantity=getBatchTotalQuantity(productBO,schemeProductBO.getBatchId());
-                            }
-                            else {
-                                orderedQuantity = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
-                            }
+                            orderedQuantity= getTotalOrderedQuantity(schemeProductBO.getProductId(),isBatchWise ,schemeProductBO.getBatchId());
 
                             if (orderedQuantity>0) {
 
@@ -2557,8 +2480,7 @@ public class SchemeDetailsMasterHelper {
                 minimumBuyValue = schemeProductBO.getBuyQty();
                 maximumBuyValue = schemeProductBO.getTobuyQty();
 
-                ProductMasterBO productMasterBO = bModel.productHelper
-                        .getProductMasterBOById(schemeProductBO.getProductId());
+                ProductMasterBO productMasterBO = mOrderedProductBOById.get(schemeProductBO.getProductId());
                 if (productMasterBO != null) {
 
                     int quantity = (productMasterBO.getOrderedCaseQty() * productMasterBO
@@ -2568,16 +2490,7 @@ public class SchemeDetailsMasterHelper {
                             + productMasterBO.getOrderedPcsQty();
 
                     double value;
-                    if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                        value = getBatchTotalValue(productMasterBO, schemeProductBO.getBatchId());
-                    } else {
-                        value = (productMasterBO.getOrderedCaseQty() * productMasterBO
-                                .getCsrp())
-                                + (productMasterBO.getOrderedOuterQty() * productMasterBO
-                                .getOsrp())
-                                + productMasterBO.getOrderedPcsQty()
-                                * productMasterBO.getSrp();
-                    }
+                    value = getTotalOrderedValue(schemeProductBO.getProductId(), isBatchWise, schemeProductBO.getBatchId());
 
                     //Quantity used(if previous slab applied) for scheme are reduced here.
                     if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
@@ -2635,19 +2548,10 @@ public class SchemeDetailsMasterHelper {
                     tempToQty = maximumBuyValue;
 
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
-                        ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
+                        ProductMasterBO productBO = mOrderedProductBOById.get(schemeProductBO.getProductId());
                         if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
 
-                            if (isBatchWise && productBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                                totVal = getBatchTotalValue(productBO, schemeProductBO.getBatchId());
-                            } else {
-                                totVal = (productBO.getOrderedCaseQty() * productBO
-                                        .getCsrp())
-                                        + (productBO.getOrderedOuterQty() * productBO
-                                        .getOsrp())
-                                        + productBO.getOrderedPcsQty()
-                                        * productBO.getSrp();
-                            }
+                            totVal = getTotalOrderedValue(schemeProductBO.getProductId(), isBatchWise, schemeProductBO.getBatchId());
 
                             if (totVal > 0) {
 
@@ -2979,7 +2883,7 @@ public class SchemeDetailsMasterHelper {
                                     count++;
 
                                     int stock = 0;
-                                    productMasterBO = bModel.productHelper.getProductMasterBOById(schemePdtBO.getProductId());
+                                    productMasterBO = mProductMasterBOById.get(schemePdtBO.getProductId());
 
                                     if (productMasterBO != null) {
                                         stock = productMasterBO.getSIH()
@@ -3057,10 +2961,89 @@ public class SchemeDetailsMasterHelper {
     }
 
 
+    private int getTotalOrderedQuantity(String productId,boolean isBatchWise,String batchId){
+        int totalQuantity=0;
+
+            for (ProductMasterBO productMasterBO : mOrderedProductList) {
+                if (productMasterBO.getProductID().equals(productId)
+                        ||productMasterBO.getParentHierarchy().contains("/"+productId+"/")) {
+
+                    if(isBatchWise&&productMasterBO.getBatchwiseProductCount()>0){
+                        if(mBatchListByProductId!=null) {
+
+                            ArrayList<ProductMasterBO> batchWiseList = mBatchListByProductId.get(productMasterBO.getProductID());
+                            if (batchWiseList != null) {
+
+                                for (ProductMasterBO batchProductBO : batchWiseList) {
+                                    if (batchProductBO.getBatchid().equals(batchId)) {
+
+                                        if (batchProductBO.getOrderedPcsQty() > 0 || batchProductBO.getOrderedCaseQty() > 0 || batchProductBO.getOrderedOuterQty() > 0) {
+
+                                            totalQuantity += batchProductBO.getOrderedPcsQty()
+                                                    + (batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                                    + (batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize());
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        totalQuantity += productMasterBO.getOrderedPcsQty() + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
+                    }
+                }
+            }
+
+
+        return totalQuantity;
+
+    }
+
+    private double getTotalOrderedValue(String productId,boolean isBatchWise,String batchId){
+        double totalValue=0;
+
+        for (ProductMasterBO productMasterBO : mOrderedProductList) {
+            if (productMasterBO.getProductID().equals(productId)) {
+
+                if(isBatchWise&&productMasterBO.getBatchwiseProductCount()>0
+                        ||productMasterBO.getParentHierarchy().contains("/"+productId+"/")) {
+                    if(mBatchListByProductId!=null) {
+
+                        ArrayList<ProductMasterBO> batchWiseList = mBatchListByProductId.get(productMasterBO.getProductID());
+                        if (batchWiseList != null) {
+
+                            for (ProductMasterBO batchProductBO : batchWiseList) {
+                                if (batchProductBO.getBatchid().equals(batchId)) {
+
+                                    if (batchProductBO.getOrderedPcsQty() > 0 || batchProductBO.getOrderedCaseQty() > 0 || batchProductBO.getOrderedOuterQty() > 0) {
+
+                                        totalValue += (batchProductBO.getOrderedPcsQty() * productMasterBO.getSrp())
+                                                + (batchProductBO.getOrderedCaseQty() * productMasterBO.getCsrp())
+                                                + (batchProductBO.getOrderedOuterQty() * productMasterBO.getOsrp());
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    totalValue += (productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp())
+                            + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp())
+                            + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp());
+                }
+            }
+        }
+
+        return totalValue;
+
+    }
 
 
 
-
+/////////////////////////
 
     /**
      * @param orderID - mapping to orderID
@@ -4146,9 +4129,6 @@ public class SchemeDetailsMasterHelper {
             }
         }
     }
-
-
-
 
 
     private int getAmountBasedSchemeCount(SchemeBO schemeBO) {

@@ -19,7 +19,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/spinner_tab_widget"
+                android:id="@+id/layout_title"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimens_50dp"
                 android:layout_marginBottom="4dp"

@@ -39,6 +39,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
     private Bundle instate;
     private BusinessModel bmodel;
     private String productId="0";
+    private boolean isFromUpSelling;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,8 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+
+        isFromUpSelling=getIntent().getBooleanExtra("isFromUpSelling",false);
 
         if(getIntent()!=null&&getIntent().getStringExtra("productId")!=null){
             productId=String.valueOf(getIntent().getStringExtra("productId"));
@@ -154,6 +157,9 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
             }
         });
+
+        if(isFromUpSelling)
+            tabLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -208,7 +214,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
         mSelectFragment.setArguments(bundle);
         mFragmentList.add(mSelectFragment);
 
-        boolean isFromUpSelling=getIntent().getBooleanExtra("isFromUpSelling",false);
+
 
         if (!isFromUpSelling&&bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
             mSelectFragment = new ProductDetailsFragment();

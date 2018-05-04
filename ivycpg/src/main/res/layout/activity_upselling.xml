@@ -28,19 +28,6 @@
         android:layout_alignParentBottom="true"
         android:background="?customLayoutBackground"
         android:orientation="horizontal">
-
-
-
-        <Button
-            android:id="@+id/btn_edit_order"
-            style="?attr/roundedCustomButtonSmall"
-            android:layout_centerVertical="true"
-            android:layout_margin="@dimen/target_top_margin"
-            android:text="Edit Order"
-            android:textAllCaps="false"
-            android:layout_toLeftOf="@+id/btn_next"
-             />
-
         <Button
             android:id="@+id/btn_next"
             style="?attr/roundedCustomButtonSmall"

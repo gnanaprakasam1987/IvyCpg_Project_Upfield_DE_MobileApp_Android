@@ -52,6 +52,8 @@ import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * This screen will show list of schemes applied for current order from that user can select/Reject/Modify
@@ -153,7 +155,40 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Void... voids) {
 
             try {
-                schemeHelper.schemeApply();
+               /* Vector<ProductMasterBO> mOrderedList=new Vector<>();
+                HashMap<String,ProductMasterBO> mOrderedProductBOById=new HashMap<>();
+                for(ProductMasterBO productMasterBO:bModel.productHelper.getProductMaster()){
+
+                    int totalQuantity=0;
+
+                    if(bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                        ArrayList<ProductMasterBO> batchWiseList = bModel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
+
+                        if (batchWiseList != null) {
+                            for (ProductMasterBO batchProductBO : batchWiseList) {
+
+                                if (batchProductBO.getOrderedPcsQty() > 0 || batchProductBO.getOrderedCaseQty() > 0 || batchProductBO.getOrderedOuterQty() > 0) {
+                                    totalQuantity += batchProductBO.getOrderedPcsQty()
+                                            + (batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                            + (batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize());
+
+                                }
+
+                            }
+                        }
+                    }
+                    else {
+                        totalQuantity = productMasterBO.getOrderedPcsQty() + (productMasterBO.getOrderedCaseQty() * productMasterBO .getCaseSize())
+                                + (productMasterBO.getOrderedOuterQty() * productMasterBO .getOutersize());
+                    }
+
+                    if(totalQuantity>0) {
+                        mOrderedList.add(productMasterBO);
+                        mOrderedProductBOById.put(productMasterBO.getProductID(),productMasterBO);
+                    }
+                }*/
+
+                schemeHelper.schemeApply(bModel.productHelper.getProductMaster());//mOrderedList,mOrderedProductBOById,bModel.batchAllocationHelper.getBatchlistByProductID());
             }
             catch (Exception ex){
                 return false;

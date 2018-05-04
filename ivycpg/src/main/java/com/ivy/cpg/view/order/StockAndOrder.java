@@ -85,6 +85,8 @@ import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -4263,7 +4265,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             bmodel.productHelper.taxHelper.removeTaxFromPrice();
         }
 
-        ArrayList<String> nearestSchemes=SchemeDetailsMasterHelper.getInstance(this).upSelling();
+        ArrayList<String> nearestSchemes=SchemeDetailsMasterHelper.getInstance(this).upSelling(bmodel.productHelper.getProductMaster());
         if(nearestSchemes.size()>0) {
             Intent intent = new Intent(this, UpSellingActivity.class);
             intent.putStringArrayListExtra("nearestSchemes", nearestSchemes);
@@ -4600,8 +4602,23 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
         }
         else if(requestCode==REQUEST_CODE_UPSELLING){
-            if (resultCode == RESULT_OK) {
+            if (resultCode == 1) {
               moveToNextScreen();
+            }
+            else if(resultCode==2){
+                if(data!=null){
+                    String slabId=data.getStringExtra("slabId");
+                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(this);
+                    SchemeBO slabBO=schemeHelper.getSchemeById().get(slabId);
+                    if(slabBO!=null) {
+                        mylist = new Vector<>();
+                        for (SchemeProductBO schemeProductBO : slabBO.getBuyingProducts()) {
+                            mylist.add(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()));
+                        }
+                        lvwplist.setAdapter(new MyAdapter(mylist));
+                    }
+
+                }
             }
 
         }

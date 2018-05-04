@@ -65,6 +65,7 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
 
         mContext = context;
         bModel = (BusinessModel) mContext.getApplicationContext();
+        mSchemeBO=schemeBO;
         schemeHelper=SchemeDetailsMasterHelper.getInstance(context);
 
 
@@ -100,7 +101,6 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
         ListView mListView =  findViewById(R.id.lv);
 
 
-        mSchemeBO = schemeBO;
         mFreeProductListener = freeProductListener;
         mFreeProductsList = new ArrayList<>();
         for (SchemeProductBO schemeProductBO : mSchemeBO.getFreeProducts()) {
