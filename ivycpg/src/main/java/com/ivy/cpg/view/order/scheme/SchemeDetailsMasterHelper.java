@@ -120,6 +120,7 @@ public class SchemeDetailsMasterHelper {
     private static final String CODE_FOC_ACCUMULATION_VALIDATION = "SCH04";
     private static final String CODE_SCHEME_SLAB_ON = "SCH08";
     private static final String CODE_SCHEME_CHECK = "SCH09";
+    private static final String CODE_UP_SELLING = "SCH12";
 
     public boolean IS_SCHEME_ON;
     public boolean IS_SCHEME_EDITABLE;
@@ -130,6 +131,8 @@ public class SchemeDetailsMasterHelper {
     public boolean IS_SCHEME_CHECK_DISABLED;
     public boolean IS_SCHEME_ON_MASTER;
     public boolean IS_SCHEME_SHOW_SCREEN_MASTER;
+    private boolean IS_UP_SELLING;
+    private int UP_SELLING_PERCENTAGE=70;
 
 
     /**
@@ -233,6 +236,12 @@ public class SchemeDetailsMasterHelper {
                         IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_SLAB_ON))
                         IS_SCHEME_SLAB_ON = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_UP_SELLING)) {
+                        IS_UP_SELLING = true;
+                        if (c.getString(1) != null && c.getString(1).equals("1")) {
+                            IS_SCHEME_CHECK_DISABLED = true;
+                        }
+                    }
 
                     if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_CHECK)) {
                         IS_SCHEME_CHECK = true;
@@ -1130,6 +1139,12 @@ public class SchemeDetailsMasterHelper {
 
     }
 
+    /**
+     * Download scheme report
+     * @param mContext context
+     * @param id Transaction Id
+     * @param flag Flag to identify invoice or order
+     */
     public void downloadSchemeReport(Context mContext,String id, boolean flag) {
         DBUtil db = null;
         try {
@@ -1171,7 +1186,11 @@ public class SchemeDetailsMasterHelper {
 
 ///////////////////////////
 
-    private void prepareNescessaryLists(Vector<ProductMasterBO> mProductMasterList){
+    /**
+     * Prepare necessary lists needed for applying scheme
+     * @param mProductMasterList Product master list
+     */
+    private void prepareNecessaryLists(Vector<ProductMasterBO> mProductMasterList){
         int totalQuantity=0;
         mOrderedProductList=new Vector<>();
         mOrderedProductBOById=new HashMap<>();
@@ -1215,7 +1234,7 @@ public class SchemeDetailsMasterHelper {
      */
     public void schemeApply(Vector<ProductMasterBO> mProductMasterList) {
 
-        prepareNescessaryLists(mProductMasterList);
+        prepareNecessaryLists(mProductMasterList);
 
         if(mOrderedProductList!=null&&mOrderedProductList.size()>0) {
 
@@ -1277,14 +1296,19 @@ public class SchemeDetailsMasterHelper {
 
     }
 
+    /**
+     * Gives list of slabs that are near(greater than given percentage) based on current order
+     *
+     * @param mProductMasterList Product master list
+     * @return Nearest slabs
+     */
     public ArrayList<String> upSelling(Vector<ProductMasterBO>mProductMasterList){
 
-        prepareNescessaryLists(mProductMasterList);
+        prepareNecessaryLists(mProductMasterList);
 
         ArrayList<String> nearestSchemes=new ArrayList<>();
 
         mAchieved_qty_or_salesValue_by_schemeId_nd_productid=new HashMap<>();
-        //ArrayList<String> nextSchemes=new ArrayList<>();
 
         HashMap<String,Double> schemeIdByPercentage=new HashMap<>();
 
@@ -1305,15 +1329,6 @@ public class SchemeDetailsMasterHelper {
                         if(!schemeBO.getParentLogic().equals(ONLY_LOGIC))
                             break;
 
-                       /* boolean isBuyProductOrdered=false;
-                        for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
-                            if(mOrderedProducts.contains(schemeProductBo.getProductId())){
-                                isBuyProductOrdered=true; break;}
-                        }*/
-
-                      //  if(true ||isBuyProductOrdered) {
-
-
                             if (!schemeBO.isOffScheme()) {
                                 // only ON scheme will be allowed to apply
 
@@ -1333,8 +1348,6 @@ public class SchemeDetailsMasterHelper {
                                 if (isParentAndLogicDone(schemeBO, mGroupNameList, mGroupLogicTypeByGroupName, parentID))
                                     break;
 
-                             //   nextSchemes.add(schemeBO.getSchemeId());
-
 
                                 for (String groupName : mGroupNameList) {
                                     String groupBuyType = mGroupLogicTypeByGroupName.get(groupName);
@@ -1345,14 +1358,11 @@ public class SchemeDetailsMasterHelper {
 
                                             double toBuy = schemeProductBo.getBuyQty();
                                             double bought=0;
-                                            //ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
 
                                             if(schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-                                               // bought = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize())+ (productBO.getOrderedOuterQty() * productBO.getOutersize());
                                                 bought+= getTotalOrderedQuantity(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
                                             }
                                             else if(schemeBO.getBuyType().equals(SALES_VALUE)){
-                                                //bought = (productBO.getOrderedPcsQty() * productBO.getSrp()) + (productBO.getOrderedCaseQty() * productBO.getCsrp()) + (productBO.getOrderedOuterQty() * productBO.getOsrp());
                                                 bought+= getTotalOrderedValue(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
                                             }
 
@@ -1372,14 +1382,11 @@ public class SchemeDetailsMasterHelper {
                                         for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
 
                                             total_toBuy += schemeProductBo.getBuyQty();
-                                            //ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
 
                                             if(schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-                                                //total_bought += productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
                                                 total_bought+= getTotalOrderedQuantity(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
                                             }
                                             else if(schemeBO.getBuyType().equals(SALES_VALUE)){
-                                               // total_bought = (productBO.getOrderedPcsQty() * productBO.getSrp()) + (productBO.getOrderedCaseQty() * productBO.getCsrp()) + (productBO.getOrderedOuterQty() * productBO.getOsrp());
                                                 total_bought+= getTotalOrderedValue(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
                                             }
 
@@ -1393,23 +1400,15 @@ public class SchemeDetailsMasterHelper {
 
 
                             }
-                        //}
+
                     }
                 }
             }
         }
 
         //
-
-
-        double highestPercentage=0;
-        String nextPossibleSchemeId="0";
         for(String schemeId:schemeIdByPercentage.keySet()){
-            /*if(highestPercentage<schemeIdByPercentage.get(schemeId)) {
-                highestPercentage = schemeIdByPercentage.get(schemeId);
-                nextPossibleSchemeId=schemeId;
-            }*/
-            if(schemeIdByPercentage.get(schemeId)>=10){
+            if(schemeIdByPercentage.get(schemeId)>=UP_SELLING_PERCENTAGE){
                 nearestSchemes.add(schemeId);
 
             }
@@ -2943,8 +2942,6 @@ public class SchemeDetailsMasterHelper {
         }
 
     }
-
-
 
 
     private double getBalancePercent() {

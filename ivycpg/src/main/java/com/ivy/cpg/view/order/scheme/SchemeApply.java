@@ -149,44 +149,15 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
     }
 
 
+    /**
+     * Getting scheme applied list by giving product master list
+     */
     private class SchemeApplyAsync extends AsyncTask<Void,Void,Boolean>{
 
         @Override
         protected Boolean doInBackground(Void... voids) {
 
             try {
-               /* Vector<ProductMasterBO> mOrderedList=new Vector<>();
-                HashMap<String,ProductMasterBO> mOrderedProductBOById=new HashMap<>();
-                for(ProductMasterBO productMasterBO:bModel.productHelper.getProductMaster()){
-
-                    int totalQuantity=0;
-
-                    if(bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                        ArrayList<ProductMasterBO> batchWiseList = bModel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
-
-                        if (batchWiseList != null) {
-                            for (ProductMasterBO batchProductBO : batchWiseList) {
-
-                                if (batchProductBO.getOrderedPcsQty() > 0 || batchProductBO.getOrderedCaseQty() > 0 || batchProductBO.getOrderedOuterQty() > 0) {
-                                    totalQuantity += batchProductBO.getOrderedPcsQty()
-                                            + (batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
-                                            + (batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize());
-
-                                }
-
-                            }
-                        }
-                    }
-                    else {
-                        totalQuantity = productMasterBO.getOrderedPcsQty() + (productMasterBO.getOrderedCaseQty() * productMasterBO .getCaseSize())
-                                + (productMasterBO.getOrderedOuterQty() * productMasterBO .getOutersize());
-                    }
-
-                    if(totalQuantity>0) {
-                        mOrderedList.add(productMasterBO);
-                        mOrderedProductBOById.put(productMasterBO.getProductID(),productMasterBO);
-                    }
-                }*/
 
                 schemeHelper.schemeApply(bModel.productHelper.getProductMaster());//mOrderedList,mOrderedProductBOById,bModel.batchAllocationHelper.getBatchlistByProductID());
             }
@@ -1286,7 +1257,10 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
     }
 
 
-
+    /**
+     * Show alert dialog
+     * @param message Message to show in dialog
+     */
     private void showAlert(String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(getResources().getString(R.string.scheme_apply));
