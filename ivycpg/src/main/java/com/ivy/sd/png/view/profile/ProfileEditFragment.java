@@ -1547,7 +1547,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
             else
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
             editText[mNumber].setHint(MName);
@@ -1695,7 +1695,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
             else
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
             if (inputFilters != null && inputFilters.size() > 0) {
@@ -1723,7 +1723,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 if (inputFilters != null && inputFilters.size() > 0) {
@@ -1768,7 +1768,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 if (inputFilters != null && inputFilters.size() > 0) {
@@ -1816,7 +1816,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 if (inputFilters != null && inputFilters.size() > 0) {
@@ -1916,7 +1916,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 editText[other2_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
