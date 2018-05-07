@@ -1561,10 +1561,31 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
                         editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+            editText[mNumber].addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable et) {
+                    String s = et.toString();
+                    if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                        s = s.toUpperCase();
+                        editText[mNumber].setText(s);
+                        editText[mNumber].setSelection(editText[mNumber].length());
+                    }
+                }
+            });
             editTextInputLayout.addView(editText[mNumber]);
 
-//            secondlayout.addView(editTextInputLayout, commonsparams);
-//            linearlayout.addView(firstlayout, weight2);
             linearlayout.addView(editTextInputLayout, weight1);
 
         }
@@ -1597,15 +1618,6 @@ public class ProfileEditFragment extends IvyBaseFragment {
             }
             editTextInputLayout.addView(editText[mNumber]);
 
-
-//            if (profileConfig.get(mNumber).getMaxLengthNo() > 0) {
-//                int maxNo = profileConfig.get(mNumber).getMaxLengthNo();
-//                editText[mNumber].setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxNo)});
-//            } else {
-//                editText[mNumber].setFilters(new InputFilter[]{new InputFilter.LengthFilter(25)});
-//            }
-//            secondlayout.addView(editText[mNumber], commonsparams);
-//            linearlayout.addView(firstlayout, weight2);
             linearlayout.addView(editTextInputLayout, weight1);
 
         }
@@ -1662,8 +1674,6 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 }
             });
 
-//            secondlayout.addView(editText[mNumber], commonsparams);
-//            linearlayout.addView(firstlayout, weight2);
             linearlayout.addView(editTextInputLayout, weight1);
 
         }
@@ -1706,6 +1716,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             }
 
+            editText[mNumber].addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable et) {
+                    String s = et.toString();
+                    if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                        s = s.toUpperCase();
+                        editText[mNumber].setText(s);
+                        editText[mNumber].setSelection(editText[mNumber].length());
+                    }
+                }
+            });
+
             editTextInputLayout.addView(editText[mNumber]);
 
 
@@ -1733,6 +1766,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (inputFilters.size() == 2)
                         editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+                editText[lName1_editText_index].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[lName1_editText_index].setText(s);
+                            editText[lName1_editText_index].setSelection(editText[lName1_editText_index].length());
+                        }
+                    }
+                });
 
                 editTextInputLayout1.addView(editText[lName1_editText_index]);
                 if (retailerObj.getContactLname() == null
@@ -1778,6 +1834,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (inputFilters.size() == 2)
                         editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+                editText[lName2_editText_index].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[lName2_editText_index].setText(s);
+                            editText[lName2_editText_index].setSelection(editText[lName2_editText_index].length());
+                        }
+                    }
+                });
 
                 editTextInputLayout2.addView(editText[lName2_editText_index]);
                 if (retailerObj.getContactLname2() == null
@@ -1826,6 +1905,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (inputFilters.size() == 2)
                         editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+                editText[other1_editText_index].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[other1_editText_index].setText(s);
+                            editText[other1_editText_index].setSelection(editText[other1_editText_index].length());
+                        }
+                    }
+                });
 
                 editTextInputLayout3.addView(editText[other1_editText_index]);
                 if (retailerObj.getContact1_titlelovid() == null
@@ -1930,6 +2032,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (inputFilters.size() == 2)
                         editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+                editText[other2_editText_index].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[other2_editText_index].setText(s);
+                            editText[other2_editText_index].setSelection(editText[other2_editText_index].length());
+                        }
+                    }
+                });
 
                 editTextInputLayout4.addView(editText[other2_editText_index]);
 
