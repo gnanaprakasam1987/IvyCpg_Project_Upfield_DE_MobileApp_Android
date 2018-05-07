@@ -88,10 +88,10 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
                 view_parent = inflater.inflate(R.layout.row_upselling, null);
                 TextView text_schemeName=view_parent.findViewById(R.id.text_scheme_name);
                 TextView text_slabName=view_parent.findViewById(R.id.text_slab_name);
+                TextView text_hint=view_parent.findViewById(R.id.text_hint);updateFont(text_slabName,0);
                 TextView label_product=view_parent.findViewById(R.id.label_product);updateFont(label_product,1);
                 TextView label_ordered=view_parent.findViewById(R.id.label_ordered);updateFont(label_ordered,1);
                 TextView label_to_add=view_parent.findViewById(R.id.label_to_add);updateFont(label_to_add,1);
-                TextView label_text_any=view_parent.findViewById(R.id.text_any);updateFont(label_text_any,1);
                 (view_parent.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 text_slabName.setText(schemeBO.getScheme());updateFont(text_slabName,0);
                 text_schemeName.setText(schemeBO.getProductName());
@@ -125,6 +125,7 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
 
                 LinearLayout layout_products=view_parent.findViewById(R.id.layout_products);
 
+                double totalNeeded=0;
                 for(SchemeProductBO schemeProductBO:schemeBO.getBuyingProducts()) {
                     View view_products = inflater.inflate(R.layout.row_upselling_products, null);
 
@@ -132,45 +133,52 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
                     TextView text_ordered=view_products.findViewById(R.id.text_ordered);updateFont(text_ordered,0);
                     TextView text_toAdd=view_products.findViewById(R.id.text_add);updateFont(text_toAdd,0);
 
-                    ProductMasterBO productMasterBO=bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
-                    text_productName.setText(productMasterBO.getProductShortName());
+                    text_productName.setText(schemeProductBO.getProductName());
 
+                    double toAdd=0;
                     if(schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-                        int ordered = productMasterBO.getOrderedPcsQty() + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize()) + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
+                        int ordered=schemeHelper.getTotalOrderedQuantity(schemeProductBO.getProductId(),schemeBO.isBatchWise(),schemeProductBO.getBatchId());
                         text_ordered.setText(String.valueOf(ordered));
 
-                        double toAdd=(schemeProductBO.getBuyQty()-ordered);
+                        toAdd=(schemeProductBO.getBuyQty()-ordered);
                         if(toAdd<0)
                             toAdd=0;
                         text_toAdd.setText(String.valueOf((int)toAdd));
 
                     }
                     else if(schemeBO.getBuyType().equals(SALES_VALUE)){
-                        double ordered = (productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()) + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()) + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp());
+                        double ordered=schemeHelper.getTotalOrderedQuantity(schemeProductBO.getProductId(),schemeBO.isBatchWise(),schemeProductBO.getBatchId());
                         text_ordered.setText(String.valueOf(ordered));
 
-                        double toAdd=(schemeProductBO.getBuyQty()-ordered);
+                        toAdd=(schemeProductBO.getBuyQty()-ordered);
                         if(toAdd<0)
                             toAdd=0;
                         text_toAdd.setText(bModel.formatValue(toAdd));
+
                     }
 
                     label_product.setText("Product("+schemeProductBO.getUomDescription()+")");
-                   // label_to_add.setText("Add("+schemeProductBO.getUomDescription()+")");
+
                     if(schemeProductBO.getGroupLogic().equals("ANY")){
                         text_toAdd.setVisibility(View.GONE);
                         label_to_add.setVisibility(View.GONE);
-                        label_text_any.setVisibility(View.VISIBLE);
 
-                        if(schemeBO.getBuyType().equals(QUANTITY_TYPE))
-                        label_text_any.setText("Need "+(int)schemeProductBO.getBuyQty()+" Quantity");
-                        else label_text_any.setText("Need Amount "+(int)schemeProductBO.getBuyQty());
+                        if(totalNeeded==0||totalNeeded>toAdd){
+                            totalNeeded=toAdd;
+                        }
+                    }
+                    else {
+                        totalNeeded+=toAdd;
                     }
 
                     layout_products.addView(view_products);
 
 
                 }
+
+                if(schemeBO.getBuyType().equals(QUANTITY_TYPE))
+                    text_hint.setText("Need "+(int)totalNeeded+" quantity to achieve.");
+                else text_hint.setText("Need "+(int)totalNeeded+" Rs to achieve");
 
 
                 layout_parent.addView(view_parent);

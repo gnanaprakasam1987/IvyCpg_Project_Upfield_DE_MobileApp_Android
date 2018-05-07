@@ -131,7 +131,7 @@ public class SchemeDetailsMasterHelper {
     public boolean IS_SCHEME_CHECK_DISABLED;
     public boolean IS_SCHEME_ON_MASTER;
     public boolean IS_SCHEME_SHOW_SCREEN_MASTER;
-    public boolean IS_UP_SELLING;
+    public boolean IS_UP_SELLING=true;
     private int UP_SELLING_PERCENTAGE=70;
 
 
@@ -156,10 +156,11 @@ public class SchemeDetailsMasterHelper {
             int accountId = retailerInfo.getAccountId();
             int priorityProductId = retailerInfo.getPriorityProductId();
 
+            //  loading valid scheme groups based on retailer attributes
+            ArrayList<String> mGroupIdList = downloadValidSchemeGroups(db,retailerId);
+
             if (IS_SCHEME_ON_MASTER) {
 
-                //  loading scheme groups based on retailer attributes
-                ArrayList<String> mGroupIdList = downloadValidSchemeGroups(db,retailerId);
                 //  for loading highest slab parent ids
                 downloadSchemeParentDetails(db, distributorId, retailerId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
                 //  load buy product list
@@ -217,8 +218,8 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
 
             String sql = "SELECT hhtCode, RField FROM "
-                    + DataMembers.tbl_HhtModuleMaster;
-            // + " WHERE menu_type = 'SCHEME' AND flag='1'";
+                    + DataMembers.tbl_HhtModuleMaster
+              + " WHERE menu_type = 'SCHEME' AND flag='1'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -458,6 +459,8 @@ public class SchemeDetailsMasterHelper {
         mBuyProductBoBySchemeIdWithPid = new HashMap<>();
 
 
+        clearPROMOFlag(db);
+
 
         SchemeBO schemeBO ;
         SchemeProductBO schemeProductBo;
@@ -551,10 +554,7 @@ public class SchemeDetailsMasterHelper {
                     schemeProductBo.setBatchId(c.getString(20));
 
                     //updating Promo flag in product master list
-                    ProductMasterBO productMasterBO= bModel.productHelper.getProductMasterBOById(schemeProductBo.getProductId());
-                    if(productMasterBO!=null) {
-                        productMasterBO.setIsPromo(true);
-                    }
+                    updatePROMOFlag(schemeProductBo.getProductId());
 
 
                     mBuyProductBoBySchemeIdWithPid.put(schemeBO.getSchemeId() + schemeProductBo.getProductId(), schemeProductBo);
@@ -1081,22 +1081,8 @@ public class SchemeDetailsMasterHelper {
             db.createDataBase();
             db.openDataBase();
 
-            // before update scheme available or not, first reallocate all
-            // product setIsScheme is zero
-            String sql = "select distinct(PID) from productMaster inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-
-                    ProductMasterBO prdBO = bModel.productHelper.getProductMasterBOById(c
-                            .getString(0));
-                    if (prdBO != null) {
-                        prdBO.setIsPromo(false);
-                    }
-
-                }
-                c.close();
-            }
+            // clearing promo flag in product object
+            clearPROMOFlag(db);
 
             /*
              * update scheme product setIsScheme is one condition - schemeCount
@@ -1121,11 +1107,8 @@ public class SchemeDetailsMasterHelper {
             if (schemeCursor != null) {
                 if (schemeCursor.getCount() > 0) {
                     while (schemeCursor.moveToNext()) {
-                        ProductMasterBO schemeProductBo = bModel.productHelper.getProductMasterBOById(schemeCursor.getString(0));
                         if (schemeCursor.getInt(3) == 0 || (schemeCursor.getInt(3) == 1 && mGroupIDList != null && mGroupIDList.contains(schemeCursor.getString(2) + schemeCursor.getString(1)))) {
-                            if (schemeProductBo != null) {
-                                schemeProductBo.setIsPromo(true);
-                            }
+                            updatePROMOFlag(schemeCursor.getString(0));
                         }
                     }
                 }
@@ -1135,6 +1118,50 @@ public class SchemeDetailsMasterHelper {
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
+        }
+
+    }
+
+    /**
+     * Clearing PROMO flag of all products in the scheme buy master.
+     * @param db Database object
+     */
+    private void clearPROMOFlag(DBUtil db){
+
+        String sql = "select distinct(PID) from productMaster inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
+        Cursor c = db.selectSQL(sql);
+        if (c != null) {
+            while (c.moveToNext()) {
+
+                ProductMasterBO prdBO = bModel.productHelper.getProductMasterBOById(c
+                        .getString(0));
+                if (prdBO != null) {
+                    prdBO.setIsPromo(false);
+                }
+
+            }
+            c.close();
+        }
+    }
+
+    /**
+     * Updating flag to denote the scheme availability for the product
+     * @param productId Product Id
+     */
+    private void updatePROMOFlag(String productId){
+        ProductMasterBO productMasterBO=bModel.productHelper.getProductMasterBOById(productId);
+        if(productMasterBO!=null){
+            productMasterBO.setIsPromo(true);
+
+        }
+        else {
+            // In case of product mapped to parent level in the hierarchy
+            for (ProductMasterBO productBO : bModel.productHelper.getProductMaster()) {
+                if (productBO.getProductID().equals(productId)
+                        || productBO.getParentHierarchy().contains("/" + productId + "/")) {
+                    productBO.setIsPromo(true);
+                }
+            }
         }
 
     }
@@ -1332,6 +1359,7 @@ public class SchemeDetailsMasterHelper {
                             if (!schemeBO.isOffScheme()) {
                                 // only ON scheme will be allowed to apply
 
+                                // Preparing group lists available for the scheme
                                 ArrayList<String> mGroupNameList = new ArrayList<>();
                                 HashMap<String, String> mGroupLogicTypeByGroupName = new HashMap<>();
 
@@ -1345,10 +1373,12 @@ public class SchemeDetailsMasterHelper {
 
                                 }
 
+                                // If current slab is achieved then no need to apply 'UPSelling' logic
                                 if (isParentAndLogicDone(schemeBO, mGroupNameList, mGroupLogicTypeByGroupName, parentID))
                                     break;
 
 
+                                // Applying UPSelling Logic and preparing list(slab Id by percentage).
                                 for (String groupName : mGroupNameList) {
                                     String groupBuyType = mGroupLogicTypeByGroupName.get(groupName);
                                     if (groupBuyType.equals(AND_LOGIC) || groupBuyType.equals(ONLY_LOGIC)) {
@@ -1381,7 +1411,7 @@ public class SchemeDetailsMasterHelper {
 
                                         for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
 
-                                            total_toBuy += schemeProductBo.getBuyQty();
+                                            total_toBuy = schemeProductBo.getBuyQty();
 
                                             if(schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
                                                 total_bought+= getTotalOrderedQuantity(schemeProductBo.getProductId(),schemeBO.isBatchWise(),schemeProductBo.getBatchId());
@@ -1406,7 +1436,7 @@ public class SchemeDetailsMasterHelper {
             }
         }
 
-        //
+        //Adding slabs with more than given percentage
         for(String schemeId:schemeIdByPercentage.keySet()){
             if(schemeIdByPercentage.get(schemeId)>=UP_SELLING_PERCENTAGE){
                 nearestSchemes.add(schemeId);
@@ -2958,7 +2988,7 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-    private int getTotalOrderedQuantity(String productId,boolean isBatchWise,String batchId){
+    public int getTotalOrderedQuantity(String productId,boolean isBatchWise,String batchId){
         int totalQuantity=0;
 
             for (ProductMasterBO productMasterBO : mOrderedProductList) {
@@ -2998,7 +3028,7 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    private double getTotalOrderedValue(String productId,boolean isBatchWise,String batchId){
+    public double getTotalOrderedValue(String productId,boolean isBatchWise,String batchId){
         double totalValue=0;
 
         for (ProductMasterBO productMasterBO : mOrderedProductList) {

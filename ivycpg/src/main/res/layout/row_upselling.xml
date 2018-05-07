@@ -22,7 +22,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                >
                 <TextView
                     android:id="@+id/text_scheme_name"
                     style="?attr/customListItemPrimary"
@@ -40,12 +41,20 @@
                 android:layout_toLeftOf="@+id/image_view_info"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/text_scheme_name"/>
+                <TextView
+                    android:id="@+id/text_hint"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/image_view_info"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/text_slab_name"
+                    android:textColor="@color/RED"/>
                 <ImageView
                     android:id="@+id/image_view_info"
                     android:layout_width="@dimen/info_icon"
                     android:layout_height="@dimen/info_icon"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
                     android:padding="@dimen/list_item_padding"
                     android:src="@drawable/ic_info_new"
                     android:tint="@color/black_bg1" />
@@ -99,15 +108,7 @@
             android:orientation="vertical"
             >
         </LinearLayout>
-        <TextView
-            android:id="@+id/text_any"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:textColor="@color/RED"
-            android:text=""
-            android:layout_marginRight="@dimen/dimen_5dp"
-            android:visibility="gone"/>
+
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
