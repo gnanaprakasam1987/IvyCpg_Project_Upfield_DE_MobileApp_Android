@@ -1333,6 +1333,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SBD_GAP_PROFILE = "SBD_PROFILE";
     public boolean SHOW_SBD_GAP_IN_PROFILE = true;
 
+    private static final String CODE_SPLIT_ORDER = "SPLIT_ORDER";  //jnj project specific
+    public boolean IS_ORDER_SPLIT;
+
     public boolean IS_BEAT_WISE_RETAILER_MAPPING = true;
     private static final String CODE_BEAT_WISE_RETAILER = "FIELD_USER_PLAN";
 
@@ -2317,6 +2320,8 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT) != null && hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT)) {
             SBD_TARGET_PERCENTAGE = hashMapHHTModuleOrder.get(CODE_SBD_TARGET_PERCENT);
         }
+
+        this.IS_ORDER_SPLIT = hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) : false;
 
         this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
         this.IS_FILTER_TAG_PRODUCTS = hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) : false;

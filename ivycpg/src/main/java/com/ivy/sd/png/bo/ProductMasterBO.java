@@ -81,6 +81,7 @@ public class ProductMasterBO {
     private int companyId = 0;
     private int DSIH;
 
+    private boolean isSeparateBill ;
 
 
     // To maintain original SRP value given in master, in case of updating @srp with some other values(SRP without tax).
@@ -1851,5 +1852,13 @@ public class ProductMasterBO {
 
     public void setParentHierarchy(String parentHierarchy) {
         this.parentHierarchy = parentHierarchy;
+    }
+
+    public boolean isSeparateBill() {
+        return isSeparateBill;
+    }
+
+    public void setSeparateBill(boolean separateBill) {
+        isSeparateBill = separateBill;
     }
 }

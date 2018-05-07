@@ -12,6 +12,7 @@ import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -30,6 +31,7 @@ import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 
 import java.util.Locale;
+import java.util.Vector;
 
 public class MyThread extends Thread {
 
@@ -43,10 +45,10 @@ public class MyThread extends Thread {
         this.opt = opt;
     }
 
-    public MyThread(Activity ctx, int opt,boolean isFromCallAnalysis) {
+    public MyThread(Activity ctx, int opt, boolean isFromCallAnalysis) {
         this.ctx = ctx;
         this.opt = opt;
-        this.isFromCallAnalysis=isFromCallAnalysis;
+        this.isFromCallAnalysis = isFromCallAnalysis;
     }
 
     public MyThread(Activity ctx, int opt, Handler handler) {
@@ -128,13 +130,12 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.AMAZONIMAGE_UPLOAD) {
 
             Handler handler;
-            if(isFromCallAnalysis){
+            if (isFromCallAnalysis) {
                 CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
-                handler=fragment.getHandler();
-            }
-            else {
+                handler = fragment.getHandler();
+            } else {
                 HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-                handler=fragment.getHandler();
+                handler = fragment.getHandler();
             }
 
             bmodel = (BusinessModel) ctx.getApplicationContext();
@@ -143,13 +144,12 @@ public class MyThread extends Thread {
 
         } else if (opt == DataMembers.SYNCUPLOAD_IMAGE) {
             Handler handler;
-            if(isFromCallAnalysis){
+            if (isFromCallAnalysis) {
                 CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
-                handler=fragment.getHandler();
-            }
-            else {
+                handler = fragment.getHandler();
+            } else {
                 HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-                handler=fragment.getHandler();
+                handler = fragment.getHandler();
             }
 
             bmodel = (BusinessModel) ctx.getApplicationContext();
@@ -162,18 +162,17 @@ public class MyThread extends Thread {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
             Handler handler;
-            if(isFromCallAnalysis){
+            if (isFromCallAnalysis) {
                 CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
-                handler=fragment.getHandler();
-            }
-            else {
+                handler = fragment.getHandler();
+            } else {
                 HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-                handler=fragment.getHandler();
+                handler = fragment.getHandler();
             }
 
             if (bmodel.isOnline()) {
 
-                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
                 int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOAD);
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 0);
 
@@ -201,7 +200,7 @@ public class MyThread extends Thread {
             ReAllocationActivity frm = (ReAllocationActivity) ctx;
 
             if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
                 int bool = mUploadHelper.uploadUsingHttp(frm.getHandler(), DataMembers.SYNC_REALLOC_UPLOAD);
                 if (bool == 1) {
                     frm.getHandler().sendEmptyMessage(
@@ -221,18 +220,17 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             Handler handler;
-            if(isFromCallAnalysis){
+            if (isFromCallAnalysis) {
                 CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
-                handler=fragment.getHandler();
-            }
-            else {
+                handler = fragment.getHandler();
+            } else {
                 HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-                handler=fragment.getHandler();
+                handler = fragment.getHandler();
             }
 
             if (bmodel.isOnline()) {
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 1);
-                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
                 int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOADRETAILERWISE);
 
                 if (bool == 1) {
@@ -253,7 +251,7 @@ public class MyThread extends Thread {
             HomeScreenActivity fragment = (HomeScreenActivity) ctx;
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-            UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+            UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
             // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 2);
             int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNC_EXPORT);
 
@@ -275,62 +273,136 @@ public class MyThread extends Thread {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
 
-            // Save Order
-            if (orderHelper.saveOrder(ctx)) {
-                // Save Discount
+            if (bmodel.configurationMasterHelper.IS_ORDER_SPLIT) {
+                Vector<ProductMasterBO> productList = bmodel.productHelper.getProductMaster();
+                ProductMasterBO product;
+                Vector<ProductMasterBO> bill1Products = new Vector<>();
+                Vector<ProductMasterBO> bill2Products = new Vector<>();
+                for (int i = 0; i < productList.size(); ++i) {
+                    product = productList.elementAt(i);
+
+                    if (product.getOrderedPcsQty() > 0
+                            || product.getOrderedCaseQty() > 0
+                            || product.getOrderedOuterQty() > 0) {
+
+                        if (product.isSeparateBill()) {
+                            bill2Products.add(product);
+                        } else {
+                            bill1Products.add(product);
+                        }
+                    }
+
+                }
+
+                if (orderHelper.saveOrder(ctx, bill1Products) && orderHelper.saveOrder(ctx, bill2Products)) {
+
+                    bmodel.setOrderHeaderBO(null);
+
+                    // Update review plan in DB
+                    bmodel.setReviewPlanInDB();
+
+                    // If Stock and order is enabled , then save stock too.
+                    if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
+                            && bmodel.hasStockInOrder()) {
+                        bmodel.saveClosingStock(true);
+
+                        if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+                            // save price check
+                            PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
+                            if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
+                                priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
+
+                            // save near expiry
+                            bmodel.saveNearExpiry();
+                        }
+                    }
+
+                    // Set Order Flag
+                    bmodel.setIsOrdered("Y");
+                    bmodel.setOrderedInDB("Y");
+                    bmodel.getRetailerMasterBO().setOrdered("Y");
+
+                    // Set Order Taken/ executed flag
+                    bmodel.setIsOrderMerch();
+                    bmodel.setOrderMerchInDB("Y");
+                    bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
+
+                    // If initiative is enabled then , claculate and update the values
+                    // in DB
+                    if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
+                        bmodel.initiativeHelper.loadInitiativeStatus(true,
+                                bmodel.retailerMasterBO.getRetailerID(), false, false,
+                                bmodel.getRetailerMasterBO().getSubchannelid());
+                        bmodel.initiativeHelper
+                                .updateInitAchievedPercentInRetailerMaster();
+                    }
+
+                    // Clear all the temp values
+                    OrderSummary frm = (OrderSummary) ctx;
+                    // bmodel.productHelper.clearOrderTable();
+                    frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
+                } else {
+                    OrderSummary frm = (OrderSummary) ctx;
+                    frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_NOT_SAVED);
+                }
+            } else {
+
+                // Save Order
+                if (orderHelper.saveOrder(ctx)) {
+                    // Save Discount
 //            bmodel.saveInvoiceDiscountDetails();
 
-                bmodel.setOrderHeaderBO(null);
+                    bmodel.setOrderHeaderBO(null);
 
-                // Update review plan in DB
-                bmodel.setReviewPlanInDB();
+                    // Update review plan in DB
+                    bmodel.setReviewPlanInDB();
 
-                // If Stock and order is enabled , then save stock too.
-                if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
-                        && bmodel.hasStockInOrder()) {
-                    bmodel.saveClosingStock(true);
+                    // If Stock and order is enabled , then save stock too.
+                    if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
+                            && bmodel.hasStockInOrder()) {
+                        bmodel.saveClosingStock(true);
 
-                    if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
-                        // save price check
-                        PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
-                        if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
-                            priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
+                        if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
+                            // save price check
+                            PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(ctx);
+                            if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK)
+                                priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
-                        // save near expiry
-                        bmodel.saveNearExpiry();
+                            // save near expiry
+                            bmodel.saveNearExpiry();
+                        }
                     }
+
+                    // Set Order Flag
+                    bmodel.setIsOrdered("Y");
+                    bmodel.setOrderedInDB("Y");
+                    bmodel.getRetailerMasterBO().setOrdered("Y");
+
+                    // Set Order Taken/ executed flag
+                    bmodel.setIsOrderMerch();
+                    bmodel.setOrderMerchInDB("Y");
+                    bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
+
+                    // If initiative is enabled then , claculate and update the values
+                    // in DB
+                    if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
+                        bmodel.initiativeHelper.loadInitiativeStatus(true,
+                                bmodel.retailerMasterBO.getRetailerID(), false, false,
+                                bmodel.getRetailerMasterBO().getSubchannelid());
+                        bmodel.initiativeHelper
+                                .updateInitAchievedPercentInRetailerMaster();
+                    }
+
+                    // Clear all the temp values
+                    OrderSummary frm = (OrderSummary) ctx;
+                    // bmodel.productHelper.clearOrderTable();
+
+
+                    frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
+                } else {
+                    OrderSummary frm = (OrderSummary) ctx;
+                    frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_NOT_SAVED);
                 }
-
-                // Set Order Flag
-                bmodel.setIsOrdered("Y");
-                bmodel.setOrderedInDB("Y");
-                bmodel.getRetailerMasterBO().setOrdered("Y");
-
-                // Set Order Taken/ executed flag
-                bmodel.setIsOrderMerch();
-                bmodel.setOrderMerchInDB("Y");
-                bmodel.getRetailerMasterBO().setIsOrderMerch("Y");
-
-                // If initiative is enabled then , claculate and update the values
-                // in DB
-                if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
-                    bmodel.initiativeHelper.loadInitiativeStatus(true,
-                            bmodel.retailerMasterBO.getRetailerID(), false, false,
-                            bmodel.getRetailerMasterBO().getSubchannelid());
-                    bmodel.initiativeHelper
-                            .updateInitAchievedPercentInRetailerMaster();
-                }
-
-                // Clear all the temp values
-                OrderSummary frm = (OrderSummary) ctx;
-                // bmodel.productHelper.clearOrderTable();
-
-
-
-                frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
-            } else {
-                OrderSummary frm = (OrderSummary) ctx;
-                frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_NOT_SAVED);
             }
         } else if (opt == DataMembers.SAVESUBDORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
@@ -395,8 +467,6 @@ public class MyThread extends Thread {
 
             bmodel.setOrderMerchInDB("N");
             bmodel.getRetailerMasterBO().setIsOrderMerch("N");
-
-
 
 
             if (bmodel.getRemarkType().length() > 0)
@@ -669,16 +739,15 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.SYNCSIHUPLOAD) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-            UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+            UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
 
             Handler handler;
-            if(isFromCallAnalysis){
+            if (isFromCallAnalysis) {
                 CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
-                handler=fragment.getHandler();
-            }
-            else {
+                handler = fragment.getHandler();
+            } else {
                 HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-                handler=fragment.getHandler();
+                handler = fragment.getHandler();
             }
 
             if (bmodel.isOnline()) {
@@ -705,17 +774,16 @@ public class MyThread extends Thread {
 
 
             Handler handler;
-            if(isFromCallAnalysis){
+            if (isFromCallAnalysis) {
                 CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
-                handler=fragment.getHandler();
-            }
-            else {
+                handler = fragment.getHandler();
+            } else {
                 HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-                handler=fragment.getHandler();
+                handler = fragment.getHandler();
             }
 
             if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
                 int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSTKAPPLYUPLOAD);
 
                 if (bool == 2) {
@@ -741,7 +809,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
                 int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_SIH_UPLOAD);
 
                 if (bool == 2) {
@@ -764,7 +832,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
                 int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_STOCK_APPLY_UPLOAD);
 
                 if (bool == 2) {
@@ -787,7 +855,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
                 int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.CS_REJECTED_VARIANCE_UPLOAD);
 
                 if (bool == 2) {
@@ -809,17 +877,16 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             Handler handler;
-            if(isFromCallAnalysis){
+            if (isFromCallAnalysis) {
                 CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
-                handler=fragment.getHandler();
-            }
-            else {
+                handler = fragment.getHandler();
+            } else {
                 HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-                handler=fragment.getHandler();
+                handler = fragment.getHandler();
             }
 
             if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper=UploadHelper.getInstance(ctx);
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
                 int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCLYTYPTUPLOAD);
 
                 if (bool == 2) {
