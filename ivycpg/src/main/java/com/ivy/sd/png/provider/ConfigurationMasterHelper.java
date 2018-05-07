@@ -490,7 +490,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_EXPENSE_DAYS = "EXP01";
     public int expenseDays = 30;
 
-    private static final String CODE_UPPERCASE_LETTER = "UPPERCASELETTER";
+    private static final String CODE_UPPERCASE_LETTER = "UPRCASE";
     public boolean IS_UPPERCASE_LETTER;
 
     /**
