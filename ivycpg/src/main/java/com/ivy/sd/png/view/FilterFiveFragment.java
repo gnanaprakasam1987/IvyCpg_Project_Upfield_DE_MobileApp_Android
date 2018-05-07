@@ -23,13 +23,16 @@ import com.ivy.cpg.view.sf.SalesFundamentalHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.LevelBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 @SuppressLint("ResourceAsColor")
@@ -56,6 +59,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
     private boolean isAttributeFilter = true;
     SalesFundamentalHelper mSFHelper;
+    private boolean isTagged = false;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -70,6 +74,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
         isFrom = getArguments().getString("isFrom");
         isFrom = (isFrom == null) ? "STK" : isFrom;
+        isTagged = getArguments().getBoolean("isTag", false);
 
         isAttributeFilter = getArguments().get("isAttributeFilter") == null || getArguments().getBoolean("isAttributeFilter");
 
@@ -177,31 +182,33 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     @Override
     public void onStart() {
         super.onStart();
+        loadedFilterValues = new HashMap<>();
+        sequence = new Vector<>();
 
         if (isFrom != null) {
             switch (isFrom) {
                 case "STK":
                     if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER)
                         bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
-                    loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-                    sequence = bmodel.productHelper.getSequenceValues();
+                    loadedFilterValues.putAll(bmodel.productHelper.getFiveLevelFilters());
+                    sequence.addAll(bmodel.productHelper.getSequenceValues());
                     break;
                 case "SF":
-                    loadedFilterValues = mSFHelper.getFiveLevelFilters();
-                    sequence = mSFHelper.getSequenceValues();
+                    loadedFilterValues.putAll(mSFHelper.getFiveLevelFilters());
+                    sequence.addAll(mSFHelper.getSequenceValues());
                     break;
                 case "SVR":
-                    loadedFilterValues = bmodel.reportHelper.getMfilterlevelBo();
-                    sequence = bmodel.reportHelper.getSequencevalues();
+                    loadedFilterValues.putAll(bmodel.reportHelper.getMfilterlevelBo());
+                    sequence.addAll(bmodel.reportHelper.getSequencevalues());
                     break;
                 default:
-                    loadedFilterValues = bmodel.productHelper.getRetailerModuleFilerContentBySequenct();
-                    sequence = bmodel.productHelper.getRetailerModuleSequenceValues();
+                    loadedFilterValues.putAll(bmodel.productHelper.getRetailerModuleFilerContentBySequenct());
+                    sequence.addAll(bmodel.productHelper.getRetailerModuleSequenceValues());
                     break;
             }
         } else {
-            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-            sequence = bmodel.productHelper.getSequenceValues();
+            loadedFilterValues.putAll(bmodel.productHelper.getFiveLevelFilters());
+            sequence.addAll(bmodel.productHelper.getSequenceValues());
         }
 
         if (loadedFilterValues != null) {
@@ -229,7 +236,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         }
 
         if (sequence == null) {
-            sequence = new Vector<LevelBO>();
+            sequence = new Vector<>();
         }
 
         if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
@@ -248,6 +255,9 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
             mSelectedLevelBO = sequence.get(0);
 
             int levelID = sequence.get(0).getProductID();
+            // To restrict filter's based on tagged products
+            if (bmodel.configurationMasterHelper.IS_FILTER_TAG_PRODUCTS && isTagged)
+                loadTagProductFilters(levelID);
             Vector<LevelBO> filterValues = new Vector<>();
             filterValues.addAll(loadedFilterValues.get(levelID));
 
@@ -264,14 +274,23 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if (loadedFilterValues != null)
+            loadedFilterValues.clear();
+        if (sequence != null)
+            sequence.clear();
+    }
+
     private void viewInitialization() {
-        filterlistview = (ListView) view.findViewById(R.id.filterlistview);
+        filterlistview = view.findViewById(R.id.filterlistview);
 
-        filtergridview = (ListView) view.findViewById(R.id.filtergridview);
+        filtergridview = view.findViewById(R.id.filtergridview);
 
-        cancelButton = (Button) view.findViewById(R.id.btn_cancel);
+        cancelButton = view.findViewById(R.id.btn_cancel);
 
-        btnOK = (Button) view.findViewById(R.id.btn_ok);
+        btnOK = view.findViewById(R.id.btn_ok);
 
         btnOK.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         cancelButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -295,7 +314,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         private final Vector<LevelBO> filteritem;
         private View row;
 
-        public FilterAdapter(Vector<LevelBO> itemss) {
+        FilterAdapter(Vector<LevelBO> itemss) {
             filteritem = itemss;
         }
 
@@ -323,9 +342,9 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                 row = inflater
                         .inflate(R.layout.filter_grid_item, parent, false);
                 holder = new ViewHolder();
-                holder.text = (TextView) row.findViewById(R.id.grid_item_text);
-                holder.selectedfilters = (ImageView) row.findViewById(R.id.selectedfilters);
-                holder.gridItem = (LinearLayout) row.findViewById(R.id.GridItem);
+                holder.text = row.findViewById(R.id.grid_item_text);
+                holder.selectedfilters = row.findViewById(R.id.selectedfilters);
+                holder.gridItem = row.findViewById(R.id.GridItem);
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -364,6 +383,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                 public void onClick(View v) {
 
                     mSelectedLevelBO = holder.levelBO;
+                    // To restrict filter's based on tagged products
+                    if (bmodel.configurationMasterHelper.IS_FILTER_TAG_PRODUCTS && isTagged)
+                    loadTagProductFilters(mSelectedLevelBO.getProductID());
+
                     int size = 0;
                     if (isAttributeFilter && bmodel.productHelper.getmAttributeTypes() != null)
                         size = bmodel.productHelper.getmAttributeTypes().size();
@@ -491,7 +514,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         private LevelBO levelBO;
         private View gridrow;
 
-        public FilterGridAdapter(Vector<LevelBO> itemss) {
+        FilterGridAdapter(Vector<LevelBO> itemss) {
             filteritem = itemss;
         }
 
@@ -523,9 +546,9 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                 gridrow = inflater.inflate(R.layout.filter_secondary_list_item, parent,
                         false);
                 holder = new ViewHolder();
-                holder.text = (TextView) gridrow
+                holder.text = gridrow
                         .findViewById(R.id.grid_item_text);
-                holder.selectedfilters = (ImageView) gridrow.findViewById(R.id.selectedfilters);
+                holder.selectedfilters = gridrow.findViewById(R.id.selectedfilters);
                 gridrow.setTag(holder);
             } else {
                 holder = (ViewHolder) gridrow.getTag();
@@ -707,6 +730,22 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         }
 
         return parentIdList;
+    }
+
+    //Compute Filter's based on Tagged Products Parent Hierarchy
+    private void loadTagProductFilters(int levelId) {
+        Vector<LevelBO> taggedProductFilter = new Vector<>();
+        for (LevelBO levelBO : loadedFilterValues.get(levelId)) {
+            for (ProductMasterBO productMasterBO : bmodel.productHelper.getTaggedProducts()) {
+                List<String> hierarchy = Arrays.asList(productMasterBO.getParentHierarchy().split("/"));
+                if (hierarchy.contains(String.valueOf(levelBO.getProductID()))) {
+                    taggedProductFilter.add(levelBO);
+                    break;
+                }
+            }
+        }
+
+        loadedFilterValues.put(levelId, taggedProductFilter);
     }
 
 }
