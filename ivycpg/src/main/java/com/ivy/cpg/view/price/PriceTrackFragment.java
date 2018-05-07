@@ -1511,6 +1511,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     businessModel.configurationMasterHelper.getGenFilter());
             bundle.putString("isFrom", "STK");
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
+            bundle.putBoolean("isTag", true);
 
             // set Fragmentclass Arguments
             FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
