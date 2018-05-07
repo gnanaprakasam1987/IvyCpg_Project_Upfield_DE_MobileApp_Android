@@ -2046,6 +2046,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                     bmodel.configurationMasterHelper.getGenFilter());
             bundle.putString("isFrom", "STK");
             bundle.putBoolean("isAttributeFilter", true);
+            bundle.putBoolean("isTag", true);
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
 
             // set Fragmentclass Arguments

@@ -96,5 +96,21 @@
     <string name="max_possible">Max Possible Payout</string>
     <string name="Rs">\u20B9</string>
     <string name="day_target">Day target</string>
+
+    <string name="pcs">pcs</string>
+    <string name="pclabels">pc</string>
+
+    <plurals name="pcs">
+        <item quantity="one">@string/pclabels</item>
+        <item quantity="other">@string/pcs</item>
+    </plurals>
+
     <string name="retailer_kpi_not_available">Retailer KPI not available.</string>
+
+    <!--Split Order-->
+    <string name="bill1_value">Bill1 Value</string>
+    <string name="bill1_line">Bill1 Line</string>
+    <string name="bill2_value">Bill2 Value</string>
+    <string name="bill2_line">Bill2 Line</string>
+
 </resources>

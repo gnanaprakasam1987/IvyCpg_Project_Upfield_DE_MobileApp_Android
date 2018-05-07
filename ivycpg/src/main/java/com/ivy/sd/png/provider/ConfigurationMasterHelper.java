@@ -1335,8 +1335,14 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SBD_GAP_PROFILE = "SBD_PROFILE";
     public boolean SHOW_SBD_GAP_IN_PROFILE = true;
 
+    private static final String CODE_SPLIT_ORDER = "SPLIT_ORDER";  //jnj project specific
+    public boolean IS_ORDER_SPLIT;
+
     public boolean IS_BEAT_WISE_RETAILER_MAPPING = true;
     private static final String CODE_BEAT_WISE_RETAILER = "FIELD_USER_PLAN";
+
+    public boolean IS_FILTER_TAG_PRODUCTS = true;
+    private static final String CODE_FILTER_TAGGED_PRODUCTS = "FILTER_TAG";
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1384,7 +1390,7 @@ public class ConfigurationMasterHelper {
                     ApplicationConfigs.LANGUAGE);
             db.openDataBase();
             profileConfig = new Vector<>();
-            String query = "select HHTCode,MName,RField,hasLink,flag,RField6,MNumber,Regex from "
+            String query = "select HHTCode,MName,RField,hasLink,flag,RField6,MNumber,Regex,RField1 from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where flag=1" +
                     " and MenuType= 'RETAILER_PROFILE' and lang=" + bmodel.QT(locale)
@@ -1417,6 +1423,7 @@ public class ConfigurationMasterHelper {
                         }
                     }
                     con.setRegex(c.getString(7));
+                    con.setMandatory(c.getInt(8));
                     profileConfig.add(con);
 
                 }
@@ -2318,7 +2325,10 @@ public class ConfigurationMasterHelper {
             SBD_TARGET_PERCENTAGE = hashMapHHTModuleOrder.get(CODE_SBD_TARGET_PERCENT);
         }
 
+        this.IS_ORDER_SPLIT = hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) : false;
+
         this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
+        this.IS_FILTER_TAG_PRODUCTS = hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) : false;
     }
 
     public void loadOrderReportConfiguration() {

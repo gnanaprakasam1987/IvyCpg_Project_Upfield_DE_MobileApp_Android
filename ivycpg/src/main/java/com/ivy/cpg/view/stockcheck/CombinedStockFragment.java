@@ -1066,6 +1066,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
             bundle.putString("isFrom", "STK");
+            bundle.putBoolean("isTag", true);
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
             // set Fragmentclass Arguments
             FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();

@@ -120,6 +120,7 @@ SynchronizationHelper {
     public static final int DOWNLOAD_FINISH_UPDATE = 17;
     public static final int DISTRIBUTOR_WISE_DOWNLOAD_INSERT = 18;
     public static final int LAST_VISIT_TRAN_DOWNLOAD_INSERT = 19;
+    public static final int MOBILE_EMAIL_VERIFICATION = 20;
 
     public static final String AUTHENTICATION_SUCCESS_CODE = "0";
     public static final String UPDATE_TABLE_SUCCESS_CODE = "-1";
@@ -147,8 +148,8 @@ SynchronizationHelper {
         LOAD_MANAGEMENT(4),
         RETAILER_SELECTION(5),
         COUNTER_SALES_SELECTION(6),
-        TL_ALLOCATION(7);
-
+        TL_ALLOCATION(7),
+        MOBILE_EMAIL_VERIFY(8);
         private int value;
 
         FROM_SCREEN(int value) {
@@ -4160,5 +4161,38 @@ SynchronizationHelper {
 
     }
 
+    public void verifyMobileOrEmail(String value) {
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String downloadurl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select url from urldownloadmaster where mastername='REQUESTOTP'");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        downloadurl = c.getString(0);
+                    }
+                }
+            }
+
+            JSONObject json = new JSONObject();
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+
+
+            downloadurl = DataMembers.SERVER_URL + downloadurl;
+            callVolley(downloadurl, FROM_SCREEN.MOBILE_EMAIL_VERIFY, 0, MOBILE_EMAIL_VERIFICATION, json);
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            db.closeDB();
+        }
+
+
+    }
 
 }
