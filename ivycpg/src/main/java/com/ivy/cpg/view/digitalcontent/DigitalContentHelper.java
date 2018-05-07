@@ -93,19 +93,19 @@ public class DigitalContentHelper {
 
                     " LEFT JOIN  (SELECT DISTINCT imgid,GroupId,mappingid LocationId  FROM DigitalContentMapping " +
                     " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode='LOCATION' " +
-                    "and listtype='DIGITAL_CRITERIA_TYPE')  LS ON DigitalContent.imgid=Ls.imgid and DigitalContent.GroupId=LS.GroupId " +
+                    "and listtype='DIGITAL_CONTENT_CRITERIA_TYPE')  LS ON DigitalContent.imgid=Ls.imgid and DigitalContent.GroupId=LS.GroupId " +
 
                     "LEFT JOIN (SELECT imgid,GroupId,mappingid ChannelId FROM DigitalContentMapping " +
                     " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode in ('CHANNEL','SUBCHANNEL') " +
-                    " and listtype='DIGITAL_CRITERIA_TYPE') CS ON  DigitalContent.imgid=CS.imgid and DigitalContent.GroupId=CS.GroupId " +
+                    " and listtype='DIGITAL_CONTENT_CRITERIA_TYPE') CS ON  DigitalContent.imgid=CS.imgid and DigitalContent.GroupId=CS.GroupId " +
 
                     " LEFT JOIN (SELECT imgid,GroupId,mappingid AttributeID FROM DigitalContentMapping " +
                     " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode='RTR_ATTRIBUTES' " +
-                    " and listtype='DIGITAL_CRITERIA_TYPE') AT ON  DigitalContent.imgid=AT.imgid and DigitalContent.GroupId=AT.GroupId " +
+                    " and listtype='DIGITAL_CONTENT_CRITERIA_TYPE') AT ON  DigitalContent.imgid=AT.imgid and DigitalContent.GroupId=AT.GroupId " +
 
                     " LEFT JOIN (SELECT imgid,GroupId,mappingid PriorityBiD FROM DigitalContentMapping " +
                     " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode='PRIORITY_PRD' " +
-                    " and  listtype='DIGITAL_CRITERIA_TYPE') PR ON  DigitalContent.imgid=PR.imgid and DigitalContent.GroupId=PR.GroupId " +
+                    " and  listtype='DIGITAL_CONTENT_CRITERIA_TYPE') PR ON  DigitalContent.imgid=PR.imgid and DigitalContent.GroupId=PR.GroupId " +
 
                     " LEFT JOIN (SELECT imgid,GroupId,mappingid RetailerID FROM DigitalContentMapping " +
                     " INNER JOIN StandardListMaster on ListId=mappingtype WHERE ListCode='RETAILER') RTR ON  " +
