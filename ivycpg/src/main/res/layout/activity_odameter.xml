@@ -77,8 +77,8 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginEnd="@dimen/store_margin_top"
+                    android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
                     android:background="@color/GRAY"
                     android:orientation="horizontal"
@@ -235,19 +235,50 @@
                         android:textColor="@color/black_bg1" />
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/capture_starttrip_img"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/plano_list_top_margin"
+                    android:orientation="horizontal"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:id="@+id/tv_capture_starttrip_img"
+                        style="@style/TextViewListItemPrimary"
+                        android:layout_width="@dimen/order_stock_list_product_name_width"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:padding="5dp"
+                        android:text="@string/text_capture_proof"
+                        android:textColor="@color/black_bg1" />
+
+                    <TextView
+                        android:id="@+id/tv_capture_starttrip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:background="@drawable/ic_image_camera_alt_blk"
+                        android:gravity="start">
+
+                    </TextView>
+
+
+                </RelativeLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginEnd="@dimen/values_editextWidth"
+                    android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
                     android:background="@color/light_grey" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginEnd="@dimen/store_margin_top"
+                    android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/dialog_list_item_left_margin"
                     android:background="@color/GRAY"
                     android:orientation="horizontal"
@@ -407,11 +438,52 @@
                         android:textColor="@color/black_bg1" />
                 </RelativeLayout>
 
+
+                <RelativeLayout
+                    android:id="@+id/capture_endtrip_img"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/plano_list_top_margin"
+                    android:orientation="horizontal"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:id="@+id/tv_capture_endtrip_img"
+                        style="@style/TextViewListItemPrimary"
+                        android:layout_width="@dimen/order_stock_list_product_name_width"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:padding="5dp"
+                        android:text="@string/text_capture_proof"
+                        android:textColor="@color/black_bg1" />
+
+                    <TextView
+                        android:id="@+id/tv_capture_endtrip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/tv_end_img_count"
+                        android:background="@drawable/ic_image_camera_alt_blk"
+                        android:gravity="start">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/tv_end_img_count"
+                        style="@style/TextViewListItemValues"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:padding="10dp"
+                        android:textColor="@color/black_bg1" />
+
+
+                </RelativeLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginEnd="@dimen/values_editextWidth"
+                    android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
                     android:background="@color/light_grey" />
 

@@ -3,6 +3,7 @@ package com.ivy.cpg.view.van;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
+import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -44,6 +46,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.util.regex.Pattern;
 
@@ -51,9 +54,13 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     private BusinessModel bmodel;
     private EditText tripStarting;
+    private TextView tripStartingImage, tvStartImgCount;
     private EditText tripEnding;
+    private TextView tvCaptureEndtrip;
+    private Context mContext;
+    private String imageUrl;
     private TextView distanceCoveredEt;
-
+    private String imageFileName = "", photoNamePath;
     private double startingvalue;
     private double endingvalue;
     private double distanceCovered;
@@ -64,16 +71,22 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
     private Toolbar toolbar;
     private TextView datevalue, timevalue, timevaluestart, endtimevalue, timeend, enddatevalue;
     private CustomDigitalClock clk1, clk2;
-    private RelativeLayout endingtriplayout, distancelayout;
+    private RelativeLayout endingtriplayout, distancelayout, captureEndtripImg, parentStartCapture;
     private LinearLayout enddatetime_layout;
     private Intent loadActivity;
     private boolean isFromPlanning = false;
+    private static final String TAG = "OdaMeterScreen";
+    final String ACTION_SCANNERINPUTPLUGIN = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
+    final String EXTRA_PARAMETER = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
+    final String DISABLE_PLUGIN = "DISABLE_PLUGIN";
+    private static final int CAMERA_REQUEST_CODE = 1;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_odameter);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        mContext = getApplicationContext();
         Intent i = getIntent();
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -91,6 +104,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             finish();
         }
 
+
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -101,13 +115,16 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
         isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
         tripStarting = (EditText) findViewById(R.id.trip_starting_reading);
+        // capture image starting
+        tripStartingImage = (TextView) findViewById(R.id.tv_capture_starttrip);
+
 
         tripStarting.setInputType(InputType.TYPE_CLASS_NUMBER);
         tripStarting.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         tripStarting.setKeyListener(DigitsKeyListener.getInstance(false, true));
 
         tripEnding = (EditText) findViewById(R.id.trip_ending_reading);
-
+        tvCaptureEndtrip = (TextView) findViewById(R.id.tv_capture_endtrip);
         tripEnding.setInputType(InputType.TYPE_CLASS_NUMBER);
         tripEnding.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         tripEnding.setKeyListener(DigitsKeyListener.getInstance(false, true));
@@ -123,8 +140,11 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         startjourney = (Button) findViewById(R.id.startjourney);
         endjourney = (Button) findViewById(R.id.endjourney);
         endingtriplayout = (RelativeLayout) findViewById(R.id.endingtriplayout);
+        captureEndtripImg = (RelativeLayout) findViewById(R.id.capture_endtrip_img);
         distancelayout = (RelativeLayout) findViewById(R.id.distancelayout);
         enddatetime_layout = (LinearLayout) findViewById(R.id.enddatetime_layout);
+        parentStartCapture = (RelativeLayout) findViewById(R.id.capture_starttrip_img);
+
         clk1 = (CustomDigitalClock) findViewById(R.id.digitalClock1);
         clk2 = (CustomDigitalClock) findViewById(R.id.digitalClock2);
 
@@ -147,6 +167,9 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         clk1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         clk2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
+        photoNamePath = HomeScreenFragment.photoPath + "/";
+        Commons.print("Photo Path, " + "" + photoNamePath);
+
         startjourney.setOnClickListener(this);
         endjourney.setOnClickListener(this);
 
@@ -156,10 +179,20 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             if (bmodel.getMissedCallRetailers().size() != 0 && bmodel.configurationMasterHelper.SHOW_CLOSE_DAY_VALID) {
                 endjourney.setVisibility(View.GONE);
                 tripEnding.setEnabled(false);
+                tvCaptureEndtrip.setEnabled(false);
             } else {
                 endjourney.setVisibility(View.VISIBLE);
                 tripEnding.setEnabled(true);
+                tvCaptureEndtrip.setEnabled(true);
             }
+        }
+
+        if (!bmodel.configurationMasterHelper.SHOW_PHOTO) {
+            parentStartCapture.setVisibility(View.GONE);
+            captureEndtripImg.setVisibility(View.GONE);
+        } else {
+            parentStartCapture.setVisibility(View.VISIBLE);
+            captureEndtripImg.setVisibility(View.VISIBLE);
         }
 
 
@@ -192,7 +225,9 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
             startjourney.setVisibility(View.VISIBLE);
             tripStarting.setFocusable(true);
+            tripStartingImage.setFocusable(true);
             endingtriplayout.setVisibility(View.GONE);
+            captureEndtripImg.setVisibility(View.GONE);
             distancelayout.setVisibility(View.GONE);
             endjourney.setVisibility(View.GONE);
             enddatetime_layout.setVisibility(View.GONE);
@@ -200,6 +235,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             timevaluestart.setVisibility(View.GONE);
             timevalue.setVisibility(View.GONE);
             tripStarting.setText("");
+
             tripStarting.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -226,17 +262,24 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             clk1.setVisibility(View.GONE);
 
             tripEnding.setFocusable(true);
+            tvCaptureEndtrip.setFocusable(true);
 
             startjourney.setVisibility(View.GONE);
             tripStarting.setEnabled(false);
             tripStarting.setFocusable(false);
+
+            tripStartingImage.setEnabled(false);
+            tripStartingImage.setFocusable(false);
+
             clk2.setVisibility(View.VISIBLE);
             endingtriplayout.setVisibility(View.VISIBLE);
+            captureEndtripImg.setVisibility(View.VISIBLE);
             distancelayout.setVisibility(View.VISIBLE);
             endjourney.setVisibility(View.VISIBLE);
             enddatetime_layout.setVisibility(View.VISIBLE);
             endtimevalue.setVisibility(View.GONE);
             tripEnding.setEnabled(true);
+            tvCaptureEndtrip.setEnabled(true);
             tripEnding.setText("");
             tripEnding.setOnTouchListener(new OnTouchListener() {
                 @Override
@@ -264,6 +307,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
             timevaluestart.setVisibility(View.VISIBLE);
             tripStarting.setFocusable(false);
+            tripStartingImage.setFocusable(false);
             timevalue.setVisibility(View.GONE);
             timeend.setVisibility(View.VISIBLE);
             endtimevalue.setVisibility(View.GONE);
@@ -273,7 +317,10 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             startjourney.setVisibility(View.GONE);
             tripEnding.setEnabled(false);
             tripEnding.setFocusable(false);
+            tvCaptureEndtrip.setEnabled(false);
+            tvCaptureEndtrip.setFocusable(false);
             tripStarting.setEnabled(false);
+            tripStartingImage.setEnabled(false);
             if (endingvalue > startingvalue)
                 distanceCovered = endingvalue - startingvalue;
             else
@@ -356,6 +403,80 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
 
 
+        if (bmodel.configurationMasterHelper.SHOW_PHOTO) {
+            tripStartingImage.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    takePhoto();
+                }
+            });
+            tvCaptureEndtrip.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    takePhoto();
+                }
+            });
+        }
+
+    }
+
+
+    private void takePhoto() {
+
+        if (bmodel.isExternalStorageAvailable()) {
+
+            imageFileName = "Odameter_" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "_" + Commons.now(Commons.DATE_TIME) + "_img.jpg";
+
+            String path = photoNamePath + "/" + imageFileName;
+
+            try {
+                Intent i = new Intent();
+                i.setAction(ACTION_SCANNERINPUTPLUGIN);
+                i.putExtra(EXTRA_PARAMETER, DISABLE_PLUGIN);
+                mContext.sendBroadcast(i);
+
+                Intent intent = new Intent(mContext, CameraActivity.class);
+                intent.putExtra(getResources().getString(R.string.quality), 40);
+                intent.putExtra(getResources().getString(R.string.path), path);
+                startActivityForResult(intent, CAMERA_REQUEST_CODE);
+
+            } catch (Exception e) {
+                Commons.print("error opening camera");
+                Commons.printException(e);
+                // TODO: handle exception
+            }
+        } else {
+            Toast.makeText(
+                    mContext,
+                    getResources().getString(
+                            R.string.unable_to_access_the_sdcard),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (resultCode == 1) {
+                Commons.print(TAG + ",Camers Activity : Sucessfully Captured.");
+
+                //For adding server ref path to image name
+                String path = "Odameter_/"
+                        + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
+                        + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/";
+
+//                imagesList.add(path + imageFileName);
+
+
+                imageUrl = (path + imageFileName);
+                product.setTripImage(imageUrl);
+            } else {
+                Commons.print(TAG + ",Camers Activity : Canceled");
+            }
+        }
     }
 
     //to allow single digit after decimal
@@ -664,37 +785,66 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     public void saveOdameter(VanLoadMasterBO mylist) {
         try {
-
             DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             db.executeQ("DELETE from Odameter");
 
-            String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date";
+            if (!bmodel.configurationMasterHelper.SHOW_PHOTO) {
+                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date";
 
-            String values = QT(bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID))
-                    + ","
-                    + mylist.getOdameterstart()
-                    + ","
-                    + mylist.getOdameterend()
-                    + ","
-                    + 1
-                    + ","
-                    + LocationUtil.latitude
-                    + ","
-                    + LocationUtil.longitude
-                    + ","
-                    + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
-                    + ","
-                    + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
-                    .getDownloadDate());
+                String values = QT(bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID))
+                        + ","
+                        + mylist.getOdameterstart()
+                        + ","
+                        + mylist.getOdameterend()
+                        + ","
+                        + 1
+                        + ","
+                        + LocationUtil.latitude
+                        + ","
+                        + LocationUtil.longitude
+                        + ","
+                        + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
+                        + ","
+                        + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
+                        .getDownloadDate());
+                String sql = "insert into " + "Odameter" + "(" + columns
+                        + ") values(" + values + ")";
+                db.executeQ(sql);
+                db.closeDB();
 
-            String sql = "insert into " + "Odameter" + "(" + columns
-                    + ") values(" + values + ")";
-            db.executeQ(sql);
-            db.closeDB();
+            } else {
+
+                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,imgStart";
+
+                String values = QT(bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID))
+                        + ","
+                        + mylist.getOdameterstart()
+                        + ","
+                        + mylist.getOdameterend()
+                        + ","
+                        + 1
+                        + ","
+                        + LocationUtil.latitude
+                        + ","
+                        + LocationUtil.longitude
+                        + ","
+                        + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
+                        + ","
+                        + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
+                        .getDownloadDate())
+                        + ","
+                        + QT(mylist.getTripImage());
+                String sql = "insert into " + "Odameter" + "(" + columns
+                        + ") values(" + values + ")";
+                db.executeQ(sql);
+                db.closeDB();
+            }
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -777,36 +927,72 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     public void UpdateOdaMeter(VanLoadMasterBO mylist) {
         try {
-            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select  count(uid) from Odameter");
             String sql1, sql;
             if (c != null) {
                 while (c.moveToNext())
-                    if (c.getInt(0) == 0) {
-                        sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,isended,upload) values("
-                                + mylist.getOdameterend()
-                                + ","
-                                + QT(SDUtil.now(SDUtil.TIME))
-                                + ","
-                                + LocationUtil.latitude
-                                + ","
-                                + LocationUtil.longitude + "," + 1 + ",N)";
-                        db.executeQ(sql1);
-                    } else {
-                        sql = "update Odameter set end="
-                                + mylist.getOdameterend()
-                                + ",endtime="
-                                + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
-                                + ",endlatitude=" + LocationUtil.latitude
-                                + ",endlongitude=" + LocationUtil.longitude
-                                + ",isended=" + 1 + ",upload='N'";
-                        db.executeQ(sql);
-                    }
 
-                c.close();
+                    if (!bmodel.configurationMasterHelper.SHOW_PHOTO) {
+                        if (c.getInt(0) == 0) {
+                            sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,isended,upload) values("
+                                    + mylist.getOdameterend()
+                                    + ","
+                                    + QT(SDUtil.now(SDUtil.TIME))
+                                    + ","
+                                    + LocationUtil.latitude
+                                    + ","
+                                    + LocationUtil.longitude
+                                    + ","
+                                    + 1
+                                    + ",N)";
+
+                            db.executeQ(sql1);
+                        } else {
+                            sql = "update Odameter set end="
+                                    + mylist.getOdameterend()
+                                    + ",endtime="
+                                    + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
+                                    + ",endlatitude=" + LocationUtil.latitude
+                                    + ",endlongitude=" + LocationUtil.longitude
+                                    + ",isended=" + 1 + ",upload='N'";
+                            db.executeQ(sql);
+                        }
+
+                        c.close();
+                    } else {
+
+                        if (c.getInt(0) == 0) {
+                            sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,imgEnd,isended,upload) values("
+                                    + mylist.getOdameterend()
+                                    + ","
+                                    + QT(SDUtil.now(SDUtil.TIME))
+                                    + ","
+                                    + LocationUtil.latitude
+                                    + ","
+                                    + LocationUtil.longitude
+                                    + ","
+                                    + mylist.getTripImage()
+                                    + ","
+                                    + 1
+                                    + ",N)";
+
+                            db.executeQ(sql1);
+                        } else {
+                            sql = "update Odameter set end="
+                                    + mylist.getOdameterend()
+                                    + ",endtime="
+                                    + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
+                                    + ",endlatitude=" + LocationUtil.latitude
+                                    + ",endlongitude=" + LocationUtil.longitude
+                                    + ",imgEnd=" + QT(mylist.getTripImage())
+                                    + ",isended=" + 1 + ",upload='N'";
+                            db.executeQ(sql);
+                        }
+                        c.close();
+                    }
             }
             db.closeDB();
         } catch (Exception e) {
