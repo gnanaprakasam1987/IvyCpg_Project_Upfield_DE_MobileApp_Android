@@ -862,9 +862,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         || configCode.equalsIgnoreCase("COUNTRY")
                         ) {
 
-                    totalView.addView(getEditTextView(i, mName,
-                            InputType.TYPE_TEXT_VARIATION_PERSON_NAME, mandatory),
-                            commonsparams);
+                    totalView.addView(getEditTextView(i, mName, InputType.TYPE_TEXT_VARIATION_PERSON_NAME, mandatory), commonsparams);
+
 
                 } else if (configCode.equalsIgnoreCase("EMAIL")) {
                     totalView.addView(
@@ -2251,7 +2250,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
 
                 editText[mNumber + 50 + 5] = new AppCompatEditText(getActivity());
-                editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                    editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                else
+                    editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
                 editText[mNumber + 50 + 5].setHint("Titile");
                 editText[mNumber + 50 + 5].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                 editText[mNumber + 50 + 5].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2262,7 +2267,31 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     editText[mNumber + 50 + 5].setFilters(stockArr);
                     if (inputFilters.size() == 2)
                         editText[mNumber + 50 + 5].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+
                 }
+
+                editText[mNumber + 50 + 5].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[mNumber + 50 + 5].setText(s);
+                            editText[mNumber + 50 + 5].setSelection(editText[mNumber + 50 + 5].length());
+                        }
+                    }
+                });
 
                 edittextinputLayout4.addView(editText[mNumber + 50 + 5], params3new);
 
@@ -2306,16 +2335,29 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             editText[mNumber] = new AppCompatEditText(getActivity());
             editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            else
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             if (isContactTitle)
                 editText[mNumber].setHint(getResources().getString(R.string.contact_person_first_name));
             else
                 editText[mNumber].setHint(MName + " " + getResources().getString(R.string.contact_person_first_name));
 
+
             editText[mNumber + 50] = new AppCompatEditText(getActivity());
             editText[mNumber + 50].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber + 50].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                editText[mNumber + 50].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            else
+                editText[mNumber + 50].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             editText[mNumber + 50].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             if (isContactTitle)
                 editText[mNumber + 50].setHint(getResources().getString(R.string.contact_person_last_name));
@@ -2351,6 +2393,54 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
             }
 
+
+            editText[mNumber].addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable et) {
+                    String s = et.toString();
+                    if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                        s = s.toUpperCase();
+                        editText[mNumber].setText(s);
+                        editText[mNumber].setSelection(editText[mNumber].length());
+                    }
+                }
+            });
+
+            editText[mNumber + 50].addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable et) {
+                    String s = et.toString();
+                    if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                        s = s.toUpperCase();
+                        editText[mNumber + 50].setText(s);
+                        editText[mNumber + 50].setSelection(editText[mNumber + 50].length());
+                    }
+                }
+            });
+
+
             edittextinputLayout.addView(editText[mNumber], params3);
             linearlayout.addView(edittextinputLayout, params3);
             edittextinputLayout2.addView(editText[mNumber + 50], params3);
@@ -2385,7 +2475,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 editText[mNumber + 51 + 5] = new AppCompatEditText(getActivity());
                 editText[mNumber + 51 + 5].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-                editText[mNumber + 51 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                    editText[mNumber + 51 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                else
+                    editText[mNumber + 51 + 5].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
                 editText[mNumber + 51 + 5].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 editText[mNumber + 51 + 5].setHint("Title");
 
@@ -2396,7 +2492,28 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     if (inputFilters.size() == 2)
                         editText[mNumber + 51 + 5].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+                editText[mNumber + 51 + 5].addTextChangedListener(new TextWatcher() {
 
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[mNumber + 51 + 5].setText(s);
+                            editText[mNumber + 51 + 5].setSelection(editText[mNumber + 51 + 5].length());
+                        }
+                    }
+                });
                 edittextinputLayout3.addView(editText[mNumber + 51 + 5], params3new);
 
                 final int title_id = mNumber + 51 + 5;
@@ -2437,7 +2554,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             editText[mNumber] = new AppCompatEditText(getActivity());
             editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            else
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             //for title displaying
             if (isContactTitle)
@@ -2447,7 +2570,14 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             editText[mNumber + 51] = new AppCompatEditText(getActivity());
             editText[mNumber + 51].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            editText[mNumber + 51].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                editText[mNumber + 51].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            else
+                editText[mNumber + 51].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             editText[mNumber + 51].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             //for title displaying
             if (isContactTitle)
@@ -2475,15 +2605,63 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
 
             if (inputFilters != null && inputFilters.size() > 0) {
+
                 InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                 stockArr = inputFilters.toArray(stockArr);
                 editText[mNumber].setFilters(stockArr);
                 editText[mNumber + 51].setFilters(stockArr);
+
                 if (inputFilters.size() == 2) {
                     editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     editText[mNumber + 51].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
             }
+
+            editText[mNumber].addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable et) {
+                    String s = et.toString();
+                    if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                        s = s.toUpperCase();
+                        editText[mNumber].setText(s);
+                        editText[mNumber].setSelection(editText[mNumber].length());
+                    }
+                }
+            });
+
+            editText[mNumber + 51].addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable et) {
+                    String s = et.toString();
+                    if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                        s = s.toUpperCase();
+                        editText[mNumber + 51].setText(s);
+                        editText[mNumber + 51].setSelection(editText[mNumber + 51].length());
+                    }
+                }
+            });
 
             edittextinputLayout.addView(editText[mNumber], params3);
             linearlayout.addView(edittextinputLayout, params3);
@@ -2511,25 +2689,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                 editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-                if (edittexttype == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
-                    editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_CLASS_NUMBER) {
+                if (edittexttype == InputType.TYPE_CLASS_NUMBER) {
                     editText[mNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
                     editText[mNumber].setHint(MName);
-                } else if (edittexttype == InputType.TYPE_CLASS_TEXT) {
-                    editText[mNumber].setInputType(InputType.TYPE_CLASS_TEXT);
-                    editText[mNumber].setHint(MName);
                 }
+
 
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
@@ -2579,8 +2743,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     edittextinputLayout.addView(editText[mNumber], weight1);
 
                 }
-
-
                 linearlayout.addView(edittextinputLayout, commonsparams3);
             } else {
                 edittextinputLayout = new TextInputLayout(getActivity());
@@ -2601,25 +2763,39 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                 editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
+
                 if (edittexttype == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                    else
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
                     editText[mNumber].setHint(MName);
                 } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
                     editText[mNumber]
                             .setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                     editText[mNumber].setHint(MName);
                 } else if (edittexttype == InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS) {
-                    editText[mNumber]
-                            .setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
+                    else
+                        editText[mNumber]
+                                .setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
                     editText[mNumber].setHint(MName);
                 } else if (edittexttype == InputType.TYPE_CLASS_NUMBER) {
                     editText[mNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
                     editText[mNumber].setHint(MName);
                 } else if (edittexttype == InputType.TYPE_CLASS_TEXT) {
-                    editText[mNumber].setInputType(InputType.TYPE_CLASS_TEXT);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+                        editText[mNumber].setInputType(InputType.TYPE_CLASS_TEXT);
+                    else
+                        editText[mNumber].setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
                     editText[mNumber].setHint(MName);
                 }
+
                 //cmd for not apply inputfilter value for email id
                 if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("EMAIL"))
                     if (inputFilters != null && inputFilters.size() > 0) {
@@ -2644,6 +2820,31 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     edittextinputLayout.addView(editText[mNumber], weight1);
 
                 }
+
+
+                editText[mNumber].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("EMAIL") &&
+                                bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[mNumber].setText(s);
+                            editText[mNumber].setSelection(editText[mNumber].length());
+                        }
+                    }
+                });
 
                 linearlayout.addView(edittextinputLayout, commonsparams3);
 

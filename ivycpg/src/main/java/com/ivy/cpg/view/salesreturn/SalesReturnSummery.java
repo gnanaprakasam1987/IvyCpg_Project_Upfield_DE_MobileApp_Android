@@ -642,7 +642,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             try {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                salesReturnHelper.saveSalesReturn(getApplicationContext(),"","");
+                salesReturnHelper.saveSalesReturn(getApplicationContext(),"","",false);
                 salesReturnHelper.clearSalesReturnTable(false);
                 return Boolean.TRUE;
             } catch (Exception e) {

@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
@@ -47,6 +49,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderSummary;
+import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -494,7 +497,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         }
     }
 
-     private class SearchAsync extends
+    private class SearchAsync extends
             AsyncTask<Integer, Integer, Boolean> {
 
 
@@ -524,78 +527,78 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         Commons.print("Search method called.");
 
-            Vector<ProductMasterBO> productMasterList = bmodel.productHelper
-                    .getProductMaster();
-            if (productMasterList == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
+        Vector<ProductMasterBO> productMasterList = bmodel.productHelper
+                .getProductMaster();
+        if (productMasterList == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.no_products_exists),
+                    0);
+            return;
+        }
+        int siz = productMasterList.size();
+        mylist = new Vector<>();
+        String mSelectedFilter = bmodel.getProductFilter();
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO ret = productMasterList.elementAt(i);
+
+            // For breaking search..
+            if (searchAsync.isCancelled()) {
+                break;
             }
-            int siz = productMasterList.size();
-            mylist = new Vector<>();
-            String mSelectedFilter = bmodel.getProductFilter();
-            for (int i = 0; i < siz; ++i) {
-                ProductMasterBO ret = productMasterList.elementAt(i);
 
-                // For breaking search..
-                if (searchAsync.isCancelled()) {
-                    break;
-                }
+            if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                    && ret.getSIH() > 0)
+                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
 
-                if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                        && ret.getSIH() > 0)
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
+                if (mSelectedFilter.equals(getResources().getString(
+                        R.string.order_dialog_barcode))) {
 
-                    if (mSelectedFilter.equals(getResources().getString(
-                            R.string.order_dialog_barcode))) {
+                    if (ret.getBarCode() != null
+                            && (ret.getBarCode().toLowerCase()
+                            .contains(searchedtext.toLowerCase())
+                            || ret.getCasebarcode().toLowerCase().
+                            contains(searchedtext.toLowerCase())
+                            || ret.getOuterbarcode().toLowerCase().
+                            contains(searchedtext.toLowerCase())) && ret.getIsSaleable() == 1) {
 
-                        if (ret.getBarCode() != null
-                                && (ret.getBarCode().toLowerCase()
-                                .contains(searchedtext.toLowerCase())
-                                || ret.getCasebarcode().toLowerCase().
-                                contains(searchedtext.toLowerCase())
-                                || ret.getOuterbarcode().toLowerCase().
-                                contains(searchedtext.toLowerCase())) && ret.getIsSaleable() == 1) {
-
-                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                                mylist.add(ret);
-                            else if (applyProductAndSpecialFilter(ret))
-                                mylist.add(ret);
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            mylist.add(ret);
 
 
-                        }
-
-                    } else if (mSelectedFilter.equals(getResources().getString(
-                            R.string.order_gcas))) {
-                        if (ret.getRField1() != null && ret.getRField1()
-                                .toLowerCase()
-                                .contains(
-                                        searchedtext
-                                                .toLowerCase()) && ret.getIsSaleable() == 1) {
-                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                                mylist.add(ret);
-                            else if (applyProductAndSpecialFilter(ret))
-                                mylist.add(ret);
-                        }
-
-
-                    } else if (mSelectedFilter.equals(getResources().getString(
-                            R.string.product_name))) {
-                        if (ret.getProductShortName() != null && ret.getProductShortName()
-                                .toLowerCase()
-                                .contains(
-                                        searchedtext
-                                                .toLowerCase()) && ret.getIsSaleable() == 1)
-                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
-                                mylist.add(ret);
-                            else if (applyProductAndSpecialFilter(ret))
-                                mylist.add(ret);
                     }
-                }
 
+                } else if (mSelectedFilter.equals(getResources().getString(
+                        R.string.order_gcas))) {
+                    if (ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(
+                                    searchedtext
+                                            .toLowerCase()) && ret.getIsSaleable() == 1) {
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            mylist.add(ret);
+                    }
+
+
+                } else if (mSelectedFilter.equals(getResources().getString(
+                        R.string.product_name))) {
+                    if (ret.getProductShortName() != null && ret.getProductShortName()
+                            .toLowerCase()
+                            .contains(
+                                    searchedtext
+                                            .toLowerCase()) && ret.getIsSaleable() == 1)
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            mylist.add(ret);
+                }
             }
+
+        }
 
     }
 
@@ -1777,7 +1780,18 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
                 holder.moq.setText(strMoqQty);
             }
-
+            if (holder.ssrp != null) {
+                String price = "";
+                if (bmodel.labelsMasterHelper
+                        .applyLabels("catalog_srp") != null) {
+                    price = bmodel.labelsMasterHelper
+                            .applyLabels("catalog_srp") + ": "
+                            + bmodel.formatValue(holder.productObj.getSrp()) + "";
+                } else {
+                    price = "Price : " + bmodel.formatValue(holder.productObj.getSrp());
+                }
+                holder.ssrp.setText(price);
+            }
             if (holder.mrp != null) {
                 holder.mrp.setText(getResources().getString(R.string.mrp) + ": " + bmodel.formatValue(holder.productObj.getMRP()));
             }
@@ -1795,12 +1809,19 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 if (holder.productObj.getLocations().get(0).getShelfPiece() == -1) {
                     holder.list_view_stock_btn.setText("STOCK");
                 } else {
-                    holder.list_view_stock_btn.setText("Stock - " + holder.productObj.getLocations().get(0).getShelfPiece() + "");
+                    holder.list_view_stock_btn.setText("Stock - "
+                            + ((holder.productObj.getLocations().get(0).getShelfCase() * holder.productObj.getCaseSize())
+                            + (holder.productObj.getLocations().get(0).getShelfOuter() * holder.productObj.getOutersize())
+                            + (holder.productObj.getLocations().get(0).getShelfPiece())) + "");
                 }
             }
             if (holder.list_view_order_btn != null && holder.total != null) {
                 if (holder.productObj.getOrderedPcsQty() != 0) {
-                    holder.list_view_order_btn.setText(getResources().getString(R.string.ordered) + " - " + holder.productObj.getOrderedPcsQty() + "");
+                    holder.list_view_order_btn.setText(getResources().getString(R.string.ordered) + " - "
+                            + ((holder.productObj.getOrderedCaseQty() * holder.productObj.getCaseSize())
+                            + (holder.productObj.getOrderedOuterQty() * holder.productObj.getOutersize())
+                            + holder.productObj.getOrderedPcsQty())
+                            + "");
                     holder.total.setText("" + bmodel.formatValue(holder.productObj.getTotalamount()));
                 } else {
                     holder.total.setText("0");
@@ -1886,9 +1907,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private ImageView pdt_image;
-            private TextView catalog_order_listview_productname, ppq,
+            private TextView catalog_order_listview_productname, ppq,ssrp,
                     mrp, total, sih, wsih, moq;
-            private Button list_view_order_btn, list_view_stock_btn;
+            private Button list_view_order_btn, list_view_stock_btn, list_view_sales_return_qty;
             private LinearLayout pdt_details_layout;
             private ProductMasterBO productObj;
             private RelativeLayout slant_view;
@@ -1900,10 +1921,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 catalog_order_listview_productname = (TextView) v.findViewById(R.id.catalog_order_listview_productname);
                 ppq = (TextView) v.findViewById(R.id.catalog_order_listview_ppq);
                 moq = (TextView) v.findViewById(R.id.catalog_order_listview_moq);
+                ssrp = (TextView) v.findViewById(R.id.catalog_order_listview_srp);
                 mrp = (TextView) v.findViewById(R.id.catalog_order_listview_mrp);
                 total = (TextView) v.findViewById(R.id.catalog_order_listview_product_value);
                 list_view_order_btn = (Button) v.findViewById(R.id.list_view_order_btn);
                 list_view_stock_btn = (Button) v.findViewById(R.id.list_view_stock_btn);
+                list_view_sales_return_qty = (Button) v.findViewById(R.id.list_view_sales_return_qty);
                 pdt_details_layout = (LinearLayout) v.findViewById(R.id.pdt_details_layout);
                 sih = (TextView) v.findViewById(R.id.catalog_order_listview_sih);
                 wsih = (TextView) v.findViewById(R.id.catalog_order_listview_wsih);
@@ -1912,10 +1935,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                 catalog_order_listview_productname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
                 ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 list_view_order_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 list_view_stock_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+                list_view_sales_return_qty.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 moq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
@@ -1936,6 +1961,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 } else {
                     list_view_order_btn.setVisibility(View.VISIBLE);
                 }
+
+                if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                    list_view_sales_return_qty.setVisibility(View.GONE);
+                else
+                    list_view_sales_return_qty.setVisibility(View.VISIBLE);
 
                 if (!bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
                     sih.setVisibility(View.GONE);
@@ -1959,6 +1989,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 if (!bmodel.configurationMasterHelper.IS_SHOW_PPQ) {
                     ppq.setVisibility(View.GONE);
                 }
+                if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
+                    ssrp.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP)
                     mrp.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
@@ -2021,6 +2053,17 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     }
                 });
 
+                list_view_sales_return_qty.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        View vChild = pdt_recycler_view.getChildAt(0);
+                        GridLayoutManager layoutManager = ((GridLayoutManager) pdt_recycler_view.getLayoutManager());
+                        int holderPosition = layoutManager.findFirstVisibleItemPosition();
+                        int holderTop = (vChild == null) ? 0 : (vChild.getTop() - pdt_recycler_view.getPaddingTop());
+                        showSalesReturnDialog(productObj.getProductID(), holderPosition, holderTop);
+                    }
+                });
+
                 pdt_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -2040,6 +2083,19 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 });
             }
         }
+    }
+
+    private static final int SALES_RETURN = 3;
+
+    private void showSalesReturnDialog(String productId, int holderPostion, int holderTop) {
+        Intent intent = new Intent(this, SalesReturnEntryActivity.class);
+        intent.putExtra("pid", productId);
+        intent.putExtra("position", holderPostion);
+        intent.putExtra("top", holderTop);
+        intent.putExtra("from", "ORDER");
+
+        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+        ActivityCompat.startActivityForResult(this, intent, SALES_RETURN, opts.toBundle());
     }
 
     public void numberPressed(View v) {

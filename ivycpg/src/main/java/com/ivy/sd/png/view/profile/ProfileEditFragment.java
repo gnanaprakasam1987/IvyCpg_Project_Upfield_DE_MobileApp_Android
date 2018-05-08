@@ -7,9 +7,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -22,6 +24,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -77,11 +80,13 @@ import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
+import com.ivy.sd.png.view.RetailerOTPDialog;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -102,7 +107,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by hanifa.m on 3/28/2017.
  */
 
-public class ProfileEditFragment extends IvyBaseFragment {
+public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPDialog.OTPListener{
 
     private BusinessModel bmodel;
 
@@ -209,6 +214,10 @@ public class ProfileEditFragment extends IvyBaseFragment {
     private ArrayList<InputFilter> inputFilters = new ArrayList<>();
     static TextView dlExpDateTextView;
     static TextView flExpDateTextView;
+    private AlertDialog alertDialog;
+    private String str_mob_email = "";
+    private boolean otpShown = false;
+    private OTPReceiver otpReceiver;
 
     @Nullable
     @Override
@@ -307,6 +316,8 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 bmodel.locationUtil.startLocationListener();
             }
         }
+
+        registerReceiver();
     }
 
     @Override
@@ -318,12 +329,18 @@ public class ProfileEditFragment extends IvyBaseFragment {
             if (permissionStatus == PackageManager.PERMISSION_GRANTED)
                 bmodel.locationUtil.stopLocationListener();
         }
+        unRegister();
     }
 
     @SuppressLint("RestrictedApi")
     private View createTabViewForProfileForEdit() {
         profileConfig = new Vector<>();
         profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
+
+        other1_editText_index = profileConfig.size() + 50;
+        other2_editText_index = profileConfig.size() + 51;
+        lName1_editText_index = profileConfig.size() + 25;
+        lName2_editText_index = profileConfig.size() + 26;
 
         retailerObj = bmodel.getRetailerMasterBO();
 
@@ -371,7 +388,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 if (!tempList.isEmpty()) {
                     NewOutletAttributeBO tempBO1;
                     NewOutletAttributeBO tempBO2;
-                    if(attributeList.size()>0) {
+                    if (attributeList.size() > 0) {
                         for (int i = 0; i < attributeList.size(); i++) {
                             tempBO1 = attributeList.get(i);
                             for (int j = 0; j < tempList.size(); j++) {
@@ -382,12 +399,10 @@ public class ProfileEditFragment extends IvyBaseFragment {
                                 }
                             }
                         }
-                    }
-                    else {
+                    } else {
                         attributeList.addAll(tempList);
                     }
                 }
-
 
 
             }
@@ -440,6 +455,9 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         params5.setMargins(0, 0, 20, 0);
         params5.gravity = Gravity.CENTER;
+
+        weight0 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
 
         weight1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -542,9 +560,15 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME), commonsparams);
+                    else
+
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
+
                 } else if (configCode.equals("PROFILE03") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
                     if (retailerObj.getAddress1() == null
@@ -559,9 +583,19 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+                    else
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
+
                 } else if (configCode.equals("PROFILE04") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
                     if (retailerObj.getAddress2() == null
                             || retailerObj.getAddress2().equals(
@@ -574,9 +608,19 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+                    else
+
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
+
                 } else if (configCode.equals("PROFILE05") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
                     if (retailerObj.getAddress3() == null
                             || retailerObj.getAddress3().equals(
@@ -589,9 +633,19 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+                    else
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
+
                 } else if (configCode.equals("PROFILE39") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
                     if (retailerObj.getCity() == null
                             || retailerObj.getCity().equals(
@@ -605,9 +659,19 @@ public class ProfileEditFragment extends IvyBaseFragment {
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
                     Commons.print("PROFILE39," + "" + profileConfig.get(i).getModule_Order());
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+                    else
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
+
                 } else if (configCode.equals("PROFILE40") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
                     if (retailerObj.getState() == null
                             || retailerObj.getState().equals(
@@ -623,9 +687,18 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     Commons.print("PROFILE40," + "" + profileConfig.get(i).getModule_Order());
 
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+                    else
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
+
                 } else if (configCode.equals("PROFILE38") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
                     if (retailerObj.getPincode() == null
                             || retailerObj.getPincode().equals(
@@ -738,9 +811,17 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
 
 
                 } else if (configCode.equals("PROFILE10") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
@@ -775,10 +856,19 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
 
                 } else if (configCode.equals("PROFILE12") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
@@ -891,9 +981,19 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
+
                 } else if (configCode.equals("PROFILE26") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
                     String text = retailerObj.getRfield2() + "";
@@ -901,9 +1001,18 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
+
                 } else if (configCode.equals("PROFILE27") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
                     String text = retailerObj.getCredit_invoice_count() + "";
@@ -911,9 +1020,19 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
+
                 } else if (configCode.equals("PROFILE28") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
                     String text = retailerObj.getRField4() + "";
@@ -921,9 +1040,18 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
                     if (profileConfig.get(i).getHasLink() == 0)
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                                commonsparams);
+
+                        if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                            totalView.addView(
+                                    getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                    commonsparams);
+
+                        else
+                            totalView.addView(
+                                    getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                    commonsparams);
+
                     else {
                         if (text.equals(""))
                             text = "0";
@@ -939,9 +1067,19 @@ public class ProfileEditFragment extends IvyBaseFragment {
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
                     if (profileConfig.get(i).getHasLink() == 0)
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                                commonsparams);
+
+
+                        if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                            totalView.addView(
+                                    getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                    commonsparams);
+
+                        else
+                            totalView.addView(
+                                    getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                    commonsparams);
+
                     else {
                         if (text.equals(""))
                             text = "0";
@@ -956,9 +1094,17 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
                     if (profileConfig.get(i).getHasLink() == 0)
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                                commonsparams);
+                        if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                            totalView.addView(
+                                    getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                    commonsparams);
+
+                        else
+                            totalView.addView(
+                                    getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                    commonsparams);
+
                     else {
                         if (text.equals(""))
                             text = "0";
@@ -1094,10 +1240,17 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
                 } else if (configCode.equals("PROFILE82") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
                     if (retailerObj.getFoodLicenceNo() == null
@@ -1111,9 +1264,17 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
                 } else if (configCode.equals("PROFILE84") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
                     if (retailerObj.getDLNo() == null
@@ -1127,9 +1288,17 @@ public class ProfileEditFragment extends IvyBaseFragment {
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
                 } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE85")) {
                     LinearLayout secondlayout = new LinearLayout(getActivity());
                     LinearLayout firstlayout = new LinearLayout(getActivity());
@@ -1294,9 +1463,17 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
                 } else if (configCode.equals("PROFILE88") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
                     if (retailerObj.getCountry() == null
                             || retailerObj.getCountry().equals(
@@ -1307,9 +1484,17 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                            commonsparams);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
                 }
 
 
@@ -1376,7 +1561,15 @@ public class ProfileEditFragment extends IvyBaseFragment {
             editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             editText[mNumber].setText(textValue);
             editText[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-            editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            else
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             editText[mNumber].setHint(MName);
             //cmd for not apply inputfilter value for email id
             if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78"))
@@ -1385,12 +1578,66 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     stockArr = inputFilters.toArray(stockArr);
                     editText[mNumber].setFilters(stockArr);
                     if (inputFilters.size() == 2)
+
                         editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+            editText[mNumber].addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable et) {
+                    String s = et.toString();
+                    if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                        s = s.toUpperCase();
+                        editText[mNumber].setText(s);
+                        editText[mNumber].setSelection(editText[mNumber].length());
+                    }
+                }
+            });
             editTextInputLayout.addView(editText[mNumber]);
 
 //            secondlayout.addView(editTextInputLayout, commonsparams);
 //            linearlayout.addView(firstlayout, weight2);
+            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78")
+                    && profileConfig.get(mNumber).getMandatory() == 1) {
+                LinearLayout emailLayout = new LinearLayout(getActivity());
+                emailLayout.setOrientation(LinearLayout.HORIZONTAL);
+                emailLayout.setWeightSum(10);
+                LinearLayout.LayoutParams emailParam = new LinearLayout.LayoutParams(0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                emailParam.weight = 7;
+                LinearLayout.LayoutParams emailParam1 = new LinearLayout.LayoutParams(0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                emailParam1.setMargins(0,0,0,2);
+                emailParam1.weight = 3;
+                emailParam1.gravity = Gravity.BOTTOM;
+                emailLayout.addView(editTextInputLayout, emailParam);
+
+                Button verifyBtn = new Button(getActivity());
+                verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
+                verifyBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                verifyBtn.setText("Verify");
+                verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
+                verifyBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        verifyOTP("EMAIL", editText[mNumber].getText().toString());
+                    }
+                });
+                emailLayout.addView(verifyBtn, emailParam1);
+
+                linearlayout.addView(emailLayout, weight1);
+            } else
             linearlayout.addView(editTextInputLayout, weight1);
 
         }
@@ -1432,6 +1679,36 @@ public class ProfileEditFragment extends IvyBaseFragment {
 //            }
 //            secondlayout.addView(editText[mNumber], commonsparams);
 //            linearlayout.addView(firstlayout, weight2);
+            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE79")
+                    && profileConfig.get(mNumber).getMandatory() == 1) {
+                LinearLayout mobileLayout = new LinearLayout(getActivity());
+                mobileLayout.setOrientation(LinearLayout.HORIZONTAL);
+                mobileLayout.setWeightSum(10);
+                LinearLayout.LayoutParams mobileParam = new LinearLayout.LayoutParams(0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                mobileParam.weight = 7;
+                LinearLayout.LayoutParams mobileParam1 = new LinearLayout.LayoutParams(0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                mobileParam1.setMargins(0,0,0,2);
+                mobileParam1.weight = 3;
+                mobileParam1.gravity = Gravity.BOTTOM;
+                mobileLayout.addView(editTextInputLayout, mobileParam);
+
+                Button verifyBtn = new Button(getActivity());
+                verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
+                verifyBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                verifyBtn.setText("Verify");
+                verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
+                verifyBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        verifyOTP("MOBILE", editText[mNumber].getText().toString());
+                    }
+                });
+                mobileLayout.addView(verifyBtn, mobileParam1);
+
+                linearlayout.addView(mobileLayout, weight1);
+            } else
             linearlayout.addView(editTextInputLayout, weight1);
 
         }
@@ -1488,8 +1765,6 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 }
             });
 
-//            secondlayout.addView(editText[mNumber], commonsparams);
-//            linearlayout.addView(firstlayout, weight2);
             linearlayout.addView(editTextInputLayout, weight1);
 
         }
@@ -1515,7 +1790,15 @@ public class ProfileEditFragment extends IvyBaseFragment {
             editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             editText[mNumber].setHint(getResources().getString(R.string.contact_person_first_name));
             editText[mNumber].setText(textValue);
-            editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+            else
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
             if (inputFilters != null && inputFilters.size() > 0) {
                 InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                 stockArr = inputFilters.toArray(stockArr);
@@ -1523,6 +1806,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 if (inputFilters.size() == 2)
                     editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             }
+
+            editText[mNumber].addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable et) {
+                    String s = et.toString();
+                    if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                        s = s.toUpperCase();
+                        editText[mNumber].setText(s);
+                        editText[mNumber].setSelection(editText[mNumber].length());
+                    }
+                }
+            });
 
             editTextInputLayout.addView(editText[mNumber]);
 
@@ -1535,7 +1841,15 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 editText[lName1_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
                 editText[lName1_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
                 editText[lName1_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                else
+                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                     stockArr = inputFilters.toArray(stockArr);
@@ -1543,6 +1857,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (inputFilters.size() == 2)
                         editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+                editText[lName1_editText_index].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[lName1_editText_index].setText(s);
+                            editText[lName1_editText_index].setSelection(editText[lName1_editText_index].length());
+                        }
+                    }
+                });
 
                 editTextInputLayout1.addView(editText[lName1_editText_index]);
                 if (retailerObj.getContactLname() == null
@@ -1571,7 +1908,16 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 editText[lName2_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
                 editText[lName2_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
                 editText[lName2_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                else
+                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                     stockArr = inputFilters.toArray(stockArr);
@@ -1579,6 +1925,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (inputFilters.size() == 2)
                         editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+                editText[lName2_editText_index].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[lName2_editText_index].setText(s);
+                            editText[lName2_editText_index].setSelection(editText[lName2_editText_index].length());
+                        }
+                    }
+                });
 
                 editTextInputLayout2.addView(editText[lName2_editText_index]);
                 if (retailerObj.getContactLname2() == null
@@ -1611,7 +1980,15 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 editText[other1_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 editText[other1_editText_index].setHint("Title");
                 editText[other1_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-                editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                else
+                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                     stockArr = inputFilters.toArray(stockArr);
@@ -1619,6 +1996,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (inputFilters.size() == 2)
                         editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+                editText[other1_editText_index].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[other1_editText_index].setText(s);
+                            editText[other1_editText_index].setSelection(editText[other1_editText_index].length());
+                        }
+                    }
+                });
 
                 editTextInputLayout3.addView(editText[other1_editText_index]);
                 if (retailerObj.getContact1_titlelovid() == null
@@ -1703,7 +2103,15 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 //contact title other edit text
                 editTextInputLayout4 = new TextInputLayout(getActivity());
                 editText[other2_editText_index] = new AppCompatEditText(getActivity());
-                editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                else
+                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+
                 editText[other2_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
                 editText[other2_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
                 editText[other2_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1715,6 +2123,29 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     if (inputFilters.size() == 2)
                         editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+
+                editText[other2_editText_index].addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable et) {
+                        String s = et.toString();
+                        if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                            s = s.toUpperCase();
+                            editText[other2_editText_index].setText(s);
+                            editText[other2_editText_index].setSelection(editText[other2_editText_index].length());
+                        }
+                    }
+                });
 
                 editTextInputLayout4.addView(editText[other2_editText_index]);
 
@@ -2751,17 +3182,16 @@ public class ProfileEditFragment extends IvyBaseFragment {
                     int subChannelID;
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null)
                         subChannelID = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"));
-                    else subChannelID=bmodel.getRetailerMasterBO().getSubchannelid();
+                    else subChannelID = bmodel.getRetailerMasterBO().getSubchannelid();
                     mChannelAttributeList.addAll(mAttributeListByChannelId.get(subChannelID));
                 }
 
             } else if (isFromChannel) {
 
-                if(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")!=null
-                        &&(Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"))==((SpinnerBO) subchannel.getSelectedItem()).getId())){
-                    isNewChannel=false;
-                }
-                else if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
+                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null
+                        && (Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")) == ((SpinnerBO) subchannel.getSelectedItem()).getId())) {
+                    isNewChannel = false;
+                } else if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
                     // in case of user selecting new sub channel.. then view wil be updated here..
                     isNewChannel = true;
 
@@ -2860,6 +3290,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                                             loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
                                     }
                                 }
+
                                 @Override
                                 public void onNothingSelected(AdapterView<?> parent) {
                                 }
@@ -2886,20 +3317,20 @@ public class ProfileEditFragment extends IvyBaseFragment {
                 //Call while creating view first time
                 //Call while creating a  view
 
-                if(attributeList.size()>0) {
+                if (attributeList.size() > 0) {
                     // There is a attribute for current retailer..
 
-                    ArrayList<Integer> mAddedCommonAttributeList=new ArrayList<>();
+                    ArrayList<Integer> mAddedCommonAttributeList = new ArrayList<>();
                     int rowCount = attributeList.size();
                     updateRetailerAttribute(attributeList);
 
                     // Even if there is a record for current retailer.. we should load common attributes in the view,
                     // so that user can add new attribute for current retailer
-                    for(NewOutletAttributeBO newOutletAttributeBO:attributeHeaderList){
-                        if(mCommonAttributeList.contains(newOutletAttributeBO.getAttrId()))
+                    for (NewOutletAttributeBO newOutletAttributeBO : attributeHeaderList) {
+                        if (mCommonAttributeList.contains(newOutletAttributeBO.getAttrId()))
                             mAddedCommonAttributeList.add(newOutletAttributeBO.getAttrId());
                     }
-                    prepareCommonAttributeView(mCommonAttributeList,parentLayout,mAddedCommonAttributeList);
+                    prepareCommonAttributeView(mCommonAttributeList, parentLayout, mAddedCommonAttributeList);
                     //
 
                     for (int i = 0; i < rowCount; i++) {
@@ -2967,6 +3398,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
                                                 loadAttributeSpinner(attribName + parentBO.getAttrId(), attrbList.get(position).getAttrId());
                                         }
                                     }
+
                                     @Override
                                     public void onNothingSelected(AdapterView<?> parent) {
                                     }
@@ -2988,12 +3420,11 @@ public class ProfileEditFragment extends IvyBaseFragment {
                             parentLayout.addView(layout);
                         }
                     }
-                }
-                else {
+                } else {
                     // No attributes for current retailer..
                     // so just adding common attributes(Because user can add attribute for current retailer from edit screen).
-                    prepareCommonAttributeView(mCommonAttributeList,parentLayout,new ArrayList<Integer>());
-                        }
+                    prepareCommonAttributeView(mCommonAttributeList, parentLayout, new ArrayList<Integer>());
+                }
 
 
             }
@@ -3005,7 +3436,7 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
 
     private void prepareCommonAttributeView(ArrayList<Integer> mCommonAttributeList
-            ,LinearLayout parentLayout,ArrayList<Integer> mAddedCommonAttributeList) {
+            , LinearLayout parentLayout, ArrayList<Integer> mAddedCommonAttributeList) {
 
         LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -3096,8 +3527,6 @@ public class ProfileEditFragment extends IvyBaseFragment {
             }
         }
     }
-
-
 
 
     // to check sub channel is available or not
@@ -3424,6 +3853,12 @@ public class ProfileEditFragment extends IvyBaseFragment {
             }
 
         }
+    }
+
+    @Override
+    public void generateOTP() {
+        otpShown = true;
+        new VerifyTask(str_mob_email).execute();
     }
 
     @SuppressLint("ValidFragment")
@@ -4468,5 +4903,128 @@ public class ProfileEditFragment extends IvyBaseFragment {
 
     public boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    private void verifyOTP(String type, String value) {
+        otpShown = false;
+        switch (type) {
+            case "MOBILE":
+                if (value != null && !value.isEmpty() && value.length() == 10)
+                    new VerifyTask(value).execute();
+                else
+                    Toast.makeText(getActivity(), "Invalid Mobile Number", Toast.LENGTH_LONG).show();
+                break;
+            case "EMAIL":
+                if (isValidEmail(value))
+                    new VerifyTask(value).execute();
+                else
+                    Toast.makeText(getActivity(), getResources().
+                            getString(R.string.invalid_email_address), Toast.LENGTH_LONG).show();
+                break;
+        }
+    }
+
+    class VerifyTask extends AsyncTask<Integer, Integer, Integer> {
+
+        private AlertDialog.Builder builder;
+        private String value;
+
+        VerifyTask(String value){
+            this.value = value;
+        }
+
+
+        protected void onPreExecute() {
+            builder = new AlertDialog.Builder(getActivity());
+
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            try {
+                bmodel.synchronizationHelper.updateAuthenticateToken();
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+            return 0;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                bmodel.synchronizationHelper.verifyMobileOrEmail(value);
+                str_mob_email = value;
+            } else {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    private void registerReceiver() {
+        IntentFilter filter = new IntentFilter(
+                OTPReceiver.PROCESS_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        otpReceiver = new OTPReceiver();
+        getActivity().registerReceiver(otpReceiver, filter);
+    }
+
+    private void unRegister() {
+        if (otpReceiver != null) {
+            getActivity().unregisterReceiver(otpReceiver);
+            otpReceiver = null;
+        }
+    }
+
+    public class OTPReceiver extends BroadcastReceiver {
+        public static final String PROCESS_RESPONSE = "com.ivy.intent.action.RetailerOTP";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateReceiver(intent);
+        }
+    }
+
+    private void updateReceiver(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        int method = bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0);
+        String errorCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
+
+        switch (method) {
+            case SynchronizationHelper.MOBILE_EMAIL_VERIFICATION:
+                if (errorCode != null && errorCode
+                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    alertDialog.dismiss();
+                    if (getActivity() != null && !otpShown) {
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        RetailerOTPDialog dialog1 = new RetailerOTPDialog(ProfileEditFragment.this);
+                        dialog1.setCancelable(false);
+                        dialog1.show(ft, "mobiledialog");
+                    } else if (otpShown)
+                        Toast.makeText(getActivity(), "OTP Sent Successfully", Toast.LENGTH_LONG).show();
+
+                } else {
+                    String errorDownloadMessage = bmodel.synchronizationHelper
+                            .getErrormessageByErrorCode().get(errorCode);
+                    if (errorDownloadMessage != null) {
+                        Toast.makeText(getActivity(), errorDownloadMessage,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    alertDialog.dismiss();
+                    break;
+                }
+                break;
+            default:
+                break;
+        }
+
     }
 }
