@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
     RecyclerView recyclerView;
     Toolbar toolbar;
     RecyclerViewAdapter mAdapter;
+    SchemeDetailsMasterHelper schemeHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +68,8 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
             final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(mLayoutManager);
 
-            mAdapter = new RecyclerViewAdapter(businessModel.schemeDetailsMasterHelper.getmDisplaySchemeMasterList());
+            schemeHelper= SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+            mAdapter = new RecyclerViewAdapter(schemeHelper.getmDisplaySchemeMasterList());
             recyclerView.setAdapter(mAdapter);
 
             Button button_save = (Button) findViewById(R.id.btn_next);
@@ -74,7 +77,7 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
                     if (isDataAvailable()) {
-                        if (businessModel.schemeDetailsMasterHelper.saveDisplayScheme(getApplicationContext())) {
+                        if (schemeHelper.saveDisplayScheme(getApplicationContext())) {
                             businessModel.saveModuleCompletion(HomeScreenTwo.MENU_DISPLAY_SCH);
                             Toast.makeText(DisplaySchemeActivity.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
                             startActivity(new Intent(DisplaySchemeActivity.this,
@@ -198,7 +201,7 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
      * @return iS Selected
      */
     private boolean isSchemeSelected(String schemeId) {
-        for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getDisplaySchemeSlabs()) {
+        for (SchemeBO schemeBO : schemeHelper.getDisplaySchemeSlabs()) {
             if (schemeId.equals(String.valueOf(schemeBO.getParentId()))) {
                 if (schemeBO.isSchemeSelected()) {
                     return true;
@@ -214,7 +217,7 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
      * @return IS available or not
      */
     private boolean isDataAvailable() {
-        for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getDisplaySchemeSlabs()) {
+        for (SchemeBO schemeBO : schemeHelper.getDisplaySchemeSlabs()) {
             if (schemeBO.isSchemeSelected()) {
                 return true;
             }

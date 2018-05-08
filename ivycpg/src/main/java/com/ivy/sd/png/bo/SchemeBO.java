@@ -20,7 +20,7 @@ public class SchemeBO {
 	private String buyType;
 
 	// AND/ANY/ONLY
-	private String type;
+	private String parentLogic;
 	// Scheme product name or scheme group item name
 	private String schemeParentName;
 	// Buy Quantity - This should actually be in SchemeProductBO
@@ -168,8 +168,8 @@ public class SchemeBO {
 	/**
 	 * @return the type
 	 */
-	public String getType() {
-		return type;
+	public String getParentLogic() {
+		return parentLogic;
 	}
 
 	/**
@@ -235,8 +235,8 @@ public class SchemeBO {
 	 * @param type
 	 *            the type to set
 	 */
-	public void setType(String type) {
-		this.type = type;
+	public void setParentLogic(String type) {
+		this.parentLogic = type;
 	}
 
 	/**

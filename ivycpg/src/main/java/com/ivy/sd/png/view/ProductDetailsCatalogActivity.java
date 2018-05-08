@@ -14,10 +14,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
@@ -87,9 +89,10 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
                 (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND == true ?
                         " SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()) : ""));
 
-        if (bmodel.schemeDetailsMasterHelper.getmSchemeList().size() > 0) {
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        if (schemeHelper.getSchemeList().size() > 0) {
 
-            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
+            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
             bmodel.productHelper.setPdname(bmodel.selectedPdt.getProductShortName());
             bmodel.productHelper.setProdId(bmodel.selectedPdt.getProductID());
             bmodel.productHelper.setProductObj(bmodel.selectedPdt);
@@ -97,6 +100,9 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
             bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
             SchemeDetailsFragment fragment = new SchemeDetailsFragment();
+            Bundle bundle =new Bundle();
+            bundle.putString("productId",bmodel.selectedPdt.getProductID());
+            fragment.setArguments(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frame, fragment);
             transaction.commit();

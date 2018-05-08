@@ -19,9 +19,9 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/spinner_tab_widget"
+                android:id="@+id/layout_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dimens_50dp"
                 android:layout_marginBottom="4dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
@@ -29,23 +29,8 @@
                 android:background="@color/WHITE"
                 android:orientation="vertical"
                 android:padding="3dp"
-                android:visibility="gone">
-
-                <Spinner
-                    android:id="@+id/scheme_spnr"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="3dp"
-                    android:visibility="gone" />
-
-                <LinearLayout
-                    android:id="@+id/scheme_info_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_50dp"
-                    android:orientation="vertical"
-                    android:padding="0dp">
-
-                    <TextView
+                >
+                   <TextView
                         android:id="@+id/scheme_info_title"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -55,20 +40,9 @@
                         android:text=""
                         android:textColor="@android:color/black"
                         android:textStyle="bold" />
-                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/scheme_info_widget"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="2dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/background_noise"
-                    android:orientation="vertical">
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
@@ -79,66 +53,20 @@
 
                         <ScrollView
                             android:id="@+id/scheme_sv_widget"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:scrollbars="none">
 
                             <LinearLayout
                                 android:id="@+id/schemeDialogwidget"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:orientation="vertical" />
                         </ScrollView>
                     </HorizontalScrollView>
 
-
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/product_tab_widget"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/product_info_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="3dp"
-                android:text=""
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none">
-
-
-                <LinearLayout
-                    android:id="@+id/product_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/BLUE"
-                    android:orientation="vertical"
-                    android:padding="1dp">
-
-
-                    <LinearLayout
-                        android:id="@+id/profile_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_noise"
-                        android:orientation="vertical"
-                        android:padding="5dp">
-
-                    </LinearLayout>
-                </LinearLayout>
-            </ScrollView>
-        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

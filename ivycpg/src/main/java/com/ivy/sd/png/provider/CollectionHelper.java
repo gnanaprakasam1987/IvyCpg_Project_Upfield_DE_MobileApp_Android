@@ -1378,6 +1378,7 @@ public class CollectionHelper {
     public void downloadDiscountSlab() {
         mDiscountSlabList = new ArrayList<>();
         DiscontSlabBO discountSlabBO;
+
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1392,12 +1393,12 @@ public class CollectionHelper {
             sb.append("where (Retailerid in(" + bmodel.getRetailerMasterBO().getRetailerID() + ",0) AND ");
             sb.append(" distributorid in(" + bmodel.getRetailerMasterBO().getDistributorId() + ",0) AND ");
             sb.append(" Channelid in (" + bmodel.getRetailerMasterBO().getSubchannelid() + ",");
-            String channelid = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid());
+            String channelid = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(),mContext);
             if (channelid.equals("")) {
                 channelid = "0";
             }
             sb.append(channelid + ",0) AND ");
-            String locid = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme();
+            String locid = bmodel.channelMasterHelper.getLocationHierarchy(mContext);
             if (locid.equals("")) {
                 locid = "0";
             }

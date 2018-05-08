@@ -141,7 +141,7 @@ public class SurveyHelperNew {
         StringBuilder sb = new StringBuilder();
         ArrayList<String> groupIDList = new ArrayList<>();
 
-        ArrayList<String> retailerAttributes = bmodel.getAttributeParentListForCurrentRetailer();
+        ArrayList<String> retailerAttributes = bmodel.getAttributeParentListForCurrentRetailer(bmodel.getRetailerMasterBO().getRetailerID());
 
         sb.append("select Distinct surveyid,groupid,EA1.AttributeName as ParentName,EA.ParentID from SurveyCriteriaMapping  SAM" +
                 " inner join EntityAttributeMaster EA on EA.AttributeId = SAM.criteriaid" +
@@ -243,10 +243,8 @@ public class SurveyHelperNew {
             String channelId = "";
 
             /* Get location id and its parent id */
-            if (!"".equals(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme()) &&
-                    bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() != null) {
-                locIdScheme = "," + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme();
-            }
+                          locIdScheme = "," + bmodel.channelMasterHelper.getLocationHierarchy(context);
+
 
             /* Get channel id and its parent id */
             if (!"".equals(getChannelidForSurvey()) &&

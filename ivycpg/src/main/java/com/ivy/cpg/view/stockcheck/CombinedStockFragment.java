@@ -67,6 +67,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
@@ -713,8 +714,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
                             SchemeDialog sc = new SchemeDialog(
                                     getActivity(),
-                                    bmodel.schemeDetailsMasterHelper
-                                            .getmSchemeList(), holder.pname,
+                                    SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext()).getSchemeList(), holder.pname,
                                     holder.productId, holder.productObj, 1, mTotalScreenWidth);
                             FragmentManager fm = getActivity().getSupportFragmentManager();
                             sc.show(fm, "");

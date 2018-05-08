@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.util.SparseArray;
 
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
@@ -763,7 +764,7 @@ public class PrintHelper {
                 }
 
                 for (ProductMasterBO productBO : mOrderedProductList) {
-                    if (productBO.getIsscheme() == 1) {
+                    if (productBO.isPromo()) {
                         List<SchemeProductBO> schemeFreeList = productBO.getSchemeProducts();
                         if (schemeFreeList != null) {
                             totalFrreProudctCount = totalFrreProudctCount + schemeFreeList.size();
@@ -1267,7 +1268,7 @@ public class PrintHelper {
 
                 int totalFrreProudctCount = 0;
                 for (ProductMasterBO productBO : mOrderedProductList) {
-                    if (productBO.getIsscheme() == 1) {
+                    if (productBO.isPromo() ) {
                         List<SchemeProductBO> schemeFreeList = productBO.getSchemeProducts();
                         if (schemeFreeList != null) {
                             totalFrreProudctCount = totalFrreProudctCount + schemeFreeList.size();
@@ -1473,7 +1474,7 @@ public class PrintHelper {
                         sb.append("T 7 0 470 " + x + " ");
                         sb.append(bmodel.formatValue(amount) + "\r\n");
 
-                        if (productBO.getIsscheme() == 1) {
+                        if (productBO.isPromo() ) {
                             if (productBO.getSchemeProducts() != null && productBO.getSchemeProducts().size() > 0) {
 
                                 for (SchemeProductBO schemeProductBo : productBO.getSchemeProducts()) {
@@ -1768,9 +1769,9 @@ public class PrintHelper {
                 int x = 340;
                 int schemeSize = 0;
                 // update free product size
-                if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
+                if (SchemeDetailsMasterHelper.getInstance(mContext).IS_SCHEME_ON) {
                     for (ProductMasterBO product : mProductsForAdapter) {
-                        if (product.getIsscheme() == 1) {
+                        if (product.isPromo()) {
                             if (product.getSchemeProducts() != null) {
                                 schemeSize = schemeSize
                                         + product.getSchemeProducts().size();
@@ -1901,7 +1902,7 @@ public class PrintHelper {
                             + bmodel.formatValue(totalProdVal) + "\r\n";
                     x += 10;
                     // print scheme free product starts
-                    if (productBO.getIsscheme() == 1) {
+                    if (productBO.isPromo() ) {
                         if (productBO.getSchemeProducts() != null) {
 
                             List<SchemeProductBO> freeProductList = productBO

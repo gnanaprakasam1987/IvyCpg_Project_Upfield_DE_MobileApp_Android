@@ -25,11 +25,13 @@ import android.widget.Toast;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -633,8 +635,9 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
         // Intent returnIntent = new Intent();
         // setResult(RESULT_CANCELED, returnIntent);
         // finish();
-        if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        if (schemeHelper.IS_SCHEME_ON
+                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent intent = new Intent(OrderDiscount.this, SchemeApply.class);
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);

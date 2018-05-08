@@ -21,6 +21,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
     private void loadProducts() {
         try {
             mFreeProductList = new ArrayList<>();
-            for (SchemeBO schemeBO : bmodel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
+            for (SchemeBO schemeBO : SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getAppliedSchemeList()) {
 
                 if (schemeBO.isQuantityTypeSelected()) {
                     SchemeProductBO freeProduct;
