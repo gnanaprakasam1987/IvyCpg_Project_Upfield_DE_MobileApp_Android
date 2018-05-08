@@ -86,17 +86,20 @@ public class SupervisorActivityHelper {
             String email = LocationConstants.FIREBASE_EMAIL;
             String password = LocationConstants.FIREBASE_PASSWORD;
             // Authenticate with Firebase and subscribe to updates
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                    email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        Commons.print("firebase auth success");
-                    } else {
-                        Commons.print("firebase auth failed");
+
+            if(email.trim().length() > 0 && password.trim().length() > 0) {
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                        email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Commons.print("firebase auth success");
+                        } else {
+                            Commons.print("firebase auth failed");
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 

@@ -89,12 +89,10 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
-        Bundle extras = getActivity().getIntent().getExtras();
+        Bundle extras = getArguments();
         //Set Screen Title
         try {
-            if (extras == null)
-                setScreenTitle(bmodel.getMenuName("MENU_SUPERVISOR"));
-            else {
+            if (extras != null){
                 trackingType = extras.getInt("TrackingType");
                 setScreenTitle(extras.getString("screentitle"));
             }
@@ -159,6 +157,10 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
 
+        if(trackingType == 2)
+            view.findViewById(R.id.bottomSheetLayout).setVisibility(View.VISIBLE);
+        else
+            view.findViewById(R.id.bottomSheetLayout).setVisibility(View.GONE);
     }
 
     private int getPixelsFromDp(Context context, float dp) {

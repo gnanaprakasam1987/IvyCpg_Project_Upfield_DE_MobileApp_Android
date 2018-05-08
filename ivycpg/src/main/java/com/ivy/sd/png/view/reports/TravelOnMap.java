@@ -53,7 +53,7 @@ import java.util.Vector;
 /**
  * Created by maheswaran.m on 16-10-2015.
  */
-public class TravelOnMap extends IvyBaseFragment {
+public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
 
     private SupportMapFragment fragment;
     private GoogleMap map;
@@ -126,64 +126,11 @@ public class TravelOnMap extends IvyBaseFragment {
                             .getApplicationContext());
             if (resultCode == ConnectionResult.SUCCESS) {
                 if (map == null) {
-                    fragment.getMapAsync(new OnMapReadyCallback() {
-                        @Override
-                        public void onMapReady(GoogleMap googleMap) {
-                            map = googleMap;
-                        }
-                    });
-                    map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                    fragment.getMapAsync(this);
+                }else{
+                    mapFunction();
                 }
-                try {
-                    MapsInitializer.initialize(getActivity());
-                    downloadRouteMapReport();
-                    downloadTravelMapReport();
-                    addMarkers();
-           /* String url = "https://maps.googleapis.com/maps/api/directions/json?origin=12.965379,80.247531&destination=12.984606,80.174903"
-                    +"&waypoints=optimize:false"
-                    +"|12.972105,80.250039|"
-                    +"12.979771,80.252885|"
-                    +"12.981423,80.242950|"
-                    +"12.981924,80.232725|"
-                    +"12.976241,80.221505|"
-                    +"12.988464,80.223309|"
-                    +"12.990429,80.220599|"
-                    +"12.997491,80.216423|&sensor=false";*/
 
-                    for (int r = 0; r < geocoordinateList.size() - 1; r++) {
-                        String srclat = String.valueOf(geocoordinateList.get(r).latitude);
-                        String srclon = String.valueOf(geocoordinateList.get(r).longitude);
-                        String destlat = String.valueOf(geocoordinateList.get(r + 1).latitude);
-                        String destlon = String.valueOf(geocoordinateList.get(r + 1).longitude);
-                        String url = getMapsApiDirectionsUrl(srclat, srclon, destlat, destlon);
-//                        Log.i("LOOP " + r + " ", url);
-                        ReadTask downloadTask = new ReadTask(Color.BLUE);
-                        downloadTask.execute(url);
-                    }
-
-                    if (mRoutecoordinateList != null) {
-                        for (int s = 0; s < mRoutecoordinateList.size() - 1; s++) {
-                            String srclat1 = String.valueOf(mRoutecoordinateList.get(s).latitude);
-                            String srclon1 = String.valueOf(mRoutecoordinateList.get(s).longitude);
-                            String destlat1 = String.valueOf(mRoutecoordinateList.get(s + 1).latitude);
-                            String destlon1 = String.valueOf(mRoutecoordinateList.get(s + 1).longitude);
-
-                            String url = getMapsApiDirectionsUrl(srclat1, srclon1, destlat1, destlon1);
-//                            Log.i("LOOP " + s + " ", url);
-                            ReadTask downloadTask = new ReadTask(Color.GREEN);
-                            downloadTask.execute(url);
-                        }
-                    } else
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.no_visit_today),
-                                Toast.LENGTH_SHORT).show();
-
-
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(geocoordinateList.get(0), 13));
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    Commons.printException(e);
-                }
             } else {
                 GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 1);
             }
@@ -217,6 +164,67 @@ public class TravelOnMap extends IvyBaseFragment {
 
 //        Log.i("PATH", url);
         return url;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        mapFunction();
+    }
+
+    private void mapFunction(){
+        try {
+            MapsInitializer.initialize(getActivity());
+            downloadRouteMapReport();
+            downloadTravelMapReport();
+            addMarkers();
+           /* String url = "https://maps.googleapis.com/maps/api/directions/json?origin=12.965379,80.247531&destination=12.984606,80.174903"
+                    +"&waypoints=optimize:false"
+                    +"|12.972105,80.250039|"
+                    +"12.979771,80.252885|"
+                    +"12.981423,80.242950|"
+                    +"12.981924,80.232725|"
+                    +"12.976241,80.221505|"
+                    +"12.988464,80.223309|"
+                    +"12.990429,80.220599|"
+                    +"12.997491,80.216423|&sensor=false";*/
+
+            for (int r = 0; r < geocoordinateList.size() - 1; r++) {
+                String srclat = String.valueOf(geocoordinateList.get(r).latitude);
+                String srclon = String.valueOf(geocoordinateList.get(r).longitude);
+                String destlat = String.valueOf(geocoordinateList.get(r + 1).latitude);
+                String destlon = String.valueOf(geocoordinateList.get(r + 1).longitude);
+                String url = getMapsApiDirectionsUrl(srclat, srclon, destlat, destlon);
+//                        Log.i("LOOP " + r + " ", url);
+                ReadTask downloadTask = new ReadTask(Color.BLUE);
+                downloadTask.execute(url);
+            }
+
+            if (mRoutecoordinateList != null) {
+                for (int s = 0; s < mRoutecoordinateList.size() - 1; s++) {
+                    String srclat1 = String.valueOf(mRoutecoordinateList.get(s).latitude);
+                    String srclon1 = String.valueOf(mRoutecoordinateList.get(s).longitude);
+                    String destlat1 = String.valueOf(mRoutecoordinateList.get(s + 1).latitude);
+                    String destlon1 = String.valueOf(mRoutecoordinateList.get(s + 1).longitude);
+
+                    String url = getMapsApiDirectionsUrl(srclat1, srclon1, destlat1, destlon1);
+//                            Log.i("LOOP " + s + " ", url);
+                    ReadTask downloadTask = new ReadTask(Color.GREEN);
+                    downloadTask.execute(url);
+                }
+            } else
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.no_visit_today),
+                        Toast.LENGTH_SHORT).show();
+
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(geocoordinateList.get(0), 13));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            Commons.printException(e);
+        }
     }
 
 
