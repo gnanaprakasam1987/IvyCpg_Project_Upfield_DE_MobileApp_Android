@@ -71,7 +71,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
     private Toolbar toolbar;
     private TextView datevalue, timevalue, timevaluestart, endtimevalue, timeend, enddatevalue;
     private CustomDigitalClock clk1, clk2;
-    private RelativeLayout endingtriplayout, distancelayout, captureEndtripImg, parentStartCapture;
+    private RelativeLayout endingtriplayout, distancelayout, endTripImgLayout, startTripImgLayout;
     private LinearLayout enddatetime_layout;
     private Intent loadActivity;
     private boolean isFromPlanning = false;
@@ -91,7 +91,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
             checkAndRequestPermissionAtRunTime(3);
         }
@@ -114,39 +114,39 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
-        tripStarting = (EditText) findViewById(R.id.trip_starting_reading);
+        tripStarting = findViewById(R.id.trip_starting_reading);
         // capture image starting
-        tripStartingImage = (TextView) findViewById(R.id.tv_capture_starttrip);
+        tripStartingImage = findViewById(R.id.tv_capture_starttrip);
 
 
         tripStarting.setInputType(InputType.TYPE_CLASS_NUMBER);
         tripStarting.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         tripStarting.setKeyListener(DigitsKeyListener.getInstance(false, true));
 
-        tripEnding = (EditText) findViewById(R.id.trip_ending_reading);
-        tvCaptureEndtrip = (TextView) findViewById(R.id.tv_capture_endtrip);
+        tripEnding = findViewById(R.id.trip_ending_reading);
+        tvCaptureEndtrip = findViewById(R.id.tv_capture_endtrip);
         tripEnding.setInputType(InputType.TYPE_CLASS_NUMBER);
         tripEnding.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         tripEnding.setKeyListener(DigitsKeyListener.getInstance(false, true));
-        distanceCoveredEt = (TextView) findViewById(R.id.distance_covered);
-        datevalue = (TextView) findViewById(R.id.datevalue);
-        timevalue = (TextView) findViewById(R.id.timevalue);
-        timevaluestart = (TextView) findViewById(R.id.timevaluestart);
-        endtimevalue = (TextView) findViewById(R.id.endtimevalue);
-        timeend = (TextView) findViewById(R.id.timeend);
-        enddatevalue = (TextView) findViewById(R.id.enddatevalue);
-        TextView vanno = (TextView) findViewById(R.id.vanno);
-        TextView vannovalue = (TextView) findViewById(R.id.vannovalue);
-        startjourney = (Button) findViewById(R.id.startjourney);
-        endjourney = (Button) findViewById(R.id.endjourney);
-        endingtriplayout = (RelativeLayout) findViewById(R.id.endingtriplayout);
-        captureEndtripImg = (RelativeLayout) findViewById(R.id.capture_endtrip_img);
-        distancelayout = (RelativeLayout) findViewById(R.id.distancelayout);
-        enddatetime_layout = (LinearLayout) findViewById(R.id.enddatetime_layout);
-        parentStartCapture = (RelativeLayout) findViewById(R.id.capture_starttrip_img);
+        distanceCoveredEt = findViewById(R.id.distance_covered);
+        datevalue = findViewById(R.id.datevalue);
+        timevalue = findViewById(R.id.timevalue);
+        timevaluestart = findViewById(R.id.timevaluestart);
+        endtimevalue = findViewById(R.id.endtimevalue);
+        timeend = findViewById(R.id.timeend);
+        enddatevalue = findViewById(R.id.enddatevalue);
+        TextView vanno = findViewById(R.id.vanno);
+        TextView vannovalue = findViewById(R.id.vannovalue);
+        startjourney = findViewById(R.id.startjourney);
+        endjourney = findViewById(R.id.endjourney);
+        endingtriplayout = findViewById(R.id.endingtriplayout);
+        endTripImgLayout = findViewById(R.id.capture_endtrip_img);
+        distancelayout = findViewById(R.id.distancelayout);
+        enddatetime_layout = findViewById(R.id.enddatetime_layout);
+        startTripImgLayout = findViewById(R.id.capture_starttrip_img);
 
-        clk1 = (CustomDigitalClock) findViewById(R.id.digitalClock1);
-        clk2 = (CustomDigitalClock) findViewById(R.id.digitalClock2);
+        clk1 = findViewById(R.id.digitalClock1);
+        clk2 = findViewById(R.id.digitalClock2);
 
 
         vanno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -187,14 +187,13 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             }
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_PHOTO) {
-            parentStartCapture.setVisibility(View.GONE);
-            captureEndtripImg.setVisibility(View.GONE);
+        if (!bmodel.configurationMasterHelper.SHOW_ODAMETER_PHOTO) {
+            startTripImgLayout.setVisibility(View.GONE);
+            endTripImgLayout.setVisibility(View.GONE);
         } else {
-            parentStartCapture.setVisibility(View.VISIBLE);
-            captureEndtripImg.setVisibility(View.VISIBLE);
+            startTripImgLayout.setVisibility(View.VISIBLE);
+            endTripImgLayout.setVisibility(View.VISIBLE);
         }
-
 
         datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
@@ -227,7 +226,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             tripStarting.setFocusable(true);
             tripStartingImage.setFocusable(true);
             endingtriplayout.setVisibility(View.GONE);
-            captureEndtripImg.setVisibility(View.GONE);
+            endTripImgLayout.setVisibility(View.GONE);
             distancelayout.setVisibility(View.GONE);
             endjourney.setVisibility(View.GONE);
             enddatetime_layout.setVisibility(View.GONE);
@@ -273,7 +272,8 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
             clk2.setVisibility(View.VISIBLE);
             endingtriplayout.setVisibility(View.VISIBLE);
-            captureEndtripImg.setVisibility(View.VISIBLE);
+            if (bmodel.configurationMasterHelper.SHOW_ODAMETER_PHOTO)
+                endTripImgLayout.setVisibility(View.VISIBLE);
             distancelayout.setVisibility(View.VISIBLE);
             endjourney.setVisibility(View.VISIBLE);
             enddatetime_layout.setVisibility(View.VISIBLE);
@@ -403,7 +403,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
 
 
-        if (bmodel.configurationMasterHelper.SHOW_PHOTO) {
+        if (bmodel.configurationMasterHelper.SHOW_ODAMETER_PHOTO) {
             tripStartingImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -425,7 +425,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
         if (bmodel.isExternalStorageAvailable()) {
 
-            imageFileName = "Odameter_" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            imageFileName = "ODA_" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "_" + Commons.now(Commons.DATE_TIME) + "_img.jpg";
 
             String path = photoNamePath + "/" + imageFileName;
@@ -464,7 +464,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                 Commons.print(TAG + ",Camers Activity : Sucessfully Captured.");
 
                 //For adding server ref path to image name
-                String path = "Odameter_/"
+                String path = "Odameter/"
                         + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
                         + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/";
 
@@ -503,44 +503,13 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     private void tripEndInsideTry(String value) {
         try {
-            /*int indexOFdec = value.indexOf(".");
 
-            if (indexOFdec >= 0) {
-                if (value.substring(indexOFdec).length() > 2) {
-
-                    Toast.makeText(
-                            getApplicationContext(),
-                            getResources().getString(
-                                    R.string.value_exceeded),
-                            Toast.LENGTH_SHORT).show();
-                    tripEnding.setText(value.substring(0,
-                            value.length() - 1));
-                    endingvalue = SDUtil.convertToDouble(value
-                            .substring(0, value.length() - 1));
-
-                }
-            }*/
-        /*    if (value.length() > 6 && indexOFdec < 0) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        getResources().getString(
-                                R.string.value_exceeded),
-                        Toast.LENGTH_SHORT).show();
-                tripEnding.setText(value.substring(0,
-                        value.length() - 1));
-                endingvalue = SDUtil.convertToDouble(value
-                        .substring(0, value.length() - 1));
-
-            }*/
             if (endingvalue > startingvalue)
                 distanceCovered = endingvalue - startingvalue;
             else
                 distanceCovered = 0;
 
-            /*String tvDistanceCoveredEt = distanceCovered + "";
-            distanceCoveredEt.setText(tvDistanceCoveredEt);*/
             double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
-            // String tvDistanceCoveredEt = distance + "";
             distanceCoveredEt.setText(String.format("%.2f", distance));
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -549,43 +518,12 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     private void tripStartInsideTry(String value) {
         try {
-            /*int indexOFdec = value.indexOf('.');
 
-            if (indexOFdec >= 0 && value.substring(indexOFdec).length() > 2) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        getResources().getString(
-                                R.string.value_exceeded),
-                        Toast.LENGTH_SHORT).show();
-                tripStarting.setText(value.substring(0,
-                        value.length() - 1));
-                startingvalue = SDUtil.convertToDouble(value
-                        .substring(0, value.length() - 1));
-
-            }*/
-          /*  if (value.length() > 6 && indexOFdec < 0) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        getResources().getString(
-                                R.string.value_exceeded),
-                        Toast.LENGTH_SHORT).show();
-                tripStarting.setText(value.substring(0,
-                        value.length() - 1));
-                startingvalue = SDUtil.convertToDouble(value
-                        .substring(0, value.length() - 1));
-
-            }*/
             if (endingvalue > startingvalue)
                 distanceCovered = endingvalue - startingvalue;
             else
                 distanceCovered = 0;
-
-            //  String tvDistanceCoveredEt = distanceCovered + "";
-            //  distanceCoveredEt.setText(tvDistanceCoveredEt);
-
-
             double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
-            // String tvDistanceCoveredEt = distance + "";
             distanceCoveredEt.setText(String.format("%.2f", distance));
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -791,7 +729,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             db.openDataBase();
             db.executeQ("DELETE from Odameter");
 
-            if (!bmodel.configurationMasterHelper.SHOW_PHOTO) {
+            if (!bmodel.configurationMasterHelper.SHOW_ODAMETER_PHOTO) {
                 String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date";
 
                 String values = QT(bmodel.userMasterHelper.getUserMasterBO()
@@ -935,7 +873,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             if (c != null) {
                 while (c.moveToNext())
 
-                    if (!bmodel.configurationMasterHelper.SHOW_PHOTO) {
+                    if (!bmodel.configurationMasterHelper.SHOW_ODAMETER_PHOTO) {
                         if (c.getInt(0) == 0) {
                             sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,isended,upload) values("
                                     + mylist.getOdameterend()
