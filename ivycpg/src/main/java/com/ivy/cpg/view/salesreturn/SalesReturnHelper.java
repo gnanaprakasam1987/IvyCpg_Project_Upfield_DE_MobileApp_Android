@@ -359,7 +359,7 @@ public class SalesReturnHelper {
     /**
      * Save sales return details and update SIH.
      */
-    public void saveSalesReturn(Context mContext, String orderId, String module) {
+    public void saveSalesReturn(Context mContext, String orderId, String module, boolean isSplitOrder) {
         try {
             ProductMasterBO product;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -370,6 +370,12 @@ public class SalesReturnHelper {
             setSalesReturnID(QT("SR"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID)));
+
+            if (isSplitOrder)
+                setSalesReturnID(QT("SR"
+                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS)));
+
             // To generate Seqno based Sales Return Id
             if (bmodel.configurationMasterHelper.SHOW_SR_SEQUENCE_NO) {
                 String seqNo;

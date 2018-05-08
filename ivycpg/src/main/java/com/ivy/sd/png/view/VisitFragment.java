@@ -1133,65 +1133,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
     }
 
-    private void retailerClick() {
-        if (!isClicked
-                && calledBy.equals(MENU_PLANNING)
-                && bmodel.configurationMasterHelper.IS_SHOW_TARGET_PLAN) {
-
-            bmodel.setRetailerMasterBO(mSelectedRetailer.retailerObjectHolder);
-            isClicked = true;
-            if (mSelectedRetailer.retailerObjectHolder.getIsToday() == 1) {
-                bmodel.setRetailerMasterBO(mSelectedRetailer.retailerObjectHolder);
-                if (bmodel.targetPlanHelper
-                        .hasDataInDTPMaster()) {
-                    if (bmodel.configurationMasterHelper.IS_TARGET_SCREEN_PH) {
-                        Intent i = new Intent(getActivity(),
-                                TargetPlanActivity_PH.class);
-                        i.putExtra("From", "Visit");
-                        startActivity(i);
-                    } else {
-                        Intent i = new Intent(getActivity(),
-                                TargetPlanActivity.class);
-                        i.putExtra("From", "Visit");
-                        startActivity(i);
-                    }
-
-                } else {
-                    Toast.makeText(
-                            getActivity(),
-                            getResources()
-                                    .getString(
-                                            R.string.planning_not_available_if_nodata_avail),
-                            Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(
-                        getActivity(),
-                        getResources()
-                                .getString(
-                                        R.string.planning_not_available_for_deviated_retailer),
-                        Toast.LENGTH_SHORT).show();
-            }
-            isClicked = false;
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PROFILE_REQUEST_CODE) {
-            if (resultCode == 1) {
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        retailerClick();
-                    }
-                }, 1500);
-
-            } else if (resultCode == 2)
-                updateCancel();
+        if (requestCode == PROFILE_REQUEST_CODE && resultCode == 2) {
+            updateCancel();
         }
     }
 
@@ -1378,6 +1324,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                         i.putExtra("locvisit", true);
                                     }
 
+                                    startActivity(i);
+
                                 }
                             } else {
                                 String Url = bmodel.mRetailerHelper.getValidateUrl();
@@ -1502,33 +1450,33 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     holder.outletNew.setVisibility(View.GONE);
                 }
 
-            if ("1".equals(mRetailerProp.get("RTPRTY01"))
-                    && ("Y").equals(retailerObj.getIsDeadStore())) {
-                holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_dead_store);
-                holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
-            } else if ("1".equals(mRetailerProp.get("RTPRTY02"))
-                    && retailerObj.getIsGoldStore() == 1) {
-                holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
-                holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
-            } else if ("1".equals(mRetailerProp.get("RTPRTY02")) && retailerObj.getIsVisited().equals("Y")
-                    && retailerObj.getSbdPercent() > ConfigurationMasterHelper.SBD_TARGET_PERCENTAGE) {
-                holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
-                holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
-            } else if ("1".equals(mRetailerProp.get("RTPRTY05"))
-                    && !retailerObj.getRField4().equals("0")) {// QDVP3 Store
-                holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
-                holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
-                if (retailerObj.getRField4() != null) {
-                    try {
-                        if (bmodel.mRetailerHelper.getColorCode(retailerObj.getRField4()).length() > 0)
-                            holder.imgGoldDeadStore.setColorFilter(Color.parseColor(bmodel.mRetailerHelper.getColorCode(retailerObj.getRField4())), PorterDuff.Mode.SRC_ATOP);
-                    } catch (Exception e) {
-                        Commons.printException(e);
+                if ("1".equals(mRetailerProp.get("RTPRTY01"))
+                        && ("Y").equals(retailerObj.getIsDeadStore())) {
+                    holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_dead_store);
+                    holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
+                } else if ("1".equals(mRetailerProp.get("RTPRTY02"))
+                        && retailerObj.getIsGoldStore() == 1) {
+                    holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
+                    holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
+                } else if ("1".equals(mRetailerProp.get("RTPRTY02")) && retailerObj.getIsVisited().equals("Y")
+                        && retailerObj.getSbdPercent() > ConfigurationMasterHelper.SBD_TARGET_PERCENTAGE) {
+                    holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
+                    holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
+                } else if ("1".equals(mRetailerProp.get("RTPRTY05"))
+                        && !retailerObj.getRField4().equals("0")) {// QDVP3 Store
+                    holder.imgGoldDeadStore.setVisibility(View.VISIBLE);
+                    holder.imgGoldDeadStore.setImageResource(R.drawable.ic_dashboard_golden_store);
+                    if (retailerObj.getRField4() != null) {
+                        try {
+                            if (bmodel.mRetailerHelper.getColorCode(retailerObj.getRField4()).length() > 0)
+                                holder.imgGoldDeadStore.setColorFilter(Color.parseColor(bmodel.mRetailerHelper.getColorCode(retailerObj.getRField4())), PorterDuff.Mode.SRC_ATOP);
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                        }
                     }
+                } else {
+                    holder.imgGoldDeadStore.setVisibility(View.GONE);
                 }
-            } else {
-                holder.imgGoldDeadStore.setVisibility(View.GONE);
-            }
 
                 if ("1".equals(mRetailerProp.get("RTPRTY03"))
                         && bmodel.configurationMasterHelper.IS_INVOICE

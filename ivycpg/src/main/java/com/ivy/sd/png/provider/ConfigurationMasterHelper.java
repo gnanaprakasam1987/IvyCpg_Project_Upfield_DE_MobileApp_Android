@@ -331,6 +331,18 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MSL_NOT_SOLD = "PRO24";
     private static final String CODE_NORMAL_DASHBOARD = "DASH13";
     private static final String CODE_SHOW_NEARBY_RETAILER_MAX = "NEARBYMAX";
+
+    private static final String CODE_MAX_MIN_DATE_CHEQUE = "MIN_MAX_CHQ_DATE";
+    public boolean IS_ENABLE_MIN_MAX_DATE_CHQ = false;
+    private static final String CODE_ACC_NO_CHEQUE = "IS_ACC_NO_CHQ";
+    public boolean IS_ENABLE_ACC_NO_CHQ = false;
+    public int CHQ_MIN_DATE = 30;
+    public int CHQ_MAX_DATE = 0;
+
+    private static final String CODE_ENABLE_PRODUCT_TAGGING_VALIDATION = "TAGG01";
+    public boolean IS_ENABLE_PRODUCT_TAGGING_VALIDATION = false;
+
+
     public boolean IS_NEARBY_RETAILER = false;
     public int VALUE_NEARBY_RETAILER_MAX = 1;
     private static final String CODE_IS_AUDIT_USER = "ISAUDITUSER";
@@ -484,6 +496,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_EXPENSE_DAYS = "EXP01";
     public int expenseDays = 30;
 
+    private static final String CODE_UPPERCASE_LETTER = "UPRCASE";
+    public boolean IS_UPPERCASE_LETTER;
 
     /**
      * RoadActivity config *
@@ -956,9 +970,9 @@ public class ConfigurationMasterHelper {
     private Vector<ConfigureBO> activitymenuconfig;
     private Vector<ConfigureBO> primarymenus;
 
-    private int alarmTime = 3;
-    private int startTime = 8;
-    private int endTime = 20;
+    public int alarmTime = 3;
+    public int startTime = 8;
+    public int endTime = 20;
     private Vector<ConfigureBO> genFilter, productdetails;
     private Vector<String> SIHApplyById = null;
     private ArrayList<String> mRetailerProperty;
@@ -1310,15 +1324,30 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
     public boolean IS_ORD_SR_VALUE_VALIDATE;
 
+    private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
+    public boolean IS_REALTIME_LOCATION_CAPTURE ;
+
+    private static final String CODE_UPLOAD_ATTENDANCE = "UPLOADATTENDANCE";
+    public boolean IS_UPLOAD_ATTENDANCE ;
+
     private static final String CODE_SHOW_DISTRIBUTOR_PROFILE = "PRO27";
     public boolean SHOW_DISTRIBUTOR_PROFILE;
     public int SHOW_DISTRIBUTOR_PROFILE_FROM;
 
-    private static final String CODE_SBD_TARGET_PERCENT = "SBD_PERCENTAGE";
-    public static int SBD_TARGET_PERCENTAGE = 80;
+    private static final String CODE_SBD_TARGET_PERCENT = "SBD_DIST_ACH";
+    public static int SBD_TARGET_PERCENTAGE = 100;
 
     private static final String CODE_SBD_GAP_PROFILE = "SBD_PROFILE";
     public boolean SHOW_SBD_GAP_IN_PROFILE = true;
+
+    private static final String CODE_SPLIT_ORDER = "SPLIT_ORDER";  //jnj project specific
+    public boolean IS_ORDER_SPLIT;
+
+    public boolean IS_BEAT_WISE_RETAILER_MAPPING = true;
+    private static final String CODE_BEAT_WISE_RETAILER = "FIELD_USER_PLAN";
+
+    public boolean IS_FILTER_TAG_PRODUCTS = true;
+    private static final String CODE_FILTER_TAGGED_PRODUCTS = "FILTER_TAG";
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1369,7 +1398,7 @@ public class ConfigurationMasterHelper {
                     ApplicationConfigs.LANGUAGE);
             db.openDataBase();
             profileConfig = new Vector<>();
-            String query = "select HHTCode,MName,RField,hasLink,flag,RField6,MNumber,Regex from "
+            String query = "select HHTCode,MName,RField,hasLink,flag,RField6,MNumber,Regex,RField1 from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where flag=1" +
                     " and MenuType= 'RETAILER_PROFILE' and lang=" + bmodel.QT(locale)
@@ -1402,6 +1431,7 @@ public class ConfigurationMasterHelper {
                         }
                     }
                     con.setRegex(c.getString(7));
+                    con.setMandatory(c.getInt(8));
                     profileConfig.add(con);
 
                 }
@@ -2084,6 +2114,11 @@ public class ConfigurationMasterHelper {
         if (this.IS_ENABLE_CAMERA_PICTURE_SIZE)
             loadCameraPictureSize();
 
+        this.IS_ENABLE_MIN_MAX_DATE_CHQ = hashMapHHTModuleConfig.get(CODE_MAX_MIN_DATE_CHEQUE) != null ? hashMapHHTModuleConfig.get(CODE_MAX_MIN_DATE_CHEQUE) : false;
+        if (this.IS_ENABLE_MIN_MAX_DATE_CHQ)
+            loadMinMaxDateInChq();
+        this.IS_ENABLE_ACC_NO_CHQ = hashMapHHTModuleConfig.get(CODE_ACC_NO_CHEQUE) != null ? hashMapHHTModuleConfig.get(CODE_ACC_NO_CHEQUE) : false;
+
         this.IS_LOCATION_WISE_TAX_APPLIED = hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) != null ? hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) : false;
         if (this.IS_LOCATION_WISE_TAX_APPLIED)
             this.STRING_LOCATION_WISE_TAX_APPLIED = loadLocationWiseTaxApplied();
@@ -2141,15 +2176,7 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_BACKDATE_REPORTING = hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) : false;
         this.IS_USER_CAN_SELECT_BILL_WISE_DISCOUNT = hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) : false;
         this.SHOW_ORD_CALC = hashMapHHTModuleConfig.get(CODE_ORD_CALC) != null ? hashMapHHTModuleConfig.get(CODE_ORD_CALC) : false;
-        if (this.ISUPLOADUSERLOC) {
-            SharedPreferences pref = context.getSharedPreferences("TimePref", 0);
-            Editor editor = pref.edit();
-            editor.putInt("AlarmTime", alarmTime); // AlarmTime
-            editor.putInt("StartTime", startTime); // Start Time
-            editor.putInt("EndTime", endTime); // End Time
-            editor.putBoolean("UploadUserLoc", ISUPLOADUSERLOC);
-            editor.apply(); // commit changes
-        }
+
         if (hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_LPC_ORDER) == 0)
                 this.SHOW_LPC_ORDER = true;
@@ -2205,6 +2232,8 @@ public class ConfigurationMasterHelper {
         this.expenseDays = this.expenseDays >= 30 ? this.expenseDays : 30;
 
         this.IS_FITSCORE_NEEDED = hashMapHHTModuleConfig.get(CODE_FIT_SCORE) != null ? hashMapHHTModuleConfig.get(CODE_FIT_SCORE) : false;
+
+        this.IS_UPPERCASE_LETTER = hashMapHHTModuleConfig.get(CODE_UPPERCASE_LETTER) != null ? hashMapHHTModuleConfig.get(CODE_UPPERCASE_LETTER) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_VALUE_ORDER) == 1)
@@ -2275,6 +2304,14 @@ public class ConfigurationMasterHelper {
 
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
 
+        this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
+
+        if(!isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
+            this.IS_REALTIME_LOCATION_CAPTURE = false;
+        }
+
+        this.IS_UPLOAD_ATTENDANCE = hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) != null ? hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) : false;
+
         this.SHOW_DISTRIBUTOR_PROFILE = hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) : false;
         if (hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null
                 && hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null) {
@@ -2284,6 +2321,30 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT) != null && hashMapHHTModuleConfig.get(CODE_SBD_TARGET_PERCENT)) {
             SBD_TARGET_PERCENTAGE = hashMapHHTModuleOrder.get(CODE_SBD_TARGET_PERCENT);
         }
+
+        this.IS_ORDER_SPLIT = hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) : false;
+
+        this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
+        this.IS_FILTER_TAG_PRODUCTS = hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) : false;
+        this.IS_ENABLE_PRODUCT_TAGGING_VALIDATION = hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) : false;
+    }
+
+    private boolean isInOutModule() {
+        boolean isInOutModule = false;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            Cursor c = db.selectSQL("select RField from HhtMenuMaster where hhtCode='MENU_IN_OUT'");
+            if (c.getCount() > 0 && c.moveToNext()) {
+                isInOutModule = true;
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return isInOutModule;
     }
 
     public void loadOrderReportConfiguration() {
@@ -3190,6 +3251,33 @@ public class ConfigurationMasterHelper {
                     CAMERA_PICTURE_WIDTH = Integer.parseInt(camera_params[0]);
                     CAMERA_PICTURE_HEIGHT = Integer.parseInt(camera_params[1]);
                     CAMERA_PICTURE_QUALITY = Integer.parseInt(camera_params[2]) >= 40 ? Integer.parseInt(camera_params[2]) : 40;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    public void loadMinMaxDateInChq() {
+        try {
+
+            String codeValue;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='MIN_MAX_CHQ_DATE' and Flag=1";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                    String[] min_max_params = codeValue.split(",");
+                    CHQ_MIN_DATE = Integer.parseInt(min_max_params[0]);
+                    CHQ_MAX_DATE = Integer.parseInt(min_max_params[1]);
                 }
                 c.close();
             }

@@ -100,4 +100,31 @@
     <string name="scheme_apply">Scheme Apply</string>
     <string name="scheme_details">Scheme Details</string>
     <string name="buy">buy</string>
+
+    <string name="pcs">pcs</string>
+    <string name="pclabels">pc</string>
+
+    <plurals name="pcs">
+        <item quantity="one">@string/pclabels</item>
+        <item quantity="other">@string/pcs</item>
+    </plurals>
+
+    <string name="retailer_kpi_not_available">Retailer KPI not available.</string>
+
+    <!--Split Order-->
+    <string name="bill1_value">Bill1 Value</string>
+    <string name="bill1_line">Bill1 Line</string>
+    <string name="bill2_value">Bill2 Value</string>
+    <string name="bill2_line">Bill2 Line</string>
+
+
+    <string name="notification_text">Realtime location tracking enabled. </string>
+    <string name="firebase_email" translatable="false">sajen.a@ivymobility.com</string>
+    <string name="firebase_password" translatable="false">9941782090</string>
+    <string name="firebase_path" translatable="false">supervisorivycpg</string>
+    <string name="status_time_mismatch">Start Time is Greater than end time</string>
+    <string name="status_location_accuracy">Change high location Accuracy</string>
+    <string name="status_mock_location">Mock Location is Enabled</string>
+    <string name="status_alarm_time_zero">Alarm time should not be zero</string>
+
 </resources>

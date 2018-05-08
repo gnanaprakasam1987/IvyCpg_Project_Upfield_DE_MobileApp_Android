@@ -113,7 +113,6 @@ import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.DashBoardHelper;
 import com.ivy.sd.png.provider.DeliveryManagementHelper;
 import com.ivy.sd.png.provider.DynamicReportHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
@@ -148,7 +147,6 @@ import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.StockReportMasterHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.sd.png.provider.TargetPlanHelper;
 import com.ivy.sd.png.provider.TaskHelper;
 import com.ivy.sd.png.provider.TeamLeaderMasterHelper;
 import com.ivy.sd.png.provider.UserFeedBackHelper;
@@ -173,7 +171,6 @@ import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
 import com.ivy.sd.png.view.Synchronization;
-import com.ivy.sd.png.view.TargetPlanActivity;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
@@ -250,7 +247,6 @@ public class BusinessModel extends Application {
     public static String photoPath;
 
     public InitiativeHelper initiativeHelper;
-    public TargetPlanHelper targetPlanHelper;
     public BeatMasterHelper beatMasterHealper;
     public ChannelMasterHelper channelMasterHelper;
     public SubChannelMasterHelper subChannelMasterHelper;
@@ -266,7 +262,6 @@ public class BusinessModel extends Application {
     public LoadManagementHelper vanmodulehelper;
     public StockProposalModuleHelper stockProposalModuleHelper;
     public StockReportMasterHelper stockreportmasterhelper;
-    public DashBoardHelper dashBoardHelper;
     public LabelsMasterHelper labelsMasterHelper;
     public LocationUtil locationUtil;
     public OutletTimeStampHelper outletTimeStampHelper;
@@ -404,7 +399,6 @@ public class BusinessModel extends Application {
         /** Create objects for Helpers **/
         mroadActivityHelper = RoadActivityHelper.getInstance(this);
         initiativeHelper = InitiativeHelper.getInstance(this);
-        targetPlanHelper = TargetPlanHelper.getInstance(this);
 
         beatMasterHealper = BeatMasterHelper.getInstance(this);
         channelMasterHelper = ChannelMasterHelper.getInstance(this);
@@ -420,7 +414,6 @@ public class BusinessModel extends Application {
         vanmodulehelper = LoadManagementHelper.getInstance(this);
         stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
         stockreportmasterhelper = StockReportMasterHelper.getInstance(this);
-        dashBoardHelper = DashBoardHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
         locationUtil = LocationUtil.getInstance(this);
         outletTimeStampHelper = OutletTimeStampHelper.getInstance(this);
@@ -536,9 +529,6 @@ public class BusinessModel extends Application {
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actactivationscreen)) {
             myIntent = new Intent(ctxx, ScreenActivationActivity.class);
-            ctxx.startActivityForResult(myIntent, 0);
-        } else if (act.equals(DataMembers.actTargetPlan)) {
-            myIntent = new Intent(ctxx, TargetPlanActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actclosingstock)) {
             myIntent = new Intent(ctxx, StockCheckActivity.class);
@@ -1427,14 +1417,17 @@ public class BusinessModel extends Application {
 
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                            + " IFNULL(RTGT.monthly_target,0) as MonthlyTarget, IFNULL(RTGT.DailyTarget,0) as DailyTarget, IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
+                            + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
                             + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 'YES') = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent"
                             + " FROM RetailerMaster A"
 
-                            + " LEFT JOIN RetailerClientMappingMaster RC on RC.rid = A.RetailerID"
+                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
+
+                            + " LEFT JOIN RetailerClientMappingMaster RC "+(configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING? " on RC.beatID=RBM.beatId" :" on RC.Rid = A.RetailerId")
+
                             + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
 
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
@@ -1448,13 +1441,12 @@ public class BusinessModel extends Application {
 
                             + " LEFT JOIN RetailerVisit RV ON RV.RetailerID = A.RetailerID"
 
-                            + " LEFT JOIN RetailerTargetMaster RTGT ON RTGT.RetailerID = A.RetailerID"
-
                             + " LEFT JOIN RetailerAchievement RACH ON RACH.RetailerID = A.RetailerID"
 
                             + " LEFT JOIN LocationMaster LM ON LM.LocId = A.locationid"
-                            + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
+
                             + " LEFT JOIN RetailerPriorityProducts RPP ON RPP.retailerid = A.RetailerID"
+
                             + " LEFT JOIN RetailerAttribute RAT ON A.RetailerID = RAT.RetailerId");
 
             // group by A.retailerid
@@ -1590,10 +1582,6 @@ public class BusinessModel extends Application {
                     retailer.setVisitDoneCount(c.getInt(c.getColumnIndex("VisitDoneCount")));
                     retailer.setVisit_frequencey(c.getInt(c.getColumnIndex("VisitFrequency")));
 
-                    //temp_retailer_targetmaster
-                    retailer.setMonthly_target(c.getDouble(c.getColumnIndex("MonthlyTarget")));
-                    retailer.setDaily_target(c.getInt(c.getColumnIndex("DailyTarget")));
-
                     //temp_invoice_monthlyachievement
                     retailer.setMonthly_acheived(c.getDouble(c.getColumnIndex("MonthlyAcheived")));
 
@@ -1677,6 +1665,8 @@ public class BusinessModel extends Application {
 
                 }
             }
+
+            mRetailerHelper.downloadRetailerTarget("SV");
 
             db.closeDB();
         } catch (Exception e) {
@@ -3061,7 +3051,7 @@ public class BusinessModel extends Application {
         ProductMasterBO product = null;
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
             product = productHelper.getTaggedProductBOById(productid);
-        } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER")) {
+        } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
 
@@ -3195,240 +3185,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    private JSONArray prepareDataForLocationTrackingUploadJSON(DBUtil db,
-                                                               String tableName, String columns) {
-        JSONArray ohRowsArray = new JSONArray();
-        try {
-            Cursor cursor;
-            String columnArray[] = columns.split(",");
-            String sql = "select " + columns + " from " + tableName
-                    + " where upload = 'N'";
-            cursor = db.selectSQL(sql);
-            if (cursor != null) {
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        JSONObject jsonObjRow = new JSONObject();
-                        int count = 0;
-                        for (String col : columnArray) {
-                            String value = cursor.getString(count);
-                            jsonObjRow.put(col, value);
-                            count++;
-                        }
-                        ohRowsArray.put(jsonObjRow);
-                    }
-                }
-                cursor.close();
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-
-        }
-        return ohRowsArray;
-    }
-
-
-    /**
-     * Upload Transaction Sequence Table after Data Upload through seperate
-     * method name Returns the response Success/Failure
-     *
-     * @return
-     * @paramhandler
-     */
-
-
-    public void saveUserLocation(String latitude, String longtitude,
-                                 String accuracy) {
-        DBUtil db = null;
-        try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String columns = "Tid, Date, Latitude, Longtitude";
-
-            String Tid = userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
-
-            String values = QT(Tid) + "," + QT(SDUtil.now(SDUtil.DATE_TIME))
-                    + "," + QT(latitude) + "," + QT(longtitude);
-
-            db.insertSQL("LocationTracking", columns, values);
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public boolean isUserLocationAvailable() {
-        DBUtil db = null;
-        boolean isAvail = false;
-        try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-
-            Cursor c = db.selectSQL("SELECT Tid FROM LocationTracking where upload = 'N'");
-
-            if (c.getCount() > 0) {
-                if (c.moveToNext()) {
-                    isAvail = true;
-                }
-            }
-            c.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        return isAvail;
-    }
-
-    public int uploadLocationTracking() {
-
-        DBUtil db = null;
-        try {
-
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            JSONObject jsonObjData = null;
-
-            Set<String> keys = DataMembers.uploadLocationTrackingColumn
-                    .keySet();
-
-            jsonObjData = new JSONObject();
-            for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForLocationTrackingUploadJSON(
-                        db, tableName,
-                        DataMembers.uploadLocationTrackingColumn.get(tableName));
-
-                if (jsonArray.length() > 0)
-                    jsonObjData.put(tableName, jsonArray);
-            }
-
-            JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
-            try {
-                if (!"0".equals(userMasterHelper.getUserMasterBO().getBackupSellerID())) {
-                    jsonFormatter.addParameter("UserId", userMasterHelper
-                            .getUserMasterBO().getBackupSellerID());
-                    jsonFormatter.addParameter("WorkingFor", userMasterHelper.getUserMasterBO().getUserid());
-                } else {
-                    jsonFormatter.addParameter("UserId", userMasterHelper
-                            .getUserMasterBO().getUserid());
-                }
-                jsonFormatter.addParameter("DistributorId", userMasterHelper
-                        .getUserMasterBO().getDistributorid());
-                jsonFormatter.addParameter("BranchId", userMasterHelper
-                        .getUserMasterBO().getBranchId());
-                jsonFormatter.addParameter("LoginId", userMasterHelper
-                        .getUserMasterBO().getLoginName());
-                jsonFormatter.addParameter("DeviceId",
-                        activationHelper.getIMEINumber());
-                jsonFormatter.addParameter("VersionCode",
-                        getApplicationVersionNumber());
-                jsonFormatter.addParameter("OrganisationId", userMasterHelper
-                        .getUserMasterBO().getOrganizationId());
-                jsonFormatter.addParameter("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-                jsonFormatter.addParameter("MobileUTCDateTime",
-                        Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-                jsonFormatter.addParameter("DownloadedDataDate",
-                        userMasterHelper.getUserMasterBO().getDownloadDate());
-                jsonFormatter.addParameter("VanId", userMasterHelper
-                        .getUserMasterBO().getVanId());
-                String LastDayClose = "";
-                if (synchronizationHelper.isDayClosed()) {
-                    LastDayClose = userMasterHelper.getUserMasterBO()
-                            .getDownloadDate();
-                }
-                jsonFormatter.addParameter("LastDayClose", LastDayClose);
-                jsonFormatter.addParameter("DataValidationKey", synchronizationHelper.generateChecksum(jsonObjData.toString()));
-                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, getApplicationVersionName());
-
-                Commons.print(jsonFormatter.getDataInJson());
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-            String url = synchronizationHelper.getUploadUrl("UPLDTRAN");
-            Vector<String> responseVector = synchronizationHelper
-                    .getUploadResponse(jsonFormatter.getDataInJson(),
-                            jsonObjData.toString(), url);
-
-            int response = 0;
-
-            if (responseVector.size() > 0) {
-
-
-                for (String s : responseVector) {
-                    JSONObject jsonObject = new JSONObject(s);
-
-                    Iterator itr = jsonObject.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Response")) {
-                            response = jsonObject.getInt("Response");
-
-                        } else if (key.equals("ErrorCode")) {
-                            String tokenResponse = jsonObject.getString("ErrorCode");
-                            if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
-                                    || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
-                                    || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
-
-                                response = 9;
-
-                            }
-
-                        }
-
-                    }
-
-
-                }
-            } else {
-                if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
-                    if (errorMsg != null) {
-                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(ctx, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-           /* if (responseVector != null) {
-
-                for (String s : responseVector) {
-                    JSONObject responseObject = new JSONObject(s);
-                    response = responseObject.getInt("Response");
-                }
-            }*/
-
-            if (response == 1) {
-
-                System.gc();
-                try {
-
-                    db.executeQ("DELETE FROM LocationTracking");
-                    db.closeDB();
-                    responceMessage = 1;
-                } catch (Exception e) {
-
-                    responceMessage = 0;
-                    Commons.printException(e);
-                }
-
-            } else {
-                responceMessage = 9;
-            }
-
-        } catch (Exception e) {
-            Commons.printException(e);
-            return 0;
-        }
-        db.closeDB();
-        return responceMessage;
-    }
-
     public boolean isOnline() {
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -3463,10 +3219,6 @@ public class BusinessModel extends Application {
                     frm.finish();
                     BusinessModel.loadActivity(ctx,
                             DataMembers.actHomeScreenTwo);
-                } else if (idd == 201) {
-                    TargetPlanActivity frm = (TargetPlanActivity) ctx;
-                    frm.finish();
-                    BusinessModel.loadActivity(ctx, DataMembers.actPlanning);
                 } else if (idd == 3333) {
                     ReAllocationActivity frm = (ReAllocationActivity) ctx;
                     frm.finish();

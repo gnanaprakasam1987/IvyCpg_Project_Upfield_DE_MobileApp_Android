@@ -40,6 +40,12 @@ import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
 import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
+import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
+import com.ivy.cpg.view.dashboard.FitScoreDashboardActivity;
+import com.ivy.cpg.view.dashboard.KellogsDashBoardActivity;
+import com.ivy.cpg.view.dashboard.olddashboard.SKUWiseTargetActivity;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashBoardActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
@@ -1714,6 +1720,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 .downloadProductDetailsList();
                         bmodel.collectionHelper.downloadBankDetails();
                         bmodel.collectionHelper.downloadBranchDetails();
+                        bmodel.collectionHelper.downloadRetailerAccountDetails();
                         if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
                             bmodel.productHelper
                                     .loadRetailerWiseInventoryOrderQty();
@@ -2442,6 +2449,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 bmodel.collectionHelper.downloadBankDetails();
                 bmodel.collectionHelper.downloadBranchDetails();
+                bmodel.collectionHelper.downloadRetailerAccountDetails();
                 bmodel.collectionHelper.updateInvoiceDiscountedAmount();
 
 
@@ -2627,39 +2635,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
-                }
-            } else {
-                Toast.makeText(
-                        this,
-                        getResources().getString(
-                                R.string.please_complete_previous_activity),
-                        Toast.LENGTH_SHORT).show();
-                isCreated = false;
-            }
-
-        } else if (menu.getConfigCode().equals(MENU_REV) && hasLink == 1) {
-            if (isPreviousDone(menu)
-                    || bmodel.configurationMasterHelper.IS_JUMP
-                    ) {
-                if (bmodel.configurationMasterHelper.IS_TARGET_SCREEN_PH) {
-                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                    Intent i = new Intent(HomeScreenTwo.this,
-                            TargetPlanActivity_PH.class);
-                    i.putExtra("From", "Review");
-                    startActivity(i);
-                    finish();
-                } else {
-                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                    Intent i = new Intent(HomeScreenTwo.this,
-                            TargetPlanActivity.class);
-                    i.putExtra("From", "Review");
-                    i.putExtra("screentitle", menu.getMenuName());
-                    startActivity(i);
-                    finish();
                 }
             } else {
                 Toast.makeText(
@@ -3485,9 +3460,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_RTR_KPI) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
-                bmodel.dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
+                DashBoardHelper.getInstance(this).loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
 
-                if (bmodel.dashBoardHelper.getDashChartDataList().size() > 0) {
+                if (DashBoardHelper.getInstance(this).getDashChartDataList().size() > 0) {
                     Intent i = new Intent(this,
                             SellerDashBoardActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -3774,6 +3749,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
                 bmodel.collectionHelper.downloadBankDetails();
                 bmodel.collectionHelper.downloadBranchDetails();
+                bmodel.collectionHelper.downloadRetailerAccountDetails();
                 bmodel.collectionHelper.loadCreditNote();
             }
 

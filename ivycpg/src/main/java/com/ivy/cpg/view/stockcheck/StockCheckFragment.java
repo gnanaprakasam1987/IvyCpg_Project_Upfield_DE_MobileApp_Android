@@ -1476,6 +1476,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             Bundle bundle = new Bundle();
             bundle.putString("isFrom", "STK");
             bundle.putSerializable("selectedFilter", stockCheckPresenter.mSelectedIdByLevelId);
+            bundle.putBoolean("isTag", true);
 
             FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
             fragobj.setArguments(bundle);

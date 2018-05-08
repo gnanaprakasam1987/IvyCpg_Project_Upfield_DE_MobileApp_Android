@@ -117,7 +117,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
     @Override
     public void doPrintActivity(String orderId) {
-        bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true,orderDeliveryHelper.preparePrintData(context,orderId) , null);
+        bmodel.mCommonPrintHelper.xmlRead(".xml", false,orderDeliveryHelper.preparePrintData(context,orderId) , null);
 
         bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                 StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -153,7 +153,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size()-1).
                             setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(context,orderId));
 
-                bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true,orderDeliveryHelper.getOrderedProductMasterBOS() , null);
+                bmodel.mCommonPrintHelper.xmlRead(".xml", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null);
 
                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -182,7 +182,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
         @Override
         protected Boolean doInBackground(String... params) {
-            bmodel.mCommonPrintHelper.xmlRead("invoice_print.xml", true,orderDeliveryHelper.preparePrintData(context,orderId) , null);
+            bmodel.mCommonPrintHelper.xmlRead(".xml", false,orderDeliveryHelper.preparePrintData(context,orderId) , null);
 
             bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                     StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);

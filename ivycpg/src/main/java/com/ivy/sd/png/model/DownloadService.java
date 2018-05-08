@@ -1141,7 +1141,21 @@ public class DownloadService extends IntentService {
                     sendBroadcast(updateFinishedIntent);
                 }
                 break;
-
+            case SynchronizationHelper.MOBILE_EMAIL_VERIFICATION:
+                Intent otpDownloadIntent = new Intent();
+                    otpDownloadIntent
+                            .setAction("android.intent.action.DOWNLOAD");
+                    insertBundle = new Bundle();
+                    String mobileErrorCode = intent
+                            .getStringExtra(SynchronizationHelper.ERROR_CODE);
+                    insertBundle.putString(SynchronizationHelper.ERROR_CODE,
+                            mobileErrorCode);
+                    insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
+                            SynchronizationHelper.MOBILE_EMAIL_VERIFICATION);
+                    insertBundle.putSerializable("isFromWhere", isFromWhere);
+                    otpDownloadIntent.putExtras(insertBundle);
+                    sendBroadcast(otpDownloadIntent);
+                break;
 
             default:
                 break;

@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.DiscontSlabBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.RetailerWiseBankDetailsBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -46,6 +47,7 @@ public class CollectionHelper {
     private HashMap<String, PaymentBO> mPaymentBOByMode;
     private ArrayList<BankMasterBO> bankMaster;
     private ArrayList<BranchMasterBO> bankBranch;
+    private ArrayList<RetailerWiseBankDetailsBO> retailerWiseBankDetailsBOArrayList;
     public String receiptno = "";
     public String collectionDate = "";
 
@@ -67,6 +69,7 @@ public class CollectionHelper {
         paymentList = new ArrayList<>();
         bankMaster = new ArrayList<>();
         bankBranch = new ArrayList<>();
+        retailerWiseBankDetailsBOArrayList = new ArrayList<>();
     }
 
     public static CollectionHelper getInstance(Context context) {
@@ -916,6 +919,7 @@ public class CollectionHelper {
             paymentBO.setDiscountedAmount(0);
             paymentBO.setBalance(0);
             paymentBO.setReceiptDate("");
+            paymentBO.setAccountNumber("");
         }
     }
 
@@ -1117,6 +1121,7 @@ public class CollectionHelper {
                         + "," + bmodel.QT(printFilePath)
                         + "," + bmodel.QT(paymentBO.getBankName())
                         + "," + bmodel.QT(paymentBO.getBranchName());
+                //+ "," + bmodel.QT(paymentBO.getAccountNumber());
 
                 db.insertSQL(DataMembers.tbl_Payment, columns, values);
             } else if (StandardListMasterConstants.CREDIT_NOTE.equals(paymentBO.getCashMode())) {
@@ -1311,6 +1316,27 @@ public class CollectionHelper {
     }
 
     /**
+     * Download Retailer Account Details
+     */
+    public void downloadRetailerAccountDetails() {
+        RetailerWiseBankDetailsBO retailerBankBO;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        Cursor c = db.selectSQL("SELECT retailer_id, bank_account_no FROM RetailerWiseBankInfo");
+        if (c != null) {
+            retailerWiseBankDetailsBOArrayList = new ArrayList<>();
+            while (c.moveToNext()) {
+                retailerBankBO = new RetailerWiseBankDetailsBO();
+                retailerBankBO.setRetailer_id(c.getString(0));
+                retailerBankBO.setBank_Account_no(c.getString(1));
+                retailerWiseBankDetailsBOArrayList.add(retailerBankBO);
+            }
+            c.close();
+        }
+        db.closeDB();
+    }
+
+    /**
      * Download bank branch details from Standard Details of type BANK_BRANCH_TYPE.
      */
     public void downloadBranchDetails() {
@@ -1340,6 +1366,10 @@ public class CollectionHelper {
 
     public ArrayList<BankMasterBO> getBankMasterBO() {
         return bankMaster;
+    }
+
+    public ArrayList<RetailerWiseBankDetailsBO> getRetailerWiseBankDetailsBOArrayList() {
+        return retailerWiseBankDetailsBOArrayList;
     }
 
     /**
@@ -1715,6 +1745,7 @@ public class CollectionHelper {
 
         downloadBankDetails();
         downloadBranchDetails();
+        downloadRetailerAccountDetails();
         updateInvoiceDiscountedAmount();
 
         bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
@@ -1827,4 +1858,12 @@ public class CollectionHelper {
         }
     }
 
+    public boolean checkRetailerWiseAccountMatched(String accountNo) {
+        for (RetailerWiseBankDetailsBO retailerBankBO : getRetailerWiseBankDetailsBOArrayList()) {
+            if (retailerBankBO.getRetailer_id().equals(bmodel.retailerMasterBO.getRetailerID())
+                    && retailerBankBO.getBank_Account_no().equals(accountNo))
+                return true;
+        }
+        return false;
+    }
 }

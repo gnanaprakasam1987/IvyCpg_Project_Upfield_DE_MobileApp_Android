@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1280"
-    android:versionName="2.128.0.1425">
+    android:versionCode="1290"
+    android:versionName="2.129.0.1425">
 
     <supports-screens
         android:anyDensity="true"
@@ -31,6 +31,8 @@
 
     <!-- Camera - used for photo capture -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
     <uses-feature
         android:name="android.hardware.camera.front"
@@ -90,7 +92,6 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/MVPTheme.Blue">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -107,12 +108,15 @@
 
         <receiver android:name="com.ivy.sd.png.model.ScreenReceiver" />
 
-        <service android:name="com.ivy.ivyretail.service.LocationListenerService" />
-        <service android:name="com.ivy.ivyretail.service.LocationUploadService" />
+        <service
+            android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingListenerService"
+            android:enabled="true"
+            android:exported="false" />
+        <service android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingUploadService" />
 
         <receiver
-            android:name="com.ivy.ivyretail.service.AlarmReceiver"
-            android:enabled="false"
+            android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingAlarmReceiver"
+            android:enabled="true"
             android:exported="false"
             android:process=":remote">
             <intent-filter>
@@ -125,6 +129,15 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.ivy.cpg.locationservice.realtime.RealtimeLocationReceiver"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -152,6 +165,13 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
         <service android:name="com.ivy.sd.png.model.DownloadService" />
+        <service
+            android:name="com.ivy.cpg.locationservice.realtime.RealTimeLocationService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name="com.ivy.cpg.locationservice.activitytracking.ActivityIntentService"
+            android:exported="false" />
 
         <receiver
             android:name="com.ivy.sd.png.model.DownloadReceiver"
@@ -253,12 +273,6 @@
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
-        <activity
-            android:name="com.ivy.sd.png.view.TargetPlanActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.TargetPlanActivity_PH"
-            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.merch.MerchandisingActivity"
             android:screenOrientation="portrait" />
@@ -368,7 +382,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.ivy.sd.png.view.SKUWiseTargetActivity"
+            android:name="com.ivy.cpg.view.dashboard.olddashboard.SKUWiseTargetActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.reports.OrderReportDetail"
@@ -421,7 +435,7 @@
             android:theme="@style/PreferencesTheme" />
         <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
         <activity
-            android:name="com.ivy.cpg.view.order.scheme.SchemeApply"
+            android:name="com.ivy.sd.png.view.SchemeApply"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnSummery"
@@ -464,22 +478,16 @@
             android:name="com.ivy.sd.png.view.InvoicePrintZebraNew"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DashBoardActivity"
+            android:name="com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.KellogsDashBoardActivity"
+            android:name="com.ivy.cpg.view.dashboard.KellogsDashBoardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SellerDashBoardActivity"
+            android:name="com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashBoardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SellerKPISKUActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.RetailerDashBoardActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.RetailerKPISKUActivity"
+            android:name="com.ivy.cpg.view.dashboard.sellerdashboard.SellerKPISKUActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.reports.InvoiceReportDetail"
@@ -735,7 +743,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.FitScoreDashboardActivity"
+            android:name="com.ivy.cpg.view.dashboard.FitScoreDashboardActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
 
@@ -775,12 +783,10 @@
             android:name="com.ivy.sd.png.view.SubDStockCheckActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.png.view.SubDStockOrderActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.png.view.OfflinePlanningActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -788,14 +794,15 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.ivy.sd.png.view.BackUpSellerActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"
-            android:screenOrientation="portrait"/>
-
-
-        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity" />
-        <activity android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"></activity>
+            android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity" />
+        <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity"></activity>
     </application>
 
 </manifest>

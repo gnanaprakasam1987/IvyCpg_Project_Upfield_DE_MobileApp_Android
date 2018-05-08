@@ -3715,6 +3715,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
             bundle.putString("isFrom", "STK");
             bundle.putBoolean("isAttributeFilter", true);
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
+            bundle.putBoolean("isTag", true);
 
             // set Fragmentclass Arguments
             FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();

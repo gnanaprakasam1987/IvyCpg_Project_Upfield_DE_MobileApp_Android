@@ -467,6 +467,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
                 bmodel.collectionHelper.downloadBankDetails();
                 bmodel.collectionHelper.downloadBranchDetails();
+                bmodel.collectionHelper.downloadRetailerAccountDetails();
                 bmodel.collectionHelper.loadCreditNote();
             }
 
