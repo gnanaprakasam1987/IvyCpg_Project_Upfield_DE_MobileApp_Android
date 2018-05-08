@@ -180,7 +180,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
 
     private fun initializeMap() {
 
-        mMap = this.map
+//        mMap = this.map
         mMap!!.uiSettings.isMapToolbarEnabled = false
         mMap!!.uiSettings.isZoomControlsEnabled = false
 
@@ -358,7 +358,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
                                 }
                                 markerList!!.add(markerOptions)
 
-                                map.addMarker(markerOptions)
+//                                map.addMarker(markerOptions)
 
 
                             }
