@@ -983,9 +983,9 @@ public class ConfigurationMasterHelper {
     private Vector<ConfigureBO> activitymenuconfig;
     private Vector<ConfigureBO> primarymenus;
 
-    private int alarmTime = 3;
-    private int startTime = 8;
-    private int endTime = 20;
+    public int alarmTime = 3;
+    public int startTime = 8;
+    public int endTime = 20;
     private Vector<ConfigureBO> genFilter, productdetails;
     private Vector<String> SIHApplyById = null;
     private ArrayList<String> mRetailerProperty;
@@ -1336,6 +1336,12 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
     public boolean IS_ORD_SR_VALUE_VALIDATE;
+
+    private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
+    public boolean IS_REALTIME_LOCATION_CAPTURE ;
+
+    private static final String CODE_UPLOAD_ATTENDANCE = "UPLOADATTENDANCE";
+    public boolean IS_UPLOAD_ATTENDANCE ;
 
     private static final String CODE_SHOW_DISTRIBUTOR_PROFILE = "PRO27";
     public boolean SHOW_DISTRIBUTOR_PROFILE;
@@ -2196,15 +2202,7 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_BACKDATE_REPORTING = hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) : false;
         this.IS_USER_CAN_SELECT_BILL_WISE_DISCOUNT = hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) : false;
         this.SHOW_ORD_CALC = hashMapHHTModuleConfig.get(CODE_ORD_CALC) != null ? hashMapHHTModuleConfig.get(CODE_ORD_CALC) : false;
-        if (this.ISUPLOADUSERLOC) {
-            SharedPreferences pref = context.getSharedPreferences("TimePref", 0);
-            Editor editor = pref.edit();
-            editor.putInt("AlarmTime", alarmTime); // AlarmTime
-            editor.putInt("StartTime", startTime); // Start Time
-            editor.putInt("EndTime", endTime); // End Time
-            editor.putBoolean("UploadUserLoc", ISUPLOADUSERLOC);
-            editor.apply(); // commit changes
-        }
+
         if (hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_LPC_ORDER) == 0)
                 this.SHOW_LPC_ORDER = true;
@@ -2332,6 +2330,14 @@ public class ConfigurationMasterHelper {
 
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
 
+        this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
+
+        if(!isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
+            this.IS_REALTIME_LOCATION_CAPTURE = false;
+        }
+
+        this.IS_UPLOAD_ATTENDANCE = hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) != null ? hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) : false;
+
         this.SHOW_DISTRIBUTOR_PROFILE = hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) : false;
         if (hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null
                 && hashMapHHTModuleOrder.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null) {
@@ -2347,6 +2353,24 @@ public class ConfigurationMasterHelper {
         this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
         this.IS_FILTER_TAG_PRODUCTS = hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) : false;
         this.IS_ENABLE_PRODUCT_TAGGING_VALIDATION = hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) : false;
+    }
+
+    private boolean isInOutModule() {
+        boolean isInOutModule = false;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            Cursor c = db.selectSQL("select RField from HhtMenuMaster where hhtCode='MENU_IN_OUT'");
+            if (c.getCount() > 0 && c.moveToNext()) {
+                isInOutModule = true;
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return isInOutModule;
     }
 
     public void loadOrderReportConfiguration() {

@@ -1,7 +1,11 @@
 package com.ivy.sd.png.provider;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
+import android.location.Location;
+import android.os.BatteryManager;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
@@ -155,7 +159,7 @@ public class OutletTimeStampHelper {
 			db.createDataBase();
 			db.openDataBase();
 			
-			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID";
+			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocatioEnabled,IsDeviated,OrderValue";
 
 			if(isJointCall(joinCallList)){  // check join call or not
 				joinCallFlag=1;
@@ -165,7 +169,7 @@ public class OutletTimeStampHelper {
 					+ bmodel.retailerMasterBO.getBeatID() + "," + QT(date)
 					+ "," + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
 					+ QT(date + " " + timeIn) + "," + QT(date + " " + timeIn)
-					+ "," + QT(" ") + ","
+					+ "," + QT(bmodel.retailerMasterBO.getRetailerName()) + ","
 					+ QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
 					+ QT(LocationUtil.latitude + "") + ","
 					+ QT(LocationUtil.longitude + "")+","
@@ -174,7 +178,12 @@ public class OutletTimeStampHelper {
 					+ QT(distance+"")+","
 					+ (dist<bmodel.getRetailerMasterBO().getGpsDistance()?1:0)+","
 					+ (getLastRetailerId()==Integer.parseInt(bmodel.getRetailerMasterBO().getRetailerID())? getLastRetailerSequence():(getLastRetailerSequence()+1))
-					+","+bmodel.retailerMasterBO.getDistributorId();
+					+","+bmodel.retailerMasterBO.getDistributorId()
+					+","+getBatteryPercentage(context)
+					+","+QT(LocationUtil.mProviderName)
+					+","+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
+					+","+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+					+","+QT(String.valueOf(bmodel.getOrderValue()));
 
 			db.insertSQL("OutletTimestamp", columns, values);
 			
@@ -218,8 +227,16 @@ public class OutletTimeStampHelper {
 			String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
 			String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
 					+"',feedback="+bmodel.QT(reasonDesc)
-					+ "  WHERE RetailerID = '"
-					+ bmodel.retailerMasterBO.getRetailerID()
+					+", OrderValue = "+QT(String.valueOf(bmodel.getOrderValue()))
+					+", latitude = "+ QT(LocationUtil.latitude + "")
+					+", longitude = "+ QT(LocationUtil.longitude + "")
+					+", LocationProvider = "+QT(LocationUtil.mProviderName)
+					+", gpsAccuracy = "+ QT(LocationUtil.accuracy+"")
+					+", Battery = "+getBatteryPercentage(context)
+					+", IsLocatioEnabled = "+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
+					+", IsDeviated = "+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+					+"  WHERE RetailerID = '"
+					+bmodel.retailerMasterBO.getRetailerID()
 					+ "' AND TimeIn = '" + getTimeIn() + "'";
 			db.updateSQL(query);
 			db.closeDB();
@@ -430,5 +447,21 @@ public class OutletTimeStampHelper {
 		} catch (Exception e) {
 			Commons.printException(e);
 		}
+	}
+
+	/**
+	 * Get current battery percentage
+	 */
+	private int getBatteryPercentage(Context context) {
+
+		IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		Intent batteryStatus = context.registerReceiver(null, iFilter);
+
+		int level = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : -1;
+		int scale = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1) : -1;
+
+		float batteryPct = level / (float) scale;
+
+		return (int) (batteryPct * 100);
 	}
 }

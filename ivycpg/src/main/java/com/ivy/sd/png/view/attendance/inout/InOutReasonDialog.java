@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.attendance.inout;
 
 import android.app.Dialog;
 import android.content.Context;

@@ -62,10 +62,7 @@ import java.util.Locale;
 @SuppressLint("NewApi")
 public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragListener, LocationListener, OnMapReadyCallback {
 
-    private Marker currLocMarker;
-    private MarkerOptions currLocMarkerOption;
     private GoogleMap mMap;
-    private List<MarkerOptions> markerList = new ArrayList<MarkerOptions>();
     double lattitude = 0;
     double longitude = 0;
 
@@ -107,11 +104,7 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.map);
-
-
-
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -181,7 +174,6 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
         }
         try {
 
-
 //            FragmentManager myFragmentManager = getSupportFragmentManager();
 //            SupportMapFragment mySupportMapFragment = (SupportMapFragment) myFragmentManager
 //                    .findFragmentById(R.id.map);
@@ -189,27 +181,9 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
             mCustomMapFragment = ((CustomMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map));
             mCustomMapFragment.setOnDragListener(MapDialogue.this);
-            mMap = mCustomMapFragment.getMap();
             mCustomMapFragment.getMapAsync(this);
 
-            if (mMap != null) {
-                mMap.setMyLocationEnabled(true);
-                if (mMarkerParentView != null &&
-                        mMarkerParentView.findViewById(Integer.parseInt("1")) != null) {
-                    // Get the button view
-                    View locationButton = ((View) mMarkerParentView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-                    // and next place it, on bottom right (as Google Maps app)
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
-                            locationButton.getLayoutParams();
-                    // position on right bottom
-                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                    layoutParams.setMargins(0, 0, 30, 30);
 
-                }
-                showMyLocation(lattitude, longitude);
-
-            }
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -226,23 +200,42 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
             }
         });
 
+    }
 
-        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-                clickable = true;
-                Location mylLocation = mMap.getMyLocation();
-                if (mylLocation != null) {
-                    LatLng latLng = new LatLng(mylLocation.getLatitude(), mylLocation.getLongitude());
-                    showMeOnMap(latLng);
-                    updateLocation(latLng);
-                }
-                return true;
+    private void setMap(){
+        if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
+            if (mMarkerParentView != null &&
+                    mMarkerParentView.findViewById(Integer.parseInt("1")) != null) {
+                // Get the button view
+                View locationButton = ((View) mMarkerParentView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+                // and next place it, on bottom right (as Google Maps app)
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
+                        locationButton.getLayoutParams();
+                // position on right bottom
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                layoutParams.setMargins(0, 0, 30, 30);
+
             }
-        });
+            showMyLocation(lattitude, longitude);
 
 
+            mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    clickable = true;
+                    Location mylLocation = mMap.getMyLocation();
+                    if (mylLocation != null) {
+                        LatLng latLng = new LatLng(mylLocation.getLatitude(), mylLocation.getLongitude());
+                        showMeOnMap(latLng);
+                        updateLocation(latLng);
+                    }
+                    return true;
+                }
+            });
 
+        }
     }
 
 
@@ -416,9 +409,8 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-
-
+        mMap = googleMap;
+        setMap();
     }
 
 

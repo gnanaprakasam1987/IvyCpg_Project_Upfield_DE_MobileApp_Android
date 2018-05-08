@@ -1,20 +1,15 @@
 package com.ivy.sd.png.view;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -50,6 +45,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.olddashboard.DashboardFragment;
@@ -59,13 +55,13 @@ import com.ivy.cpg.view.dashboard.olddashboard.SkuWiseTargetFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.supervisor.SupervisorMapFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.PlanningSubScreenFragment;
 import com.ivy.cpg.view.van.StockProposalFragment;
 import com.ivy.cpg.view.van.VanStockAdjustActivity;
-import com.ivy.ivyretail.service.AlarmReceiver;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.camera.CameraActivity;
@@ -82,6 +78,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.attendance.inout.TimeTrackingFragment;
 import com.ivy.sd.png.view.reports.ReportMenufragment;
 
 import java.io.File;
@@ -147,6 +144,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_TASK_NEW = "MENU_TASK_NEW";
     private static final String MENU_PLANE_MAP = "MENU_PLANE_MAP";
     private static final String MENU_BACKUP_SELLER = "MENU_BACKUP_SELLER";
+    private static final String MENU_SUPERVISOR_REALTIME = "MENU_SUPERVISOR_REALTIME";
+    private static final String MENU_SUPERVISOR_MOVEMENT = "MENU_SUPERVISOR_MOVEMENT";
+    private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_CALLANALYSIS";
+//    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
 
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_GROOM_CS = "MENU_GROOM_CS";
@@ -274,6 +275,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_OFLNE_PLAN, R.drawable.ic_expense_icon);
         menuIcons.put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
         menuIcons.put(MENU_BACKUP_SELLER, R.drawable.ic_reallocation_icon);
+        menuIcons.put(MENU_SUPERVISOR_REALTIME, R.drawable.ic_new_retailer_icon);
+        menuIcons.put(MENU_SUPERVISOR_MOVEMENT, R.drawable.ic_new_retailer_icon);
+        menuIcons.put(MENU_SUPERVISOR_CALLANALYSIS, R.drawable.ic_new_retailer_icon);
 
         // Load the HHTMenuTable
         bmodel.configurationMasterHelper.downloadMainMenu();
@@ -458,10 +462,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         listView.setAdapter(new LeftMenuBaseAdapter(leftmenuDB));
 
 
-        if (bmodel.configurationMasterHelper.ISUPLOADUSERLOC)
-            setAlarm();
-
-
         /** Initialising map view **/
         markerList = new ArrayList<>();
         baiduMarkerList = new ArrayList<>();
@@ -476,6 +476,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
         //showDefaultScreen();
         refreshList(true);
+
+        if (bmodel.configurationMasterHelper.ISUPLOADUSERLOC) {
+
+            MovementTracking.startTrackingLocation(getContext(),
+                    bmodel.configurationMasterHelper.startTime,
+                    bmodel.configurationMasterHelper.endTime,
+                    bmodel.configurationMasterHelper.alarmTime);
+
+        }
 
         return view;
 
@@ -552,41 +561,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         }
     }
-
-    private void setAlarm() {
-        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(
-                "TimePref", 0); // 0 - for private mode
-        int alarm_time = pref.getInt("AlarmTime", 0);
-
-        boolean alarmUp = (PendingIntent.getBroadcast(getActivity(), 0, new Intent(getActivity(),
-                AlarmReceiver.class), PendingIntent.FLAG_NO_CREATE) != null);
-
-        if (!alarmUp) {
-            Intent i = new Intent(getActivity(), AlarmReceiver.class);
-            PendingIntent pi = PendingIntent.getBroadcast(getActivity(), 0, i, 0);
-            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
-            long timeInMillis = System.currentTimeMillis() + (alarm_time * 60 * 1000);
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
-            }
-
-            // Below has been added to enable the receiver manually as we have
-            // disabled in the manifest
-            ComponentName receiver = new ComponentName(getActivity(),
-                    AlarmReceiver.class);
-            PackageManager pm = getActivity().getPackageManager();
-            pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP);
-        }
-
-    }
-
 
     @Override
     public void onResume() {
@@ -1571,6 +1545,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 switchFragment(MENU_BACKUP_SELLER, menuItem.getMenuName());
             }
         }
+        else if (menuItem.getConfigCode().equals(MENU_SUPERVISOR_REALTIME)
+                || menuItem.getConfigCode().equals(MENU_SUPERVISOR_MOVEMENT)
+                || menuItem.getConfigCode().equals(MENU_SUPERVISOR_CALLANALYSIS)) {
+            switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
+        }
 
     }
 
@@ -1666,6 +1645,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_NON_FIELD);
         TaskFragment taskFragment = (TaskFragment) fm.findFragmentByTag(MENU_TASK_NEW);
         BackUpSellerFragment backUpSellerFragment = (BackUpSellerFragment) fm.findFragmentByTag(MENU_BACKUP_SELLER);
+
+        SupervisorMapFragment supervisorMapFragment = (SupervisorMapFragment) fm.findFragmentByTag(fragmentName);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1779,6 +1760,17 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (backUpSellerFragment != null && fragmentName.equals(MENU_BACKUP_SELLER)
                 && backUpSellerFragment.isVisible()) {
             return;
+        } else if (supervisorMapFragment != null && (fragmentName.equals(MENU_SUPERVISOR_REALTIME))
+                && supervisorMapFragment.isVisible()) {
+            return;
+        }
+        else if (supervisorMapFragment != null && (fragmentName.equals(MENU_SUPERVISOR_MOVEMENT))
+                && supervisorMapFragment.isVisible()) {
+            return;
+        }
+        else if (supervisorMapFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
+                && supervisorMapFragment.isVisible()) {
+            return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
@@ -1854,6 +1846,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(taskFragment);
         if (backUpSellerFragment != null)
             ft.remove(backUpSellerFragment);
+        if(supervisorMapFragment!=null)
+            ft.remove(supervisorMapFragment);
 
         Bundle bndl;
         Fragment fragment;
@@ -2171,6 +2165,34 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_BACKUP_SELLER);
+                break;
+
+            case MENU_SUPERVISOR_REALTIME:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                bndl.putInt("TrackingType",0);
+                fragment = new SupervisorMapFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_SUPERVISOR_REALTIME);
+                break;
+            case MENU_SUPERVISOR_MOVEMENT:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                bndl.putInt("TrackingType",1);
+                fragment = new SupervisorMapFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_SUPERVISOR_MOVEMENT);
+                break;
+            case MENU_SUPERVISOR_CALLANALYSIS:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                bndl.putInt("TrackingType",2);
+                fragment = new SupervisorMapFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_SUPERVISOR_CALLANALYSIS);
                 break;
         }
         ft.commit();
