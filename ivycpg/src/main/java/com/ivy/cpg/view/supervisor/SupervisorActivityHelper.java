@@ -17,11 +17,9 @@ import android.graphics.Rect;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -42,22 +40,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +56,9 @@ import java.util.Locale;
 
 public class SupervisorActivityHelper {
 
-    boolean isMarkerRotating;
+    private boolean isMarkerRotating;
+
+    private HashMap<String, DetailsBo> detailsBoHashMap = new HashMap<>();
 
     private static SupervisorActivityHelper instance = null;
 
@@ -79,11 +72,19 @@ public class SupervisorActivityHelper {
         return instance;
     }
 
+    HashMap<String, DetailsBo> getDetailsBoHashMap() {
+        return detailsBoHashMap;
+    }
+
+    private void setDetailsBoHashMap(HashMap<String, DetailsBo> detailsBoHashMap) {
+        this.detailsBoHashMap = detailsBoHashMap;
+    }
+
     void loginToFirebase(final Context context) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null || FirebaseDatabase.getInstance() == null) {
-            String email = context.getString(R.string.firebase_email);
-            String password = context.getString(R.string.firebase_password);
+            String email = LocationConstants.FIREBASE_EMAIL;
+            String password = LocationConstants.FIREBASE_PASSWORD;
             // Authenticate with Firebase and subscribe to updates
             FirebaseAuth.getInstance().signInWithEmailAndPassword(
                     email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -102,20 +103,20 @@ public class SupervisorActivityHelper {
     /**
      * Get all Seller Complete details when updated or inserted
      */
-    void subscribeSellerLocationUpdates(Context context, final Seller seller,int trackingType) {
+    void subscribeSellerLocationUpdates(Context context, final Seller seller, int trackingType) {
 
-        if(FirebaseDatabase.getInstance() == null){
+        if (FirebaseDatabase.getInstance() == null) {
             loginToFirebase(context);
-        }else {
+        } else {
 
             String path;
 
-            if(trackingType == 1)
-                path = "/movement_tracking/";
-            else
+            if (trackingType == 2)
                 path = "/activity_tracking/";
+            else
+                path = "/movement_tracking/";
 
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(context.getString(R.string.firebase_path) + path);
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(LocationConstants.FIREBASE_BASE_PATH + path);
 
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
@@ -149,11 +150,11 @@ public class SupervisorActivityHelper {
      */
     void subscribeSellersUpdates(Context context, final Seller seller) {
 
-        if(FirebaseDatabase.getInstance() == null){
+        if (FirebaseDatabase.getInstance() == null) {
             loginToFirebase(context);
-        }else {
+        } else {
 
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(context.getString(R.string.firebase_path) + "/Attendance/");
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(LocationConstants.FIREBASE_BASE_PATH + "/Attendance/");
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -171,9 +172,9 @@ public class SupervisorActivityHelper {
     /**
      * Selected Seller Details From Firebase
      */
-    void subscribeSellerDetails(final Context context, final Seller seller,String pathNode) {
+    void subscribeSellerDetails(final Context context, final Seller seller, String pathNode) {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(context.getString(R.string.firebase_path) + pathNode);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(LocationConstants.FIREBASE_BASE_PATH + pathNode);
 
         ref.orderByKey().addChildEventListener(new ChildEventListener() {
             @Override
@@ -205,7 +206,7 @@ public class SupervisorActivityHelper {
     /**
      * Return the seller Count under Supervisor
      */
-    int getSellersCount(Context context, BusinessModel bmodel){
+    int getSellersCount(Context context, BusinessModel bmodel) {
         int sellerCount = 0;
         DBUtil db = null;
         try {
@@ -216,33 +217,44 @@ public class SupervisorActivityHelper {
             db.openDataBase();
 
             StringBuffer sb = new StringBuffer();
-            sb.append("select count(userid) from Usermaster where isDeviceUser=0 AND ");
+            sb.append("select userid,username from Usermaster where isDeviceUser=0 AND ");
             if (bmodel.configurationMasterHelper.userLevel != null && bmodel.configurationMasterHelper.userLevel.length() > 0)
                 sb.append("userLevel in (" + bmodel.configurationMasterHelper.userLevel + ")");
             else
                 sb.append("relationship !='PARENT'");
 
             Cursor c = db.selectSQL(sb.toString());
-            if (c != null && c.moveToNext()) {
-                sellerCount = c.getInt(0);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    DetailsBo detailsBo = new DetailsBo();
+                    detailsBo.setUserId(c.getInt(0));
+                    detailsBo.setUserName(c.getString(1));
+                    detailsBo.setStatus("Absent");
+                    detailsBoHashMap.put(String.valueOf(c.getInt(0)),detailsBo);
+                }
                 c.close();
+
+                setDetailsBoHashMap(detailsBoHashMap);
+
+                sellerCount = detailsBoHashMap.size();
             }
 
             db.closeDB();
 
-        }catch(Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
-            if (db!=null)
+            if (db != null)
                 db.closeDB();
         }
 
         return sellerCount;
     }
 
+
     /**
      * Will return Address from Latlong
      */
-    String getAddressLatLong(Context context,LatLng latLng){
+    String getAddressLatLong(Context context, LatLng latLng) {
         StringBuilder sb = new StringBuilder();
 
         Geocoder gc = new Geocoder(context, Locale.getDefault());
@@ -252,12 +264,12 @@ public class SupervisorActivityHelper {
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
                 for (int i = 0; i < address.getMaxAddressLineIndex(); i++)
-                    sb.append(address.getAddressLine(i)!=null?address.getAddressLine(i):"").append("\n");
-                sb.append(address.getLocality()!=null?address.getLocality():"").append("\n");
-                sb.append(address.getPostalCode()!=null?address.getPostalCode():"").append("\n");
-                sb.append(address.getCountryName()!=null?address.getCountryName():"");
+                    sb.append(address.getAddressLine(i) != null ? address.getAddressLine(i) : "").append("\n");
+                sb.append(address.getLocality() != null ? address.getLocality() : "").append("\n");
+                sb.append(address.getPostalCode() != null ? address.getPostalCode() : "").append("\n");
+                sb.append(address.getCountryName() != null ? address.getCountryName() : "");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
         return sb.toString();
@@ -292,7 +304,8 @@ public class SupervisorActivityHelper {
 //                                .build()));
 
                         float bearing = getBearing(startPosition, destination);
-                        if (bearing>=0)marker.setRotation(getBearing(startPosition, destination));
+                        if (bearing >= 0)
+                            marker.setRotation(getBearing(startPosition, destination));
                     } catch (Exception ex) {
                     }
                 }
@@ -329,32 +342,32 @@ public class SupervisorActivityHelper {
         return -1;
     }
 
-    String getTimeFromMillis(String millis){
+    String getTimeFromMillis(String millis) {
         if (millis == null || millis.trim().length() == 0 || millis.equalsIgnoreCase("0"))
             return "";
 
-        SimpleDateFormat formatter= new SimpleDateFormat("HH:mm:ss", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.US);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(Long.valueOf(millis));
         // Pass date object
         return formatter.format(calendar.getTime());
     }
 
-    Bitmap setMarkerDrawable(int number,Context context) {
+    Bitmap setMarkerDrawable(int number, Context context) {
         int background = R.drawable.location_icon;
 
-        Bitmap icon = drawTextToBitmap(background, String.valueOf(number),context);
+        Bitmap icon = drawTextToBitmap(background, String.valueOf(number), context);
 
         return icon;
     }
 
-    private Bitmap drawTextToBitmap(int gResId, String gText,Context context) {
+    private Bitmap drawTextToBitmap(int gResId, String gText, Context context) {
         Resources resources = context.getResources();
         float scale = resources.getDisplayMetrics().density;
         Bitmap bitmap = BitmapFactory.decodeResource(resources, gResId);
         android.graphics.Bitmap.Config bitmapConfig = bitmap.getConfig();
 
-        if ( bitmapConfig == null ) {
+        if (bitmapConfig == null) {
             bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
         }
         bitmap = bitmap.copy(bitmapConfig, true);
@@ -367,13 +380,12 @@ public class SupervisorActivityHelper {
 
         Rect bounds = new Rect();
         paint.getTextBounds(gText, 0, gText.length(), bounds);
-        int x = (bitmap.getWidth() - bounds.width())/2;
-        int y = (bitmap.getHeight() + bounds.height())/3;
+        int x = (bitmap.getWidth() - bounds.width()) / 2;
+        int y = (bitmap.getHeight() + bounds.height()) / 3;
         canvas.drawText(gText, x, y, paint);
 
         return bitmap;
     }
-
 
     void animateMarkerNew(final LatLng destination, final Marker marker, final GoogleMap googleMap) {
 
@@ -401,7 +413,8 @@ public class SupervisorActivityHelper {
 //                                .build()));
 
                         float bearing = getBearing(startPosition, destination);
-                        if (bearing>=0)marker.setRotation(getBearing(startPosition, destination));
+                        if (bearing >= 0)
+                            marker.setRotation(getBearing(startPosition, destination));
                     } catch (Exception ex) {
                     }
                 }
@@ -422,29 +435,10 @@ public class SupervisorActivityHelper {
         }
     }
 
-
-    Bitmap setMapMarkerIcon(Context context,int color){
-
-        Bitmap sourceBitmap;
-        if(color == Color.RED)
-            sourceBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.map_marker_car);
-        else
-            sourceBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.map_marker_car_red);
-
-//        Bitmap resultBitmap = sourceBitmap.copy(sourceBitmap.getConfig(),true);
-//        Paint paint = new Paint();
-//        ColorFilter filter = new LightingColorFilter(color, 1);
-//        paint.setColorFilter(filter);
-//        Canvas canvas = new Canvas(resultBitmap);
-//        canvas.drawBitmap(resultBitmap, 0, 0, paint);
-
-        return sourceBitmap;
-    }
-
     /**
- * Need To check these method for animation marker
- */
-    private void animateMarker(final GoogleMap mMap,final Marker marker, final LatLng toPosition, final Location toLocation, final boolean hideMarker) {
+     * Need To check these method for animation marker
+     */
+    private void animateMarker(final GoogleMap mMap, final Marker marker, final LatLng toPosition, final Location toLocation, final boolean hideMarker) {
 
         if (mMap == null || marker == null || marker.getPosition() == null) {
             return;
@@ -519,7 +513,7 @@ public class SupervisorActivityHelper {
         });
     }
 
-    private void animateMarker(GoogleMap myMap, final Marker marker,final LatLng latLng) {
+    private void animateMarker(GoogleMap myMap, final Marker marker, final LatLng latLng) {
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         Projection proj = myMap.getProjection();
@@ -548,7 +542,7 @@ public class SupervisorActivityHelper {
         });
     }
 
-    private double bearingBetweenLocations(LatLng latLng1,LatLng latLng2) {
+    private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
 
         double PI = 3.14159;
         double lat1 = latLng1.latitude * PI / 180;
@@ -572,7 +566,7 @@ public class SupervisorActivityHelper {
 
     private void rotateMarker(final Marker marker, final float toRotation) {
 
-        if(!isMarkerRotating) {
+        if (!isMarkerRotating) {
             final Handler handler = new Handler();
             final long start = SystemClock.uptimeMillis();
             final float startRotation = marker.getRotation();
@@ -602,7 +596,7 @@ public class SupervisorActivityHelper {
         }
     }
 
-    private void animateMarker(final GoogleMap mMap,final Marker marker,final Location location){
+    private void animateMarker(final GoogleMap mMap, final Marker marker, final Location location) {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

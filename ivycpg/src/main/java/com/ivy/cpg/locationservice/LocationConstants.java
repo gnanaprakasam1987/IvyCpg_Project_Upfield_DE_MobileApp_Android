@@ -26,5 +26,8 @@ public class LocationConstants {
     public static final String TILTING = "TILTING";
     public static final String UNKNOWN = "UNKNOWN";
 
+    public static final String FIREBASE_EMAIL= "";
+    public static final String FIREBASE_PASSWORD ="";
+    public static final String FIREBASE_BASE_PATH="";
 
 }

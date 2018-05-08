@@ -72,7 +72,7 @@ android {
 
     buildTypes {
         debug {
-            resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
+            resValue "string", "google_maps_api_key", "AIzaSyBrL2q-4N0xGxS7Y_f3FcF9Ec1XdL6VDk4"
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
         }

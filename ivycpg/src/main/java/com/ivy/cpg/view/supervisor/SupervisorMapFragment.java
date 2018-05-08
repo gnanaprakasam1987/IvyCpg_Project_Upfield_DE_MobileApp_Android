@@ -2,7 +2,6 @@ package com.ivy.cpg.view.supervisor;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -30,7 +29,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.ivy.maplib.MapWrapperLayout;
-import com.ivy.maplib.OnInfoWindowElemTouchListener;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -39,12 +37,12 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class SupervisorMapFragment extends IvyBaseFragment implements
         OnMapReadyCallback, Seller,View.OnClickListener,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener {
 
     private BusinessModel bmodel;
+    View view;
     private HashMap<String, DetailsBo> userHashmap = new HashMap<>();
     private GoogleMap mMap;
     boolean isFirst = true;
@@ -54,14 +52,11 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     private int totalSellerCount = 0;
     MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
-    private OnInfoWindowElemTouchListener infoButtonListener;
-    private TextView tvMapInfoUserName,tvUserName , tvTimeIn , tvTimeOut , tvBattery , tvActivity, tvAddress, tvLastSync ;
-    private ImageView sellerInfoNavigate;
-    private LinearLayout startSellerMap,timeLayout;
+    private TextView tvMapInfoUserName,tvUserName , tvTimeIn , tvTimeOut , tvBattery ,
+            tvActivity, tvAddress, tvLastSync,tvOutletCovered ;
+    private LinearLayout timeLayout,routeLayout,infoWindowLayout,bottomLayout;
 
-    private LinearLayout infoWindowLayout;
-
-    private int trackingType = 2; //0 - RealTime, 1 - Movement Tracking, 2 - Call analysis
+    private int trackingType; //0 - RealTime, 1 - Movement Tracking, 2 - Call analysis
 
 
     @Override
@@ -82,7 +77,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_supervisor_home, container, false);
+        view = inflater.inflate(R.layout.activity_supervisor_home, container, false);
 
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -99,8 +94,10 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         try {
             if (extras == null)
                 setScreenTitle(bmodel.getMenuName("MENU_SUPERVISOR"));
-            else
+            else {
+                trackingType = extras.getInt("TrackingType");
                 setScreenTitle(extras.getString("screentitle"));
+            }
         } catch (Exception e) {
 
             setScreenTitle("MENU_SUPERVISOR");
@@ -135,6 +132,13 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         tvActivity = view.findViewById(R.id.tv_activity);
         tvAddress = view.findViewById(R.id.tv_address);
         timeLayout = view.findViewById(R.id.time_layout);
+        routeLayout = view.findViewById(R.id.route_layout);
+        bottomLayout = view.findViewById(R.id.bottom_layout);
+        tvOutletCovered = view.findViewById(R.id.tv_outlet_covered);
+        tvLastSync = view.findViewById(R.id.tv_time);
+
+        (view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        (view.findViewById(R.id.view_dotted_line_end)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         ((TextView)view.findViewById(R.id.tv_header_ttl_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         ((TextView)view.findViewById(R.id.tv_header_market_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -150,29 +154,8 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
         mapWrapperLayout = view.findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(SupervisorMapFragment.this.getActivity(), 39 + 20));
-//
+
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
-//        tvTimeIn = mymarkerview.findViewById(R.id.tv_time_in);
-//        tvTimeOut = mymarkerview.findViewById(R.id.tv_time_out);
-//        tvBattery = mymarkerview.findViewById(R.id.tv_battery);
-//        tvActivity = mymarkerview.findViewById(R.id.tv_activity);
-//        tvAddress = mymarkerview.findViewById(R.id.tv_address);
-//        tvLastSync = mymarkerview.findViewById(R.id.tv_last_sync);
-//        sellerInfoNavigate = mymarkerview.findViewById(R.id.user_in_work);
-//        startSellerMap = mymarkerview.findViewById(R.id.btn_layout);
-//        timeLayout = mymarkerview.findViewById(R.id.time_layout);
-//
-//        infoButtonListener = new OnInfoWindowElemTouchListener(startSellerMap){
-//            @Override
-//            protected void onClickConfirmed(View v, Marker marker) {
-//
-//                Intent intent = new Intent(getActivity(),SellerMapViewActivity.class);
-//                intent.putExtra("SellerId",marker.getTitle());
-//                startActivity(intent);
-//
-//            }
-//        };
-//        startSellerMap.setOnTouchListener(infoButtonListener);
 
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
 
@@ -222,6 +205,33 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         //Initialize the firebase instance and update the seller details
         SupervisorActivityHelper.getInstance().subscribeSellersUpdates(getContext(),this);
 
+        totalSeller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),SellerListActivity.class);
+                intent.putExtra("TabPos",0);
+                startActivity(intent);
+            }
+        });
+
+        absentSeller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),SellerListActivity.class);
+                intent.putExtra("TabPos",1);
+                startActivity(intent);
+            }
+        });
+
+        marketSeller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),SellerListActivity.class);
+                intent.putExtra("TabPos",2);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -241,13 +251,8 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         mMap = googleMap;
         mMap.setMaxZoomPreference(24);
         mMap.getUiSettings().setMapToolbarEnabled(false);
-//        if(trackingType != 0)
-//            mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
-
-        SupervisorActivityHelper.getInstance().subscribeSellerLocationUpdates(getContext(),this,trackingType);
-
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
@@ -256,6 +261,8 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                     infoWindowLayout.setVisibility(View.GONE);
             }
         });
+
+        SupervisorActivityHelper.getInstance().subscribeSellerLocationUpdates(getContext(),this,trackingType);
     }
 
     @Override
@@ -353,10 +360,16 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
         int outSellerCount = 0;
         for (DataSnapshot s : dataSnapshot.getChildren()) {
-            if (s.child("status").getValue() != null)
+            if (s.child("status").getValue() != null) {
                 if (!s.child("status").getValue().toString().equalsIgnoreCase("IN")) {
                     outSellerCount = outSellerCount + 1;
                 }
+            }
+
+            DetailsBo detailsBo = SupervisorActivityHelper.getInstance().getDetailsBoHashMap().get(s.getKey());
+            if(detailsBo!=null){
+                detailsBo.setStatus("In Market");
+            }
         }
 
         outSeller.setText(String.valueOf(outSellerCount));
@@ -377,12 +390,11 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     public boolean onMarkerClick(Marker marker) {
         Commons.print("on Marker Click called");
 
-        marker.showInfoWindow();
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
 
-        if(infoWindowLayout.getVisibility() == View.VISIBLE)
-            infoWindowLayout.setVisibility(View.GONE);
-        else
-            showInfoWindow(marker);
+        marker.showInfoWindow();
+        showInfoWindow(marker);
+
         return true;
     }
 
@@ -402,39 +414,36 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             String battery = "Battery <b>" + detailsBo.getBatterStatus() + "% </b>";
             tvBattery.setText(Html.fromHtml(battery));
 
-//            String syncTime = "Last Sync <b>" + SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getTime()) + "</b>";
-//            tvLastSync.setText(Html.fromHtml(syncTime));
+            tvLastSync.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getTime()));
 
-            if (trackingType != 0) {
-//                sellerInfoNavigate.setImageResource(R.drawable.ic_double_right_arrow);
-                timeLayout.setVisibility(View.GONE);
+            String address = "Address <b>" +
+                    SupervisorActivityHelper.getInstance().getAddressLatLong(getContext(), detailsBo.getMarker().getPosition()) + " </b>";
+            tvAddress.setText(Html.fromHtml(address));
 
-                String address = "Address <b>" +
-                        SupervisorActivityHelper.getInstance().getAddressLatLong(getContext(), detailsBo.getMarker().getPosition()) + " </b>";
-                tvAddress.setText(Html.fromHtml(address));
+            tvTimeIn.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getInTime()));
+            tvTimeOut.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getOutTime()));
 
-                mymarkerview.findViewById(R.id.view_dotted_line).setVisibility(View.GONE);
-                mymarkerview.findViewById(R.id.view_dotted_line_end).setVisibility(View.GONE);
-
-                infoWindowLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(),SellerMapViewActivity.class);
-                        intent.putExtra("SellerId",marker.getSnippet());
-                        intent.putExtra("screentitle",marker.getTitle());
-                        intent.putExtra("TrackingType",trackingType);
-                        startActivity(intent);
-                    }
-                });
-
-            } else {
-
-                tvTimeIn.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getInTime()));
-                tvTimeOut.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getOutTime()));
-
-                tvAddress.setVisibility(View.GONE);
-
+            if(trackingType == 0){
+                bottomLayout.setVisibility(View.GONE);
+                timeLayout.setVisibility(View.VISIBLE);
             }
+            else if (trackingType == 1) {
+                timeLayout.setVisibility(View.GONE);
+            }else if (trackingType == 2){
+                timeLayout.setVisibility(View.VISIBLE);
+                tvOutletCovered.setVisibility(View.VISIBLE);
+            }
+
+            routeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), SellerMapViewActivity.class);
+                    intent.putExtra("SellerId", marker.getSnippet());
+                    intent.putExtra("screentitle", marker.getTitle());
+                    intent.putExtra("TrackingType", trackingType);
+                    startActivity(intent);
+                }
+            });
 
         }
     }

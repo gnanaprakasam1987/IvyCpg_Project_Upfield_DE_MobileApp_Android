@@ -55,11 +55,11 @@
                     android:layout_weight="3"
                     android:text="Total Seller"
                     android:gravity="center"
-                    android:textColor="@color/RED"/>
+                    android:textColor="@color/FullBlack"/>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/activity_divider_height"
+                    android:layout_height="@dimen/plano_list_footer_line"
                     android:layout_margin="@dimen/dimen_10dp"
                     android:background="@color/black_bg1" />
 
@@ -110,11 +110,11 @@
                     android:layout_weight="3"
                     android:text="In Market Seller"
                     android:gravity="center"
-                    android:textColor="@color/RED"/>
+                    android:textColor="@color/FullBlack"/>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/activity_divider_height"
+                    android:layout_height="@dimen/plano_list_footer_line"
                     android:layout_margin="@dimen/dimen_10dp"
                     android:background="@color/black_bg1" />
 
@@ -174,11 +174,11 @@
                     android:layout_weight="3"
                     android:text="Absent Sellers"
                     android:gravity="center"
-                    android:textColor="@color/RED"/>
+                    android:textColor="@color/FullBlack"/>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/activity_divider_height"
+                    android:layout_height="@dimen/plano_list_footer_line"
                     android:layout_margin="@dimen/dimen_10dp"
                     android:background="@color/black_bg1" />
 
@@ -229,11 +229,11 @@
                     android:layout_weight="3"
                     android:text="Out Sellers"
                     android:gravity="center"
-                    android:textColor="@color/RED"/>
+                    android:textColor="@color/FullBlack"/>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/activity_divider_height"
+                    android:layout_height="@dimen/plano_list_footer_line"
                     android:layout_margin="@dimen/dimen_10dp"
                     android:background="@color/black_bg1" />
 

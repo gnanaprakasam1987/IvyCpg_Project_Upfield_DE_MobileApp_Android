@@ -3,11 +3,13 @@ package com.ivy.cpg.view.supervisor;
 
 import com.google.android.gms.maps.model.Marker;
 
-public class DetailsBo {
+import java.io.Serializable;
 
-    private String userName,status,activityName,inTime,outTime,time;
+public class DetailsBo implements Serializable{
+
+    private String userName,status,activityName,inTime,outTime,time,retailerName,orderValue;
     private int userId,batterStatus;
-    private boolean isMockLocationEnabled,isGpsEnabled;
+    private boolean isMockLocationEnabled,isGpsEnabled,isDeviated;
 
     private Marker marker;
 
@@ -97,5 +99,29 @@ public class DetailsBo {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getRetailerName() {
+        return retailerName;
+    }
+
+    public void setRetailerName(String retailerName) {
+        this.retailerName = retailerName;
+    }
+
+    public String getOrderValue() {
+        return orderValue;
+    }
+
+    public void setOrderValue(String orderValue) {
+        this.orderValue = orderValue;
+    }
+
+    public boolean isDeviated() {
+        return isDeviated;
+    }
+
+    public void setDeviated(boolean deviated) {
+        isDeviated = deviated;
     }
 }

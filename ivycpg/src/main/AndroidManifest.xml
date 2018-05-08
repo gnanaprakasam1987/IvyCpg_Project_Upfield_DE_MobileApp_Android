@@ -801,7 +801,8 @@
         <activity
             android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity"></activity>
+        <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity" />
+        <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity"></activity>
     </application>
 
 </manifest>

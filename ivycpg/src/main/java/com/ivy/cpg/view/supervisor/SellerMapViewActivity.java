@@ -3,7 +3,6 @@ package com.ivy.cpg.view.supervisor;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,9 +11,9 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,10 +31,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
+import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
 import org.json.JSONObject;
@@ -51,9 +50,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements OnMapReadyCallback,Seller {
+public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements OnMapReadyCallback,Seller,GoogleMap.OnMarkerClickListener {
 
-    private BusinessModel bmodel;
     private GoogleMap mMap;
     private LinkedHashMap<String,DetailsBo> sellerDetailHashmap = new LinkedHashMap<>();
     private String id;
@@ -62,6 +60,12 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     ArrayList<LatLng> latLngArrayList = new ArrayList<>();
     private Marker marker;
     private int trackingType;
+    MapWrapperLayout mapWrapperLayout;
+    private ViewGroup mymarkerview;
+    private TextView tvMapInfoUserName,tvUserName , tvTimeIn , tvTimeOut , tvBattery ,
+            tvActivity, tvAddress, tvLastSync,tvOutletCovered ;
+
+    private LinearLayout timeLayout,routeLayout,infoWindowLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,9 +85,6 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         }
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
 
         Bundle extras = getIntent().getExtras();
         try {
@@ -113,6 +114,31 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     private void initViews() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_info_window, null);
+
+        (findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        (findViewById(R.id.view_dotted_line_end)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+
+        infoWindowLayout = findViewById(R.id.user_info_layout);
+        infoWindowLayout.setVisibility(View.GONE);
+
+        tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
+
+        tvUserName = findViewById(R.id.tv_user_name);
+        tvTimeIn = findViewById(R.id.tv_time_in);
+        tvTimeOut = findViewById(R.id.tv_time_out);
+        tvBattery = findViewById(R.id.tv_battery);
+        tvActivity = findViewById(R.id.tv_activity);
+        tvAddress = findViewById(R.id.tv_address);
+        timeLayout = findViewById(R.id.time_layout);
+        routeLayout = findViewById(R.id.route_layout);
+        tvOutletCovered = findViewById(R.id.tv_outlet_covered);
+        tvLastSync = findViewById(R.id.tv_time);
+
+        mapWrapperLayout = findViewById(R.id.map_wrap_layout);
+        mapWrapperLayout.init(mMap, getPixelsFromDp(this, 39 + 20));
     }
 
     @Override
@@ -120,7 +146,17 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         mMap = googleMap;
         mMap.setMaxZoomPreference(24);
         mMap.getUiSettings().setMapToolbarEnabled(false);
-        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(SellerMapViewActivity.this));
+        mMap.setOnMarkerClickListener(this);
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if(infoWindowLayout.getVisibility() == View.VISIBLE)
+                    infoWindowLayout.setVisibility(View.GONE);
+            }
+        });
 
     }
 
@@ -135,11 +171,15 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             String userName = value.get("userName")!=null?value.get("userName").toString():"";
             String status = value.get("status")!=null?value.get("status").toString():"";
             String activityStatus = value.get("activityType")!=null?value.get("activityType").toString():"";
-            String inTime = SupervisorActivityHelper.getInstance().getTimeFromMillis(value.get("inTime").toString());
-            String outTime = SupervisorActivityHelper.getInstance().getTimeFromMillis(value.get("outTime").toString());
+            String inTime = value.get("inTime")!=null?value.get("inTime").toString():"0";
+            String outTime = value.get("outTime")!=null?value.get("outTime").toString():"0";
             int batteryStatus = Integer.valueOf(value.get("batterStatus")!=null?value.get("batterStatus").toString():"0");
             double lat = Double.parseDouble(value.get("latitude")!= null?value.get("latitude").toString():"0");
             double lng = Double.parseDouble(value.get("latitude")!= null?value.get("longitude").toString():"0");
+
+            String retailerName = value.get("RetailerName")!=null?value.get("RetailerName").toString():"";
+            String orderValue = value.get("orderValue")!=null?value.get("orderValue").toString():"";
+            boolean isDeviated = Boolean.valueOf(value.get("isDeviated")!=null?value.get("isDeviated").toString():"false");
 
             LatLng destLatLng = new LatLng(lat, lng);
 
@@ -157,6 +197,9 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             detailsBo.setTime(key);
             detailsBo.setMarker(mMap.addMarker(new MarkerOptions().flat(true).
                     title(userName).position(destLatLng).snippet(key).icon(icon)));
+            detailsBo.setRetailerName(retailerName);
+            detailsBo.setOrderValue(orderValue);
+            detailsBo.setDeviated(isDeviated);
 
             sellerDetailHashmap.put(key,detailsBo);
 
@@ -185,14 +228,60 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
     }
 
-    private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Commons.print("on Marker Click called");
 
-        private final View mymarkerview;
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
 
-        CustomInfoWindowAdapter(Activity context) {
-            mymarkerview = context.getLayoutInflater()
-                    .inflate(R.layout.map_custom_info_window, null);
+        marker.showInfoWindow();
+        showInfoWindow(marker);
+
+        return true;
+    }
+
+    private void showInfoWindow(final Marker marker){
+
+        DetailsBo detailsBo = sellerDetailHashmap.get(marker.getSnippet());
+
+        if(detailsBo != null) {
+
+            infoWindowLayout.setVisibility(View.VISIBLE);
+
+            String activity = "Activity <b>" + detailsBo.getActivityName() + "</b>";
+            tvActivity.setText(Html.fromHtml(activity));
+
+            String battery = "Battery <b>" + detailsBo.getBatterStatus() + "% </b>";
+            tvBattery.setText(Html.fromHtml(battery));
+
+            tvLastSync.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getTime()));
+
+            String address = "Address <b>" +
+                    SupervisorActivityHelper.getInstance().getAddressLatLong(this, detailsBo.getMarker().getPosition()) + " </b>";
+            tvAddress.setText(Html.fromHtml(address));
+
+            tvTimeIn.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getInTime()));
+            tvTimeOut.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getOutTime()));
+
+            routeLayout.setVisibility(View.GONE);
+
+            if (trackingType == 1) {
+                timeLayout.setVisibility(View.GONE);
+                tvUserName.setText(detailsBo.getUserName());
+                (findViewById(R.id.view_dotted_line_end)).setVisibility(View.GONE);
+            }else if (trackingType == 2){
+                timeLayout.setVisibility(View.VISIBLE);
+                tvOutletCovered.setVisibility(View.VISIBLE);
+                tvUserName.setText(detailsBo.getRetailerName());
+
+                findViewById(R.id.ll_sales_value).setVisibility(View.VISIBLE);
+                ((TextView)findViewById(R.id.tv_sales_value)).setText(detailsBo.getOrderValue());
+            }
+
         }
+    }
+
+    class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         @Override
         public View getInfoContents(Marker marker) {
@@ -201,55 +290,22 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
         @Override
         public View getInfoWindow(final Marker marker) {
-            TextView tvUserName = mymarkerview.findViewById(R.id.tv_user_name);
-            TextView tvBattery = mymarkerview.findViewById(R.id.tv_battery);
-            TextView tvActivity = mymarkerview.findViewById(R.id.tv_activity);
-            ImageView imageView = mymarkerview.findViewById(R.id.user_in_work);
-            TextView tvLastSync = mymarkerview.findViewById(R.id.tv_last_sync);
-            TextView tvAddress = mymarkerview.findViewById(R.id.tv_address);
 
-            LinearLayout timeLayout = mymarkerview.findViewById(R.id.time_layout);
+            DetailsBo detailsBo = sellerDetailHashmap.get(marker.getSnippet());
 
-            try{
+            if(detailsBo != null) {
+                if (trackingType == 1)
+                    tvMapInfoUserName.setText(detailsBo.getUserName());
+                else if (trackingType == 2)
+                    tvMapInfoUserName.setText(detailsBo.getRetailerName());
 
-                String time = marker.getSnippet();
+            }else
+                tvMapInfoUserName.setText(marker.getTitle());
 
-                for(DetailsBo detailsBo : sellerDetailHashmap.values()){
-
-                    if(detailsBo.getTime().equalsIgnoreCase(time)) {
-
-                        tvUserName.setText(detailsBo.getUserName());
-                        tvUserName.setVisibility(View.GONE);
-
-                        String activity = "Activity <b>" + detailsBo.getActivityName() + "</b>";
-                        tvActivity.setText(Html.fromHtml(activity));
-
-                        String battery = "Battery <b>" + detailsBo.getBatterStatus() + "% </b>";
-                        tvBattery.setText(Html.fromHtml(battery));
-
-                        String syncTime = "Last Sync <b>" + SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getTime()) + "</b>";
-                        tvLastSync.setText(Html.fromHtml(syncTime));
-
-                        String address = "Address <b>" +
-                                SupervisorActivityHelper.getInstance().getAddressLatLong(SellerMapViewActivity.this,detailsBo.getMarker().getPosition())+ " </b>";
-                        tvAddress.setText(Html.fromHtml(address));
-
-                        timeLayout.setVisibility(View.GONE);
-                        imageView.setVisibility(View.GONE);
-                        mymarkerview.findViewById(R.id.view_dotted_line).setVisibility(View.GONE);
-                        mymarkerview.findViewById(R.id.view_dotted_line_end).setVisibility(View.GONE);
-
-                        break;
-                    }
-                }
-
-            }catch(Exception e){
-                Commons.printException("Error",e);
-            }
+            mapWrapperLayout.setMarkerWithInfoWindow(marker, mymarkerview);
 
             return mymarkerview;
         }
-
     }
 
     @Override
@@ -264,6 +320,7 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         int i = item.getItemId();
         if (i == android.R.id.home) {
             finish();
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }else if(i == R.id.menu_route){
             drawRoute();
         }else if(i == R.id.menu_navigate){
@@ -289,7 +346,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
 //        String sensor = "sensor=false&units=metric";
         String alternatives = "alternatives=false&mode=driving";
-        String parameters = str_origin + "&" + str_dest + "&" + alternatives;
+        String mapKey = "key=AIzaSyBrL2q-4N0xGxS7Y_f3FcF9Ec1XdL6VDk4";
+        String parameters = str_origin + "&" + str_dest + "&" + alternatives+"&"+mapKey;
         String output = "json";
 
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
@@ -449,7 +507,6 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-
     /**
      * Animate the seller marker in map path
      */
@@ -532,6 +589,11 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         else if (begin.latitude < end.latitude && begin.longitude >= end.longitude)
             return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 270);
         return -1;
+    }
+
+    private int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
     }
 
 }

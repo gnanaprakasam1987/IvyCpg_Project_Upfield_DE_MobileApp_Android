@@ -144,7 +144,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_TASK_NEW = "MENU_TASK_NEW";
     private static final String MENU_PLANE_MAP = "MENU_PLANE_MAP";
     private static final String MENU_BACKUP_SELLER = "MENU_BACKUP_SELLER";
-    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
+    private static final String MENU_SUPERVISOR_REALTIME = "MENU_SUPERVISOR_REALTIME";
+    private static final String MENU_SUPERVISOR_MOVEMENT = "MENU_SUPERVISOR_MOVEMENT";
+    private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_CALLANALYSIS";
+//    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
 
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_GROOM_CS = "MENU_GROOM_CS";
@@ -272,7 +275,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_OFLNE_PLAN, R.drawable.ic_expense_icon);
         menuIcons.put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
         menuIcons.put(MENU_BACKUP_SELLER, R.drawable.ic_reallocation_icon);
-        menuIcons.put(MENU_SUPERVISOR, R.drawable.ic_new_retailer_icon);
+        menuIcons.put(MENU_SUPERVISOR_REALTIME, R.drawable.ic_new_retailer_icon);
+        menuIcons.put(MENU_SUPERVISOR_MOVEMENT, R.drawable.ic_new_retailer_icon);
+        menuIcons.put(MENU_SUPERVISOR_CALLANALYSIS, R.drawable.ic_new_retailer_icon);
 
         // Load the HHTMenuTable
         bmodel.configurationMasterHelper.downloadMainMenu();
@@ -1540,8 +1545,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 switchFragment(MENU_BACKUP_SELLER, menuItem.getMenuName());
             }
         }
-        else if (menuItem.getConfigCode().equals(MENU_SUPERVISOR)) {
-            switchFragment(MENU_SUPERVISOR, menuItem.getMenuName());
+        else if (menuItem.getConfigCode().equals(MENU_SUPERVISOR_REALTIME)
+                || menuItem.getConfigCode().equals(MENU_SUPERVISOR_MOVEMENT)
+                || menuItem.getConfigCode().equals(MENU_SUPERVISOR_CALLANALYSIS)) {
+            switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
         }
 
     }
@@ -1639,7 +1646,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         TaskFragment taskFragment = (TaskFragment) fm.findFragmentByTag(MENU_TASK_NEW);
         BackUpSellerFragment backUpSellerFragment = (BackUpSellerFragment) fm.findFragmentByTag(MENU_BACKUP_SELLER);
 
-        SupervisorMapFragment supervisorMapFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR);
+        SupervisorMapFragment supervisorMapFragment = (SupervisorMapFragment) fm.findFragmentByTag(fragmentName);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1753,7 +1760,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (backUpSellerFragment != null && fragmentName.equals(MENU_BACKUP_SELLER)
                 && backUpSellerFragment.isVisible()) {
             return;
-        } else if (supervisorMapFragment != null && fragmentName.equals(MENU_SUPERVISOR)
+        } else if (supervisorMapFragment != null && (fragmentName.equals(MENU_SUPERVISOR_REALTIME))
+                && supervisorMapFragment.isVisible()) {
+            return;
+        }
+        else if (supervisorMapFragment != null && (fragmentName.equals(MENU_SUPERVISOR_MOVEMENT))
+                && supervisorMapFragment.isVisible()) {
+            return;
+        }
+        else if (supervisorMapFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
                 && supervisorMapFragment.isVisible()) {
             return;
         }
@@ -2152,13 +2167,32 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_BACKUP_SELLER);
                 break;
 
-            case MENU_SUPERVISOR:
+            case MENU_SUPERVISOR_REALTIME:
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
+                bndl.putInt("TrackingType",0);
                 fragment = new SupervisorMapFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
-                        MENU_SUPERVISOR);
+                        MENU_SUPERVISOR_REALTIME);
+                break;
+            case MENU_SUPERVISOR_MOVEMENT:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                bndl.putInt("TrackingType",1);
+                fragment = new SupervisorMapFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_SUPERVISOR_MOVEMENT);
+                break;
+            case MENU_SUPERVISOR_CALLANALYSIS:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                bndl.putInt("TrackingType",2);
+                fragment = new SupervisorMapFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_SUPERVISOR_CALLANALYSIS);
                 break;
         }
         ft.commit();

@@ -2,6 +2,7 @@ package com.ivy.cpg.locationservice.realtime;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -10,6 +11,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -27,19 +29,24 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
 
-            String email = context.getString(R.string.firebase_email);
-            String password = context.getString(R.string.firebase_password);
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                    email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        Commons.print("Service Firebase Uth Success");
-                    } else {
-                        Commons.print("Service firebase onComplete: Failed=");
+            String email = LocationConstants.FIREBASE_EMAIL;
+            String password = LocationConstants.FIREBASE_PASSWORD;
+
+            if(email.trim().length() > 0 && password.trim().length() > 0) {
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                        email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Commons.print("Service Firebase Uth Success");
+                        } else {
+                            Commons.print("Service firebase onComplete: Failed=");
+                        }
                     }
-                }
-            });
+                });
+            }else{
+                Commons.print("Firebase : No User Found");
+            }
         }else{
             Commons.print("Firebase : User already Online");
         }
@@ -70,7 +77,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         }
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
-                child(context.getString(R.string.firebase_path)).child(pathNode).child(userId);
+                child(LocationConstants.FIREBASE_BASE_PATH).child(pathNode).child(userId);
         databaseReference.child("inTime").setValue(String.valueOf(System.currentTimeMillis()));
         databaseReference.child("outTime").setValue("");
         databaseReference.child("status").setValue("IN");
@@ -91,7 +98,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         }
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
-                child(context.getString(R.string.firebase_path)).child(pathNode).child(userId);
+                child(LocationConstants.FIREBASE_BASE_PATH).child(pathNode).child(userId);
         databaseReference.child("outTime").setValue(String.valueOf(System.currentTimeMillis()));
         databaseReference.child("status").setValue("Day Closed");
 //            FirebaseDatabase.getInstance().goOffline();
@@ -108,7 +115,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             userName = String.valueOf(userMasterBO.getUserName());
         }
 
-        final String path = context.getString(R.string.firebase_path) + "/" + nodePath + "/" + userId;
+        final String path = LocationConstants.FIREBASE_BASE_PATH + "/" + nodePath + "/" + userId;
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);
         ref.child("userId").setValue(userId);
         ref.child("userName").setValue(userName);
@@ -120,6 +127,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         ref.child("gpsEnabled").setValue(locationDetailBO.isGpsEnabled());
         ref.child("mockLocationEnabled").setValue(locationDetailBO.isMockLocationEnabled());
         ref.child("activityType").setValue(locationDetailBO.getActivityType());
+        ref.child("time").setValue(System.currentTimeMillis());
     }
 
     /**

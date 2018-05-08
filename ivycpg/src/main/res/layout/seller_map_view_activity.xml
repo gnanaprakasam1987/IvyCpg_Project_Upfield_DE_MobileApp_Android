@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -15,8 +14,9 @@
         android:id="@+id/map_wrap_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/topimage_view"
-        android:orientation="vertical">
+        android:layout_below="@+id/toolbar"
+        android:orientation="vertical"
+        >
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/map"
@@ -26,5 +26,8 @@
 
     </com.ivy.maplib.MapWrapperLayout>
 
+    <include layout="@layout/map_seller_info_layout"
+        android:id="@+id/user_info_layout"/>
 
-</LinearLayout>
+
+</RelativeLayout>
