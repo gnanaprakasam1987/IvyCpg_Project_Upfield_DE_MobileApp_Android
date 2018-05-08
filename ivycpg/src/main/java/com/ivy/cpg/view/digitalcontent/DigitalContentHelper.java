@@ -86,40 +86,33 @@ public class DigitalContentHelper {
 
             sb.append("SELECT Distinct DigitalContent.imgid,DigitalContent.GroupId," +
                     "IfNull(LocationId,0) AS LocationId," +
-                    "IfNull(ChannelId,0) AS ChannelId,Case  IFNULL(AttributeID ,-1) when -1  then '0' else '1' END as flag," +
-                    "IfNull(PriorityBiD,0) AS PriorityBiD," +
-                    "IfNull(RetailerID,0) AS RetailerID, IfNull(AccountID,0) AS AccountID " +
+                    "IfNull(ChannelId,0) AS ChannelId," +
+                    "IfNull(RetailerID,0) AS RetailerID," +
+                    "IfNull(AccountID,0) AS AccountID," +
+                    "IfNull(CounterID,0) AS CounterID " +
+
                     " FROM (SELECT  DISTINCT imgid,GroupId FROM DigitalContentMapping) AS DigitalContent " +
 
                     " LEFT JOIN  (SELECT DISTINCT imgid,GroupId,mappingid LocationId  FROM DigitalContentMapping " +
-                    " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode='LOCATION' " +
-                    "and listtype='DIGITAL_CONTENT_CRITERIA_TYPE')  LS ON DigitalContent.imgid=Ls.imgid and DigitalContent.GroupId=LS.GroupId " +
+                    " where mappingtype in('LOCATION'))  LS ON DigitalContent.imgid=Ls.imgid and DigitalContent.GroupId=LS.GroupId " +
 
-                    "LEFT JOIN (SELECT imgid,GroupId,mappingid ChannelId FROM DigitalContentMapping " +
-                    " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode in ('CHANNEL','SUBCHANNEL') " +
-                    " and listtype='DIGITAL_CONTENT_CRITERIA_TYPE') CS ON  DigitalContent.imgid=CS.imgid and DigitalContent.GroupId=CS.GroupId " +
+                    " LEFT JOIN (SELECT imgid,GroupId,mappingid ChannelId FROM DigitalContentMapping " +
+                    " where mappingtype in('CHL_L1','CHL_L2')) CS ON  DigitalContent.imgid=CS.imgid and DigitalContent.GroupId=CS.GroupId " +
 
-                    " LEFT JOIN (SELECT imgid,GroupId,mappingid AttributeID FROM DigitalContentMapping " +
-                    " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode='RTR_ATTRIBUTES' " +
-                    " and listtype='DIGITAL_CONTENT_CRITERIA_TYPE') AT ON  DigitalContent.imgid=AT.imgid and DigitalContent.GroupId=AT.GroupId " +
+                    " LEFT JOIN (SELECT DISTINCT imgid,GroupId,mappingid RetailerID FROM DigitalContentMapping " +
+                    " where mappingtype in('RETAILER')) RTR ON   DigitalContent.imgid=RTR.imgid and DigitalContent.GroupId=RTR.GroupId " +
 
-                    " LEFT JOIN (SELECT imgid,GroupId,mappingid PriorityBiD FROM DigitalContentMapping " +
-                    " INNER JOIN StandardListMaster on ListId= mappingtype WHERE ListCode='PRIORITY_PRD' " +
-                    " and  listtype='DIGITAL_CONTENT_CRITERIA_TYPE') PR ON  DigitalContent.imgid=PR.imgid and DigitalContent.GroupId=PR.GroupId " +
+                    " LEFT JOIN (SELECT DISTINCT imgid,GroupId,mappingid AccountID FROM DigitalContentMapping " +
+                    " where mappingtype in('ACCOUNT')) ACC ON   DigitalContent.imgid=ACC.imgid and DigitalContent.GroupId=ACC.GroupId " +
 
-                    " LEFT JOIN (SELECT imgid,GroupId,mappingid RetailerID FROM DigitalContentMapping " +
-                    " INNER JOIN StandardListMaster on ListId=mappingtype WHERE ListCode='RETAILER') RTR ON  " +
-                    " DigitalContent.imgid=RTR.imgid and DigitalContent.GroupId=RTR.GroupId " +
-
-                    " LEFT JOIN (SELECT imgid,GroupId,mappingid AccountID FROM DigitalContentMapping " +
-                    " INNER JOIN StandardListMaster on ListId=mappingtype WHERE ListCode='ACCOUNT') ACC ON  " +
-                    " DigitalContent.imgid=ACC.imgid and DigitalContent.GroupId=ACC.GroupId " +
+                    " LEFT JOIN (SELECT DISTINCT imgid,GroupId,mappingid CounterID FROM DigitalContentMapping " +
+                    " where mappingtype in('COUNTER')) CUN ON   DigitalContent.imgid=CUN.imgid and DigitalContent.GroupId=CUN.GroupId " +
 
                     " where ifNull(locationid,0) in(0" + locIdScheme + "," + mBModel.getRetailerMasterBO().getLocationId() + ")" +
                     " And ifnull(channelid,0) in (0" + channelId + "," + mBModel.getRetailerMasterBO().getSubchannelid() + ")" +
-                    " And ifnull(PriorityBiD,0) in (0," + mBModel.getRetailerMasterBO().getPrioriryProductId() + ")" +
                     " And ifnull(RetailerID,0) in (0," + mBModel.getRetailerMasterBO().getRetailerID() + ")" +
-                    " And ifnull(AccountID,0) in (0," + mBModel.getRetailerMasterBO().getAccountid() + ")");
+                    " And ifnull(AccountID,0) in (0," + mBModel.getRetailerMasterBO().getAccountid() + ")" +
+                    " And ifnull(CounterID,0) in (0," + mBModel.getCounterId() + ")");
 
 
             Cursor c1 = db.selectSQL(sb.toString());
