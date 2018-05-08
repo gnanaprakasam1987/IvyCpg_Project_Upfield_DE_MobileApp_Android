@@ -630,7 +630,11 @@ public class CheckModeFragment extends IvyBaseFragment
             case CQ:
                 mChequeNoTitleTV.setText(getResources().getString(R.string.cheque_no));
                 mChequeDateTitleTV.setText(getResources().getString(R.string.cheque_date));
-                llAccountNo.setVisibility(View.VISIBLE);
+                if(bmodel.configurationMasterHelper.IS_ENABLE_ACC_NO_CHQ) {
+                    llAccountNo.setVisibility(View.VISIBLE);
+                } else {
+                    llAccountNo.setVisibility(View.GONE);
+                }
                 mName = "CHEQUE";
                 break;
             case RTGS:
@@ -775,13 +779,15 @@ public class CheckModeFragment extends IvyBaseFragment
                     return false;
                 }
 
-                if (!(paymentBO.getAccountNumber().length() > 0)) {
-                    mErrorMsg = getResources().getString(R.string.enter_account) + " in cheque";
-                    return false;
-                }
-                if (!bmodel.collectionHelper.checkRetailerWiseAccountMatched(paymentBO.getAccountNumber())) {
-                    mErrorMsg = "Check the Retailer Account No. It is inCorrect in cheque";
-                    return false;
+                if(bmodel.configurationMasterHelper.IS_ENABLE_ACC_NO_CHQ) {
+                    if (!(paymentBO.getAccountNumber().length() > 0)) {
+                        mErrorMsg = getResources().getString(R.string.enter_account) + " in cheque";
+                        return false;
+                    }
+                    if (!bmodel.collectionHelper.checkRetailerWiseAccountMatched(paymentBO.getAccountNumber())) {
+                        mErrorMsg = "Check the Retailer Account No. It is inCorrect in cheque";
+                        return false;
+                    }
                 }
             }
         } else if (paymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.DEMAND_DRAFT)) {

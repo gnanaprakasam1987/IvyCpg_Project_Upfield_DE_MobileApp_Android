@@ -339,8 +339,15 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_NEARBY_RETAILER_MAX = "NEARBYMAX";
 
     private static final String CODE_MAX_MIN_DATE_CHEQUE = "MIN_MAX_CHQ_DATE";
+    public boolean IS_ENABLE_MIN_MAX_DATE_CHQ = false;
+    private static final String CODE_ACC_NO_CHEQUE = "IS_ACC_NO_CHQ";
+    public boolean IS_ENABLE_ACC_NO_CHQ = false;
+    public int CHQ_MIN_DATE = 30;
+    public int CHQ_MAX_DATE = 0;
+
     private static final String CODE_ENABLE_PRODUCT_TAGGING_VALIDATION = "TAGG01";
     public boolean IS_ENABLE_PRODUCT_TAGGING_VALIDATION = false;
+
 
     public boolean IS_NEARBY_RETAILER = false;
     public int VALUE_NEARBY_RETAILER_MAX = 1;
@@ -901,10 +908,6 @@ public class ConfigurationMasterHelper {
     public int CAMERA_PICTURE_WIDTH = 640;
     public int CAMERA_PICTURE_HEIGHT = 480;
     public int CAMERA_PICTURE_QUALITY = 40;
-
-    public boolean IS_ENABLE_MIN_MAX_DATE_CHQ = false;
-    public int CHQ_MIN_DATE = 30;
-    public int CHQ_MAX_DATE = 30;
 
     public boolean IS_SIH_VALIDATION_MASTER;
     public boolean IS_WSIH_MASTER;
@@ -2128,6 +2131,7 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_MIN_MAX_DATE_CHQ = hashMapHHTModuleConfig.get(CODE_MAX_MIN_DATE_CHEQUE) != null ? hashMapHHTModuleConfig.get(CODE_MAX_MIN_DATE_CHEQUE) : false;
         if (this.IS_ENABLE_MIN_MAX_DATE_CHQ)
             loadMinMaxDateInChq();
+        this.IS_ENABLE_ACC_NO_CHQ = hashMapHHTModuleConfig.get(CODE_ACC_NO_CHEQUE) != null ? hashMapHHTModuleConfig.get(CODE_ACC_NO_CHEQUE) : false;
 
         this.IS_LOCATION_WISE_TAX_APPLIED = hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) != null ? hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) : false;
         if (this.IS_LOCATION_WISE_TAX_APPLIED)

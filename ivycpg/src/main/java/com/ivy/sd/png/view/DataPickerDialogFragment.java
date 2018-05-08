@@ -56,7 +56,7 @@ public class DataPickerDialogFragment extends DialogFragment implements DatePick
 
     private void setMinMaxDate(DatePickerDialog dpd) {
         if (moduleName.equals("CHEQUE")) {
-            if (minDate != 0 && maxDate != 0) {
+            if (minDate != 0 || maxDate != 0) {
                 Calendar c = Calendar.getInstance();
                 c.add(Calendar.DATE, minDate); // subtract 2 years from now
                 dpd.getDatePicker().setMinDate(c.getTimeInMillis());
