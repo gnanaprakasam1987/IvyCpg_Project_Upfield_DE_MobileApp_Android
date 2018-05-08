@@ -4615,7 +4615,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if(slabBO!=null) {
                         mylist = new Vector<>();
                         for (SchemeProductBO schemeProductBO : slabBO.getBuyingProducts()) {
-                            mylist.add(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()));
+
+                            if(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId())!=null)
+                              mylist.add(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()));
+                            else {
+                                for(ProductMasterBO productMasterBO:productList){
+                                    if(productMasterBO.getParentHierarchy().contains("/"+schemeProductBO.getProductId()+"/"))
+                                      mylist.add(productMasterBO);
+                                }
+                            }
                         }
                         lvwplist.setAdapter(new MyAdapter(mylist));
                     }

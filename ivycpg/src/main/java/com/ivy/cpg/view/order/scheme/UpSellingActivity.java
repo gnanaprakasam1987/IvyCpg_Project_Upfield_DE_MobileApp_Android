@@ -137,7 +137,7 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
 
                     double toAdd=0;
                     if(schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
-                        int ordered=schemeHelper.getTotalOrderedQuantity(schemeProductBO.getProductId(),schemeBO.isBatchWise(),schemeProductBO.getBatchId());
+                        int ordered=schemeHelper.getTotalOrderedQuantity(schemeProductBO.getProductId(),schemeBO.isBatchWise(),schemeProductBO.getBatchId(),schemeProductBO.getUomID(),schemeBO.getParentId());
                         text_ordered.setText(String.valueOf(ordered));
 
                         toAdd=(schemeProductBO.getBuyQty()-ordered);
@@ -147,7 +147,7 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
 
                     }
                     else if(schemeBO.getBuyType().equals(SALES_VALUE)){
-                        double ordered=schemeHelper.getTotalOrderedQuantity(schemeProductBO.getProductId(),schemeBO.isBatchWise(),schemeProductBO.getBatchId());
+                        double ordered=schemeHelper.getTotalOrderedValue(schemeProductBO.getProductId(),schemeBO.isBatchWise(),schemeProductBO.getBatchId(),schemeBO.getParentId());
                         text_ordered.setText(String.valueOf(ordered));
 
                         toAdd=(schemeProductBO.getBuyQty()-ordered);
