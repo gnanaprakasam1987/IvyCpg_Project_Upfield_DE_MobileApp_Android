@@ -18,6 +18,7 @@ public class PaymentBO {
 	private String collectionDate;
 	private String listName;
 	private String imageName;
+	private String AccountNumber;
 	private double InvoiceAmount;
 	private double Balance;
 	private double Amount;
@@ -255,6 +256,13 @@ public class PaymentBO {
 		this.imageName = imageName;
 	}
 
+	public String getAccountNumber() {
+		return AccountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		AccountNumber = accountNumber;
+	}
 
 	// For AdvancePayment
 	public String getAdvancePaymentId() {
