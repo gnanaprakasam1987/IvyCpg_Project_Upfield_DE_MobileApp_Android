@@ -1396,7 +1396,7 @@ public class BusinessModel extends Application {
                             + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                             + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
                             + " ifnull(A.RPS_Merch_Achieved,0) as RPS_Merch_Achieved, ifnull(RC.weekNo,0) as weekNo,A.isDeadStore,A.isPlanned,"
-                            + " (select ListCode from StandardListMaster where ListID=A.RpTypeId) as RpTypeCode, A.sptgt, A.isOrderMerch,"
+                            + " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode, A.sptgt, A.isOrderMerch,"
                             + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone,"
                             + " case when RC.WalkingSeq='' then 9999 else RC.WalkingSeq end as WalkingSeq,"
                             + " A.sbd_dist_stock,A.RField1,"
@@ -1428,7 +1428,7 @@ public class BusinessModel extends Application {
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
-                            + " LEFT JOIN RetailerClientMappingMaster RC "+(configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING? " on RC.beatID=RBM.beatId" :" on RC.Rid = A.RetailerId")
+                            + " LEFT JOIN RetailerClientMappingMaster RC " + (configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING ? " on RC.beatID=RBM.beatId" : " on RC.Rid = A.RetailerId")
 
                             + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
 

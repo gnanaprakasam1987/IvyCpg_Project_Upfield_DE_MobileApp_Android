@@ -570,8 +570,6 @@ public class OrderHelper {
             db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getRetailerMasterBO().getSbdPercent()
                     + " where retailerid =" + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()));
 
-            db.closeDB();
-
             this.invoiceDiscount = businessModel.getOrderHeaderBO().getDiscount() + "";
 
             try {
@@ -589,6 +587,8 @@ public class OrderHelper {
                     && businessModel.retailerMasterBO.getRpTypeCode().equals(salesReturnHelper.CREDIT_TYPE))
                 updateCreditNoteprintList();
 
+            db.closeDB();
+
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                 salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER",false);
                 salesReturnHelper.clearSalesReturnTable(true);
@@ -603,6 +603,7 @@ public class OrderHelper {
         } catch (Exception e) {
             Commons.printException(e);
             deleteOrderTransactions(db, isVanSales, uid);
+            db.closeDB();
             return false;
         }
         return true;

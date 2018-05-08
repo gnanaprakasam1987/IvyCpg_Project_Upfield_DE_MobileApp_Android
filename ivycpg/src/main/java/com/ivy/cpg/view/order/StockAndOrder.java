@@ -3418,7 +3418,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
             if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE && holder.productObj.getCaseSize() > 0) {
-                String label = holder.caseTitleText +"(" + holder.productObj.getCaseSize() + getResources().getQuantityString(R.plurals.pcs,holder.productObj.getCaseSize()) + ")";
+                String label = holder.caseTitleText + "(" + holder.productObj.getCaseSize() + getResources().getQuantityString(R.plurals.pcs, holder.productObj.getCaseSize()) + ")";
                 ((TextView) row.findViewById(R.id.caseTitle)).setText(label);
             }
 
@@ -3745,6 +3745,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 String strOuterQty = holder.productObj.getOrderedOuterQty() + "";
                 holder.outerQty.setText(strOuterQty);
             }
+
+            if (bmodel.configurationMasterHelper.IS_WSIH) {
+                String wSIH = holder.productObj.getWSIH() + "";
+                holder.wsih.setText(wSIH);
+            }
+
 
             if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
                 holder.srp.setText(bmodel.formatValue(holder.productObj
