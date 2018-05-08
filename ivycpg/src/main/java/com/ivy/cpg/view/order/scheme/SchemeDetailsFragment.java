@@ -25,6 +25,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,54 +85,58 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_scheme_details, container, false);
 
-        setHasOptionsMenu(true);
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-        }
-
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        getActivity().getWindow().getWindowManager().getDefaultDisplay() .getMetrics(outMetrics);
-
-
-        if(getArguments()!=null&&getArguments().getString("productId")!=null)
-            mProductID=getArguments().getString("productId");
-        if(getArguments()!=null&&getArguments().getString("slabId")!=null)
-            mSelectedSlabId=getArguments().getString("slabId");
-
-        ProductMasterBO productMasterBO=bModel.productHelper.getProductMasterBOById(mProductID);
-
-        if(!mSelectedSlabId.equals("0")){
-            setScreenTitle(getResources().getString(R.string.scheme_details));
-            rootView.findViewById(R.id.layout_title).setVisibility(View.GONE);
-            prepareView(rootView, mProductID,productMasterBO, mSelectedSlabId);
-        }
-        else if(productMasterBO!=null) {
-            setScreenTitle(productMasterBO.getProductShortName());
-            List<SchemeBO> schemes = schemeHelper.getSchemeList();
-
-
-            if (bModel.labelsMasterHelper.applyLabels(CURRENCY_LABEL) != null) {
-                rupeesLabel = bModel.labelsMasterHelper.applyLabels(CURRENCY_LABEL);
+        try {
+            setHasOptionsMenu(true);
+            if (getActivity().getActionBar() != null) {
+                getActivity().getActionBar().setDisplayShowTitleEnabled(false);
             }
 
-            TextView schemeTitleTV = rootView.findViewById(R.id.scheme_info_title);
-            schemeTitleTV.setText(productMasterBO.getProductShortName());
+            DisplayMetrics outMetrics = new DisplayMetrics();
+            getActivity().getWindow().getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
 
 
-            boolean isSchemeAvailable = false;
-            if (schemes != null && schemes.size() > 0) {
-                for (SchemeBO schemeBO : schemes) {
-                    for (SchemeProductBO buyProductBO : schemeBO.getBuyingProducts()) {
-                        if (productMasterBO.getParentHierarchy().contains("/"+buyProductBO.getProductId()+"/"));
+            if (getArguments() != null && getArguments().getString("productId") != null)
+                mProductID = getArguments().getString("productId");
+            if (getArguments() != null && getArguments().getString("slabId") != null)
+                mSelectedSlabId = getArguments().getString("slabId");
+
+            ProductMasterBO productMasterBO = bModel.productHelper.getProductMasterBOById(mProductID);
+
+            if (!mSelectedSlabId.equals("0")) {
+                setScreenTitle(getResources().getString(R.string.scheme_details));
+                rootView.findViewById(R.id.layout_title).setVisibility(View.GONE);
+                prepareView(rootView, mProductID, productMasterBO, mSelectedSlabId);
+            } else if (productMasterBO != null) {
+                setScreenTitle(productMasterBO.getProductShortName());
+                List<SchemeBO> schemes = schemeHelper.getSchemeList();
+
+
+                if (bModel.labelsMasterHelper.applyLabels(CURRENCY_LABEL) != null) {
+                    rupeesLabel = bModel.labelsMasterHelper.applyLabels(CURRENCY_LABEL);
+                }
+
+                TextView schemeTitleTV = rootView.findViewById(R.id.scheme_info_title);
+                schemeTitleTV.setText(productMasterBO.getProductShortName());
+
+
+                boolean isSchemeAvailable = false;
+                if (schemes != null && schemes.size() > 0) {
+                    for (SchemeBO schemeBO : schemes) {
+                        for (SchemeProductBO buyProductBO : schemeBO.getBuyingProducts()) {
+                            if (productMasterBO.getParentHierarchy().contains("/" + buyProductBO.getProductId() + "/"))
                             isSchemeAvailable = true;
+                        }
                     }
                 }
-            }
 
-            if (schemes != null && schemes.size() > 0 && isSchemeAvailable) {
-                schemeTitleTV.setWidth(outMetrics.widthPixels);
-                prepareView(rootView, mProductID, productMasterBO,"0");
+                if (schemes != null && schemes.size() > 0 && isSchemeAvailable) {
+                    schemeTitleTV.setWidth(outMetrics.widthPixels);
+                    prepareView(rootView, mProductID, productMasterBO, "0");
+                }
             }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
         }
 
 

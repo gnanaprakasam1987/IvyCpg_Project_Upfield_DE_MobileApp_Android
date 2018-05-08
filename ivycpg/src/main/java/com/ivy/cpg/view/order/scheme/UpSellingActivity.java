@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -114,7 +115,8 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
                         intent.putExtra("productId",schemeBO.getBuyingProducts().get(0).getProductId());
                         intent.putExtra("isFromUpSelling",true);
                         startActivity(intent);
-                        overridePendingTransition(R.anim.zoom_enter, R.anim.zoom_exit);
+                        AnimationUtils.loadAnimation(UpSellingActivity.this,R.anim.zoom_enter);
+                        //overridePendingTransition(R.anim.fab_open, R.anim.fab_close);
                     }
                 });
                 view_parent.setOnClickListener(new View.OnClickListener() {
