@@ -337,6 +337,18 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MSL_NOT_SOLD = "PRO24";
     private static final String CODE_NORMAL_DASHBOARD = "DASH13";
     private static final String CODE_SHOW_NEARBY_RETAILER_MAX = "NEARBYMAX";
+
+    private static final String CODE_MAX_MIN_DATE_CHEQUE = "MIN_MAX_CHQ_DATE";
+    public boolean IS_ENABLE_MIN_MAX_DATE_CHQ = false;
+    private static final String CODE_ACC_NO_CHEQUE = "IS_ACC_NO_CHQ";
+    public boolean IS_ENABLE_ACC_NO_CHQ = false;
+    public int CHQ_MIN_DATE = 30;
+    public int CHQ_MAX_DATE = 0;
+
+    private static final String CODE_ENABLE_PRODUCT_TAGGING_VALIDATION = "TAGG01";
+    public boolean IS_ENABLE_PRODUCT_TAGGING_VALIDATION = false;
+
+
     public boolean IS_NEARBY_RETAILER = false;
     public int VALUE_NEARBY_RETAILER_MAX = 1;
     private static final String CODE_IS_AUDIT_USER = "ISAUDITUSER";
@@ -2122,6 +2134,11 @@ public class ConfigurationMasterHelper {
         if (this.IS_ENABLE_CAMERA_PICTURE_SIZE)
             loadCameraPictureSize();
 
+        this.IS_ENABLE_MIN_MAX_DATE_CHQ = hashMapHHTModuleConfig.get(CODE_MAX_MIN_DATE_CHEQUE) != null ? hashMapHHTModuleConfig.get(CODE_MAX_MIN_DATE_CHEQUE) : false;
+        if (this.IS_ENABLE_MIN_MAX_DATE_CHQ)
+            loadMinMaxDateInChq();
+        this.IS_ENABLE_ACC_NO_CHQ = hashMapHHTModuleConfig.get(CODE_ACC_NO_CHEQUE) != null ? hashMapHHTModuleConfig.get(CODE_ACC_NO_CHEQUE) : false;
+
         this.IS_LOCATION_WISE_TAX_APPLIED = hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) != null ? hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) : false;
         if (this.IS_LOCATION_WISE_TAX_APPLIED)
             this.STRING_LOCATION_WISE_TAX_APPLIED = loadLocationWiseTaxApplied();
@@ -2329,6 +2346,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
         this.IS_FILTER_TAG_PRODUCTS = hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) : false;
+        this.IS_ENABLE_PRODUCT_TAGGING_VALIDATION = hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) : false;
     }
 
     public void loadOrderReportConfiguration() {
@@ -3235,6 +3253,33 @@ public class ConfigurationMasterHelper {
                     CAMERA_PICTURE_WIDTH = Integer.parseInt(camera_params[0]);
                     CAMERA_PICTURE_HEIGHT = Integer.parseInt(camera_params[1]);
                     CAMERA_PICTURE_QUALITY = Integer.parseInt(camera_params[2]) >= 40 ? Integer.parseInt(camera_params[2]) : 40;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    public void loadMinMaxDateInChq() {
+        try {
+
+            String codeValue;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='MIN_MAX_CHQ_DATE' and Flag=1";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                    String[] min_max_params = codeValue.split(",");
+                    CHQ_MIN_DATE = Integer.parseInt(min_max_params[0]);
+                    CHQ_MAX_DATE = Integer.parseInt(min_max_params[1]);
                 }
                 c.close();
             }

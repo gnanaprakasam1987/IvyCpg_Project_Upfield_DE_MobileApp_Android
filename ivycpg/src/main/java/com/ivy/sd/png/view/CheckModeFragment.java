@@ -29,11 +29,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.mapapi.BMapManager;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
 import com.ivy.sd.png.bo.PaymentBO;
+import com.ivy.sd.png.bo.RetailerWiseBankDetailsBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -64,6 +66,7 @@ public class CheckModeFragment extends IvyBaseFragment
     private ArrayList<BankMasterBO> mBankDetailList;
     private EditText mBankET;
     private EditText mBranchET;
+    private EditText mAccountnoET;
 
     private ArrayList<BranchMasterBO> mBranchDetailsList;
     private Button mChequeDateBTN;
@@ -83,6 +86,9 @@ public class CheckModeFragment extends IvyBaseFragment
     private boolean isNumberPressed = false;
     private double tempPaidAmt = 0.0;
     private String mErrorMsg = "";
+    private int chqMinDate = 0, chqMaxDate = 0;
+    private LinearLayout llAccountNo;
+    String mName = "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,6 +107,9 @@ public class CheckModeFragment extends IvyBaseFragment
         mPaymentList = bmodel.collectionHelper.getCollectionPaymentList();
         mPaymentBO = mPaymentList.get(checkModePos);
         tempPaidAmt = mPaymentBO.getAmount();
+
+        chqMinDate = bmodel.configurationMasterHelper.CHQ_MIN_DATE;
+        chqMaxDate = bmodel.configurationMasterHelper.CHQ_MAX_DATE;
     }
 
     @Nullable
@@ -133,9 +142,17 @@ public class CheckModeFragment extends IvyBaseFragment
         mChequeNoET = (EditText) rootView.findViewById(R.id.edit_chequeno);
         mBankET = (EditText) rootView.findViewById(R.id.edit_bankname);
         mBranchET = (EditText) rootView.findViewById(R.id.edit_branchname);
+        mAccountnoET = (EditText) rootView.findViewById(R.id.edit_accountno);
+        llAccountNo = (LinearLayout) rootView.findViewById(R.id.llAccountNo);
+
         if (mPaymentBO.getAmount() > 0) {
             mCollectAmountET.setText(mPaymentBO.getAmount() + "");
             mCollectAmountET.setSelection(mCollectAmountET.getText().length());
+        }
+
+        if (mPaymentBO.getAccountNumber().length() > 0) {
+            mAccountnoET.setText(mPaymentBO.getAccountNumber());
+            mAccountnoET.setSelection(mAccountnoET.getText().length());
         }
 
         mChequeNoET.setText(mPaymentBO.getChequeNumber());
@@ -220,6 +237,13 @@ public class CheckModeFragment extends IvyBaseFragment
             @Override
             public void onClick(View v) {
                 DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putString("MODULE", mName);
+                args.putInt("CHQMINDATE", chqMinDate * -1);
+                args.putInt("CHQMAXDATE", chqMaxDate);
+                newFragment.setArguments(args);
+
                 newFragment.show(getFragmentManager(), "datePicker1");
                 //AssetTrackingFragment.DatePickerFragment newFragment = new AssetTrackingFragment.DatePickerFragment();
                 //newFragment.show(getFragmentManager(),"datePicker1");
@@ -415,6 +439,23 @@ public class CheckModeFragment extends IvyBaseFragment
             }
         });
 
+        mAccountnoET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mPaymentBO.setAccountNumber(s.toString());
+            }
+        });
+
         Drawable mDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_camera);
         mDrawable.setColorFilter(ContextCompat.getColor(getActivity(), R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
 
@@ -470,21 +511,30 @@ public class CheckModeFragment extends IvyBaseFragment
         String paidDate = DateUtil.convertDateObjectToRequestedFormat(
                 date, "yyyy/MM/dd");
         if (!bmodel.configurationMasterHelper.IS_POST_DATE_ALLOW) {
-            if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate)) {
-                if (mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.DEMAND_DRAFT))
-                    Toast.makeText(getActivity(), getResources().getString(
-                            R.string.post_dated_demand_draft_notallow),
-                            Toast.LENGTH_SHORT).show();
-                else if (mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.RTGS))
-                    Toast.makeText(getActivity(), getResources().getString(
-                            R.string.post_dated_rtgs_notallow),
-                            Toast.LENGTH_SHORT).show();
-                else
+            if (!bmodel.configurationMasterHelper.IS_ENABLE_MIN_MAX_DATE_CHQ) {
+                if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate)) {
                     Toast.makeText(getActivity(), getResources().getString(
                             R.string.post_dated_cheque_notallow),
                             Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
 
-                return;
+            if (mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.DEMAND_DRAFT)) {
+                if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate)) {
+                    Toast.makeText(getActivity(), getResources().getString(
+                            R.string.post_dated_demand_draft_notallow),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            if (mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.RTGS)) {
+                if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate)) {
+                    Toast.makeText(getActivity(), getResources().getString(
+                            R.string.post_dated_rtgs_notallow),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         }
         mChequeDateBTN.setText(DateUtil.convertDateObjectToRequestedFormat(
@@ -571,19 +621,33 @@ public class CheckModeFragment extends IvyBaseFragment
         mChequeDateBTN.setText(DateUtil.convertFromServerDateToRequestedFormat(
                 mPaymentBO.getChequeDate(), ConfigurationMasterHelper.outDateFormat));
         mChequeNoET.setText(mPaymentBO.getChequeNumber());
+
+        mAccountnoET.setText(mPaymentBO.getAccountNumber() + "");
+        mAccountnoET.setSelection(mAccountnoET.getText().length());
+
         CollectionFragmentNew.CaseMODE caseMODE = CollectionFragmentNew.CaseMODE.valueOf(mPaymentBO.getCashMode());
         switch (caseMODE) {
             case CQ:
                 mChequeNoTitleTV.setText(getResources().getString(R.string.cheque_no));
                 mChequeDateTitleTV.setText(getResources().getString(R.string.cheque_date));
+                if(bmodel.configurationMasterHelper.IS_ENABLE_ACC_NO_CHQ) {
+                    llAccountNo.setVisibility(View.VISIBLE);
+                } else {
+                    llAccountNo.setVisibility(View.GONE);
+                }
+                mName = "CHEQUE";
                 break;
             case RTGS:
                 mChequeNoTitleTV.setText(getResources().getString(R.string.rtgs_no));
                 mChequeDateTitleTV.setText(getResources().getString(R.string.rtgs_date));
+                llAccountNo.setVisibility(View.GONE);
+                mName = "RTGS";
                 break;
             case DD:
                 mChequeNoTitleTV.setText(getResources().getString(R.string.dd_no));
                 mChequeDateTitleTV.setText(getResources().getString(R.string.dd_no_date));
+                llAccountNo.setVisibility(View.GONE);
+                mName = "DD";
                 break;
         }
 
@@ -715,6 +779,16 @@ public class CheckModeFragment extends IvyBaseFragment
                     return false;
                 }
 
+                if(bmodel.configurationMasterHelper.IS_ENABLE_ACC_NO_CHQ) {
+                    if (!(paymentBO.getAccountNumber().length() > 0)) {
+                        mErrorMsg = getResources().getString(R.string.enter_account) + " in cheque";
+                        return false;
+                    }
+                    if (!bmodel.collectionHelper.checkRetailerWiseAccountMatched(paymentBO.getAccountNumber())) {
+                        mErrorMsg = "Check the Retailer Account No. It is inCorrect in cheque";
+                        return false;
+                    }
+                }
             }
         } else if (paymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.DEMAND_DRAFT)) {
 
@@ -777,7 +851,10 @@ public class CheckModeFragment extends IvyBaseFragment
                     mErrorMsg = getResources().getString(R.string.enter_amount) + " in RTGS";
                     return false;
                 }
-
+//                if (!(paymentBO.getAccountNumber().length() > 0)) {
+//                    mErrorMsg = getResources().getString(R.string.enter_account) + " in RTGS";
+//                    return false;
+//                }
             }
         }
 

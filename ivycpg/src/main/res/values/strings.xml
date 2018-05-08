@@ -68,6 +68,7 @@
     <string name="password_does_not_match">Password does not match.</string>
     <string name="its_not_possible_to_upload_without_img">Its not possible to upload without images.</string>
     <string name="enter_amount">Enter amount</string>
+    <string name="enter_account">Enter account no</string>
     <string name="sel_bank">Select Bank</string>
     <string name="sel_branch">Select Branch</string>
     <string name="copy_right">© 2017 Ivy Mobility Solutions Ltd. All rights reserved.</string>

@@ -96,6 +96,7 @@
                             android:id="@+id/tv_date_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:text="@string/cheque_date"
                             android:textColor="@color/Black"
@@ -133,6 +134,7 @@
                         android:id="@+id/tv_branch_title"
                         android:layout_width="@dimen/cheque_no_width"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
                         android:text="@string/bank_name"
                         android:textColor="@color/Black"
@@ -159,6 +161,7 @@
                         android:id="@+id/tv_bank_title"
                         android:layout_width="@dimen/cheque_no_width"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
                         android:text="@string/branch_area"
                         android:textColor="@color/Black"
@@ -172,6 +175,35 @@
                         android:layout_gravity="center"
                         android:background="@android:color/transparent"
                         android:gravity="center|start" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llAccountNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_accountno_title"
+                        android:layout_width="@dimen/cheque_no_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
+                        android:text="@string/acc_no"
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/text_sz_small"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/edit_accountno"
+                        style="@style/EditTextGravity"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/cheque_no_height"
+                        android:digits="0123456789"
+                        android:inputType="number"
+                        android:maxLength="15" />
 
                 </LinearLayout>
 
@@ -252,6 +284,7 @@
                             android:id="@+id/tv_amount_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:text="@string/amount"
                             android:textColor="@color/Black"
@@ -263,6 +296,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/cheque_no_height"
                             style="@style/EditTextGravity"
+                            android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="@dimen/dimens_2dp"
                             android:clickable="true"
@@ -331,6 +365,7 @@
             style="?attr/roundedCustomButtonNormalTransparent"
             android:layout_width="@dimen/dimens_100dp"
             android:layout_height="@dimen/dimens_40dp"
+            android:layout_marginRight="@dimen/dimen_6dp"
             android:layout_marginEnd="@dimen/dimen_6dp"
             android:text="@string/cancel"
             android:textColor="@color/Black"

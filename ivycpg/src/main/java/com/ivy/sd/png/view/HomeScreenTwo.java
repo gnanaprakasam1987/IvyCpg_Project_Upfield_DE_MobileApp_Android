@@ -1717,6 +1717,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 .downloadProductDetailsList();
                         bmodel.collectionHelper.downloadBankDetails();
                         bmodel.collectionHelper.downloadBranchDetails();
+                        bmodel.collectionHelper.downloadRetailerAccountDetails();
                         if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
                             bmodel.productHelper
                                     .loadRetailerWiseInventoryOrderQty();
@@ -2445,6 +2446,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 bmodel.collectionHelper.downloadBankDetails();
                 bmodel.collectionHelper.downloadBranchDetails();
+                bmodel.collectionHelper.downloadRetailerAccountDetails();
                 bmodel.collectionHelper.updateInvoiceDiscountedAmount();
 
 
@@ -3746,6 +3748,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
                 bmodel.collectionHelper.downloadBankDetails();
                 bmodel.collectionHelper.downloadBranchDetails();
+                bmodel.collectionHelper.downloadRetailerAccountDetails();
                 bmodel.collectionHelper.loadCreditNote();
             }
 
