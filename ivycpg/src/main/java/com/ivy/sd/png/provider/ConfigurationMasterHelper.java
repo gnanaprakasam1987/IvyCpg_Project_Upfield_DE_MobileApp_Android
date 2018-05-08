@@ -339,6 +339,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_NEARBY_RETAILER_MAX = "NEARBYMAX";
 
     private static final String CODE_MAX_MIN_DATE_CHEQUE = "MIN_MAX_CHQ_DATE";
+    private static final String CODE_ENABLE_PRODUCT_TAGGING_VALIDATION = "TAGG01";
+    public boolean IS_ENABLE_PRODUCT_TAGGING_VALIDATION = false;
 
     public boolean IS_NEARBY_RETAILER = false;
     public int VALUE_NEARBY_RETAILER_MAX = 1;
@@ -2331,6 +2333,7 @@ public class ConfigurationMasterHelper {
         this.IS_ORDER_SPLIT = hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) : false;
 
         this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
+        this.IS_ENABLE_PRODUCT_TAGGING_VALIDATION = hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) : false;
     }
 
     public void loadOrderReportConfiguration() {

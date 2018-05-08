@@ -84,6 +84,7 @@ import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -361,6 +362,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         if (bmodel.configurationMasterHelper.HIDE_ORDER_DIST) {
             findViewById(R.id.ll_dist).setVisibility(View.GONE);
+        }
+
+        if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+            bmodel.fitscoreHelper.getTaggingDetails("MAX_ORD_VAL"); //MAX_ORD_VAL
         }
 
         String title;
@@ -830,12 +835,20 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (product.getOrderedCaseQty() <= 0 && product.getOrderedPcsQty() <= 0 && product.getOrderedOuterQty() <= 0) {
                         return false;
                     }
+                    if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION && !checkTaggingDetails(product)) {
+                        Toast.makeText(StockAndOrder.this, product.getProductName() + " exceeded Allocation", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
                 }
                 return false;
             } else if (applyLevel.equals("ANY")) {
                 //ANY
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
                     if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
+                        if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION && !checkTaggingDetails(product)) {
+                            Toast.makeText(StockAndOrder.this, product.getProductName() + " exceeded Allocation", Toast.LENGTH_LONG).show();
+                            return false;
+                        }
                         return true;
                     }
                 }
@@ -850,6 +863,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (product.getOrderedCaseQty() <= 0 && product.getOrderedPcsQty() <= 0 && product.getOrderedOuterQty() <= 0) {
                             return false;
                         }
+                        if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION && !checkTaggingDetails(product)) {
+                            Toast.makeText(StockAndOrder.this, product.getProductName() + " exceeded Allocation", Toast.LENGTH_LONG).show();
+                            return false;
+                        }
                     }
                 }
                 return false;
@@ -858,6 +875,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
                     if (isSpecialFilterAppliedProduct(filterCode, product)) {
                         if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
+                            if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION && !checkTaggingDetails(product)) {
+                                Toast.makeText(StockAndOrder.this, product.getProductName() + " exceeded Allocation", Toast.LENGTH_LONG).show();
+                                return false;
+                            }
                             return true;
                         }
                     }
@@ -4094,6 +4115,20 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
     }
 
+    private boolean checkTaggingDetails(ProductMasterBO productMasterBO) {
+        ArrayList<ProductTaggingBO> productTaggingList = bmodel.fitscoreHelper.getProductTaggingList();
+        for (ProductTaggingBO productTagging : productTaggingList) {
+            float totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                    + (productMasterBO.getOrderedPcsQty())
+                    + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
+            if (productMasterBO.getProductID().equals(productTagging.getPid()) &&
+                    totalQty > 0
+                    && totalQty > Integer.parseInt(productTagging.getToNorm())) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private void showToastForGuidedSelling(GuidedSellingBO bo) {
         if (bo.getSubActivity().equals(mOrderCode)) {
@@ -4188,6 +4223,22 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         count = 0;
                         return;
                     }
+                } else if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+                    int size = bmodel.productHelper
+                            .getProductMaster().size();
+                    for (int i = 0; i < size; ++i) {
+                        ProductMasterBO product = bmodel.productHelper
+                                .getProductMaster().get(i);
+
+                        if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 ||
+                                product.getOrderedOuterQty() > 0) {
+                            if (!checkTaggingDetails(product)) {
+                                Toast.makeText(StockAndOrder.this, product.getProductName() + " exceeded Allocation", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                        }
+                    }
+
                 }
                 if (bmodel.getOrderHeaderBO() == null)
                     bmodel.setOrderHeaderBO(new OrderHeader());
