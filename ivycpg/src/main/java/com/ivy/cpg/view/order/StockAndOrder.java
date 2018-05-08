@@ -4608,26 +4608,32 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
               moveToNextScreen();
             }
             else if(resultCode==2){
-                if(data!=null){
-                    String slabId=data.getStringExtra("slabId");
-                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(this);
-                    SchemeBO slabBO=schemeHelper.getSchemeById().get(slabId);
-                    if(slabBO!=null) {
-                        mylist = new Vector<>();
-                        for (SchemeProductBO schemeProductBO : slabBO.getBuyingProducts()) {
+                try {
 
-                            if(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId())!=null)
-                              mylist.add(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()));
-                            else {
-                                for(ProductMasterBO productMasterBO:productList){
-                                    if(productMasterBO.getParentHierarchy().contains("/"+schemeProductBO.getProductId()+"/"))
-                                      mylist.add(productMasterBO);
+                    if (data != null) {
+                        String slabId = data.getStringExtra("slabId");
+                        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(this);
+                        SchemeBO slabBO = schemeHelper.getSchemeById().get(slabId);
+                        if (slabBO != null) {
+                            mylist = new Vector<>();
+                            for (SchemeProductBO schemeProductBO : slabBO.getBuyingProducts()) {
+
+                                if (bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()) != null)
+                                    mylist.add(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()));
+                                else {
+                                    for (ProductMasterBO productMasterBO : productList) {
+                                        if (productMasterBO.getParentHierarchy().contains("/" + schemeProductBO.getProductId() + "/"))
+                                            mylist.add(productMasterBO);
+                                    }
                                 }
                             }
+                            lvwplist.setAdapter(new MyAdapter(mylist));
                         }
-                        lvwplist.setAdapter(new MyAdapter(mylist));
-                    }
 
+                    }
+                }
+                catch (Exception ex){
+                    Commons.printException(ex);
                 }
             }
 

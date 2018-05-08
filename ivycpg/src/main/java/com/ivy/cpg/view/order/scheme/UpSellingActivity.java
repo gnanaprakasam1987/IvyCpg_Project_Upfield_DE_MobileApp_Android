@@ -23,6 +23,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CrownReturnActivity;
 import com.ivy.sd.png.view.InitiativeActivity;
@@ -53,27 +54,33 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
 
         setContentView(R.layout.activity_upselling);
 
-        toolbar=findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar()!=null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle("Nearest Schemes");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        try {
+            toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                setScreenTitle("Nearest Schemes");
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            bModel = (BusinessModel) getApplicationContext();
+            layout_parent = findViewById(R.id.layout_parent);
+            button_next = findViewById(R.id.btn_next);
+            button_next.setOnClickListener(this);
+
+            schemeHelper = SchemeDetailsMasterHelper.getInstance(this);
+            productList = new Vector<>();
+
+            if (getIntent().getExtras().containsKey("nearestSchemes"))
+                nearestSchemes = getIntent().getExtras().getStringArrayList("nearestSchemes");
+
+            if (nearestSchemes != null && nearestSchemes.size() > 0)
+                updateView();
         }
-
-        bModel=(BusinessModel)getApplicationContext();
-        layout_parent=findViewById(R.id.layout_parent);
-        button_next=findViewById(R.id.btn_next);button_next.setOnClickListener(this);
-
-        schemeHelper=SchemeDetailsMasterHelper.getInstance(this);
-        productList=new Vector<>();
-
-        if(getIntent().getExtras().containsKey("nearestSchemes"))
-            nearestSchemes=getIntent().getExtras().getStringArrayList("nearestSchemes");
-
-        if(nearestSchemes!=null&&nearestSchemes.size()>0)
-          updateView();
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
 
     }
 
@@ -98,8 +105,6 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
                 text_schemeName.setTypeface(bModel.configurationMasterHelper.getProductNameFont());
 
                 View view=view_parent.findViewById(R.id.image_view_info);
-               // view.setTag(1,schemeBO.getSchemeId());
-               // view.setTag(2,schemeBO.getBuyingProducts().get(0).getProductId());
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -121,7 +126,6 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
                          finish();
                     }
                 });
-               // view.setOnClickListener(this);
 
                 LinearLayout layout_products=view_parent.findViewById(R.id.layout_products);
 
