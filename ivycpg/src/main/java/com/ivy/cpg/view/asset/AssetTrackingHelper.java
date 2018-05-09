@@ -428,7 +428,7 @@ public class AssetTrackingHelper {
             sb.append(" and (Channelid in(0,");
             sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
             sb.append(" OR Channelid in (0,");
-            sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()) + "))");
+            sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(),mContext) + "))");
 
 
             if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
@@ -966,7 +966,7 @@ public class AssetTrackingHelper {
             sb.append(" and (Channelid in(0,");
             sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
             sb.append(" OR Channelid in (0,");
-            sb.append(mBusinessModel.schemeDetailsMasterHelper.getChannelidForScheme(mBusinessModel.getRetailerMasterBO().getSubchannelid()));
+            sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(),mContext));
             sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
 

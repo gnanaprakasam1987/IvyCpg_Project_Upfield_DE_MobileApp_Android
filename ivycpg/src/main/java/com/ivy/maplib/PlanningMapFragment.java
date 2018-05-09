@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -84,7 +86,7 @@ import static com.ivy.sd.png.util.StandardListMasterConstants.MENU_STK_ORD;
 
 public class PlanningMapFragment extends SupportMapFragment implements
         OnMyLocationButtonClickListener, OnGlobalLayoutListener,
-        OnMarkerClickListener, OnInfoWindowClickListener, LocationUpdater {
+        OnMarkerClickListener, OnInfoWindowClickListener, LocationUpdater, OnMapReadyCallback {
 
     int prog = 0;
     private DataPulling dataPull;
@@ -628,7 +630,8 @@ public class PlanningMapFragment extends SupportMapFragment implements
         try {
             final ViewGroup nullParent = null;
             if (mMap == null) {
-                mMap = this.getMap();
+                SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.planningmapnew);
+                supportMapFragment.getMapAsync(this);
                 float pxlDp = 39 + 20;
                 mainLayout.init(mMap, getPixelsFromDp(PlanningMapFragment.this.getActivity(), pxlDp));
                 this.infoWindow = (ViewGroup) layInflater.inflate(
@@ -662,7 +665,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
                     }
                 };
                 startVisitLty.setOnTouchListener(infoButtonListener);
-                setUpMap();
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -672,6 +674,11 @@ public class PlanningMapFragment extends SupportMapFragment implements
     private void setUpMap() {
         try {
             mMap.getUiSettings().setZoomControlsEnabled(true);
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string.permission_enable_msg), Toast.LENGTH_SHORT).show();
+                return;
+            }
             mMap.setMyLocationEnabled(false);
             mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
         } catch (Exception e) {
@@ -1124,6 +1131,12 @@ public class PlanningMapFragment extends SupportMapFragment implements
                     }
                 });
         bmodel.applyAlertDialogTheme(builder);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        setUpMap();
     }
 
     public interface DataPulling {

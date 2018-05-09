@@ -635,7 +635,7 @@
     <dimen name="dimens_120dp">96dp</dimen>
     <dimen name="dimens_180dp">144dp</dimen>
     <dimen name="dimens_200dp">160dp</dimen>
-    <dimen name="dimens_360dp">272dp</dimen>
+    <dimen name="dimens_360dp">302dp</dimen>
 
 
     <dimen name="change_pwd_padding">16dp</dimen>

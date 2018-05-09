@@ -73,6 +73,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 
@@ -1095,17 +1096,18 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         bmodel = (BusinessModel) getApplicationContext();
                         bmodel.setContext(OrderNewOutlet.this);
 
+                        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
                         if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
-                            if (bmodel.schemeDetailsMasterHelper
-                                    .getmSchemeList() == null
-                                    || bmodel.schemeDetailsMasterHelper
-                                    .getmSchemeList().size() == 0) {
+                            if (schemeHelper
+                                    .getSchemeList() == null
+                                    || schemeHelper
+                                    .getSchemeList().size() == 0) {
                                 Toast.makeText(OrderNewOutlet.this,
                                         R.string.scheme_not_available,
                                         Toast.LENGTH_SHORT).show();
                             }
 
-                            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
+                            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -1113,6 +1115,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
                             Intent intent = new Intent(OrderNewOutlet.this, ProductSchemeDetailsActivity.class);
+                            intent.putExtra("productId",holder.productId);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
 
@@ -1126,8 +1129,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
                             SchemeDialog sc = new SchemeDialog(
                                     OrderNewOutlet.this,
-                                    bmodel.schemeDetailsMasterHelper
-                                            .getmSchemeList(), holder.pname,
+                                    schemeHelper
+                                            .getSchemeList(), holder.pname,
                                     holder.productId, holder.productObj, 1, mTotalScreenWidth);
                             FragmentManager fm = getSupportFragmentManager();
                             sc.show(fm, "");

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "635960739913",
+    "firebase_url": "https://supervisorivycpg.firebaseio.com",
+    "project_id": "supervisorivycpg",
+    "storage_bucket": "supervisorivycpg.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635960739913:android:09b29fbcd4d51663",
+        "android_client_info": {
+          "package_name": "com.ivy.sd.png.asean.view"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "635960739913-pm2futnkfmvsg8peku4epvpnag8kcii8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ivy.sd.png.asean.view",
+            "certificate_hash": "44903522de01be57479e56a698feebcc0024e0aa"
+          }
+        },
+        {
+          "client_id": "635960739913-qrjdlakrk8vp3kn6ascqnq64m16o7j0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrL2q-4N0xGxS7Y_f3FcF9Ec1XdL6VDk4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "635960739913-qrjdlakrk8vp3kn6ascqnq64m16o7j0r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
