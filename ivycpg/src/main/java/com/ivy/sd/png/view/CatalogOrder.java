@@ -51,6 +51,7 @@ import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
+import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -66,6 +67,7 @@ import com.ivy.sd.png.model.CatalogOrderValueUpdate;
 import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.ScreenOrientation;
@@ -1499,6 +1501,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {
                 bmodel.configurationMasterHelper.setBatchAllocationtitle("Batch Allocation");
@@ -1526,8 +1529,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);
             finish();
-        } else if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        } else if (schemeHelper.IS_SCHEME_ON
+                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(CatalogOrder.this, SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
             init.putExtra("ForScheme", screenCode);
@@ -1836,7 +1839,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 holder.sih.setText(getResources().getString(R.string.sih) + ": " + holder.productObj.getSIH());
             }
             if (holder.slant_view != null) {
-                if (holder.productObj.getIsscheme() == 1) {
+                if (holder.productObj.isPromo()) {
                     holder.slant_view.setVisibility(View.VISIBLE);
                 } else {
                     holder.sih.setVisibility(View.GONE);

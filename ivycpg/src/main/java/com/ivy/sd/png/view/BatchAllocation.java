@@ -24,11 +24,13 @@ import android.widget.Toast;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -429,6 +431,7 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
      */
 
     private void nextButtonClick() {
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         if (mylist.size() == 0) {
             Toast.makeText(BatchAllocation.this, "please take order ",
                     Toast.LENGTH_SHORT).show();
@@ -444,8 +447,8 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
                 intent.putExtra("ScreenCode", screenCode);
                 startActivity(intent);
 //                finish();
-            } else if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                    && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+            } else if (schemeHelper.IS_SCHEME_ON
+                    && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
                 Intent init = new Intent(BatchAllocation.this, SchemeApply.class);
                 init.putExtra("ScreenCode", screenCode);
                 startActivity(init);

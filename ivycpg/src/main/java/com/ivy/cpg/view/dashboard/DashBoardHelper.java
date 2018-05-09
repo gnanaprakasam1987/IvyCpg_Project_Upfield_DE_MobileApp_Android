@@ -3254,7 +3254,7 @@ public class DashBoardHelper {
         if (flag.equals("P")) {
             for (int i = 0; i < size; i++) {
                 if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
+                    chIDs = chIDs + "," + bmodel.getChannelids();
                 }
             }
 
@@ -3327,7 +3327,7 @@ public class DashBoardHelper {
         if (flag.equals("P")) {
             for (int i = 0; i < size; i++) {
                 if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
+                    chIDs = chIDs + "," + bmodel.getChannelids();
                 }
             }
             if (chIDs.endsWith(","))

@@ -70,6 +70,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.order.scheme.UpSellingActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -84,6 +85,8 @@ import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -92,6 +95,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
@@ -108,7 +112,7 @@ import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.sd.png.view.SchemeApply;
+import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.view.SchemeDialog;
 
 import java.util.ArrayList;
@@ -252,6 +256,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private OrderHelper orderHelper;
 
     private static final int SALES_RETURN = 3;
+    private static final int REQUEST_CODE_UPSELLING = 4;
+
     SearchAsync searchAsync;
     private int sbdHistory = 0;
 
@@ -3372,17 +3378,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         bmodel = (BusinessModel) getApplicationContext();
                         bmodel.setContext(StockAndOrder.this);
 
+                        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+
                         if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
-                            if (bmodel.schemeDetailsMasterHelper
-                                    .getmSchemeList() == null
-                                    || bmodel.schemeDetailsMasterHelper
-                                    .getmSchemeList().size() == 0) {
+                            if (schemeHelper
+                                    .getSchemeList() == null
+                                    || schemeHelper
+                                    .getSchemeList().size() == 0) {
                                 Toast.makeText(StockAndOrder.this,
                                         R.string.scheme_not_available,
                                         Toast.LENGTH_SHORT).show();
                             }
 
-                            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
+                            //This objects reference is used only in Product Detail screen.
+                            // This should be removed while cleaning product detail screen
+                            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -3391,6 +3401,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             Intent intent = new Intent(StockAndOrder.this, ProductSchemeDetailsActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("productId",holder.productId);
                             startActivity(intent);
 
                         } else {
@@ -3402,8 +3413,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             SchemeDialog sc = new SchemeDialog(
                                     StockAndOrder.this,
-                                    bmodel.schemeDetailsMasterHelper
-                                            .getmSchemeList(), holder.pname,
+                                    schemeHelper
+                                            .getSchemeList(), holder.pname,
                                     holder.productId, holder.productObj, 1, mTotalScreenWidth);
                             FragmentManager fm = getSupportFragmentManager();
                             sc.show(fm, "");
@@ -4069,14 +4080,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (vw == mBtnNext) {
 
-            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
-                if (!orderHelper.isPendingReplaceAmt()) {
+                if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
+                    if (!orderHelper.isPendingReplaceAmt()) {
+                        onnext();
+                    } else {
+                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
+                    }
+                } else
                     onnext();
-                } else {
-                    Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
-                }
-            } else
-                onnext();
+
 
         } else if (vw == mBtnGuidedSelling_next) {
             boolean isAllDone = true;
@@ -4186,6 +4198,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private void nextButtonClick() {
         try {
+
             if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                 bmodel.isDeadGoldenAchieved();
             }
@@ -4291,6 +4304,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             getResources().getString(
                                     R.string.no_items_added), 0);
             }
+
+
         } catch (Exception e) {
             Commons.printException(e + "");
         }
@@ -4305,14 +4320,38 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     };
 
     private void nextBtnSubTask() {
-        if (bmodel.mSelectedModule != 3)
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
-
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.productHelper.taxHelper.removeTaxFromPrice();
         }
+
+        if(SchemeDetailsMasterHelper.getInstance(this).IS_UP_SELLING) {
+            ArrayList<String> nearestSchemes = SchemeDetailsMasterHelper.getInstance(this).upSelling(bmodel.productHelper.getProductMaster());
+            if (nearestSchemes.size() > 0) {
+                Intent intent = new Intent(this, UpSellingActivity.class);
+                intent.putStringArrayListExtra("nearestSchemes", nearestSchemes);
+                startActivityForResult(intent, REQUEST_CODE_UPSELLING);
+                return;
+                //  finish();
+            }
+        }
+
+        moveToNextScreen();
+
+    }
+
+
+    /**
+     * Moving to next screen based on the config
+     * NOTE: Please don't add any validations inside this method. This method should only contain intents
+     */
+    private void moveToNextScreen(){
+
+
+        if (bmodel.mSelectedModule != 3)
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {
@@ -4341,8 +4380,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);
             finish();
-        } else if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        } else if (schemeHelper.IS_SCHEME_ON
+                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
             init.putExtra("ForScheme", screenCode);
@@ -4623,7 +4662,43 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (mylist.size() > 0)
                     lvwplist.setSelectionFromTop(holderPosition, holderTop);
             }
-        } else {
+        }
+        else if(requestCode==REQUEST_CODE_UPSELLING){
+            if (resultCode == 1) {
+              moveToNextScreen();
+            }
+            else if(resultCode==2){
+                try {
+
+                    if (data != null) {
+                        String slabId = data.getStringExtra("slabId");
+                        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(this);
+                        SchemeBO slabBO = schemeHelper.getSchemeById().get(slabId);
+                        if (slabBO != null) {
+                            mylist = new Vector<>();
+                            for (SchemeProductBO schemeProductBO : slabBO.getBuyingProducts()) {
+
+                                if (bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()) != null)
+                                    mylist.add(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()));
+                                else {
+                                    for (ProductMasterBO productMasterBO : productList) {
+                                        if (productMasterBO.getParentHierarchy().contains("/" + schemeProductBO.getProductId() + "/"))
+                                            mylist.add(productMasterBO);
+                                    }
+                                }
+                            }
+                            lvwplist.setAdapter(new MyAdapter(mylist));
+                        }
+
+                    }
+                }
+                catch (Exception ex){
+                    Commons.printException(ex);
+                }
+            }
+
+        }
+        else {
             if (result != null) {
                 if (result.getContents() == null) {
                     Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();

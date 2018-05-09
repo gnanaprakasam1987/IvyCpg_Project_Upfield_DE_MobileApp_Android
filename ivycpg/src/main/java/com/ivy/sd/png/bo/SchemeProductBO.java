@@ -55,7 +55,7 @@ public class SchemeProductBO {
 
 	// Especially for combination scheme
 	private String groupName;
-	private String groupBuyType;
+	private String groupLogic;
 
 	private int uomID; // Scheme buy qty uom Type
 	private String uomDescription;
@@ -380,12 +380,12 @@ public class SchemeProductBO {
 		this.maxAmountCalculated = maxAmountCalculated;
 	}
 
-	public String getGroupBuyType() {
-		return groupBuyType;
+	public String getGroupLogic() {
+		return groupLogic;
 	}
 
 	public void setGroupBuyType(String groupBuyType) {
-		this.groupBuyType = groupBuyType;
+		this.groupLogic = groupBuyType;
 	}
 
 	public String getGroupName() {

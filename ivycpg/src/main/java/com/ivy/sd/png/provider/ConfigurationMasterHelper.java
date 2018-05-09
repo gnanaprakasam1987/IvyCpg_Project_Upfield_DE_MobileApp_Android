@@ -65,9 +65,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_CONTRACT_TYPE = "PROFILE17";
     public static final String CODE_CONTRACT_EXPIRYDATE = "PROFILE18";
     public static final String CODE_VISIT_FREQUENCY = "PROFILE19";
-    public static final String CODE_SUBCHANNEL_ON = "SCH07";
-    public static final String CODE_SCHEME_SLAB_ON = "SCH08";
-    public static final String CODE_SCHEME_CHECK = "SCH09";
+
     public static final String CODE_PRODUCT_FILTER_IN_SURVEY = "SURVEY08";
     public static final String CODE_QDVP3_SCORE_CARD_TAB = "PRO18";
     public static final String CODE_OUTLET_PROGRAM = "PROFILE28";
@@ -164,9 +162,7 @@ public class ConfigurationMasterHelper {
     // code added in v 35
 
     private static final String CODE_CALCULATOR = "FUN04";
-    private static final String CODE_SCHEME_ON = "SCH01";
-    private static final String CODE_SCHEME_EDITABLE = "SCH02";
-    private static final String CODE_SCHEME_SHOW_SCREEN = "SCH03";
+
     private static final String CODE_BIXOLONI = "PRINT01";
     private static final String CODE_BIXOLONII = "PRINT02";
     private static final String CODE_ZEBRA = "PRINT03";
@@ -236,7 +232,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SECONDARY_CONTACT_NUMBER = "PROFILE12";
     private static final String CODE_BATCH_WISE_PRODUCT = "BWP01";
     private static final String CODE_SIGNATURE_SCREEN = "ORDB03";
-    private static final String CODE_FOC_ACCUMULATION_VALIDATION = "SCH04";
     private static final String CODE_PARTIAL_PAYMENT = "COLL03";
     private static final String CODE_COLLECTION_ORDER = "COLL04";
     private static final String CODE_COLLECTION_REASON = "COLL05";
@@ -302,7 +297,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_PRINTRPT01 = "PRINTRPT01";
     private static final String CODE_SHOW_SUB_DEPOT = "STKPRO19";
     private static final String CODE_CALCULATE_UNLOAD = "STKPRO20";
-    private static final String CODE_SCHEME_APPLY_REM = "SCH06";
     private static final String CODE_SHOW_SUPPLIER_SELECTION = "FUN11";
     private static final String CODE_SHOW_USER_TASK = "FUN12";
     private static final String CODE_SHOW_JOINT_CALL = "FUN13";
@@ -647,9 +641,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_INITIATIVE_MERCHANDISING;
     // Added in 35 version
     public boolean SHOW_CALC;
-    public boolean IS_SCHEME_ON;
-    public boolean IS_SCHEME_EDITABLE;
-    public boolean IS_SCHEME_SHOW_SCREEN;
+
     public boolean SHOW_BIXOLONI;
     public boolean SHOW_BIXOLONII;
     // this value specify how much value show after decimal
@@ -662,8 +654,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SCHEME_DIALOG;
     public boolean IS_PRODUCT_DIALOG;
     public boolean IS_PRODUCT_SCHEME_DIALOG;
-    public boolean IS_SCHEME_CHECK;
-    public boolean IS_SCHEME_CHECK_DISABLED;
+
     public boolean SHOW_STK_ORD_SRP = true;
     public boolean SHOW_CASE_SRP;
     public boolean SHOW_PC_SRP;
@@ -716,7 +707,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_NEWOUTLET_IMAGETYPE;
     public boolean IS_NEWOUTLET_LOCATION;
     public boolean SHOW_DISC_AMOUNT_ALLOW;
-    public boolean IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE;
+
     public boolean IS_PARTIAL_PAYMENT = true;
     public boolean IS_COLLECTION_ORDER;
     public boolean SHOW_COLLECTION_REASON;
@@ -896,8 +887,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CONTRACT_TYPE;
     public boolean SHOW_CONTRACT_EXPIRYDATE;
     public boolean SHOW_VISIT_FREQUENCY;
-    public boolean IS_SUBCHANNEL_ON;
-    public boolean IS_SCHEME_SLAB_ON;
     public boolean SHOW_PRODUCT_FILTER_IN_SURVEY;
     public boolean SHOW__QDVP3_SCORE_CARD_TAB;
     public boolean SHOW__OUTLET_PROGRAM;
@@ -913,8 +902,7 @@ public class ConfigurationMasterHelper {
 
     public boolean IS_SIH_VALIDATION_MASTER;
     public boolean IS_WSIH_MASTER;
-    public boolean IS_SCHEME_ON_MASTER;
-    public boolean IS_SCHEME_SHOW_SCREEN_MASTER;
+
 
     public boolean SHOW_TAX_MASTER;
     public boolean IS_EXCLUDE_TAX;
@@ -952,7 +940,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_NEW_OUTLET_ORDER;
     public boolean SHOW_NEW_OUTLET_OPPR;
 
-    boolean SCHEME_APPLY_REM = false;
     boolean SHOW_BATCH_WISE_PRICE;// BWP01
     public boolean SHOW_ORDER_TYPE_DIALOG;//ORDB39
     public boolean SHOW_ORDER_FOCUS_COUNT; //ORDB54
@@ -1399,6 +1386,9 @@ public class ConfigurationMasterHelper {
     }
 
 
+    /**
+     * Method will download configuration related to retailer profile view.
+     */
     public void downloadProfileModuleConfig() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
@@ -1431,7 +1421,7 @@ public class ConfigurationMasterHelper {
                         if (str.contains("<") && str.contains(">")) {
 
                             String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
-                            if (minlen != null && !minlen.isEmpty()) {
+                            if (!minlen.isEmpty()) {
                                 try {
                                     con.setMaxLengthNo(Integer.parseInt(minlen));
                                 } catch (Exception ex) {
@@ -1453,8 +1443,7 @@ public class ConfigurationMasterHelper {
 
         } catch (Exception e) {
             Commons.printException("" + e);
-            if (db != null)
-                db.closeDB();
+            db.closeDB();
         }
     }
 
@@ -1813,7 +1802,6 @@ public class ConfigurationMasterHelper {
         this.HAS_STOCK_IN_DIST_POST = hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) : false;
         this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
         this.SHOW_CALC = hashMapHHTModuleConfig.get(CODE_CALCULATOR) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATOR) : false;
-        this.IS_SCHEME_EDITABLE = hashMapHHTModuleConfig.get(CODE_SCHEME_EDITABLE) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_EDITABLE) : false;
         this.IS_MUST_SELL = hashMapHHTModuleConfig.get(CODE_MUST_SELL) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL) : false;
         this.SHOW_STK_ORD_SRP = hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP) : false;
         this.SHOW_MVP_DRAWER = hashMapHHTModuleConfig.get(CODE_SHOW_MVP_DRAWER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MVP_DRAWER) : false;
@@ -1843,7 +1831,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_BATCH_WISE_PRICE = hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) != null ? hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) : false;
         this.SHOW_SIGNATURE_SCREEN = hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) : false;
         this.SHOW_DISC_AMOUNT_ALLOW = hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) : false;
-        this.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE = hashMapHHTModuleConfig.get(CODE_FOC_ACCUMULATION_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_FOC_ACCUMULATION_VALIDATION) : false;
         this.IS_PARTIAL_PAYMENT = hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) : false;
         this.SHOW_SKUWISE_INCENTIVE = hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) != null ? hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) : false;
         this.CALC_OUTSTANDING = hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) : false;
@@ -1907,7 +1894,6 @@ public class ConfigurationMasterHelper {
         this.IS_SHOW_TARGET_PLAN = hashMapHHTModuleConfig.get(CODE_HIDE_TARGET_PLAN) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_TARGET_PLAN) : false;
         this.IS_SHOW_REJECT_BTN = hashMapHHTModuleConfig.get(CODE_SHOW_REJECT_BTN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REJECT_BTN) : false;
         this.CALCULATE_UNLOAD = hashMapHHTModuleConfig.get(CODE_CALCULATE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATE_UNLOAD) : false;
-        this.SCHEME_APPLY_REM = hashMapHHTModuleConfig.get(CODE_SCHEME_APPLY_REM) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_APPLY_REM) : false;
         this.SHOW_SUPPLIER_SELECTION = hashMapHHTModuleConfig.get(CODE_SHOW_SUPPLIER_SELECTION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SUPPLIER_SELECTION) : false;
         if (hashMapHHTModuleConfig.get(CODE_SHOW_SUPPLIER_SELECTION) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_SUPPLIER_SELECTION) == 1)
@@ -1950,9 +1936,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_CONTRACT_TYPE = hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) : false;
         this.SHOW_CONTRACT_EXPIRYDATE = hashMapHHTModuleConfig.get(CODE_CONTRACT_EXPIRYDATE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_EXPIRYDATE) : false;
         this.SHOW_VISIT_FREQUENCY = hashMapHHTModuleConfig.get(CODE_VISIT_FREQUENCY) != null ? hashMapHHTModuleConfig.get(CODE_VISIT_FREQUENCY) : false;
-        this.IS_SUBCHANNEL_ON = hashMapHHTModuleConfig.get(CODE_SUBCHANNEL_ON) != null ? hashMapHHTModuleConfig.get(CODE_SUBCHANNEL_ON) : false;
-        this.IS_SCHEME_SLAB_ON = hashMapHHTModuleConfig.get(CODE_SCHEME_SLAB_ON) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_SLAB_ON) : false;
-        this.IS_SCHEME_CHECK = hashMapHHTModuleConfig.get(CODE_SCHEME_CHECK) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_CHECK) : false;
         this.SHOW_PRODUCT_FILTER_IN_SURVEY = hashMapHHTModuleConfig.get(CODE_PRODUCT_FILTER_IN_SURVEY) != null ? hashMapHHTModuleConfig.get(CODE_PRODUCT_FILTER_IN_SURVEY) : false;
         this.SHOW__QDVP3_SCORE_CARD_TAB = hashMapHHTModuleConfig.get(CODE_QDVP3_SCORE_CARD_TAB) != null ? hashMapHHTModuleConfig.get(CODE_QDVP3_SCORE_CARD_TAB) : false;
         this.SHOW__OUTLET_PROGRAM = hashMapHHTModuleConfig.get(CODE_OUTLET_PROGRAM) != null ? hashMapHHTModuleConfig.get(CODE_OUTLET_PROGRAM) : false;
@@ -2049,11 +2032,6 @@ public class ConfigurationMasterHelper {
                 IS_SURVEY_ONCE = true;
 
         }
-        if (hashMapHHTModuleOrder.get(CODE_SCHEME_CHECK) != null) {
-            if (hashMapHHTModuleOrder.get(CODE_SCHEME_CHECK) == 1)
-                IS_SCHEME_CHECK_DISABLED = true;
-
-        }
 
         this.IS_STOCK_IN_HAND = hashMapHHTModuleConfig.get(CODE_STOCK_IN_HAND) != null ? hashMapHHTModuleConfig.get(CODE_STOCK_IN_HAND) : false;
         this.IS_STOCK_IN_HAND_MASTER = hashMapHHTModuleConfig.get(CODE_STOCK_IN_HAND) != null ? hashMapHHTModuleConfig.get(CODE_STOCK_IN_HAND) : false;
@@ -2064,11 +2042,7 @@ public class ConfigurationMasterHelper {
         this.IS_SIH_VALIDATION = hashMapHHTModuleConfig.get(CODE_SIH_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_SIH_VALIDATION) : false;
         this.IS_SIH_VALIDATION_MASTER = hashMapHHTModuleConfig.get(CODE_SIH_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_SIH_VALIDATION) : false;
 
-        this.IS_SCHEME_ON = hashMapHHTModuleConfig.get(CODE_SCHEME_ON) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_ON) : false;
-        this.IS_SCHEME_ON_MASTER = hashMapHHTModuleConfig.get(CODE_SCHEME_ON) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_ON) : false;
 
-        this.IS_SCHEME_SHOW_SCREEN = hashMapHHTModuleConfig.get(CODE_SCHEME_SHOW_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_SHOW_SCREEN) : false;
-        this.IS_SCHEME_SHOW_SCREEN_MASTER = hashMapHHTModuleConfig.get(CODE_SCHEME_SHOW_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_SCHEME_SHOW_SCREEN) : false;
 
         this.SHOW_TAX = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
         this.SHOW_TAX_MASTER = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;

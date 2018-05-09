@@ -41,6 +41,7 @@ import android.widget.ViewFlipper;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -50,6 +51,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -682,9 +684,9 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
     }
 
     public void nextBtnSubTask() {
-
-        if (bmodel.configurationMasterHelper.IS_SCHEME_ON
-                && bmodel.configurationMasterHelper.IS_SCHEME_SHOW_SCREEN) {
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        if (schemeHelper.IS_SCHEME_ON
+                && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(CrownReturnActivity.this,
                     SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
@@ -1341,15 +1343,16 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                         bmodel = (BusinessModel) getApplicationContext();
                         bmodel.setContext(CrownReturnActivity.this);
 
+                        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
                         if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
-                            if (bmodel.schemeDetailsMasterHelper.getmSchemeList() == null || bmodel.schemeDetailsMasterHelper.getmSchemeList().size() == 0) {
+                            if (schemeHelper.getSchemeList() == null || schemeHelper.getSchemeList().size() == 0) {
                                 Toast.makeText(CrownReturnActivity.this,
                                         R.string.scheme_not_available,
                                         Toast.LENGTH_SHORT).show();
                                 return true;
                             }
 
-                            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
+                            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -1357,6 +1360,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                             bmodel.productHelper.setTotalScreenSize(0);
 
                             Intent intent = new Intent(CrownReturnActivity.this, ProductSchemeDetailsActivity.class);
+                            intent.putExtra("productId",holder.productId);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
@@ -1368,7 +1372,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
                             bmodel.productHelper.setFlag(1);
                             bmodel.productHelper.setTotalScreenSize(0);
                             SchemeDialog sc = new SchemeDialog(
-                                    CrownReturnActivity.this, bmodel.schemeDetailsMasterHelper.getmSchemeList(),
+                                    CrownReturnActivity.this, schemeHelper.getSchemeList(),
                                     holder.pname, holder.productId,
                                     holder.productObj, 1, 0);
 

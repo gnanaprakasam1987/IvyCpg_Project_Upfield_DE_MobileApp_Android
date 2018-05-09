@@ -21,6 +21,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -180,7 +181,7 @@ public class OrderHelper {
 
             // Deleting existing order
             if (hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())) {
-                uid = deleteOrderTransactions(db, isVanSales, uid);
+                uid = deleteOrderTransactions(db, isVanSales, uid,mContext);
             }
 
             // It can be used to show in OrderSummary alert
@@ -501,13 +502,12 @@ public class OrderHelper {
                     businessModel.updateTaxForFreeProduct(mOrderedProductList, uid, db);
                 }
 
+                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
                 if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                         || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    businessModel.schemeDetailsMasterHelper.insertScemeDetails(uid, db, "N");
+                    schemeHelper.insertSchemeDetails(uid, db, "N");
                 }
-
-
-                businessModel.schemeDetailsMasterHelper.insertAccumulationDetails(db, uid);
+                schemeHelper.insertAccumulationDetails(mContext,db, uid);
 
 
             } catch (Exception e1) {
@@ -602,7 +602,7 @@ public class OrderHelper {
 
         } catch (Exception e) {
             Commons.printException(e);
-            deleteOrderTransactions(db, isVanSales, uid);
+            deleteOrderTransactions(db, isVanSales, uid,mContext);
             return false;
         }
         return true;
@@ -981,13 +981,14 @@ public class OrderHelper {
                         businessModel.updateTaxForFreeProduct(mOrderedProductList, uid, db);
                     }
 
+                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
                     if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                             || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                        businessModel.schemeDetailsMasterHelper.insertScemeDetails(uid, db, "N");
+                        schemeHelper.insertSchemeDetails(uid, db, "N");
                     }
 
 
-                    businessModel.schemeDetailsMasterHelper.insertAccumulationDetails(db, uid);
+                    schemeHelper.insertAccumulationDetails(mContext,db, uid);
 
 
                 } catch (Exception e1) {
@@ -1083,7 +1084,7 @@ public class OrderHelper {
 
         } catch (Exception e) {
             Commons.printException(e);
-            deleteOrderTransactions(db, isVanSales, uid);
+            deleteOrderTransactions(db, isVanSales, uid,mContext);
             return false;
         }
         return true;
@@ -1925,8 +1926,8 @@ public class OrderHelper {
             /* update free products sih starts */
             if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                     || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                businessModel.schemeDetailsMasterHelper.updateFreeProductsSIH(
-                        this.getOrderId(), invoiceId, db);
+                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+                schemeHelper.updateFreeProductsSIH(this.getOrderId(), invoiceId, db);
             }
 
             /* insert tax details  */
@@ -2834,7 +2835,8 @@ public class OrderHelper {
 
             if (!isPartial) {
                 // inserting free products
-                for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
+                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+                for (SchemeBO schemeBO : schemeHelper.getAppliedSchemeList()) {
 
                     if (schemeBO.isQuantityTypeSelected()) {
 
@@ -2957,22 +2959,23 @@ public class OrderHelper {
      *
      * @param mOrderedProductList ordered product list
      */
-    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList, double totalOrderValue) {
+    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList, double totalOrderValue,Context mContext) {
 
         ArrayList<String> mValidSchemes = null;
-        if (businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE) {
-            mValidSchemes = getValidAccumulationSchemes(totalOrderValue);
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+        if (schemeHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE) {
+            mValidSchemes = getValidAccumulationSchemes(totalOrderValue,mContext);
         }
 
         //
 
         ProductMasterBO productBO = mOrderedProductList.get(mOrderedProductList.size() - 1);
         if (productBO != null) {
-            ArrayList<SchemeBO> offInvoiceSchemeList = businessModel.schemeDetailsMasterHelper.getmOffInvoiceAppliedSchemeList();
+            ArrayList<SchemeBO> offInvoiceSchemeList = schemeHelper.getmOffInvoiceAppliedSchemeList();
             if (offInvoiceSchemeList != null) {
                 for (SchemeBO schemeBO : offInvoiceSchemeList) {
                     if (schemeBO.isQuantityTypeSelected()) {
-                        if (!businessModel.configurationMasterHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
+                        if (!schemeHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE
                                 || mValidSchemes.contains(String.valueOf(schemeBO.getParentId()))) {
                             updateSchemeFreeProduct(schemeBO, productBO);
                         }
@@ -2983,11 +2986,12 @@ public class OrderHelper {
 
     }
 
-    private ArrayList<String> getValidAccumulationSchemes(double totalOrderValue) {
+    private ArrayList<String> getValidAccumulationSchemes(double totalOrderValue,Context mContext) {
         mValidAccumulationSchemes = new ArrayList<>();
         try {
             HashMap<String, Double> mFOCValueBySchemeId = new HashMap<>();
-            for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getmOffInvoiceAppliedSchemeList()) {
+            SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+            for (SchemeBO schemeBO : schemeHelper.getmOffInvoiceAppliedSchemeList()) {
                 if (schemeBO.isQuantityTypeSelected()) {
 
                     double FOCValue = 0;
@@ -3135,7 +3139,7 @@ public class OrderHelper {
      * @param orderList Orderd list
      * @return stock avilability
      */
-    public boolean isStockAvailableToDeliver(List<ProductMasterBO> orderList) {
+    public boolean isStockAvailableToDeliver(List<ProductMasterBO> orderList,Context mContext) {
         try {
 
             HashMap<String, Integer> mDeliverQtyByProductId = new HashMap<>();
@@ -3157,9 +3161,9 @@ public class OrderHelper {
 
                 }
             }
-
-            if (businessModel.configurationMasterHelper.IS_SCHEME_ON) {
-                for (SchemeBO schemeBO : businessModel.schemeDetailsMasterHelper.getAppliedSchemeList()) {
+            SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+            if (schemeHelper.IS_SCHEME_ON) {
+                for (SchemeBO schemeBO : schemeHelper.getAppliedSchemeList()) {
                     if (schemeBO.getFreeProducts() != null) {
                         for (SchemeProductBO freeProductBO : schemeBO.getFreeProducts()) {
                             if (freeProductBO.getQuantitySelected() > 0) {
@@ -3326,7 +3330,7 @@ public class OrderHelper {
 
     }
 
-    private String deleteOrderTransactions(DBUtil db, int isVanSales, String uid) {
+    private String deleteOrderTransactions(DBUtil db, int isVanSales, String uid,Context mContext) {
         StringBuffer sb = new StringBuffer();
         sb.append("select OrderID from OrderHeader where RetailerID=");
         sb.append(businessModel.getRetailerMasterBO().getRetailerID());
@@ -3369,8 +3373,9 @@ public class OrderHelper {
                     deleteSalesReturnDatas(db, uid);
                 }
 
-                // if scheme module enable ,delete tha scheme table
-                if (businessModel.configurationMasterHelper.IS_SCHEME_ON) {
+                // if scheme module enable ,delete the scheme table
+                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+                if (schemeHelper.IS_SCHEME_ON) {
                     db.deleteSQL(DataMembers.tbl_scheme_details,
                             "OrderID=" + uid, false);
                     db.deleteSQL(DataMembers.tbl_SchemeFreeProductDetail,
@@ -3395,5 +3400,32 @@ public class OrderHelper {
 
         return uid;
     }
+
+    public double getTotalValueOfAllBatches(ProductMasterBO productBO) {
+
+        ArrayList<ProductMasterBO> batchWiseList = businessModel.batchAllocationHelper
+                .getBatchlistByProductID().get(productBO.getProductID());
+        double totalValue = 0.0;
+        if (batchWiseList != null) {
+            for (ProductMasterBO batchProductBO : batchWiseList) {
+                if (batchProductBO.getOrderedPcsQty() > 0
+                        || batchProductBO.getOrderedCaseQty() > 0
+                        || batchProductBO.getOrderedOuterQty() > 0) {
+                    double totalBatchValue = batchProductBO.getOrderedPcsQty()
+                            * batchProductBO.getSrp()
+                            + batchProductBO.getOrderedCaseQty()
+                            * batchProductBO.getCsrp()
+                            + batchProductBO.getOrderedOuterQty()
+                            * batchProductBO.getOsrp();
+                    totalValue = totalValue + totalBatchValue;
+                    batchProductBO.setDiscount_order_value(totalBatchValue);
+                    batchProductBO.setSchemeAppliedValue(totalBatchValue);
+                }
+            }
+        }
+        return totalValue;
+
+    }
+
 
 }

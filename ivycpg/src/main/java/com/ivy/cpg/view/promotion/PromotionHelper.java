@@ -135,10 +135,10 @@ public class PromotionHelper {
             db.openDataBase();
             Cursor c;
             String query = " where PM.AccId in (0," + businessModel.getRetailerMasterBO().getAccountid() + ")"
-                    + " and (PM.ChId in(0," + businessModel.getRetailerMasterBO().getSubchannelid() + ") OR PM.Chid in(0," + businessModel.schemeDetailsMasterHelper.getChannelidForScheme(businessModel.getRetailerMasterBO().getSubchannelid()) + "))"
+                    + " and (PM.ChId in(0," + businessModel.getRetailerMasterBO().getSubchannelid() + ") OR PM.Chid in(0," + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(),mContext) + "))"
                     + " and PM.retailerid in (0," + businessModel.getRetailerMasterBO().getRetailerID() + ")"
                     + " and PM.ClassId in (0," + businessModel.getRetailerMasterBO().getClassid() + ")"
-                    + " and (PM.LocId in (0," + businessModel.getRetailerMasterBO().getLocationId() + ") OR PM.LocId in(0," + businessModel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "))"
+                    + " and (PM.LocId in (0," + businessModel.getRetailerMasterBO().getLocationId() + ") OR PM.LocId in(0," + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + "))"
                     + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.Pid ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId ";
 
 

@@ -43,6 +43,7 @@ import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -550,7 +551,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                     }
                     mProductContainerLL.addView(v);
                     // free products added to display
-                    if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
+                    if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_ON) {
                         if (productBO.getSchemeProducts() != null
                                 && productBO.getSchemeProducts().size() > 0) {
                             updatFreeProduct(productBO);
@@ -1119,9 +1120,9 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                 int schemeSize = 0;
                 int batchSize = 0;
                 // update free product size
-                if (bmodel.configurationMasterHelper.IS_SCHEME_ON) {
+                if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_ON) {
                     for (ProductMasterBO product : mProductsForAdapter) {
-                        if (product.getIsscheme() == 1) {
+                        if (product.isPromo()) {
                             if (product.getSchemeProducts() != null) {
                                 schemeSize = schemeSize
                                         + product.getSchemeProducts().size();
@@ -1364,7 +1365,7 @@ public class PrintPreviewScreenDiageo extends IvyBaseActivityNoActionBar {
                     }
                     x += 10;
                     // print scheme free product starts
-                    if (productBO.getIsscheme() == 1) {
+                    if (productBO.isPromo() ) {
                         if (productBO.getSchemeProducts() != null) {
 
                             List<SchemeProductBO> freeProductList = productBO

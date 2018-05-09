@@ -142,7 +142,7 @@ import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
-import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.StockReportMasterHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
@@ -261,7 +261,6 @@ public class BusinessModel extends Application {
     public ReportHelper reportHelper;
     public LoadManagementHelper vanmodulehelper;
     public StockProposalModuleHelper stockProposalModuleHelper;
-    public SchemeDetailsMasterHelper schemeDetailsMasterHelper;
     public StockReportMasterHelper stockreportmasterhelper;
     public LabelsMasterHelper labelsMasterHelper;
     public LocationUtil locationUtil;
@@ -414,7 +413,6 @@ public class BusinessModel extends Application {
         reportHelper = ReportHelper.getInstance(this);
         vanmodulehelper = LoadManagementHelper.getInstance(this);
         stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
-        schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(this);
         stockreportmasterhelper = StockReportMasterHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
         locationUtil = LocationUtil.getInstance(this);
@@ -5748,13 +5746,11 @@ public class BusinessModel extends Application {
 
             mModuleCompletionResult = new HashMap<String, String>();
 
-            if (c != null)
+            if (c != null) {
                 while (c.moveToNext())
                     mModuleCompletionResult.put(c.getString(0), "1");
-
-            Commons.print("HASHMAP VALUES ," +
-                    "" + mModuleCompletionResult.toString());
-            c.close();
+                c.close();
+            }
 
             db.closeDB();
         } catch (Exception e) {
@@ -6160,12 +6156,13 @@ public class BusinessModel extends Application {
                 while (c.moveToNext()) {
                     int flag = c.getInt(0);
 
+                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getContext());
                     if (flag == 1) {
                         configurationMasterHelper.IS_SIH_VALIDATION = configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
                         configurationMasterHelper.IS_STOCK_IN_HAND = configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
                         configurationMasterHelper.IS_WSIH = false;
-                        configurationMasterHelper.IS_SCHEME_ON = configurationMasterHelper.IS_SCHEME_ON_MASTER;
-                        configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = configurationMasterHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
+                        schemeHelper.IS_SCHEME_ON = schemeHelper.IS_SCHEME_ON_MASTER;
+                        schemeHelper.IS_SCHEME_SHOW_SCREEN = schemeHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
                         configurationMasterHelper.SHOW_TAX = configurationMasterHelper.SHOW_TAX_MASTER;
 
 
@@ -6174,8 +6171,8 @@ public class BusinessModel extends Application {
                         configurationMasterHelper.IS_SIH_VALIDATION = false;
                         configurationMasterHelper.IS_STOCK_IN_HAND = false;
                         configurationMasterHelper.IS_WSIH = configurationMasterHelper.IS_WSIH_MASTER;
-                        configurationMasterHelper.IS_SCHEME_ON = false;
-                        configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = false;
+                        schemeHelper.IS_SCHEME_ON = false;
+                        schemeHelper.IS_SCHEME_SHOW_SCREEN = false;
                         configurationMasterHelper.SHOW_TAX = false;
 
                         retailerMasterBO.setIsVansales(0);
@@ -7922,7 +7919,7 @@ public class BusinessModel extends Application {
     }
 
 
-    public ArrayList<String> getAttributeParentListForCurrentRetailer() {
+    public ArrayList<String> getAttributeParentListForCurrentRetailer(String retailerId) {
         ArrayList<String> lst = null;
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -7931,7 +7928,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String sql = "select distinct EA.parentid from RetailerAttribute RA" +
                     " inner join EntityAttributeMaster EA on EA.Attributeid = RA.Attributeid" +
-                    " where retailerid =" + getRetailerMasterBO().getRetailerID();
+                    " where retailerid =" + retailerId;
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() > 0) {
                 lst = new ArrayList<>();
