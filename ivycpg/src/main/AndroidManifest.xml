@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1290"
-    android:versionName="2.129.0.1571">
+    android:versionName="2.129.0.1576">
 
     <supports-screens
         android:anyDensity="true"
