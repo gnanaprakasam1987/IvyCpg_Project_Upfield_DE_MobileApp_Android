@@ -75,7 +75,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApkDownloaderThread;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.DownloaderThreadNew;
-import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
@@ -98,7 +97,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SynchronizationFragment extends IvyBaseFragment
-        implements View.OnClickListener, SwitchUserDialog.onSwitchUser,SyncContractor.SyncView {
+        implements View.OnClickListener, SwitchUserDialog.onSwitchUser, SyncContractor.SyncView {
 
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
@@ -141,14 +140,15 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     private UploadPresenterImpl presenter;
     private UploadHelper mUploadHelper;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(getActivity());
-        mUploadHelper=UploadHelper.getInstance(getActivity());
-        presenter =new UploadPresenterImpl(context,bmodel,this,mUploadHelper,mVanUnloadHelper);
+        mUploadHelper = UploadHelper.getInstance(getActivity());
+        presenter = new UploadPresenterImpl(context, bmodel, this, mUploadHelper, mVanUnloadHelper);
     }
 
     @Override
@@ -279,7 +279,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                  boolean isChecked) {
                         if (isChecked) {
                             presenter.updateDayCloseStatus(true);
-                            if (SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
+                            if (SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                                     "yyyy/MM/dd") >= 0) {
 
                                 if (!presenter.isDayClosed()) {
@@ -570,7 +570,6 @@ public class SynchronizationFragment extends IvyBaseFragment
     }
 
 
-
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
@@ -815,7 +814,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
                 case DataMembers.NOTIFY_UPLOADED:
                     if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES)
-                            && (presenter.getImageFilesCount()>0 || presenter.getTextFilesCount() > 0)) {
+                            && (presenter.getImageFilesCount() > 0 || presenter.getTextFilesCount() > 0)) {
                         String s1 = tvwstatus.getText()
                                 + DataMembers.CR1
                                 + getResources().getString(
@@ -939,26 +938,24 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         if (v.getId() == R.id.startsync) {
 
-                if (presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
+            if (presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
 
-                    if (dayCloseCheckBox.isChecked()) {
-                            showAlertOkCancel(
-                                    getResources()
-                                            .getString(
-                                                    R.string.do_u_want_to_close_the_day),
-                                    0);
+                if (dayCloseCheckBox.isChecked()) {
+                    showAlertOkCancel(
+                            getResources()
+                                    .getString(
+                                            R.string.do_u_want_to_close_the_day),
+                            0);
 
-                    } else {
-                      presenter.validateAndUpload();
-
-                    }
                 } else {
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.password_does_not_match), 0);
+                    presenter.validateAndUpload();
+
                 }
-
-
+            } else {
+                bmodel.showAlert(
+                        getResources().getString(
+                                R.string.password_does_not_match), 0);
+            }
 
 
         } else if (v.getId() == R.id.download) {
@@ -1046,7 +1043,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         switch (requestCode) {
             case 0:
                 if (resultCode == Activity.RESULT_OK) {
-                  presenter.upload();
+                    presenter.upload();
 
                 }
                 break;
@@ -1057,7 +1054,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (presenter.getVisitedRetailerId() != null
                             && presenter.getVisitedRetailerId().toString().length() > 0) {
                         isClicked = false;
-                      presenter.upload();
+                        presenter.upload();
                     } else {
                         bmodel.showAlert(
                                 getResources()
@@ -1114,7 +1111,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
                     public void onClick(DialogInterface dialog, int which) {
                         if (idd == 0) {
-                           presenter.dayCloseAndUpload();
+                            presenter.dayCloseAndUpload();
                         } else if (idd == 3) {
                             isClicked = false;
                             withPhotosCheckBox.setChecked(true);
@@ -1129,7 +1126,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     public void onClick(DialogInterface dialog, int which) {
                         isClicked = false;
                         if (idd == 3) {
-                          presenter.upload();
+                            presenter.upload();
                         }
                     }
                 });
@@ -1522,7 +1519,6 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         bmodel.applyAlertDialogTheme(builder);
     }
-
 
 
     public class SyncronizationReceiver extends BroadcastReceiver {
@@ -2261,22 +2257,22 @@ public class SynchronizationFragment extends IvyBaseFragment
     @Override
     public void showOrderExistWithoutInvoice() {
         bmodel.showAlert(
-                        getResources().getString(
-                R.string.order_exist_without_invoice),
+                getResources().getString(
+                        R.string.order_exist_without_invoice),
                 0);
     }
 
     @Override
     public void showNoDataExist() {
         Toast.makeText(getActivity(),
-            getResources().getString(R.string.no_data_exists),
-                    Toast.LENGTH_SHORT).show();
+                getResources().getString(R.string.no_data_exists),
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showProgressLoading() {
 
-        if(alertDialog!=null){
+        if (alertDialog != null) {
             alertDialog.dismiss();
         }
         builder = new AlertDialog.Builder(getActivity());
@@ -2287,7 +2283,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     @Override
     public void showProgressUploading() {
-        if(alertDialog!=null){
+        if (alertDialog != null) {
             alertDialog.dismiss();
         }
         builder = new AlertDialog.Builder(getActivity());
@@ -2298,7 +2294,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     @Override
     public void cancelProgress() {
-        if(alertDialog!=null){
+        if (alertDialog != null) {
             alertDialog.dismiss();
         }
     }
@@ -2328,5 +2324,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 getResources().getString(
                         R.string.no_unsubmitted_orders),
                 0);
+        if (withPhotosCheckBox.isChecked())
+            withPhotosCheckBox.setChecked(false);
     }
 }

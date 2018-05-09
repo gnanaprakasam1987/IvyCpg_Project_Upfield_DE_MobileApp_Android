@@ -408,6 +408,13 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             alertDialog.dismiss();
             Toast.makeText(VanLoadStockApplyActivity.this, "Vanload Stock Applied ",
                     Toast.LENGTH_SHORT).show();
+            if (isFromPlanning)
+                startActivity(new Intent(VanLoadStockApplyActivity.this,
+                        HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING_SUB"));
+            else
+                startActivity(new Intent(VanLoadStockApplyActivity.this,
+                        HomeScreenActivity.class).putExtra("menuCode", "MENU_LOAD_MANAGEMENT"));
+
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 

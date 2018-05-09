@@ -1024,6 +1024,7 @@ public class DiscountHelper {
             }
             productB0.setCompanyTypeDiscount(0);
             productB0.setDistributorTypeDiscount(0);
+            productB0.setSoreasonId(0);
 
         }
 

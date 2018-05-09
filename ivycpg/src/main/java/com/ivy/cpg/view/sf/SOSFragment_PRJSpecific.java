@@ -98,9 +98,12 @@ public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnC
         try {
             if (mSFHelper.getLstSOS_PRJSpecific() == null)
                 lstSOS = mSFHelper.downloadSOSGroups();
-            else
-                lstSOS = mSFHelper.getLstSOS_PRJSpecific();
 
+            //loading existing data, if any
+            if (mSFHelper.getLstSOS_PRJSpecific() != null)
+                mSFHelper.downloadSOSProjTransactions();
+
+            lstSOS = mSFHelper.getLstSOS_PRJSpecific();
 
             LayoutInflater inflater = LayoutInflater.from(getActivity());
 

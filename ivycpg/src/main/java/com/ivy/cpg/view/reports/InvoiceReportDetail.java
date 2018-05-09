@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -35,7 +36,6 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.BixolonIIPrint;
@@ -254,7 +254,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 schemeProductList = businessModel.reportHelper.getSchemeProductDetails(mInvoiceId);
             } else {
                 //load accumulation scheme free products
-                schemeProductList = SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downLoadAccumulationSchemeDetailReport(getApplicationContext(),mInvoiceId, true);
+                schemeProductList = SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downLoadAccumulationSchemeDetailReport(getApplicationContext(), mInvoiceId, true);
             }
             if (schemeProductList != null &&
                     mProductsForAdapter != null) {
@@ -366,7 +366,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                         CommonPrintPreviewActivity.class);
                 intent.putExtra("IsUpdatePrintCount", true);
                 intent.putExtra("isHomeBtnEnable", true);
-                intent.putExtra("isFromInvoice",true);
+                intent.putExtra("isFromInvoice", true);
             } else
                 intent.setClass(InvoiceReportDetail.this, BixolonIIPrint.class);
 
@@ -435,7 +435,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                                             finish();
                                             return;
                                         }
-                                        SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downloadSchemeReport(getApplicationContext(),mInvoiceId, true);
+                                        SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downloadSchemeReport(getApplicationContext(), mInvoiceId, true);
                                         checkBluetoothEnabled();
 
 
@@ -900,11 +900,13 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         @Override
         public int getChildrenCount(int groupPosition) {
 
+            if (mProductsForAdapter.get(groupPosition).isPromo()
+                    && (mProductsForAdapter.get(groupPosition).getSchemeProducts() != null
+                    && mProductsForAdapter.get(groupPosition).getSchemeProducts().size() > 0)) {
 
-            if (mProductsForAdapter.get(groupPosition).getSchemeProducts() != null) {
-                return mProductsForAdapter.get(groupPosition)
-                        .getSchemeProducts().size();
-
+                if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mProductsForAdapter.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
+                    return mProductsForAdapter.get(groupPosition).getSchemeProducts().size();
+                }
             }
 
             return 0;

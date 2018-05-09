@@ -407,7 +407,7 @@ public class DataMembers {
     private static final String tbl_SOSKU_Tracking_Header_cols = "Uid,RetailerId,Date,Remark";
     private static final String tbl_SOSKU_Tracking_Detail_cols = "Uid,pid,Norm,Actual,Required,Gap,ParentTotal,ReasonId,ImageName,RetailerId,IsOwn,Parentid,MappingId";
 
-    private static final String tbl_SOS_Tracking_Detail_cols = "Uid,pid,Norm,Actual,Required,Gap,ParentTotal,ReasonId,ImageName,RetailerId,IsOwn,Parentid,MappingId,locid,remarks";
+    private static final String tbl_SOS_Tracking_Detail_cols = "Uid,pid,Norm,Actual,Required,Gap,ParentTotal,ReasonId,ImageName,RetailerId,IsOwn,Parentid,MappingId,locid,remarks,Flex1";
     private static final String tbl_SOS_Tracking_Header_cols = "Uid,RetailerId,Date,Remark";
     private static final String tbl_SOS_Tracking_Parent_Detail_cols = "Uid,pid,blockcount,shelfcount,shelflength,extrashelf,total,locid";
     private static final String tbl_SOS_Block_Tracking_Detail_cols = "Uid,pid,ChildPid,SubCellId,CellId,locid";

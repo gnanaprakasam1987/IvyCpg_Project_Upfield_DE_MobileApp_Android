@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="1dp"
-            android:text="hjjhjjhjj"
+            android:text="@string/product_name"
 
             android:textSize="@dimen/font_micro_small"
             android:layout_marginTop="@dimen/divder_margin"/>
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             style="?attr/customListItemSecondary"
-            android:text="ffffffff"
+            android:text="@string/batch_no"
             android:maxLines="1"
             android:layout_below="@+id/PRDNAME1"
             android:layout_marginBottom="@dimen/icons_top_margin"/>
@@ -56,7 +56,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="ggdfff"
+        android:text="@string/item_case"
         android:textSize="@dimen/font_small"
         android:layout_weight="1.3"
         android:maxLines="1" />
@@ -67,7 +67,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text=""
+        android:text="@string/item_outer"
         android:textSize="@dimen/font_micro_small"
         android:layout_weight="1.3"
         android:maxLines="1" />
@@ -90,7 +90,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text=""
+        android:text="@string/value"
         android:textSize="@dimen/font_micro_small"
         android:maxLines="1"
         android:layout_weight="2"/>

@@ -2963,6 +2963,8 @@ public class ProductHelper {
             product.setLocalOrderCaseqty(0);
             product.setLocalOrderOuterQty(0);
             product.setFoc(0);
+            //clear product wise reason
+            product.setSoreasonId(0);
             // clear discount fields
             product.setD1(0);
             product.setD2(0);
