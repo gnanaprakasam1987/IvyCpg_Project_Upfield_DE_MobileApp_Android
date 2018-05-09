@@ -71,7 +71,7 @@ public class DigitalContentHelper {
 
         /* Get location id and its parent id */
         String locationHierarchy=mBModel.channelMasterHelper.getLocationHierarchy(mContext);
-        if (locationHierarchy!=null&&!"".equals(locationHierarchy)) {
+        if (locationHierarchy != null&&!"".equals(locationHierarchy) ) {
             locIdScheme = "," + locationHierarchy;
         }
 
