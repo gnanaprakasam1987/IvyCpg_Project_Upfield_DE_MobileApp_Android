@@ -23,6 +23,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.ui.IconGenerator
@@ -47,7 +48,7 @@ import java.util.*
  *
  */
 
-class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.SellerSelectionInterface {
+class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.SellerSelectionInterface,OnMapReadyCallback {
 
     internal lateinit var view: View
     internal lateinit var bmodel: BusinessModel
@@ -169,7 +170,8 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
             mDrawerLayout.addDrawerListener(mDrawerToggle)
             mDrawerLayout.closeDrawer(GravityCompat.END)
 
-            initializeMap()
+            this.getMapAsync(this)
+
 
         } catch (ex: Exception) {
             Commons.printException(ex)
@@ -178,9 +180,14 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
 
     }
 
+    override fun onMapReady(p0: GoogleMap?) {
+        mMap = p0;
+
+        initializeMap()
+    }
+
     private fun initializeMap() {
 
-//        mMap = this.map
         mMap!!.uiSettings.isMapToolbarEnabled = false
         mMap!!.uiSettings.isZoomControlsEnabled = false
 
@@ -358,7 +365,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
                                 }
                                 markerList!!.add(markerOptions)
 
-//                                map.addMarker(markerOptions)
+                                mMap!!.addMarker(markerOptions)
 
 
                             }
