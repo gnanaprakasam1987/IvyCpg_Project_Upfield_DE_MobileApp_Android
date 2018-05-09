@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.SparseArray;
 
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.PriorityBo;
@@ -78,7 +77,7 @@ public class DashBoardHelper {
     //for viewpager pie graph used in both kpi and day dashboard
     private ArrayList<SKUWiseTargetBO> skuwiseGraphData;
 
-    private Vector<DashBoardBO> monthList ;
+    private Vector<DashBoardBO> monthList;
 
     private ArrayList<DashBoardBO> kpiList;
     public static final String MONTH_NAME[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -179,6 +178,7 @@ public class DashBoardHelper {
             db.createDataBase();
             db.openDataBase();
             String sb = "SELECT distinct strftime('%m', replace(fromdate,'/','-')) AS Month FROM sellerkpi " +
+                    "WHERE Interval=" + bmodel.QT(P3M) +
                     " order by Month desc";
             Cursor c = db.selectSQL(sb);
             int index = 0;

@@ -779,7 +779,7 @@ public class BatchAllocationHelper {
      */
     public void setBatchwiseProducts(String productid, int caseqty,
                                      int pieceqty, int outerQty, float srp, double pricePerPiece,
-                                     Cursor OrderDetails, int caseSize, int outerSize, String batchid) {
+                                     Cursor OrderDetails, int caseSize, int outerSize, String batchid,int skuResonId) {
         ProductMasterBO produBo = bmodel.getProductbyId(productid);
         if (produBo != null) {
             if (produBo.getBatchwiseProductCount() > 0) {
@@ -795,6 +795,7 @@ public class BatchAllocationHelper {
                             batchProductBO.setOrderedCaseQty(caseqty);
                             batchProductBO.setOrderedOuterQty(outerQty);
                             batchProductBO.setSrp(srp);
+                            batchProductBO.setSoreasonId(skuResonId);
                             double totalValue = pieceqty * batchProductBO.getSrp()
                                     + caseqty * batchProductBO.getCsrp() + outerQty
                                     * batchProductBO.getOsrp();

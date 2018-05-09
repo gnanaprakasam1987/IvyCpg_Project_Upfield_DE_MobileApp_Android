@@ -65,6 +65,7 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
@@ -75,7 +76,6 @@ import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.base64.Base64;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -142,7 +142,6 @@ import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.StockReportMasterHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
@@ -207,7 +206,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.TimeZone;
 import java.util.Vector;
 
@@ -1394,7 +1392,7 @@ public class BusinessModel extends Application {
                             + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                             + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
                             + " ifnull(A.RPS_Merch_Achieved,0) as RPS_Merch_Achieved, ifnull(RC.weekNo,0) as weekNo,A.isDeadStore,A.isPlanned,"
-                            + " (select ListCode from StandardListMaster where ListID=A.RpTypeId) as RpTypeCode, A.sptgt, A.isOrderMerch,"
+                            + " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode, A.sptgt, A.isOrderMerch,"
                             + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone,"
                             + " case when RC.WalkingSeq='' then 9999 else RC.WalkingSeq end as WalkingSeq,"
                             + " A.sbd_dist_stock,A.RField1,"
@@ -1426,7 +1424,7 @@ public class BusinessModel extends Application {
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
-                            + " LEFT JOIN RetailerClientMappingMaster RC "+(configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING? " on RC.beatID=RBM.beatId" :" on RC.Rid = A.RetailerId")
+                            + " LEFT JOIN RetailerClientMappingMaster RC " + (configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING ? " on RC.beatID=RBM.beatId" : " on RC.Rid = A.RetailerId")
 
                             + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
 
@@ -2940,15 +2938,19 @@ public class BusinessModel extends Application {
                     int locationId = orderDetailCursor.getInt(7);
                     int isDistributed = orderDetailCursor.getInt(8);
                     int isListed = orderDetailCursor.getInt(9);
-                    String reasonID = orderDetailCursor.getString(10);
+                    int reasonID = orderDetailCursor.getInt(10);
                     int isOwn = orderDetailCursor.getInt(11);
                     int facing = orderDetailCursor.getInt(12);
                     int pouring = 0;
                     int cocktail = 0;
 
+                    int availability = 0;
+                    if (shelfpqty > 0 || shelfcqty > 0 || shelfoqty > 0)
+                        availability = 1;
+
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", -1);
+                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", availability);
 
                 }
             }
@@ -3013,7 +3015,7 @@ public class BusinessModel extends Application {
                     int locationId = orderDetailCursor.getInt(7);
                     int isDistributed = orderDetailCursor.getInt(8);
                     int isListed = orderDetailCursor.getInt(9);
-                    String reasonID = orderDetailCursor.getString(10);
+                    int reasonID = orderDetailCursor.getInt(10);
                     int audit = orderDetailCursor.getInt(11);
                     int isOwn = orderDetailCursor.getInt(12);
                     int facing = orderDetailCursor.getInt(13);
@@ -3043,7 +3045,7 @@ public class BusinessModel extends Application {
      */
     private void setStockCheckQtyDetails(String productid, int shelfpqty,
                                          int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
-                                         int locationId, int isDistributed, int isListed, String reasonID,
+                                         int locationId, int isDistributed, int isListed, int reasonID,
                                          int audit, int isOwn, int facing, int pouring, int cocktail,
                                          String menuCode, int availability) {
 
@@ -3067,7 +3069,7 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setWHOuter(whoqty);
                     product.setIsDistributed(isDistributed);
                     product.setIsListed(isListed);
-                    product.setReasonID(reasonID);
+                    product.getLocations().get(j).setReasonId(reasonID);
                     product.getLocations().get(j).setAudit(audit);
                     product.getLocations().get(j).setFacingQty(facing);
                     product.getLocations().get(j).setIsPouring(pouring);
@@ -4321,7 +4323,7 @@ public class BusinessModel extends Application {
 
                 if (beatMasterHealper.getTodayBeatMasterBO() == null
                         || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
-                    c = db.selectSQL("select  distinct(Retailerid) from InvoiceMaster");
+                    c = db.selectSQL("select  distinct(Retailerid) from InvoiceMaster where upload='N'");
                 } else {
                     c = db.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
                             + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
@@ -4657,7 +4659,8 @@ public class BusinessModel extends Application {
                             || product.getLocations().get(j).getCockTailQty() > 0
                             || product.getLocations().get(j).getFacingQty() > 0
                             || product.getLocations().get(j).getAudit() != 2
-                            || product.getLocations().get(j).getAvailability() > -1) {
+                            || product.getLocations().get(j).getAvailability() > -1
+                            || product.getLocations().get(j).getReasonId() != 0) {
 
                         int count = product.getLocations().get(j)
                                 .getShelfPiece()
@@ -4699,7 +4702,7 @@ public class BusinessModel extends Application {
                                 + ","
                                 + product.getLocations().get(j).getLocationId()
                                 + "," + dd + "," + ld + ","
-                                + product.getReasonID() + ","
+                                + product.getLocations().get(j).getReasonId() + ","
                                 + product.getLocations().get(j).getAudit()
                                 + ","
                                 + product.getLocations().get(j).getFacingQty()
@@ -6156,7 +6159,7 @@ public class BusinessModel extends Application {
                 while (c.moveToNext()) {
                     int flag = c.getInt(0);
 
-                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getContext());
+                    SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getContext());
                     if (flag == 1) {
                         configurationMasterHelper.IS_SIH_VALIDATION = configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
                         configurationMasterHelper.IS_STOCK_IN_HAND = configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;

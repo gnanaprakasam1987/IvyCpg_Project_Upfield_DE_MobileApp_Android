@@ -80,14 +80,22 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
 
         sih_detail.setText("SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()));
         pdt_name.setText(bmodel.selectedPdt.getProductName());
-        pdt_name.setText(bmodel.selectedPdt.getProductName());
-        pdt_name.setText(bmodel.selectedPdt.getProductName());
-        sih_detail.setText((bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP == true ?
-                getResources().getString(R.string.srp_text) + " : " + bmodel.formatValue(bmodel.selectedPdt.getSrp()) : "") +
-                (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP == true ?
-                        " MRP : " + bmodel.formatValue(bmodel.selectedPdt.getMRP()) : "") +
-                (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND == true ?
-                        " SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()) : ""));
+        StringBuilder sihDetail = new StringBuilder();
+        if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
+            sihDetail.append(getResources().getString(R.string.srp) + ": ");
+            sihDetail.append(bmodel.formatValue(bmodel.selectedPdt.getSrp()));
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP) {
+            sihDetail.append(getResources().getString(R.string.mrp) + ": ");
+            sihDetail.append(bmodel.formatValue(bmodel.selectedPdt.getMRP()));
+        }
+
+        if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
+            sihDetail.append(getResources().getString(R.string.sih) + ": ");
+            sihDetail.append(bmodel.formatValue(bmodel.selectedPdt.getSIH()));
+        }
+        sih_detail.setText(sihDetail.toString());
 
         SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         if (schemeHelper.getSchemeList().size() > 0) {

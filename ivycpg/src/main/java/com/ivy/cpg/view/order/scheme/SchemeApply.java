@@ -27,6 +27,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -139,6 +140,10 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 mExpandableLV.setAdapter(mExpandableAdapterNew);
             }
         }
+
+
+        if (!schemeHelper.IS_SCHEME_EDITABLE)
+            ((LinearLayout) findViewById(R.id.footer)).setVisibility(View.GONE);
 
     }
 

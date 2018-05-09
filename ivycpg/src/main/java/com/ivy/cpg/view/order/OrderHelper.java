@@ -570,8 +570,6 @@ public class OrderHelper {
             db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getRetailerMasterBO().getSbdPercent()
                     + " where retailerid =" + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()));
 
-            db.closeDB();
-
             this.invoiceDiscount = businessModel.getOrderHeaderBO().getDiscount() + "";
 
             try {
@@ -1520,7 +1518,7 @@ public class OrderHelper {
 
 
             String sql1 = "select productId,caseqty,pieceqty,  Rate, D1, D2, D3,"
-                    + "uomcount,DA,totalamount,outerQty,dOuomQty,batchid,weight from "
+                    + "uomcount,DA,totalamount,outerQty,dOuomQty,batchid,weight,ReasonId from "
                     + DataMembers.tbl_orderDetails
                     + " where orderId="
                     + businessModel.QT(orderID) + " order by rowid";
@@ -1539,6 +1537,7 @@ public class OrderHelper {
                     String batchId = orderDetailCursor.getString(12);
                     float weight = orderDetailCursor.getFloat(13);
                     float srp = orderDetailCursor.getFloat(3);
+                    int skuResonId = orderDetailCursor.getInt(14);
 
                     productId = orderDetailCursor.getString(0);
 
@@ -1565,19 +1564,19 @@ public class OrderHelper {
                                         productId, caseQty, pieceQty, outerQty, srp,
                                         orderDetailCursor.getDouble(4),
                                         orderDetailCursor, caseSize, outerSize,
-                                        batchId);
+                                        batchId,skuResonId);
                             } else {
                                 setProductDetails(productId, caseQty, pieceQty,
                                         outerQty, srp,
                                         orderDetailCursor.getDouble(4),
-                                        orderDetailCursor, caseSize, outerSize, weight);
+                                        orderDetailCursor, caseSize, outerSize, weight,skuResonId);
                             }
                         }
 
                     } else {
                         setProductDetails(productId, caseQty, pieceQty,
                                 outerQty, srp, orderDetailCursor.getDouble(4),
-                                orderDetailCursor, caseSize, outerSize, weight);
+                                orderDetailCursor, caseSize, outerSize, weight,skuResonId);
                     }
 
 
@@ -1693,7 +1692,7 @@ public class OrderHelper {
      */
     private void setProductDetails(String productId, int caseQty, int pieceQty,
                                    int outerQty, float srp, double pricePerPiece, Cursor OrderDetails,
-                                   int caseSize, int outerSize, float weight) {
+                                   int caseSize, int outerSize, float weight,int skuResonId) {
         ProductMasterBO product;
         int siz = businessModel.productHelper.getProductMaster().size();
         if (siz == 0)
@@ -1713,6 +1712,7 @@ public class OrderHelper {
                 product.setOrderedOuterQty(outerQty);
                 product.setOrderPricePiece(pricePerPiece);
                 product.setSrp(srp);
+                product.setSoreasonId(skuResonId);
 
                 if (product.getSchemeBO() != null) {
                     product.setSchemeBO(new SchemeBO());
@@ -2454,8 +2454,7 @@ public class OrderHelper {
                 productId = invoiceDetailCursor.getString(0);
                 setProductDetails(productId, caseQty, pieceQty, outerQty, srp,
                         invoiceDetailCursor.getDouble(3), invoiceDetailCursor,
-                        0, 0, weight);
-
+                        0, 0, weight,0);
 
             }
             invoiceDetailCursor.close();
@@ -3237,8 +3236,7 @@ public class OrderHelper {
         Vector<ConfigureBO> config = businessModel.configurationMasterHelper.getActivityMenu();
         for (int i = 0; i < config.size(); i++) {
             ConfigureBO con = config.get(i);
-            if (con.getConfigCode().equals("MENU_STOCK")
-                    || con.getConfigCode().equals("MENU_STK_ORD"))
+            if (con.getConfigCode().equals("MENU_STK_ORD"))
                 if (con.getHasLink() == 1 && con.isFlag() == 1)
                     return true;
         }

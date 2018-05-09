@@ -126,5 +126,7 @@
     <string name="status_location_accuracy">Change high location Accuracy</string>
     <string name="status_mock_location">Mock Location is Enabled</string>
     <string name="status_alarm_time_zero">Alarm time should not be zero</string>
+    <string name="mandatory_fileds_empty">Mandatory fields empty!</string>
+    <string name="vanload_stock_applied">VanLoad Stock Applied</string>
 
 </resources>

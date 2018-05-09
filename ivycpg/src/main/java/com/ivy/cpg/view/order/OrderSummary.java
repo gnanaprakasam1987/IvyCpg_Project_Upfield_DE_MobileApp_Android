@@ -37,11 +37,10 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.itextpdf.text.pdf.codec.BmpImage;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
@@ -55,7 +54,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.model.ScreenReceiver;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -827,13 +825,21 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     double lineValue;
 
-                if (BModel.configurationMasterHelper.IS_SIH_VALIDATION
-                        && BModel.configurationMasterHelper.IS_INVOICE
-                        && BModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                    if (productBO.getBatchwiseProductCount() > 0) {
-                        // Apply batch wise price apply
-                        lineValue = orderHelper
-                                .getTotalValueOfAllBatches(productBO);
+                    if (BModel.configurationMasterHelper.IS_SIH_VALIDATION
+                            && BModel.configurationMasterHelper.IS_INVOICE
+                            && BModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                        if (productBO.getBatchwiseProductCount() > 0) {
+                            // Apply batch wise price apply
+                            lineValue = orderHelper
+                                    .getTotalValueOfAllBatches(productBO);
+                        } else {
+                            lineValue = (productBO.getOrderedCaseQty() * productBO
+                                    .getCsrp())
+                                    + (productBO.getOrderedPcsQty() * productBO
+                                    .getSrp())
+                                    + (productBO.getOrderedOuterQty() * productBO
+                                    .getOsrp());
+                        }
                     } else {
                         lineValue = (productBO.getOrderedCaseQty() * productBO
                                 .getCsrp())
@@ -842,14 +848,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 + (productBO.getOrderedOuterQty() * productBO
                                 .getOsrp());
                     }
-                } else {
-                    lineValue = (productBO.getOrderedCaseQty() * productBO
-                            .getCsrp())
-                            + (productBO.getOrderedPcsQty() * productBO
-                            .getSrp())
-                            + (productBO.getOrderedOuterQty() * productBO
-                            .getOsrp());
-                }
 
                     // Set the calculated values in productBO **/
                     productBO.setDiscount_order_value(lineValue);
@@ -888,12 +886,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             discountHelper.clearProductDiscountAndTaxValue(mOrderedProductList);
 
 
-        // Scheme calculations
-        if (!BModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                || BModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-            totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList,getApplicationContext());
-            totalOrderValue -= totalSchemeDiscValue;
-        }
+            // Scheme calculations
+            if (!BModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                    || BModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList, getApplicationContext());
+                totalOrderValue -= totalSchemeDiscValue;
+            }
 
             if (BModel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
                 //applying removed tax..
@@ -1556,7 +1554,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if (!isClick) {
             isClick = true;
 
-            if (BModel.configurationMasterHelper.IS_SIH_VALIDATION && !orderHelper.isStockAvailableToDeliver(mOrderedProductList,getApplicationContext())) {
+            if (BModel.configurationMasterHelper.IS_SIH_VALIDATION && !orderHelper.isStockAvailableToDeliver(mOrderedProductList, getApplicationContext())) {
                 Toast.makeText(
                         this,
                         getResources()
@@ -1748,7 +1746,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     float taxDiscount = (float) vatAmount;
                     double percent = 0;
-                    if (sku.isPromo() ) {
+                    if (sku.isPromo()) {
                         percent = sku.getMschemeper();
                     }
 
@@ -1849,7 +1847,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     orderHelper.getFocusAndMustSellOrderedProducts(mOrderedProductList);
 
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
-                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue,getApplicationContext());
+                orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue, getApplicationContext());
 
                 new MyThread(this, DataMembers.SAVEINVOICE).start();
             } else {
@@ -2138,9 +2136,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            if (mOrderedProductList.get(groupPosition).isPromo() && mOrderedProductList.get(groupPosition).getSchemeProducts() != null) {
-                return mOrderedProductList.get(groupPosition)
-                        .getSchemeProducts().size();
+
+            if (mOrderedProductList.get(groupPosition).isPromo()
+                    && (mOrderedProductList.get(groupPosition).getSchemeProducts() != null
+                    && mOrderedProductList.get(groupPosition).getSchemeProducts().size() > 0)) {
+
+                if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mOrderedProductList.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
+                    return mOrderedProductList.get(groupPosition).getSchemeProducts().size();
+                }
             }
             return 0;
         }

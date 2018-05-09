@@ -61,9 +61,9 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
     private ListView lvwplist;
     private BusinessModel bmodel;
     private Vector<StockReportMasterBO> mylist;
-    private Vector<StockReportMasterBO>mylist3;
+    private Vector<StockReportMasterBO> mylist3;
     private TextView productname;
-    private TextView prodlabel,batchlabel,caselabel,outerlabel,piecelabel,totallabel;
+    private TextView prodlabel, batchlabel, caselabel, outerlabel, piecelabel, totallabel;
     private Button applybtn, rejectbtn;
     private String uid;
     Vector<String> SIHApplyById;
@@ -98,26 +98,6 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         rejectbtn.setOnClickListener(this);
 
         SIHApplyById = bmodel.configurationMasterHelper.getSIHApplyById();
-        try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.caseTitle).getTag()) != null)
-                ((TextView) view.findViewById(R.id.caseTitle))
-                        .setText(bmodel.labelsMasterHelper.applyLabels(view
-                                .findViewById(R.id.caseTitle).getTag()));
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.pcsTitle).getTag()) != null)
-                ((TextView) view.findViewById(R.id.pcsTitle))
-                        .setText(bmodel.labelsMasterHelper.applyLabels(view
-                                .findViewById(R.id.pcsTitle).getTag()));
-
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.outerTitle).getTag()) != null)
-                ((TextView) view.findViewById(R.id.outerTitle))
-                        .setText(bmodel.labelsMasterHelper.applyLabels(view
-                                .findViewById(R.id.outerTitle).getTag()));
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -133,17 +113,17 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         productname = (TextView) view.findViewById(R.id.productName);
         productname.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)view.findViewById(R.id.prod_label)).setTypeface(bmodel.configurationMasterHelper
+        ((TextView) view.findViewById(R.id.prod_label)).setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)view.findViewById(R.id.batchidTitle)).setTypeface(bmodel.configurationMasterHelper
+        ((TextView) view.findViewById(R.id.batchidTitle)).setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)view.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper
+        ((TextView) view.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)view.findViewById(R.id.outerTitle)).setTypeface(bmodel.configurationMasterHelper
+        ((TextView) view.findViewById(R.id.outerTitle)).setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)view.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper
+        ((TextView) view.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)view.findViewById(R.id.totaltitle)).setTypeface(bmodel.configurationMasterHelper
+        ((TextView) view.findViewById(R.id.totaltitle)).setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
@@ -166,94 +146,6 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
 
         updateVanload(uid);
 
-
-//        try {
-//            ArrayList<VanLoadSpinnerBO> lst = new ArrayList<VanLoadSpinnerBO>();
-//            lst.add(new VanLoadSpinnerBO(getResources().getString(R.string.all), getResources().getString(R.string.all)));
-//
-//            mManuvalVanloadFlagByuid = new HashMap<String, Integer>();
-//            for (int i = 0; i < mylist.size(); i++) {
-//                lst.add(new VanLoadSpinnerBO(mylist.get(i).getUid(), mylist.get(i).getLoadNO()));
-//                mManuvalVanloadFlagByuid.put(mylist.get(i).getUid(), mylist.get(i)
-//                        .getIsManuvalVanload());
-//            }
-//
-//            ArrayList<VanLoadSpinnerBO> result = new ArrayList<VanLoadSpinnerBO>();
-//            Set<String> titles = new HashSet<String>();
-//
-//            for (VanLoadSpinnerBO item : lst) {
-//                if (titles.add(item.getSpinnerTxt())) {
-//                    result.add(item);
-//                }
-//            }
-//            Collections.sort(lst, StockReportMasterBO.uIDComparator);
-//            final ArrayAdapter<VanLoadSpinnerBO> vanAdapter = new ArrayAdapter<VanLoadSpinnerBO>(
-//                    getActivity(), android.R.layout.simple_spinner_item, result);
-//            vanAdapter
-//                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//            spinnerVanload.setAdapter(vanAdapter);
-////            spinnerVanload
-////                    .setOnItemSelectedListener(new OnItemSelectedListener() {
-////
-////                        @Override
-////                        public void onItemSelected(AdapterView<?> parent,
-////                                                   View view, int position, long id) {
-////                            try {
-////                                uid = vanAdapter.getItem(position).getUid();
-////                                Commons.print("uid" + uid);
-////                                if (!bmodel.startjourneyclicked
-////                                        || bmodel.configurationMasterHelper.STOCK_APPROVAL) {
-////                                    if (!uid.equalsIgnoreCase(getResources()
-////                                            .getString(R.string.all))) {
-////                                        if (SIHApplyById.contains(uid)) {
-////
-////                                            applybtn.setEnabled(false);
-////                                            applybtn.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-////                                            rejectbtn.setEnabled(false);
-////                                            rejectbtn
-////                                                    .setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-////                                        } else {
-////
-////                                            applybtn.setEnabled(true);
-////                                            applybtn.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0));
-////                                            rejectbtn.setEnabled(true);
-////                                            rejectbtn
-////                                                    .setBackgroundColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0));
-////                                        }
-////                                    }
-////                                } else {
-////                                    applybtn.setEnabled(false);
-////                                    applybtn.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-////                                    rejectbtn.setEnabled(false);
-////                                    rejectbtn.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-////                                }
-////                                if (uid.equalsIgnoreCase(getResources()
-////                                        .getString(R.string.all))) {
-////                                    applybtn.setVisibility(View.GONE);
-////                                    rejectbtn.setVisibility(View.GONE);
-////                                    updateStockReportGrid();
-////                                } else {
-////                                    updateVanload(uid);
-////                                    applybtn.setVisibility(View.VISIBLE);
-////                                    if (bmodel.configurationMasterHelper.IS_SHOW_REJECT_BTN)
-////                                        rejectbtn.setVisibility(View.VISIBLE);
-////                                }
-////
-////                            } catch (Exception e) {
-////                                Commons.printException("" + e);
-////                            }
-////                        }
-////
-////                        @Override
-////                        public void onNothingSelected(AdapterView<?> arg0) {
-////                            // TO DO Auto-generated method stub
-////
-////                        }
-////                    });
-//        } catch (NotFoundException e) {
-//            Commons.printException("" + e);
-//        }
 
         if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
             view.findViewById(R.id.caseTitle).setVisibility(View.GONE);
@@ -293,6 +185,17 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         }
         if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
             view.findViewById(R.id.outerTitle).setVisibility(View.GONE);
+        else {
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                        R.id.outerTitle).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.outerTitle))
+                            .setText(bmodel.labelsMasterHelper.applyLabels(view
+                                    .findViewById(R.id.outerTitle).getTag()));
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+        }
         setHasOptionsMenu(true);
         return view;
 
@@ -837,7 +740,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 row = inflater.inflate(R.layout.row_stock_report_listview,
                         parent, false);
                 holder = new ViewHolder();
-                holder.listBgLayout =(LinearLayout)row.findViewById(R.id.header_listlty);
+                holder.listBgLayout = (LinearLayout) row.findViewById(R.id.header_listlty);
                 holder.psname = (TextView) row.findViewById(R.id.productname);
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.caseqty = (TextView) row.findViewById(R.id.caseqty);
@@ -996,7 +899,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
 
     }
 
-    private byte[] printThai(){
+    private byte[] printThai() {
         double mCaseTotalValue;
         double mPcTotalValue;
         double mOuterTotalValue;
@@ -1017,59 +920,59 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
                 tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
-                        +bmodel.userMasterHelper.getUserMasterBO().getDistributorTinNumber()+ "\r\n");
+                        + bmodel.userMasterHelper.getUserMasterBO().getDistributorTinNumber() + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
             }
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Seller Name" + ":"+
-                    bmodel.userMasterHelper.getUserMasterBO().getUserName()+ "\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Seller Name" + ":" +
+                    bmodel.userMasterHelper.getUserMasterBO().getUserName() + "\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Date" + ":"+
-                    mSalesdate+ "\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Date" + ":" +
+                    mSalesdate + "\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "CENTER\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Load Request\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Load Request\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Product\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Product\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT");
 
             if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 "+ getResources().getString(R.string.case_u) + "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 " + getResources().getString(R.string.case_u) + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT");
             }
@@ -1077,7 +980,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
             if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 "+ getResources().getString(R.string.item_outer) + "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 " + getResources().getString(R.string.item_outer) + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT");
             }
@@ -1093,14 +996,14 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 }
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 420 + " 1 "+ pc_text + "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 420 + " 1 " + pc_text + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
             }
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
@@ -1115,14 +1018,14 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ productBO.getProductname().toLowerCase() + "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + productBO.getProductname().toLowerCase() + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
 
                 if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 "+ productBO.getCaseqty() + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 " + productBO.getCaseqty() + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
                 }
@@ -1130,7 +1033,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 "+ productBO.getOuterQty() + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 " + productBO.getOuterQty() + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
                 }
@@ -1138,7 +1041,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 420 + " 1 "+ productBO.getPieceqty() + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 420 + " 1 " + productBO.getPieceqty() + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
                 }
@@ -1146,7 +1049,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
@@ -1154,19 +1057,19 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Total Case:\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Total Case:\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT");
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 "+ bmodel.formatValue(mCaseTotalValue) + "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 " + bmodel.formatValue(mCaseTotalValue) + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
 
@@ -1183,19 +1086,19 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Total " + pc_text + ":\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Total " + pc_text + ":\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT");
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 420 + " 1 "+ bmodel.formatValue(mPcTotalValue)+ "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 420 + " 1 " + bmodel.formatValue(mPcTotalValue) + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
 
@@ -1203,33 +1106,33 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
             if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 440 + " 1 "+ "Total Outer:" + "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 440 + " 1 " + "Total Outer:" + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT");
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 440 + " 1 "+ bmodel.formatValue(mOuterTotalValue)+ "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 440 + " 1 " + bmodel.formatValue(mOuterTotalValue) + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "---------------------------------------------------------------------------\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "---------------------------------------------------------------------------\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
             }
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "+ "Rep. Sign--------------------------------------------------------------\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Rep. Sign--------------------------------------------------------------\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
             tempsb.append("\r\n");
 
             printDataBytes = String.valueOf(tempsb).getBytes("ISO-8859-11");
 
-        } catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
         return printDataBytes;

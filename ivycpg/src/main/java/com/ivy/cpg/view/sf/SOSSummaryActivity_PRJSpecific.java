@@ -172,7 +172,6 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
 
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            startActivity(new Intent(this, SOSActivity_PRJSpecific.class));
             finish();
             return true;
         }
