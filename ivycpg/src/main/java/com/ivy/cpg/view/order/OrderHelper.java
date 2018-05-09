@@ -981,13 +981,14 @@ public class OrderHelper {
                         businessModel.updateTaxForFreeProduct(mOrderedProductList, uid, db);
                     }
 
+                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
                     if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                             || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                        businessModel.schemeDetailsMasterHelper.insertScemeDetails(uid, db, "N");
+                        schemeHelper.insertSchemeDetails(uid, db, "N");
                     }
 
 
-                    businessModel.schemeDetailsMasterHelper.insertAccumulationDetails(db, uid);
+                    schemeHelper.insertAccumulationDetails(mContext,db, uid);
 
 
                 } catch (Exception e1) {
@@ -1083,7 +1084,7 @@ public class OrderHelper {
 
         } catch (Exception e) {
             Commons.printException(e);
-            deleteOrderTransactions(db, isVanSales, uid);
+            deleteOrderTransactions(db, isVanSales, uid,mContext);
             return false;
         }
         return true;

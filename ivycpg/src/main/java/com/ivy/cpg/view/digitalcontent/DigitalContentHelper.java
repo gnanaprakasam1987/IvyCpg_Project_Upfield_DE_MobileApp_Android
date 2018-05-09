@@ -70,9 +70,9 @@ public class DigitalContentHelper {
         ArrayList<String> mappingIdList = new ArrayList<>();
 
         /* Get location id and its parent id */
-        if (!"".equals(mBModel.schemeDetailsMasterHelper.getLocationIdsForScheme()) &&
-                mBModel.schemeDetailsMasterHelper.getLocationIdsForScheme() != null) {
-            locIdScheme = "," + mBModel.schemeDetailsMasterHelper.getLocationIdsForScheme();
+        String locationHierarchy=mBModel.channelMasterHelper.getLocationHierarchy(mContext);
+        if (locationHierarchy != null&&!"".equals(locationHierarchy) ) {
+            locIdScheme = "," + locationHierarchy;
         }
 
         /* Get channel id and its parent id */
