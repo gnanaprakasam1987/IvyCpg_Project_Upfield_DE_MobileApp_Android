@@ -2194,33 +2194,81 @@ public class SalesFundamentalHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
+            String query = "select Uid from  SOS_Tracking_Header where retailerid=" + mBModel.getRetailerMasterBO().getRetailerID() + " and date=" + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            Cursor cursor = db.selectSQL(query);
+
+            if (cursor.getCount() > 0) {
+                if (cursor.moveToNext()) {
+                    db.deleteSQL("SOS_Tracking_Header",
+                            "uid=" + mBModel.QT(cursor.getString(0)), false);
+                    db.deleteSQL("SOS_Tracking_Detail",
+                            "uid=" + mBModel.QT(cursor.getString(0)), false);
+                }
+            }
+
             String uid = (mBModel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
                     .now(SDUtil.DATE_TIME_ID));
 
+            String detailColumns = "Uid,MappingId,pid,Actual,IsOwn,Flex1,Norm";
+            String headerColumns = "Uid,RetailerId,Date";
 
-            String values;
+            String values = "";
             boolean isData = false;
             for (SOSBO bo : getLstSOS_PRJSpecific()) {
                 if (bo.getAvailability() > 0) {
                     values = uid + "," + bo.getGroupId() + "," + bo.getProductID() + "," + bo.getAvailability() + "," + bo.getIsOwn() + "," + bo.getInTarget() + "," + bo.getGroupTarget();
-                    db.insertSQL(DataMembers.tbl_SOSDetail_Proj, DataMembers.tbl_SOSDetail_Proj_cols, values);
+                    db.insertSQL("SOS_Tracking_Detail", detailColumns, values);
                     isData = true;
                 }
             }
 
             if (isData) {
-                db.insertSQL(DataMembers.tbl_SOSHeader_Proj, DataMembers.tbl_SOSHeader_Proj_cols, uid + "," + mBModel.getRetailerMasterBO().getRetailerID() + "," + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                db.insertSQL("SOS_Tracking_Header", headerColumns, uid + "," + mBModel.getRetailerMasterBO().getRetailerID() + "," + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             }
 
 
             db.closeDB();
         } catch (Exception e) {
-            if (db != null) {
-                db.closeDB();
-            }
+            db.closeDB();
         }
 
     }
+
+    /**
+     * download transaction data
+     */
+
+    public void downloadSOSProjTransactions() {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+
+            StringBuilder str = new StringBuilder();
+            str.append("select MappingId,pid,Actual,IsOwn from SOS_Tracking_Detail SD");
+            str.append(" INNER JOIN SOS_Tracking_Header SH ON SH.uid=SD.uid");
+            str.append(" WHERE SH.retailerid=" + mBModel.getRetailerMasterBO().getRetailerID() + " and SH.date=" + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            str.append("  order by SD.MappingId");
+
+            Cursor c = db.selectSQL(str.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+
+                    for (SOSBO bo : getLstSOS_PRJSpecific()) {
+                        if (bo.getGroupId() == c.getInt(0) && bo.getProductID() == c.getInt(1) && bo.getIsOwn() == c.getInt(3)) {
+                            bo.setAvailability(c.getInt(2));
+                        }
+                    }
+                }
+
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            db.closeDB();
+        }
+    }
+
 
     /**
      * Load data for SOS/SOD/SOSKU

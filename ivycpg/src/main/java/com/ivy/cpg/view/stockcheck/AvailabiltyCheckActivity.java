@@ -545,23 +545,39 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                                         .setShelfPiece(sp_qty);
 
 
+                                if (sp_qty > 0
+                                        || SDUtil.convertToInt(etShelfCase.getText().toString()) > 0
+                                        || SDUtil.convertToInt(etShelfOuter.getText().toString()) > 0) {
+                                    chkAvailability.setChecked(true);
+                                    chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.colorAccent)));
+                                } else if (sp_qty == 0) {
+                                    chkAvailability.setChecked(true);
+                                    chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.RED)));
+                                }
+
                             } else {
                                 mProductMasterBO.getLocations()
                                         .get(mSelectedLocationIndex)
                                         .setShelfPiece(-1);
+                                chkAvailability.setChecked(false);
+                                chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.checkbox_default_color)));
+
                             }
 
-
-                            int totValue = getProductTotalValue(mProductMasterBO);
-                            if (totValue > 0) {
-                                mReason.setEnabled(false);
-                                mReason.setSelected(false);
-                                mReason.setSelection(0);
-                                mProductMasterBO.setReasonID("0");
-                            } else {
-                                mReason.setEnabled(true);
-                                mReason.setSelected(true);
-                                mReason.setSelection(0);
+                            if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                int totValue = getProductTotalValue(mProductMasterBO);
+                                if (totValue > 0) {
+                                    mReason.setEnabled(false);
+                                    mReason.setSelected(false);
+                                    mReason.setSelection(0);
+                                    mProductMasterBO.getLocations()
+                                            .get(mSelectedLocationIndex).setReasonId(0);
+                                } else {
+                                    mReason.setEnabled(true);
+                                    mReason.setSelected(true);
+                                    mReason.setSelection(getReasonIndex(mProductMasterBO
+                                            .getLocations().get(mSelectedLocationIndex).getReasonId() + ""));
+                                }
                             }
 
                         }
@@ -611,23 +627,38 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                                         .get(mSelectedLocationIndex)
                                         .setShelfCase(scqty);
 
+                                if (scqty > 0
+                                        || SDUtil.convertToInt(etShelfPiece.getText().toString()) > 0
+                                        || SDUtil.convertToInt(etShelfOuter.getText().toString()) > 0) {
+                                    chkAvailability.setChecked(true);
+                                    chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.colorAccent)));
+                                } else if (scqty == 0) {
+                                    chkAvailability.setChecked(true);
+                                    chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.RED)));
+                                }
+
                             } else {
                                 mProductMasterBO.getLocations()
                                         .get(mSelectedLocationIndex)
                                         .setShelfCase(-1);
+                                chkAvailability.setChecked(false);
+                                chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.checkbox_default_color)));
                             }
 
-
-                            int totValue = getProductTotalValue(mProductMasterBO);
-                            if (totValue > 0) {
-                                mReason.setEnabled(false);
-                                mReason.setSelected(false);
-                                mReason.setSelection(0);
-                                mProductMasterBO.setReasonID("0");
-                            } else {
-                                mReason.setEnabled(true);
-                                mReason.setSelected(true);
-                                mReason.setSelection(0);
+                            if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                int totValue = getProductTotalValue(mProductMasterBO);
+                                if (totValue > 0) {
+                                    mReason.setEnabled(false);
+                                    mReason.setSelected(false);
+                                    mReason.setSelection(0);
+                                    mProductMasterBO.getLocations()
+                                            .get(mSelectedLocationIndex).setReasonId(0);
+                                } else {
+                                    mReason.setEnabled(true);
+                                    mReason.setSelected(true);
+                                    mReason.setSelection(getReasonIndex(mProductMasterBO
+                                            .getLocations().get(mSelectedLocationIndex).getReasonId() + ""));
+                                }
                             }
                         }
 
@@ -684,23 +715,39 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                         mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex)
                                 .setShelfOuter(shelfoqty);
+
+
+                        if (shelfoqty > 0
+                                || SDUtil.convertToInt(etShelfCase.getText().toString()) > 0
+                                || SDUtil.convertToInt(etShelfPiece.getText().toString()) > 0) {
+                            chkAvailability.setChecked(true);
+                            chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.colorAccent)));
+                        } else if (shelfoqty == 0) {
+                            chkAvailability.setChecked(true);
+                            chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.RED)));
+                        }
                     } else {
                         mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex)
                                 .setShelfOuter(-1);
+                        chkAvailability.setChecked(false);
+                        chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.checkbox_default_color)));
                     }
 
-
-                    int totValue = getProductTotalValue(mProductMasterBO);
-                    if (totValue > 0) {
-                        mReason.setEnabled(false);
-                        mReason.setSelected(false);
-                        mReason.setSelection(0);
-                        mProductMasterBO.setReasonID("0");
-                    } else {
-                        mReason.setEnabled(true);
-                        mReason.setSelected(true);
-                        mReason.setSelection(0);
+                    if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                        int totValue = getProductTotalValue(mProductMasterBO);
+                        if (totValue > 0) {
+                            mReason.setEnabled(false);
+                            mReason.setSelected(false);
+                            mReason.setSelection(0);
+                            mProductMasterBO.getLocations()
+                                    .get(mSelectedLocationIndex).setReasonId(0);
+                        } else {
+                            mReason.setEnabled(true);
+                            mReason.setSelected(true);
+                            mReason.setSelection(getReasonIndex(mProductMasterBO
+                                    .getLocations().get(mSelectedLocationIndex).getReasonId() + ""));
+                        }
                     }
 
                 }
@@ -1166,7 +1213,7 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
             if (mProductMasterBO.getLocations()
                     .get(mSelectedLocationIndex).getAvailability() == 1) {
                 chkAvailability.setChecked(true);
-                chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.GREEN)));
+                chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.colorAccent)));
             } else if (mProductMasterBO.getLocations()
                     .get(mSelectedLocationIndex).getAvailability() == 0) {
                 chkAvailability.setChecked(true);
@@ -1187,15 +1234,23 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                             .get(mSelectedLocationIndex).getAvailability() == -1) {
                         mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex).setAvailability(1);
-                        chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.GREEN)));
+                        chkAvailability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.colorAccent)));
                         chkAvailability.setChecked(true);
 
                         if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
                             mReason.setEnabled(false);
                             mReason.setSelected(false);
                             mReason.setSelection(0);
-                            mProductMasterBO.setReasonID("0");
+                            mProductMasterBO.getLocations()
+                                    .get(mSelectedLocationIndex).setReasonId(0);
                         }
+
+                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+                            etShelfPiece.setText("1");
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+                            etShelfPiece.setText("1");
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                            etShelfPiece.setText("1");
 
                     } else if (mProductMasterBO.getLocations()
                             .get(mSelectedLocationIndex).getAvailability() == 1) {
@@ -1208,7 +1263,17 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                             mReason.setEnabled(true);
                             mReason.setSelected(true);
                             mReason.setSelection(0);
+                            mProductMasterBO.getLocations()
+                                    .get(mSelectedLocationIndex).setReasonId(0);
                         }
+
+
+                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+                            etShelfPiece.setText("0");
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+                            etShelfPiece.setText("0");
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                            etShelfPiece.setText("0");
 
                     } else if (mProductMasterBO.getLocations()
                             .get(mSelectedLocationIndex).getAvailability() == 0) {
@@ -1221,8 +1286,17 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                             mReason.setEnabled(false);
                             mReason.setSelected(false);
                             mReason.setSelection(0);
-                            mProductMasterBO.setReasonID("0");
+                            mProductMasterBO.getLocations()
+                                    .get(mSelectedLocationIndex).setReasonId(0);
                         }
+
+                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+                            etShelfPiece.setText("");
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+                            etShelfPiece.setText("");
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                            etShelfPiece.setText("");
+
 
                     }
 
@@ -1238,8 +1312,10 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                     ReasonMaster reString = (ReasonMaster) mReason
                             .getSelectedItem();
 
-                    mProductMasterBO.setReasonID(reString
-                            .getReasonID());
+                    mProductMasterBO.getLocations()
+                            .get(mSelectedLocationIndex)
+                            .setReasonId(SDUtil.convertToInt(reString.getReasonID()));
+
 
                 }
 
@@ -1294,17 +1370,20 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                     + "";
             facingQty.setText(strFacingQty);
 
-
-            if (mProductMasterBO.getLocations()
-                    .get(mSelectedLocationIndex)
-                    .getShelfPiece() > -1 || mProductMasterBO.getLocations()
-                    .get(mSelectedLocationIndex).getAvailability() > -1) {
-                mReason.setEnabled(false);
-                mReason.setSelected(false);
-                mReason.setSelection(0);
-            } else {
-                mReason.setEnabled(true);
-                mReason.setSelected(true);
+            if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                if (mProductMasterBO.getLocations()
+                        .get(mSelectedLocationIndex)
+                        .getShelfPiece() > -1 || mProductMasterBO.getLocations()
+                        .get(mSelectedLocationIndex).getAvailability() > -1) {
+                    mReason.setEnabled(false);
+                    mReason.setSelected(false);
+                    mReason.setSelection(0);
+                } else {
+                    mReason.setEnabled(true);
+                    mReason.setSelected(true);
+                    mReason.setSelection(getReasonIndex(mProductMasterBO
+                            .getLocations().get(mSelectedLocationIndex).getReasonId() + ""));
+                }
             }
 
 

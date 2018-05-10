@@ -957,7 +957,7 @@ public class CollectionHelper {
             db.createDataBase();
             db.openDataBase();
             String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,PrintFilePath,BankName,BranchName";
-            double calculateCredit = 0;
+            double calculateCredit = bmodel.getRetailerMasterBO().getCredit_balance();
             String groupID;
 
             groupID = bmodel.QT(SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + bmodel.userMasterHelper.getUserMasterBO().getUserid());
@@ -986,6 +986,7 @@ public class CollectionHelper {
                             calculateCredit = calculateCredit + paymentBO.getAmount();
 
                             bmodel.retailerMasterBO.setCredit_balance((float) calculateCredit);
+                            bmodel.retailerMasterBO.setRField1("" + (float) calculateCredit);
                         }
                     }
                     if (!StandardListMasterConstants.CHEQUE.equals(paymentBO.getCashMode()) &&
@@ -1393,7 +1394,7 @@ public class CollectionHelper {
             sb.append("where (Retailerid in(" + bmodel.getRetailerMasterBO().getRetailerID() + ",0) AND ");
             sb.append(" distributorid in(" + bmodel.getRetailerMasterBO().getDistributorId() + ",0) AND ");
             sb.append(" Channelid in (" + bmodel.getRetailerMasterBO().getSubchannelid() + ",");
-            String channelid = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(),mContext);
+            String channelid = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext);
             if (channelid.equals("")) {
                 channelid = "0";
             }

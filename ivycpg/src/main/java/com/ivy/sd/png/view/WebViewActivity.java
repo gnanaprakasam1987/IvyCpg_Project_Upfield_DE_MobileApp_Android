@@ -17,7 +17,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.van.LoadManagementScreen;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -116,7 +115,9 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
             Intent in = new Intent(WebViewActivity.this, HomeScreenActivity.class);
             if (mMenuCode.equals("MENU_LOAD_WEBVIEW"))
-                in = new Intent(WebViewActivity.this, LoadManagementScreen.class);
+                in = new Intent(WebViewActivity.this, HomeScreenActivity.class)
+                        .putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
+
             startActivity(in);
             finish();
             return true;

@@ -87,6 +87,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     public String mSelectedBarCodemodule;
     private AlertDialog alertDialog;
     private View view;
+    private Loadmanagemntreceiver mLoadmanagementReceiver;
 
     @Override
     public void onAttach(Context context) {
@@ -179,7 +180,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             ListView listView = (ListView) view.findViewById(R.id.listView1);
             listView.setCacheColorHint(0);
             listView.setAdapter(new MenuBaseAdapter(menuDB));
-            registerReceiver();
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -197,6 +198,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
         super.onResume();
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        registerReceiver();
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -218,6 +221,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
     @Override
     public void onPause() {
         super.onPause();
+
+        getActivity().unregisterReceiver(mLoadmanagementReceiver);
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
@@ -258,7 +263,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
 
     private void registerReceiver() {
-        Loadmanagemntreceiver mLoadmanagementReceiver;
         IntentFilter filter = new IntentFilter(
                 Loadmanagemntreceiver.RESPONSE);
         filter.addCategory(Intent.CATEGORY_DEFAULT);

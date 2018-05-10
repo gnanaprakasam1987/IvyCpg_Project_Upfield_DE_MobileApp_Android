@@ -518,7 +518,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             else {
                 if ("1".equals(calledBy)) {
                     startActivity(new Intent(getActivity(),
-                            LoadManagementScreen.class));
+                            HomeScreenActivity.class).putExtra("menuCode", "MENU_LOAD_MANAGEMENT"));
                     getActivity().finish();
                 }
                 if ("2".equals(calledBy)) {
@@ -689,7 +689,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     public void onPositiveButtonClick() {
                         if ("1".equals(calledBy)) {
                             startActivity(new Intent(getActivity(),
-                                    LoadManagementScreen.class));
+                                    HomeScreenActivity.class).putExtra("menuCode", "MENU_LOAD_MANAGEMENT"));
                             getActivity().finish();
                         }
                         if ("2".equals(calledBy)) {

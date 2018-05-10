@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.van;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -1371,6 +1372,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
 
                     }
 
+                    @SuppressLint("StringFormatInvalid")
                     @Override
                     public void afterTextChanged(Editable s) {
                         Commons.print("outer:" + holder.spbo.getOuterSize());
@@ -2174,12 +2176,14 @@ public class StockProposalScreen extends ToolBarwithFilter implements
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
             alertDialog.dismiss();
-
-            finish();
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             Toast.makeText(StockProposalScreen.this,
                     getResources().getString(R.string.saved_successfully),
                     Toast.LENGTH_SHORT).show();
+            loadActivity = new Intent(StockProposalScreen.this, HomeScreenActivity.class);
+            loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
+            startActivity(loadActivity);
+            finish();
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
 
     }

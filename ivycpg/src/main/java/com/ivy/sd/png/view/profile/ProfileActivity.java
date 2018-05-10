@@ -1184,7 +1184,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
 
             JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
+            List<List<HashMap<String, String>>> routes = new ArrayList<>();
             try {
                 jObject = new JSONObject(jsonData[0]);
                 DirectionsJSONParser parser = new DirectionsJSONParser();

@@ -219,7 +219,8 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             String[] CurrentString = product.getStartdatetime().toString().split(" ");
 
             timevaluestart.setText(CurrentString[1]);
-            datevalue.setText(CurrentString[0]);
+            datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(CurrentString[0],
+                    ConfigurationMasterHelper.outDateFormat));
 
             timevaluestart.setVisibility(View.VISIBLE);
             timevalue.setVisibility(View.GONE);
@@ -257,10 +258,13 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             String CurrentString1 = product.getEndtime().toString();
             String[] separated = CurrentString.split(" ");
             timevaluestart.setText(separated[1]);
-            datevalue.setText(separated[0]);
+            datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(separated[0],
+                    ConfigurationMasterHelper.outDateFormat));
             String[] separated1 = CurrentString1.split(" ");
             timeend.setText(separated1[1]);
-            enddatevalue.setText(separated1[0]);
+            enddatevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(separated[0],
+                    ConfigurationMasterHelper.outDateFormat));
+
 
             timevaluestart.setVisibility(View.VISIBLE);
             tripStarting.setFocusable(false);

@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
@@ -1384,9 +1385,12 @@ public class ProfileFragment extends IvyBaseFragment {
     }
 
     private void initializeTransferUtility() {
+        System.setProperty
+                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                 ConfigurationMasterHelper.SECRET_KEY);
         AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
         transferUtility = new TransferUtility(s3, getActivity());
     }
 
