@@ -253,7 +253,7 @@
                         android:text="@string/text_capture_proof"
                         android:textColor="@color/black_bg1" />
 
-                    <TextView
+                    <ImageView
                         android:id="@+id/tv_capture_starttrip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -261,7 +261,7 @@
                         android:background="@drawable/ic_image_camera_alt_blk"
                         android:gravity="start">
 
-                    </TextView>
+                    </ImageView>
 
 
                 </RelativeLayout>
@@ -457,7 +457,7 @@
                         android:text="@string/text_capture_proof"
                         android:textColor="@color/black_bg1" />
 
-                    <TextView
+                    <ImageView
                         android:id="@+id/tv_capture_endtrip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -465,7 +465,7 @@
                         android:background="@drawable/ic_image_camera_alt_blk"
                         android:gravity="start">
 
-                    </TextView>
+                    </ImageView>
 
                     <TextView
                         android:id="@+id/tv_end_img_count"

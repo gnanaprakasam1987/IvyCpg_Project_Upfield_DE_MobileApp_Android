@@ -11,6 +11,7 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -28,11 +29,14 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
@@ -42,6 +46,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -54,9 +59,10 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     private BusinessModel bmodel;
     private EditText tripStarting;
-    private TextView tripStartingImage, tvStartImgCount;
+    private TextView tvStartImgCount;
+    private ImageView tripStartingImage, tempImageView, tvCaptureEndtrip;
     private EditText tripEnding;
-    private TextView tvCaptureEndtrip;
+
     private Context mContext;
     private String imageUrl;
     private TextView distanceCoveredEt;
@@ -116,7 +122,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
         tripStarting = (EditText) findViewById(R.id.trip_starting_reading);
         // capture image starting
-        tripStartingImage = (TextView) findViewById(R.id.tv_capture_starttrip);
+        tripStartingImage = (ImageView) findViewById(R.id.tv_capture_starttrip);
 
 
         tripStarting.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -124,7 +130,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         tripStarting.setKeyListener(DigitsKeyListener.getInstance(false, true));
 
         tripEnding = (EditText) findViewById(R.id.trip_ending_reading);
-        tvCaptureEndtrip = (TextView) findViewById(R.id.tv_capture_endtrip);
+        tvCaptureEndtrip = (ImageView) findViewById(R.id.tv_capture_endtrip);
         tripEnding.setInputType(InputType.TYPE_CLASS_NUMBER);
         tripEnding.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         tripEnding.setKeyListener(DigitsKeyListener.getInstance(false, true));
@@ -404,15 +410,19 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
 
         if (bmodel.configurationMasterHelper.SHOW_PHOTO) {
+
             tripStartingImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    tempImageView = tripStartingImage;
                     takePhoto();
                 }
             });
             tvCaptureEndtrip.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    tempImageView = tvCaptureEndtrip;
                     takePhoto();
                 }
             });
@@ -425,27 +435,41 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
         if (bmodel.isExternalStorageAvailable()) {
 
-            imageFileName = "Odameter_" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "_" + Commons.now(Commons.DATE_TIME) + "_img.jpg";
 
-            String path = photoNamePath + "/" + imageFileName;
+            boolean nFilesThere = bmodel
+                    .checkForNFilesInFolder(
+                            photoNamePath,
+                            1, imageFileName);
 
-            try {
-                Intent i = new Intent();
-                i.setAction(ACTION_SCANNERINPUTPLUGIN);
-                i.putExtra(EXTRA_PARAMETER, DISABLE_PLUGIN);
-                mContext.sendBroadcast(i);
 
-                Intent intent = new Intent(mContext, CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), path);
-                startActivityForResult(intent, CAMERA_REQUEST_CODE);
+            if (nFilesThere) {
 
-            } catch (Exception e) {
-                Commons.print("error opening camera");
-                Commons.printException(e);
-                // TODO: handle exception
+                showFileDeleteAlertWithImage(imageFileName, " ");
+            } else {
+
+                imageFileName = "Odameter_" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + "_" + Commons.now(Commons.DATE_TIME) + "_img.jpg";
+
+
+                String path = photoNamePath + "/" + imageFileName;
+                try {
+                    Intent i = new Intent();
+                    i.setAction(ACTION_SCANNERINPUTPLUGIN);
+                    i.putExtra(EXTRA_PARAMETER, DISABLE_PLUGIN);
+                    mContext.sendBroadcast(i);
+
+                    Intent intent = new Intent(mContext, CameraActivity.class);
+                    intent.putExtra(getResources().getString(R.string.quality), 40);
+                    intent.putExtra(getResources().getString(R.string.path), path);
+                    startActivityForResult(intent, CAMERA_REQUEST_CODE);
+
+                } catch (Exception e) {
+                    Commons.print("error opening camera");
+                    Commons.printException(e);
+                    // TODO: handle exception
+                }
             }
+
         } else {
             Toast.makeText(
                     mContext,
@@ -454,6 +478,43 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                     Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+
+    private void showFileDeleteAlertWithImage(final String imageNameStarts,
+                                              final String imageSrc) {
+        final CommonDialog commonDialog = new CommonDialog(OdaMeterScreen.this.getApplication(), //Context
+                OdaMeterScreen.this, //Context
+                "", //Title
+                getResources().getString(R.string.word_already) + " " + 1 + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
+                true, //ToDisplayImage
+                getResources().getString(R.string.yes), //Positive Button
+                getResources().getString(R.string.no), //Negative Button
+                false, //MoveToNextActivity
+                this.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageNameStarts, //LoadImage
+                new CommonDialog.positiveOnClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+
+                        bmodel.deleteFiles(photoNamePath,
+                                imageNameStarts);
+                        Intent intent = new Intent(getApplicationContext(),
+                                CameraActivity.class);
+                        intent.putExtra("quality", 40);
+                        String path = photoNamePath + "/" + imageNameStarts;
+                        intent.putExtra("path", path);
+                        startActivityForResult(intent,
+                                bmodel.CAMERA_REQUEST_CODE);
+
+                    }
+                }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+// dialog.dismiss();
+            }
+        });
+        commonDialog.show();
+        commonDialog.setCancelable(false);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -472,6 +533,15 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
 
                 imageUrl = (path + imageFileName);
+
+                Glide.with(getApplicationContext()).load(this.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageFileName)
+                        .centerCrop()
+                        .placeholder(R.drawable.downloadsuccess)
+                        .error(R.drawable.no_image_available)
+                        .override(100, 100)
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(tempImageView);
                 product.setTripImage(imageUrl);
             } else {
                 Commons.print(TAG + ",Camers Activity : Canceled");
