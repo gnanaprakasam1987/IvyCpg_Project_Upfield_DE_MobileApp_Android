@@ -129,4 +129,6 @@
     <string name="mandatory_fileds_empty">Mandatory fields empty!</string>
     <string name="vanload_stock_applied">VanLoad Stock Applied</string>
 
+    <string name="enter_account">Enter account no</string>
+
 </resources>
