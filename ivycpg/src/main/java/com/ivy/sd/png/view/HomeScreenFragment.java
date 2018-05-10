@@ -1646,7 +1646,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         TaskFragment taskFragment = (TaskFragment) fm.findFragmentByTag(MENU_TASK_NEW);
         BackUpSellerFragment backUpSellerFragment = (BackUpSellerFragment) fm.findFragmentByTag(MENU_BACKUP_SELLER);
 
-        SupervisorMapFragment supervisorMapFragment = (SupervisorMapFragment) fm.findFragmentByTag(fragmentName);
+        SupervisorMapFragment supervisorMapRFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_REALTIME);
+        SupervisorMapFragment supervisorMapMFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_MOVEMENT);
+        SupervisorMapFragment supervisorMapCFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_CALLANALYSIS);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1760,16 +1762,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (backUpSellerFragment != null && fragmentName.equals(MENU_BACKUP_SELLER)
                 && backUpSellerFragment.isVisible()) {
             return;
-        } else if (supervisorMapFragment != null && (fragmentName.equals(MENU_SUPERVISOR_REALTIME))
-                && supervisorMapFragment.isVisible()) {
+        } else if (supervisorMapRFragment != null && (fragmentName.equals(MENU_SUPERVISOR_REALTIME))
+                && supervisorMapRFragment.isVisible()) {
             return;
         }
-        else if (supervisorMapFragment != null && (fragmentName.equals(MENU_SUPERVISOR_MOVEMENT))
-                && supervisorMapFragment.isVisible()) {
+        else if (supervisorMapMFragment != null && (fragmentName.equals(MENU_SUPERVISOR_MOVEMENT))
+                && supervisorMapMFragment.isVisible()) {
             return;
         }
-        else if (supervisorMapFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
-                && supervisorMapFragment.isVisible()) {
+        else if (supervisorMapCFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
+                && supervisorMapCFragment.isVisible()) {
             return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
@@ -1846,8 +1848,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(taskFragment);
         if (backUpSellerFragment != null)
             ft.remove(backUpSellerFragment);
-        if(supervisorMapFragment!=null)
-            ft.remove(supervisorMapFragment);
+        if(supervisorMapRFragment!=null)
+            ft.remove(supervisorMapRFragment);
+        if(supervisorMapMFragment!=null)
+            ft.remove(supervisorMapMFragment);
+        if(supervisorMapCFragment!=null)
+            ft.remove(supervisorMapCFragment);
 
         Bundle bndl;
         Fragment fragment;
