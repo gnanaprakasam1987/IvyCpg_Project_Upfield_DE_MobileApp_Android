@@ -77,7 +77,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
     private Toolbar toolbar;
     private TextView datevalue, timevalue, timevaluestart, endtimevalue, timeend, enddatevalue;
     private CustomDigitalClock clk1, clk2;
-    private RelativeLayout endingtriplayout, distancelayout, captureEndtripImg, parentStartCapture;
+    private RelativeLayout endingtriplayout, distancelayout, endImgLayout, startImgLayout;
     private LinearLayout enddatetime_layout;
     private Intent loadActivity;
     private boolean isFromPlanning = false;
@@ -120,39 +120,39 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
-        tripStarting = (EditText) findViewById(R.id.trip_starting_reading);
+        tripStarting = findViewById(R.id.trip_starting_reading);
         // capture image starting
-        tripStartingImage = (ImageView) findViewById(R.id.tv_capture_starttrip);
+        tripStartingImage = findViewById(R.id.tv_capture_starttrip);
 
 
         tripStarting.setInputType(InputType.TYPE_CLASS_NUMBER);
         tripStarting.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         tripStarting.setKeyListener(DigitsKeyListener.getInstance(false, true));
 
-        tripEnding = (EditText) findViewById(R.id.trip_ending_reading);
-        tvCaptureEndtrip = (ImageView) findViewById(R.id.tv_capture_endtrip);
+        tripEnding = findViewById(R.id.trip_ending_reading);
+        tvCaptureEndtrip = findViewById(R.id.tv_capture_endtrip);
         tripEnding.setInputType(InputType.TYPE_CLASS_NUMBER);
         tripEnding.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         tripEnding.setKeyListener(DigitsKeyListener.getInstance(false, true));
-        distanceCoveredEt = (TextView) findViewById(R.id.distance_covered);
-        datevalue = (TextView) findViewById(R.id.datevalue);
-        timevalue = (TextView) findViewById(R.id.timevalue);
-        timevaluestart = (TextView) findViewById(R.id.timevaluestart);
-        endtimevalue = (TextView) findViewById(R.id.endtimevalue);
-        timeend = (TextView) findViewById(R.id.timeend);
-        enddatevalue = (TextView) findViewById(R.id.enddatevalue);
-        TextView vanno = (TextView) findViewById(R.id.vanno);
-        TextView vannovalue = (TextView) findViewById(R.id.vannovalue);
-        startjourney = (Button) findViewById(R.id.startjourney);
-        endjourney = (Button) findViewById(R.id.endjourney);
-        endingtriplayout = (RelativeLayout) findViewById(R.id.endingtriplayout);
-        captureEndtripImg = (RelativeLayout) findViewById(R.id.capture_endtrip_img);
-        distancelayout = (RelativeLayout) findViewById(R.id.distancelayout);
-        enddatetime_layout = (LinearLayout) findViewById(R.id.enddatetime_layout);
-        parentStartCapture = (RelativeLayout) findViewById(R.id.capture_starttrip_img);
+        distanceCoveredEt = findViewById(R.id.distance_covered);
+        datevalue = findViewById(R.id.datevalue);
+        timevalue = findViewById(R.id.timevalue);
+        timevaluestart = findViewById(R.id.timevaluestart);
+        endtimevalue = findViewById(R.id.endtimevalue);
+        timeend = findViewById(R.id.timeend);
+        enddatevalue = findViewById(R.id.enddatevalue);
+        TextView vanno = findViewById(R.id.vanno);
+        TextView vannovalue = findViewById(R.id.vannovalue);
+        startjourney = findViewById(R.id.startjourney);
+        endjourney = findViewById(R.id.endjourney);
+        endingtriplayout = findViewById(R.id.endingtriplayout);
+        endImgLayout = findViewById(R.id.capture_endtrip_img);
+        distancelayout = findViewById(R.id.distancelayout);
+        enddatetime_layout = findViewById(R.id.enddatetime_layout);
+        startImgLayout = findViewById(R.id.capture_starttrip_img);
 
-        clk1 = (CustomDigitalClock) findViewById(R.id.digitalClock1);
-        clk2 = (CustomDigitalClock) findViewById(R.id.digitalClock2);
+        clk1 = findViewById(R.id.digitalClock1);
+        clk2 = findViewById(R.id.digitalClock2);
 
 
         vanno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -194,11 +194,11 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
 //
         if (!bmodel.configurationMasterHelper.SHOW_PHOTO) {
-            parentStartCapture.setVisibility(View.GONE);
-            captureEndtripImg.setVisibility(View.GONE);
+            startImgLayout.setVisibility(View.GONE);
+            endImgLayout.setVisibility(View.GONE);
         } else {
-            parentStartCapture.setVisibility(View.VISIBLE);
-            captureEndtripImg.setVisibility(View.VISIBLE);
+            startImgLayout.setVisibility(View.VISIBLE);
+            endImgLayout.setVisibility(View.VISIBLE);
         }
 
 
@@ -233,7 +233,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             tripStarting.setFocusable(true);
             tripStartingImage.setFocusable(true);
             endingtriplayout.setVisibility(View.GONE);
-            captureEndtripImg.setVisibility(View.GONE);
+            endImgLayout.setVisibility(View.GONE);
             distancelayout.setVisibility(View.GONE);
             endjourney.setVisibility(View.GONE);
             enddatetime_layout.setVisibility(View.GONE);
@@ -279,7 +279,8 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
             clk2.setVisibility(View.VISIBLE);
             endingtriplayout.setVisibility(View.VISIBLE);
-            captureEndtripImg.setVisibility(View.VISIBLE);
+            if (bmodel.configurationMasterHelper.SHOW_PHOTO)
+                endImgLayout.setVisibility(View.VISIBLE);
             distancelayout.setVisibility(View.VISIBLE);
             endjourney.setVisibility(View.VISIBLE);
             enddatetime_layout.setVisibility(View.VISIBLE);
@@ -888,7 +889,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
             } else {
 
-                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,imgStart";
+                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,startImage";
 
                 String values = QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID))
@@ -1035,7 +1036,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                     } else {
 
                         if (c.getInt(0) == 0) {
-                            sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,imgEnd,isended,upload) values("
+                            sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,endImage,isended,upload) values("
                                     + mylist.getOdameterend()
                                     + ","
                                     + QT(SDUtil.now(SDUtil.TIME))
@@ -1057,7 +1058,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                                     + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
                                     + ",endlatitude=" + LocationUtil.latitude
                                     + ",endlongitude=" + LocationUtil.longitude
-                                    + ",imgEnd=" + QT(mylist.getTripImage())
+                                    + ",endImage=" + QT(mylist.getTripImage())
                                     + ",isended=" + 1 + ",upload='N'";
                             db.executeQ(sql);
                         }
