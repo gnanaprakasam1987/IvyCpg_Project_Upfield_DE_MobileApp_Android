@@ -254,6 +254,8 @@
                         android:text="@string/text_capture_proof"
                         android:textColor="@color/black_bg1" />
 
+
+
                     <ImageView
                         android:id="@+id/tv_capture_starttrip"
                         android:layout_width="wrap_content"

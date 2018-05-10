@@ -192,7 +192,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                 tvCaptureEndtrip.setEnabled(true);
             }
         }
-
+//
         if (!bmodel.configurationMasterHelper.SHOW_PHOTO) {
             parentStartCapture.setVisibility(View.GONE);
             captureEndtripImg.setVisibility(View.GONE);
