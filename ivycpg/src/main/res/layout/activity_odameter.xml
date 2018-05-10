@@ -241,7 +241,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
                     android:orientation="horizontal"
-                    android:padding="15dp">
+                    android:padding="15dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_capture_starttrip_img"
@@ -445,7 +446,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
                     android:orientation="horizontal"
-                    android:padding="15dp">
+                    android:padding="15dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_capture_endtrip_img"
