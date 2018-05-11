@@ -2,7 +2,6 @@ package com.ivy.sd.png.provider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
@@ -1343,6 +1342,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SPLIT_ORDER = "SPLIT_ORDER";  //jnj project specific
     public boolean IS_ORDER_SPLIT;
 
+    private static final String CODE_PHOTODAM = "PHOTODAM";
+    public boolean SHOW_PHOTO_ODAMETER;
+
     public boolean IS_BEAT_WISE_RETAILER_MAPPING = true;
     private static final String CODE_BEAT_WISE_RETAILER = "FIELD_USER_PLAN";
 
@@ -2323,6 +2325,9 @@ public class ConfigurationMasterHelper {
         }
 
         this.IS_ORDER_SPLIT = hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) : false;
+
+        this.SHOW_PHOTO_ODAMETER = hashMapHHTModuleConfig.get(CODE_PHOTODAM) != null ? hashMapHHTModuleConfig.get(CODE_PHOTODAM) : false;
+
 
         this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
         this.IS_FILTER_TAG_PRODUCTS = hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) : false;

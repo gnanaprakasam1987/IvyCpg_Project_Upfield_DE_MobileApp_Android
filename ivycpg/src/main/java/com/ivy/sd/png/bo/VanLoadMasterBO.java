@@ -8,11 +8,14 @@ public class VanLoadMasterBO {
             pieceqty, sih, odameteruid, outerQty, dOuomQty, outerUomId;
 
     private float msqqty;
-    private String pname, psname, barcode, pcode, rfield1, odameterdate,startdatetime,starttime,endtime;
+    private String pname, psname, barcode, pcode, rfield1, odameterdate, startdatetime, starttime, endtime;
     private double odameterstart, odameterend;
     private int isended, isstarted;
     private String batchno, batchId, mfgDate,
             expDate;
+
+
+    private String startTripImg,endTripImg;
     private Vector<VanLoadMasterBO> batchlist;
 
     public VanLoadMasterBO() {
@@ -48,9 +51,9 @@ public class VanLoadMasterBO {
         this.mfgDate = vanloadbo.mfgDate;
         this.expDate = vanloadbo.expDate;
         this.batchlist = vanloadbo.batchlist;
-        this.startdatetime=vanloadbo.startdatetime;
-        this.starttime=vanloadbo.starttime;
-        this.endtime=vanloadbo.endtime;
+        this.startdatetime = vanloadbo.startdatetime;
+        this.starttime = vanloadbo.starttime;
+        this.endtime = vanloadbo.endtime;
     }
 
     public String getBatchId() {
@@ -268,7 +271,6 @@ public class VanLoadMasterBO {
         this.dOuomQty = dOuomQty;
     }
 
-
     public String getMfgDate() {
         return mfgDate;
     }
@@ -292,7 +294,6 @@ public class VanLoadMasterBO {
     public void setPieceUomId(int pieceUomId) {
         this.pieceUomId = pieceUomId;
     }
-
 
     public String getStartdatetime() {
         return startdatetime;
@@ -318,4 +319,20 @@ public class VanLoadMasterBO {
         this.endtime = endtime;
     }
 
+
+    public String getStartTripImg() {
+        return startTripImg;
+    }
+
+    public void setStartTripImg(String startTripImg) {
+        this.startTripImg = startTripImg;
+    }
+
+    public String getEndTripImg() {
+        return endTripImg;
+    }
+
+    public void setEndTripImg(String endTripImg) {
+        this.endTripImg = endTripImg;
+    }
 }
