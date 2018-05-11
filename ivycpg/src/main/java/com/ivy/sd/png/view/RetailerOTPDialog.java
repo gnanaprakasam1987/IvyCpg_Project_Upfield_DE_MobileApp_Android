@@ -41,13 +41,15 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
     private BusinessModel bmodel;
     private EditText et_otp;
     private OTPListener otpListener;
+    private String type;
 
     public interface OTPListener{
         void generateOTP();
     }
 
-    public RetailerOTPDialog(OTPListener callBack){
+    public RetailerOTPDialog(OTPListener callBack,String type){
         this.otpListener = callBack;
+        this.type = type;
     }
 
     @Override
@@ -123,6 +125,7 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
                 jsonObject.put("MobileUTCDateTime",
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
                 jsonObject.put("OTPValue", OTP);
+                jsonObject.put("type", type);
                 jsonObject.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
 
                 String appendUrl = "/V1/ForgotPassword/Validate";
@@ -166,7 +169,6 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
                     }
 
                 }
-
 
             } catch (Exception e) {
                 Commons.printException(e);

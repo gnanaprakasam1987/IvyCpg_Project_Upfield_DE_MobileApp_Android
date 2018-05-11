@@ -130,5 +130,6 @@
     <string name="vanload_stock_applied">VanLoad Stock Applied</string>
 
     <string name="enter_account">Enter account no</string>
+    <string name="otp_download_url_empty">OTP Generate Url is Empty </string>
 
 </resources>

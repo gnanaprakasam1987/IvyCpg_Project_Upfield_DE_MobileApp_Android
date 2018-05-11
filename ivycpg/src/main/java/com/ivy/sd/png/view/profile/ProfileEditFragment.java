@@ -7,11 +7,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -60,6 +58,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.ivy.lib.Utils;
+import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.location.LocationUtil;
 import com.ivy.maplib.BaiduMapDialogue;
 import com.ivy.sd.camera.CameraActivity;
@@ -88,6 +88,9 @@ import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,6 +98,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -107,14 +111,12 @@ import static android.app.Activity.RESULT_OK;
  * Created by hanifa.m on 3/28/2017.
  */
 
-public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPDialog.OTPListener{
+public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPDialog.OTPListener {
 
     private BusinessModel bmodel;
 
     private int REQUEST_CODE = 100;
 
-    WindowManager wmanager;
-    Display display;
     int width = 0;
     private Vector<ChannelBO> channelMaster;
 
@@ -215,9 +217,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     static TextView dlExpDateTextView;
     static TextView flExpDateTextView;
     private AlertDialog alertDialog;
-    private String str_mob_email = "";
+    private String str_mob_email = "", str_type = "";
     private boolean otpShown = false;
-    private OTPReceiver otpReceiver;
 
     @Nullable
     @Override
@@ -286,24 +287,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     @Override
     public void onStart() {
         super.onStart();
-      /*  bmodel.newOutletHelper.downloadLinkRetailer();
-        new DownloadAsync().execute();
-        bmodel.configurationMasterHelper.downloadProfileModuleConfig();
-        // get previous changes from retailerEdit  Header and Detail table
-        bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
-        createTabViewForProfileForEdit();
-           saveTxtBtn.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                   try {
-                       if (validateEditProfile())
-                           new SaveEditAsyncTask().execute();
-
-                   } catch (Exception e) {
-                       Commons.printException(e);
-                   }
-               }
-           });*/
     }
 
     @Override
@@ -317,7 +300,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
         }
 
-        registerReceiver();
     }
 
     @Override
@@ -329,7 +311,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             if (permissionStatus == PackageManager.PERMISSION_GRANTED)
                 bmodel.locationUtil.stopLocationListener();
         }
-        unRegister();
     }
 
     @SuppressLint("RestrictedApi")
@@ -1567,7 +1548,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
             else
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
             editText[mNumber].setHint(MName);
@@ -1618,7 +1599,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 emailParam.weight = 7;
                 LinearLayout.LayoutParams emailParam1 = new LinearLayout.LayoutParams(0,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                emailParam1.setMargins(0,0,0,2);
+                emailParam1.setMargins(0, 0, 0, 2);
                 emailParam1.weight = 3;
                 emailParam1.gravity = Gravity.BOTTOM;
                 emailLayout.addView(editTextInputLayout, emailParam);
@@ -1638,7 +1619,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                 linearlayout.addView(emailLayout, weight1);
             } else
-            linearlayout.addView(editTextInputLayout, weight1);
+                linearlayout.addView(editTextInputLayout, weight1);
 
         }
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE30") ||
@@ -1689,7 +1670,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 mobileParam.weight = 7;
                 LinearLayout.LayoutParams mobileParam1 = new LinearLayout.LayoutParams(0,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                mobileParam1.setMargins(0,0,0,2);
+                mobileParam1.setMargins(0, 0, 0, 2);
                 mobileParam1.weight = 3;
                 mobileParam1.gravity = Gravity.BOTTOM;
                 mobileLayout.addView(editTextInputLayout, mobileParam);
@@ -1709,7 +1690,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                 linearlayout.addView(mobileLayout, weight1);
             } else
-            linearlayout.addView(editTextInputLayout, weight1);
+                linearlayout.addView(editTextInputLayout, weight1);
 
         }
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE25")) {
@@ -1796,7 +1777,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
             else
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
             if (inputFilters != null && inputFilters.size() > 0) {
@@ -1847,7 +1828,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 if (inputFilters != null && inputFilters.size() > 0) {
@@ -1915,7 +1896,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 if (inputFilters != null && inputFilters.size() > 0) {
@@ -1986,7 +1967,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 if (inputFilters != null && inputFilters.size() > 0) {
@@ -2109,7 +2090,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 editText[other2_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
@@ -3858,7 +3839,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     @Override
     public void generateOTP() {
         otpShown = true;
-        new VerifyTask(str_mob_email).execute();
+        new VerifyTask(str_mob_email, str_type).execute();
     }
 
     @SuppressLint("ValidFragment")
@@ -4907,30 +4888,38 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     private void verifyOTP(String type, String value) {
         otpShown = false;
-        switch (type) {
-            case "MOBILE":
-                if (value != null && !value.isEmpty() && value.length() == 10)
-                    new VerifyTask(value).execute();
-                else
-                    Toast.makeText(getActivity(), "Invalid Mobile Number", Toast.LENGTH_LONG).show();
-                break;
-            case "EMAIL":
-                if (isValidEmail(value))
-                    new VerifyTask(value).execute();
-                else
-                    Toast.makeText(getActivity(), getResources().
-                            getString(R.string.invalid_email_address), Toast.LENGTH_LONG).show();
-                break;
-        }
+        String otpGenerateUrl = bmodel.synchronizationHelper.generateOtpUrl();
+        if (otpGenerateUrl.length() > 0) {
+            switch (type) {
+                case "MOBILE":
+                    if (value != null && !value.isEmpty() && value.length() == 10)
+                        new VerifyTask(value, type).execute();
+                    else
+                        Toast.makeText(getActivity(), "Invalid Mobile Number", Toast.LENGTH_LONG).show();
+                    break;
+                case "EMAIL":
+                    if (isValidEmail(value))
+                        new VerifyTask(value, type).execute();
+                    else
+                        Toast.makeText(getActivity(), getResources().
+                                getString(R.string.invalid_email_address), Toast.LENGTH_LONG).show();
+                    break;
+            }
+        } else
+            Toast.makeText(getActivity(), getResources().
+                    getString(R.string.otp_download_url_empty), Toast.LENGTH_LONG).show();
     }
 
     class VerifyTask extends AsyncTask<Integer, Integer, Integer> {
 
         private AlertDialog.Builder builder;
         private String value;
+        private String type;
+        private int downloadStatus = 0;
 
-        VerifyTask(String value){
+        VerifyTask(String value, String type) {
             this.value = value;
+            this.type = type;
         }
 
 
@@ -4945,86 +4934,109 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+                JSONObject jsonData = new JSONObject();
+                jsonData.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid());
+                jsonData.put("RetailerId", bmodel.getRetailerMasterBO().getRetailerID());
+                JSONObject notObj = new JSONObject();
+                notObj.put("Type", type);
+                notObj.put("Receiver", value);
+                JSONArray notificationArray = new JSONArray();
+                notificationArray.put(notObj);
+                jsonData.put("Notification", notificationArray);
+
+
+                JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+
+                jsonFormatter.addParameter("UserId", bmodel.userMasterHelper
+                        .getUserMasterBO().getUserid());
+                jsonFormatter.addParameter("VersionCode",
+                        bmodel.getApplicationVersionNumber());
+                jsonFormatter.addParameter("LoginId", bmodel.userNameTemp.trim());
+                jsonFormatter.addParameter("MobileDateTime",
+                        Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+                jsonFormatter.addParameter("MobileUTCDateTime",
+                        Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+                jsonFormatter.addParameter("DeviceId",
+                        bmodel.activationHelper.getIMEINumber());
+                jsonFormatter.addParameter("VersionCode",
+                        bmodel.getApplicationVersionNumber());
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+                jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
+                        .getUserMasterBO().getOrganizationId());
+
+                String appendUrl = bmodel.synchronizationHelper.generateOtpUrl();
+
+                Vector<String> responseVector = bmodel.synchronizationHelper.getOtpGenerateResponse(jsonFormatter.getDataInJson(),
+                        jsonData.toString(), appendUrl);
+
+                if (responseVector.size() > 0) {
+                    for (String s : responseVector) {
+                        JSONObject jsonObjectResponse = new JSONObject(s);
+
+                        Iterator itr = jsonObjectResponse.keys();
+                        while (itr.hasNext()) {
+                            String key = (String) itr.next();
+                            if (key.equals("Response")) {
+                                downloadStatus = jsonObjectResponse.getInt("Response");
+                            } else if (key.equals("ErrorCode")) {
+                                String tokenResponse = jsonObjectResponse.getString("ErrorCode");
+                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+
+                                    return -4;
+
+                                }
+
+                            }
+
+                        }
+
+
+                    }
+
+                } else {
+                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                        if (errorMsg != null) {
+                            Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), getActivity().getResources().
+                                    getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                }
+
             } catch (Exception e) {
                 Commons.printException(e);
+                return downloadStatus;
             }
-            return 0;
+            return downloadStatus;
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                bmodel.synchronizationHelper.verifyMobileOrEmail(value);
-                str_mob_email = value;
-            } else {
-                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
-                if (errorMsg != null) {
-                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+
+            alertDialog.dismiss();
+
+            if (result ==1) {
+                alertDialog.dismiss();
+                if (getActivity() != null) {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    RetailerOTPDialog dialog1 = new RetailerOTPDialog(ProfileEditFragment.this,type);
+                    dialog1.setCancelable(false);
+                    dialog1.show(ft, "mobiledialog");
                 }
+
             }
         }
     }
 
-    private void registerReceiver() {
-        IntentFilter filter = new IntentFilter(
-                OTPReceiver.PROCESS_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        otpReceiver = new OTPReceiver();
-        getActivity().registerReceiver(otpReceiver, filter);
-    }
 
-    private void unRegister() {
-        if (otpReceiver != null) {
-            getActivity().unregisterReceiver(otpReceiver);
-            otpReceiver = null;
-        }
-    }
 
-    public class OTPReceiver extends BroadcastReceiver {
-        public static final String PROCESS_RESPONSE = "com.ivy.intent.action.RetailerOTP";
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateReceiver(intent);
-        }
-    }
 
-    private void updateReceiver(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        int method = bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0);
-        String errorCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
-
-        switch (method) {
-            case SynchronizationHelper.MOBILE_EMAIL_VERIFICATION:
-                if (errorCode != null && errorCode
-                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    alertDialog.dismiss();
-                    if (getActivity() != null && !otpShown) {
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        RetailerOTPDialog dialog1 = new RetailerOTPDialog(ProfileEditFragment.this);
-                        dialog1.setCancelable(false);
-                        dialog1.show(ft, "mobiledialog");
-                    } else if (otpShown)
-                        Toast.makeText(getActivity(), "OTP Sent Successfully", Toast.LENGTH_LONG).show();
-
-                } else {
-                    String errorDownloadMessage = bmodel.synchronizationHelper
-                            .getErrormessageByErrorCode().get(errorCode);
-                    if (errorDownloadMessage != null) {
-                        Toast.makeText(getActivity(), errorDownloadMessage,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    alertDialog.dismiss();
-                    break;
-                }
-                break;
-            default:
-                break;
-        }
-
-    }
 }
