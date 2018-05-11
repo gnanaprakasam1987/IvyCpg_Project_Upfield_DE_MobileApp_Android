@@ -1277,6 +1277,7 @@
     <string name="catalog_images_download">Download Catalog Images</string>
     <string name="enter_valid_password">Please enter valid password</string>
     <string name="profile">Profile</string>
+    <string name="view">View</string>
 
     <string-array name="task_tab_header">
         <item>All</item>
