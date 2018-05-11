@@ -1325,10 +1325,10 @@ public class ConfigurationMasterHelper {
     public boolean IS_ORD_SR_VALUE_VALIDATE;
 
     private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
-    public boolean IS_REALTIME_LOCATION_CAPTURE ;
+    public boolean IS_REALTIME_LOCATION_CAPTURE;
 
     private static final String CODE_UPLOAD_ATTENDANCE = "UPLOADATTENDANCE";
-    public boolean IS_UPLOAD_ATTENDANCE ;
+    public boolean IS_UPLOAD_ATTENDANCE;
 
     private static final String CODE_SHOW_DISTRIBUTOR_PROFILE = "PRO27";
     public boolean SHOW_DISTRIBUTOR_PROFILE;
@@ -1348,6 +1348,9 @@ public class ConfigurationMasterHelper {
 
     public boolean IS_FILTER_TAG_PRODUCTS = true;
     private static final String CODE_FILTER_TAGGED_PRODUCTS = "FILTER_TAG";
+
+    private static final String CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = "SPSTK";  //jnj project specific
+    public boolean IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2043,7 +2046,6 @@ public class ConfigurationMasterHelper {
         this.IS_SIH_VALIDATION_MASTER = hashMapHHTModuleConfig.get(CODE_SIH_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_SIH_VALIDATION) : false;
 
 
-
         this.SHOW_TAX = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
         this.SHOW_TAX_MASTER = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
 
@@ -2306,7 +2308,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
 
-        if(!isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
+        if (!isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
             this.IS_REALTIME_LOCATION_CAPTURE = false;
         }
 
@@ -2327,6 +2329,7 @@ public class ConfigurationMasterHelper {
         this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
         this.IS_FILTER_TAG_PRODUCTS = hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) : false;
         this.IS_ENABLE_PRODUCT_TAGGING_VALIDATION = hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) : false;
+        this.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = hashMapHHTModuleConfig.get(CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) : false;
     }
 
     private boolean isInOutModule() {
