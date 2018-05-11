@@ -2696,15 +2696,15 @@ public class ProductHelper {
                         mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
 
                     else if (c1.getString(0).equals("CHANNEL")) {
-                        mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
+                        mappingId = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(),mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
 
                         if (c1.getInt(3) != 0)
-                            locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+                            locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();
 
                     } else if (c1.getString(0).equals("DISTRIBUTOR"))
                         mappingId = bmodel.getRetailerMasterBO().getDistributorId() + "";
                     else if (c1.getString(0).equals("LOCATION")) {
-                        locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+                        locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();
                     } else if (c1.getString(0).equals("USER"))
                         mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
                     else if (c1.getString(0).equals("CLASS"))
@@ -2963,6 +2963,8 @@ public class ProductHelper {
             product.setLocalOrderCaseqty(0);
             product.setLocalOrderOuterQty(0);
             product.setFoc(0);
+            //clear product wise reason
+            product.setSoreasonId(0);
             // clear discount fields
             product.setD1(0);
             product.setD2(0);
@@ -5072,8 +5074,8 @@ public class ProductHelper {
             sb.append("where (Retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR ");
             sb.append(" Channelid=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR ");
-            sb.append(" Channelid in(" + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + ") OR ");
-            sb.append(" locationid in(" + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + ") OR ");
+            sb.append(" Channelid in(" + bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(),mContext) + ") OR ");
+            sb.append(" locationid in(" + bmodel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + bmodel.getRetailerMasterBO().getAccountid() + " AND Accountid != 0" + ") OR ");
             sb.append(" (Retailerid=0 AND distributorid=0 AND Channelid=0 AND locationid =0 AND Accountid =0))");
             sb.append(" and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE') ");
@@ -7343,15 +7345,15 @@ public class ProductHelper {
 
 
                     if (c1.getString(0).equals("CHANNEL")) {
-                        mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
+                        mappingId = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(),mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
 
                         if (c1.getInt(3) != 0)
-                            locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+                            locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();
 
                     } else if (c1.getString(0).equals("DISTRIBUTOR"))
                         mappingId = bmodel.getRetailerMasterBO().getDistributorId() + "";
                     else if (c1.getString(0).equals("LOCATION")) {
-                        locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
+                        locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();
                     } else if (c1.getString(0).equals("USER"))
                         mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
 

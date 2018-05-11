@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.25.3'
     }
 }
 apply plugin: 'com.android.application'
@@ -33,7 +33,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 25
         multiDexEnabled true
-        resConfigs "en", "in", "lo", "th", "vi", "tr" ,"ar","es"
+        resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -116,6 +116,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     compile files('libs/BixolonPrinter.jar')
     compile files('libs/Bxlprint.jar')
     compile files('libs/intermec_arabic.jar')
@@ -144,10 +145,11 @@ dependencies {
     compile 'com.android.support:design:26.1.0'
     compile 'com.android.support:recyclerview-v7:26.1.0'
 
-    compile 'com.google.android.gms:play-services-maps:8.1.0'
-    compile 'com.google.android.gms:play-services-location:8.1.0'
-    compile 'com.google.android.gms:play-services-gcm:8.1.0'
-
+    compile 'com.google.android.gms:play-services-maps:15.0.0'
+    compile 'com.google.android.gms:play-services-gcm:15.0.0'
+    compile 'com.google.firebase:firebase-database:15.0.0'
+    compile 'com.google.firebase:firebase-auth:15.0.0'
+    compile 'com.google.android.gms:play-services-location:15.0.0'
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
@@ -159,9 +161,12 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.2.10"
 
     implementation files('libs/deviceutility.jar')
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
@@ -170,3 +175,4 @@ dependencies {
 
 
 }
+apply plugin: 'com.google.gms.google-services'

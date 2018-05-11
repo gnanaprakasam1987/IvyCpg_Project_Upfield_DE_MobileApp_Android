@@ -77,7 +77,7 @@ public class DashBoardHelper {
     //for viewpager pie graph used in both kpi and day dashboard
     private ArrayList<SKUWiseTargetBO> skuwiseGraphData;
 
-    private Vector<DashBoardBO> monthList ;
+    private Vector<DashBoardBO> monthList;
 
     private ArrayList<DashBoardBO> kpiList;
     public static final String MONTH_NAME[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -178,6 +178,7 @@ public class DashBoardHelper {
             db.createDataBase();
             db.openDataBase();
             String sb = "SELECT distinct strftime('%m', replace(fromdate,'/','-')) AS Month FROM sellerkpi " +
+                    "WHERE Interval=" + bmodel.QT(P3M) +
                     " order by Month desc";
             Cursor c = db.selectSQL(sb);
             int index = 0;
@@ -3254,7 +3255,7 @@ public class DashBoardHelper {
         if (flag.equals("P")) {
             for (int i = 0; i < size; i++) {
                 if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
+                    chIDs = chIDs + "," + bmodel.getChannelids();
                 }
             }
 
@@ -3327,7 +3328,7 @@ public class DashBoardHelper {
         if (flag.equals("P")) {
             for (int i = 0; i < size; i++) {
                 if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    chIDs = chIDs + "," + bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMaster().get(i).getSubchannelid());
+                    chIDs = chIDs + "," + bmodel.getChannelids();
                 }
             }
             if (chIDs.endsWith(","))

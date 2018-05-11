@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -253,7 +254,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 schemeProductList = businessModel.reportHelper.getSchemeProductDetails(mInvoiceId);
             } else {
                 //load accumulation scheme free products
-                schemeProductList = businessModel.schemeDetailsMasterHelper.downLoadAccumulationSchemeDetailReport(mInvoiceId, true);
+                schemeProductList = SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downLoadAccumulationSchemeDetailReport(getApplicationContext(), mInvoiceId, true);
             }
             if (schemeProductList != null &&
                     mProductsForAdapter != null) {
@@ -365,7 +366,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                         CommonPrintPreviewActivity.class);
                 intent.putExtra("IsUpdatePrintCount", true);
                 intent.putExtra("isHomeBtnEnable", true);
-                intent.putExtra("isFromInvoice",true);
+                intent.putExtra("isFromInvoice", true);
             } else
                 intent.setClass(InvoiceReportDetail.this, BixolonIIPrint.class);
 
@@ -434,7 +435,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                                             finish();
                                             return;
                                         }
-                                        businessModel.schemeDetailsMasterHelper.loadSchemeReport(mInvoiceId, true);
+                                        SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downloadSchemeReport(getApplicationContext(), mInvoiceId, true);
                                         checkBluetoothEnabled();
 
 
@@ -584,7 +585,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     float mTaxDiscount = (((float) vatAmount * 100) / total);
 
                     double percent = 0;
-                    if (productBO.getIsscheme() == 1) {
+                    if (productBO.isPromo()) {
 
                         percent = productBO.getMschemeper();
 
@@ -608,7 +609,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     } else {
                         mTaxGroup = '0';
                     }
-                    Commons.printException("taxdisc=" + Math.round(mTaxDiscount) + "taxgrp=" + mTaxGroup + " percent=" + -discount + "sku.getIsscheme()=" + productBO.getIsscheme());
+                    Commons.printException("taxdisc=" + Math.round(mTaxDiscount) + "taxgrp=" + mTaxGroup + " percent=" + -discount + "sku.isPromo()=" + productBO.isPromo());
 
 
                     zfp.sellFree(productBO.getProductShortName(), mTaxGroup, productBO.getSrp(), pieceCount, -discount);
@@ -899,11 +900,13 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         @Override
         public int getChildrenCount(int groupPosition) {
 
+            if (mProductsForAdapter.get(groupPosition).isPromo()
+                    && (mProductsForAdapter.get(groupPosition).getSchemeProducts() != null
+                    && mProductsForAdapter.get(groupPosition).getSchemeProducts().size() > 0)) {
 
-            if (mProductsForAdapter.get(groupPosition).getSchemeProducts() != null) {
-                return mProductsForAdapter.get(groupPosition)
-                        .getSchemeProducts().size();
-
+                if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mProductsForAdapter.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
+                    return mProductsForAdapter.get(groupPosition).getSchemeProducts().size();
+                }
             }
 
             return 0;

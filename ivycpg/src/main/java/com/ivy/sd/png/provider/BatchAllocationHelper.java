@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -298,8 +299,7 @@ public class BatchAllocationHelper {
      */
     public void loadFreeProductBatchList() {
         List<SchemeProductBO> schemeList;
-        ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
-                .getAppliedSchemeList();
+        ArrayList<SchemeBO> appliedSchemeList = SchemeDetailsMasterHelper.getInstance(context).getAppliedSchemeList();
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBo : appliedSchemeList) {
                 schemeList = schemeBo.getFreeProducts();
@@ -507,10 +507,13 @@ public class BatchAllocationHelper {
                     currentStockinhand = product.getSIH() - totalQty;
                 }
 
+                //If stock not enough to give free then remaining quantity will be given from next batch
                 if (currentStockinhand < pieceQty) {
+                    // stock not enough
                     schemeProductBatchBO.setQty(currentStockinhand);
                     pieceQty = pieceQty - currentStockinhand;
                 } else {
+                    // stock available
                     if (productBo.getCaseUomId() == schemeProductBO.getUomID()) {
 
                         if (productBo.getCaseSize() > 0) {
@@ -524,6 +527,9 @@ public class BatchAllocationHelper {
                         schemeProductBatchBO.setQty(pieceQty);
                         pieceQty = 0;
                     }
+
+                    //Breaking loop as all free qty delivered
+                    break;
                 }
                 schemeProductBatchBO.setBatchid(SDUtil.convertToInt(product
                         .getBatchid()));
@@ -773,7 +779,7 @@ public class BatchAllocationHelper {
      */
     public void setBatchwiseProducts(String productid, int caseqty,
                                      int pieceqty, int outerQty, float srp, double pricePerPiece,
-                                     Cursor OrderDetails, int caseSize, int outerSize, String batchid) {
+                                     Cursor OrderDetails, int caseSize, int outerSize, String batchid,int skuResonId) {
         ProductMasterBO produBo = bmodel.getProductbyId(productid);
         if (produBo != null) {
             if (produBo.getBatchwiseProductCount() > 0) {
@@ -789,6 +795,7 @@ public class BatchAllocationHelper {
                             batchProductBO.setOrderedCaseQty(caseqty);
                             batchProductBO.setOrderedOuterQty(outerQty);
                             batchProductBO.setSrp(srp);
+                            batchProductBO.setSoreasonId(skuResonId);
                             double totalValue = pieceqty * batchProductBO.getSrp()
                                     + caseqty * batchProductBO.getCsrp() + outerQty
                                     * batchProductBO.getOsrp();

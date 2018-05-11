@@ -7,6 +7,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.FitScoreBO;
 import com.ivy.sd.png.bo.FitScoreChartBO;
 import com.ivy.sd.png.bo.HHTModuleBO;
+import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.WeightageBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -27,6 +28,7 @@ public class FitScoreHelper {
     private ArrayList<WeightageBO> weightageList = new ArrayList<>();
     private ArrayList<FitScoreBO> fitScoreList = new ArrayList<>();
     private ArrayList<HHTModuleBO> hhtModuleList = new ArrayList<>();
+    private ArrayList<ProductTaggingBO> productTaggingList = new ArrayList<>();
 
     private ArrayList<FitScoreChartBO> fitScoreChartList = new ArrayList<>();
 
@@ -72,6 +74,14 @@ public class FitScoreHelper {
 
     public void setHhtModuleList(ArrayList<HHTModuleBO> hhtModuleList) {
         this.hhtModuleList = hhtModuleList;
+    }
+
+    public ArrayList<ProductTaggingBO> getProductTaggingList() {
+        return productTaggingList;
+    }
+
+    public void setProductTaggingList(ArrayList<ProductTaggingBO> productTaggingList) {
+        this.productTaggingList = productTaggingList;
     }
 
     public void getModules() {
@@ -197,6 +207,38 @@ public class FitScoreHelper {
             }
             db.closeDB();
             setWeightageList(weightageList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getTaggingDetails(String Module) {
+        try {
+            ProductTaggingBO taggingBO;
+            productTaggingList = new ArrayList<>();
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c2 = db
+                    .selectSQL("SELECT PM.GroupID, PGM.pid,PGM.ToNorm FROM ProductTaggingGroupMapping PGM " +
+                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PGM.groupid " +
+                            "inner join StandardListMaster F on F.ListID = PM.TaggingTypelovID " +
+                            "WHERE F.ListCode = '" + Module + "'");
+
+            if (c2 != null) {
+                while (c2.moveToNext()) {
+                    taggingBO = new ProductTaggingBO();
+                    taggingBO.setGroupid(c2.getString(0));
+                    taggingBO.setPid(c2.getString(1));
+                    taggingBO.setToNorm(c2.getString(2));
+                    productTaggingList.add(taggingBO);
+                }
+                c2.close();
+            }
+            db.closeDB();
+            setProductTaggingList(productTaggingList);
         } catch (Exception e) {
             e.printStackTrace();
         }

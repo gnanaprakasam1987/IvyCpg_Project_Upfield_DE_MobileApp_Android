@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -67,14 +68,15 @@ public class DisplaySchemeTrackingActivity extends IvyBaseActivityNoActionBar {
             final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(mLayoutManager);
 
-            mAdapter = new RecyclerViewAdapter(businessModel.schemeDetailsMasterHelper.getDisplaySchemeTrackingList());
+            SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+            mAdapter = new RecyclerViewAdapter(schemeHelper.getDisplaySchemeTrackingList());
             recyclerView.setAdapter(mAdapter);
 
             Button button_save = (Button) findViewById(R.id.btn_next);
             button_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (businessModel.schemeDetailsMasterHelper.saveDisplaySchemeTracking(getApplicationContext())) {
+                    if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).saveDisplaySchemeTracking(getApplicationContext())) {
                         businessModel.saveModuleCompletion(HomeScreenTwo.MENU_DISPLAY_SCH_TRACK);
                         Toast.makeText(DisplaySchemeTrackingActivity.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
                         startActivity(new Intent(DisplaySchemeTrackingActivity.this,

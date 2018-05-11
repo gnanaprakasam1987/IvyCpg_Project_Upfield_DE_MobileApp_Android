@@ -14,10 +14,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
@@ -78,18 +80,27 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
 
         sih_detail.setText("SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()));
         pdt_name.setText(bmodel.selectedPdt.getProductName());
-        pdt_name.setText(bmodel.selectedPdt.getProductName());
-        pdt_name.setText(bmodel.selectedPdt.getProductName());
-        sih_detail.setText((bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP == true ?
-                getResources().getString(R.string.srp_text) + " : " + bmodel.formatValue(bmodel.selectedPdt.getSrp()) : "") +
-                (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP == true ?
-                        " MRP : " + bmodel.formatValue(bmodel.selectedPdt.getMRP()) : "") +
-                (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND == true ?
-                        " SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()) : ""));
+        StringBuilder sihDetail = new StringBuilder();
+        if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
+            sihDetail.append(getResources().getString(R.string.srp) + ": ");
+            sihDetail.append(bmodel.formatValue(bmodel.selectedPdt.getSrp()));
+        }
 
-        if (bmodel.schemeDetailsMasterHelper.getmSchemeList().size() > 0) {
+        if (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP) {
+            sihDetail.append(getResources().getString(R.string.mrp) + ": ");
+            sihDetail.append(bmodel.formatValue(bmodel.selectedPdt.getMRP()));
+        }
 
-            bmodel.productHelper.setSchemes(bmodel.schemeDetailsMasterHelper.getmSchemeList());
+        if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
+            sihDetail.append(getResources().getString(R.string.sih) + ": ");
+            sihDetail.append(bmodel.formatValue(bmodel.selectedPdt.getSIH()));
+        }
+        sih_detail.setText(sihDetail.toString());
+
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        if (schemeHelper.getSchemeList().size() > 0) {
+
+            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
             bmodel.productHelper.setPdname(bmodel.selectedPdt.getProductShortName());
             bmodel.productHelper.setProdId(bmodel.selectedPdt.getProductID());
             bmodel.productHelper.setProductObj(bmodel.selectedPdt);
@@ -97,6 +108,9 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
             bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
             SchemeDetailsFragment fragment = new SchemeDetailsFragment();
+            Bundle bundle =new Bundle();
+            bundle.putString("productId",bmodel.selectedPdt.getProductID());
+            fragment.setArguments(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frame, fragment);
             transaction.commit();

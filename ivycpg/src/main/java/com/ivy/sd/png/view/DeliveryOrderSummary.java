@@ -25,6 +25,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 
@@ -361,7 +362,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
      * scheme Buy product.
      */
     private void updateSchemeDetails() {
-        ArrayList<SchemeBO> appliedSchemeList = bmodel.schemeDetailsMasterHelper
+        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        ArrayList<SchemeBO> appliedSchemeList = schemeHelper
                 .getAppliedSchemeList();
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBO : appliedSchemeList) {
@@ -372,6 +374,21 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     int i = 0;
                     boolean isBuyProductAvailable = false;
                     if (schemeproductList != null) {
+
+                        // Getting total order value of buy products
+                        double totalOrderValueOfBuyProducts=0;
+                        if (schemeBO.isAmountTypeSelected()) {
+                            for (SchemeProductBO schemeProductBo : schemeproductList) {
+                                ProductMasterBO productBO = bmodel.productHelper
+                                        .getProductMasterBOById(schemeProductBo
+                                                .getProductId());
+                                totalOrderValueOfBuyProducts += (productBO.getOrderedCaseQty() * productBO.getCsrp())
+                                        + (productBO.getOrderedPcsQty() * productBO.getSrp())
+                                        + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                            }
+                        }
+                        //
+
                         ArrayList<String> productidList = new ArrayList<>();
                         for (SchemeProductBO schemeProductBo : schemeproductList) {
                             ProductMasterBO productBO = bmodel.productHelper
@@ -388,6 +405,15 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                             isBuyProductAvailable = true;
                                             if (schemeBO.isAmountTypeSelected()) {
                                                 schemeProductBo.setDiscountValue(schemeBO.getSelectedAmount());
+
+                                                // calculating free amount for current product by contribution to total value of buy products
+                                                double line_value = (productBO.getOrderedCaseQty() * productBO.getCsrp())
+                                                        + (productBO.getOrderedPcsQty() * productBO.getSrp())
+                                                        + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                                double percentage_productContribution=((line_value/totalOrderValueOfBuyProducts)*100);
+                                                double amount_free=schemeBO.getSelectedAmount()*(percentage_productContribution/100);
+                                                //
+
                                                 if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
                                                         && bmodel.configurationMasterHelper.IS_SIH_VALIDATION
                                                         && bmodel.configurationMasterHelper.IS_INVOICE) {
@@ -395,21 +421,50 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                             .getBatchwiseProductCount() > 0) {
                                                         ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(productBO.getProductID());
                                                         if (batchList != null && !batchList.isEmpty()) {
+
+                                                            // To get total order value of batch buy products
+                                                            double totalOrderValueOfBuyProducts_batch=0;
+                                                            for (ProductMasterBO batchProduct : batchList) {
+                                                                totalOrderValueOfBuyProducts_batch += (batchProduct.getOrderedCaseQty() * productBO.getCsrp())
+                                                                        + (batchProduct.getOrderedPcsQty() * productBO.getSrp())
+                                                                        + (batchProduct.getOrderedOuterQty() * productBO.getOsrp());
+                                                            }
+                                                            //
+
                                                             for (ProductMasterBO batchProduct : batchList) {
                                                                 int totalQty = batchProduct.getOrderedPcsQty() + (batchProduct.getOrderedCaseQty() * productBO.getCaseSize())
                                                                         + (batchProduct.getOrderedOuterQty() * productBO.getOutersize());
                                                                 if (totalQty > 0) {
 
-                                                                    double discProd = schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount();
-                                                                    batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + (discProd / productBO.getOrderedBatchCount()));
+                                                                    // calculating free amount for current batch product(by contribution to total value(Sum of all line value of batches in a product)).
+                                                                    double line_value_batch= (batchProduct.getOrderedCaseQty() * productBO.getCsrp())
+                                                                            + (batchProduct.getOrderedPcsQty() * productBO.getSrp())
+                                                                            + (batchProduct.getOrderedOuterQty() * productBO.getOsrp());
+                                                                    double percentage_batchProductContribution=((line_value_batch/totalOrderValueOfBuyProducts_batch)*100);
+                                                                    double amount_free_batch=amount_free*(percentage_batchProductContribution/100);
+                                                                    //
+
+                                                                    batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + amount_free_batch);
                                                                 }
                                                             }
                                                         }
                                                     } else {
-                                                        productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + (schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount()));
+                                                        productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
+                                                        if (productBO.getDiscount_order_value() > 0) {
+                                                            productBO.setDiscount_order_value(productBO
+                                                                    .getDiscount_order_value()
+                                                                    - amount_free);
+
+                                                        }
                                                     }
                                                 } else {
-                                                    productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + (schemeBO.getSelectedAmount() / schemeBO.getOrderedProductCount()));
+                                                    productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
+                                                    if (productBO.getDiscount_order_value() > 0) {
+                                                        productBO.setDiscount_order_value(productBO
+                                                                .getDiscount_order_value()
+                                                                - amount_free);
+
+                                                    }
                                                 }
                                             } else if (schemeBO.isPriceTypeSeleted()) {
                                                 double totalpriceDiscount;
@@ -419,13 +474,13 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                         && bmodel.configurationMasterHelper.IS_INVOICE) {
                                                     if (productBO
                                                             .getBatchwiseProductCount() > 0) {
-                                                        totalpriceDiscount = bmodel.schemeDetailsMasterHelper
+                                                        totalpriceDiscount = schemeHelper
                                                                 .updateSchemeProducts(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrice(),
                                                                         "SCH_PR", true);
                                                     } else {
-                                                        totalpriceDiscount = bmodel.schemeDetailsMasterHelper
+                                                        totalpriceDiscount = schemeHelper
                                                                 .updateSchemeProducts(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrice(),
@@ -433,7 +488,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                     }
 
                                                 } else {
-                                                    totalpriceDiscount = bmodel.schemeDetailsMasterHelper
+                                                    totalpriceDiscount = schemeHelper
                                                             .updateSchemeProducts(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrice(),
@@ -461,13 +516,13 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                         && bmodel.configurationMasterHelper.IS_INVOICE) {
                                                     if (productBO
                                                             .getBatchwiseProductCount() > 0) {
-                                                        totalPercentageDiscount = bmodel.schemeDetailsMasterHelper
+                                                        totalPercentageDiscount = schemeHelper
                                                                 .updateSchemeProducts(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrecent(),
                                                                         "SCH_PER", true);
                                                     } else {
-                                                        totalPercentageDiscount = bmodel.schemeDetailsMasterHelper
+                                                        totalPercentageDiscount = schemeHelper
                                                                 .updateSchemeProducts(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrecent(),
@@ -475,7 +530,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                                         false);
                                                     }
                                                 } else {
-                                                    totalPercentageDiscount = bmodel.schemeDetailsMasterHelper
+                                                    totalPercentageDiscount = schemeHelper
                                                             .updateSchemeProducts(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrecent(),

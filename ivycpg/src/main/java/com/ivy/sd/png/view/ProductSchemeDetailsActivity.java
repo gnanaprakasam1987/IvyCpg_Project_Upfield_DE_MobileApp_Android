@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.order.scheme.SchemeDetailsFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
@@ -37,6 +38,8 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
     private ViewPager viewPager;
     private Bundle instate;
     private BusinessModel bmodel;
+    private String productId="0";
+    private boolean isFromUpSelling;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,12 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+
+        isFromUpSelling=getIntent().getBooleanExtra("isFromUpSelling",false);
+
+        if(getIntent()!=null&&getIntent().getStringExtra("productId")!=null){
+            productId=String.valueOf(getIntent().getStringExtra("productId"));
+        }
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         addFragments();
@@ -148,6 +157,9 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
             }
         });
+
+        if(isFromUpSelling)
+            tabLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -194,9 +206,17 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
         mFragmentList = new ArrayList<>();
         mSelectFragment = new SchemeDetailsFragment();
+        Bundle bundle =new Bundle();
+        bundle.putString("productId",productId);
+        if(getIntent()!=null&&getIntent().getStringExtra("slabId")!=null)
+          bundle.putString("slabId",getIntent().getStringExtra("slabId"));
+
+        mSelectFragment.setArguments(bundle);
         mFragmentList.add(mSelectFragment);
 
-        if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
+
+
+        if (!isFromUpSelling&&bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
             mSelectFragment = new ProductDetailsFragment();
             mFragmentList.add(mSelectFragment);
         }

@@ -1,6 +1,5 @@
 package com.ivy.sd.png.view;
 
-import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -63,7 +62,7 @@ public class TaskListFragment extends Fragment {
         args.putInt("type", 0);
         args.putBoolean("isRetailer", isRetailerwisetask);
         args.putBoolean("fromReview", fromReviewScreen);
-        args.putBoolean("fromProfileScreen",fromProfileScreen);
+        args.putBoolean("fromProfileScreen", fromProfileScreen);
         taskListFragment.setArguments(args);
         return taskListFragment;
     }
@@ -113,11 +112,15 @@ public class TaskListFragment extends Fragment {
 
         taskDataBO = bmodel.taskHelper.getTaskData(mSelectedRetailerID);
         tasktype = getArguments().getInt("type");
-        if (IsRetailerwisetask)
-            if (surveyHelperNew.getChannelidForSurvey() != null && surveyHelperNew.getChannelidForSurvey().length() > 0) {
-                bool = true;
-                chids = surveyHelperNew.getChannelidForSurvey().split(",");
-            }
+        if (IsRetailerwisetask) {
+            surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
+            String chnanelIdForSurvey = surveyHelperNew.getChannelidForSurvey();
+            if (chnanelIdForSurvey != null)
+                if (chnanelIdForSurvey.length() > 0) {
+                    bool = true;
+                    chids = chnanelIdForSurvey.split(",");
+                }
+        }
         updateTasks(tasktype);
         return rootView;
     }
@@ -245,11 +248,10 @@ public class TaskListFragment extends Fragment {
         LinearLayout layoutTaskExecution = (LinearLayout) view.findViewById(R.id.layoutTaskExecution);
         LinearLayout layoutTaskHeader = (LinearLayout) view.findViewById(R.id.layoutTaskHeader);
 
-        if(fromProfileScreen) {
+        if (fromProfileScreen) {
             layoutTaskExecution.setVisibility(View.GONE);
             layoutTaskHeader.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             layoutTaskExecution.setVisibility(View.VISIBLE);
             layoutTaskHeader.setVisibility(View.VISIBLE);
         }
@@ -260,7 +262,7 @@ public class TaskListFragment extends Fragment {
             int size = taskDataBOForAdapter.size();
             taskDes = new String[size][1];
             int j = 0;
-            for(int i=0;i<taskDataBOForAdapter.size();i++) {
+            for (int i = 0; i < taskDataBOForAdapter.size(); i++) {
                 final ViewHolder holder = new ViewHolder();
                 holder.taskBO = taskDataBOForAdapter.get(i);
                 TaskDataBO task = holder.taskBO;
@@ -271,16 +273,15 @@ public class TaskListFragment extends Fragment {
                 holder.taskTaskOwner = (TextView) v.findViewById(R.id.task_taskowner);
                 holder.taskCreatedDate = (TextView) v.findViewById(R.id.task_createdOn);
                 holder.layoutCB = (LinearLayout) v.findViewById(R.id.layoutCB);
-                holder.layoutrow = (LinearLayout)v.findViewById(R.id.layoutBorder);
-                if(fromProfileScreen) {
+                holder.layoutrow = (LinearLayout) v.findViewById(R.id.layoutBorder);
+                if (fromProfileScreen) {
                     holder.layoutCB.setVisibility(View.GONE);
                     if (i % 2 == 0)
                         holder.layoutrow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
                     else
                         holder.layoutrow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
 
-                }
-                else
+                } else
                     holder.layoutCB.setVisibility(View.VISIBLE);
                 holder.taskTaskOwner.setText(task.getTaskOwner());
                 holder.taskCreatedDate.setText("" + DateUtil.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat));

@@ -58,6 +58,7 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
@@ -607,7 +608,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     holder.mReason.setEnabled(false);
                                     holder.mReason.setSelected(false);
                                     holder.mReason.setSelection(0);
-                                    holder.productObj.setReasonID("0");
+                                    holder.productObj.getLocations()
+                                            .get(stockCheckPresenter.mSelectedLocationIndex).setReasonId(0);
                                 }
                             } else if (holder.productObj.getLocations()
                                     .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
@@ -634,7 +636,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     holder.mReason.setEnabled(false);
                                     holder.mReason.setSelected(false);
                                     holder.mReason.setSelection(0);
-                                    holder.productObj.setReasonID("0");
+                                    holder.productObj.getLocations()
+                                            .get(stockCheckPresenter.mSelectedLocationIndex).setReasonId(0);
                                 }
                             }
 
@@ -729,8 +732,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     ReasonMaster reString = (ReasonMaster) holder.mReason
                                             .getSelectedItem();
 
-                                    holder.productObj.setReasonID(reString
-                                            .getReasonID());
+                                    holder.productObj.getLocations()
+                                            .get(stockCheckPresenter.mSelectedLocationIndex)
+                                            .setReasonId(SDUtil.convertToInt(reString
+                                                    .getReasonID()));
 
                                 }
 
@@ -767,11 +772,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
                                         holder.mReason.setSelection(0);
-                                        holder.productObj.setReasonID("0");
+                                        holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex)
+                                                .setReasonId(0);
                                     } else {
                                         holder.mReason.setEnabled(true);
                                         holder.mReason.setSelected(true);
-                                        holder.mReason.setSelection(0);
+                                        holder.mReason.setSelection(stockCheckPresenter.getReasonIndex(holder.productObj
+                                                .getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getReasonId() + ""));
                                     }
 
                                     updateFooter();
@@ -815,11 +823,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
                                         holder.mReason.setSelection(0);
-                                        holder.productObj.setReasonID("0");
+                                        holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex)
+                                                .setReasonId(0);
                                     } else {
                                         holder.mReason.setEnabled(true);
                                         holder.mReason.setSelected(true);
-                                        holder.mReason.setSelection(0);
+                                        holder.mReason.setSelection(stockCheckPresenter.getReasonIndex(holder.productObj
+                                                .getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getReasonId() + ""));
 
                                     }
                                     updateFooter();
@@ -876,11 +887,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 holder.mReason.setEnabled(false);
                                 holder.mReason.setSelected(false);
                                 holder.mReason.setSelection(0);
-                                holder.productObj.setReasonID("0");
+                                holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex)
+                                        .setReasonId(0);
                             } else {
                                 holder.mReason.setEnabled(true);
                                 holder.mReason.setSelected(true);
-                                holder.mReason.setSelection(0);
+                                holder.mReason.setSelection(stockCheckPresenter.getReasonIndex(holder.productObj
+                                        .getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getReasonId() + ""));
 
                             }
                             updateFooter();
@@ -1023,9 +1037,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             businessModel = (BusinessModel) getActivity().getApplicationContext();
                             businessModel.setContext(getActivity());
                             List<SchemeBO> schemeList = null;
+                            SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
                             try {
-                                schemeList = businessModel.schemeDetailsMasterHelper
-                                        .getSchemesByProduct(holder.productId);
+                                schemeList = schemeHelper.getSchemeList();
                             } catch (Exception e) {
                                 Commons.printException(e + "");
                             }
@@ -1037,7 +1051,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             Toast.LENGTH_SHORT).show();
                                     return true;
                                 }
-                                businessModel.productHelper.setSchemes(businessModel.schemeDetailsMasterHelper.getmSchemeList());
+                                businessModel.productHelper.setSchemes(schemeHelper.getSchemeList());
                                 businessModel.productHelper.setPdname(holder.pname);
                                 businessModel.productHelper.setProdId(holder.productId);
                                 businessModel.productHelper.setProductObj(holder.productObj);
@@ -1045,6 +1059,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 businessModel.productHelper.setTotalScreenSize(0);
 
                                 Intent intent = new Intent(getActivity(), ProductSchemeDetailsActivity.class);
+                                intent.putExtra("productId", holder.productId);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
 
@@ -1474,6 +1489,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             Bundle bundle = new Bundle();
             bundle.putString("isFrom", "STK");
             bundle.putSerializable("selectedFilter", stockCheckPresenter.mSelectedIdByLevelId);
+            bundle.putBoolean("isTag", true);
 
             FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
             fragobj.setArguments(bundle);

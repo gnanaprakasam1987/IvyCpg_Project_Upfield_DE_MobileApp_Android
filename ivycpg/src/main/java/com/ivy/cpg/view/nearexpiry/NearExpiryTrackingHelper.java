@@ -60,6 +60,7 @@ public class NearExpiryTrackingHelper {
 
                 String curDateString = "";
                 boolean isDateChanged;
+                String lastPid = "";
 
                 while (orderDetailCursor.moveToNext()) {
                     String pid = orderDetailCursor.getString(0);
@@ -71,16 +72,12 @@ public class NearExpiryTrackingHelper {
                     isLocChanged = false;
                     isDateChanged = false;
 
-                    if (curLocId != locationId) {
+                    if (curLocId != locationId || !lastPid.equals(pid)) {
                         curLocId = locationId;
-                        isLocChanged = true;
-
-                        curDateString = date;
-
-                    } else if (!curDateString.equals(date)) {
-                        curDateString = date;
-                        isDateChanged = true;
+                        lastPid = pid;
+                        k = 0;
                     }
+
 
 
                     setSKUTrackingDetails(pid, locationId,
@@ -227,14 +224,6 @@ public class NearExpiryTrackingHelper {
             for (int j = 0; j < productBO.getLocations().size(); j++) {
                 if (productBO.getLocations().get(j).getLocationId() == locationId) {
 
-						/*if (isLocChanged) {
-							k = 0;
-						}
-
-						if (isDateChanged) {
-							k++;
-						}
-*/
                     productBO.getLocations().get(j).getNearexpiryDate()
                             .get(k).setDate(changeMonthNoToName(date));
 

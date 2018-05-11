@@ -402,7 +402,7 @@ public class Bixolon extends IvyBaseActivityNoActionBar {
                 ((TextView) v.findViewById(R.id.vat_tv)).setText(Utils
                         .formatAsTwoDecimal((double) productBO.getVat()));
                 mProductContainerLL.addView(v);
-                if (productBO.getIsscheme() == 1
+                if (productBO.isPromo()
                         && productBO.getSchemeProducts() != null) {
                     int cnt = 1;
                     int size = productBO.getSchemeProducts().size();

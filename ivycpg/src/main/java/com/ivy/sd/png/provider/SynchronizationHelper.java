@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.net.Uri;
 import android.os.Build;
@@ -120,6 +121,7 @@ SynchronizationHelper {
     public static final int DOWNLOAD_FINISH_UPDATE = 17;
     public static final int DISTRIBUTOR_WISE_DOWNLOAD_INSERT = 18;
     public static final int LAST_VISIT_TRAN_DOWNLOAD_INSERT = 19;
+    public static final int MOBILE_EMAIL_VERIFICATION = 20;
 
     public static final String AUTHENTICATION_SUCCESS_CODE = "0";
     public static final String UPDATE_TABLE_SUCCESS_CODE = "-1";
@@ -147,8 +149,8 @@ SynchronizationHelper {
         LOAD_MANAGEMENT(4),
         RETAILER_SELECTION(5),
         COUNTER_SALES_SELECTION(6),
-        TL_ALLOCATION(7);
-
+        TL_ALLOCATION(7),
+        MOBILE_EMAIL_VERIFY(8);
         private int value;
 
         FROM_SCREEN(int value) {
@@ -427,7 +429,7 @@ SynchronizationHelper {
      * @return true - if saved sucessfully and false - save failed
      */
     public void backUpDB() {
-        if(!ApplicationConfigs.withActivation) {
+        if (!ApplicationConfigs.withActivation) {
             String currentDBPath = "data/com.ivy.sd.png.asean.view/databases/"
                     + DataMembers.DB_NAME;
             File data = Environment.getDataDirectory();
@@ -1095,7 +1097,8 @@ SynchronizationHelper {
                     "union select count(Tid) from DisplaySchemeEnrollmentHeader where upload='N'" +
                     "union select count(Tid) from DisplaySchemeTrackingHeader where upload='N'" +
                     "union select count(PlanId) from DatewisePlan where upload='N'" +
-                    "union select count(KPIId) from RetailerKPIModifiedDetail where upload='N'";
+                    "union select count(KPIId) from RetailerKPIModifiedDetail where upload='N'" +
+                    "union select count(uid) from VanLoad where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -2068,12 +2071,12 @@ SynchronizationHelper {
                 sb.append("INSERT INTO ProductMaster (PID, PName, sih, pCode, psname, barcode, vat, isfocus, dUomId, ");
                 sb.append("msqQty, dUomQty, mrp, RField1, RField2, RField3, wsih, IsAlloc,  dOuomQty, dOuomid,  CaseBarcode, ");
                 sb.append("OuterBarcode, isReturnable, suggestqty, isMust, maxQty, stdpcs, stdcase, stdouter, issalable, baseprice, ");
-                sb.append("piece_uomid, isBom, TypeID, PLid, ParentId, PtypeId, sequence,weight,HasSerial,tagDescription,HSNId,IsDrug) ");
+                sb.append("piece_uomid, isBom, TypeID, PLid, ParentId, PtypeId, sequence,weight,HasSerial,tagDescription,HSNId,IsDrug,ParentHierarchy) ");
                 sb.append("SELECT P.PID, P.PName, P.sih, P.pCode, P.psname, (CASE WHEN IFNULL(A.piecebarcode,'') = '' THEN P.barcode ELSE A.piecebarcode END), P.vat, P.isfocus, ");
                 sb.append("IFNULL(A.caseUomId,0), P.msqQty, IFNULL(A.caseqty,0), P.mrp, P.RField1, P.RField2, P.RField3, P.wsih, P.IsAlloc,  ");
                 sb.append("IFNULL(A.boxqty,0), IFNULL(A.boxUomId,0),  IFNULL(A.casebarcode,0), IFNULL(A.boxbarcode,0), P.isReturnable, ");
                 sb.append("P.suggestqty, P.isMust, P.maxQty, P.stdpcs, P.stdcase, P.stdouter, P.issalable,P.baseprice, IFNULL(A.pieceUomId,0), ");
-                sb.append("P.isBom, P.TypeID, P.PLid, P.ParentId,P.PtypeId, P.sequence,P.weight,P.Hasserial,P.tagDescription,P.HSNId,P.IsDrug FROM temp_ProductMaster P");
+                sb.append("P.isBom, P.TypeID, P.PLid, P.ParentId,P.PtypeId, P.sequence,P.weight,P.Hasserial,P.tagDescription,P.HSNId,P.IsDrug,P.ParentHierarchy FROM temp_ProductMaster P");
                 sb.append(" LEFT JOIN(select * from (");
                 sb.append("SELECT t.PID, t1.uomqty as caseqty,t2.uomqty as pieceqty,t3.uomqty as boxqty,");
                 sb.append("t1.uombarcode as casebarcode,t2.uombarcode as piecebarcode,t3.uombarcode as boxbarcode,");
@@ -3545,10 +3548,10 @@ SynchronizationHelper {
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
-                    sql = "Select pid from LastVisitPrice where pid=" + cur.getString(0) + " and rid=" + cur.getString(3);
+                    sql = "Select pid from LastVisitPrice where pid=" + cur.getString(0) + " and rid=" + cur.getString(3) + " and uomid=" + cur.getString(4);
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
-                        db.updateSQL("update LastVisitPrice set price=" + cur.getString(1) + ",mrp=" + cur.getString(2) + " where pid=" + cur.getString(0) + " and rid=" + cur.getString(3));
+                        db.updateSQL("update LastVisitPrice set price=" + cur.getString(1) + ",mrp=" + cur.getString(2) + " where pid=" + cur.getString(0) + " and rid=" + cur.getString(3) + " and uomid=" + cur.getString(4));
                         cur1.close();
                     } else {
                         db.insertSQL("LastVisitPrice", "rid,pid,uomid,price,mrp,isown", cur.getString(3) + "," + cur.getString(0) + "," + cur.getString(4) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(5));
@@ -3585,7 +3588,7 @@ SynchronizationHelper {
                                 + " where productid=" + cur.getString(1) + " and retailerid=" + cur.getString(0) + " and LocId=" + cur.getString(8));
                         cur1.close();
                     } else {
-                        db.insertSQL("LastVisitStock", "retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing", cur.getString(1) + "," + cur.getString(0) + "," + cur.getString(2) + "," + cur.getString(3) + "," + cur.getString(4) + "," + cur.getString(5)
+                        db.insertSQL("LastVisitStock", "retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing", cur.getString(0) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(3) + "," + cur.getString(4) + "," + cur.getString(5)
                                 + "," + cur.getString(6) + "," + cur.getString(7) + "," + cur.getString(8) + "," + cur.getString(9) + "," + cur.getString(10)
                                 + "," + cur.getString(11) + "," + cur.getString(12) + "," + cur.getString(13));
 
@@ -3673,10 +3676,10 @@ SynchronizationHelper {
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
-                    sql = "Select surveyId from LastVisitSurvey where retailerid=" + cur.getString(0) + " and surveyId=" + cur.getString(1) + " and qid=" + cur.getString(2);
+                    sql = "Select surveyId from LastVisitSurvey where retailerid=" + cur.getString(0) + " and surveyId=" + cur.getString(1);
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
-                        db.executeQ("delete from LastVisitSurvey where retailerid=" + cur.getString(0) + " and surveyId=" + cur.getString(1) + " and qid=" + cur.getString(2));
+                        db.executeQ("delete from LastVisitSurvey where retailerid=" + cur.getString(0) + " and surveyId=" + cur.getString(1));
                         cur1.close();
                     }
                 }
@@ -3688,7 +3691,15 @@ SynchronizationHelper {
             Cursor cur2 = db.selectSQL(sql2);
             if (cur2 != null) {
                 while (cur2.moveToNext()) {
-                    db.insertSQL("LastVisitSurvey", "retailerId,surveyId,qid,answerId,answer,score,isExcluded,isSubQuest", cur2.getString(0) + "," + cur2.getString(1) + "," + cur2.getString(2) + "," + cur2.getString(3) + ",'" + cur2.getString(4) + "'," + cur2.getString(5) + "," + cur2.getString(6) + "," + cur2.getString(7));
+                    db.insertSQL("LastVisitSurvey", "retailerId,surveyId,qid,answerId,answer,score,isExcluded,isSubQuest",
+                            cur2.getString(0)
+                                    + "," + cur2.getString(1)
+                                    + "," + cur2.getString(2)
+                                    + "," + cur2.getString(3)
+                                    + "," + DatabaseUtils.sqlEscapeString(cur2.getString(4))
+                                    + "," + cur2.getString(5)
+                                    + "," + cur2.getString(6)
+                                    + "," + cur2.getString(7));
                 }
                 cur2.close();
             }
@@ -4160,5 +4171,38 @@ SynchronizationHelper {
 
     }
 
+    public void verifyMobileOrEmail(String value) {
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String downloadurl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select url from urldownloadmaster where mastername='REQUESTOTP'");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        downloadurl = c.getString(0);
+                    }
+                }
+            }
+
+            JSONObject json = new JSONObject();
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+
+
+            downloadurl = DataMembers.SERVER_URL + downloadurl;
+            callVolley(downloadurl, FROM_SCREEN.MOBILE_EMAIL_VERIFY, 0, MOBILE_EMAIL_VERIFICATION, json);
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            db.closeDB();
+        }
+
+
+    }
 
 }

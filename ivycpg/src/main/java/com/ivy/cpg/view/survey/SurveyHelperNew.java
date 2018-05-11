@@ -141,7 +141,7 @@ public class SurveyHelperNew {
         StringBuilder sb = new StringBuilder();
         ArrayList<String> groupIDList = new ArrayList<>();
 
-        ArrayList<String> retailerAttributes = bmodel.getAttributeParentListForCurrentRetailer();
+        ArrayList<String> retailerAttributes = bmodel.getAttributeParentListForCurrentRetailer(bmodel.getRetailerMasterBO().getRetailerID());
 
         sb.append("select Distinct surveyid,groupid,EA1.AttributeName as ParentName,EA.ParentID from SurveyCriteriaMapping  SAM" +
                 " inner join EntityAttributeMaster EA on EA.AttributeId = SAM.criteriaid" +
@@ -243,10 +243,8 @@ public class SurveyHelperNew {
             String channelId = "";
 
             /* Get location id and its parent id */
-            if (!"".equals(bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme()) &&
-                    bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() != null) {
-                locIdScheme = "," + bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme();
-            }
+                          locIdScheme = "," + bmodel.channelMasterHelper.getLocationHierarchy(context);
+
 
             /* Get channel id and its parent id */
             if (!"".equals(getChannelidForSurvey()) &&
@@ -1789,7 +1787,6 @@ public class SurveyHelperNew {
                         if (surveyBO.getSurveyID() == c.getInt(0)) {
 
                             //Load Main Question Last transaction data
-                            if (c.getInt(4) == 0) {
                                 for (QuestionBO questionBO : surveyBO.getQuestions()) {
                                     if (questionBO.getQuestionID() == c.getInt(1)) {
 
@@ -1798,20 +1795,18 @@ public class SurveyHelperNew {
 
                                     }
                                 }
-                            }
+
 
                             //Load sub question Last transaction data
-                            if (c.getInt(4) == 1) {
                                 for (QuestionBO subQuestioBo : getDependentQuestions()) {
                                     if (subQuestioBo.getQuestionID() == c.getInt(1)) {
                                         subQuestioBo.setIsSubQuestion(1);
                                         subQuestioBo.setSelectedAnswerID(c.getInt(2));
                                         subQuestioBo.setSelectedAnswer(c.getString(3));
-
+                                        surveyBO.getQuestions().add(subQuestioBo);
                                     }
-                                    surveyBO.getQuestions().add(subQuestioBo);
                                 }
-                            }
+
 
 
                         }

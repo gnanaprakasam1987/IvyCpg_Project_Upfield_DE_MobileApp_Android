@@ -25,10 +25,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
-import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -78,6 +78,7 @@ public class ReportMenufragment extends IvyBaseFragment {
             actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
             if (actionBar != null) {
+                actionBar.setTitle(null);
                 actionBar.setDisplayShowTitleEnabled(false);
                 actionBar.setIcon(null);
                 actionBar.setElevation(0);
@@ -88,6 +89,8 @@ public class ReportMenufragment extends IvyBaseFragment {
 
             if (getArguments().getString("screentitle") != null)
                 setScreenTitle(getArguments().getString("screentitle"));
+            else
+                setScreenTitle(getResources().getString(R.string.report));
             try {
                 LinearLayout bg = (LinearLayout) getActivity().findViewById(R.id.root);
                 File f = new File(
@@ -215,8 +218,7 @@ public class ReportMenufragment extends IvyBaseFragment {
             } else {
                 Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-        }
-        else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVENTORY_RPT)) {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVENTORY_RPT)) {
             intoreportacti(config);
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
             intoreportacti(config);
@@ -243,18 +245,16 @@ public class ReportMenufragment extends IvyBaseFragment {
                 intoreportacti(config);
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
-        }
-        else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
 
             bmodel.reportHelper.downloadClosingStockRetailers();
 
-            if(bmodel.reportHelper.getRetailerMaster().size() > 0) {
+            if (bmodel.reportHelper.getRetailerMaster().size() > 0) {
                 intoreportacti(config);
             } else {
                 Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
-        }
-        else {
+        } else {
             intoreportacti(config);
         }
 

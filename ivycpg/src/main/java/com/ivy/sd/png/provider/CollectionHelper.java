@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.DiscontSlabBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.RetailerWiseBankDetailsBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -46,6 +47,7 @@ public class CollectionHelper {
     private HashMap<String, PaymentBO> mPaymentBOByMode;
     private ArrayList<BankMasterBO> bankMaster;
     private ArrayList<BranchMasterBO> bankBranch;
+    private ArrayList<RetailerWiseBankDetailsBO> retailerWiseBankDetailsBOArrayList;
     public String receiptno = "";
     public String collectionDate = "";
 
@@ -67,6 +69,7 @@ public class CollectionHelper {
         paymentList = new ArrayList<>();
         bankMaster = new ArrayList<>();
         bankBranch = new ArrayList<>();
+        retailerWiseBankDetailsBOArrayList = new ArrayList<>();
     }
 
     public static CollectionHelper getInstance(Context context) {
@@ -916,6 +919,7 @@ public class CollectionHelper {
             paymentBO.setDiscountedAmount(0);
             paymentBO.setBalance(0);
             paymentBO.setReceiptDate("");
+            paymentBO.setAccountNumber("");
         }
     }
 
@@ -953,7 +957,7 @@ public class CollectionHelper {
             db.createDataBase();
             db.openDataBase();
             String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,PrintFilePath,BankName,BranchName";
-            double calculateCredit = 0;
+            double calculateCredit = bmodel.getRetailerMasterBO().getCredit_balance();
             String groupID;
 
             groupID = bmodel.QT(SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + bmodel.userMasterHelper.getUserMasterBO().getUserid());
@@ -982,6 +986,7 @@ public class CollectionHelper {
                             calculateCredit = calculateCredit + paymentBO.getAmount();
 
                             bmodel.retailerMasterBO.setCredit_balance((float) calculateCredit);
+                            bmodel.retailerMasterBO.setRField1("" + (float) calculateCredit);
                         }
                     }
                     if (!StandardListMasterConstants.CHEQUE.equals(paymentBO.getCashMode()) &&
@@ -1117,6 +1122,7 @@ public class CollectionHelper {
                         + "," + bmodel.QT(printFilePath)
                         + "," + bmodel.QT(paymentBO.getBankName())
                         + "," + bmodel.QT(paymentBO.getBranchName());
+                //+ "," + bmodel.QT(paymentBO.getAccountNumber());
 
                 db.insertSQL(DataMembers.tbl_Payment, columns, values);
             } else if (StandardListMasterConstants.CREDIT_NOTE.equals(paymentBO.getCashMode())) {
@@ -1311,6 +1317,27 @@ public class CollectionHelper {
     }
 
     /**
+     * Download Retailer Account Details
+     */
+    public void downloadRetailerAccountDetails() {
+        RetailerWiseBankDetailsBO retailerBankBO;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        Cursor c = db.selectSQL("SELECT retailer_id, bank_account_no FROM RetailerWiseBankInfo");
+        if (c != null) {
+            retailerWiseBankDetailsBOArrayList = new ArrayList<>();
+            while (c.moveToNext()) {
+                retailerBankBO = new RetailerWiseBankDetailsBO();
+                retailerBankBO.setRetailer_id(c.getString(0));
+                retailerBankBO.setBank_Account_no(c.getString(1));
+                retailerWiseBankDetailsBOArrayList.add(retailerBankBO);
+            }
+            c.close();
+        }
+        db.closeDB();
+    }
+
+    /**
      * Download bank branch details from Standard Details of type BANK_BRANCH_TYPE.
      */
     public void downloadBranchDetails() {
@@ -1342,12 +1369,17 @@ public class CollectionHelper {
         return bankMaster;
     }
 
+    public ArrayList<RetailerWiseBankDetailsBO> getRetailerWiseBankDetailsBOArrayList() {
+        return retailerWiseBankDetailsBOArrayList;
+    }
+
     /**
      * set discount slab Amount in discountSlab list
      */
     public void downloadDiscountSlab() {
         mDiscountSlabList = new ArrayList<>();
         DiscontSlabBO discountSlabBO;
+
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1362,12 +1394,12 @@ public class CollectionHelper {
             sb.append("where (Retailerid in(" + bmodel.getRetailerMasterBO().getRetailerID() + ",0) AND ");
             sb.append(" distributorid in(" + bmodel.getRetailerMasterBO().getDistributorId() + ",0) AND ");
             sb.append(" Channelid in (" + bmodel.getRetailerMasterBO().getSubchannelid() + ",");
-            String channelid = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid());
+            String channelid = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext);
             if (channelid.equals("")) {
                 channelid = "0";
             }
             sb.append(channelid + ",0) AND ");
-            String locid = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme();
+            String locid = bmodel.channelMasterHelper.getLocationHierarchy(mContext);
             if (locid.equals("")) {
                 locid = "0";
             }
@@ -1714,6 +1746,7 @@ public class CollectionHelper {
 
         downloadBankDetails();
         downloadBranchDetails();
+        downloadRetailerAccountDetails();
         updateInvoiceDiscountedAmount();
 
         bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
@@ -1826,4 +1859,12 @@ public class CollectionHelper {
         }
     }
 
+    public boolean checkRetailerWiseAccountMatched(String accountNo) {
+        for (RetailerWiseBankDetailsBO retailerBankBO : getRetailerWiseBankDetailsBOArrayList()) {
+            if (retailerBankBO.getRetailer_id().equals(bmodel.retailerMasterBO.getRetailerID())
+                    && retailerBankBO.getBank_Account_no().equals(accountNo))
+                return true;
+        }
+        return false;
+    }
 }

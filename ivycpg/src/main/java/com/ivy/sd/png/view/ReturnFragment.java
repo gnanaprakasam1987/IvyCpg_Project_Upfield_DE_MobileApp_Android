@@ -123,7 +123,7 @@ public class ReturnFragment extends IvyBaseFragment {
             else
                 productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
         }
-        if (productMasterBO != null) {
+        if (productMasterBO != null && productMasterBO.getSalesReturnReasonList() != null) {
             //for pre saler
             if (productMasterBO.getSalesReturnReasonList().isEmpty())
                 addrow();
@@ -161,9 +161,20 @@ public class ReturnFragment extends IvyBaseFragment {
                 if (!isReasonAndOtherFieldsAvailable()) {
                     return;
                 }
-                if (isReasonDuplicated()) {
+
+                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER || salesReturnHelper.SHOW_LOTNUMBER)
+                    for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
+                        if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER && sb.getInvoiceno().equals("0"))
+                                || (salesReturnHelper.SHOW_LOTNUMBER && sb.getLotNumber().equals("0"))) {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.mandatory_fileds_empty), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+
+
+                if (isInvNoDuplicated()) {
                     Toast.makeText(getActivity(),
-                            R.string.reason_duplicated,
+                            R.string.invoice_duplicated,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -221,21 +232,23 @@ public class ReturnFragment extends IvyBaseFragment {
         }
     }
 
-    private boolean isReasonDuplicated() {
+    private boolean isInvNoDuplicated() {
         ArrayList<String> mSelectedReasonIds = new ArrayList<>();
+        ArrayList<String> mSelectedInvNos = new ArrayList<>();
+
         for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
             if (sb.getReasonID() != null && !sb.getReasonID().equals("0")) {
 
-                if (mSelectedReasonIds.contains(sb.getReasonID())) {
+                if (mSelectedReasonIds.contains(sb.getReasonID())
+                        && (salesReturnHelper.SHOW_SR_INVOICE_NUMBER && mSelectedInvNos.contains(sb.getInvoiceno()))) {
                     return true;
                 } else {
                     mSelectedReasonIds.add(sb.getReasonID());
+                    mSelectedInvNos.add(sb.getInvoiceno());
                 }
             }
         }
         return false;
-
-
     }
 
     private boolean isReasonAndOtherFieldsAvailable() {

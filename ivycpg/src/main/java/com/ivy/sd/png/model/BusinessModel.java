@@ -65,6 +65,7 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
@@ -75,7 +76,6 @@ import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.base64.Base64;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -142,7 +142,6 @@ import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
-import com.ivy.sd.png.provider.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.StockReportMasterHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
@@ -207,7 +206,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.TimeZone;
 import java.util.Vector;
 
@@ -261,7 +259,6 @@ public class BusinessModel extends Application {
     public ReportHelper reportHelper;
     public LoadManagementHelper vanmodulehelper;
     public StockProposalModuleHelper stockProposalModuleHelper;
-    public SchemeDetailsMasterHelper schemeDetailsMasterHelper;
     public StockReportMasterHelper stockreportmasterhelper;
     public LabelsMasterHelper labelsMasterHelper;
     public LocationUtil locationUtil;
@@ -414,7 +411,6 @@ public class BusinessModel extends Application {
         reportHelper = ReportHelper.getInstance(this);
         vanmodulehelper = LoadManagementHelper.getInstance(this);
         stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
-        schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(this);
         stockreportmasterhelper = StockReportMasterHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
         locationUtil = LocationUtil.getInstance(this);
@@ -1396,7 +1392,7 @@ public class BusinessModel extends Application {
                             + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                             + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
                             + " ifnull(A.RPS_Merch_Achieved,0) as RPS_Merch_Achieved, ifnull(RC.weekNo,0) as weekNo,A.isDeadStore,A.isPlanned,"
-                            + " (select ListCode from StandardListMaster where ListID=A.RpTypeId) as RpTypeCode, A.sptgt, A.isOrderMerch,"
+                            + " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode, A.sptgt, A.isOrderMerch,"
                             + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone,"
                             + " case when RC.WalkingSeq='' then 9999 else RC.WalkingSeq end as WalkingSeq,"
                             + " A.sbd_dist_stock,A.RField1,"
@@ -1428,7 +1424,7 @@ public class BusinessModel extends Application {
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
-                            + " LEFT JOIN RetailerClientMappingMaster RC "+(configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING? " on RC.beatID=RBM.beatId" :" on RC.Rid = A.RetailerId")
+                            + " LEFT JOIN RetailerClientMappingMaster RC " + (configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING ? " on RC.beatID=RBM.beatId" : " on RC.Rid = A.RetailerId")
 
                             + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
 
@@ -2942,15 +2938,19 @@ public class BusinessModel extends Application {
                     int locationId = orderDetailCursor.getInt(7);
                     int isDistributed = orderDetailCursor.getInt(8);
                     int isListed = orderDetailCursor.getInt(9);
-                    String reasonID = orderDetailCursor.getString(10);
+                    int reasonID = orderDetailCursor.getInt(10);
                     int isOwn = orderDetailCursor.getInt(11);
                     int facing = orderDetailCursor.getInt(12);
                     int pouring = 0;
                     int cocktail = 0;
 
+                    int availability = 0;
+                    if (shelfpqty > 0 || shelfcqty > 0 || shelfoqty > 0)
+                        availability = 1;
+
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", -1);
+                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", availability);
 
                 }
             }
@@ -3015,7 +3015,7 @@ public class BusinessModel extends Application {
                     int locationId = orderDetailCursor.getInt(7);
                     int isDistributed = orderDetailCursor.getInt(8);
                     int isListed = orderDetailCursor.getInt(9);
-                    String reasonID = orderDetailCursor.getString(10);
+                    int reasonID = orderDetailCursor.getInt(10);
                     int audit = orderDetailCursor.getInt(11);
                     int isOwn = orderDetailCursor.getInt(12);
                     int facing = orderDetailCursor.getInt(13);
@@ -3045,7 +3045,7 @@ public class BusinessModel extends Application {
      */
     private void setStockCheckQtyDetails(String productid, int shelfpqty,
                                          int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
-                                         int locationId, int isDistributed, int isListed, String reasonID,
+                                         int locationId, int isDistributed, int isListed, int reasonID,
                                          int audit, int isOwn, int facing, int pouring, int cocktail,
                                          String menuCode, int availability) {
 
@@ -3069,7 +3069,7 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setWHOuter(whoqty);
                     product.setIsDistributed(isDistributed);
                     product.setIsListed(isListed);
-                    product.setReasonID(reasonID);
+                    product.getLocations().get(j).setReasonId(reasonID);
                     product.getLocations().get(j).setAudit(audit);
                     product.getLocations().get(j).setFacingQty(facing);
                     product.getLocations().get(j).setIsPouring(pouring);
@@ -3185,240 +3185,6 @@ public class BusinessModel extends Application {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
-    }
-
-    private JSONArray prepareDataForLocationTrackingUploadJSON(DBUtil db,
-                                                               String tableName, String columns) {
-        JSONArray ohRowsArray = new JSONArray();
-        try {
-            Cursor cursor;
-            String columnArray[] = columns.split(",");
-            String sql = "select " + columns + " from " + tableName
-                    + " where upload = 'N'";
-            cursor = db.selectSQL(sql);
-            if (cursor != null) {
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        JSONObject jsonObjRow = new JSONObject();
-                        int count = 0;
-                        for (String col : columnArray) {
-                            String value = cursor.getString(count);
-                            jsonObjRow.put(col, value);
-                            count++;
-                        }
-                        ohRowsArray.put(jsonObjRow);
-                    }
-                }
-                cursor.close();
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-
-        }
-        return ohRowsArray;
-    }
-
-
-    /**
-     * Upload Transaction Sequence Table after Data Upload through seperate
-     * method name Returns the response Success/Failure
-     *
-     * @return
-     * @paramhandler
-     */
-
-
-    public void saveUserLocation(String latitude, String longtitude,
-                                 String accuracy) {
-        DBUtil db = null;
-        try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String columns = "Tid, Date, Latitude, Longtitude";
-
-            String Tid = userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
-
-            String values = QT(Tid) + "," + QT(SDUtil.now(SDUtil.DATE_TIME))
-                    + "," + QT(latitude) + "," + QT(longtitude);
-
-            db.insertSQL("LocationTracking", columns, values);
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public boolean isUserLocationAvailable() {
-        DBUtil db = null;
-        boolean isAvail = false;
-        try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-
-            Cursor c = db.selectSQL("SELECT Tid FROM LocationTracking where upload = 'N'");
-
-            if (c.getCount() > 0) {
-                if (c.moveToNext()) {
-                    isAvail = true;
-                }
-            }
-            c.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        return isAvail;
-    }
-
-    public int uploadLocationTracking() {
-
-        DBUtil db = null;
-        try {
-
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            JSONObject jsonObjData = null;
-
-            Set<String> keys = DataMembers.uploadLocationTrackingColumn
-                    .keySet();
-
-            jsonObjData = new JSONObject();
-            for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForLocationTrackingUploadJSON(
-                        db, tableName,
-                        DataMembers.uploadLocationTrackingColumn.get(tableName));
-
-                if (jsonArray.length() > 0)
-                    jsonObjData.put(tableName, jsonArray);
-            }
-
-            JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
-            try {
-                if (!"0".equals(userMasterHelper.getUserMasterBO().getBackupSellerID())) {
-                    jsonFormatter.addParameter("UserId", userMasterHelper
-                            .getUserMasterBO().getBackupSellerID());
-                    jsonFormatter.addParameter("WorkingFor", userMasterHelper.getUserMasterBO().getUserid());
-                } else {
-                    jsonFormatter.addParameter("UserId", userMasterHelper
-                            .getUserMasterBO().getUserid());
-                }
-                jsonFormatter.addParameter("DistributorId", userMasterHelper
-                        .getUserMasterBO().getDistributorid());
-                jsonFormatter.addParameter("BranchId", userMasterHelper
-                        .getUserMasterBO().getBranchId());
-                jsonFormatter.addParameter("LoginId", userMasterHelper
-                        .getUserMasterBO().getLoginName());
-                jsonFormatter.addParameter("DeviceId",
-                        activationHelper.getIMEINumber());
-                jsonFormatter.addParameter("VersionCode",
-                        getApplicationVersionNumber());
-                jsonFormatter.addParameter("OrganisationId", userMasterHelper
-                        .getUserMasterBO().getOrganizationId());
-                jsonFormatter.addParameter("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-                jsonFormatter.addParameter("MobileUTCDateTime",
-                        Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-                jsonFormatter.addParameter("DownloadedDataDate",
-                        userMasterHelper.getUserMasterBO().getDownloadDate());
-                jsonFormatter.addParameter("VanId", userMasterHelper
-                        .getUserMasterBO().getVanId());
-                String LastDayClose = "";
-                if (synchronizationHelper.isDayClosed()) {
-                    LastDayClose = userMasterHelper.getUserMasterBO()
-                            .getDownloadDate();
-                }
-                jsonFormatter.addParameter("LastDayClose", LastDayClose);
-                jsonFormatter.addParameter("DataValidationKey", synchronizationHelper.generateChecksum(jsonObjData.toString()));
-                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, getApplicationVersionName());
-
-                Commons.print(jsonFormatter.getDataInJson());
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-            String url = synchronizationHelper.getUploadUrl("UPLDTRAN");
-            Vector<String> responseVector = synchronizationHelper
-                    .getUploadResponse(jsonFormatter.getDataInJson(),
-                            jsonObjData.toString(), url);
-
-            int response = 0;
-
-            if (responseVector.size() > 0) {
-
-
-                for (String s : responseVector) {
-                    JSONObject jsonObject = new JSONObject(s);
-
-                    Iterator itr = jsonObject.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Response")) {
-                            response = jsonObject.getInt("Response");
-
-                        } else if (key.equals("ErrorCode")) {
-                            String tokenResponse = jsonObject.getString("ErrorCode");
-                            if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
-                                    || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
-                                    || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
-
-                                response = 9;
-
-                            }
-
-                        }
-
-                    }
-
-
-                }
-            } else {
-                if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
-                    if (errorMsg != null) {
-                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(ctx, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-           /* if (responseVector != null) {
-
-                for (String s : responseVector) {
-                    JSONObject responseObject = new JSONObject(s);
-                    response = responseObject.getInt("Response");
-                }
-            }*/
-
-            if (response == 1) {
-
-                System.gc();
-                try {
-
-                    db.executeQ("DELETE FROM LocationTracking");
-                    db.closeDB();
-                    responceMessage = 1;
-                } catch (Exception e) {
-
-                    responceMessage = 0;
-                    Commons.printException(e);
-                }
-
-            } else {
-                responceMessage = 9;
-            }
-
-        } catch (Exception e) {
-            Commons.printException(e);
-            return 0;
-        }
-        db.closeDB();
-        return responceMessage;
     }
 
     public boolean isOnline() {
@@ -4557,7 +4323,7 @@ public class BusinessModel extends Application {
 
                 if (beatMasterHealper.getTodayBeatMasterBO() == null
                         || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
-                    c = db.selectSQL("select  distinct(Retailerid) from InvoiceMaster");
+                    c = db.selectSQL("select  distinct(Retailerid) from InvoiceMaster where upload='N'");
                 } else {
                     c = db.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
                             + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
@@ -4893,7 +4659,8 @@ public class BusinessModel extends Application {
                             || product.getLocations().get(j).getCockTailQty() > 0
                             || product.getLocations().get(j).getFacingQty() > 0
                             || product.getLocations().get(j).getAudit() != 2
-                            || product.getLocations().get(j).getAvailability() > -1) {
+                            || product.getLocations().get(j).getAvailability() > -1
+                            || product.getLocations().get(j).getReasonId() != 0) {
 
                         int count = product.getLocations().get(j)
                                 .getShelfPiece()
@@ -4935,7 +4702,7 @@ public class BusinessModel extends Application {
                                 + ","
                                 + product.getLocations().get(j).getLocationId()
                                 + "," + dd + "," + ld + ","
-                                + product.getReasonID() + ","
+                                + product.getLocations().get(j).getReasonId() + ","
                                 + product.getLocations().get(j).getAudit()
                                 + ","
                                 + product.getLocations().get(j).getFacingQty()
@@ -5982,13 +5749,11 @@ public class BusinessModel extends Application {
 
             mModuleCompletionResult = new HashMap<String, String>();
 
-            if (c != null)
+            if (c != null) {
                 while (c.moveToNext())
                     mModuleCompletionResult.put(c.getString(0), "1");
-
-            Commons.print("HASHMAP VALUES ," +
-                    "" + mModuleCompletionResult.toString());
-            c.close();
+                c.close();
+            }
 
             db.closeDB();
         } catch (Exception e) {
@@ -6394,12 +6159,13 @@ public class BusinessModel extends Application {
                 while (c.moveToNext()) {
                     int flag = c.getInt(0);
 
+                    SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getContext());
                     if (flag == 1) {
                         configurationMasterHelper.IS_SIH_VALIDATION = configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
                         configurationMasterHelper.IS_STOCK_IN_HAND = configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
                         configurationMasterHelper.IS_WSIH = false;
-                        configurationMasterHelper.IS_SCHEME_ON = configurationMasterHelper.IS_SCHEME_ON_MASTER;
-                        configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = configurationMasterHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
+                        schemeHelper.IS_SCHEME_ON = schemeHelper.IS_SCHEME_ON_MASTER;
+                        schemeHelper.IS_SCHEME_SHOW_SCREEN = schemeHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
                         configurationMasterHelper.SHOW_TAX = configurationMasterHelper.SHOW_TAX_MASTER;
 
 
@@ -6408,8 +6174,8 @@ public class BusinessModel extends Application {
                         configurationMasterHelper.IS_SIH_VALIDATION = false;
                         configurationMasterHelper.IS_STOCK_IN_HAND = false;
                         configurationMasterHelper.IS_WSIH = configurationMasterHelper.IS_WSIH_MASTER;
-                        configurationMasterHelper.IS_SCHEME_ON = false;
-                        configurationMasterHelper.IS_SCHEME_SHOW_SCREEN = false;
+                        schemeHelper.IS_SCHEME_ON = false;
+                        schemeHelper.IS_SCHEME_SHOW_SCREEN = false;
                         configurationMasterHelper.SHOW_TAX = false;
 
                         retailerMasterBO.setIsVansales(0);
@@ -8156,7 +7922,7 @@ public class BusinessModel extends Application {
     }
 
 
-    public ArrayList<String> getAttributeParentListForCurrentRetailer() {
+    public ArrayList<String> getAttributeParentListForCurrentRetailer(String retailerId) {
         ArrayList<String> lst = null;
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -8165,7 +7931,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String sql = "select distinct EA.parentid from RetailerAttribute RA" +
                     " inner join EntityAttributeMaster EA on EA.Attributeid = RA.Attributeid" +
-                    " where retailerid =" + getRetailerMasterBO().getRetailerID();
+                    " where retailerid =" + retailerId;
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() > 0) {
                 lst = new ArrayList<>();

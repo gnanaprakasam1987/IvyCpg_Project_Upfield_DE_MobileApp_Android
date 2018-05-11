@@ -22,6 +22,7 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.ToolBarwithFilter;
 
 import java.util.ArrayList;
@@ -149,6 +150,8 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
 
     @Override
     public void onBackButtonClick() {
+        startActivity(new Intent(CurrentStockBatchViewActivity.this,
+                HomeScreenActivity.class).putExtra("menuCode", "MENU_LOAD_MANAGEMENT"));
         finish();
     }
 
