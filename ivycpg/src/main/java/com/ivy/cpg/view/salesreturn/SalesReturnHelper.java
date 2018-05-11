@@ -420,7 +420,7 @@ public class SalesReturnHelper {
                     + QT(bmodel.mSelectedRetailerLongitude + "") + ","
                     + bmodel.retailerMasterBO.getDistributorId() + ","
                     + bmodel.retailerMasterBO.getDistParentId() + ","
-                    + QT(getSignaturePath()) + ","
+                    + QT(getSignaturePath() != null ? getSignaturePath() : "") + ","
                     + QT(getSignatureName());
 
             if (!orderId.equals(""))
