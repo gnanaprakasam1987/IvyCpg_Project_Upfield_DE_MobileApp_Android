@@ -235,16 +235,19 @@ public class ReturnFragment extends IvyBaseFragment {
     private boolean isInvNoDuplicated() {
         ArrayList<String> mSelectedReasonIds = new ArrayList<>();
         ArrayList<String> mSelectedInvNos = new ArrayList<>();
+        ArrayList<String> mSelectedLotNos = new ArrayList<>();
 
         for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
             if (sb.getReasonID() != null && !sb.getReasonID().equals("0")) {
 
                 if (mSelectedReasonIds.contains(sb.getReasonID())
-                        && (salesReturnHelper.SHOW_SR_INVOICE_NUMBER && mSelectedInvNos.contains(sb.getInvoiceno()))) {
+                        && (salesReturnHelper.SHOW_SR_INVOICE_NUMBER && mSelectedInvNos.contains(sb.getInvoiceno()))
+                        && (salesReturnHelper.SHOW_LOTNUMBER && mSelectedLotNos.contains(sb.getLotNumber()))) {
                     return true;
                 } else {
                     mSelectedReasonIds.add(sb.getReasonID());
                     mSelectedInvNos.add(sb.getInvoiceno());
+                    mSelectedLotNos.add(sb.getLotNumber());
                 }
             }
         }
