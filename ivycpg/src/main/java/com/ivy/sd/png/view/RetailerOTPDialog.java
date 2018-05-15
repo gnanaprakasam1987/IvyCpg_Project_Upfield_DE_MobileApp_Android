@@ -46,6 +46,8 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
 
     public interface OTPListener {
         void generateOTP();
+
+        void dismissListener(String type, boolean isVerfied);
     }
 
     public RetailerOTPDialog(OTPListener callBack, String type) {
@@ -85,6 +87,7 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
         switch (i) {
             case R.id.btn_cancel:
                 dismiss();
+                otpListener.dismissListener(type, false);
                 break;
             case R.id.btn_ok:
                 if (!et_otp.getText().toString().isEmpty())
@@ -228,6 +231,7 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         dismiss();
+                                        otpListener.dismissListener(type, true);
                                     }
                                 }).create();
             case 1:

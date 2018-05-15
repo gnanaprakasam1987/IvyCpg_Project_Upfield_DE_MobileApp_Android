@@ -218,7 +218,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     static TextView flExpDateTextView;
     private AlertDialog alertDialog;
     private String str_mob_email = "", str_type = "";
-    private boolean otpShown = false;
+    private boolean otpShown = false, isMobileNoVerfied = false, isEmailVerfied = false;
 
     @Nullable
     @Override
@@ -3842,6 +3842,17 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         new VerifyTask(str_mob_email, str_type).execute();
     }
 
+    @Override
+    public void dismissListener(String type, boolean isVerfied) {
+        if (isVerfied) {
+            if (type.equals("MOBILE"))
+                isMobileNoVerfied = true;
+            if (type.equals("EMAIL"))
+                isEmailVerfied = true;
+        }
+
+    }
+
     @SuppressLint("ValidFragment")
     public class CustomFragment extends DialogFragment {
         private String mTitle = "";
@@ -4160,6 +4171,29 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         validate = false;
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.enter_valid_email_id), Toast.LENGTH_SHORT)
+                                .show();
+                        break;
+                    }
+
+                    if (!isEmailVerfied) {
+                        editText[i].requestFocus();
+                        validate = false;
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.profile_edit_verify_email_id), Toast.LENGTH_SHORT)
+                                .show();
+                        break;
+                    }
+
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("PROFILE79")
+                        && profileConfig.get(i).getModule_Order() == 1
+                        && editText[i].getText().toString().trim().length() != 0) {
+
+                    if (!isMobileNoVerfied) {
+                        editText[i].requestFocus();
+                        validate = false;
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.profile_edit_verify_mobile_no), Toast.LENGTH_SHORT)
                                 .show();
                         break;
                     }
