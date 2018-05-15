@@ -1,0 +1,110 @@
+package com.ivy.cpg.view.reports.taskreport;
+
+import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.model.BusinessModel;
+
+public class TaskReportFragmentNew extends Fragment {
+
+
+    private BusinessModel bmodel;
+    private View view;
+    private ViewPager viewPager;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_task_report_new, container, false);
+        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.sessionout_loginagain),
+                    Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
+
+        viewPager = view.findViewById(R.id.viewPager);
+
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);//setting tab over viewpager
+
+        PagerAdapter adapter = new PagerAdapter
+                (getChildFragmentManager(), tabLayout.getTabCount());
+
+        viewPager.setOffscreenPageLimit(1);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        return view;
+
+    }
+
+    public class PagerAdapter extends FragmentStatePagerAdapter {
+        int mNumOfTabs;
+        String[] title = {"Seller", "Outlet"};
+
+        PagerAdapter(FragmentManager fm, int NumOfTabs) {
+            super(fm);
+            this.mNumOfTabs = NumOfTabs;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if(position == 0)
+                return new SellerTaskReportFragment();
+            else
+                return new OutletTaskReportFragment();
+        }
+
+        @Override
+        public int getCount() {
+            return mNumOfTabs;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return title[position];
+        }
+    }
+
+
+    @Override
+    public void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+
+    }
+
+}

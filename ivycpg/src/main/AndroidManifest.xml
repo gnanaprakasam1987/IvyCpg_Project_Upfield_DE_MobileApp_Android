@@ -60,16 +60,9 @@
     <!-- Google Map - used for map in planning screen -->
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
-    <permission
-        android:name="com.ivy.sd.png.asean.view.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
-
     <uses-permission android:name="com.ivy.sd.png.asean.view.permission.MAPS_RECEIVE" />
 
     <!-- GCM  - used for push notification -->
-    <permission
-        android:name="com.ivy.sd.png.view.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
 
     <uses-permission android:name="com.ivy.sd.png.view.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />

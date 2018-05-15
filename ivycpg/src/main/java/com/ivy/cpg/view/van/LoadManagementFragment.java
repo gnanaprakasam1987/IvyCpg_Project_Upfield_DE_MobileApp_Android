@@ -52,6 +52,7 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.WebViewActivity;
+import com.ivy.sd.png.view.reports.ReportActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -166,6 +167,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
             menuIcons.put(MENU_VAN_PLANOGRAM, R.drawable.icon_vanload);
             menuIcons.put(StandardListMasterConstants.MENU_DAMAGE_STOCK,
                     R.drawable.icon_stock);
+            menuIcons.put(StandardListMasterConstants.MENU_TASK_REPORT,
+                    R.drawable.icon_reports);
 
             Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
                     .downloadLoadManagementMenu();
@@ -443,6 +446,22 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 } else
                     Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
                 break;
+
+            case StandardListMasterConstants.MENU_TASK_REPORT :
+
+                ConfigureBO configureBO = new ConfigureBO();
+                configureBO.setMenuName(menuItem.getMenuName());
+                configureBO.setConfigCode(StandardListMasterConstants.MENU_TASK_REPORT);
+
+                Intent intent = new Intent(getActivity(), ReportActivity.class);
+                Bundle bun = new Bundle();
+                bun.putSerializable("config", configureBO);
+                bun.putString("FROM","LOADMANAGEMENT");
+                intent.putExtras(bun);
+
+                startActivity(intent);
+                break;
+
             default:
                 break;
         }

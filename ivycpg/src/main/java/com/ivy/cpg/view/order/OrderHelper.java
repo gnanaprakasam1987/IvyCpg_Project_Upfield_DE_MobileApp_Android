@@ -2267,7 +2267,7 @@ public class OrderHelper {
                         + retailerId);
 
             else
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' retailerid=" + retailerId);
+                c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' and retailerid=" + retailerId);
 
 
             if (c != null) {
