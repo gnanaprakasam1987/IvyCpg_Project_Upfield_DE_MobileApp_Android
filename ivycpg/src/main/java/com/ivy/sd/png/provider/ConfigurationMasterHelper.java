@@ -1323,6 +1323,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
     public boolean IS_ORD_SR_VALUE_VALIDATE;
 
+    private static final String CODE_SR_INDICATIVE = "SR16";
+    public boolean IS_INDICATIVE_SR;
+
+
     private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
     public boolean IS_REALTIME_LOCATION_CAPTURE ;
 
@@ -2303,6 +2307,8 @@ public class ConfigurationMasterHelper {
         this.SHOW_PRINT_HEADERS = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) : false;
 
         this.IS_ORD_SR_VALUE_VALIDATE = hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) != null ? hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) : false;
+
+        this.IS_INDICATIVE_SR = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
 
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
 
