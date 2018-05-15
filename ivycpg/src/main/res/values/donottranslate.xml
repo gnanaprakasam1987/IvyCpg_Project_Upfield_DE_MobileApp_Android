@@ -130,5 +130,6 @@
     <string name="vanload_stock_applied">VanLoad Stock Applied</string>
 
     <string name="enter_account">Enter account no</string>
+    <string name="share_percent">Share %</string>
 
 </resources>
