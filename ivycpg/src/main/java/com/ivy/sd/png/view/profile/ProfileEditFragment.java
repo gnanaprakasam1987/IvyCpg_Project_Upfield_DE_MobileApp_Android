@@ -4934,10 +4934,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
+
+                int listid = bmodel.configurationMasterHelper.getActivtyType("RE");
+
                 JSONObject jsonData = new JSONObject();
                 jsonData.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid());
                 jsonData.put("RetailerId", bmodel.getRetailerMasterBO().getRetailerID());
+                jsonData.put("ActivityType", listid);
                 JSONObject notObj = new JSONObject();
                 notObj.put("Type", type);
                 notObj.put("Receiver", value);
@@ -4988,25 +4992,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                     return -4;
 
                                 }
-
                             }
-
-                        }
-
-
-                    }
-
-                } else {
-                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                        String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
-                        if (errorMsg != null) {
-                            Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), getActivity().getResources().
-                                    getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                         }
                     }
-
                 }
 
             } catch (Exception e) {
@@ -5022,21 +5010,29 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             alertDialog.dismiss();
 
-            if (result ==1) {
+            if (result == 1) {
                 alertDialog.dismiss();
                 if (getActivity() != null) {
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    RetailerOTPDialog dialog1 = new RetailerOTPDialog(ProfileEditFragment.this,type);
+                    RetailerOTPDialog dialog1 = new RetailerOTPDialog(ProfileEditFragment.this, type);
                     dialog1.setCancelable(false);
                     dialog1.show(ft, "mobiledialog");
                 }
 
             }
+            if (result == -4) {
+                if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), getActivity().getResources().
+                                getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
         }
     }
-
-
-
 
 
 }

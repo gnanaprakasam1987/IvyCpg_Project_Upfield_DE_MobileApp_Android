@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -43,11 +44,11 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
     private OTPListener otpListener;
     private String type;
 
-    public interface OTPListener{
+    public interface OTPListener {
         void generateOTP();
     }
 
-    public RetailerOTPDialog(OTPListener callBack,String type){
+    public RetailerOTPDialog(OTPListener callBack, String type) {
         this.otpListener = callBack;
         this.type = type;
     }
@@ -93,8 +94,10 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
                             getResources().getString(R.string.enter_otp), Toast.LENGTH_LONG).show();
                 break;
             case R.id.tv_resend:
-                if (otpListener != null)
-                otpListener.generateOTP();
+                if (otpListener != null) {
+                    dismiss();
+                    otpListener.generateOTP();
+                }
                 break;
             default:
                 break;
@@ -116,19 +119,24 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
+                int listid = bmodel.configurationMasterHelper.getActivtyType("RE");
+
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("VersionCode",
                         bmodel.getApplicationVersionNumber());
+                jsonObject.put("UserId", bmodel.userMasterHelper
+                        .getUserMasterBO().getUserid());
+                jsonObject.put("RetailerId", bmodel.getRetailerMasterBO().getRetailerID());
                 jsonObject.put("LoginId", bmodel.userNameTemp.trim());
                 jsonObject.put("MobileDateTime",
                         Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                 jsonObject.put("MobileUTCDateTime",
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
                 jsonObject.put("OTPValue", OTP);
-                jsonObject.put("type", type);
+                jsonObject.put("ActivityType", listid);
                 jsonObject.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
 
-                String appendUrl = "/V1/ForgotPassword/Validate";
+                String appendUrl = "/OTPValidator/Validate";
 
                 Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject, appendUrl, false);
                 if (responseVector.size() > 0) {
@@ -211,7 +219,7 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
     protected Dialog onCreateDialog(int id, String message) {
         switch (id) {
             case 0:
-                return new AlertDialog.Builder(getActivity())
+                return new AlertDialog.Builder(getActivity(), R.style.DatePickerDialogStyle)
                         .setIcon(null)
                         .setCancelable(false)
                         .setTitle(message)
@@ -222,9 +230,8 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
                                         dismiss();
                                     }
                                 }).create();
-
             case 1:
-                return new AlertDialog.Builder(getActivity())
+                return new AlertDialog.Builder(getActivity(), R.style.DatePickerDialogStyle)
                         .setIcon(null)
                         .setCancelable(false)
                         .setTitle(message)
