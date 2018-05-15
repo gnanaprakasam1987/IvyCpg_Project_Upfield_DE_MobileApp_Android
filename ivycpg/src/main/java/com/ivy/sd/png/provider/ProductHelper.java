@@ -5703,28 +5703,28 @@ public class ProductHelper {
 
             int mFiltrtLevel = 0;
             int mContentLevel = 0;
-
+            int loopEnd = 0;
 
             if (mCompetitorSequenceValues != null && mCompetitorSequenceValues.size() > 0) {
                 mFiltrtLevel = mCompetitorSequenceValues.get(mCompetitorSequenceValues.size() - 1).getSequence();
             }
+            if(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS!= null) {
+                List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
 
-            List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
-
-            if (mLevels.size() > 0) {
-                Cursor filterCur = db
-                        .selectSQL("SELECT Distinct IFNULL(Sequence,0) FROM ProductLevel" +
-                                " where levelId = " + mLevels.get(mLevels.size() - 1));
-                if (filterCur != null) {
-                    if (filterCur.moveToNext()) {
-                        mContentLevel = filterCur.getInt(0);
+                if (mLevels.size() > 0) {
+                    Cursor filterCur = db
+                            .selectSQL("SELECT Distinct IFNULL(Sequence,0) FROM ProductLevel" +
+                                    " where levelId = " + mLevels.get(mLevels.size() - 1));
+                    if (filterCur != null) {
+                        if (filterCur.moveToNext()) {
+                            mContentLevel = filterCur.getInt(0);
+                        }
+                        filterCur.close();
                     }
-                    filterCur.close();
                 }
+
+                loopEnd = mContentLevel - mFiltrtLevel + 1;
             }
-
-            int loopEnd = mContentLevel - mFiltrtLevel + 1;
-
             if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                 getAlCompetitorTaggedProducts(loopEnd);
             } else {

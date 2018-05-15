@@ -77,8 +77,8 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginEnd="@dimen/store_margin_top"
+                    android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
                     android:background="@color/GRAY"
                     android:orientation="horizontal"
@@ -110,7 +110,7 @@
                                 android:gravity="center"
                                 android:padding="2dp"
                                 android:text="@string/date"
-                                android:textColor="?attr/colorAccent"
+                                android:textColor="?attr/accentcolor"
                                 android:textSize="@dimen/greyed_text_size" />
 
                             <TextView
@@ -156,7 +156,7 @@
                                 android:gravity="center"
                                 android:padding="2dp"
                                 android:text="@string/time"
-                                android:textColor="?attr/colorAccent"
+                                android:textColor="?attr/accentcolor"
                                 android:textSize="@dimen/greyed_text_size" />
 
                             <TextView
@@ -190,20 +190,20 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/starttriplayout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
+                    android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="15dp">
 
                     <TextView
                         android:id="@+id/starttriptxtview"
                         style="@style/TextViewListItemPrimary"
-                        android:layout_width="@dimen/order_stock_list_product_name_width"
+                        android:layout_width="@dimen/meter_value_width_large"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:padding="5dp"
                         android:text="@string/trip_starting_reading"
                         android:textColor="@color/black_bg1" />
@@ -213,46 +213,52 @@
                         style="@style/EditText_ListItem"
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
-                        android:layout_toStartOf="@+id/kms"
                         android:digits="0123456789$&amp;*"
-                        android:gravity="start"
                         android:imeOptions="actionDone"
                         android:inputType="numberDecimal"
                         android:maxLength="8"
+                        android:gravity="start"
                         android:maxLines="1"
-                        android:textColorHint="@color/black_bg1">
+                        android:textColorHint="@color/black_bg1" />
 
-                    </EditText>
 
                     <TextView
                         android:id="@+id/kms"
                         style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
                         android:padding="5dp"
                         android:text="@string/km"
                         android:textColor="@color/black_bg1" />
-                </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/starttripimgiv"
+                        android:layout_width="@dimen/icon"
+                        android:layout_height="@dimen/icon"
+                        android:layout_marginLeft="@dimen/card_margin"
+                        android:background="@drawable/ic_photo_camera_blue_24dp"
+                        android:gravity="start"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginEnd="@dimen/values_editextWidth"
+                    android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
                     android:background="@color/light_grey" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginEnd="@dimen/store_margin_top"
+                    android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/dialog_list_item_left_margin"
                     android:background="@color/GRAY"
-                    android:orientation="horizontal"
-
-                    >
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:id="@+id/enddatetime_layout"
@@ -361,20 +367,20 @@
                 </LinearLayout>
 
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/endingtriplayout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/toolbar_image_top"
+                    android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="15dp">
 
                     <TextView
                         android:id="@+id/endtriptxtview"
                         style="@style/TextViewListItemPrimary"
-                        android:layout_width="@dimen/order_stock_list_product_name_width"
+                        android:layout_width="@dimen/meter_value_width_large"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:padding="5dp"
                         android:text="@string/trip_ending_reading"
                         android:textColor="@color/black_bg1" />
@@ -384,34 +390,42 @@
                         style="@style/EditText_ListItem"
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
-                        android:layout_toStartOf="@+id/kms1"
                         android:digits="0123456789$&amp;*"
-                        android:gravity="start"
                         android:imeOptions="actionDone"
                         android:inputType="numberDecimal"
                         android:maxLength="8"
                         android:maxLines="1"
-                        android:textColorHint="@color/black_bg1">
+                        android:gravity="start"
+                        android:textColorHint="@color/black_bg1" />
 
-                        <requestFocus />
-                    </EditText>
 
                     <TextView
                         android:id="@+id/kms1"
                         style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
                         android:padding="5dp"
                         android:text="@string/km"
                         android:textColor="@color/black_bg1" />
-                </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/endtripimgiv"
+                        android:layout_width="@dimen/icon"
+                        android:layout_height="@dimen/icon"
+                        android:layout_marginLeft="@dimen/card_margin"
+                        android:background="@drawable/ic_photo_camera_blue_24dp"
+                        android:gravity="start"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginEnd="@dimen/values_editextWidth"
+                    android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
                     android:background="@color/light_grey" />
 

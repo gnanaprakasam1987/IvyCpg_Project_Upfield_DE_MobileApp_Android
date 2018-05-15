@@ -134,6 +134,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private HashMap<Integer, Integer> mCompetitorSelectedIdByLevelId;
     private MustSellReasonDialog dialog;
 
+    private TextView tv_sharePercent;
+    private LinearLayout ll_stockCheck_SharePercent;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -315,6 +318,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
 
+        ll_stockCheck_SharePercent = (LinearLayout) view.findViewById(R.id.llstockCheckSharePercent);
+        tv_sharePercent = (TextView) view.findViewById(R.id.tv_sharePercent);
     }
 
     private ActionBar getActionBar() {
@@ -418,7 +423,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 view.findViewById(R.id.ll_keypad).setVisibility(View.GONE);
             }
 
-
+            if (businessModel.configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
+                ll_stockCheck_SharePercent.setVisibility(View.VISIBLE);
+            }
         } catch (Exception e) {
             Commons.printException(e + "");
         }
@@ -1945,6 +1952,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private void updateFooter() {
 
         int totalAvailableProduts = 0;
+        int totalownedProducts = 0;
         for (ProductMasterBO bo : stockList) {
 
             for (LocationBO locationBO : bo.getLocations()) {
@@ -1952,6 +1960,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 if ((locationBO.getShelfCase() > 0 || locationBO.getShelfOuter() > 0 || locationBO.getShelfPiece() > 0)
                         || (locationBO.getAvailability() > -1)) {
                     totalAvailableProduts += 1;
+                    if (bo.getOwn() == 1) {
+                        totalownedProducts += 1;
+                    }
                     break;
                 }
             }
@@ -1959,7 +1970,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         tv_total_stockCheckedProducts.setText(totalAvailableProduts + "");
         tv_total_products.setText("/" + stockList.size());
-
+        if (stockList.size() > 0) {
+            businessModel.setAvailablilityShare(businessModel.formatPercent(((double) totalownedProducts / stockList.size()) * 100));
+            tv_sharePercent.setText(businessModel.getAvailablilityShare());
+        }
     }
 
 
