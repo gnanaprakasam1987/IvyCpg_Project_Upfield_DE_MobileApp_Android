@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
     private ArrayAdapter<TaskDataBO> spinnerRetailerAdapter;
     private ArrayAdapter<String> spinnerDateAdapter;
     private HashSet<Integer> mSelectedRetailerId;
+
+    Vector<TaskDataBO> tasklist = new Vector<TaskDataBO>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,9 +85,18 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
         spinnerRetailerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
         spinnerRetailerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        myAdapter = new MyAdapter(tasklist);
+        recyclerView.setAdapter(myAdapter);
+
+        RecyclerSectionItemDecoration sectionItemDecoration =
+                new RecyclerSectionItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_30dp),
+                        false,
+                        getSectionCallback(tasklist));
+        recyclerView.addItemDecoration(sectionItemDecoration);
+
         mylist.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReport());
 
-        if (bmodel.configurationMasterHelper.SHOW_DATE_ROUTE) {
+        if (bmodel.configurationMasterHelper.SHOW_DATE_ROUTE || bmodel.configurationMasterHelper.SHOW_WEEK_ROUTE) {
 
             final Vector<TaskDataBO> dateWiseTask = new Vector<>();
 
@@ -93,7 +105,13 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
             ArrayList<String> strings = new ArrayList<>();
 
             strings.add(0, getActivity().getResources().getString(R.string.all));
-            strings.addAll(bmodel.mRetailerHelper.getMaxDaysInRouteSelection());
+
+            if(bmodel.configurationMasterHelper.SHOW_WEEK_ROUTE){
+                strings.add(SDUtil.now(SDUtil.DATE_GLOBAL));
+            }else{
+                strings.addAll(bmodel.mRetailerHelper.getMaxDaysInRouteSelection());
+            }
+
             spinnerDateAdapter.addAll(strings);
 
             spinnerReport.setAdapter(spinnerDateAdapter);
@@ -101,8 +119,6 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
             spinnerReport.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                    //TaskDataBO tempBo = (TaskDataBO) parent.getSelectedItem();
 
                     mSelectedRetailerId.clear();
 
@@ -159,7 +175,7 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
 
     private void load(HashSet<Integer> retailerIds) {
 
-        Vector<TaskDataBO> tasklist = new Vector<TaskDataBO>();
+        tasklist.clear();
 
         if (retailerIds.size() == 0) {
             tasklist.addAll(mylist);
@@ -170,36 +186,28 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
             }
         }
 
-        myAdapter = new MyAdapter(tasklist);
-        recyclerView.setAdapter(myAdapter);
+        myAdapter.notifyDataSetChanged();
 
-        getList(tasklist);
-
-        recyclerView.addItemDecoration(new HeaderItemDecoration(recyclerView,(HeaderItemDecoration.StickyHeaderInterface) myAdapter));
     }
 
-    private List getList(Vector<TaskDataBO> tasklist){
-        List list = new ArrayList<>();
-        for (int index =0; index < tasklist.size(); index++){
-            TaskDataBO itemModel = new TaskDataBO();
-            itemModel.setRid(tasklist.get(index).getRid());
-            itemModel.setRetailerName(tasklist.get(index).getRetailerName());
-            list.add(itemModel);
-        }
-        if (list.size() > 0) {
-            Collections.sort(list, new Comparator() {
-                @Override
-                public int compare(Object object1, Object object2) {
+    private RecyclerSectionItemDecoration.SectionCallback getSectionCallback(final List<TaskDataBO> taskDataBOS) {
+        return new RecyclerSectionItemDecoration.SectionCallback() {
+            @Override
+            public boolean isSection(int position) {
+                return position == 0
+                        || taskDataBOS.get(position)
+                        .getRid() != taskDataBOS.get(position - 1)
+                        .getRid();
+            }
 
-                    TaskDataBO taskDataBO1 = (TaskDataBO) object1;
-                    TaskDataBO taskDataBO2 = (TaskDataBO) object2;
-
-                    return String.valueOf(taskDataBO1.getRid()).compareTo(String.valueOf(taskDataBO2.getRid()));
-                }
-            });
-        }
-        return list;
+            @Override
+            public CharSequence getSectionHeader(int position) {
+                return taskDataBOS.get(position)
+                        .getRetailerName();
+            }
+        };
     }
+
 
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
@@ -208,7 +216,6 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
         public MyAdapter(Vector<TaskDataBO> items) {
             this.items = items;
         }
-
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -247,12 +254,20 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
 
             if (items.get(position).getIsdone().equalsIgnoreCase("0"))
                 holder.imgStatus.setImageResource(R.drawable.ic_in_progress_icon);
+            else
+                holder.imgStatus.setImageResource(R.drawable.coll_tick);
 
         }
 
         @Override
         public int getItemCount() {
             return items.size();
+        }
+
+        @Override
+        public int getItemViewType(int position)
+        {
+            return position;
         }
     }
 

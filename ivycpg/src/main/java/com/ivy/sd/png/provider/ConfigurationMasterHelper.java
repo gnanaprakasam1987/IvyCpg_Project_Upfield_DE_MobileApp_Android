@@ -1351,6 +1351,12 @@ public class ConfigurationMasterHelper {
     public boolean IS_FILTER_TAG_PRODUCTS = true;
     private static final String CODE_FILTER_TAGGED_PRODUCTS = "FILTER_TAG";
 
+    private static final String CODE_TASK_OPEN = "TASK_RPT_OPEN";
+    public int TASK_OPEN;
+
+    private static final String CODE_TASK_PLANNED = "TASK_RPT_PLANNED";
+    public int TASK_PLANNED ;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2332,6 +2338,9 @@ public class ConfigurationMasterHelper {
         this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
         this.IS_FILTER_TAG_PRODUCTS = hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) : false;
         this.IS_ENABLE_PRODUCT_TAGGING_VALIDATION = hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) : false;
+
+        this.TASK_OPEN = hashMapHHTModuleOrder.get(CODE_TASK_OPEN) != null ? hashMapHHTModuleOrder.get(CODE_TASK_OPEN) : 0;
+        this.TASK_PLANNED = hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) != null ? hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) : 0;
     }
 
     private boolean isInOutModule() {

@@ -10,8 +10,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="@dimen/dimen_10dp"
-        android:weightSum="1">
+        android:padding="@dimen/dimen_12dp"
+        android:weightSum="1"
+        android:id="@+id/spinner_layout">
 
         <TextView
             android:id="@+id/select_retailer"
@@ -37,6 +38,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"/>
+        android:scrollbars="none"
+        android:layout_marginTop="@dimen/dimen_2dp"/>
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.TaskDataBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -46,11 +47,24 @@ public class TaskReportHelper {
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
+
+        String concatQuery = "";
+        concatQuery = ",ifnull((Select count (TED.TaskId) from TaskExecutionDetails TED where TED.TaskId = A.taskid and TED.RetailerId = A.retailerId),0) as taskStatus ";
+        String conditionStr = "";
+
+        if(bmodel.configurationMasterHelper.TASK_OPEN == 1){
+            conditionStr = " And taskStatus = 0 ";
+        }else if(bmodel.configurationMasterHelper.TASK_OPEN == 2){
+            conditionStr = " And taskStatus = 1 ";
+        }else{
+            concatQuery ="";
+        }
+
         Cursor c = db
-                .selectSQL("select distinct A.retailerId, R.RetailerName , A.date  from TaskConfigurationMaster A  " +
+                .selectSQL("select distinct A.retailerId, R.RetailerName , A.date "+concatQuery+" from TaskConfigurationMaster A  " +
                         " inner join TaskMaster B on A.taskid=B.taskid" +
                         " inner join RetailerMaster r on r.RetailerID = A.retailerId " +
-                        " where A.retailerId!=0 AND A.isdone=0");
+                        " where A.retailerId!=0"+conditionStr);
         taskDataBO = new Vector<>();
 
         if (c != null) {
@@ -72,11 +86,24 @@ public class TaskReportHelper {
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
+
+        String concatQuery = "";
+        concatQuery = ",ifnull((Select count (TED.TaskId) from TaskExecutionDetails TED where TED.TaskId = A.taskid and TED.RetailerId = A.retailerId),0) as taskStatus ";
+        String conditionStr = "";
+
+        if(bmodel.configurationMasterHelper.TASK_OPEN == 1){
+            conditionStr = " and  A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId and taskid = A.taskid) and taskStatus = 0 ";
+        }else if(bmodel.configurationMasterHelper.TASK_OPEN == 2){
+            conditionStr = " And taskStatus = 1 ";
+        }
+
+        String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,B.TaskOwner,B.Date, R.RetailerName "+concatQuery+" from TaskConfigurationMaster A " +
+                " inner join TaskMaster B on A.taskid=B.taskid  " +
+                " inner join RetailerMaster r on r.RetailerID = A.retailerId " +
+                " where A.retailerId!=0 "+conditionStr+" order by A.retailerId";
+
         Cursor c = db
-                .selectSQL("select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,B.TaskOwner,B.Date, R.RetailerName,A.isdone from TaskConfigurationMaster A " +
-                        " inner join TaskMaster B on A.taskid=B.taskid  " +
-                        " inner join RetailerMaster r on r.RetailerID = A.retailerId " +
-                        " where A.retailerId!=0 AND A.isdone=0 order by A.retailerId");
+                .selectSQL(query);
         taskDataBO = new Vector<>();
         if (c != null) {
             TaskDataBO taskmasterbo;
@@ -103,8 +130,18 @@ public class TaskReportHelper {
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
+
+        String condtionStr = "";
+
+        if(bmodel.configurationMasterHelper.TASK_PLANNED == 1){
+            if (bmodel.configurationMasterHelper.SHOW_WEEK_ROUTE) {
+                String date = SDUtil.now(SDUtil.DATE_GLOBAL);
+                condtionStr = " where Date = "+QT(date);
+            }
+        }
+
         Cursor c = db
-                .selectSQL("SELECT RID, Date FROM RetailerClientMappingMaster ORDER BY RID");
+                .selectSQL("SELECT RID, Date FROM RetailerClientMappingMaster "+condtionStr+" ORDER BY RID");
         taskDataBO = new Vector<>();
         if (c != null) {
             TaskDataBO taskmasterbo;
@@ -120,7 +157,7 @@ public class TaskReportHelper {
         return taskDataBO;
     }
 
-    public Vector<TaskDataBO> getSellerWiseTaskReport(){
+    Vector<TaskDataBO> getSellerWiseTaskReport(){
 
         Vector<TaskDataBO> taskDataBOS = new Vector<>();
 
@@ -130,8 +167,8 @@ public class TaskReportHelper {
         db.openDataBase();
         Cursor c = db
                 .selectSQL("select distinct A.taskid,B.taskcode,B.taskDesc,A.UserId,B.TaskOwner,B.Date," +
-                        " um.username,A.isdone from TaskConfigurationMaster A  inner join TaskMaster B on A.taskid=B.taskid  " +
-                        " inner join usermaster um on um.userid = A.UserId  where A.retailerId=0 and A.userId!=0");
+                        " um.username,A.isdone from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid  " +
+                        " inner join usermaster um on um.userid = A.UserId  where A.retailerId=0 and A.userId!=0 order by A.UserId");
         taskDataBO = new Vector<>();
         if (c != null) {
             TaskDataBO taskmasterbo;
@@ -154,6 +191,40 @@ public class TaskReportHelper {
 
         return taskDataBOS;
 
+    }
+
+    public Vector<TaskDataBO> getTaskDataBO (Context context){
+        Vector<TaskDataBO> taskDataBOS = new Vector<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+
+        Cursor c = db
+                .selectSQL("select distinct A.taskid,B.taskcode,B.taskDesc,A.UserId,B.TaskOwner,B.Date," +
+                        " um.username,A.isdone from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid  " +
+                        " inner join usermaster um on um.userid = A.UserId  where A.retailerId=0 and A.userId!=0 order by A.UserId");
+        taskDataBO = new Vector<>();
+        if (c != null) {
+            TaskDataBO taskmasterbo;
+            while (c.moveToNext()) {
+                taskmasterbo = new TaskDataBO();
+                taskmasterbo.setTaskId(c.getString(0));
+                taskmasterbo.setTasktitle(c.getString(1));
+                taskmasterbo.setTaskDesc(c.getString(2));
+                taskmasterbo.setUserId(c.getInt(3));
+                taskmasterbo.setRid(0);
+                taskmasterbo.setTaskOwner(c.getString(4));
+                taskmasterbo.setCreatedDate(c.getString(5));
+                taskmasterbo.setUserName(c.getString(6));
+                taskmasterbo.setIsdone(c.getString(7));
+                taskDataBOS.add(taskmasterbo);
+            }
+            c.close();
+            db.closeDB();
+        }
+
+        return taskDataBOS;
     }
 
 }
