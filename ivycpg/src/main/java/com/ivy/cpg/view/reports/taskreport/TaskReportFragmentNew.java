@@ -9,17 +9,21 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 public class TaskReportFragmentNew extends Fragment {
 
 
     private BusinessModel bmodel;
-    private View view;
     private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private String[] title = {"Outlet","Seller"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,7 +36,7 @@ public class TaskReportFragmentNew extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_task_report_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_task_report_new, container, false);
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -41,9 +45,21 @@ public class TaskReportFragmentNew extends Fragment {
         }
 
         viewPager = view.findViewById(R.id.viewPager);
+        tabLayout = view.findViewById(R.id.tab_layout);
 
-        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+        //If Seller wise report is not configured then tab will be removed
+        if (!bmodel.configurationMasterHelper.IS_SELLER_TASK_RPT)
+            tabLayout.removeTabAt(1);
+
         tabLayout.setupWithViewPager(viewPager);//setting tab over viewpager
+
+        //Tab name from Label master
+        try{
+            title[0] = bmodel.labelsMasterHelper.applyLabels("Outlet_Task_Tag")!=null?bmodel.labelsMasterHelper.applyLabels("Outlet_Task_Tag"):"Outlet";
+            title[1] = bmodel.labelsMasterHelper.applyLabels("Seller_Task_Tag")!=null?bmodel.labelsMasterHelper.applyLabels("Seller_Task_Tag"):"Seller";
+        }catch(Exception e){
+            Commons.printException(e);
+        }
 
         PagerAdapter adapter = new PagerAdapter
                 (getChildFragmentManager(), tabLayout.getTabCount());
@@ -55,7 +71,6 @@ public class TaskReportFragmentNew extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-
             }
 
             @Override
@@ -67,13 +82,29 @@ public class TaskReportFragmentNew extends Fragment {
             }
         });
 
+        changeTabsFont();
+
         return view;
 
     }
 
+    private void changeTabsFont() {
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildsCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildsCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    ((TextView) tabViewChild).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                }
+            }
+        }
+    }
+
     public class PagerAdapter extends FragmentStatePagerAdapter {
         int mNumOfTabs;
-        String[] title = {"Seller", "Outlet"};
 
         PagerAdapter(FragmentManager fm, int NumOfTabs) {
             super(fm);
@@ -83,9 +114,10 @@ public class TaskReportFragmentNew extends Fragment {
         @Override
         public Fragment getItem(int position) {
             if(position == 0)
-                return new SellerTaskReportFragment();
-            else
                 return new OutletTaskReportFragment();
+            else
+                return new SellerTaskReportFragment();
+
         }
 
         @Override
@@ -98,7 +130,6 @@ public class TaskReportFragmentNew extends Fragment {
             return title[position];
         }
     }
-
 
     @Override
     public void onStart() {

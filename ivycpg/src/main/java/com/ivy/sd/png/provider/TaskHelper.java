@@ -181,6 +181,7 @@ public class TaskHelper {
 
     }
 
+
     public boolean isTaskDone() {
         boolean flag = false;
         try {
@@ -266,6 +267,86 @@ public class TaskHelper {
 
     }
 
+    public Vector<TaskDataBO> loadTaskReportRetailerList() {
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        Cursor c = db
+                .selectSQL("select distinct A.retailerId, R.RetailerName , A.date  from TaskConfigurationMaster A  " +
+                        " inner join TaskMaster B on A.taskid=B.taskid" +
+                        " inner join RetailerMaster r on r.RetailerID = A.retailerId " +
+                        " where A.retailerId!=0 AND A.isdone=0");
+        taskDataBO = new Vector<>();
+
+        if (c != null) {
+            while (c.moveToNext()) {
+                TaskDataBO taskmasterbo = new TaskDataBO();
+                taskmasterbo.setRid(c.getInt(0));
+                taskmasterbo.setTaskOwner(c.getString(1));
+                taskDataBO.add(taskmasterbo);
+            }
+            c.close();
+        }
+        db.closeDB();
+        return taskDataBO;
+
+    }
+
+    public Vector<TaskDataBO> loadTaskReport() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        Cursor c = db
+                .selectSQL("select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,B.TaskOwner,B.Date, R.RetailerName from TaskConfigurationMaster A " +
+                        " inner join TaskMaster B on A.taskid=B.taskid  " +
+                        " inner join RetailerMaster r on r.RetailerID = A.retailerId " +
+                        " where A.retailerId!=0 AND A.isdone=0");
+        taskDataBO = new Vector<>();
+        if (c != null) {
+            TaskDataBO taskmasterbo;
+            while (c.moveToNext()) {
+                taskmasterbo = new TaskDataBO();
+                taskmasterbo.setTaskId(c.getString(0));
+                taskmasterbo.setTasktitle(c.getString(1));
+                taskmasterbo.setTaskDesc(c.getString(2));
+                taskmasterbo.setRid(c.getInt(3));
+                taskmasterbo.setTaskOwner(c.getString(4));
+                taskmasterbo.setCreatedDate(c.getString(5));
+                taskmasterbo.setRetailerName(c.getString(6));
+                taskDataBO.add(taskmasterbo);
+            }
+            c.close();
+            db.closeDB();
+        }
+        return taskDataBO;
+    }
+
+    public Vector<TaskDataBO> loadRetailerPlannedDate() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        Cursor c = db
+                .selectSQL("SELECT RID, Date FROM RetailerClientMappingMaster ORDER BY RID");
+        taskDataBO = new Vector<>();
+        if (c != null) {
+            TaskDataBO taskmasterbo;
+            while (c.moveToNext()) {
+                taskmasterbo = new TaskDataBO();
+                taskmasterbo.setRid(c.getInt(0));
+                taskmasterbo.setPlannedDate(c.getString(1));
+                taskDataBO.add(taskmasterbo);
+            }
+            c.close();
+            db.closeDB();
+        }
+        return taskDataBO;
+
+    }
+
     /**
      * This method will return the count of distinct tasks. Its a sum of task
      * downloaded from the server and user created task. If the user created
@@ -347,3 +428,4 @@ public class TaskHelper {
     }
 
 }
+

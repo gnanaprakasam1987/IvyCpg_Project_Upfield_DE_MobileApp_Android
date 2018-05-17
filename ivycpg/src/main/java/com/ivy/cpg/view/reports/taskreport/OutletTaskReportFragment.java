@@ -19,10 +19,10 @@ import com.ivy.sd.png.bo.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
@@ -30,16 +30,17 @@ import java.util.Vector;
 public class OutletTaskReportFragment extends IvyBaseFragment {
 
     private RecyclerView recyclerView;
-    MyAdapter myAdapter;
+    private MyAdapter myAdapter;
     private Vector<TaskDataBO> mylist = new Vector<>();
     private BusinessModel bmodel;
-    private Spinner spinnerReport;
-    TextView select_retailer;
-    private ArrayAdapter<TaskDataBO> spinnerRetailerAdapter;
-    private ArrayAdapter<String> spinnerDateAdapter;
-    private HashSet<Integer> mSelectedRetailerId;
+    private Spinner spinnerReportRetailer, spinnerReportDate;
+    private int retailerSelectedId = 0;
+    private HashSet<Integer> dateSelectedRetailerId;
 
-    Vector<TaskDataBO> tasklist = new Vector<TaskDataBO>();
+    private int checkRetailerSpnr,checkDateSpinner;
+
+
+    Vector<TaskDataBO> tasklist = new Vector<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,136 +51,190 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_task_report_list, container, false);
+
+        initViews(view);
+        prepareScreenData(view);
+
+        return view;
+    }
+
+    private void initViews(View view) {
 
         recyclerView = view.findViewById(R.id.recycler_view);
 
-        select_retailer = view.findViewById(R.id.select_retailer);
-        select_retailer.setText(getActivity().getResources().getString(R.string.plain_select));
+        spinnerReportRetailer = view.findViewById(R.id.spinner_retid_taskreport);
+        spinnerReportDate = view.findViewById(R.id.spinner_date_taskreport);
 
-        spinnerReport = view.findViewById(R.id.spinner_retid_taskreport);
-
-        prepareScreenData();
-
-        return view;
-
+        ((TextView) view.findViewById(R.id.select_retailer)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.select_date)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
     }
 
-    private void prepareScreenData(){
+    private void prepareScreenData(View view) {
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        if (bmodel.configurationMasterHelper.SHOW_DATE_ROUTE) {
-            select_retailer.setText("Select Date");
+        //Enable or disable date Filter based on Config
+        if (bmodel.configurationMasterHelper.TASK_PLANNED >= 0) {
+            view.findViewById(R.id.date_layout).setVisibility(View.VISIBLE);
         } else {
-            select_retailer.setText("Select Outlet");
+            view.findViewById(R.id.date_layout).setVisibility(View.GONE);
         }
 
-        mSelectedRetailerId = new HashSet<>();
+        dateSelectedRetailerId = new HashSet<>();
 
-        spinnerDateAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
-        spinnerDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinnerRetailerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
+        ArrayAdapter<TaskDataBO> spinnerRetailerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
         spinnerRetailerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        ArrayAdapter<String> spinnerDateAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
+        spinnerDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         myAdapter = new MyAdapter(tasklist);
         recyclerView.setAdapter(myAdapter);
 
+        //Header Decoration to set Retailer name as Header for common retailer
         RecyclerSectionItemDecoration sectionItemDecoration =
                 new RecyclerSectionItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_30dp),
                         false,
                         getSectionCallback(tasklist));
         recyclerView.addItemDecoration(sectionItemDecoration);
 
+        //Holds all the Task data based on the config
         mylist.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReport());
 
-        if (bmodel.configurationMasterHelper.SHOW_DATE_ROUTE || bmodel.configurationMasterHelper.SHOW_WEEK_ROUTE) {
+        loadAll();
 
-            final Vector<TaskDataBO> dateWiseTask = new Vector<>();
+        ArrayList<TaskDataBO> strings = new ArrayList<>();
+        strings.add(new TaskDataBO(0, getActivity().getResources().getString(R.string.all)));
 
-            dateWiseTask.addAll(TaskReportHelper.getInstance(getContext()).loadRetailerPlannedDate());
+        //Load the Spinner element with retailer name
+        strings.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReportRetailerList());
 
-            ArrayList<String> strings = new ArrayList<>();
+        spinnerRetailerAdapter.addAll(strings);
+        spinnerReportRetailer.setAdapter(spinnerRetailerAdapter);
+        spinnerReportRetailer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-            strings.add(0, getActivity().getResources().getString(R.string.all));
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-            if(bmodel.configurationMasterHelper.SHOW_WEEK_ROUTE){
-                strings.add(SDUtil.now(SDUtil.DATE_GLOBAL));
-            }else{
-                strings.addAll(bmodel.mRetailerHelper.getMaxDaysInRouteSelection());
-            }
-
-            spinnerDateAdapter.addAll(strings);
-
-            spinnerReport.setAdapter(spinnerDateAdapter);
-
-            spinnerReport.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                    mSelectedRetailerId.clear();
-
-                    String mSeletedSpinnerDate = parent.getSelectedItem().toString();
-
-                    if (!mSeletedSpinnerDate.equalsIgnoreCase(getActivity().getResources().getString(R.string.all))) {
-                        for (TaskDataBO temp : dateWiseTask) {
-                            if (mSeletedSpinnerDate.equalsIgnoreCase(temp.getPlannedDate())) {
-                                mSelectedRetailerId.add(temp.getRid());
-                            }
-                        }
-                    }
-                    load(mSelectedRetailerId);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-        } else {
-
-            ArrayList<TaskDataBO> strings = new ArrayList<>();
-            strings.add(new TaskDataBO(0, getActivity().getResources().getString(R.string.all)));
-
-            strings.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReportRetailerList());
-
-            spinnerRetailerAdapter.addAll(strings);
-            spinnerReport.setAdapter(spinnerRetailerAdapter);
-            spinnerReport.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                if(++checkRetailerSpnr > 1) {
                     TaskDataBO tempBo = (TaskDataBO) parent.getSelectedItem();
 
-                    mSelectedRetailerId.clear();
+                    retailerSelectedId = tempBo.getRid();
 
-                    if (tempBo.getRid() != 0)
-                        mSelectedRetailerId.add(tempBo.getRid());
+                    HashSet<Integer> integers = new HashSet<>();
 
-                    load(mSelectedRetailerId);
+                    /**
+                     * If Date Filter is enabled then it will check for retailer
+                     * spinner matching date spinner values. if no element matched then no data will be loaded.
+                     */
+
+                    if (tempBo.getRid() == 0 && dateSelectedRetailerId.size() == 0)
+                        loadAll();
+                    else if (tempBo.getRid() == 0 && dateSelectedRetailerId.size() > 0)
+                        load(dateSelectedRetailerId);
+                    else if (tempBo.getRid() != 0 && dateSelectedRetailerId.size() == 0) {
+                        integers.add(retailerSelectedId);
+                        load(integers);
+                    } else if (tempBo.getRid() != 0 && dateSelectedRetailerId.size() > 0) {
+                        if (dateSelectedRetailerId.contains(retailerSelectedId))
+                            integers.add(retailerSelectedId);
+                        load(integers);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //If Date Spinner Config is found then following block will be executed
+        if (bmodel.configurationMasterHelper.TASK_PLANNED >= 0 ) {
+
+            final Vector<TaskDataBO> dateWiseTask = new Vector<>();
+            //Load the PlannedDate with retailer id
+            dateWiseTask.addAll(TaskReportHelper.getInstance(getContext()).loadRetailerPlannedDate());
+            ArrayList<String> stringVal = new ArrayList<>();
+
+            stringVal.add(0, getActivity().getResources().getString(R.string.all));
+
+            // If Config value is 1 then it will load only todays date
+            // otherwise all the planned date with date higher than the downloadDate(UserMaster) will be loaded with Limit 7
+            if (bmodel.configurationMasterHelper.TASK_PLANNED == 1) {
+                stringVal.add(SDUtil.now(SDUtil.DATE_GLOBAL));
+            } else {
+                stringVal.addAll(bmodel.mRetailerHelper.getMaxDaysInRouteSelection());
+            }
+
+            spinnerDateAdapter.addAll(stringVal);
+            spinnerReportDate.setAdapter(spinnerDateAdapter);
+            spinnerReportDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    if(++checkDateSpinner > 1) {
+                        dateSelectedRetailerId.clear();
+
+                        String mSeletedSpinnerDate = parent.getSelectedItem().toString();
+
+                        HashSet<Integer> integers = new HashSet<>();
+
+                        if (!mSeletedSpinnerDate.equalsIgnoreCase(getActivity().getResources().getString(R.string.all))) {
+                            for (TaskDataBO temp : dateWiseTask) {
+                                if (mSeletedSpinnerDate.equalsIgnoreCase(temp.getPlannedDate())) {
+                                    dateSelectedRetailerId.add(temp.getRid());
+                                }
+                            }
+                        }
+
+                        /**
+                         * If Date Filter is enabled then it will check for retailer
+                         * spinner matching date spinner values. if no element matched then no data will be loaded.
+                         */
+
+                        if (dateSelectedRetailerId.size() == 0 && retailerSelectedId == 0) {
+                            loadAll();
+                        } else if (dateSelectedRetailerId.size() == 0 && retailerSelectedId != 0) {
+                            integers.add(retailerSelectedId);
+                            load(integers);
+                        } else if (dateSelectedRetailerId.size() > 0 && retailerSelectedId == 0) {
+                            integers.addAll(dateSelectedRetailerId);
+                            load(integers);
+                        } else if (dateSelectedRetailerId.size() > 0 && retailerSelectedId != 0) {
+                            if (dateSelectedRetailerId.contains(retailerSelectedId))
+                                integers.add(retailerSelectedId);
+                            load(integers);
+                        }
+                    }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
-
-                    // TODO Auto-generated method stub
 
                 }
             });
         }
     }
 
+    //Load All the Task Data
+    private void loadAll() {
+
+        tasklist.clear();
+        tasklist.addAll(mylist);
+        myAdapter.notifyDataSetChanged();
+
+    }
+
+    //Load Specified Task Data
     private void load(HashSet<Integer> retailerIds) {
 
         tasklist.clear();
-
-        if (retailerIds.size() == 0) {
-            tasklist.addAll(mylist);
-        } else {
+        if (retailerIds.size() > 0) {
             for (TaskDataBO temp : mylist) {
                 if (retailerIds.contains(temp.getRid()))
                     tasklist.add(temp);
@@ -208,7 +263,6 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
         };
     }
 
-
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         private Vector<TaskDataBO> items;
@@ -219,7 +273,7 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            TextView tvRetailerName,tvTaskName,tvTaskDesc,tvCreatedBy,tvDate;
+            TextView tvRetailerName, tvTaskName, tvTaskDesc, tvCreatedBy, tvDate;
             ImageView imgStatus;
 
             public MyViewHolder(View view) {
@@ -232,6 +286,11 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
                 tvDate = view.findViewById(R.id.tv_task_date);
                 imgStatus = view.findViewById(R.id.task_status);
 
+                tvRetailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvTaskName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvTaskDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tvCreatedBy.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tvDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             }
         }
 
@@ -249,8 +308,8 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
             holder.tvRetailerName.setText(items.get(position).getRetailerName());
             holder.tvTaskName.setText(items.get(position).getTasktitle());
             holder.tvTaskDesc.setText(items.get(position).getTaskDesc());
-            holder.tvCreatedBy.setText(items.get(position).getUsercreated());
-            holder.tvDate.setText(items.get(position).getCreatedDate());
+            holder.tvCreatedBy.setText(items.get(position).getUsercreated()!=null?"Created by "+items.get(position).getUsercreated():"");
+            holder.tvDate.setText("At "+items.get(position).getCreatedDate());
 
             if (items.get(position).getIsdone().equalsIgnoreCase("0"))
                 holder.imgStatus.setImageResource(R.drawable.ic_in_progress_icon);
@@ -265,10 +324,10 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
         }
 
         @Override
-        public int getItemViewType(int position)
-        {
+        public int getItemViewType(int position) {
             return position;
         }
     }
+
 
 }

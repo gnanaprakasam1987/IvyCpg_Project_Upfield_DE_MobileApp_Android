@@ -20,16 +20,18 @@
         app:tabTextColor="#ddd">
 
         <android.support.design.widget.TabItem
+            android:id="@+id/retailer_wise_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:background="@color/white"
-            android:text="@string/Seller" />
+            android:text="Outlet" />
 
         <android.support.design.widget.TabItem
+            android:id="@+id/user_wise_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:text="Outlet" />
+            android:text="Seller"/>
 
     </android.support.design.widget.TabLayout>
 

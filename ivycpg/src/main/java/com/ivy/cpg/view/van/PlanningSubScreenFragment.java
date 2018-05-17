@@ -33,8 +33,10 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
+import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
+import com.ivy.sd.png.view.reports.ReportActivity;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -104,6 +106,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         menuIcons.put(menuStockView, R.drawable.icon_stock);
         menuIcons.put(menuVanloadStockView, R.drawable.icon_stock);
         menuIcons.put(menuManualVanload, R.drawable.icon_vanload);
+        menuIcons.put(StandardListMasterConstants.MENU_TASK_REPORT,R.drawable.icon_reports);
 
         Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper.downloadPlanningSubMenu();
         Commons.print("load management," + String.valueOf(menuDB.size()));
@@ -258,6 +261,19 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
             vanloadintent.putExtra("planingsub", true);
             new DownloadManualVanLoad().execute();
 
+        }else if (menuItem.getConfigCode().equals(StandardListMasterConstants.MENU_TASK_REPORT ) ){
+
+            ConfigureBO configureBO = new ConfigureBO();
+            configureBO.setMenuName(menuItem.getMenuName());
+            configureBO.setConfigCode(StandardListMasterConstants.MENU_TASK_REPORT);
+
+            Intent intent = new Intent(getActivity(), ReportActivity.class);
+            Bundle bun = new Bundle();
+            bun.putSerializable("config", configureBO);
+            bun.putString("FROM", "LOADMANAGEMENT");
+            intent.putExtras(bun);
+
+            startActivity(intent);
         }
 
     }

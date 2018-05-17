@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.TaskDataBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.cpg.view.reports.taskreport.TaskReportHelper;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,35 +26,23 @@ public class TaskReportFragment extends Fragment {
 
     private ListView lvwplist;
     private BusinessModel bmodel;
-    private Vector<TaskDataBO> mylist, mRetailerPlannedDate;
+    private Vector<TaskDataBO> mylist,mRetailerPlannedDate;
     private View view;
     private ArrayAdapter<TaskDataBO> retailerSpinnerAdapter;
     private ArrayAdapter<String> retailer_dateAdapter;
-    private HashSet<Integer> mSelectedRetailerId;
+    private HashSet<Integer> mSelectedRetailerId ;
     private Spinner spinner_retailertaskreport;
     MyAdapter mSchedule;
-    TextView select_retailer, select_date;
+    TextView select_retailer , select_date;
     private List<TaskDataBO> retailerID;
-    private List<String> dateList;
+    private List<String> dateList ;
     private Spinner spinner_date_taskreport;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onCreate(savedInstanceState);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-
-        mylist = new Vector<TaskDataBO>();
-        retailerID = new Vector<TaskDataBO>();
-        dateList = new Vector<String>();
-        mRetailerPlannedDate = new Vector<TaskDataBO>();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_task_report, container, false);
-
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -63,10 +50,10 @@ public class TaskReportFragment extends Fragment {
             getActivity().finish();
         }
         select_retailer = (TextView) view.findViewById(R.id.select_retailer);
-        select_retailer.setText(getActivity().getResources().getString(R.string.plain_select));
+        select_retailer.setText(getActivity().getResources().getString(R.string.plain_select) );
 
         select_date = (TextView) view.findViewById(R.id.select_date);
-        select_date.setText(getActivity().getResources().getString(R.string.plain_select));
+        select_date.setText(getActivity().getResources().getString(R.string.plain_select) );
 
         lvwplist = (ListView) view.findViewById(R.id.lv_taskreport_list);
         lvwplist.setCacheColorHint(0);
@@ -79,10 +66,10 @@ public class TaskReportFragment extends Fragment {
         spinner_date_taskreport.setVisibility(View.GONE);
         select_date.setVisibility(View.GONE);
 
-        if (bmodel.configurationMasterHelper.SHOW_DATE_ROUTE) {
+        if(bmodel.configurationMasterHelper.SHOW_DATE_ROUTE){
             spinner_date_taskreport.setVisibility(View.VISIBLE);
             select_date.setVisibility(View.VISIBLE);
-        } else {
+        }else{
             spinner_retailertaskreport.setVisibility(View.VISIBLE);
             select_retailer.setVisibility(View.VISIBLE);
         }
@@ -91,6 +78,18 @@ public class TaskReportFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+
+        mylist = new Vector<TaskDataBO>();
+        retailerID = new Vector<TaskDataBO>();
+        dateList = new Vector<String>();
+        mRetailerPlannedDate= new Vector<TaskDataBO>();
+    }
 
     @Override
     public void onStart() {
@@ -108,14 +107,14 @@ public class TaskReportFragment extends Fragment {
         retailerSpinnerAdapter = new ArrayAdapter<TaskDataBO>(getActivity(), android.R.layout.simple_spinner_item);
         retailerSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        mylist.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReport());
-        mRetailerPlannedDate.addAll(TaskReportHelper.getInstance(getContext()).loadRetailerPlannedDate());
+        mylist.addAll(bmodel.taskHelper.loadTaskReport());
+        mRetailerPlannedDate.addAll(bmodel.taskHelper.loadRetailerPlannedDate());
 
-        if (bmodel.configurationMasterHelper.SHOW_DATE_ROUTE) {
+        if (bmodel.configurationMasterHelper.SHOW_DATE_ROUTE){
 
-            dateList.add(0, getActivity().getResources().getString(R.string.all));
+            dateList.add(0,getActivity().getResources().getString(R.string.all));
             dateList.addAll(bmodel.mRetailerHelper.getMaxDaysInRouteSelection());
-            for (String date : dateList)
+            for(String date : dateList)
                 retailer_dateAdapter.add(date);
 
             spinner_date_taskreport.setAdapter(retailer_dateAdapter);
@@ -130,9 +129,9 @@ public class TaskReportFragment extends Fragment {
 
                     String mSeletedSpinnerDate = parent.getSelectedItem().toString();
 
-                    if (!mSeletedSpinnerDate.equalsIgnoreCase(getActivity().getResources().getString(R.string.all))) {
-                        for (TaskDataBO temp : mRetailerPlannedDate) {
-                            if (mSeletedSpinnerDate.equalsIgnoreCase(temp.getPlannedDate())) {
+                    if(!mSeletedSpinnerDate.equalsIgnoreCase(getActivity().getResources().getString(R.string.all))){
+                        for(TaskDataBO temp : mRetailerPlannedDate){
+                            if(mSeletedSpinnerDate.equalsIgnoreCase(temp.getPlannedDate())){
                                 mSelectedRetailerId.add(temp.getRid());
                             }
                         }
@@ -145,10 +144,11 @@ public class TaskReportFragment extends Fragment {
 
                 }
             });
-        } else {
+        }
+        else {
             retailerSpinnerAdapter.add(new TaskDataBO(0, getActivity().getResources().getString(R.string.all)));
-            retailerID.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReportRetailerList());
-            for (TaskDataBO task : retailerID)
+            retailerID.addAll(bmodel.taskHelper.loadTaskReportRetailerList());
+            for(TaskDataBO task : retailerID)
                 retailerSpinnerAdapter.add(task);
             spinner_retailertaskreport.setAdapter(retailerSpinnerAdapter);
             spinner_retailertaskreport.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -160,7 +160,7 @@ public class TaskReportFragment extends Fragment {
 
                     mSelectedRetailerId.clear();
 
-                    if (tempBo.getRid() != 0)
+                    if(tempBo.getRid() != 0)
                         mSelectedRetailerId.add(tempBo.getRid());
 
                     load(mSelectedRetailerId);
@@ -180,7 +180,7 @@ public class TaskReportFragment extends Fragment {
 
         Vector<TaskDataBO> tasklist = new Vector<TaskDataBO>();
 
-        if (retailerIds.size() == 0) {
+        if(retailerIds.size()==0){
             tasklist.addAll(mylist);
         } else {
             for (TaskDataBO temp : mylist) {
@@ -251,7 +251,7 @@ public class TaskReportFragment extends Fragment {
     }
 
     class ViewHolder {
-        TextView taskName, taskDesc, taskRetailername, taskCreatedBy, taskCreatedDate;
+        TextView taskName, taskDesc, taskRetailername , taskCreatedBy , taskCreatedDate;
         String pname;
     }
 

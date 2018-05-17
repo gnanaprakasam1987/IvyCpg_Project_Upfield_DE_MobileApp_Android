@@ -39,7 +39,8 @@ public class SellerTaskReportFragment extends IvyBaseFragment {
         View view = inflater.inflate(R.layout.fragment_task_report_list, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view);
-        view.findViewById(R.id.spinner_layout).setVisibility(View.GONE);
+        view.findViewById(R.id.retailer_layout).setVisibility(View.GONE);
+        view.findViewById(R.id.date_layout).setVisibility(View.GONE);
 
         prepareScreenData();
 
@@ -56,8 +57,10 @@ public class SellerTaskReportFragment extends IvyBaseFragment {
         myAdapter = new MyAdapter(mylist);
         recyclerView.setAdapter(myAdapter);
 
+        //Loading Userwise data
         mylist.addAll(TaskReportHelper.getInstance(getContext()).getSellerWiseTaskReport());
 
+        //Item Decoration for Header as User name
         RecyclerSectionItemDecoration sectionItemDecoration =
                 new RecyclerSectionItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_30dp),
                         false,
@@ -68,6 +71,7 @@ public class SellerTaskReportFragment extends IvyBaseFragment {
 
     }
 
+    //This method will check id to set the Header
     private RecyclerSectionItemDecoration.SectionCallback getSectionCallback(final List<TaskDataBO> taskDataBOS) {
         return new RecyclerSectionItemDecoration.SectionCallback() {
             @Override

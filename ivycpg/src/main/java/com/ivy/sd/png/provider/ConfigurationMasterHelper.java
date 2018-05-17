@@ -1355,7 +1355,10 @@ public class ConfigurationMasterHelper {
     public int TASK_OPEN;
 
     private static final String CODE_TASK_PLANNED = "TASK_RPT_PLANNED";
-    public int TASK_PLANNED ;
+    public int TASK_PLANNED= -1  ;
+
+    private static final String CODE_TASK_SELLER_RPT = "TASK_SELLER_RPT";
+    public boolean IS_SELLER_TASK_RPT;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2340,7 +2343,8 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_PRODUCT_TAGGING_VALIDATION = hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) : false;
 
         this.TASK_OPEN = hashMapHHTModuleOrder.get(CODE_TASK_OPEN) != null ? hashMapHHTModuleOrder.get(CODE_TASK_OPEN) : 0;
-        this.TASK_PLANNED = hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) != null ? hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) : 0;
+        this.TASK_PLANNED = hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) != null ? hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) : -1;
+        this.IS_SELLER_TASK_RPT = hashMapHHTModuleConfig.get(CODE_TASK_SELLER_RPT) != null ? hashMapHHTModuleConfig.get(CODE_TASK_SELLER_RPT) : false;
     }
 
     private boolean isInOutModule() {
