@@ -594,7 +594,11 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     @Override
     public void onStart() {
         super.onStart();
-
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(businessModel.mSelectedActivityName);
+            getActionBar().setElevation(0);
+        }
         hideandSeek();
         prepareAdapters();
     }

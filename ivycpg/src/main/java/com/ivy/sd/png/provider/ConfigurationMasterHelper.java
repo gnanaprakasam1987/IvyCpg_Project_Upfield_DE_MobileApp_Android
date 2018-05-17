@@ -1164,10 +1164,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_BAR_CODE = "ORDB09";
     private static final String CODE_BAR_CODE_STOCK_CHECK = "ORDB72";
     private static final String CODE_BAR_CODE_PRICE_CHECK = "ORDB73";
+    private static final String CODE_BAR_CODE_VAN_UNLOAD = "ORDB74";
 
     public boolean IS_BAR_CODE;
     public boolean IS_BAR_CODE_STOCK_CHECK;
     public boolean IS_BAR_CODE_PRICE_CHECK;
+    public boolean IS_BAR_CODE_VAN_UNLOAD;
 
     public boolean IS_QTY_INCREASE;
 
@@ -2167,6 +2169,7 @@ public class ConfigurationMasterHelper {
         }
         this.IS_BAR_CODE_STOCK_CHECK = hashMapHHTModuleConfig.get(CODE_BAR_CODE_STOCK_CHECK) != null ? hashMapHHTModuleConfig.get(CODE_BAR_CODE_STOCK_CHECK) : false;
         this.IS_BAR_CODE_PRICE_CHECK = hashMapHHTModuleConfig.get(CODE_BAR_CODE_PRICE_CHECK) != null ? hashMapHHTModuleConfig.get(CODE_BAR_CODE_PRICE_CHECK) : false;
+        this.IS_BAR_CODE_VAN_UNLOAD = hashMapHHTModuleConfig.get(CODE_BAR_CODE_VAN_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_BAR_CODE_VAN_UNLOAD) : false;
 
         this.IS_SHOW_DISCOUNTS_ORDER_SUMMARY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNTS_ORDER_SUMMMARY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNTS_ORDER_SUMMMARY) : false;
         this.IS_APPLY_BATCH_PRICE_FROM_PRODUCT = hashMapHHTModuleConfig.get(CODE_APLLY_BATCH_PRICE_FROM_PRODCUT) != null ? hashMapHHTModuleConfig.get(CODE_APLLY_BATCH_PRICE_FROM_PRODCUT) : false;
