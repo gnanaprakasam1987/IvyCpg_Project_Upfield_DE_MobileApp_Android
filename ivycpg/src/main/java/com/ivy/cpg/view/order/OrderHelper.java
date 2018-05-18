@@ -2267,7 +2267,7 @@ public class OrderHelper {
                         + retailerId);
 
             else
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' retailerid=" + retailerId);
+                c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' and retailerid=" + retailerId);
 
 
             if (c != null) {
@@ -2970,7 +2970,7 @@ public class OrderHelper {
 
         ProductMasterBO productBO = mOrderedProductList.get(mOrderedProductList.size() - 1);
         if (productBO != null) {
-            ArrayList<SchemeBO> offInvoiceSchemeList = schemeHelper.getmOffInvoiceAppliedSchemeList();
+            ArrayList<SchemeBO> offInvoiceSchemeList = schemeHelper.getOffInvoiceAppliedSchemeList();
             if (offInvoiceSchemeList != null) {
                 for (SchemeBO schemeBO : offInvoiceSchemeList) {
                     if (schemeBO.isQuantityTypeSelected()) {
@@ -2990,7 +2990,7 @@ public class OrderHelper {
         try {
             HashMap<String, Double> mFOCValueBySchemeId = new HashMap<>();
             SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
-            for (SchemeBO schemeBO : schemeHelper.getmOffInvoiceAppliedSchemeList()) {
+            for (SchemeBO schemeBO : schemeHelper.getOffInvoiceAppliedSchemeList()) {
                 if (schemeBO.isQuantityTypeSelected()) {
 
                     double FOCValue = 0;

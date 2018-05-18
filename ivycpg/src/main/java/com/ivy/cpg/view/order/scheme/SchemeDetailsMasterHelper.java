@@ -40,7 +40,7 @@ public class SchemeDetailsMasterHelper {
 
     private static final String ANY_LOGIC = "ANY"; // use ANY type scheme logic
     private static final String AND_LOGIC = "AND"; // use AND type scheme logic
-    private static final String ONLY_LOGIC = "ONLY";// use ONLY type scheme
+    public static final String ONLY_LOGIC = "ONLY";// use ONLY type scheme
 
     private static final String SCHEME_AMOUNT = "SCH_AMT";
     private static final String SCHEME_PERCENTAGE = "SCH_PER";
@@ -134,11 +134,13 @@ public class SchemeDetailsMasterHelper {
     public boolean IS_UP_SELLING;
     private int UP_SELLING_PERCENTAGE = 70;
 
+    private boolean isBatchWiseProducts;
+
 
     /**
      * Method to load all scheme related methods
      */
-    public void initializeScheme(Context mContext, int mUserId) {
+    public void initializeScheme(Context mContext, int mUserId,boolean isBatchWiseProducts) {
 
         DBUtil db;
         try {
@@ -160,6 +162,8 @@ public class SchemeDetailsMasterHelper {
             ArrayList<String> mGroupIdList = downloadValidSchemeGroups(db, retailerId);
 
             if (IS_SCHEME_ON_MASTER) {
+
+                this.isBatchWiseProducts=isBatchWiseProducts;
 
                 //  for loading highest slab parent ids
                 downloadSchemeParentDetails(db, distributorId, retailerId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
@@ -217,8 +221,8 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
 
             String sql = "SELECT hhtCode, RField FROM "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " WHERE menu_type = 'SCHEME' AND flag='1'";
+                    + DataMembers.tbl_HhtModuleMaster;
+                    //+ " WHERE menu_type = 'SCHEME' AND flag='1'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -270,7 +274,7 @@ public class SchemeDetailsMasterHelper {
      * @param retailerId retailer Id
      * @return Valid scheme group Id list
      */
-    private ArrayList<String> downloadValidSchemeGroups(DBUtil db, String retailerId) {
+    public ArrayList<String> downloadValidSchemeGroups(DBUtil db, String retailerId) {
 
         StringBuilder sb = new StringBuilder();
         ArrayList<String> mGroupIDList = new ArrayList<>();
@@ -463,7 +467,7 @@ public class SchemeDetailsMasterHelper {
         mBuyProductBoBySchemeIdWithPid = new HashMap<>();
 
 
-        clearPROMOFlag(db);
+        //clearPROMOFlag(db);
 
 
         SchemeBO schemeBO;
@@ -478,7 +482,7 @@ public class SchemeDetailsMasterHelper {
 
         sb.append(" FROM SchemeMaster SM left join schemeApplyCountMaster SAC on SM.schemeid=SAC.schemeID");
 
-        sb.append(" and ((SAC.retailerid=0 OR SAC.retailerid=" + bModel.QT(retailerId) + ")");
+        sb.append(" and ((SAC.retailerid=0 OR SAC.retailerid=" + retailerId + ")");
         sb.append(" AND (SAC.userid=0 OR SAC.userid=" + userId + ")) ");
 
         sb.append(" INNER JOIN  SchemeBuyMaster BD ON BD.SchemeID = SM.SchemeID");
@@ -695,17 +699,21 @@ public class SchemeDetailsMasterHelper {
                             schemeID + productBO.getGroupName(),
                             productBO.getGroupLogic());
 
-                    if (mFreeGroupNameListBySchemeId.get(productBO.getSchemeId()) != null) {
-                        ArrayList<String> mGroupNames = mFreeGroupNameListBySchemeId.get(productBO.getSchemeId());
-                        if (!mGroupNames.contains(productBO.getGroupName())) {
-                            mGroupNames.add(productBO.getGroupName());
-                        }
-                        mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(), mGroupNames);
+                    //Preparing list of groupName by its slab Id
+                    if(productBO.getGroupName()!=null) {
+                        if (mFreeGroupNameListBySchemeId.get(productBO.getSchemeId()) != null) {
+                            ArrayList<String> mGroupNames = mFreeGroupNameListBySchemeId.get(productBO.getSchemeId());
+                            if (!mGroupNames.contains(productBO.getGroupName())) {
+                                mGroupNames.add(productBO.getGroupName());
+                            }
+                            mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(), mGroupNames);
 
-                    } else {
-                        ArrayList<String> mGroupNames = new ArrayList<>();
-                        mGroupNames.add(productBO.getGroupName());
-                        mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(), mGroupNames);
+                        } else {
+
+                            ArrayList<String> mGroupNames = new ArrayList<>();
+                            mGroupNames.add(productBO.getGroupName());
+                            mFreeGroupNameListBySchemeId.put(productBO.getSchemeId(), mGroupNames);
+                        }
                     }
                 }
             }
@@ -783,32 +791,22 @@ public class SchemeDetailsMasterHelper {
                     }
 
                     //Preparing product Id list by parent Id
-                    if (parentId != c.getInt(1)) {
-                        if (parentId != 0) {
-
-                            mProductIdListByParentId.put(parentId, productIdList);
-                            productIdList = new ArrayList<>();
-                            productIdList.add(productId);
-                            parentId = c.getInt(1);
-
-                        } else {
-                            productIdList.add(productId);
-                            parentId = c.getInt(1);
-
-                        }
-                    } else {
-                        productIdList.add(productId);
-
+                    if( mProductIdListByParentId.get(c.getInt(1))!=null){
+                        mProductIdListByParentId.get(c.getInt(1), productIdList).add(c.getString(0));
                     }
+                    else {
+                        productIdList = new ArrayList<>();
+                        productIdList.add(c.getString(0));
+                        mProductIdListByParentId.put(c.getInt(1), productIdList);
+                    }
+
 
                 }
             }
             if (parentIdList.size() > 0) {
                 mParentIdListByProductId.put(productId, parentIdList);
             }
-            if (productIdList.size() > 0) {
-                mProductIdListByParentId.put(parentId, productIdList);
-            }
+
 
         }
         c.close();
@@ -1158,18 +1156,23 @@ public class SchemeDetailsMasterHelper {
      * @param productId Product Id
      */
     private void updatePROMOFlag(String productId) {
-        ProductMasterBO productMasterBO = bModel.productHelper.getProductMasterBOById(productId);
-        if (productMasterBO != null) {
-            productMasterBO.setIsPromo(true);
+        try {
+            ProductMasterBO productMasterBO = bModel.productHelper.getProductMasterBOById(productId);
+            if (productMasterBO != null) {
+                productMasterBO.setIsPromo(true);
 
-        } else {
-            // In case of product mapped to parent level in the hierarchy
-            for (ProductMasterBO productBO : bModel.productHelper.getProductMaster()) {
-                if (productBO.getProductID().equals(productId)
-                        || productBO.getParentHierarchy().contains("/" + productId + "/")) {
-                    productBO.setIsPromo(true);
+            } else {
+                // In case of product mapped to parent level in the hierarchy
+                for (ProductMasterBO productBO : bModel.productHelper.getProductMaster()) {
+                    if (productBO.getProductID().equals(productId)
+                            || productBO.getParentHierarchy().contains("/" + productId + "/")) {
+                        productBO.setIsPromo(true);
+                    }
                 }
             }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
         }
 
     }
@@ -1235,7 +1238,7 @@ public class SchemeDetailsMasterHelper {
 
         for (ProductMasterBO productMasterBO : mProductMasterList) {
 
-            if (bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+            if (isBatchWiseProducts) {
                 ArrayList<ProductMasterBO> batchWiseList = bModel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
 
                 if (batchWiseList != null) {
@@ -2621,9 +2624,7 @@ public class SchemeDetailsMasterHelper {
                                                 .getOutersize()) + productMasterBO.getOrderedPcsQty());
                                     }
 
-                                    schemePdtBO.setStock(stock);
                                     schemePdtBO.setQuantitySelected(0);
-
 
                                     if (bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                                         if (bModel.getResources().getBoolean(R.bool.config_is_sih_considered)) {
@@ -2669,6 +2670,24 @@ public class SchemeDetailsMasterHelper {
                     }
                 }
             }
+        }
+
+        //Updating current stock for free products of all applied scheme
+        for (SchemeBO schemeBO : mAppliedSchemeList) {
+            for(SchemeProductBO schemeProductBO:schemeBO.getFreeProducts()){
+               ProductMasterBO productMasterBO = mProductMasterBOById.get(schemeProductBO.getProductId());
+
+                if (productMasterBO != null) {
+                    int stock = productMasterBO.getSIH()
+                            - ((productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                            + (productMasterBO.getOrderedOuterQty() * productMasterBO
+                            .getOutersize()) + productMasterBO.getOrderedPcsQty());
+                    if(stock>0)
+                    schemeProductBO.setStock(stock);
+                    else schemeProductBO.setStock(0);
+                }
+            }
+
         }
 
     }
@@ -2837,7 +2856,8 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-/////////////////////////
+    /////////////////////////////////////////////////////////////
+
 
     /**
      * @param orderID - mapping to orderID
@@ -3042,7 +3062,7 @@ public class SchemeDetailsMasterHelper {
                     ProductMasterBO productBO = bModel
                             .getProductbyId(freeProductBO.getProductId());
                     if (productBO != null) {
-                        if (bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                        if (isBatchWiseProducts
                                 && bModel.configurationMasterHelper.IS_SIH_VALIDATION
                                 && bModel.configurationMasterHelper.IS_INVOICE) {
                             if (productBO.getBatchwiseProductCount() > 0) {
@@ -3120,7 +3140,6 @@ public class SchemeDetailsMasterHelper {
             } else {
                 sb.append(0 + "," + 0);
             }
-            sb.append(",'N'");
 
             sb.append("," + bModel.QT(productBO.getHsnCode()));
 
@@ -3412,7 +3431,7 @@ public class SchemeDetailsMasterHelper {
                                         + " else 0 end) where pid="
                                         + productBO.getProductID());
 
-                                if (productBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                                if (isBatchWiseProducts&&productBO.getBatchwiseProductCount() > 0 ) {
                                     updateFreeProductSihbatchwise(
                                             schemeProductBO, db);
                                 } else {
@@ -3488,7 +3507,7 @@ public class SchemeDetailsMasterHelper {
                                         + " else 0 end) where pid="
                                         + productBO.getProductID());
 
-                                if (productBO.getBatchwiseProductCount() > 0 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                                if (isBatchWiseProducts&&productBO.getBatchwiseProductCount() > 0) {
                                     updateFreeProductSihbatchwise(
                                             schemeProductBO, db);
                                 } else {
@@ -3965,7 +3984,7 @@ public class SchemeDetailsMasterHelper {
 
         if (freeProductList != null) {
             for (SchemeProductBO schemeProductBO : freeProductList) {
-                if (groupName.equals(schemeProductBO.getGroupName())) {
+                if (groupName!=null&&groupName.equals(schemeProductBO.getGroupName())) {
 
                     int stock;
                     ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
@@ -4049,7 +4068,7 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    public ArrayList<SchemeBO> getmOffInvoiceAppliedSchemeList() {
+    public ArrayList<SchemeBO> getOffInvoiceAppliedSchemeList() {
         if (mOffInvoiceAppliedSchemeList != null) {
             return mOffInvoiceAppliedSchemeList;
         }
@@ -4062,15 +4081,15 @@ public class SchemeDetailsMasterHelper {
         ArrayList<String> previousGroupNameList = null;
         ArrayList<String> schemeIdList = mSchemeIDListByParentID.get(parentId);
         if (schemeIdList != null) {
-            for (String schemeid : schemeIdList) {
+            for (String schemeId : schemeIdList) {
 
-                groupNameList = mFreeGroupNameListBySchemeId.get(schemeid);
+                groupNameList = mFreeGroupNameListBySchemeId.get(schemeId);
                 if (previousGroupNameList != null) {
                     if (!previousGroupNameList.equals(groupNameList)) {
                         return false;
                     }
                 }
-                previousGroupNameList = mFreeGroupNameListBySchemeId.get(schemeid);
+                previousGroupNameList = mFreeGroupNameListBySchemeId.get(schemeId);
             }
         }
 
@@ -4590,9 +4609,9 @@ public class SchemeDetailsMasterHelper {
                     }
 
                 } else if (schemeBO.isAmountTypeSelected()) {
-                    if (!(schemeBO.getSelectedPrecent() >= schemeBO.getMinimumPrecent()
-                            && schemeBO.getSelectedPrecent() <= schemeBO
-                            .getMaximumPrecent() && schemeBO.getSelectedPrecent() > 0)) {
+                    if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) >= Double.parseDouble(SDUtil.format(schemeBO.getMinimumAmount(), 2, 0))
+                            && Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumAmount(), 2, 0))
+                            && Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) > 0)) {
                         return false;
                     }
 

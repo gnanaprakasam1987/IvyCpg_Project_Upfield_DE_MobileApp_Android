@@ -1993,7 +1993,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                 || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
 
                                 SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(ProfileActivity.this,
-                                        bmodel.userMasterHelper.getUserMasterBO().getUserid());
+                                        bmodel.userMasterHelper.getUserMasterBO().getUserid(),bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
 
                         }
 
