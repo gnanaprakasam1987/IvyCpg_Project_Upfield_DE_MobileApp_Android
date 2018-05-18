@@ -167,6 +167,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 schemeHelper.schemeApply(bModel.productHelper.getProductMaster());//mOrderedList,mOrderedProductBOById,bModel.batchAllocationHelper.getBatchlistByProductID());
             }
             catch (Exception ex){
+                Commons.printException(ex);
                 return false;
             }
 

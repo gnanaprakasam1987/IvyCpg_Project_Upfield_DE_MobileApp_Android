@@ -1943,6 +1943,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
+                holder.cbSeparateBill = row.findViewById(R.id.cbSeparateBill);
+                holder.cbSeparateBill.setVisibility(View.GONE);
 
                 if (!"MENU_ORDER".equals(screenCode) && BModel.configurationMasterHelper.SHOW_STOCK_IN_SUMMARY) {
 
@@ -2141,7 +2143,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     && (mOrderedProductList.get(groupPosition).getSchemeProducts() != null
                     && mOrderedProductList.get(groupPosition).getSchemeProducts().size() > 0)) {
 
-                if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mOrderedProductList.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
+                if (!SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mOrderedProductList.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
                     return mOrderedProductList.get(groupPosition).getSchemeProducts().size();
                 }
             }
