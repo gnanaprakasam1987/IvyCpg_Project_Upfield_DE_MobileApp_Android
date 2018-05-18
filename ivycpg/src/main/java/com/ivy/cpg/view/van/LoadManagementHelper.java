@@ -116,7 +116,7 @@ public class LoadManagementHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT o.uid,o.date,o.start,o.end,o.isended,o.isstarted,o.starttime,o.endtime FROM Odameter o");
+                    .selectSQL("SELECT o.uid,o.date,o.start,o.end,o.isended,o.isstarted,o.starttime,o.endtime,IFNULL(o.startImage,''),IFNULL(O.endImage,'') FROM Odameter o");
             if (c != null) {
 
                 while (c.moveToNext()) {
@@ -129,6 +129,18 @@ public class LoadManagementHelper {
                     temp.setIsstarted(c.getInt(5));
                     temp.setStartdatetime(c.getString(6));
                     temp.setEndtime(c.getString(7));
+
+                    if (c.getString(8).length() > 0) {
+                        String[] imjObj = c.getString(8).split("/");
+                        if (imjObj.length > 3)
+                            temp.setStartTripImg(imjObj[3]);
+                    }
+                    if (c.getString(9).length() > 0) {
+                        String[] imjObj = c.getString(9).split("/");
+                        if (imjObj.length > 3)
+                            temp.setEndTripImg(imjObj[3]);
+                    }
+
                 }
                 c.close();
             }

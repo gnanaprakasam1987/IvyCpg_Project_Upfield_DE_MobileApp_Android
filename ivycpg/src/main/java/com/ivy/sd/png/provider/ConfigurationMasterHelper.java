@@ -2,7 +2,6 @@ package com.ivy.sd.png.provider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
@@ -1324,11 +1323,15 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORD_SR_VALUE_VALIDATE = "SR15";
     public boolean IS_ORD_SR_VALUE_VALIDATE;
 
+    private static final String CODE_SR_INDICATIVE = "SR16";
+    public boolean IS_INDICATIVE_SR;
+
+
     private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
-    public boolean IS_REALTIME_LOCATION_CAPTURE ;
+    public boolean IS_REALTIME_LOCATION_CAPTURE;
 
     private static final String CODE_UPLOAD_ATTENDANCE = "UPLOADATTENDANCE";
-    public boolean IS_UPLOAD_ATTENDANCE ;
+    public boolean IS_UPLOAD_ATTENDANCE;
 
     private static final String CODE_SHOW_DISTRIBUTOR_PROFILE = "PRO27";
     public boolean SHOW_DISTRIBUTOR_PROFILE;
@@ -1343,11 +1346,17 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SPLIT_ORDER = "SPLIT_ORDER";  //jnj project specific
     public boolean IS_ORDER_SPLIT;
 
+    private static final String CODE_PHOTODAM = "PHOTODAM";
+    public boolean SHOW_PHOTO_ODAMETER;
+
     public boolean IS_BEAT_WISE_RETAILER_MAPPING = true;
     private static final String CODE_BEAT_WISE_RETAILER = "FIELD_USER_PLAN";
 
     public boolean IS_FILTER_TAG_PRODUCTS = true;
     private static final String CODE_FILTER_TAGGED_PRODUCTS = "FILTER_TAG";
+
+    private static final String CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = "SPSTK";  //jnj project specific
+    public boolean IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2043,7 +2052,6 @@ public class ConfigurationMasterHelper {
         this.IS_SIH_VALIDATION_MASTER = hashMapHHTModuleConfig.get(CODE_SIH_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_SIH_VALIDATION) : false;
 
 
-
         this.SHOW_TAX = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
         this.SHOW_TAX_MASTER = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
 
@@ -2302,11 +2310,13 @@ public class ConfigurationMasterHelper {
 
         this.IS_ORD_SR_VALUE_VALIDATE = hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) != null ? hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) : false;
 
+        this.IS_INDICATIVE_SR = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
+
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
 
         this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
 
-        if(!isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
+        if (!isInOutModule() && this.IS_REALTIME_LOCATION_CAPTURE) {
             this.IS_REALTIME_LOCATION_CAPTURE = false;
         }
 
@@ -2324,9 +2334,13 @@ public class ConfigurationMasterHelper {
 
         this.IS_ORDER_SPLIT = hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SPLIT_ORDER) : false;
 
+        this.SHOW_PHOTO_ODAMETER = hashMapHHTModuleConfig.get(CODE_PHOTODAM) != null ? hashMapHHTModuleConfig.get(CODE_PHOTODAM) : false;
+
+
         this.IS_BEAT_WISE_RETAILER_MAPPING = hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_BEAT_WISE_RETAILER) : false;
         this.IS_FILTER_TAG_PRODUCTS = hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_FILTER_TAGGED_PRODUCTS) : false;
         this.IS_ENABLE_PRODUCT_TAGGING_VALIDATION = hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) : false;
+        this.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = hashMapHHTModuleConfig.get(CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) : false;
     }
 
     private boolean isInOutModule() {

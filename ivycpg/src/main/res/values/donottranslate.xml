@@ -129,4 +129,11 @@
     <string name="mandatory_fileds_empty">Mandatory fields empty!</string>
     <string name="vanload_stock_applied">VanLoad Stock Applied</string>
 
+    <string name="enter_account">Enter account no</string>
+    <string name="share_percent">Share %</string>
+    <string name="otp_download_url_empty">OTP Generate Url is Empty </string>
+    <string name="profile_edit_verify_email_id">Please verify Email Id</string>
+    <string name="profile_edit_verify_mobile_no">Please verify Mobile No</string>
+
+
 </resources>

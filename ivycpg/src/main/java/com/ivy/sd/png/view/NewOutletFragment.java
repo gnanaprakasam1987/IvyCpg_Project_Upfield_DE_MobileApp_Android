@@ -195,7 +195,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     private LinearLayout.LayoutParams commonsparams, commonsparams3, commonsparams4, params, params2, params3, params3new, params4new, params4aflollipop, params4, params5, params5new, params5aflollipop, params6, paramsaflollipop, params6aflollipop, params8, params9, params10, params11, params12, params13, paramsAttrib, paramsAttribSpinner;
     private LinearLayout.LayoutParams weight1, weight2, weight3, weight6, weight0, weight0wrap, weight0marginbottom, editweightmargin, weight1new;
-    private LinearLayout.LayoutParams textinputlayoutparams, textinputlayoutparams2, textinputlayoutparams3;
 
     boolean isChannel = false;
     boolean issubChannel = false;
@@ -269,13 +268,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         width = displaymetrics.widthPixels;
 
-//        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setTitle(bmodel.mSelectedActivityName);
-//            actionBar.setIcon(R.drawable.icon_new_retailer);
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//            actionBar.setDisplayShowHomeEnabled(true);
-//        }
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -812,16 +804,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         weight6.weight = 6;
         weight6.gravity = Gravity.CENTER;
-
-        textinputlayoutparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        textinputlayoutparams2 = new LinearLayout.LayoutParams(width / 4,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-
-
-        textinputlayoutparams3 = new LinearLayout.LayoutParams(width / 6,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
 
         paramsAttrib = new LinearLayout.LayoutParams(
                 0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -2211,6 +2193,14 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         return validate;
     }
 
+    /**
+     *
+     * @param mNumber
+     * @param MName
+     * @param edittexttype
+     * @param mandatory
+     * @return
+     */
     private LinearLayout getEditTextView(final int mNumber, String MName,
                                          int edittexttype, int mandatory) {
 
@@ -2897,7 +2887,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     temp = "[" + temp + "]";
                 }
                 reg = temp;
-                //data.replaceAll("\\(.*?\\)", "()"); //if you want to keep the brackets
                 InputFilter filter = new InputFilter() {
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                         for (int i = start; i < end; i++) {
