@@ -391,6 +391,7 @@ public class BusinessModel extends Application {
     private static final String PRD_ORD = "ORD";
     private static final String PRD_STK = "STK";
 
+    private String availablilityShare;
 
     public BusinessModel() {
 
@@ -691,6 +692,13 @@ public class BusinessModel extends Application {
         return orderid;
     }
 
+    public String getAvailablilityShare() {
+        return availablilityShare;
+    }
+
+    public void setAvailablilityShare(String availablilityShare) {
+        this.availablilityShare = availablilityShare;
+    }
 
     public boolean isEditStockCheck() {
         return isEditStockCheck;
@@ -4738,6 +4746,10 @@ public class BusinessModel extends Application {
                     columns = columns + ",Weightage,Score";
                 }
 
+                if (configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
+                    columns = columns + ",AvailabilityShare";
+                }
+
                 values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + ", " + QT(getRetailerMasterBO().getRetailerID()) + ", "
                         + QT(getRetailerMasterBO().getRetailerCode()) + ","
@@ -4748,8 +4760,12 @@ public class BusinessModel extends Application {
                     values = values + "," + moduleWeightage + ",0";
                 }
 
-                db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
+                if (configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
+                    values = values + "," + QT(getAvailablilityShare());
+                }
 
+                db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
+                setAvailablilityShare("");
                 if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
                     double achieved = (((double) sum / (double) 100) * moduleWeightage);
                     db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +

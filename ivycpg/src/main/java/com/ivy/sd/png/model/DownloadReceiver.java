@@ -63,11 +63,6 @@ public class DownloadReceiver extends BroadcastReceiver {
                 broadCIntent.putExtras(bundle);
                 context.sendBroadcast(broadCIntent);
                 break;
-            case MOBILE_EMAIL_VERIFY:
-                broadCIntent.setAction(ProfileEditFragment.OTPReceiver.PROCESS_RESPONSE);
-                broadCIntent.putExtras(bundle);
-                context.sendBroadcast(broadCIntent);
-                break;
             default:
                 break;
         }

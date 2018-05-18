@@ -2357,6 +2357,34 @@ SynchronizationHelper {
     }
 
 
+    public Vector<String> getOtpGenerateResponse(String headerinfo, String data,
+                                                          String appendurl) {
+        // Update Security key
+        updateAuthenticateToken();
+        StringBuilder url = new StringBuilder();
+        url.append(DataMembers.SERVER_URL);
+        url.append(appendurl);
+        try {
+            MyHttpConnectionNew http = new MyHttpConnectionNew();
+            http.create(MyHttpConnectionNew.POST, url.toString(), null);
+            http.addHeader(SECURITY_HEADER, mSecurityKey);
+            http.addParam("userInfo", headerinfo);
+            if (data != null) {
+                http.addParam("Data", data);
+            }
+            http.connectMe();
+            Vector<String> result = http.getResult();
+            if (result == null) {
+                return new Vector<>();
+            }
+            return result;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return new Vector<>();
+        }
+    }
+
+
     public static final String USER_IDENTITY = "UserIdentity";
 
     public Vector<String> getUploadResponseForgotPassword(JSONObject jsonObject,
@@ -4169,6 +4197,26 @@ SynchronizationHelper {
         }
         return docsFolder;
 
+    }
+
+    public String generateOtpUrl() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String downloadurl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select url from urldownloadmaster where mastername='OTP_GENERATION'");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        downloadurl = c.getString(0);
+                    }
+                }
+            }
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+        return downloadurl;
     }
 
     public void verifyMobileOrEmail(String value) {

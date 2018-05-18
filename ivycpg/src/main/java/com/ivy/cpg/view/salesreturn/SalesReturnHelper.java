@@ -386,6 +386,12 @@ public class SalesReturnHelper {
             bmodel.remarksHelper.getRemarksBO().setTid(
                     getSalesReturnID().substring(1, getSalesReturnID().length() - 1));
 
+            int indicativeFlag = 0;
+
+            if (bmodel.configurationMasterHelper.IS_INDICATIVE_SR)
+                indicativeFlag = 1;
+
+
             // Sales return edit mode is available for presales. So delete the
             // transaction before saving new one.
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
@@ -406,7 +412,7 @@ public class SalesReturnHelper {
             }
 
             // Preapre and save salesreturn header.
-            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,RefModuleTId,RefModule";
+            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule";
             String values = getSalesReturnID() + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
@@ -421,7 +427,8 @@ public class SalesReturnHelper {
                     + bmodel.retailerMasterBO.getDistributorId() + ","
                     + bmodel.retailerMasterBO.getDistParentId() + ","
                     + QT(getSignaturePath() != null ? getSignaturePath() : "") + ","
-                    + QT(getSignatureName());
+                    + QT(getSignatureName()) + ","
+                    + indicativeFlag;
 
             if (!orderId.equals(""))
                 values = values + "," + orderId + "," + QT(module);
