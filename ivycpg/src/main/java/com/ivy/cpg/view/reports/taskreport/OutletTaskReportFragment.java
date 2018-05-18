@@ -20,7 +20,6 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -127,9 +126,9 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
 
                     HashSet<Integer> integers = new HashSet<>();
 
-                    /**
-                     * If Date Filter is enabled then it will check for retailer
-                     * spinner matching date spinner values. if no element matched then no data will be loaded.
+                    /*
+                      If Date Filter is enabled then it will check for retailer
+                      spinner matching date spinner values. if no element matched then no data will be loaded.
                      */
 
                     if (tempBo.getRid() == 0 && dateSelectedRetailerId.size() == 0)
@@ -192,9 +191,9 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
                             }
                         }
 
-                        /**
-                         * If Date Filter is enabled then it will check for retailer
-                         * spinner matching date spinner values. if no element matched then no data will be loaded.
+                        /*
+                          If Date Filter is enabled then it will check for retailer
+                          spinner matching date spinner values. if no element matched then no data will be loaded.
                          */
 
                         if (dateSelectedRetailerId.size() == 0 && retailerSelectedId == 0) {

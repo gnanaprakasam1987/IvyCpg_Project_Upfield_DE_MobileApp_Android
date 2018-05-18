@@ -136,6 +136,8 @@ public class SellerTaskReportFragment extends IvyBaseFragment {
 
             if (items.get(position).getIsdone().equalsIgnoreCase("0"))
                 holder.imgStatus.setImageResource(R.drawable.ic_in_progress_icon);
+            else
+                holder.imgStatus.setImageResource(R.drawable.coll_tick);
 
         }
 

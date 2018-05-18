@@ -25,7 +25,7 @@ import android.widget.Toast;
 import com.ivy.cpg.view.reports.InvoiceReportFragment;
 import com.ivy.cpg.view.reports.OrderReportFragment;
 import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
-import com.ivy.cpg.view.reports.taskreport.TaskReportFragmentNew;
+import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -64,7 +64,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private CollectionReportFragment collectionReportFragment;
     private TaskExecutionReportFragment taskReportFragment;
     private EODStockReportFragment mEODStockReportFragment;
-    private TaskReportFragmentNew taskreportfragment;
+    private TaskReportFragment taskreportfragment;
     private QuestionReportFragment questionReportFragment;
     private CurrentStockBatchViewFragment currentStockBatchViewFragment;
     private DashboardReportFragment dashboardReportFragment;
@@ -196,7 +196,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         taskReportFragment.setArguments(getIntent().getExtras());
         mEODStockReportFragment = new EODStockReportFragment();
         mEODStockReportFragment.setArguments(getIntent().getExtras());
-        taskreportfragment = new TaskReportFragmentNew();
+        taskreportfragment = new TaskReportFragment();
         questionReportFragment = new QuestionReportFragment();
         currentStockBatchViewFragment = new CurrentStockBatchViewFragment();
         dashboardReportFragment = new DashboardReportFragment();

@@ -17,7 +17,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
-public class TaskReportFragmentNew extends Fragment {
+public class TaskReportFragment extends Fragment {
 
 
     private BusinessModel bmodel;

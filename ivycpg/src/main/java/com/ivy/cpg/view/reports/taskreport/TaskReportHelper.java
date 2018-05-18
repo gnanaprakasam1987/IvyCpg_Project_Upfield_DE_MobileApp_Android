@@ -23,7 +23,7 @@ public class TaskReportHelper {
     private HashMap<String,Vector<TaskDataBO>> taskDataBODate = new HashMap<>();
 
 
-    protected TaskReportHelper(Context context) {
+    private TaskReportHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context.getApplicationContext();
         setTaskDataBO(new Vector<TaskDataBO>());
@@ -46,14 +46,14 @@ public class TaskReportHelper {
         return "'" + data + "'";
     }
 
-    public Vector<TaskDataBO> loadTaskReportRetailerList() {
+    Vector<TaskDataBO> loadTaskReportRetailerList() {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
 
-        String concatQuery = "";
+        String concatQuery ;
         concatQuery = ",ifnull((Select count (TED.TaskId) from TaskExecutionDetails TED where TED.TaskId = A.taskid and TED.RetailerId = A.retailerId),0) as taskStatus ";
         String conditionStr = "";
 
@@ -86,13 +86,13 @@ public class TaskReportHelper {
 
     }
 
-    public Vector<TaskDataBO> loadTaskReport() {
+    Vector<TaskDataBO> loadTaskReport() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
 
-        String concatQuery = "";
+        String concatQuery ;
         concatQuery = ",ifnull((Select count (TED.TaskId) from TaskExecutionDetails TED where TED.TaskId = A.taskid and TED.RetailerId = A.retailerId),0) as taskStatus ";
         String conditionStr = "";
 
@@ -138,7 +138,7 @@ public class TaskReportHelper {
         return taskDataBO;
     }
 
-    public Vector<TaskDataBO> loadRetailerPlannedDate() {
+    Vector<TaskDataBO> loadRetailerPlannedDate() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
@@ -186,7 +186,7 @@ public class TaskReportHelper {
         db.createDataBase();
         db.openDataBase();
 
-        String concatQuery = "";
+        String concatQuery ;
         concatQuery = ",ifnull((Select count (TED.TaskId) from TaskExecutionDetails TED where TED.TaskId = A.taskid and TED.RetailerId = A.retailerId),0) as taskStatus ";
         String conditionStr = "";
 
