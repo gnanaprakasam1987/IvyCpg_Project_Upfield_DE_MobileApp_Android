@@ -196,6 +196,13 @@ public class TaskReportHelper {
             conditionStr = " And taskStatus = 1 ";
         }
 
+        if(bmodel.configurationMasterHelper.TASK_PLANNED == 1) {
+            if(loadSellerPlannedDate().size() == 0) {
+                db.closeDB();
+                return taskDataBOS;
+            }
+        }
+
         Cursor c = db
                 .selectSQL("select distinct A.taskid,B.taskcode,B.taskDesc,A.UserId,B.TaskOwner,B.Date," +
                         " um.username"+concatQuery+" from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid  " +
@@ -222,6 +229,34 @@ public class TaskReportHelper {
 
         return taskDataBOS;
 
+    }
+
+    private Vector<TaskDataBO> loadSellerPlannedDate() {
+
+        Vector<TaskDataBO> taskDataBO = new Vector<>();
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+
+        String condtionStr = " where userid!=0 and Date = "+QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+
+        Cursor c = db
+                .selectSQL("SELECT UserId, Date FROM RetailerClientMappingMaster "+condtionStr+" ORDER BY UserId");
+        if (c != null) {
+            TaskDataBO taskmasterbo;
+            while (c.moveToNext()) {
+                taskmasterbo = new TaskDataBO();
+                taskmasterbo.setUserId(c.getInt(0));
+                taskmasterbo.setPlannedDate(c.getString(1));
+                taskDataBO.add(taskmasterbo);
+
+            }
+            c.close();
+            db.closeDB();
+        }
+        return taskDataBO;
     }
 
 }
