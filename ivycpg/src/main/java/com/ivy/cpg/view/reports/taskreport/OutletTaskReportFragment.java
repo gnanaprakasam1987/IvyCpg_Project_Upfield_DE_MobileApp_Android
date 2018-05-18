@@ -14,12 +14,14 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.common.internal.service.Common;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,6 +39,8 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
     private HashSet<Integer> dateSelectedRetailerId;
 
     private int checkRetailerSpnr,checkDateSpinner;
+
+    private TextView tvRetailerTxt,tvDateText;
 
 
     Vector<TaskDataBO> tasklist = new Vector<>();
@@ -66,8 +70,26 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
         spinnerReportRetailer = view.findViewById(R.id.spinner_retid_taskreport);
         spinnerReportDate = view.findViewById(R.id.spinner_date_taskreport);
 
-        ((TextView) view.findViewById(R.id.select_retailer)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.select_date)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvRetailerTxt = view.findViewById(R.id.select_retailer);
+        tvDateText = view.findViewById(R.id.select_date);
+
+        try{
+            tvRetailerTxt.setText(
+                    bmodel.labelsMasterHelper.applyLabels(tvRetailerTxt.getTag())!=null
+                            ?
+                            bmodel.labelsMasterHelper.applyLabels(tvRetailerTxt.getTag()):"Retailer");
+
+            tvDateText.setText(
+                    bmodel.labelsMasterHelper.applyLabels(tvDateText.getTag())!=null
+                            ?
+                            bmodel.labelsMasterHelper.applyLabels(tvDateText.getTag()):"Date");
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+
+        tvDateText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvRetailerTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
     }
 
     private void prepareScreenData(View view) {
@@ -310,10 +332,10 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
             holder.tvCreatedBy.setText(items.get(position).getUsercreated()!=null?"Created by "+items.get(position).getUsercreated():"");
             holder.tvDate.setText("At "+items.get(position).getCreatedDate());
 
-            if (items.get(position).getIsdone().equalsIgnoreCase("0"))
-                holder.imgStatus.setImageResource(R.drawable.ic_in_progress_icon);
-            else
+            if (!items.get(position).getIsdone().equalsIgnoreCase("0"))
                 holder.imgStatus.setImageResource(R.drawable.coll_tick);
+            else
+                holder.imgStatus.setImageResource(android.R.color.transparent);
 
         }
 

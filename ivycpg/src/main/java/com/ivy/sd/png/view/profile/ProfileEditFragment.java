@@ -220,6 +220,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     private String str_mob_email = "", str_type = "";
     private boolean otpShown = false, isMobileNoVerfied = false, isEmailVerfied = false;
 
+    private int subChannelSpinnerCount = 0;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -367,19 +369,75 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
 
                 if (!tempList.isEmpty()) {
-                    NewOutletAttributeBO tempBO1;
-                    NewOutletAttributeBO tempBO2;
+
+                    int size = attributeList.size();
                     if (attributeList.size() > 0) {
-                        for (int i = 0; i < attributeList.size(); i++) {
-                            tempBO1 = attributeList.get(i);
-                            for (int j = 0; j < tempList.size(); j++) {
-                                tempBO2 = tempList.get(j);
-                                if (tempBO1.getParentId() == tempBO2.getParentId()) {
-                                    if (tempBO1.getAttrId() != tempBO2.getAttrId() && "N".equals(tempBO2.getStatus()))
-                                        attributeList.set(i, tempBO2);
+                        ArrayList<NewOutletAttributeBO> newOutletAttributeBOS = new ArrayList<>();
+                        newOutletAttributeBOS.addAll(attributeList);
+                        for (int i = 0; i < tempList.size(); i++) {
+                            for (int j = 0; j < newOutletAttributeBOS.size(); j++) {
+
+                                if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
+                                        && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
+                                        && tempList.get(i).getStatus().equalsIgnoreCase("D")) {
+
+                                    for(int k = 0;k<attributeList.size();k++)
+                                        if (attributeList.get(k).getParentId() == tempList.get(i).getParentId()
+                                                && attributeList.get(k).getAttrId() == tempList.get(i).getAttrId()
+                                                && tempList.get(i).getStatus().equalsIgnoreCase("D"))
+                                            attributeList.remove(j);
+
+                                } else {
+                                    if (j == size - 1) {
+                                        attributeList.add(tempList.get(i));
+                                    }
                                 }
+
+//                                if (attributeList.get(j).getParentId() == tempList.get(i).getParentId()
+//                                        && attributeList.get(j).getAttrId() == tempList.get(i).getAttrId()
+//                                        && tempList.get(i).getStatus().equalsIgnoreCase("D")) {
+//                                    attributeList.remove(j);
+//                                    size = size -1;
+//                                } else {
+//                                    if (j == size - 1) {
+//                                        attributeList.add(tempList.get(i));
+//                                    }
+//                                }
                             }
                         }
+
+//                        NewOutletAttributeBO tempBO1;
+//                        NewOutletAttributeBO tempBO2;
+//                        ArrayList<Integer> processedAttributes = new ArrayList<>();
+//                        if (attributeList.size() > 0) {
+//                            for (int i = 0; i < attributeList.size(); i++) {
+//                                tempBO1 = attributeList.get(i);
+//                                if (tempList.size() > 0) {
+//                                    for (int j = 0; j < tempList.size(); j++) {
+//                                        tempBO2 = tempList.get(j);
+//                                        if (tempBO1.getParentId() == tempBO2.getParentId()) {
+//                                            if (tempBO1.getAttrId() != tempBO2.getAttrId() && "N".equals(tempBO2.getStatus())) {
+//                                                attributeList.set(i, tempBO2);
+//                                                processedAttributes.add(tempBO2.getAttrId());
+//                                            }
+//                                        }
+//                                    }
+//
+//                                }
+//                            }
+//
+//                        ArrayList<NewOutletAttributeBO>temp = new ArrayList<>();
+//                        temp.addAll(attributeList);
+//                        for (int i=0;i<temp.size();i++) {
+//                            if (!processedAttributes.contains(temp.get(i).getAttrId()))
+//                                attributeList.remove(i);
+//                        }
+//
+//                        for (int i=0;i<tempList.size();i++) {
+//                            if (!processedAttributes.contains(tempList.get(i).getAttrId()))
+//                                attributeList.add(tempList.get(i));
+//                        }
+
                     } else {
                         attributeList.addAll(tempList);
                     }
@@ -2798,7 +2856,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         subchannel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 //SpinnerBO tempBo = (SpinnerBO) parent.getSelectedItem();
-                addAttributeView(1);
+
+                if(++subChannelSpinnerCount > 1)
+                    addAttributeView(1);
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -3169,10 +3229,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             } else if (isFromChannel) {
 
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null
-                        && (Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")) == ((SpinnerBO) subchannel.getSelectedItem()).getId())) {
-                    isNewChannel = false;
-                } else if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
+//                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null
+//                        && (Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")) == ((SpinnerBO) subchannel.getSelectedItem()).getId())) {
+//                    isNewChannel = false;
+//                } else if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
                     // in case of user selecting new sub channel.. then view wil be updated here..
                     isNewChannel = true;
 
@@ -3191,7 +3251,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     if (mAttributeListByChannelId != null && mAttributeListByChannelId.get(((SpinnerBO) subchannel.getSelectedItem()).getId()) != null)
                         mNewChannelAttributeList.addAll(mAttributeListByChannelId.get(((SpinnerBO) subchannel.getSelectedItem()).getId()));
 
-                }
+//                }
 
             }
 

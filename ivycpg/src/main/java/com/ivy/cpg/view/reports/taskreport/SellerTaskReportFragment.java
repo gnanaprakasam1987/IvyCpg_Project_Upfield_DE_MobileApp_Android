@@ -134,10 +134,10 @@ public class SellerTaskReportFragment extends IvyBaseFragment {
             holder.tvCreatedBy.setText(items.get(position).getUsercreated());
             holder.tvDate.setText(items.get(position).getCreatedDate());
 
-            if (items.get(position).getIsdone().equalsIgnoreCase("0"))
-                holder.imgStatus.setImageResource(R.drawable.ic_in_progress_icon);
-            else
+            if (!items.get(position).getIsdone().equalsIgnoreCase("0"))
                 holder.imgStatus.setImageResource(R.drawable.coll_tick);
+            else
+                holder.imgStatus.setImageResource(android.R.color.transparent);
 
         }
 

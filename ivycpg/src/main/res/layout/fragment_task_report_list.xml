@@ -21,9 +21,10 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dimen_10dp"
             android:layout_weight="0.3"
-            android:text="@string/Seller"
+            android:text="@string/retailer"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:tag="retailer_task_spinner"/>
 
         <Spinner
             android:id="@+id/spinner_retid_taskreport"
@@ -54,7 +55,8 @@
             android:layout_weight="0.3"
             android:text="@string/date_label"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:tag="date_task_spinner"/>
 
         <Spinner
             android:id="@+id/spinner_date_taskreport"
