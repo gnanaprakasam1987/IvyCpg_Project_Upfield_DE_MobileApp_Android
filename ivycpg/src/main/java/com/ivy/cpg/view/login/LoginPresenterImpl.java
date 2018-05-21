@@ -151,6 +151,20 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 ConfigurationMasterHelper.outDateFormat));
         edt.putString("time", SDUtil.now(SDUtil.TIME));
         edt.apply();
+
+
+    }
+
+    @Override
+    public void updateDownloadedTime() {
+
+        SharedPreferences mLastUploadAndDownloadPref = context.getSharedPreferences("lastUploadAndDownload", MODE_PRIVATE);
+        SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
+        edt.putString("downloadDate",
+                SDUtil.now(SDUtil.DATE_GLOBAL));
+        edt.putString("downloadTime", SDUtil.now(SDUtil.TIME));
+        edt.apply();
+
     }
 
     /*

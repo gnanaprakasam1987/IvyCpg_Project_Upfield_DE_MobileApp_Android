@@ -926,6 +926,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 listView.expandGroup(i);
             }
 
+            //Applying Bill wise Discount
             if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
                 //find the  range of discount by using total value
                 final double billWiseRangeDiscount = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);

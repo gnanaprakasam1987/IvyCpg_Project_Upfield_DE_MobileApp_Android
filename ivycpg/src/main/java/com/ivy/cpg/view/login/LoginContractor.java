@@ -28,6 +28,7 @@ public interface LoginContractor {
         void callInitialAuthentication(boolean isDeviceChanged);
 
         void applyLastSyncPref();
+        void updateDownloadedTime();
 
         void applyPasswordLockCountPref();
 
