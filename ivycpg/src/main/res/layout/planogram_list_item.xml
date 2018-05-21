@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/plano_save_padding"
+    android:layout_marginTop="@dimen/plano_save_padding"
+    android:orientation="vertical"
+    card_view:cardBackgroundColor="@color/font_inactive"
+    card_view:cardCornerRadius="@dimen/dimen_2dp"
+    card_view:cardElevation="@dimen/dimen_1dp"
+    card_view:cardPreventCornerOverlap="true"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/plano_card_height"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/plano_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/plano_list_header"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/plano_list_header_bottom"
+                android:paddingStart="@dimen/plano_list_header_left"
+                android:paddingTop="@dimen/plano_list_header_top"
+                android:text=""
+                android:textColor="@color/font_inactive"
+                android:textSize="@dimen/font_medium"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/image_linear_layout_new"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/product_name_twenty_five_character"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/plano_img_margin_top"
+                android:layout_marginStart="@dimen/plano_img_margin_left"
+                android:layout_marginEnd="@dimen/plano_img_margin_right"
+                android:layout_marginTop="@dimen/plano_img_margin_top"
+                android:orientation="horizontal"
+                android:padding="@dimen/list_margin">
+                <!--android:weightSum="10"-->
+
+                <ImageView
+                    android:id="@+id/planogram_image_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/plano_image_frame"
+                    android:clickable="true"
+                    android:contentDescription="@drawable/no_image_available"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/no_image_available" />
+
+                <LinearLayout
+                    android:id="@+id/ll_cameraImage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/plano_img_left"
+                    android:layout_weight="0.3"
+                    android:background="@drawable/bg_imageview_photo"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/capture_image_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:adjustViewBounds="true"
+                        android:clickable="true"
+                        android:contentDescription="@drawable/ic_photo_camera"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_photo_camera" />
+
+                    <TextView
+                        android:id="@+id/tvClicktoTakePic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/plano_save_top"
+                        android:gravity="center"
+                        android:text="@string/click_to_take_pic"
+                        android:visibility="gone"
+                        android:textColor="@color/plano_click_picture" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/cameraImage"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/plano_img_left"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/plano_image_frame"
+                    android:clickable="true"
+                    android:contentDescription="@drawable/no_image_available"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/no_image_available"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/plano_img_left"
+                    android:orientation="vertical">
+
+                    <android.support.v4.view.ViewPager
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/image_view_pager"/>
+
+                    <me.relex.circleindicator.CircleIndicator
+                        android:id="@+id/indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        card_view:ci_drawable_unselected="@color/FullBlack"/>
+
+                </RelativeLayout>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/btn_audit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/image_desc"
+                    android:gravity="center" />
+
+                <ImageView
+                    android:id="@+id/supervisor_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/login_box_bg"
+                    android:clickable="true"
+                    android:contentDescription="@string/image_desc"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/no_image_available"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/plano_img_margin_left"
+                android:layout_marginEnd="@dimen/plano_img_margin_right">
+
+                <TextView
+                    android:id="@+id/adherence_text_view"
+                    style="?textFieldStyle"
+                    android:layout_width="@dimen/textview_width"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="@string/plano_adherence"
+                    android:textColor="@color/plano_adherence"
+                    android:textSize="@dimen/font_micro_small" />
+
+                <RadioButton
+                    android:id="@+id/yes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/plano_rb_gap"
+                    android:layout_toEndOf="@id/adherence_text_view"
+                    android:button="@drawable/ic_tick_disable"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:paddingStart="@dimen/plano_rb_padding"
+                    android:paddingEnd="@dimen/plano_rb_padding"
+                    android:text="@string/yes"
+                    android:textColor="@color/plano_yes_grey"
+                    android:textSize="@dimen/font_micro_small" />
+
+                <RadioButton
+                    android:id="@+id/no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/plano_rb_gap"
+                    android:layout_toEndOf="@id/yes"
+                    android:button="@drawable/ic_cross_disable"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:paddingStart="@dimen/plano_rb_padding"
+                    android:paddingEnd="@dimen/plano_rb_padding"
+                    android:text="@string/no"
+                    android:textColor="@color/plano_yes_grey"
+                    android:textSize="@dimen/font_micro_small" />
+
+                <Spinner
+                    android:id="@+id/sp_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_toEndOf="@id/no"
+                    android:background="@android:color/transparent"
+                    android:gravity="start|center"
+                    android:overlapAnchor="false" />
+                <!--app:paddingEnd="@dimen/plano_save_padding"-->
+                <!--app:paddingStart="@dimen/plano_save_padding"-->
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>
+

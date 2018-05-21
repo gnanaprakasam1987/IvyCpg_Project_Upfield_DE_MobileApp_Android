@@ -18,7 +18,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/plano_list_left_margin"
             android:layout_marginEnd="@dimen/plano_list_right_margin"
-            android:layout_marginTop="@dimen/plano_list_top_margin"></android.support.v7.widget.RecyclerView>
+            android:layout_marginTop="@dimen/plano_list_top_margin"/>
 
         <LinearLayout
             android:id="@+id/filterscreenlayout"

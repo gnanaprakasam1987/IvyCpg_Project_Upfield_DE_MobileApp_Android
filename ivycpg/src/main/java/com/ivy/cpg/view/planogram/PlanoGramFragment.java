@@ -74,6 +74,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import me.relex.circleindicator.CircleIndicator;
+
 public class PlanoGramFragment extends IvyBaseFragment implements
         OnClickListener, BrandDialogInterface {
 
@@ -352,6 +354,13 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 for (PlanoGramBO planBo : mPlanoGramList) {
                     if (planBo.getPid() == productId) {
                         planBo.setPlanogramCameraImgName(imageFileName);
+                        if(planBo.getPlanoGramCameraImgList().size()>0)
+                            planBo.getPlanoGramCameraImgList().add(imageFileName);
+                        else{
+                            ArrayList<String> strings = new ArrayList<>();
+                            strings.add(imageFileName);
+                            planBo.setPlanoGramCameraImgList(strings);
+                        }
                     }
                 }
                 planoAdapter.notifyDataSetChanged();
@@ -911,7 +920,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.planogram_list_child, parent, false);
+                    .inflate(R.layout.planogram_list_item, parent, false);
             return new ViewHolder(v);
         }
 
@@ -932,7 +941,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 holder.adherence_reason.setVisibility(View.INVISIBLE);
             }
             holder.setImageFromServer();
-            holder.setImageFromCamera();
+//            holder.setImageFromCamera();
             holder.rdYes.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
                 @Override
@@ -1069,6 +1078,28 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     }
                 }
             });
+
+            GalleryAdapter adapter =
+                    new GalleryAdapter(getContext(),holder.planoObj.getPlanoGramCameraImgList(),photoNamePath);
+            // Set the custom click listener on the adapter directly
+            adapter.setOnItemClickListener(new ItemClickSupport() {
+                @Override
+                public void onItemClicked() {
+                    // inner view pager page was clicked
+                    Toast.makeText(getContext(), "Item clicked", Toast.LENGTH_SHORT).show();
+                }
+            });
+            // Set the adapter on the view pager
+            holder.imageViewPager.setAdapter(adapter);
+
+            holder.indicator.setViewPager(holder.imageViewPager);
+
+            if(holder.planoObj.getPlanoGramCameraImgList().size() < 2)
+                holder.indicator.setVisibility(View.GONE);
+            else
+                holder.indicator.setVisibility(View.VISIBLE);
+
+            adapter.registerDataSetObserver(holder.indicator.getDataSetObserver());
         }
 
         @Override
@@ -1094,20 +1125,24 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             Spinner adherence_reason;
             PlanoGramBO planoObj;
             LinearLayout layout_cameraImage;
+            android.support.v4.view.ViewPager imageViewPager;
+            CircleIndicator indicator;
 
             public ViewHolder(View v) {
                 super(v);
-                imgFromCamera = (ImageView) v.findViewById(R.id.capture_image_view);
-                imgFromServer = (ImageView) v.findViewById(R.id.planogram_image_view);
-                ivCamera = (ImageView) v.findViewById(R.id.cameraImage);
-                rdYes = (RadioButton) v.findViewById(R.id.yes);
-                rdNo = (RadioButton) v.findViewById(R.id.no);
-                adherence_reason = (Spinner) v.findViewById(R.id.sp_reason);
-                productName = (TextView) v.findViewById(R.id.plano_product);
-                tvAdherence = (TextView) v.findViewById(R.id.adherence_text_view);
-                text_clickToTakePicture = (TextView) v.findViewById(R.id.tvClicktoTakePic);
+                imgFromCamera = v.findViewById(R.id.capture_image_view);
+                imgFromServer = v.findViewById(R.id.planogram_image_view);
+                ivCamera =  v.findViewById(R.id.cameraImage);
+                rdYes = v.findViewById(R.id.yes);
+                rdNo =  v.findViewById(R.id.no);
+                adherence_reason = v.findViewById(R.id.sp_reason);
+                productName =  v.findViewById(R.id.plano_product);
+                tvAdherence =  v.findViewById(R.id.adherence_text_view);
+                text_clickToTakePicture =  v.findViewById(R.id.tvClicktoTakePic);
                 adherence_reason.setAdapter(reasonAdapter);
-                layout_cameraImage = (LinearLayout) v.findViewById(R.id.ll_cameraImage);
+                layout_cameraImage =  v.findViewById(R.id.ll_cameraImage);
+                imageViewPager = v.findViewById(R.id.image_view_pager);
+                indicator = v.findViewById(R.id.indicator);
             }
 
             private void setImageFromCamera() {
@@ -1348,5 +1383,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     public void onDestroy() {
         super.onDestroy();
         mPlanoGramHelper.clearInstance();
+    }
+
+    interface ItemClickSupport{
+        void onItemClicked();
     }
 }
