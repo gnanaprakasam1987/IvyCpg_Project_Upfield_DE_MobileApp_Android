@@ -34,6 +34,7 @@
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/plano_list_header_bottom"
                 android:paddingStart="@dimen/plano_list_header_left"
+                android:paddingLeft="@dimen/plano_list_header_left"
                 android:paddingTop="@dimen/plano_list_header_top"
                 android:text=""
                 android:textColor="@color/font_inactive"
@@ -43,28 +44,50 @@
             <LinearLayout
                 android:id="@+id/image_linear_layout_new"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/product_name_twenty_five_character"
+                android:layout_height="@dimen/price_product_name"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/plano_img_margin_top"
                 android:layout_marginStart="@dimen/plano_img_margin_left"
+                android:layout_marginLeft="@dimen/plano_img_margin_left"
                 android:layout_marginEnd="@dimen/plano_img_margin_right"
-                android:layout_marginTop="@dimen/plano_img_margin_top"
+                android:layout_marginRight="@dimen/plano_img_margin_right"
+                android:layout_marginTop="@dimen/plano_img_margin_right"
                 android:orientation="horizontal"
                 android:padding="@dimen/list_margin">
                 <!--android:weightSum="10"-->
 
-                <ImageView
-                    android:id="@+id/planogram_image_view"
+                <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/plano_image_frame"
-                    android:clickable="true"
-                    android:contentDescription="@drawable/no_image_available"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/no_image_available" />
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/planogram_image_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/plano_image_frame"
+                        android:clickable="true"
+                        android:contentDescription="@drawable/no_image_available"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/no_image_available"
+                        android:layout_marginBottom="25dp"/>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true">
+
+                        <View
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:background="@drawable/dot_circle_green"
+                            android:layout_centerInParent="true"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/ll_cameraImage"
@@ -84,7 +107,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:adjustViewBounds="true"
-                        android:clickable="true"
                         android:contentDescription="@drawable/ic_photo_camera"
                         android:scaleType="fitXY"
                         android:src="@drawable/ic_photo_camera" />
@@ -102,21 +124,6 @@
 
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/cameraImage"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/plano_img_left"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/plano_image_frame"
-                    android:clickable="true"
-                    android:contentDescription="@drawable/no_image_available"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/no_image_available"
-                    android:visibility="gone" />
-
                 <RelativeLayout
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="match_parent"
@@ -127,15 +134,19 @@
                     <android.support.v4.view.ViewPager
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/image_view_pager"/>
+                        android:id="@+id/image_view_pager"
+                        android:layout_marginBottom="25dp"
+                        android:background="@drawable/plano_image_frame"/>
 
                     <me.relex.circleindicator.CircleIndicator
                         android:id="@+id/indicator"
                         android:layout_width="wrap_content"
-                        android:layout_height="25dp"
+                        android:layout_height="20dp"
                         android:layout_centerHorizontal="true"
                         android:layout_alignParentBottom="true"
-                        card_view:ci_drawable_unselected="@color/FullBlack"/>
+                        android:gravity="bottom"
+                        card_view:ci_drawable="@drawable/dot_circle_green"
+                        card_view:ci_drawable_unselected="@drawable/dot_circle_blue"/>
 
                 </RelativeLayout>
 

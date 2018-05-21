@@ -1,6 +1,5 @@
 package com.ivy.cpg.view.planogram;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
@@ -12,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 
@@ -69,15 +68,16 @@ public class GalleryAdapter extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         // The object returned by instantiateItem() is a key/identifier. This method checks whether
         // the View passed to it (representing the page) is associated with that key or not.
         // It is required by a PagerAdapter to function properly.
         return view == object;
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, final int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, final int position) {
         // This method should create the page for the given position passed to it as an argument.
         // In our case, we inflate() our layout resource to create the hierarchy of view objects and then
         // set resource for the ImageView in it.
@@ -85,22 +85,33 @@ public class GalleryAdapter extends PagerAdapter {
 
         // inflate our layout resource
         View itemView = mLayoutInflater.inflate(R.layout.image_pager_layout, container, false);
+        ImageView displayImg = (ImageView) itemView.findViewById(R.id.image_item);
 
         if(mItems.size() > 0) {
             // Display the resource on the view
-            displayGalleryItem((ImageView) itemView.findViewById(R.id.image_item), mItems.get(position));
+            displayGalleryItem(displayImg, mItems.get(position));
         }
 
         // Add our inflated view to the container
         container.addView(itemView);
 
         // Detect the click events and pass them to any listeners
-        itemView.setOnClickListener(new View.OnClickListener() {
+        displayImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mOnItemClickListener) {
-                    mOnItemClickListener.onItemClicked();
+                    mOnItemClickListener.onItemClicked(photoNamePath+mItems.get(position),false);
                 }
+            }
+        });
+
+        displayImg.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (null != mOnItemClickListener) {
+                    mOnItemClickListener.onItemClicked(mItems.get(position),true);
+                }
+                return false;
             }
         });
 
@@ -109,7 +120,7 @@ public class GalleryAdapter extends PagerAdapter {
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         // Removes the page from the container for the given position. We simply removed object using removeView()
         // but could’ve also used removeViewAt() by passing it the position.
         try {
@@ -180,7 +191,7 @@ public class GalleryAdapter extends PagerAdapter {
      * @param path File path
      * @return Availability
      */
-    public boolean isImagePresent(String path) {
+    private boolean isImagePresent(String path) {
         File f = new File(path);
         return f.exists();
     }
@@ -191,7 +202,7 @@ public class GalleryAdapter extends PagerAdapter {
      * @param path File path
      * @return URI
      */
-    public Uri getUriFromFile(String path) {
+    private Uri getUriFromFile(String path) {
         File f = new File(path);
         if (Build.VERSION.SDK_INT >= 24) {
             return FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", f);

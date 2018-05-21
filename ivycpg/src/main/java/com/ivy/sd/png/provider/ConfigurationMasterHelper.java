@@ -2345,6 +2345,8 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_PRODUCT_TAGGING_VALIDATION = hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PRODUCT_TAGGING_VALIDATION) : false;
         this.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = hashMapHHTModuleConfig.get(CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) : false;
 
+        this.PLANO_IMG_COUNT = hashMapHHTModuleOrder.get(CODE_PLANO_IMG_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PLANO_IMG_COUNT) : 1;
+
     }
 
     private boolean isInOutModule() {

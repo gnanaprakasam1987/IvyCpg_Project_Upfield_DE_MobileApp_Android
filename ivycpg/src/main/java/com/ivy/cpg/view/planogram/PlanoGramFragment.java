@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -44,7 +45,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.van.LoadManagementScreen;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
@@ -116,7 +116,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_planogram, container, false);
@@ -179,14 +179,13 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
     private void initializeViews(View view) {
 
-        plano_recycler = (RecyclerView) view.findViewById(R.id.plano_recycler);
+        plano_recycler =  view.findViewById(R.id.plano_recycler);
         plano_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        Button btnSave = (Button) view.findViewById(R.id.saveButton);
+        Button btnSave =  view.findViewById(R.id.saveButton);
         btnSave.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         btnSave.setOnClickListener(this);
-        mDrawerLayout = (DrawerLayout) view.findViewById(
-                R.id.drawer_layout);
-        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        mDrawerLayout =  view.findViewById(R.id.drawer_layout);
+        FrameLayout drawer = view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
@@ -208,7 +207,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 if (actionBar != null)
                     setScreenTitle(mPlanoGramHelper.mSelectedActivityName);
 
-                getActivity().supportInvalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -216,7 +215,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 if (actionBar != null)
                     setScreenTitle(getResources().getString(R.string.filter));
 
-                getActivity().supportInvalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
@@ -285,7 +284,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("id", filterId);
     }
@@ -553,7 +552,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             return true;
         } else if (i == R.id.menu_product_filter) {
             productFilterClickedFragment();
-            getActivity().supportInvalidateOptionsMenu();
+            getActivity().invalidateOptionsMenu();
             return true;
         } else if (i == R.id.menu_remarks) {
             android.support.v4.app.FragmentManager ft = getActivity()
@@ -855,11 +854,28 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
     /**
      * Show file delete alert
-     *
-     * @param imageNameStarts Image Name
-     * @param planoGramBO     Selected PlanoGram
      */
-    public void showFileDeleteAlert(final String imageNameStarts, final PlanoGramBO planoGramBO) {
+    public void showFileDeleteAlert() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("");
+        builder.setMessage(getResources().getString(
+                R.string.planogram_image_count_reached));
+
+        builder.setPositiveButton(getResources().getString(R.string.ok),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                    }
+                });
+
+        builder.setCancelable(true);
+        mBModel.applyAlertDialogTheme(builder);
+    }
+
+
+    public void displayFileDeleteAlert(final String imageName, final ArrayList<String> stringArrayList) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("");
@@ -871,26 +887,25 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
 
 
-                        mPlanoGramHelper
-                                .deleteImageName(getContext().getApplicationContext(), planoGramBO.getPlanogramCameraImgName());
-                        mBModel.deleteFiles(
-                                HomeScreenFragment.folder.getPath(), planoGramBO.getPlanogramCameraImgName());
-                        planoGramBO.setPlanogramCameraImgName("");
+//                        mPlanoGramHelper
+//                                .deleteImageName(getContext().getApplicationContext(), planoGramBO.getPlanogramCameraImgName());
+                        mBModel.deleteFiles(photoNamePath, imageName);
 
-                        dialog.dismiss();
+                        if(stringArrayList.contains(imageName)){
+                            stringArrayList.remove(stringArrayList.indexOf(imageName));
+                        }
 
-                        Intent intent = new Intent(getActivity(),
-                                CameraActivity.class);
-                        String _path = HomeScreenFragment.photoPath + "/" + imageNameStarts;
-                        intent.putExtra(
-                                getResources().getString(R.string.quality), 40);
-                        intent.putExtra(
-                                getResources().getString(R.string.path), _path);
-                        intent.putExtra(
-                                getResources().getString(R.string.saverequired),
+                        planoAdapter.notifyDataSetChanged();
+
+                        Intent intent = new Intent(getActivity(),CameraActivity.class);
+                        String _path = HomeScreenFragment.photoPath + "/" + imageName;
+                        intent.putExtra(getResources().getString(R.string.quality), 40);
+                        intent.putExtra(getResources().getString(R.string.path), _path);
+                        intent.putExtra(getResources().getString(R.string.saverequired),
                                 false);
                         startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
+                        dialog.dismiss();
                     }
                 });
 
@@ -941,7 +956,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 holder.adherence_reason.setVisibility(View.INVISIBLE);
             }
             holder.setImageFromServer();
-//            holder.setImageFromCamera();
+            holder.setImageFromCamera();
             holder.rdYes.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
                 @Override
@@ -1024,33 +1039,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     }
                 }
             });
-            holder.ivCamera.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    photoNamePath = BusinessModel.photoPath + "/";
-                    if ("1".equals(calledBy)) {
-                        imageFileName = "VPL_" + "0" + "_" + selectedCategory + "_"
-                                + mSelectedLocationId + "_" + Commons.now(Commons.DATE) + "_img.jpg";
 
-                    } else {
-                        imageFileName = "PL_" + holder.planoObj.getPid()
-                                + "_" + selectedCategory + "_" + mSelectedLocationId + "_"
-                                + Commons.now(Commons.DATE) + "_img.jpg";
-                    }
-                    if (!"".equals(holder.planoObj.getPlanogramCameraImgName())) {
-                        String path = photoNamePath
-                                + holder.planoObj.getPlanogramCameraImgName();
-                        if (mBModel.isImagePresent(path)) {
-                            showFileDeleteAlert(imageFileName, holder.planoObj);
-                        } else {
-                            setCameraImage(holder.planoObj);
-                        }
-                    } else {
-                        productId = holder.planoObj.getPid();
-                        setCameraImage(holder.planoObj);
-                    }
-                }
-            });
             holder.layout_cameraImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1062,16 +1051,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     } else {
                         imageFileName = "PL_" + holder.planoObj.getPid()
                                 + "_" + selectedCategory + "_" + mSelectedLocationId + "_"
-                                + Commons.now(Commons.DATE) + "_img.jpg";
+                                + Commons.now(Commons.DATE_TIME) + "_img.jpg";
                     }
-                    if (!"".equals(holder.planoObj.getPlanogramCameraImgName())) {
-                        String path = photoNamePath
-                                + holder.planoObj.getPlanogramCameraImgName();
-                        if (mBModel.isImagePresent(path)) {
-                            showFileDeleteAlert(imageFileName, holder.planoObj);
-                        } else {
-                            setCameraImage(holder.planoObj);
-                        }
+
+                    if (holder.planoObj.getPlanoGramCameraImgList().size() > 0
+                            && mBModel.configurationMasterHelper.PLANO_IMG_COUNT == holder.planoObj.getPlanoGramCameraImgList().size()) {
+                        showFileDeleteAlert();
                     } else {
                         productId = holder.planoObj.getPid();
                         setCameraImage(holder.planoObj);
@@ -1080,13 +1065,22 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             });
 
             GalleryAdapter adapter =
-                    new GalleryAdapter(getContext(),holder.planoObj.getPlanoGramCameraImgList(),photoNamePath);
+                    new GalleryAdapter(getActivity(),holder.planoObj.getPlanoGramCameraImgList(),photoNamePath);
             // Set the custom click listener on the adapter directly
             adapter.setOnItemClickListener(new ItemClickSupport() {
                 @Override
-                public void onItemClicked() {
+                public void onItemClicked(String path,boolean isDelete) {
                     // inner view pager page was clicked
-                    Toast.makeText(getContext(), "Item clicked", Toast.LENGTH_SHORT).show();
+                    try{
+                        if(!isDelete) {
+                            File imgFile = new File(path);
+                            openImage(imgFile.getAbsolutePath());
+                        }else{
+                            displayFileDeleteAlert(path,holder.planoObj.getPlanoGramCameraImgList());
+                        }
+                    }catch(Exception e){
+                        Commons.printException(e);
+                    }
                 }
             });
             // Set the adapter on the view pager
@@ -1094,10 +1088,10 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
             holder.indicator.setViewPager(holder.imageViewPager);
 
-            if(holder.planoObj.getPlanoGramCameraImgList().size() < 2)
-                holder.indicator.setVisibility(View.GONE);
-            else
-                holder.indicator.setVisibility(View.VISIBLE);
+//            if(holder.planoObj.getPlanoGramCameraImgList().size() < 2)
+//                holder.indicator.setVisibility(View.GONE);
+//            else
+//                holder.indicator.setVisibility(View.VISIBLE);
 
             adapter.registerDataSetObserver(holder.indicator.getDataSetObserver());
         }
@@ -1116,7 +1110,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
             ImageView imgFromServer;
             ImageView imgFromCamera;
-            ImageView ivCamera;
             RadioButton rdYes;
             RadioButton rdNo;
             TextView productName;
@@ -1132,7 +1125,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 super(v);
                 imgFromCamera = v.findViewById(R.id.capture_image_view);
                 imgFromServer = v.findViewById(R.id.planogram_image_view);
-                ivCamera =  v.findViewById(R.id.cameraImage);
                 rdYes = v.findViewById(R.id.yes);
                 rdNo =  v.findViewById(R.id.no);
                 adherence_reason = v.findViewById(R.id.sp_reason);
@@ -1146,28 +1138,28 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             }
 
             private void setImageFromCamera() {
-                if (!"".equals(planoObj.getPlanogramCameraImgName())) {
-                    String path = photoNamePath
-                            + planoObj.getPlanogramCameraImgName();
-                    if (mBModel.isImagePresent(path)) {
-                        Uri uri = mBModel.getUriFromFile(path);
-                        ivCamera.setVisibility(View.VISIBLE);
-                        ivCamera.invalidate();
-                        ivCamera.setImageURI(uri);
-                        layout_cameraImage.setVisibility(View.GONE);
+                if (planoObj.getPlanoGramCameraImgList().size() > 0) {
+
+                    boolean isImgPresent = false;
+
+                    for(int i=0;i<planoObj.getPlanoGramCameraImgList().size();i++){
+                        String path = photoNamePath
+                                + planoObj.getPlanoGramCameraImgList().get(i);
+                        if (mBModel.isImagePresent(path)) {
+                            isImgPresent = true;
+                        }
+                    }
+
+                    if (isImgPresent) {
                         rdYes.setEnabled(true);
                         rdYes.setChecked(false);
                         rdNo.setEnabled(true);
                         rdNo.setChecked(false);
                     } else {
-                        imgFromCamera
-                                .setImageResource(R.drawable.ic_photo_camera);
                         rdYes.setEnabled(false);
                         rdNo.setEnabled(false);
                     }
                 } else {
-                    imgFromCamera
-                            .setImageResource(R.drawable.ic_photo_camera);
                     rdYes.setEnabled(false);
                     rdNo.setEnabled(false);
                 }
@@ -1386,6 +1378,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     }
 
     interface ItemClickSupport{
-        void onItemClicked();
+        void onItemClicked(String path,boolean isDelete);
     }
 }
