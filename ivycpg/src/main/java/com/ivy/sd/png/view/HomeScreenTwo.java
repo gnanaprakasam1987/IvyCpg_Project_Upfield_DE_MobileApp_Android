@@ -3631,7 +3631,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 schemeHelper.downloadDisplayScheme(getApplicationContext());
                 schemeHelper.downloadDisplaySchemeSlabs(getApplicationContext());
-                if (schemeHelper.getmDisplaySchemeMasterList().size() > 0) {
+                if (schemeHelper.getDisplaySchemeMasterList().size() > 0) {
                     Intent i = new Intent(this,
                             DisplaySchemeActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
