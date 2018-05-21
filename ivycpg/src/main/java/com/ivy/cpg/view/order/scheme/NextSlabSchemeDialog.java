@@ -12,11 +12,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 
 public class NextSlabSchemeDialog extends Dialog {
 
@@ -60,13 +58,13 @@ public class NextSlabSchemeDialog extends Dialog {
 
 		@Override
 		public int getCount() {
-            return schemeHelper.getmSchemePromotion()
+            return schemeHelper.getSchemePromotion()
                     .size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-            return schemeHelper.getmSchemePromotion().get(
+            return schemeHelper.getSchemePromotion().get(
                     position);
 		}
 
@@ -75,7 +73,7 @@ public class NextSlabSchemeDialog extends Dialog {
 
 			final ViewHolder holder;
             SchemeBO schemeBO = schemeHelper
-                    .getmSchemePromotion().get(position);
+                    .getSchemePromotion().get(position);
 			View row = convertView;
 			if (row == null) {
 				LayoutInflater inflater = getLayoutInflater();

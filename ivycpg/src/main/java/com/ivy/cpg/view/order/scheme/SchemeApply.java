@@ -53,8 +53,6 @@ import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Vector;
 
 /**
  * This screen will show list of schemes applied for current order from that user can select/Reject/Modify
@@ -458,8 +456,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                 holder.schemeBO.getSubChannelId(),
                                 holder.productBO.getProductID(),
                                 holder.schemeBO.getQuantity());
-                        if (schemeHelper.getmSchemePromotion() != null
-                                && schemeHelper.getmSchemePromotion()
+                        if (schemeHelper.getSchemePromotion() != null
+                                && schemeHelper.getSchemePromotion()
                                 .size() > 0) {
                             if (mSchemePromDialog == null) {
                                 mSchemePromDialog = new NextSlabSchemeDialog(
