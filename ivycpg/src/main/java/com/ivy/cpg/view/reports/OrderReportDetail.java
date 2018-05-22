@@ -248,18 +248,17 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             View row = convertView;
             if (row == null) {
                 LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(R.layout.row_invoice_report_detail,
+                row = inflater.inflate(R.layout.row_orderdetail_report,
                         parent, false);
                 holder = new ViewHolder();
-                holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME1);
                 holder.tvwpsname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-                holder.tvwqty = (TextView) row.findViewById(R.id.PRDPCSQTY);
-                holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDQTY);
+                holder.tvpcsqty = (TextView) row.findViewById(R.id.PRDQTY);
+                holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDCASEQTY);
                 holder.tvwval = (TextView) row.findViewById(R.id.PRDVAL);
-                holder.tvBatchNo = (TextView) row.findViewById(R.id.batch_no);
-                holder.outerQty = (TextView) row
-                        .findViewById(R.id.outerCaseQty);
+                holder.tvBatchNo = (TextView) row.findViewById(R.id.prdbatchid);
+                holder.outerQty = (TextView) row.findViewById(R.id.PRDOUTERQTY);
 
                 row.setOnClickListener(new OnClickListener() {
 
@@ -273,7 +272,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                     holder.tvcaseqty.setVisibility(View.GONE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    holder.tvwqty.setVisibility(View.GONE);
+                    holder.tvpcsqty.setVisibility(View.GONE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
                     holder.outerQty.setVisibility(View.GONE);
@@ -281,6 +280,10 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
                 if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
                     holder.tvBatchNo.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP)
+                    holder.tvwval.setVisibility(View.GONE);
+
 
                 row.setTag(holder);
             } else {
@@ -300,13 +303,13 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
             if (productBO.getUomDescription().equals("CASE")) {
                 holder.tvcaseqty.setText(productBO.getQuantitySelected() + "");
-                holder.tvwqty.setText(0 + "");
+                holder.tvpcsqty.setText(0 + "");
             } else if (productBO.getUomDescription().equals("OUTER")) {
                 holder.outerQty.setText(productBO.getQuantitySelected() + "");
-                holder.tvwqty.setText(0 + "");
+                holder.tvpcsqty.setText(0 + "");
                 holder.tvcaseqty.setText(0 + "");
             } else {
-                holder.tvwqty.setText(productBO.getQuantitySelected() + "");
+                holder.tvpcsqty.setText(productBO.getQuantitySelected() + "");
                 holder.tvcaseqty.setText(0 + "");
                 holder.outerQty.setText(0 + "");
             }
@@ -356,17 +359,16 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             View row = convertView;
             if (row == null) {
                 LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(R.layout.row_invoice_report_detail,
+                row = inflater.inflate(R.layout.row_orderdetail_report,
                         parent, false);
                 holder = new ViewHolder();
-                holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME1);
                 holder.tvwpsname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                holder.tvBatchNo = (TextView) row.findViewById(R.id.batch_no);
-                holder.tvwqty = (TextView) row.findViewById(R.id.PRDPCSQTY);
-                holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDQTY);
+                holder.tvBatchNo = (TextView) row.findViewById(R.id.prdbatchid);
+                holder.tvpcsqty = (TextView) row.findViewById(R.id.PRDQTY);
+                holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDCASEQTY);
                 holder.tvwval = (TextView) row.findViewById(R.id.PRDVAL);
-                holder.outerQty = (TextView) row
-                        .findViewById(R.id.outerCaseQty);
+                holder.outerQty = (TextView) row.findViewById(R.id.PRDOUTERQTY);
                 holder.tvWeight = (TextView) row.findViewById(R.id.prdweight);
                 row.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
@@ -379,7 +381,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                     holder.tvcaseqty.setVisibility(View.GONE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    holder.tvwqty.setVisibility(View.GONE);
+                    holder.tvpcsqty.setVisibility(View.GONE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
                     holder.outerQty.setVisibility(View.GONE);
@@ -389,6 +391,9 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
                 if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
                     holder.tvBatchNo.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP)
+                    holder.tvwval.setVisibility(View.GONE);
 
                 row.setTag(holder);
             } else {
@@ -404,7 +409,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             holder.tvwpsname.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.tvwpsname.setText(holder.productBO.getProductShortName());
             holder.productName = holder.productBO.getProductName();
-            holder.tvwqty.setText(holder.productBO.getPQty() + "");
+            holder.tvpcsqty.setText(holder.productBO.getPQty() + "");
             holder.tvcaseqty.setText(holder.productBO.getCQty() + "");
             holder.outerQty.setText(holder.productBO.getOuterOrderedCaseQty() + "");
             int totalQty = holder.productBO.getTotalQty();
@@ -440,7 +445,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         String productName;
         TextView tvwpsname;
         TextView tvBatchNo;
-        TextView tvwval, tvwqty, tvcaseqty, outerQty;
+        TextView tvwval, tvpcsqty, tvcaseqty, outerQty;
         TextView tvWeight;
     }
 
