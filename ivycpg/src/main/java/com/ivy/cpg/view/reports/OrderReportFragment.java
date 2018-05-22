@@ -384,6 +384,11 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 holder.focusbrandlabel = (TextView) row.findViewById(R.id.focusbrand_label);
                 holder.mustselllabel = (TextView) row.findViewById(R.id.mustsell_label);
 
+                holder.tv_tax_value = (TextView) row.findViewById(R.id.tv_tax_amount);
+                holder.tv_discount_amt = (TextView) row.findViewById(R.id.tv_disc_amt);
+                holder.taxTitle = (TextView) row.findViewById(R.id.tv_tax_title);
+                holder.discTitle = (TextView) row.findViewById(R.id.tv_disc_title);
+
                 if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                     holder.tvWeight.setVisibility(View.GONE);
                     holder.label_weight.setVisibility(View.GONE);
@@ -395,12 +400,28 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 }
 
                 if (!businessModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT) {
-                    holder.tvMustSellCount.setVisibility(View.GONE);
+                    holder.text_mustSellCount.setVisibility(View.GONE);
                     holder.mustselllabel.setVisibility(View.GONE);
                 }
 
+                if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+                    holder.label_PreORPost.setVisibility(View.GONE);
+                    holder.tvwDist.setVisibility(View.GONE);
+                }
+
+
                 if (!businessModel.configurationMasterHelper.SHOW_DELIVERY_DATE_IN_ORDER_RPT)
                     holder.text_delivery_date.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.IS_SHOW_TAX_IN_REPORT) {
+                    holder.tv_tax_value.setVisibility(View.GONE);
+                    holder.taxTitle.setVisibility(View.GONE);
+                }
+
+                if (!businessModel.configurationMasterHelper.IS_SHOW_DISCOUNT_IN_REPORT) {
+                    holder.tv_discount_amt.setVisibility(View.GONE);
+                    holder.discTitle.setVisibility(View.GONE);
+                }
 
 
                 row.setTag(holder);
@@ -408,11 +429,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 holder = (ViewHolder) row.getTag();
             }
 
-            if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
-                holder.label_PreORPost.setVisibility(View.GONE);
-                holder.tvwDist.setVisibility(View.GONE);
 
-            }
 
             holder.text_retailerName.setText(reportBO.getRetailerName());
             holder.text_retailerName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -428,6 +445,10 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             holder.label_PreORPost.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.label_focusBrand.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.label_MustSell.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tv_tax_value.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tv_discount_amt.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.taxTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.discTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
             try {
@@ -504,6 +525,18 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                     String value = getResources().getString(R.string.delivery_date_label) + " : " + delivery_date;
                     holder.text_delivery_date.setText(value);
                 }
+
+                if (businessModel.labelsMasterHelper.applyLabels(holder.taxTitle.getTag()) != null)
+                    holder.taxTitle.setText(businessModel.labelsMasterHelper.applyLabels(holder.taxTitle.getTag()));
+
+                holder.tv_tax_value.setText(businessModel.formatValue(reportBO.getTaxValue()));
+
+
+                if (businessModel.labelsMasterHelper.applyLabels(holder.discTitle.getTag()) != null)
+                    holder.discTitle.setText(businessModel.labelsMasterHelper.applyLabels(holder.discTitle.getTag()));
+
+                holder.tv_discount_amt.setText(businessModel.formatValue(reportBO.getDiscountValue()));
+
             } catch (Exception e) {
                 Commons.printException(e);
             }
@@ -516,7 +549,8 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
     class ViewHolder {
         TextView text_retailerName, label_orderNumber;
         TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount;
-        TextView text_delivery_date;
+        TextView text_delivery_date, tv_tax_value, tv_discount_amt, taxTitle, discTitle;
+        ;
         TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel;
 
     }

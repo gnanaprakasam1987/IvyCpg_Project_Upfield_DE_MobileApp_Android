@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1290"
+    android:versionCode="1300"
     android:versionName="2.129.0.1587">
 
     <supports-screens
@@ -428,7 +428,7 @@
             android:theme="@style/PreferencesTheme" />
         <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
         <activity
-            android:name="com.ivy.sd.png.view.SchemeApply"
+            android:name="com.ivy.cpg.view.order.scheme.SchemeApply"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnSummery"

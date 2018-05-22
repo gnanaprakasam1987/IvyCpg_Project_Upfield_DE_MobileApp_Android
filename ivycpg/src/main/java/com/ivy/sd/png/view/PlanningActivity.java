@@ -200,12 +200,14 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
      */
     private BeatMasterBO getTodayBeat() {
         try {
-            int size = bmodel.beatMasterHealper.getBeatMaster().size();
-            for (int i = 0; i < size; i++) {
-                BeatMasterBO b = bmodel.beatMasterHealper.getBeatMaster()
-                        .get(i);
-                if (b.getToday() == 1)
-                    return b;
+            if(bmodel.beatMasterHealper.getBeatMaster()!=null) {
+                int size = bmodel.beatMasterHealper.getBeatMaster().size();
+                for (int i = 0; i < size; i++) {
+                    BeatMasterBO b = bmodel.beatMasterHealper.getBeatMaster()
+                            .get(i);
+                    if (b.getToday() == 1)
+                        return b;
+                }
             }
 
         } catch (Exception e) {

@@ -117,7 +117,10 @@ public class ReportHelper {
             Cursor c = db
                     .selectSQL("SELECT OrderHeader.OrderID ,OrderHeader.RetailerID , RetailerMaster.RetailerName,"
                             + "OrderHeader.OrderValue,OrderHeader.LinesPerCall ,RetailerMaster.sbd_dist_stock,RetailerMaster.sbd_dist_achieve,"
-                            + "OrderHeader.upload,OrderHeader.totalweight,OrderHeader.FocusPackLines,OrderHeader.MSPLines,OrderHeader.is_vansales FROM OrderHeader INNER JOIN RetailerMaster "
+                            + "OrderHeader.upload,OrderHeader.totalweight,OrderHeader.FocusPackLines,OrderHeader.MSPLines,OrderHeader.is_vansales,"
+                            + "IFNULL((select sum(taxValue) from OrderTaxDetails where OrderId = OrderHeader.OrderID ),0) as taxValue,"
+                            + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue "
+                            + "FROM OrderHeader INNER JOIN RetailerMaster "
                             + "ON OrderHeader.RetailerId = RetailerMaster.RetailerID INNER JOIN OrderDetail OD ON  OD.OrderID = OrderHeader.OrderID where OrderHeader.upload!='X' "
                             + "GROUP BY OrderHeader.OrderID ,OrderHeader.RetailerID,RetailerMaster.RetailerName,"
                             + "OrderHeader.OrderValue, OrderHeader.LinesPerCall");
@@ -138,6 +141,8 @@ public class ReportHelper {
                     orderreport.setFocusBrandCount(c.getInt(9));
                     orderreport.setMustSellCount(c.getInt(10));
                     orderreport.setIsVanSeller(c.getInt(11));
+                    orderreport.setTaxValue(c.getDouble(c.getColumnIndex("taxValue")));
+                    orderreport.setDiscountValue(c.getDouble(c.getColumnIndex("discountValue")));
                     reportordbooking.add(orderreport);
                 }
                 c.close();
@@ -3194,10 +3199,10 @@ public class ReportHelper {
      * if free product available for selected invoice,this method use to retrieve data from
      * scheme detail table and display in invoice detai report screen
      *
-     * @param invoiceno - selected invoice
+     * @param id - selected invoice
      * @return - free product list
      */
-    public ArrayList<SchemeProductBO> getSchemeProductDetails(String invoiceno) {
+    public ArrayList<SchemeProductBO> getSchemeProductDetails(String id,boolean isInvoice) {
         ArrayList<SchemeProductBO> freeProductList = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -3209,7 +3214,10 @@ public class ReportHelper {
         sb.append("from SchemeFreeProductDetail SFP ");
         sb.append("inner join Productmaster PM on SFP.freeproductid=PM.pid ");
         sb.append("left join Batchmaster BM on SFP.freeproductid=BM.pid and SFP.batchid=BM.batchid ");
-        sb.append("where invoiceid=" + bmodel.QT(invoiceno));
+        if(isInvoice)
+            sb.append("where invoiceid=" + bmodel.QT(id));
+        else // Order Report
+            sb.append("where OrderID=" + bmodel.QT(id));
         Cursor c = db.selectSQL(sb.toString());
         if (c != null) {
             SchemeProductBO schemeProductBO;
@@ -3410,7 +3418,7 @@ public class ReportHelper {
             Cursor filterCur = db
                     .selectSQL("SELECT Distinct IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0) FROM ProductLevel CF " +
                             "LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  (Select RField from HhtModuleMaster " +
-                            "where hhtCode = 'RPT03' and flag = 1) " +
+                            "where hhtCode = 'RPT03' and flag = 1 and ForSwitchSeller = 0) " +
                             "LEFT JOIN ProductLevel PL3 ON PL3.LevelId = (Select LevelId from ProductLevel " +
                             "where Sequence = (Select max(Sequence) from ProductLevel))");
 
@@ -3439,7 +3447,7 @@ public class ReportHelper {
                         + ".ParentId = A" + (i - 1) + ".PID";
 
             sql = sql + " left join OrderDetail OD on OD.ProductID = A" + loopEnd + ".pid WHERE A1.PLid IN " +
-                    "(Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1) and "
+                    "(Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1 and ForSwitchSeller = 0) and "
                     + " A" + loopEnd + ".pid = OD.ProductId"
                     + " group by A" + loopEnd + ".pid ORDER BY "
                     + " A" + loopEnd + ".rowid";
@@ -3501,7 +3509,7 @@ public class ReportHelper {
             db.openDataBase();
 
             String sql = "select distinct PM.PID,PM.PName," +
-                    "PM.ParentId,PM.PLid,PL.LevelName from ProductMaster PM left join ProductLevel PL on PL.LevelId = PM.PLid where PM.PLid = (Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1)";
+                    "PM.ParentId,PM.PLid,PL.LevelName from ProductMaster PM left join ProductLevel PL on PL.LevelId = PM.PLid where PM.PLid = (Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1 and and ForSwitchSeller = 0)";
 
             Cursor c = db.selectSQL(sql);
             Vector<LevelBO> levelBOVector = new Vector<>();
@@ -3545,7 +3553,7 @@ public class ReportHelper {
         db.createDataBase();
         db.openDataBase();
         Cursor c = db
-                .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1");
+                .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1 and ForSwitchSeller = 0");
         if (c != null) {
             while (c.moveToNext()) {
                 isAmazonUpload = true;

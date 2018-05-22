@@ -958,8 +958,8 @@ SynchronizationHelper {
         dataMissedTable = "";
         int hhtCount = 0, standList = 0;
         try {
-            c = db.selectSQL("select  count(hhtCode) from "
-                    + DataMembers.tbl_HhtModuleMaster);
+            c = db.selectSQL("select count(hhtCode) from "
+                    + DataMembers.tbl_HhtModuleMaster+" Where ForSwitchSeller = 0");
             if (c != null) {
                 if (c.moveToNext()) {
                     hhtCount = c.getInt(0);

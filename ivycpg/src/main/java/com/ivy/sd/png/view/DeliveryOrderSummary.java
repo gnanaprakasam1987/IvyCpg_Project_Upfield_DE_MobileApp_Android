@@ -475,13 +475,13 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                     if (productBO
                                                             .getBatchwiseProductCount() > 0) {
                                                         totalpriceDiscount = schemeHelper
-                                                                .updateSchemeProducts(
+                                                                .calculateDiscountValue(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrice(),
                                                                         "SCH_PR", true);
                                                     } else {
                                                         totalpriceDiscount = schemeHelper
-                                                                .updateSchemeProducts(
+                                                                .calculateDiscountValue(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrice(),
                                                                         "SCH_PR", false);
@@ -489,7 +489,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
                                                 } else {
                                                     totalpriceDiscount = schemeHelper
-                                                            .updateSchemeProducts(
+                                                            .calculateDiscountValue(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrice(),
                                                                     "SCH_PR", false);
@@ -517,13 +517,13 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                     if (productBO
                                                             .getBatchwiseProductCount() > 0) {
                                                         totalPercentageDiscount = schemeHelper
-                                                                .updateSchemeProducts(
+                                                                .calculateDiscountValue(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrecent(),
                                                                         "SCH_PER", true);
                                                     } else {
                                                         totalPercentageDiscount = schemeHelper
-                                                                .updateSchemeProducts(
+                                                                .calculateDiscountValue(
                                                                         productBO,
                                                                         schemeBO.getSelectedPrecent(),
                                                                         "SCH_PER",
@@ -531,7 +531,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                     }
                                                 } else {
                                                     totalPercentageDiscount = schemeHelper
-                                                            .updateSchemeProducts(
+                                                            .calculateDiscountValue(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrecent(),
                                                                     "SCH_PER", false);

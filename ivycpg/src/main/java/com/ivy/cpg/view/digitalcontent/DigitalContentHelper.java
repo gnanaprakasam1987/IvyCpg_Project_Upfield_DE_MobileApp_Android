@@ -2,7 +2,6 @@ package com.ivy.cpg.view.digitalcontent;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DigitalContentBO;

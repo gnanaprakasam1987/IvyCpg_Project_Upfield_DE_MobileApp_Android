@@ -11,11 +11,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -31,7 +34,6 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         OnClickListener {
 
     private Button back;
-    private ListView listView;
     private TextView text_total, totalLines, tv_lbl_total_lines;
 
     private BusinessModel businessModel;
@@ -42,6 +44,8 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
     private String TotalLines;
 
     private ArrayList<OrderReportBO> list;
+    private ArrayList<SchemeProductBO> schemeProductList = new ArrayList<SchemeProductBO>();
+    private ExpandableListView elv;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,13 +118,13 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                     + obj.getRetailerName();
             outletName.setText(value);
 
-            listView = (ListView) findViewById(R.id.lvwplistorddet);
-            listView.setCacheColorHint(0);
+
+            elv = (ExpandableListView) findViewById(R.id.elv);
 
             setSupportActionBar(toolbar);
             // Set title to toolbar
             if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(
+                setScreenTitle(
                         getResources().getString(R.string.order_report_details));
             //     getSupportActionBar().setIcon(R.drawable.icon_order);
             // Used to on / off the back arrow icon
@@ -130,6 +134,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             // Used to hide the app logo icon from actionbar
             // getSupportActionBar().setDisplayUseLogoEnabled(false);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
             if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
                 findViewById(R.id.cqty).setVisibility(View.GONE);
@@ -156,6 +161,17 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             else
                 list = businessModel.reportHelper
                         .downloadPVSOrderreportdetail(orderID);
+
+            //scheme products
+            schemeProductList = businessModel.reportHelper.getSchemeProductDetails(orderID, false);
+
+            if (schemeProductList != null && list != null) {
+                if (list.get(list.size() - 1).getSchemeProducts() != null)
+                    list.get(list.size() - 1).getSchemeProducts().addAll(schemeProductList);
+                else
+                    list.get(list.size() - 1).setSchemeProducts(schemeProductList);
+            }
+
             updateOrderDetailsGrid();
         } catch (Exception e) {
             Commons.printException(e);
@@ -200,111 +216,237 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                 0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
-        MyAdapter mSchedule = new MyAdapter(list);
-        listView.setAdapter(mSchedule);
+
+        elv.setAdapter(new MyAdapter());
+        int orderedProductCount = list.size();
+        for (int i = 0; i < orderedProductCount; i++) {
+            ((ExpandableListView) elv).expandGroup(i);
+        }
     }
 
 
-    int pos;
 
-    class MyAdapter extends ArrayAdapter<OrderReportBO> {
-        ArrayList<OrderReportBO> items;
+    class MyAdapter extends BaseExpandableListAdapter {
 
-        MyAdapter(ArrayList<OrderReportBO> items) {
-            super(OrderReportDetail.this, R.layout.row_orderdetail_report,
-                    items);
-            this.items = items;
+        @Override
+        public Object getChild(int arg0, int arg1) {
+            // TODO Auto-generated method stub
+            return null;
         }
 
-        @NonNull
-        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public View getChildView(int groupPosition, int childPosition,
+                                 boolean isLastChild, View convertView, ViewGroup parent) {
             final ViewHolder holder;
-            pos = position;
-            businessModel = (BusinessModel) getApplicationContext();
 
-            businessModel.setContext(OrderReportDetail.this);
-            OrderReportBO orderReportBO = items
-                    .get(pos);
             View row = convertView;
-            businessModel = (BusinessModel) getApplicationContext();
-
             if (row == null) {
                 LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(R.layout.row_orderdetail_report, parent,
-                        false);
+                row = inflater.inflate(R.layout.row_orderdetail_report,
+                        parent, false);
                 holder = new ViewHolder();
-                holder.productShortName = (TextView) row.findViewById(R.id.PRDNAME1);
-                holder.productShortName.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+                holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME1);
+                holder.tvwpsname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-                holder.text_value = (TextView) row.findViewById(R.id.PRDVAL);
-                holder.text_quantity = (TextView) row.findViewById(R.id.PRDQTY);
-                holder.text_caseQuantity = (TextView) row.findViewById(R.id.PRDCASEQTY);
-                holder.outerQty = (TextView) row
-                        .findViewById(R.id.outerCaseQty);
-                holder.text_batchId = (TextView) row.findViewById(R.id.prdbatchid);
-                holder.tvWeight = (TextView) row.findViewById(R.id.prdweight);
-
-                if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    holder.text_caseQuantity.setVisibility(View.GONE);
-                if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    holder.text_quantity.setVisibility(View.GONE);
-                if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
-                    holder.outerQty.setVisibility(View.GONE);
-                if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                    holder.tvWeight.setVisibility(View.GONE);
-                if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
-                    holder.text_value.setVisibility(View.GONE);
-                }
-                if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
-                    holder.text_batchId.setVisibility(View.GONE);
+                holder.tvpcsqty = (TextView) row.findViewById(R.id.PRDQTY);
+                holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDCASEQTY);
+                holder.tvwval = (TextView) row.findViewById(R.id.PRDVAL);
+                holder.tvBatchNo = (TextView) row.findViewById(R.id.prdbatchid);
+                holder.outerQty = (TextView) row.findViewById(R.id.PRDOUTERQTY);
 
                 row.setOnClickListener(new OnClickListener() {
-                    public void onClick(View v) {
-                        //   productName.setText(holder.productName);
 
+                    public void onClick(View v) {
+                       // productName.setText(holder.productName);
                     }
                 });
+
+                // On/Off order case and pce
+                if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    holder.tvcaseqty.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    holder.tvpcsqty.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
+                    holder.outerQty.setVisibility(View.GONE);
+
+
+                if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
+                    holder.tvBatchNo.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP)
+                    holder.tvwval.setVisibility(View.GONE);
+
 
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
             }
 
+            SchemeProductBO productBO = list.get(groupPosition)
+                    .getSchemeProducts().get(childPosition);
 
-            holder.productShortName.setText(orderReportBO.getProductShortName());
-            holder.productShortName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.text_batchId.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvwpsname.setText(productBO.getProductName());
 
-            holder.productName = orderReportBO.getProductName();
-            holder.text_caseQuantity.setText(String.valueOf(orderReportBO.getCQty()));
-            holder.text_quantity.setText(String.valueOf(orderReportBO.getPQty()));
-            holder.text_value.setText(businessModel.formatValue((orderReportBO.getTot())));
-            holder.outerQty.setText(String.valueOf(orderReportBO.getOuterOrderedCaseQty()));
+            holder.productName = productBO.getProductFullName();
             if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                if (orderReportBO.getBatchNo() != null && !orderReportBO.getBatchNo().equals("null")) {
-                    String value = "Batch No : " + orderReportBO.getBatchNo();
-                    holder.text_batchId.setText(value);
-                } else holder.text_batchId.setText("");
+                if (productBO.getBatchId() != null && !productBO.getBatchId().equals("null"))
+                    holder.tvBatchNo.setText(productBO.getBatchId());
             }
 
-            holder.productShortName.setTextColor(holder.outerQty.getTextColors());
-            if (orderReportBO.getIsCrown() == 1)
-                holder.productShortName.setTextColor(Color.BLUE);
-            else if (orderReportBO.getIsBottleReturn() == 1)
-                holder.productShortName.setTextColor(Color.GREEN);
-            String weight = "WGT :" + orderReportBO.getTotalQty() * orderReportBO.getWeight();
-            holder.tvWeight.setText(weight);
-            holder.tvWeight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (productBO.getUomDescription().equals("CASE")) {
+                holder.tvcaseqty.setText(productBO.getQuantitySelected() + "");
+                holder.tvpcsqty.setText(0 + "");
+            } else if (productBO.getUomDescription().equals("OUTER")) {
+                holder.outerQty.setText(productBO.getQuantitySelected() + "");
+                holder.tvpcsqty.setText(0 + "");
+                holder.tvcaseqty.setText(0 + "");
+            } else {
+                holder.tvpcsqty.setText(productBO.getQuantitySelected() + "");
+                holder.tvcaseqty.setText(0 + "");
+                holder.outerQty.setText(0 + "");
+            }
 
-
-            return (row);
+            holder.tvwval.setText("0");
+            return row;
         }
+
+        @Override
+        public int getChildrenCount(int groupPosition) {
+
+
+            if (list.get(groupPosition).getSchemeProducts() != null) {
+                return list.get(groupPosition)
+                        .getSchemeProducts().size();
+
+            }
+
+            return 0;
+        }
+
+        @Override
+        public Object getGroup(int groupPosition) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public int getGroupCount() {
+            if (list == null)
+                return 0;
+
+            return list.size();
+        }
+
+        @Override
+        public long getGroupId(int groupPosition) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public View getGroupView(int groupPosition, boolean isExpanded,
+                                 View convertView, ViewGroup parent) {
+            final ViewHolder holder;
+
+            View row = convertView;
+            if (row == null) {
+                LayoutInflater inflater = getLayoutInflater();
+                row = inflater.inflate(R.layout.row_orderdetail_report,
+                        parent, false);
+                holder = new ViewHolder();
+                holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME1);
+                holder.tvwpsname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+                holder.tvBatchNo = (TextView) row.findViewById(R.id.prdbatchid);
+                holder.tvpcsqty = (TextView) row.findViewById(R.id.PRDQTY);
+                holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDCASEQTY);
+                holder.tvwval = (TextView) row.findViewById(R.id.PRDVAL);
+                holder.outerQty = (TextView) row.findViewById(R.id.PRDOUTERQTY);
+                holder.tvWeight = (TextView) row.findViewById(R.id.prdweight);
+                row.setOnClickListener(new OnClickListener() {
+                    public void onClick(View v) {
+                        //productName.setText(holder.productName);
+                    }
+                });
+
+                // On/Off order case and pce
+                if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    holder.tvcaseqty.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    holder.tvpcsqty.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
+                    holder.outerQty.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
+                    holder.tvWeight.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
+                    holder.tvBatchNo.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP)
+                    holder.tvwval.setVisibility(View.GONE);
+
+                row.setTag(holder);
+            } else {
+                holder = (ViewHolder) row.getTag();
+            }
+
+            holder.productBO = list.get(groupPosition);
+            if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+                if (holder.productBO.getBatchNo() != null && !holder.productBO.getBatchNo().equals("null"))
+                    holder.tvBatchNo.setText("12345" + holder.productBO.getBatchNo() + " , ");
+            }
+            holder.tvBatchNo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvwpsname.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvwpsname.setText(holder.productBO.getProductShortName());
+            holder.productName = holder.productBO.getProductName();
+            holder.tvpcsqty.setText(holder.productBO.getPQty() + "");
+            holder.tvcaseqty.setText(holder.productBO.getCQty() + "");
+            holder.outerQty.setText(holder.productBO.getOuterOrderedCaseQty() + "");
+            int totalQty = holder.productBO.getTotalQty();
+            holder.tvWeight.setText(" WGT : " + totalQty * holder.productBO.getWeight() + "");
+            holder.tvWeight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            /**
+             * This line wise total may be wrong is amount discount appied via
+             * scheme
+             **/
+            holder.tvwval.setText(businessModel.formatValue(holder.productBO
+                    .getTot()) + "");
+
+            return row;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
     }
 
     class ViewHolder {
+        private OrderReportBO productBO;
+        String ref;// product id
         String productName;
-        TextView productShortName;
-        TextView text_value, text_quantity, text_caseQuantity, outerQty, text_batchId, tvWeight;
+        TextView tvwpsname;
+        TextView tvBatchNo;
+        TextView tvwval, tvpcsqty, tvcaseqty, outerQty;
+        TextView tvWeight;
     }
 
     public void onClick(View comp) {
