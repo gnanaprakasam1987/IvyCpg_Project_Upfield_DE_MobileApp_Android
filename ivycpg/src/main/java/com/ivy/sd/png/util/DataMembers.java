@@ -630,6 +630,9 @@ public class DataMembers {
     public static final String tbl_retailer_kpi_modified = "RetailerKPIModifiedDetail";
     public static final String tbl_retailer_kpi_modified_cols = "KPIId,KPITypeLovId,KPIParamLovId,Target";
 
+    public static final String tbl_planogram_image_detail = "PlanogramImageDetails";
+    public static final String tbl_planogram_image_detail_cols = "Tid,PId,imageName,mappingid,imagePath";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -803,6 +806,8 @@ public class DataMembers {
         uploadColumn.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
         uploadColumn.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
         uploadColumn.put(tbl_retailer_kpi_modified, tbl_retailer_kpi_modified_cols);
+
+        uploadColumn.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
 
     }
 
@@ -1001,6 +1006,8 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_NonFieldActivity, tbl_NonFieldActivity_cols);
         uploadColumnWithOutRetailer.put(tbl_retailer_kpi_modified, tbl_retailer_kpi_modified_cols);
+
+        uploadColumnWithOutRetailer.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();

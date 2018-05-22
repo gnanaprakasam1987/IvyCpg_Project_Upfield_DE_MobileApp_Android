@@ -21,10 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
+ *
  * Custom pager adapter which will manually create the pages needed for showing an slide pages gallery.
- * </p>
- * Created by Ionut Negru on 13/06/16.
+ *
  */
 public class GalleryAdapter extends PagerAdapter {
 
@@ -132,7 +131,6 @@ public class GalleryAdapter extends PagerAdapter {
             // Remove any resources used by this view
             unbindDrawables((View) object);
             // Invalidate the object
-            object = null;
         } catch (Exception e) {
             Log.w(TAG, "destroyItem: failed to destroy item and clear it's used resources", e);
         }

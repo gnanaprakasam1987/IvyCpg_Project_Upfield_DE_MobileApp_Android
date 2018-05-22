@@ -331,12 +331,18 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     public void onClick(View v) {
 
         if (v.getId() == R.id.saveButton) {
-            if (checkDataForSave())
+            int statusVal = checkDataForSave();
+            if (statusVal == 2)
                 nextButtonClick();
             else {
-                mBModel.showAlert(
+                if(statusVal == 0)
+                    mBModel.showAlert(
                         getResources().getString(
                                 R.string.please_fill_adherence), 0);
+                else if(statusVal == 1)
+                    mBModel.showAlert(
+                            getResources().getString(
+                                    R.string.planogram_image_count_not_reached), 0);
             }
         }
     }
@@ -352,7 +358,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             if (resultCode == 1) {
                 for (PlanoGramBO planBo : mPlanoGramList) {
                     if (planBo.getPid() == productId) {
-                        planBo.setPlanogramCameraImgName(imageFileName);
+//                        planBo.setPlanogramCameraImgName(imageFileName);
                         if(planBo.getPlanoGramCameraImgList().size()>0)
                             planBo.getPlanoGramCameraImgList().add(imageFileName);
                         else{
@@ -742,12 +748,21 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         return true;
     }
 
-    private boolean checkDataForSave() {
+    /**
+     *check whether the adherence is filled or not
+     * check whether image is captured or not
+     * 0 - no adherence found
+     * 1 - no image found
+     * 2 - Success
+     */
+    private int checkDataForSave() {
         for (final PlanoGramBO planoGramBO : mPlanoGramList) {
-            if (planoGramBO.getAdherence() != null)
-                return true;
+            if (planoGramBO.getAdherence() == null)
+                return 0;
+            else if(planoGramBO.getPlanoGramCameraImgList()!=null && planoGramBO.getPlanoGramCameraImgList().size() == 0)
+                return 1;
         }
-        return false;
+        return 2;
     }
 
     /**
@@ -855,27 +870,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     /**
      * Show file delete alert
      */
-    public void showFileDeleteAlert() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("");
-        builder.setMessage(getResources().getString(
-                R.string.planogram_image_count_reached));
-
-        builder.setPositiveButton(getResources().getString(R.string.ok),
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-
-                    }
-                });
-
-        builder.setCancelable(true);
-        mBModel.applyAlertDialogTheme(builder);
-    }
-
-
-    public void displayFileDeleteAlert(final String imageName, final ArrayList<String> stringArrayList) {
+    public void showFileDeleteAlert(final String imageName, final ArrayList<String> stringArrayList) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("");
@@ -886,13 +881,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-
-//                        mPlanoGramHelper
-//                                .deleteImageName(getContext().getApplicationContext(), planoGramBO.getPlanogramCameraImgName());
                         mBModel.deleteFiles(photoNamePath, imageName);
 
                         if(stringArrayList.contains(imageName)){
                             stringArrayList.remove(stringArrayList.indexOf(imageName));
+                            mPlanoGramHelper
+                                    .deleteImageName(getContext().getApplicationContext(), imageName);
                         }
 
                         planoAdapter.notifyDataSetChanged();
@@ -932,7 +926,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.planogram_list_item, parent, false);
@@ -940,7 +934,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             photoNamePath = BusinessModel.photoPath + "/";
             holder.planoObj = items.get(position);
             holder.productName.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -1056,7 +1050,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
                     if (holder.planoObj.getPlanoGramCameraImgList().size() > 0
                             && mBModel.configurationMasterHelper.PLANO_IMG_COUNT == holder.planoObj.getPlanoGramCameraImgList().size()) {
-                        showFileDeleteAlert();
+                        mBModel.showAlert(
+                                getResources().getString(
+                                        R.string.planogram_image_count_reached), 0);
                     } else {
                         productId = holder.planoObj.getPid();
                         setCameraImage(holder.planoObj);
@@ -1076,7 +1072,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                             File imgFile = new File(path);
                             openImage(imgFile.getAbsolutePath());
                         }else{
-                            displayFileDeleteAlert(path,holder.planoObj.getPlanoGramCameraImgList());
+                            showFileDeleteAlert(path,holder.planoObj.getPlanoGramCameraImgList());
                         }
                     }catch(Exception e){
                         Commons.printException(e);
