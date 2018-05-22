@@ -373,30 +373,31 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                 attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
 
-                if (!tempList.isEmpty()) {
+                try {
+                    if (!tempList.isEmpty()) {
 
-                    int size = attributeList.size();
-                    if (attributeList.size() > 0) {
-                        ArrayList<NewOutletAttributeBO> newOutletAttributeBOS = new ArrayList<>();
-                        newOutletAttributeBOS.addAll(attributeList);
-                        for (int i = 0; i < tempList.size(); i++) {
-                            for (int j = 0; j < size; j++) {
+                        int size = attributeList.size();
+                        if (attributeList.size() > 0) {
+                            ArrayList<NewOutletAttributeBO> newOutletAttributeBOS = new ArrayList<>();
+                            newOutletAttributeBOS.addAll(attributeList);
+                            for (int i = 0; i < tempList.size(); i++) {
+                                for (int j = 0; j < size; j++) {
 
-                                if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
-                                        && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
-                                        && tempList.get(i).getStatus().equalsIgnoreCase("D")) {
+                                    if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
+                                            && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
+                                            && tempList.get(i).getStatus().equalsIgnoreCase("D")) {
 
-                                    for(int k = 0;k<attributeList.size();k++)
-                                        if (attributeList.get(k).getParentId() == tempList.get(i).getParentId()
-                                                && attributeList.get(k).getAttrId() == tempList.get(i).getAttrId()
-                                                && tempList.get(i).getStatus().equalsIgnoreCase("D"))
-                                            attributeList.remove(j);
+                                        for (int k = 0; k < attributeList.size(); k++)
+                                            if (attributeList.get(k).getParentId() == tempList.get(i).getParentId()
+                                                    && attributeList.get(k).getAttrId() == tempList.get(i).getAttrId()
+                                                    && tempList.get(i).getStatus().equalsIgnoreCase("D"))
+                                                attributeList.remove(j);
 
-                                } else {
-                                    if (j == size - 1) {
-                                        attributeList.add(tempList.get(i));
+                                    } else {
+                                        if (j == size - 1) {
+                                            attributeList.add(tempList.get(i));
+                                        }
                                     }
-                                }
 
 //                                if (attributeList.get(j).getParentId() == tempList.get(i).getParentId()
 //                                        && attributeList.get(j).getAttrId() == tempList.get(i).getAttrId()
@@ -408,11 +409,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 //                                        attributeList.add(tempList.get(i));
 //                                    }
 //                                }
+                                }
                             }
+                        } else {
+                            attributeList.addAll(tempList);
                         }
-                    } else {
-                        attributeList.addAll(tempList);
                     }
+                }catch(Exception e){
+                    Commons.printException(e);
                 }
 
 
@@ -1532,11 +1536,22 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
         LinearLayout secondlayout = new LinearLayout(getActivity());
         //secondlayout.addView(editText[mNumber], params);
-        if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78")) {
-
+        if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78") ||
+                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE81") ||
+                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE61")) {
             //regex
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
+        }
+
+        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE81")) {
+            addLengthFilter(profileConfig.get(mNumber).getRegex());
+            //checkPANRegex(mNumber);
+        }
+
+        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE61")) {
+            addLengthFilter(profileConfig.get(mNumber).getRegex());
+            //checkGSTRegex(mNumber);
         }
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE02") ||
                 profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE03") ||
@@ -1578,7 +1593,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
             else
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
             editText[mNumber].setHint(MName);
@@ -2251,9 +2266,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         InputFilter fil = new InputFilter.LengthFilter(25);
         String str = regex;
         if (str != null && !str.isEmpty()) {
-            if (str.contains("{") && str.contains("}")) {
+            if (str.contains("<") && str.contains(">")) {
 
-                String len = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
+                String len = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
                 if (len != null && !len.isEmpty()) {
                     if (len.contains(",")) {
                         try {
@@ -2273,21 +2288,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     private void checkRegex(String regex) {
         final String reg;
-        String temp;
+
         try {
             if (regex != null && !regex.isEmpty()) {
                 if (regex.contains("<") && regex.contains(">")) {
-                    temp = regex.replaceAll("\\<.*?\\>", "");
+                    reg = regex.replaceAll("\\<.*?\\>", "");
                 } else {
-                    temp = regex;
+                    reg = regex;
                 }
-                String[] a = temp.split("\\{");
-                if (a.length >= 2)
-                    temp = "[" + a[0] + "]{" + a[1];
-                else {
-                    temp = "[" + temp + "]";
-                }
-                reg = temp;
+
                 //data.replaceAll("\\(.*?\\)", "()"); //if you want to keep the brackets
                 InputFilter filter = new InputFilter() {
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -2298,6 +2307,113 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 Log.d("", "invalid");
                                 return "";
                             }
+                        }
+                        return null;
+                    }
+                };
+                inputFilters.add(filter);
+
+            }
+        } catch (Exception ex) {
+            Commons.printException("regex check", ex);
+        }
+    }
+
+
+    private void checkPANRegex(final int number) {
+        final String reg;
+
+        try {
+            String regex = profileConfig.get(number).getRegex();
+            if (regex != null && !regex.isEmpty()) {
+                if (regex.contains("<") && regex.contains(">")) {
+                    reg = regex.replaceAll("\\<.*?\\>", "");
+                } else {
+                    reg = regex;
+                }
+
+                InputFilter filter = new InputFilter() {
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            String enteredValue = dest + String.valueOf(source.charAt(i));
+                            String panNumber = "AAAAA1111A";
+
+                            String checkValid = enteredValue + "" + panNumber.substring(dest.length() + 1, panNumber.length());
+
+                            if (!Pattern.compile(reg).matcher(checkValid).matches()) {
+                                Toast.makeText(getActivity(),
+                                        getResources().getString(R.string.enter_valid) + " " + profileConfig.get(number).getMenuName(), Toast.LENGTH_SHORT)
+                                        .show();
+                                Log.d("", "invalid");
+                                return "";
+                            }
+
+                        }
+                        return null;
+                    }
+                };
+                inputFilters.add(filter);
+
+            }
+        } catch (Exception ex) {
+            Commons.printException("regex check", ex);
+        }
+    }
+
+    private void checkGSTRegex(final int number) {
+        final String reg;
+
+        try {
+            String regex = profileConfig.get(number).getRegex();
+
+
+            if (regex != null && !regex.isEmpty()) {
+                if (regex.contains("<") && regex.contains(">")) {
+                    reg = regex.replaceAll("\\<.*?\\>", "");
+                } else {
+                    reg = regex;
+                }
+
+                InputFilter filter = new InputFilter() {
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            String enteredValue = dest + String.valueOf(source.charAt(i));
+                            String gstNumber = "11AAAAA1111A1A1";
+
+                            String panNumber = "";
+
+                            for (int index = 0; index < profileConfig.size(); index++) {
+                                if (profileConfig.get(index).getConfigCode().equalsIgnoreCase("PAN_NUMBER")) {
+                                    panNumber = editText[index].getText().toString();
+                                }
+                            }
+
+                            boolean isValidPan = false;
+                            if (enteredValue.length() > 2 && panNumber != null && panNumber.length() == 10) {
+                                String panSubString = "";
+
+                                if (enteredValue.length() < 13) {
+                                    panSubString = enteredValue.substring(2, enteredValue.length());
+                                } else {
+                                    panSubString = enteredValue.substring(2, 12);
+                                }
+
+                                if (panNumber.substring(0, panSubString.length()).equals(panSubString)) {
+                                    isValidPan = true;
+                                }
+                            } else {
+                                isValidPan = true;
+                            }
+                            String checkValid = enteredValue + "" + gstNumber.substring(dest.length() + 1, gstNumber.length());
+                            if (!Pattern.compile(reg).matcher(checkValid).matches() || !isValidPan) {
+                                Log.d("", "invalid");
+
+                                Toast.makeText(getActivity(),
+                                        getResources().getString(R.string.enter_valid) + " " + profileConfig.get(number).getMenuName(), Toast.LENGTH_SHORT)
+                                        .show();
+                                return "";
+                            }
+
                         }
                         return null;
                     }
@@ -4230,6 +4346,68 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         break;
                     }
 
+                }else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("PROFILE81")
+                        && profileConfig.get(i).getModule_Order() == 1) {
+
+                    if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
+                            !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
+
+                        int length = editText[i].getText().toString().trim().length();
+
+                        if (length > 0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    profileConfig.get(i).getMenuName() + " Length Must Be " + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        } else if (length > 0 && !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        }
+                    }
+
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("PROFILE61")
+                        && profileConfig.get(i).getModule_Order() == 1) {
+
+                    if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
+                            !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex()) ||
+                            !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+
+
+                        int length = editText[i].getText().toString().trim().length();
+
+                        if (length > 0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    profileConfig.get(i).getMenuName() + " Length Must Be " + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        } else if (length > 0 && !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex())) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        } else if (length > 0 && !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        }
+
+                    }
+
                 }
 
 
@@ -4241,6 +4419,36 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         return validate;
     }
 
+
+    public boolean isValidRegx(CharSequence target, String regx) {
+
+        if (regx.equals("")) {
+            return true;
+        }
+        String value = regx.replaceAll("\\<.*?\\>", "");
+        return !TextUtils.isEmpty(target) && Pattern.compile(value).matcher(target).matches();
+    }
+
+
+    public boolean isValidGSTINWithPAN(CharSequence target) {
+
+        for (int index = 0; index < profileConfig.size(); index++) {
+            if (profileConfig.get(index).getConfigCode()
+                    .equalsIgnoreCase("PROFILE81")) {
+
+                String panNumber = editText[index].getText().toString().trim();
+                if (panNumber.length() > 0) {
+                    if (target.subSequence(2, target.length() - 3).equals(panNumber))
+                        return true;
+                    else
+                        return false;
+                } else
+                    return true;
+            }
+        }
+
+        return true;
+    }
 
     //handled only for single selection products
     private ArrayList<StandardListBO> computeSelectedPriorityList() {

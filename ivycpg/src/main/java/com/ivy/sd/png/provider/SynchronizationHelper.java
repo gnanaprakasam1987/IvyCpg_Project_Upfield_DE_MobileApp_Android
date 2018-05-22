@@ -1206,8 +1206,12 @@ SynchronizationHelper {
                 JSONArray value = (JSONArray) first.get(j);
 
                 String firstValue = value.toString();
-                firstValue = firstValue.replaceAll("\\[", "").replaceAll("\\]",
-                        "");
+
+                /*if(!tablename.equalsIgnoreCase("HhtMenuMaster"))
+                    firstValue = firstValue.replaceAll("\\[", "").replaceAll("\\]",
+                            "");*/
+
+                firstValue=firstValue.substring(1,firstValue.length()-1);
 
                 firstValue = firstValue.replace("\\/", "/");
 

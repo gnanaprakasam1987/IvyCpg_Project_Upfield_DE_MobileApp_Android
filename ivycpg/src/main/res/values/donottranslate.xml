@@ -135,5 +135,7 @@
     <string name="profile_edit_verify_email_id">Please verify Email Id</string>
     <string name="profile_edit_verify_mobile_no">Please verify Mobile No</string>
 
+    <string name="enter_valid">Enter valid </string>
+
 
 </resources>
