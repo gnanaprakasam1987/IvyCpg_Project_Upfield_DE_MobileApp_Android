@@ -1,10 +1,12 @@
 package com.ivy.sd.png.view;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -37,6 +39,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.stockcheck.StockCheckFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -640,13 +645,22 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            if (resultCode == RESULT_OK) {
-                strBarCodeSearch = data.getStringExtra("SCAN_RESULT");
-                Toast.makeText(ToolBarwithFilter.this,
-                        "Barcode value :--->  " + strBarCodeSearch,
-                        Toast.LENGTH_SHORT).show();
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(ToolBarwithFilter.this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                strBarCodeSearch = result.getContents();
+                if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
+                    bmodel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));
+                    mEdt_searchproductName.setText(strBarCodeSearch);
+                    if (viewFlipper.getDisplayedChild() == 0) {
+                        viewFlipper.showNext();
+                    }
+                }
             }
+        } else {
+            Toast.makeText(ToolBarwithFilter.this, getResources().getString(R.string.no_match_found), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1075,6 +1089,25 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                 mSelectedFilterMap.put("General", GENERAL);
             }
             FiveFilterFragment();
+            return true;
+        } else if (i == R.id.menu_barcode) {
+            ToolBarwithFilter.this.checkAndRequestPermissionAtRunTime(2);
+            int permissionStatus = ContextCompat.checkSelfPermission(ToolBarwithFilter.this,
+                    Manifest.permission.CAMERA);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                IntentIntegrator integrator = new IntentIntegrator(ToolBarwithFilter.this) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        ToolBarwithFilter.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                    }
+                };
+                integrator.setBeepEnabled(false).initiateScan();
+            } else {
+                Toast.makeText(ToolBarwithFilter.this,
+                        getResources().getString(R.string.permission_enable_msg)
+                                + " " + getResources().getString(R.string.permission_camera)
+                        , Toast.LENGTH_LONG).show();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);

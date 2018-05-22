@@ -9,141 +9,239 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent">
 
-        <android.support.v7.widget.CardView
+        <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/footer"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/list_margin">
+            android:layout_height="fill_parent"
+            android:layout_above="@id/footer"
+            android:layout_below="@+id/hscrl_spl_filter"
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:id="@+id/filterscreenlayout"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/search_edt_margin_bottom"
+                android:layout_marginEnd="@dimen/search_edt_margin_left_n_right"
+                android:layout_marginStart="@dimen/search_edt_margin_left_n_right"
+                android:layout_marginTop="@dimen/dimen_10dp"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/ll_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/list_header_height"
-                    android:layout_alignParentTop="true"
-                    android:background="@color/list_title_bg_color"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="@dimen/list_padding_left_n_right"
-                    android:paddingEnd="@dimen/list_padding_left_n_right"
-                    android:weightSum="10">
-
-
-                    <TextView
-                        android:id="@+id/sku"
-                        style="?attr/customListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:gravity="start"
-                        android:text="@string/product_name" />
-
-
-                    <TextView
-                        android:id="@+id/changed"
-                        style="?attr/customListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/changed"
-                        android:visibility="gone" />
-
+                <ViewFlipper
+                    android:id="@+id/view_flipper"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:padding="2dp">
 
                     <LinearLayout
-                        android:id="@+id/ll_cur_price"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:orientation="vertical">
+                        android:background="@android:color/white">
 
                         <TextView
-                            android:id="@+id/curtext"
-                            style="?attr/customListTitle"
-                            android:layout_width="match_parent"
+                            android:id="@+id/productName"
+                            android:layout_width="0dip"
                             android:layout_height="wrap_content"
-                            android:text="@string/currprice" />
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/list_margin"
+                            android:layout_marginStart="@dimen/list_margin"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:maxLines="1"
+                            android:textColor="?attr/primarycolor"
+                            android:textSize="@dimen/font_nano_small" />
+
+                        <Button
+                            android:id="@+id/btn_search"
+                            android:layout_width="@dimen/filter_icon"
+                            android:layout_height="@dimen/filter_icon"
+                            android:layout_gravity="center_vertical"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/ic_vector_search" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/white">
+
+                        <Button
+                            android:id="@+id/btn_filter_popup"
+                            android:layout_width="@dimen/filter_icon"
+                            android:layout_height="@dimen/filter_icon"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/btn_productfilter_" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/white"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:id="@+id/ca_price"
-                                style="?attr/customListTitleSecondary"
-                                android:layout_width="@dimen/dimen_0dp"
-                                android:layout_height="wrap_content"
+                            <EditText
+                                android:id="@+id/edt_searchproductName"
+                                android:layout_width="0dip"
+                                android:layout_height="@dimen/filter_icon"
+                                android:layout_gravity="center_vertical"
                                 android:layout_weight="1"
-                                android:tag="item_case"
-                                android:text="@string/item_case" />
+                                android:background="@android:color/transparent"
+                                android:gravity="start|center_vertical"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:text=""
+                                android:textColor="@color/GRAY_TEXT"
+                                android:textSize="@dimen/font_nano_small" />
 
-                            <TextView
-                                android:id="@+id/oo_price"
-                                style="?attr/customListTitleSecondary"
-                                android:layout_width="@dimen/dimen_0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:tag="item_outer"
-                                android:text="@string/item_outer" />
-
-                            <TextView
-                                android:id="@+id/pc_price"
-                                style="?attr/customListTitleSecondary"
-                                android:layout_width="@dimen/dimen_0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:tag="item_piece"
-                                android:text="@string/item_piece" />
+                            <Button
+                                android:id="@+id/btn_clear"
+                                android:layout_width="@dimen/filter_icon"
+                                android:layout_height="@dimen/filter_icon"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/ic_vector_action_clear_grey" />
                         </LinearLayout>
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/compliance"
-                        style="?attr/customListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:gravity="start|center"
-                        android:tag="compliance"
-                        android:text="@string/compliance"
-                        android:visibility="gone" />
+                </ViewFlipper>
+            </RelativeLayout>
 
-                </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/footer"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/list_margin">
 
-                <ListView
-                    android:id="@+id/list"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_above="@+id/ll_keypad"
-                    android:layout_below="@+id/ll_header"
-                    android:cacheColorHint="@null"
-                    android:divider="@color/GRAY"
-                    android:dividerHeight="0.5dp"
-                    android:fitsSystemWindows="true"
-                    android:scrollbarAlwaysDrawHorizontalTrack="true"
-                    android:scrollbarAlwaysDrawVerticalTrack="true" />
-
-                <LinearLayout
-                    android:id="@+id/ll_keypad"
-                    android:layout_width="fill_parent"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:orientation="vertical">
 
-                    <include
-                        android:id="@+id/keypad"
-                        layout="@layout/keypad"
+                    <LinearLayout
+                        android:id="@+id/ll_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/list_header_height"
+                        android:layout_alignParentTop="true"
+                        android:background="@color/list_title_bg_color"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingEnd="@dimen/list_padding_left_n_right"
+                        android:paddingStart="@dimen/list_padding_left_n_right"
+                        android:weightSum="10">
+
+
+                        <TextView
+                            android:id="@+id/sku"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:gravity="start"
+                            android:text="@string/product_name" />
+
+
+                        <TextView
+                            android:id="@+id/changed"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/changed"
+                            android:visibility="gone" />
+
+
+                        <LinearLayout
+                            android:id="@+id/ll_cur_price"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/curtext"
+                                style="?attr/customListTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/currprice" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/ca_price"
+                                    style="?attr/customListTitleSecondary"
+                                    android:layout_width="@dimen/dimen_0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:tag="item_case"
+                                    android:text="@string/item_case" />
+
+                                <TextView
+                                    android:id="@+id/oo_price"
+                                    style="?attr/customListTitleSecondary"
+                                    android:layout_width="@dimen/dimen_0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:tag="item_outer"
+                                    android:text="@string/item_outer" />
+
+                                <TextView
+                                    android:id="@+id/pc_price"
+                                    style="?attr/customListTitleSecondary"
+                                    android:layout_width="@dimen/dimen_0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:tag="item_piece"
+                                    android:text="@string/item_piece" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/compliance"
+                            style="?attr/customListTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="start|center"
+                            android:tag="compliance"
+                            android:text="@string/compliance"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <ListView
+                        android:id="@+id/list"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
+                        android:layout_height="fill_parent"
+                        android:layout_above="@+id/ll_keypad"
+                        android:layout_below="@+id/ll_header"
+                        android:cacheColorHint="@null"
+                        android:divider="@color/GRAY"
+                        android:dividerHeight="0.5dp"
+                        android:fitsSystemWindows="true"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"
+                        android:scrollbarAlwaysDrawVerticalTrack="true" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_keypad"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:orientation="vertical">
+
+                        <include
+                            android:id="@+id/keypad"
+                            layout="@layout/keypad"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/footer"
@@ -157,6 +255,7 @@
                 android:id="@+id/btn_save"
                 style="?attr/roundedCustomButtonSmall"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="@string/save"
                 android:textAllCaps="false" />

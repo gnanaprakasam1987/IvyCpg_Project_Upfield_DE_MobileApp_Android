@@ -1165,7 +1165,15 @@ public class ConfigurationMasterHelper {
     public boolean IS_STOCK_AVAILABLE_PRODUCTS_ONLY;
 
     private static final String CODE_BAR_CODE = "ORDB09";
+    private static final String CODE_BAR_CODE_STOCK_CHECK = "CSSTK05";
+    private static final String CODE_BAR_CODE_PRICE_CHECK = "PRICE_BARCODE";
+    private static final String CODE_BAR_CODE_VAN_UNLOAD = "VAN_BARCODE";
+
     public boolean IS_BAR_CODE;
+    public boolean IS_BAR_CODE_STOCK_CHECK;
+    public boolean IS_BAR_CODE_PRICE_CHECK;
+    public boolean IS_BAR_CODE_VAN_UNLOAD;
+
     public boolean IS_QTY_INCREASE;
 
     private static final String CODE_APLLY_BATCH_PRICE_FROM_PRODCUT = "FUN43";
@@ -1360,7 +1368,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_FILTER_TAG_PRODUCTS = true;
     private static final String CODE_FILTER_TAGGED_PRODUCTS = "FILTER_TAG";
 
-    private static final String CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = "SPSTK";  //jnj project specific
+    private static final String CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = "CSSTK04";  //jnj project specific
     public boolean IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK;
 
     private ConfigurationMasterHelper(Context context) {
@@ -2233,6 +2241,10 @@ public class ConfigurationMasterHelper {
         if (IS_BAR_CODE && hashMapHHTModuleOrder.get(CODE_BAR_CODE) == 1) {
             IS_QTY_INCREASE = true;
         }
+        this.IS_BAR_CODE_STOCK_CHECK = hashMapHHTModuleConfig.get(CODE_BAR_CODE_STOCK_CHECK) != null ? hashMapHHTModuleConfig.get(CODE_BAR_CODE_STOCK_CHECK) : false;
+        this.IS_BAR_CODE_PRICE_CHECK = hashMapHHTModuleConfig.get(CODE_BAR_CODE_PRICE_CHECK) != null ? hashMapHHTModuleConfig.get(CODE_BAR_CODE_PRICE_CHECK) : false;
+        this.IS_BAR_CODE_VAN_UNLOAD = hashMapHHTModuleConfig.get(CODE_BAR_CODE_VAN_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_BAR_CODE_VAN_UNLOAD) : false;
+
         this.IS_SHOW_DISCOUNTS_ORDER_SUMMARY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNTS_ORDER_SUMMMARY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNTS_ORDER_SUMMMARY) : false;
         this.IS_APPLY_BATCH_PRICE_FROM_PRODUCT = hashMapHHTModuleConfig.get(CODE_APLLY_BATCH_PRICE_FROM_PRODCUT) != null ? hashMapHHTModuleConfig.get(CODE_APLLY_BATCH_PRICE_FROM_PRODCUT) : false;
         this.IS_SHOW_PRINT_LANGUAGE_THAI = hashMapHHTModuleConfig.get(CODE_PRINT_LANGUAGE_THAI) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_LANGUAGE_THAI) : false;

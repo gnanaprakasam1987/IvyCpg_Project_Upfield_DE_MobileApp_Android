@@ -4,17 +4,19 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 public class PriceTrackingHelper {
-
+    private Context context;
     private final BusinessModel bmodel;
     private static PriceTrackingHelper instance = null;
 
@@ -42,8 +44,11 @@ public class PriceTrackingHelper {
     private String CODE_PRICE_COMPLIANCE = "PRICE_COMPLIANCE";
     private String CODE_SHOW_PREV_MRP_IN_PRICE = "PRICE_LAST_VP_MRP";
     private String CODE_PRICE_LASTVP = "PRICE_LAST_VP";
+    public ArrayList<String> mSearchTypeArray = new ArrayList<>();
+
 
     private PriceTrackingHelper(Context context) {
+        this.context = context;
         this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -54,6 +59,12 @@ public class PriceTrackingHelper {
         return instance;
     }
 
+    public void prepareAdapters(){
+        mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(context.getResources().getString(R.string.product_name));
+        mSearchTypeArray.add(context.getResources().getString(
+                R.string.order_dialog_barcode));
+    }
 
     public void clearInstance() {
         instance = null;
