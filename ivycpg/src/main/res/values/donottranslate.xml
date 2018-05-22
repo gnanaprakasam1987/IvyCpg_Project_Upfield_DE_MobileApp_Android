@@ -135,5 +135,8 @@
     <string name="profile_edit_verify_email_id">Please verify Email Id</string>
     <string name="profile_edit_verify_mobile_no">Please verify Mobile No</string>
 
+    <string name="planogram_image_count_reached">Reached Maximum planogram image count</string>
+    <string name="planogram_image_count_not_reached">Planogram image not added</string>
+
 
 </resources>
