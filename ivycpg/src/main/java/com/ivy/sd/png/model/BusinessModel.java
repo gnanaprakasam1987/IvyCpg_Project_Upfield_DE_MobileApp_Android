@@ -392,6 +392,7 @@ public class BusinessModel extends Application {
     private static final String PRD_STK = "STK";
 
     private String availablilityShare;
+    private int printSequenceLevelID;
 
     public BusinessModel() {
 
@@ -706,6 +707,14 @@ public class BusinessModel extends Application {
 
     public void setEditStockCheck(boolean isEditStockCheck) {
         this.isEditStockCheck = isEditStockCheck;
+    }
+
+    public int getPrintSequenceLevelID() {
+        return printSequenceLevelID;
+    }
+
+    public void setPrintSequenceLevelID(int printSequenceLevelID) {
+        this.printSequenceLevelID = printSequenceLevelID;
     }
 
     @Override

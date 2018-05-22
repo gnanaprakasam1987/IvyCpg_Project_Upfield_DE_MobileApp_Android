@@ -1271,6 +1271,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_LOAD_WAREHOUSE_PRD_ONLY = "FUN58";
     public boolean IS_LOAD_WAREHOUSE_PRD_ONLY;
 
+    private static final String CODE_PRINT_SEQUENCE = "PRINT_SEQUENCE";
+    public boolean IS_PRINT_SEQUENCE_REQUIRED;
+    public boolean IS_PRINT_SEQUENCE_BRANDWISE;
 
     private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
     public boolean SHOW_INVOICE_HISTORY; // PRO06
@@ -3432,6 +3435,9 @@ public class ConfigurationMasterHelper {
             SHOW_PC_SRP = false;
             SHOW_OUTER_SRP = false;
 
+            IS_PRINT_SEQUENCE_REQUIRED = false;
+            IS_PRINT_SEQUENCE_BRANDWISE = false;
+
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -4001,6 +4007,21 @@ public class ConfigurationMasterHelper {
                         SHOW_CASE_SRP = true;
                     } else if (value.equalsIgnoreCase("OU")) {
                         SHOW_OUTER_SRP = true;
+                    }
+                }
+                c.close();
+            }
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_PRINT_SEQUENCE) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    IS_PRINT_SEQUENCE_REQUIRED = true;
+                    if (c.getInt(0)!=0) {
+                        IS_PRINT_SEQUENCE_BRANDWISE = true;
+                        bmodel.setPrintSequenceLevelID(c.getInt(0));
                     }
                 }
                 c.close();

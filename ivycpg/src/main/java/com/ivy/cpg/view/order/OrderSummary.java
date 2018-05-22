@@ -871,6 +871,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 mSortedList.addAll(mOrderedProductList);
             }
 
+            if (BModel.configurationMasterHelper.IS_PRINT_SEQUENCE_REQUIRED) {
+                if (BModel.configurationMasterHelper.IS_PRINT_SEQUENCE_BRANDWISE) {
+                    mOrderedProductList = BModel.orderAndInvoiceHelper.sortbyBrand(mOrderedProductList);
+                } else {
+                    mOrderedProductList = BModel.orderAndInvoiceHelper.sort(mOrderedProductList);
+                }
+            }
 
             if (BModel.getOrderHeaderBO() != null)
                 BModel.getOrderHeaderBO().setTotalWeight(totalWeight);
