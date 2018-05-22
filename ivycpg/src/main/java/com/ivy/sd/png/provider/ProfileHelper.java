@@ -969,7 +969,7 @@ public class ProfileHelper {
 
     private String getGivenLovId() {
         String givenLovId = "";
-        String sql = " Select RField from HhtModuleMaster where hhtCode = " + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL) + " and flag =1";
+        String sql = " Select RField from HhtModuleMaster where hhtCode = " + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL) + " and flag =1 and ForSwitchSeller = 0";
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();

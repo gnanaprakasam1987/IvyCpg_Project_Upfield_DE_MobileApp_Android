@@ -1,5 +1,6 @@
 package com.ivy.sd.png.bo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -212,6 +213,8 @@ public class SchemeBO {
 	 * @return the freeProducts
 	 */
 	public List<SchemeProductBO> getFreeProducts() {
+		if(freeProducts ==null)
+			return new ArrayList<>();
 		return freeProducts;
 	}
 

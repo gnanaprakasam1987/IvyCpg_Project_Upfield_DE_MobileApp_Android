@@ -43,7 +43,7 @@
             android:singleLine="true"
             android:gravity="center"
             android:tag="sih"
-            android:text="56656"
+            android:text=""
             android:layout_toEndOf="@+id/prdbatchid"
             android:layout_marginBottom="@dimen/icons_top_margin"
             android:layout_below="@+id/PRDNAME1"
@@ -62,7 +62,7 @@
         android:maxLines="1" />
 
     <TextView
-        android:id="@+id/outerCaseQty"
+        android:id="@+id/PRDOUTERQTY"
         android:textColor="@android:color/black"
         android:layout_width="0dp"
         android:layout_height="match_parent"
