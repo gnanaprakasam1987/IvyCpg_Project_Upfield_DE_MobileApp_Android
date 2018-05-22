@@ -2518,7 +2518,7 @@ public class SurveyHelperNew {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY07'and menu_type="
-                            + bmodel.QT(menucode));
+                            + bmodel.QT(menucode)+" and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_SMS_IN_SURVEY = true;
@@ -2528,7 +2528,7 @@ public class SurveyHelperNew {
             }
 
             c = db.selectSQL("select menu_type,RField from HhtModuleMaster where flag=1 and hhtcode='SURVEY06'and menu_type="
-                    + bmodel.QT(menucode));
+                    + bmodel.QT(menucode)+" and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_PHOTOCAPTURE_IN_SURVEY = true;
@@ -2538,7 +2538,7 @@ public class SurveyHelperNew {
             }
             // Survey12 to enable multiple photo capture
             c = db.selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY12'and menu_type="
-                    + bmodel.QT(menucode));
+                    + bmodel.QT(menucode)+" and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.ENABLE_MULTIPLE_PHOTO = true;
@@ -2548,7 +2548,7 @@ public class SurveyHelperNew {
             }
 
             c = db.selectSQL("select * from HhtModuleMaster where flag=1 and hhtcode='SURVEY13'and menu_type="
-                    + bmodel.QT(menucode));
+                    + bmodel.QT(menucode)+" and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_DRAGDROP_IN_SURVEY = true;
@@ -2558,7 +2558,7 @@ public class SurveyHelperNew {
 
             c = db.selectSQL("select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_TOTAL_SCORE_IN_SURVEY) + " and Flag=1");
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_TOTAL_SCORE_IN_SURVEY) + " and Flag=1 and ForSwitchSeller = 0");
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.SHOW_TOTAL_SCORE_IN_SURVEY = true;
@@ -2568,7 +2568,7 @@ public class SurveyHelperNew {
 
             c = db.selectSQL("select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SURVEY_ANSWER_ALL) + " and Flag=1");
+                    + " where hhtCode=" + bmodel.QT(CODE_SURVEY_ANSWER_ALL) + " and Flag=1 and ForSwitchSeller = 0");
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.IS_SURVEY_ANSWER_ALL = true;
@@ -2578,7 +2578,7 @@ public class SurveyHelperNew {
 
             c = db.selectSQL("select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SURVEY_ANSWER_MANDATORY) + " and Flag=1");
+                    + " where hhtCode=" + bmodel.QT(CODE_SURVEY_ANSWER_MANDATORY) + " and Flag=1 and ForSwitchSeller = 0");
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.IS_SURVEY_ANSWER_MANDATORY = true;
@@ -2588,7 +2588,7 @@ public class SurveyHelperNew {
 
             c = db.selectSQL("select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_SCORE_IN_SURVEY) + " and Flag=1");
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_SCORE_IN_SURVEY) + " and Flag=1 and ForSwitchSeller = 0");
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.SHOW_SCORE_IN_SURVEY = true;

@@ -392,6 +392,7 @@ public class BusinessModel extends Application {
     private static final String PRD_STK = "STK";
 
     private String availablilityShare;
+    private int printSequenceLevelID;
 
     public BusinessModel() {
 
@@ -706,6 +707,14 @@ public class BusinessModel extends Application {
 
     public void setEditStockCheck(boolean isEditStockCheck) {
         this.isEditStockCheck = isEditStockCheck;
+    }
+
+    public int getPrintSequenceLevelID() {
+        return printSequenceLevelID;
+    }
+
+    public void setPrintSequenceLevelID(int printSequenceLevelID) {
+        this.printSequenceLevelID = printSequenceLevelID;
     }
 
     @Override
@@ -3651,7 +3660,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1");
+                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1 and ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     isAmazonUpload = true;
@@ -4390,7 +4399,7 @@ public class BusinessModel extends Application {
 
             String sql = "SELECT RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1'";
+                    + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1' and ForSwitchSeller = 0";
 
             Cursor c = db.selectSQL(sql);
 

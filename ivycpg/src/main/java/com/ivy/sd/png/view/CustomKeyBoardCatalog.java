@@ -21,6 +21,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CatalogOrderValueUpdate;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.Vector;
 
@@ -56,6 +57,11 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
     private boolean isOrderAllowed = true;
     //user for quantity values
     TextView selectedTextView;
+    LinearLayout llCase, llOuter, llPiece;
+
+    private int currentPsQty = 0;
+    private int currentCsQty = 0;
+    private int currentOuQty = 0;
 
     public CustomKeyBoardCatalog(Context context, TextView total_tv, Button orderBtn, ProductMasterBO pdtBO, BusinessModel bmodel, boolean isDecimalAllowed) {
         super(context);
@@ -158,9 +164,73 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         btn_cancel.setOnClickListener(this);
         btn_ok.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
+
+        llCase = (LinearLayout) findViewById(R.id.llCase);
+        llOuter = (LinearLayout) findViewById(R.id.llOuter);
+        llPiece = (LinearLayout) findViewById(R.id.llPcs);
+
+        String caseTitleText = "";
+        if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+            llCase.setVisibility(View.GONE);
+        } else {
+            try {
+                ((TextView) findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.caseTitle).getTag()) != null)
+                    ((TextView) findViewById(R.id.caseTitle))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.caseTitle).getTag()));
+                caseTitleText = bmodel.labelsMasterHelper
+                        .applyLabels(findViewById(
+                                R.id.caseTitle).getTag());
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
+        if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE && pdtBO.getCaseSize() > 0) {
+            String label = caseTitleText + "(" + pdtBO.getCaseSize() + getContext().getResources().getQuantityString(R.plurals.pcs, pdtBO.getCaseSize()) + ")";
+            ((TextView) findViewById(R.id.caseTitle)).setText(label);
+        }
+
+        if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+            llPiece.setVisibility(View.GONE);
+        } else {
+            try {
+                ((TextView) findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.pcsTitle).getTag()) != null)
+                    ((TextView) findViewById(R.id.pcsTitle))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.pcsTitle).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
+
+
+        if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+            llOuter.setVisibility(View.GONE);
+        } else {
+            try {
+                ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.outercaseTitle).getTag()) != null)
+                    ((TextView) findViewById(R.id.outercaseTitle))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.outercaseTitle)
+                                            .getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
     }
 
     private void setCaseKeyboard(String s) {
+        currentCsQty = pdtBO.getOrderedCaseQty();
+
         if (s.length() > 0)
             this.casevalue = s;
 
@@ -263,6 +333,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
     }
 
     private void setOuterKeyboard(String s) {
+        currentOuQty = pdtBO.getOrderedOuterQty();
         if (s.length() > 0)
             this.outervalue = s;
 
@@ -365,6 +436,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
     }
 
     private void setPcsKeyboard(String s) {
+        currentPsQty = pdtBO.getOrderedPcsQty();
         if (s.length() > 0)
             this.pcsvalue = s;
 
@@ -475,21 +547,26 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             //update value
             setValues();
         } else if (id == R.id.cancel) {
+            pdtBO.setOrderedPcsQty(currentPsQty);
+            pdtBO.setOrderedCaseQty(currentCsQty);
+            pdtBO.setOrderedOuterQty(currentOuQty);
             dismiss();
             isDialogCreated = false;
             if (total_tv != null && total_tv.getText().toString().equals("0")) {
                 catalogOrderValueUpdate.updateTotalValue(pdtBO.getOrderedPcsQty() + "");
             }
         } else if (id == R.id.delete) {
-            if (selectedTextView == null)
-                selectedTextView = pcs_typed_value;
-            String value = selectedTextView.getText().toString();
-            value = value.substring(0, value.length() - 1);
-            if (value.equals(""))
-                value = "0";
-            selectedTextView.setText(value);
-            if (total_tv != null) {
-                updateTotalValue("DEL");
+            if (selectedTextView == null) {
+                Toast.makeText(context, "Please Select an Item", Toast.LENGTH_LONG).show();
+            } else {
+                String value = selectedTextView.getText().toString();
+                value = value.substring(0, value.length() - 1);
+                if (value.equals(""))
+                    value = "0";
+                selectedTextView.setText(value);
+                if (total_tv != null) {
+                    updateTotalValue("DEL");
+                }
             }
         } else {
             if (isOrderAllowed) {
@@ -538,18 +615,20 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                 orderBtn.setText("Stock - " + val + "");
             }
         } else {
-            updateTotalValue("SUBMIT");
-            catalogOrderValueUpdate.updateTotalValue(pdtBO.getOrderedPcsQty() + "");
-            //mSelectedTV.setText(value);
-            if (String.valueOf(pdtBO.getOrderedCaseQty()).equals("0") && String.valueOf(pdtBO.getOrderedOuterQty()).equals("0")
-                    && String.valueOf(pdtBO.getOrderedPcsQty()).equals("0")) {
-                orderBtn.setText(context.getResources().getString(R.string.order));
-            } else {
-                orderBtn.setText(context.getResources().getString(R.string.ordered) + " - " + ((pdtBO.getOrderedCaseQty() * pdtBO.getCaseSize())
-                        + (pdtBO.getOrderedOuterQty() * pdtBO.getOutersize())
-                        + pdtBO.getOrderedPcsQty()) + "");
+            if (selectedTextView != null) {
+                updateTotalValue("SUBMIT");
+                catalogOrderValueUpdate.updateTotalValue(pdtBO.getOrderedPcsQty() + "");
+                //mSelectedTV.setText(value);
+                if (String.valueOf(pdtBO.getOrderedCaseQty()).equals("0") && String.valueOf(pdtBO.getOrderedOuterQty()).equals("0")
+                        && String.valueOf(pdtBO.getOrderedPcsQty()).equals("0")) {
+                    orderBtn.setText(context.getResources().getString(R.string.order));
+                } else {
+                    orderBtn.setText(context.getResources().getString(R.string.ordered) + " - " + ((pdtBO.getOrderedCaseQty() * pdtBO.getCaseSize())
+                            + (pdtBO.getOrderedOuterQty() * pdtBO.getOutersize())
+                            + pdtBO.getOrderedPcsQty()) + "");
+                }
+                total_tv.setText(bmodel.formatValue(pdtBO.getTotalamount()) + "");
             }
-            total_tv.setText(bmodel.formatValue(pdtBO.getTotalamount()) + "");
         }
 
         isDialogCreated = false;
@@ -559,35 +638,37 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
     }
 
     private void addValue(String typedValue) {
-        if (selectedTextView == null)
-            selectedTextView = pcs_typed_value;
-        String value = selectedTextView.getText().toString();
-        if (value.length() < limit) {
-            if (typedValue.equals(".") && !value.contains(".") && value.length() < limit - 1) {
-                if (value.equals("0"))
-                    value = "0.";
-                else
-                    value = value + typedValue;
-            } else if (!typedValue.equals(".")) {
-                if (value.equals("0")) {
-                    value = typedValue;
-                } else {
-                    value = value + typedValue;
+        if (selectedTextView == null) {
+            Toast.makeText(context, "Please Select an Item", Toast.LENGTH_LONG).show();
+        } else {
+            String value = selectedTextView.getText().toString();
+            if (value.length() < limit) {
+                if (typedValue.equals(".") && !value.contains(".") && value.length() < limit - 1) {
+                    if (value.equals("0"))
+                        value = "0.";
+                    else
+                        value = value + typedValue;
+                } else if (!typedValue.equals(".")) {
+                    if (value.equals("0")) {
+                        value = typedValue;
+                    } else {
+                        value = value + typedValue;
+                    }
                 }
-            }
 
-            if (selectedTextView.getId() == R.id.case_typed_value) {
-                case_typed_value.setText(value);
-            } else if (selectedTextView.getId() == R.id.outer_case_typed_value) {
-                outer_case_typed_value.setText(value);
-            } else if (selectedTextView.getId() == R.id.pcs_typed_value) {
-                pcs_typed_value.setText(value);
-            }
+                if (selectedTextView.getId() == R.id.case_typed_value) {
+                    case_typed_value.setText(value);
+                } else if (selectedTextView.getId() == R.id.outer_case_typed_value) {
+                    outer_case_typed_value.setText(value);
+                } else if (selectedTextView.getId() == R.id.pcs_typed_value) {
+                    pcs_typed_value.setText(value);
+                }
 
-            if (total_tv != null) {
-                updateTotalValue("ADD");
-            } else {
-                calculateSONew();
+                if (total_tv != null) {
+                    updateTotalValue("ADD");
+                } else {
+                    calculateSONew();
+                }
             }
         }
 
@@ -735,7 +816,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         so_keyboard.setText("SO : " + pdtBO.getSoInventory());
     }
 
-    private void setColor(){
+    private void setColor() {
         case_typed_value.setBackgroundColor(Color.TRANSPARENT);
         outer_case_typed_value.setBackgroundColor(Color.TRANSPARENT);
         pcs_typed_value.setBackgroundColor(Color.TRANSPARENT);

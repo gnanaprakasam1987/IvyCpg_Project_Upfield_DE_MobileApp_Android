@@ -3946,7 +3946,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                 MerchandisingActivity.class);
                                         sbd.putExtra("screentitle", bmodel.mSelectedActivityName);
                                         startActivity(sbd);
-                                    /* User clicked OK so do some stuff */
+                                        /* User clicked OK so do some stuff */
                                     }
                                 })
                         .setNegativeButton(
@@ -3955,7 +3955,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         isCreated = false;
-                                    /* User clicked Cancel so do some stuff */
+                                        /* User clicked Cancel so do some stuff */
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder);
@@ -4258,23 +4258,17 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
      */
     private void updateConfigurationSelectedSellerType(boolean flag) {
         if (!flag) {
-            bmodel.configurationMasterHelper.IS_SIH_VALIDATION = flag;
-            bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = flag;
-            schemeHelper.IS_SCHEME_ON = flag;
-            schemeHelper.IS_SCHEME_SHOW_SCREEN = flag;
-            bmodel.configurationMasterHelper.SHOW_TAX = flag;
-            bmodel.configurationMasterHelper.IS_GST = flag;
-            bmodel.configurationMasterHelper.IS_GST_HSN = flag;
-            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = flag;
-            bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = flag;
-//            bmodel.configurationMasterHelper.SHOW_DISCOUNT = flag;
+            bmodel.configurationMasterHelper.downloadSwitchConfig();
         } else {
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
             bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
             schemeHelper.IS_SCHEME_ON = schemeHelper.IS_SCHEME_ON_MASTER;
             schemeHelper.IS_SCHEME_SHOW_SCREEN = schemeHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
-
             bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
+            bmodel.configurationMasterHelper.IS_GST = bmodel.configurationMasterHelper.IS_GST_MASTER;
+            bmodel.configurationMasterHelper.IS_GST_HSN = bmodel.configurationMasterHelper.IS_GST_HSN_MASTER;
+            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
+            bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
         }
 
     }

@@ -80,7 +80,7 @@ public class LoginHelper {
         try {
             sb = new StringBuffer();
             sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(businessModel.QT(CODE_PWD_LOCK));
+            sb.append(businessModel.QT(CODE_PWD_LOCK) +" and ForSwitchSeller = 0");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -89,7 +89,7 @@ public class LoginHelper {
                         sb = new StringBuffer();
                         sb.append("select RField from hhtmodulemaster where hhtcode =");
                         sb.append(businessModel.QT(CODE_MAXIMUM_ATTEMPT_COUNT));
-                        sb.append(" and Flag=1");
+                        sb.append(" and Flag=1 and ForSwitchSeller = 0");
                         c = db.selectSQL(sb.toString());
                         if (c.getCount() > 0) {
                             if (c.moveToNext()) {
@@ -116,7 +116,7 @@ public class LoginHelper {
             sb.append(businessModel.QT(CODE_CHANGE_PASSWORD));
             sb.append(" OR hhtcode = ");
             sb.append(businessModel.QT(CODE_FORGET_PWD));
-            sb.append(") AND Flag = 1");
+            sb.append(") AND Flag = 1 and ForSwitchSeller = 0");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -133,7 +133,7 @@ public class LoginHelper {
             sb = new StringBuffer();
             sb.append("SELECT hhtcode FROM hhtmodulemaster WHERE hhtcode = ");
             sb.append(businessModel.QT(CODE_IS_PWD_ENCRYPTED));
-            sb.append(" AND Flag = 1");
+            sb.append(" AND Flag = 1 and ForSwitchSeller = 0");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
