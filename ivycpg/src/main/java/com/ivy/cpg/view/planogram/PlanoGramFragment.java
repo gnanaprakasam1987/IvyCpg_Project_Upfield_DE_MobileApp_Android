@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -116,7 +115,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_planogram, container, false);
@@ -284,7 +283,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("id", filterId);
     }
@@ -926,7 +925,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.planogram_list_item, parent, false);
@@ -934,7 +933,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, int position) {
             photoNamePath = BusinessModel.photoPath + "/";
             holder.planoObj = items.get(position);
             holder.productName.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
