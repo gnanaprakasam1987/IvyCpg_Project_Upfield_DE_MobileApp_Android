@@ -22,6 +22,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -330,7 +331,7 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
             holder.tvTaskName.setText(items.get(position).getTasktitle());
             holder.tvTaskDesc.setText(items.get(position).getTaskDesc());
             holder.tvCreatedBy.setText(items.get(position).getUsercreated()!=null?"Created by "+items.get(position).getUsercreated():"");
-            holder.tvDate.setText("At "+items.get(position).getCreatedDate());
+            holder.tvDate.setText("At "+ DateUtil.convertFromServerDateToRequestedFormat(items.get(position).getCreatedDate(), ConfigurationMasterHelper.outDateFormat));
 
             if (!items.get(position).getIsdone().equalsIgnoreCase("0"))
                 holder.imgStatus.setImageResource(R.drawable.coll_tick);

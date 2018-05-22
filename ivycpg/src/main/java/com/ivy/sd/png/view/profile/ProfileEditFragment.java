@@ -357,13 +357,18 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
 
             if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE58") && configureBO.isFlag() == 1) {
+
+
                 ArrayList<NewOutletAttributeBO> tempList = bmodel.newOutletHelper.updateRetailerMasterAttribute(
                         bmodel.newOutletAttributeHelper.getEditAttributeList(retailerObj.getRetailerID()));
 
                 bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
                 mAttributeListByChannelId = bmodel.newOutletAttributeHelper.downloadChannelWiseAttributeList();
 
+                //Load Retailer Based Attribute list and store in retailer master bo
                 bmodel.getAttributeListForRetailer();
+
+                //Load Attribute List which
                 attributeList = bmodel.newOutletHelper.updateRetailerMasterAttribute(retailerObj.getAttributeBOArrayList());
 
                 attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
@@ -375,7 +380,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         ArrayList<NewOutletAttributeBO> newOutletAttributeBOS = new ArrayList<>();
                         newOutletAttributeBOS.addAll(attributeList);
                         for (int i = 0; i < tempList.size(); i++) {
-                            for (int j = 0; j < newOutletAttributeBOS.size(); j++) {
+                            for (int j = 0; j < size; j++) {
 
                                 if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
                                         && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
@@ -405,39 +410,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 //                                }
                             }
                         }
-
-//                        NewOutletAttributeBO tempBO1;
-//                        NewOutletAttributeBO tempBO2;
-//                        ArrayList<Integer> processedAttributes = new ArrayList<>();
-//                        if (attributeList.size() > 0) {
-//                            for (int i = 0; i < attributeList.size(); i++) {
-//                                tempBO1 = attributeList.get(i);
-//                                if (tempList.size() > 0) {
-//                                    for (int j = 0; j < tempList.size(); j++) {
-//                                        tempBO2 = tempList.get(j);
-//                                        if (tempBO1.getParentId() == tempBO2.getParentId()) {
-//                                            if (tempBO1.getAttrId() != tempBO2.getAttrId() && "N".equals(tempBO2.getStatus())) {
-//                                                attributeList.set(i, tempBO2);
-//                                                processedAttributes.add(tempBO2.getAttrId());
-//                                            }
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
-//
-//                        ArrayList<NewOutletAttributeBO>temp = new ArrayList<>();
-//                        temp.addAll(attributeList);
-//                        for (int i=0;i<temp.size();i++) {
-//                            if (!processedAttributes.contains(temp.get(i).getAttrId()))
-//                                attributeList.remove(i);
-//                        }
-//
-//                        for (int i=0;i<tempList.size();i++) {
-//                            if (!processedAttributes.contains(tempList.get(i).getAttrId()))
-//                                attributeList.add(tempList.get(i));
-//                        }
-
                     } else {
                         attributeList.addAll(tempList);
                     }

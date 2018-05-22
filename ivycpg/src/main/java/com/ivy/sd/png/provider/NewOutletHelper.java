@@ -1230,8 +1230,11 @@ public class NewOutletHelper {
 
     public ArrayList<NewOutletAttributeBO> updateRetailerMasterAttribute(ArrayList<NewOutletAttributeBO> list) {
 
+        //Load Child Attribute list which parent is not zero
         ArrayList<NewOutletAttributeBO> childList = bmodel.newOutletAttributeHelper.getAttributeList();
+        //Load Parent Attribute List which Parent id is zero
         ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+
         ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
         int attribID;
         int tempAttribID;
