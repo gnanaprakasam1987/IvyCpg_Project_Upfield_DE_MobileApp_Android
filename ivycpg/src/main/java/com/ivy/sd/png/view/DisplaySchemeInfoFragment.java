@@ -78,7 +78,7 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
                 textView_qualifier.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
-                for (SchemeBO schemeBO : schemeHelper.getmDisplaySchemeMasterList()) {
+                for (SchemeBO schemeBO : schemeHelper.getDisplaySchemeMasterList()) {
                     if (schemeBO.getSchemeId().equals(mSelectedSchemeId)) {
                         textView_scheme_desc.setText(schemeBO.getScheme());
                         textView_display_period.setText(schemeBO.getDisplayPeriodStart() + " - " + schemeBO.getDisplayPeriodEnd());

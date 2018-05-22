@@ -505,7 +505,7 @@ public class OrderHelper {
                 SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
                 if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                         || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    schemeHelper.insertSchemeDetails(uid, db, "N");
+                    schemeHelper.insertSchemeDetails(uid, db);
                 }
                 schemeHelper.insertAccumulationDetails(mContext,db, uid);
 
@@ -982,7 +982,7 @@ public class OrderHelper {
                     SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
                     if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                             || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                        schemeHelper.insertSchemeDetails(uid, db, "N");
+                        schemeHelper.insertSchemeDetails(uid, db);
                     }
 
 
@@ -1926,8 +1926,14 @@ public class OrderHelper {
             /* update free products sih starts */
             if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                     || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+
+                db.updateSQL("update SchemeDetail set Invoiceid="
+                        + businessModel.QT(invoiceId) + " where orderID=" + this.getOrderId());
+                db.updateSQL("update SchemeFreeProductDetail set Invoiceid="
+                        + businessModel.QT(invoiceId) + " where orderID=" + this.getOrderId());
+
                 SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
-                schemeHelper.updateFreeProductsSIH(this.getOrderId(), invoiceId, db);
+                schemeHelper.reduceFreeProductsFromSIH( db);
             }
 
             /* insert tax details  */

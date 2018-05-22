@@ -908,13 +908,13 @@ public class DiscountHelper {
                                                 if (productBO
                                                         .getBatchwiseProductCount() > 0) {
                                                     totalPriceDiscount = schemeHelper
-                                                            .updateSchemeProducts(
+                                                            .calculateDiscountValue(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrice(),
                                                                     "SCH_PR", true);
                                                 } else {
                                                     totalPriceDiscount = schemeHelper
-                                                            .updateSchemeProducts(
+                                                            .calculateDiscountValue(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrice(),
                                                                     "SCH_PR", false);
@@ -922,7 +922,7 @@ public class DiscountHelper {
 
                                             } else {
                                                 totalPriceDiscount = schemeHelper
-                                                        .updateSchemeProducts(
+                                                        .calculateDiscountValue(
                                                                 productBO,
                                                                 schemeBO.getSelectedPrice(),
                                                                 "SCH_PR", false);
@@ -953,13 +953,13 @@ public class DiscountHelper {
                                                 if (productBO
                                                         .getBatchwiseProductCount() > 0) {
                                                     totalPercentageDiscount = schemeHelper
-                                                            .updateSchemeProducts(
+                                                            .calculateDiscountValue(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrecent(),
                                                                     "SCH_PER", true);
                                                 } else {
                                                     totalPercentageDiscount = schemeHelper
-                                                            .updateSchemeProducts(
+                                                            .calculateDiscountValue(
                                                                     productBO,
                                                                     schemeBO.getSelectedPrecent(),
                                                                     "SCH_PER",
@@ -967,7 +967,7 @@ public class DiscountHelper {
                                                 }
                                             } else {
                                                 totalPercentageDiscount = schemeHelper
-                                                        .updateSchemeProducts(
+                                                        .calculateDiscountValue(
                                                                 productBO,
                                                                 schemeBO.getSelectedPrecent(),
                                                                 "SCH_PER", false);

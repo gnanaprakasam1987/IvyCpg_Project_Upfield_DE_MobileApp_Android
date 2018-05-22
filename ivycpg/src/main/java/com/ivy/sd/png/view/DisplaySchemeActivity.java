@@ -69,7 +69,7 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
             recyclerView.setLayoutManager(mLayoutManager);
 
             schemeHelper= SchemeDetailsMasterHelper.getInstance(getApplicationContext());
-            mAdapter = new RecyclerViewAdapter(schemeHelper.getmDisplaySchemeMasterList());
+            mAdapter = new RecyclerViewAdapter(schemeHelper.getDisplaySchemeMasterList());
             recyclerView.setAdapter(mAdapter);
 
             Button button_save = (Button) findViewById(R.id.btn_next);
