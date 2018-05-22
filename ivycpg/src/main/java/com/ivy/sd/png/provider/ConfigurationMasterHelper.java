@@ -1162,9 +1162,9 @@ public class ConfigurationMasterHelper {
     public boolean IS_STOCK_AVAILABLE_PRODUCTS_ONLY;
 
     private static final String CODE_BAR_CODE = "ORDB09";
-    private static final String CODE_BAR_CODE_STOCK_CHECK = "ORDB72";
-    private static final String CODE_BAR_CODE_PRICE_CHECK = "ORDB73";
-    private static final String CODE_BAR_CODE_VAN_UNLOAD = "ORDB74";
+    private static final String CODE_BAR_CODE_STOCK_CHECK = "CSSTK05";
+    private static final String CODE_BAR_CODE_PRICE_CHECK = "PRICE_BARCODE";
+    private static final String CODE_BAR_CODE_VAN_UNLOAD = "VAN_BARCODE";
 
     public boolean IS_BAR_CODE;
     public boolean IS_BAR_CODE_STOCK_CHECK;
@@ -1363,7 +1363,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_FILTER_TAG_PRODUCTS = true;
     private static final String CODE_FILTER_TAGGED_PRODUCTS = "FILTER_TAG";
 
-    private static final String CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = "SPSTK";  //jnj project specific
+    private static final String CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = "CSSTK04";  //jnj project specific
     public boolean IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK;
 
     private ConfigurationMasterHelper(Context context) {
