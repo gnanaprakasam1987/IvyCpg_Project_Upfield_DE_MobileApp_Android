@@ -189,7 +189,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             (mview.findViewById(R.id.relativeLayout)).
                     setVisibility(View.GONE);
             filterLayout.setVisibility(View.VISIBLE);
-            mDateList.add(0, "ALL");
+            mDateList.add(0, getResources().getString(R.string.all));
             weekLL.setVisibility(View.GONE);
             beatLL.setVisibility(View.GONE);
         } else {

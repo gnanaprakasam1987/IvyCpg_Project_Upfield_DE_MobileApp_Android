@@ -46,7 +46,7 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
     private static final String SALES_VALUE = "SV";
     private static final String QUANTITY_TYPE = "QTY";
 
-    Button button_next,button_edit;
+    Button button_next;
 
     Toolbar toolbar;
     @Override

@@ -1501,8 +1501,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
      */
     private void gotoNextActivity(ConfigureBO menu, int hasLink, boolean isFromChild) {
 
-        boolean isDeviatedStore = bmodel.getRetailerMasterBO().getIsDeviated()
-                .equals("Y");// true deviated store,false not deviated store
 
         //location dialog show from store click
         isLocDialogShow = false;
@@ -3633,7 +3631,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 schemeHelper.downloadDisplayScheme(getApplicationContext());
                 schemeHelper.downloadDisplaySchemeSlabs(getApplicationContext());
-                if (schemeHelper.getmDisplaySchemeMasterList().size() > 0) {
+                if (schemeHelper.getDisplaySchemeMasterList().size() > 0) {
                     Intent i = new Intent(this,
                             DisplaySchemeActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
