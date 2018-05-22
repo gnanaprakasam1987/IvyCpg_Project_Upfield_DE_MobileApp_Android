@@ -60,6 +60,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * Digital content module fragment
+ * This Fragment is used for both seller and retailer wise digital content module.
+ */
 public class DigitalContentFragment extends IvyBaseFragment implements BrandDialogInterface {
 
     private BusinessModel mBModel;
@@ -70,8 +74,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     private DrawerLayout mDrawerLayout;
     private TabLayout tabLayout;
     private View view;
-    private ViewPager viewPager = null;
-    private PagerAdapter adapter = null;
 
     private int mSelectedTab = 0;
     private static final String BRAND = "Brand";
@@ -127,13 +129,13 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             mBModel.productHelper.downloadProductFilter(MENU_DGT);
         }
 
-        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        FrameLayout drawer =  view.findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
-        mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
+        mDrawerLayout = view.findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
@@ -177,9 +179,9 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
         new LoadAsyncTask(-1).execute();
 
-        LinearLayout footer = (LinearLayout) view.findViewById(R.id.footer);
+        LinearLayout footer =  view.findViewById(R.id.footer);
         footer.setVisibility(View.VISIBLE);
-        Button btnClose = (Button) view.findViewById(R.id.btn_close);
+        Button btnClose =  view.findViewById(R.id.btn_close);
         if (mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             btnClose.setVisibility(View.VISIBLE);
 
@@ -215,7 +217,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         } else {
             btnClose.setVisibility(View.GONE);
         }
-        Button btn_next = (Button) view.findViewById(R.id.btn_next);
+        Button btn_next =  view.findViewById(R.id.btn_next);
         if (MENU_Init.equals(calledFrom)) {
             btn_next.setVisibility(View.VISIBLE);
             btn_next.setOnClickListener(new View.OnClickListener() {
@@ -698,10 +700,10 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 tabLayout.removeAllTabs();
             }
 
-            tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+            tabLayout =  view.findViewById(R.id.tab_layout);
             tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-            viewPager = (ViewPager) view.findViewById(R.id.pager);
-            adapter = new PagerAdapter
+            ViewPager viewPager =  view.findViewById(R.id.pager);
+            PagerAdapter adapter = new PagerAdapter
                     (getChildFragmentManager());
             if (mImgCount > 0)
                 adapter.addFragment(new DigitalContentImagesFragment(), getResources().getString(R.string.tab_text_images) + ":" + mImgCount);
@@ -734,8 +736,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             int tabsCount = vg.getChildCount();
             for (int j = 0; j < tabsCount; j++) {
                 ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
-                int tabChildsCount = vgTab.getChildCount();
-                for (int i = 0; i < tabChildsCount; i++) {
+                int tabChildCount = vgTab.getChildCount();
+                for (int i = 0; i < tabChildCount; i++) {
                     View tabViewChild = vgTab.getChildAt(i);
                     if (tabViewChild instanceof TextView) {
                         ((TextView) tabViewChild).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -747,7 +749,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         /**
          * Preparing list based on digital content type
          *
-         * @param pid
+         * @param pid productId
          */
         private void loadDigitalContentByType(int pid) {
             for (int i = 0; i < size; ++i) {
@@ -814,7 +816,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
-
         public void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);

@@ -104,7 +104,7 @@ public class DownloaderThreadNew extends Thread {
                 c.close();
                 db.closeDB();
                 msg = Message.obtain(activityHandler,
-                        DataMembers.MESSAGE_DOWNLOAD_STARTED, 0, 0,
+                        DataMembers.MESSAGE_DOWNLOAD_STARTED, downloadUrls.size(), 0,
                         "Digital Contents");
                 activityHandler.sendMessage(msg);
 
@@ -268,7 +268,7 @@ public class DownloaderThreadNew extends Thread {
 
                                         msg = Message.obtain(activityHandler,
                                                 DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
-                                                downloadPercentage, 0);
+                                                responseCount, 0);
                                         activityHandler.sendMessage(msg);
                                         if (responseCount >= mTotalSize && !alertshown && !isImageDownloadCancelled) {
 
@@ -303,7 +303,7 @@ public class DownloaderThreadNew extends Thread {
                                 downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
                                 msg = Message.obtain(activityHandler,
                                         DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
-                                        downloadPercentage, 0);
+                                        responseCount, 0);
                                 activityHandler.sendMessage(msg);
                                 if (responseCount >= mTotalSize && !alertshown && !isImageDownloadCancelled) {
 
@@ -389,7 +389,7 @@ public class DownloaderThreadNew extends Thread {
 
                             msg = Message.obtain(activityHandler,
                                     DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
-                                    downloadPercentage, 0);
+                                    i, 0);
                             activityHandler.sendMessage(msg);
 
                         }

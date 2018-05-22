@@ -125,6 +125,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     private static final int UPLOAD_CS_STOCK_APPLY = 8;
     private static final int UPLOAD_CS_REJECTED_VARIANCE = 9;
     SharedPreferences mLastSyncSharedPref;
+    SharedPreferences mLastUploadAndDownloadPref;
     private NonVisitReasonDialog nvrd;
     private VanUnLoadModuleHelper mVanUnloadHelper;
 
@@ -165,6 +166,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         downloaderThread = null;
         progressDialog = null;
 
+        mLastUploadAndDownloadPref = getActivity().getSharedPreferences("lastUploadAndDownload", Context.MODE_PRIVATE);
         initializeItem();
         mLastSyncSharedPref = getActivity().getSharedPreferences("lastSync", Context.MODE_PRIVATE);
         registerReceiver();
@@ -186,7 +188,9 @@ public class SynchronizationFragment extends IvyBaseFragment
         super.onStart();
     }
 
+
     private void initializeItem() {
+
         TextView tvtitle = (TextView) view.findViewById(R.id.synctitle);
         tvtitle.setText(getArguments().getString("screentitle"));
         CardView alert_card = (CardView) view.findViewById(R.id.alert_card);
@@ -567,6 +571,7 @@ public class SynchronizationFragment extends IvyBaseFragment
             getActivity().finish();
         }
 
+        updateLastTransactionTimeInView();
     }
 
 
@@ -826,6 +831,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                         alertDialog.show();
                         presenter.uploadImages();
 
+                        updateUploadedTime();
+
 
                     } else {
                         alertDialog.dismiss();
@@ -839,6 +846,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         sdsd = new SyncDownloadStatusDialog(getActivity(), getResources().getString(
                                 R.string.data_upload_completed_sucessfully), displaymetrics);
                         sdsd.show();
+                        updateUploadedTime();
                     }
                     break;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
@@ -1551,6 +1559,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 ConfigurationMasterHelper.outDateFormat));
                         edt.putString("time", SDUtil.now(SDUtil.TIME));
                         edt.apply();
+                        updateDownloadTime();
                     }
                 } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     //outelet Performac
@@ -1581,6 +1590,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 ConfigurationMasterHelper.outDateFormat));
                         edt.putString("time", SDUtil.now(SDUtil.TIME));
                         edt.apply();
+                        updateDownloadTime();
                     }
                 } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     new UpdateDistributorFinish().execute();
@@ -2326,5 +2336,56 @@ public class SynchronizationFragment extends IvyBaseFragment
                 0);
         if (withPhotosCheckBox.isChecked())
             withPhotosCheckBox.setChecked(false);
+    }
+
+    private void updateUploadedTime(){
+        try {
+            SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
+            edt.putString("uploadDate",
+                    SDUtil.now(SDUtil.DATE_GLOBAL));
+            edt.putString("uploadTime", SDUtil.now(SDUtil.TIME));
+            edt.apply();
+
+            updateLastTransactionTimeInView();
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
+    private void updateDownloadTime(){
+        try{
+        SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
+        edt.putString("downloadDate",
+                SDUtil.now(SDUtil.DATE_GLOBAL));
+        edt.putString("downloadTime", SDUtil.now(SDUtil.TIME));
+        edt.apply();
+        updateLastTransactionTimeInView();
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
+
+    private void updateLastTransactionTimeInView(){
+        try {
+            TextView textView = view.findViewById(R.id.text_last_sync);
+            textView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            if (!mLastUploadAndDownloadPref.getString("downloadTime", "").equals("")) {
+                String download = "Last Download: " + DateUtil.convertFromServerDateToRequestedFormat(mLastUploadAndDownloadPref.getString("downloadDate", ""), ConfigurationMasterHelper.outDateFormat)
+                        + " " + mLastUploadAndDownloadPref.getString("downloadTime", "");
+                String upload = "";
+                if (!mLastUploadAndDownloadPref.getString("uploadTime", "").equals("")) {
+                    upload = "Last Upload: " + DateUtil.convertFromServerDateToRequestedFormat(mLastUploadAndDownloadPref.getString("uploadDate", ""), ConfigurationMasterHelper.outDateFormat)
+                            + " " + mLastUploadAndDownloadPref.getString("uploadTime", "");
+                }
+                String value = download + (upload.equals("") ? "" : "\n" + upload);
+                textView.setText(value);
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
     }
 }
