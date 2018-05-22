@@ -138,5 +138,7 @@
     <string name="planogram_image_count_reached">Reached Maximum planogram image count</string>
     <string name="planogram_image_count_not_reached">Planogram image not added</string>
 
+    <string name="enter_valid">Enter valid </string>
+
 
 </resources>

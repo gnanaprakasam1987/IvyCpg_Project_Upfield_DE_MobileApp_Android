@@ -874,26 +874,58 @@ public class NewOutletHelper {
 
 
                     NewOutletAttributeBO tempBO1;
-                    NewOutletAttributeBO tempBO2;
-                    for (int i = 0; i < attributeList.size(); i++) {
-                        tempBO1 = attributeList.get(i);
-                        if(attList.size()>0) {
-                            for (int j = 0; j < attList.size(); j++) {
-                                tempBO2 = attList.get(j);
-                                if (tempBO1.getParentId() == tempBO2.getParentId()) {
-                                    if (tempBO1.getAttrId() != tempBO2.getAttrId()) {
-                                        tempBO1.setStatus("N");
-                                        tempList.add(tempBO1);
-                                        tempBO2.setStatus("D");
-                                        tempList.add(tempBO2);
+                    NewOutletAttributeBO tempBO2 = null;
+                    if (attributeList.size() > 0) {
+                        for (int i = 0; i < attributeList.size(); i++) {
+                            tempBO1 = attributeList.get(i);
+                            if (attList.size() > 0) {
+                                boolean isDiffParent = true;
+                                ArrayList<Integer> porcessedAttributes = new ArrayList<>();
+                                for (int j = 0; j < attList.size(); j++) {
+                                    tempBO2 = attList.get(j);
+                                    if (tempBO1.getParentId() == tempBO2.getParentId()) {
+                                        if (tempBO1.getAttrId() != tempBO2.getAttrId()) {
+                                            tempBO1.setStatus("N");
+                                            tempList.add(tempBO1);
+                                            tempBO2.setStatus("D");
+                                            tempList.add(tempBO2);
+                                            isDiffParent = false;
+                                            porcessedAttributes.add(tempBO2.getAttrId());
+                                        }
+                                    }
+
+                                }
+                                /**
+                                 * add attribute list while change parent id
+                                 * isDiffParent
+                                 * true - parentId is mismatched
+                                 * false - parentId is matched
+                                 * add previous attribute data
+                                 * which is not available in processedAttribute list
+                                 *
+                                 */
+                                if (isDiffParent) {
+                                    tempBO1.setStatus("N");
+                                    tempList.add(tempBO1);
+
+                                    for (NewOutletAttributeBO bo : attList) {
+                                        if (!porcessedAttributes.contains(bo.getAttrId())) {
+                                            tempBO2.setStatus("D");
+                                            tempList.add(tempBO2);
+                                        }
                                     }
                                 }
 
+                            } else {
+                                tempBO1.setStatus("N");
+                                tempList.add(tempBO1);
                             }
                         }
-                        else {
-                            tempBO1.setStatus("N");
-                            tempList.add(tempBO1);
+                    } else {
+                        for (int j = 0; j < attList.size(); j++) {
+                            tempBO2 = attList.get(j);
+                            tempBO2.setStatus("D");
+                            tempList.add(tempBO2);
                         }
                     }
 
@@ -1198,8 +1230,11 @@ public class NewOutletHelper {
 
     public ArrayList<NewOutletAttributeBO> updateRetailerMasterAttribute(ArrayList<NewOutletAttributeBO> list) {
 
+        //Load Child Attribute list which parent is not zero
         ArrayList<NewOutletAttributeBO> childList = bmodel.newOutletAttributeHelper.getAttributeList();
+        //Load Parent Attribute List which Parent id is zero
         ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+
         ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
         int attribID;
         int tempAttribID;

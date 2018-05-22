@@ -2065,30 +2065,89 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         .equalsIgnoreCase("GST_NO")
                         && mandatory == 1) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (editText[i].getText().toString().trim().length() == 0) {
-                        validate = false;
-                        scrollToSpecificEditText(edittextinputLayout);
-                        editText[i].requestFocus();
+                    if (editText[i].getText().toString().trim().length() == 0 ||
+                            editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
+                            !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex()) ||
+                            !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
 
-                        edittextinputLayout.setErrorEnabled(true);
-                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        editText[i].addTextChangedListener(watcher);
-                        break;
+
+                        int length=editText[i].getText().toString().trim().length();
+                        if (length == 0 && mandatory==1) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }else if (length>0 && length < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }else if (length>0 && !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex())) {
+
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName());
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        } else if (length>0 && !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName());
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }
+
                     }
 
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PAN_NUMBER")
-                        && mandatory == 1) {
+                        .equalsIgnoreCase("PAN_NUMBER")) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (editText[i].getText().toString().trim().length() == 0) {
-                        validate = false;
-                        scrollToSpecificEditText(edittextinputLayout);
-                        editText[i].requestFocus();
-                        edittextinputLayout.setErrorEnabled(true);
-                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        editText[i].addTextChangedListener(watcher);
-                        break;
+                    if (editText[i].getText().toString().trim().length() == 0 ||
+                            editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
+                            !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
+
+
+                        int length=editText[i].getText().toString().trim().length();
+
+                        if (mandatory==1 && editText[i].getText().toString().trim().length() == 0) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }else if (length>0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }else if (length>0 && !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName());
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }
+
                     }
+
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("DRUG_LICENSE_NUM")
                         && mandatory == 1) {
@@ -2207,11 +2266,24 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(LinearLayout.HORIZONTAL);
 
-        if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("EMAIL")) {
+        if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("EMAIL") ||
+                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PAN_NUMBER") ||
+                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("GST_NO")) {
             //regex
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
         }
+
+        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PAN_NUMBER")) {
+            addLengthFilter(profileConfig.get(mNumber).getRegex());
+            //checkPANRegex(mNumber);
+        }
+
+        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("GST_NO")) {
+            addLengthFilter(profileConfig.get(mNumber).getRegex());
+            //checkGSTRegex(mNumber);
+        }
+
 
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("CONTACTPERSON1")) {
             edittextinputLayout = new TextInputLayout(getActivity());
@@ -2850,10 +2922,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         InputFilter fil = new InputFilter.LengthFilter(25);
         String str = regex;
         if (str != null && !str.isEmpty()) {
-            if (str.contains("{") && str.contains("}")) {
+            if (str.contains("<") && str.contains(">")) {
 
-                String len = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
-                if (!len.isEmpty()) {
+                String len = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+                if (len != null && !len.isEmpty()) {
                     if (len.contains(",")) {
                         try {
                             fil = new InputFilter.LengthFilter(Integer.parseInt(len.split(",")[1]));
@@ -2872,21 +2944,15 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     private void checkRegex(String regex) {
         final String reg;
-        String temp;
+
         try {
             if (regex != null && !regex.isEmpty()) {
                 if (regex.contains("<") && regex.contains(">")) {
-                    temp = regex.replaceAll("\\<.*?\\>", "");
+                    reg = regex.replaceAll("\\<.*?\\>", "");
                 } else {
-                    temp = regex;
+                    reg = regex;
                 }
-                String[] a = temp.split("\\{");
-                if (a.length >= 2)
-                    temp = "[" + a[0] + "]{" + a[1];
-                else {
-                    temp = "[" + temp + "]";
-                }
-                reg = temp;
+
                 InputFilter filter = new InputFilter() {
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                         for (int i = start; i < end; i++) {
@@ -2896,6 +2962,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                                 Log.d("", "invalid");
                                 return "";
                             }
+
                         }
                         return null;
                     }
@@ -2907,6 +2974,114 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             Commons.printException("regex check", ex);
         }
     }
+
+    private void checkPANRegex(final int number) {
+        final String reg;
+
+        try {
+            String regex = profileConfig.get(number).getRegex();
+            if (regex != null && !regex.isEmpty()) {
+                if (regex.contains("<") && regex.contains(">")) {
+                    reg = regex.replaceAll("\\<.*?\\>", "");
+                } else {
+                    reg = regex;
+                }
+
+                InputFilter filter = new InputFilter() {
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            String enteredValue = dest + String.valueOf(source.charAt(i));
+                            String panNumber = "AAAAA1111A";
+
+                            String checkValid = enteredValue + "" + panNumber.substring(dest.length() + 1, panNumber.length());
+
+                            if (!Pattern.compile(reg).matcher(checkValid).matches()) {
+                                edittextinputLayout = (TextInputLayout) editText[number].getParentForAccessibility();
+                                edittextinputLayout.setErrorEnabled(true);
+                                edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(number));
+                                editText[number].addTextChangedListener(watcher);
+                                Log.d("", "invalid");
+                                return "";
+                            }
+
+                        }
+                        return null;
+                    }
+                };
+                inputFilters.add(filter);
+
+            }
+        } catch (Exception ex) {
+            Commons.printException("regex check", ex);
+        }
+    }
+
+    private void checkGSTRegex(final int number) {
+        final String reg;
+
+        try {
+            String regex = profileConfig.get(number).getRegex();
+
+
+            if (regex != null && !regex.isEmpty()) {
+                if (regex.contains("<") && regex.contains(">")) {
+                    reg = regex.replaceAll("\\<.*?\\>", "");
+                } else {
+                    reg = regex;
+                }
+
+                InputFilter filter = new InputFilter() {
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            String enteredValue = dest + String.valueOf(source.charAt(i));
+                            String gstNumber = "11AAAAA1111A1A1";
+                            String panNumber = "";
+
+                            for (int index = 0; index < profileConfig.size(); index++) {
+                                if (profileConfig.get(index).getConfigCode().equalsIgnoreCase("PAN_NUMBER")) {
+                                    panNumber = editText[index].getText().toString();
+                                }
+                            }
+
+                            boolean isValidPan = false;
+                            if (enteredValue.length() > 2 && panNumber != null && panNumber.length() == 10) {
+                                String panSubString = "";
+
+                                if (enteredValue.length() < 13) {
+                                    panSubString = enteredValue.substring(2, enteredValue.length());
+                                } else {
+                                    panSubString = enteredValue.substring(2, 12);
+                                }
+
+                                if (panNumber.substring(0, panSubString.length()).equals(panSubString)) {
+                                    isValidPan = true;
+                                }
+                            } else {
+                                isValidPan = true;
+                            }
+                            String checkValid = enteredValue + "" + gstNumber.substring(dest.length() + 1, gstNumber.length());
+                            if (!Pattern.compile(reg).matcher(checkValid).matches() || !isValidPan) {
+                                Log.d("", "invalid");
+
+                                edittextinputLayout = (TextInputLayout) editText[number].getParentForAccessibility();
+                                edittextinputLayout.setErrorEnabled(true);
+                                edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(number));
+                                editText[number].addTextChangedListener(watcher);
+                                return "";
+                            }
+
+                        }
+                        return null;
+                    }
+                };
+                inputFilters.add(filter);
+
+            }
+        } catch (Exception ex) {
+            Commons.printException("regex check", ex);
+        }
+    }
+
 
     private String getValue(String code) {
         switch (code) {
@@ -5983,6 +6158,37 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     public boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+
+    public boolean isValidRegx(CharSequence target, String regx) {
+
+        if(regx.equals("")){
+            return true;
+        }
+        String value = regx.replaceAll("\\<.*?\\>", "");
+        return !TextUtils.isEmpty(target) && Pattern.compile(value).matcher(target).matches();
+    }
+
+    public boolean isValidGSTINWithPAN(CharSequence target) {
+
+        for (int index = 0; index < profileConfig.size(); index++) {
+            if (profileConfig.get(index).getConfigCode()
+                    .equalsIgnoreCase("PAN_NUMBER")) {
+                String panNumber = editText[index].getText().toString().trim();
+
+                if(panNumber.length()>0){
+                    if (target.subSequence(2, target.length() - 3).equals(panNumber))
+                        return true;
+                    else
+                        return false;
+                }else
+                    return true;
+
+            }
+        }
+
+        return true;
     }
 
     @Override
