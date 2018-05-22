@@ -308,7 +308,7 @@ public class CommonReasonDialog extends Dialog {
 
         String sql = "SELECT hhtCode, RField FROM "
                 + DataMembers.tbl_HhtModuleMaster
-                + " WHERE flag='1' AND hhtCode='RTRS01'";
+                + " WHERE flag='1' AND hhtCode='RTRS01' and ForSwitchSeller = 0";
         Cursor c = db.selectSQL(sql);
         if (c != null && c.getCount() != 0) {
             while (c.moveToNext()) {

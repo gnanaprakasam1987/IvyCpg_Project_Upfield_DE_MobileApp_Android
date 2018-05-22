@@ -3660,7 +3660,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1");
+                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1 and ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     isAmazonUpload = true;
@@ -4399,7 +4399,7 @@ public class BusinessModel extends Application {
 
             String sql = "SELECT RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1'";
+                    + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1' and ForSwitchSeller = 0";
 
             Cursor c = db.selectSQL(sql);
 

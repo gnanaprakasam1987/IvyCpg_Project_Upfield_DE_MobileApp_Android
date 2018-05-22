@@ -81,11 +81,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
         setContentView(R.layout.apply_scheme);
 
-        Toolbar toolbar =findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null)
             setSupportActionBar(toolbar);
-        if(getSupportActionBar()!=null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.Scheme_apply));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -94,10 +94,10 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
         bModel = (BusinessModel) getApplicationContext();
         bModel.setContext(this);
-        schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         mExpandableLV = findViewById(R.id.elv);
-        Button btnNext =  findViewById(R.id.btn_next);
+        Button btnNext = findViewById(R.id.btn_next);
         btnNext.setTypeface(bModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
 
@@ -112,7 +112,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         try {
             if (bModel.labelsMasterHelper.applyLabels("scheme_view") != null)
                 schemeViewTxt = bModel.labelsMasterHelper.applyLabels("scheme_view");
-            else schemeViewTxt=getResources().getString(R.string.view);
+            else schemeViewTxt = getResources().getString(R.string.view);
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -129,7 +129,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD") ||
                 fromOrderScreen.equalsIgnoreCase("MENU_ORDER") ||
                 fromOrderScreen.equalsIgnoreCase("MENU_CATALOG_ORDER")) {
-              new SchemeApplyAsync().execute();
+            new SchemeApplyAsync().execute();
 
         } else {
             mSchemeDoneList = schemeHelper.getAppliedSchemeList();
@@ -155,7 +155,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
     /**
      * Getting scheme applied list by giving product master list
      */
-    private class SchemeApplyAsync extends AsyncTask<Void,Void,Boolean>{
+    private class SchemeApplyAsync extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -163,8 +163,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             try {
 
                 schemeHelper.schemeApply(bModel.productHelper.getProductMaster());//mOrderedList,mOrderedProductBOById,bModel.batchAllocationHelper.getBatchlistByProductID());
-            }
-            catch (Exception ex){
+            } catch (Exception ex) {
                 Commons.printException(ex);
                 return false;
             }
@@ -175,7 +174,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPostExecute(Boolean isDone) {
             super.onPostExecute(isDone);
-            if(isDone){
+            if (isDone) {
                 mSchemeDoneList = schemeHelper.getAppliedSchemeList();
                 if (mSchemeDoneList.size() > 0) {
                     mExpandableAdapterNew = new SchemeExpandableAdapter();
@@ -233,7 +232,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         if (!isClick) {
 
             if (action == 1) {
-                isClick = true;             
+                isClick = true;
                 if ((bModel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bModel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
                         && bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     Intent intent = new Intent(SchemeApply.this,
@@ -296,7 +295,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
                 }
                 overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                finish();      
+                finish();
 
             }
         }
@@ -379,48 +378,48 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 view = mInflater.inflate(R.layout.row_scheme_product, parent,
                         false);
 
-                holder.productNameTV =  view
+                holder.productNameTV = view
                         .findViewById(R.id.tv_product_name);
-                holder.orderQuantityTV =  view
+                holder.orderQuantityTV = view
                         .findViewById(R.id.tv_buying_qty);
-                holder.schemeTV =  view.findViewById(R.id.tv_scheme);
+                holder.schemeTV = view.findViewById(R.id.tv_scheme);
 
-                holder.quantityRangeTV =  view
+                holder.quantityRangeTV = view
                         .findViewById(R.id.tv_quantity_range);
-                holder.priceRangeTV =  view
+                holder.priceRangeTV = view
                         .findViewById(R.id.tv_price_range);
-                holder.amountRangeTV =  view
+                holder.amountRangeTV = view
                         .findViewById(R.id.tv_amount_range);
-                holder.percentRangeTV =  view
+                holder.percentRangeTV = view
                         .findViewById(R.id.tv_percent_range);
 
-                holder.quantityCB =  view
+                holder.quantityCB = view
                         .findViewById(R.id.cb_quantity);
-                holder.priceCB =  view.findViewById(R.id.cb_price);
-                holder.amountCB =  view.findViewById(R.id.cb_amount);
-                holder.percentCB =  view
+                holder.priceCB = view.findViewById(R.id.cb_price);
+                holder.amountCB = view.findViewById(R.id.cb_amount);
+                holder.percentCB = view
                         .findViewById(R.id.cb_percent);
 
-                holder.priceET =  view
+                holder.priceET = view
                         .findViewById(R.id.et_selected_price);
-                holder.amountET =  view
+                holder.amountET = view
                         .findViewById(R.id.et_selected_amount);
-                holder.percentET =  view
+                holder.percentET = view
                         .findViewById(R.id.et_selected_percent);
 
-                holder.showFreeBTN =  view
+                holder.showFreeBTN = view
                         .findViewById(R.id.btn_show_free_products);
 
-                holder.rateRL =  view
+                holder.rateRL = view
                         .findViewById(R.id.priceLayout);
-                holder.amountRL =  view
+                holder.amountRL = view
                         .findViewById(R.id.amountLayout);
-                holder.percentRL =  view
+                holder.percentRL = view
                         .findViewById(R.id.percentLayout);
-                holder.qtyRL =  view
+                holder.qtyRL = view
                         .findViewById(R.id.qtyLayout);
-                holder.upArrow =  view.findViewById(R.id.uparrow);
-                holder.tv_label_qtytitle =  view.findViewById(R.id.tv_qtytitle);
+                holder.upArrow = view.findViewById(R.id.uparrow);
+                holder.tv_label_qtytitle = view.findViewById(R.id.tv_qtytitle);
 
                 //typeface
                 holder.productNameTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -481,45 +480,45 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     public void onClick(View v) {
 
 
-                            if (mSchemeDialog == null) {
+                        if (mSchemeDialog == null) {
 
+                            mSchemeDialog = new SchemeFreeProductSelectionDialog(
+                                    SchemeApply.this, holder.schemeBO,
+                                    null);
+                            if (mSchemeDialog.getWindow() != null)
+                                mSchemeDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+                            mSchemeDialog.show();
+                            mSchemeDialog.setCancelable(false);
+
+                            mSchemeDialog
+                                    .setOnDismissListener(new OnDismissListener() {
+
+                                        @Override
+                                        public void onDismiss(
+                                                DialogInterface dialog) {
+                                            mSchemeDialog = null;
+                                        }
+                                    });
+                        } else {
+                            if (!mSchemeDialog.isShowing()) {
                                 mSchemeDialog = new SchemeFreeProductSelectionDialog(
                                         SchemeApply.this, holder.schemeBO,
                                         null);
-                                if(mSchemeDialog.getWindow()!=null)
-                                mSchemeDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+                                if (mSchemeDialog.getWindow() != null)
+                                    mSchemeDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
                                 mSchemeDialog.show();
                                 mSchemeDialog.setCancelable(false);
-
                                 mSchemeDialog
                                         .setOnDismissListener(new OnDismissListener() {
-
                                             @Override
                                             public void onDismiss(
                                                     DialogInterface dialog) {
+
                                                 mSchemeDialog = null;
                                             }
                                         });
-                            } else {
-                                if (!mSchemeDialog.isShowing()) {
-                                    mSchemeDialog = new SchemeFreeProductSelectionDialog(
-                                            SchemeApply.this, holder.schemeBO,
-                                            null);
-                                    if(mSchemeDialog.getWindow()!=null)
-                                    mSchemeDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-                                    mSchemeDialog.show();
-                                    mSchemeDialog.setCancelable(false);
-                                    mSchemeDialog
-                                            .setOnDismissListener(new OnDismissListener() {
-                                                @Override
-                                                public void onDismiss(
-                                                        DialogInterface dialog) {
-
-                                                    mSchemeDialog = null;
-                                                }
-                                            });
-                                }
                             }
+                        }
                     }
                 });
 
@@ -937,7 +936,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             holder.amountET.setTag(holder.schemeBO);
             holder.percentET.setTag(holder.schemeBO);
 
-            if (holder.schemeBO.getFreeProducts() != null) {
+            if (holder.schemeBO.getFreeProducts() != null && holder.schemeBO.getFreeProducts().size() > 0) {
                 SchemeProductBO schemeProductBO = holder.schemeBO.getFreeProducts().get(0);
                 holder.quantityRangeTV.setText("Max: "
                         + holder.schemeBO.getMaximumQuantity());
@@ -1246,7 +1245,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         // Info
         private TextView productNameTV;
         private TextView schemeTV;
-        private TextView orderQuantityTV,tv_label_qtytitle;;
+        private TextView orderQuantityTV, tv_label_qtytitle;
+        ;
         // Range
         private TextView quantityRangeTV, percentRangeTV;
         private TextView priceRangeTV, amountRangeTV;
@@ -1263,6 +1263,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
     /**
      * Show alert dialog
+     *
      * @param message Message to show in dialog
      */
     private void showAlert(String message) {
@@ -1298,7 +1299,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         }
 
     }
-     public void numberPressed(View vw) {
+
+    public void numberPressed(View vw) {
 
         if (QUANTITY == null) {
 

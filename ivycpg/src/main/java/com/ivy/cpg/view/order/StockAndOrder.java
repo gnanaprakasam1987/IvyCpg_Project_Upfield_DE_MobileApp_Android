@@ -2784,7 +2784,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         else
                             holder.productObj.setFoc(SDUtil.convertToInt(qty));
 
-                        Log.e("saved------", "saved=======foc==========" + holder.productObj.getFoc());
                     }
 
                     public void beforeTextChanged(CharSequence s, int start,

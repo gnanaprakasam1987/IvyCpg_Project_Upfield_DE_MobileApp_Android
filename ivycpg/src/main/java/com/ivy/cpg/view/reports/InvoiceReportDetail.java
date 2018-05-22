@@ -251,7 +251,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
             ArrayList<SchemeProductBO> schemeProductList;
             if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON) {
-                schemeProductList = businessModel.reportHelper.getSchemeProductDetails(mInvoiceId);
+                schemeProductList = businessModel.reportHelper.getSchemeProductDetails(mInvoiceId,true);
             } else {
                 //load accumulation scheme free products
                 schemeProductList = SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downLoadAccumulationSchemeDetailReport(getApplicationContext(), mInvoiceId, true);

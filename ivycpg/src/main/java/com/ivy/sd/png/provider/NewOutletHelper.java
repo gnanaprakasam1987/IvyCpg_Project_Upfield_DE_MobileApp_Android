@@ -1898,7 +1898,7 @@ public class NewOutletHelper {
         try {
             db.openDataBase();
             String sql = "SELECT ChName,ChId,cl.levelname FROM ChannelHierarchy ch"
-                    + " inner join channellevel cl on cl.levelid=ch.levelid WHERE ch.LevelId = (SELECT LevelId FROM ChannelLevel WHERE Sequence = (SELECT rfield FROM HhtModuleMaster WHERE hhtCode= 'FUN36' AND flag = 1))";
+                    + " inner join channellevel cl on cl.levelid=ch.levelid WHERE ch.LevelId = (SELECT LevelId FROM ChannelLevel WHERE Sequence = (SELECT rfield FROM HhtModuleMaster WHERE hhtCode= 'FUN36' AND flag = 1 AND ForSwitchSeller = 0))";
             Cursor c = db.selectSQL(sql);
             if (c.getCount() > 0) {
                 ChannelBO channelBO;
