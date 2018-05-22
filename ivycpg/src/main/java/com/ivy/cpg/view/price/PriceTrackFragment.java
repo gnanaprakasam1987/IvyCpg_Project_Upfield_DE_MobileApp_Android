@@ -1,11 +1,15 @@
 package com.ivy.cpg.view.price;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -14,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +28,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -36,13 +43,18 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.stockcheck.StockCheckFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -61,8 +73,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 public class PriceTrackFragment extends IvyBaseFragment implements
-        BrandDialogInterface, OnClickListener, CompetitorFilterInterface {
+        BrandDialogInterface, OnClickListener, CompetitorFilterInterface, TextView.OnEditorActionListener {
 
     private BusinessModel businessModel;
     private PriceTrackingHelper priceTrackingHelper;
@@ -89,12 +103,24 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     private ArrayList<Integer> mAttributeProducts;
     private String filtertext;
 
+    private ViewFlipper viewFlipper;
+    private EditText mEdt_searchProductName;
+    private Button mBtn_Search;
+    private Button mBtn_clear;
+    private Button mBtnFilterPopup;
+
+    public String generalButton;
+    public final String GENERAL = "General";
+    public String strBarCodeSearch = "ALL";
+    private TextView tvIsChanged, tvCompliance,tvCa,tvPc,tvOo;
+    private LinearLayout ll_curPrice;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_price_tracking, container,
                 false);
+
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
         btnSave = (Button) view.findViewById(R.id.btn_save);
@@ -107,166 +133,11 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         params.width = width;
         drawer.setLayoutParams(params);
 
+        initialiseViews(view);
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        businessModel = (BusinessModel) getActivity().getApplicationContext();
-        businessModel.setContext(getActivity());
-        priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
-        setHasOptionsMenu(true);
-        priceTrackingHelper.mSelectedFilter = -1;
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btn_save) {
-            nextButtonClick();
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_inventory, menu);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-
-        super.onPrepareOptionsMenu(menu);
-
-        try {
-            boolean drawerOpen = false;
-            boolean navDrawerOpen = false;
-            if (mDrawerLayout != null)
-                drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-            menu.findItem(R.id.menu_location_filter).setVisible(false);
-            menu.findItem(R.id.menu_spl_filter).setVisible(false);
-            menu.findItem(R.id.menu_remarks).setVisible(false);
-
-            if (businessModel.configurationMasterHelper.floating_Survey)
-                menu.findItem(R.id.menu_survey).setVisible(true);
-
-            menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
-
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && businessModel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
-                menu.findItem(R.id.menu_fivefilter).setVisible(true);
-             /*    else
-                menu.findItem(R.id.menu_product_filter).setVisible(true);*/
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
-                for (Integer id : mSelectedIdByLevelId.keySet()) {
-                    if (mSelectedIdByLevelId.get(id) > 0) {
-                        menu.findItem(R.id.menu_fivefilter).setIcon(
-                                R.drawable.ic_action_filter_select);
-                        break;
-                    }
-                }
-            }
-            if ( businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
-                menu.findItem(R.id.menu_competitor_filter).setVisible(true);
-            }
-
-            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && mCompetitorSelectedIdByLevelId!=null) {
-                for (Integer id : mCompetitorSelectedIdByLevelId.keySet()) {
-                    if (mCompetitorSelectedIdByLevelId.get(id) > 0) {
-                        menu.findItem(R.id.menu_competitor_filter).setIcon(
-                                R.drawable.ic_action_filter_select);
-                        break;
-                    }
-                }
-
-
-            }
-            if (drawerOpen || navDrawerOpen)
-                menu.clear();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
-                mDrawerLayout.closeDrawers();
-            else {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
-                if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
-                else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
-            }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-            return true;
-        } else if (i == R.id.menu_next) {
-
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
-            return true;
-        } else if (i == R.id.menu_survey) {
-            startActivity(new Intent(getActivity(), SurveyActivityNew.class));
-            return true;
-        } else if (i == R.id.menu_fivefilter) {
-            FiveFilterFragment();
-            return true;
-        } else if (i == R.id.menu_competitor_filter) {
-            competitorFilterClickedFragment();
-            getActivity().supportInvalidateOptionsMenu();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void competitorFilterClickedFragment() {
-        try {
-            QUANTITY = null;
-
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            if (getActionBar() != null)
-                setScreenTitle(getResources().getString(R.string.competitor_filter));
-
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            CompetitorFilterFragment frag = (CompetitorFilterFragment) fm
-                    .findFragmentByTag("competitor filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-
-            if (mSelectedIdByLevelId != null && businessModel.isMapEmpty(mSelectedIdByLevelId) == false) {
-                mCompetitorSelectedIdByLevelId=new HashMap<>();
-            }
-
-            // set Fragmentclass Arguments
-            CompetitorFilterFragment fragobj = new CompetitorFilterFragment();
-            Bundle b = new Bundle();
-            b.putSerializable("selectedFilter", mCompetitorSelectedIdByLevelId);
-            fragobj.setCompetitorFilterInterface(this);
-            fragobj.setArguments(b);
-            ft.replace(R.id.right_drawer, fragobj, "competitor filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e + "");
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+    public void initialiseViews(View view){
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
@@ -305,31 +176,75 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         };
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+        priceTrackingHelper.prepareAdapters();
+
+        viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
+
+        mEdt_searchProductName = (EditText) view.findViewById(
+                R.id.edt_searchproductName);
+        mEdt_searchProductName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        mBtn_Search = (Button) view.findViewById(R.id.btn_search);
+        mBtn_Search.setOnClickListener(this);
+        mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
+        mBtn_clear.setOnClickListener(this);
+        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup.setOnClickListener(this);
+
         tvProdName = (TextView) view.findViewById(R.id.sku);
         tvProdName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        TextView tvIsChanged = (TextView) view.findViewById(R.id.changed);
-        TextView tvCompliance = (TextView) view.findViewById(R.id.compliance);
+        tvIsChanged = (TextView) view.findViewById(R.id.changed);
+        tvCompliance = (TextView) view.findViewById(R.id.compliance);
         // TextView tvReason = (TextView) view.findViewById(R.id.reason);
 
         tvCurPriceText = (TextView) view.findViewById(R.id.curtext);
         tvCurPriceText.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        mEdt_searchProductName.setOnEditorActionListener(this);
+
+        mEdt_searchProductName.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                getActivity().supportInvalidateOptionsMenu();
+
+                if (s.length() >= 3 || s.length() == 0) {
+                    loadSearchedList();
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+            }
+        });
 
         tvIsChanged.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tvCompliance.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         // tvReason.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        LinearLayout ll_curPrice = (LinearLayout) view.findViewById(R.id.ll_cur_price);
+        ll_curPrice = (LinearLayout) view.findViewById(R.id.ll_cur_price);
 
-        TextView tvCa = (TextView) view.findViewById(R.id.ca_price);
-        TextView tvPc = (TextView) view.findViewById(R.id.pc_price);
-        TextView tvOo = (TextView) view.findViewById(R.id.oo_price);
+        tvCa = (TextView) view.findViewById(R.id.ca_price);
+        tvPc = (TextView) view.findViewById(R.id.pc_price);
+        tvOo = (TextView) view.findViewById(R.id.oo_price);
 
         tvCa.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tvPc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tvOo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+        lv = (ListView) view.findViewById(R.id.list);
+        lv.setCacheColorHint(0);
+        onLoadModule();
+    }
 
+    public void hideandSeek(){
         try {
             if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.ca_price).getTag()) != null) {
@@ -419,13 +334,273 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
         (view.findViewById(R.id.calcdot))
                 .setVisibility(View.VISIBLE);
+    }
 
-        lv = (ListView) view.findViewById(R.id.list);
-        lv.setCacheColorHint(0);
-
+    public void prepareAdapters() {
         loadReasons();
+    }
 
-        onLoadModule();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(3);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        businessModel = (BusinessModel) getActivity().getApplicationContext();
+        businessModel.setContext(getActivity());
+        priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
+        setHasOptionsMenu(true);
+        priceTrackingHelper.mSelectedFilter = -1;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == mBtn_Search) {
+            viewFlipper.showNext();
+        } else if (view == mBtn_clear) {
+            if (mEdt_searchProductName.getText().length() > 0)
+                mEdt_searchProductName.setText("");
+            onLoadModule();
+
+            try {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+        } else if (view == mBtnFilterPopup) {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(
+                    getActivity());
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                    getActivity(),
+                    android.R.layout.select_dialog_singlechoice,
+                    priceTrackingHelper.mSearchTypeArray);
+            builderSingle.setAdapter(arrayAdapter,
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            businessModel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+                    });
+            int selectedFiltPos = priceTrackingHelper.mSearchTypeArray.indexOf(businessModel
+                    .getProductFilter());
+            builderSingle.setSingleChoiceItems(arrayAdapter, selectedFiltPos,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            businessModel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+
+                    });
+            builderSingle.setPositiveButton(
+                    getResources().getString(R.string.ok),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton) {
+                        }
+                    });
+            businessModel.applyAlertDialogTheme(builderSingle);
+
+        } else if (view.getId() == R.id.btn_save) {
+            nextButtonClick();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_inventory, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+
+        super.onPrepareOptionsMenu(menu);
+
+        try {
+            boolean drawerOpen = false;
+            boolean navDrawerOpen = false;
+            if (mDrawerLayout != null)
+                drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
+            menu.findItem(R.id.menu_location_filter).setVisible(false);
+            menu.findItem(R.id.menu_spl_filter).setVisible(false);
+            menu.findItem(R.id.menu_remarks).setVisible(false);
+
+            if (businessModel.configurationMasterHelper.floating_Survey)
+                menu.findItem(R.id.menu_survey).setVisible(true);
+            if(businessModel.configurationMasterHelper.IS_BAR_CODE_PRICE_CHECK) {
+                menu.findItem(R.id.menu_barcode).setVisible(true);
+            }
+            menu.findItem(R.id.menu_fivefilter).setVisible(false);
+            menu.findItem(R.id.menu_product_filter).setVisible(false);
+
+            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && businessModel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
+                menu.findItem(R.id.menu_fivefilter).setVisible(true);
+             /*    else
+                menu.findItem(R.id.menu_product_filter).setVisible(true);*/
+            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+                for (Integer id : mSelectedIdByLevelId.keySet()) {
+                    if (mSelectedIdByLevelId.get(id) > 0) {
+                        menu.findItem(R.id.menu_fivefilter).setIcon(
+                                R.drawable.ic_action_filter_select);
+                        break;
+                    }
+                }
+            }
+            if ( businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
+                menu.findItem(R.id.menu_competitor_filter).setVisible(true);
+            }
+
+            if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && mCompetitorSelectedIdByLevelId!=null) {
+                for (Integer id : mCompetitorSelectedIdByLevelId.keySet()) {
+                    if (mCompetitorSelectedIdByLevelId.get(id) > 0) {
+                        menu.findItem(R.id.menu_competitor_filter).setIcon(
+                                R.drawable.ic_action_filter_select);
+                        break;
+                    }
+                }
+
+
+            }
+            if (drawerOpen || navDrawerOpen)
+                menu.clear();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                        .now(SDUtil.TIME));
+                if (isFromChild)
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                            .putExtra("isStoreMenu", true));
+                else
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                getActivity().finish();
+            }
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            return true;
+        } else if (i == R.id.menu_next) {
+
+            return true;
+        } else if (i == R.id.menu_product_filter) {
+            productFilterClickedFragment();
+            return true;
+        } else if (i == R.id.menu_survey) {
+            startActivity(new Intent(getActivity(), SurveyActivityNew.class));
+            return true;
+        } else if (i == R.id.menu_fivefilter) {
+            FiveFilterFragment();
+            return true;
+        } else if (i == R.id.menu_competitor_filter) {
+            competitorFilterClickedFragment();
+            getActivity().supportInvalidateOptionsMenu();
+            return true;
+        } else if (i == R.id.menu_barcode) {
+            ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(2);
+            int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.CAMERA);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        PriceTrackFragment.this.startActivityForResult(intent,IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                    }
+                };
+                integrator.setBeepEnabled(false).initiateScan();
+            } else {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.permission_enable_msg)
+                                + " " + getResources().getString(R.string.permission_camera)
+                        , Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                strBarCodeSearch = result.getContents();
+                if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
+                    businessModel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));
+                    mEdt_searchProductName.setText(strBarCodeSearch);
+                    if (viewFlipper.getDisplayedChild() == 0) {
+                        viewFlipper.showNext();
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(getActivity(), getResources().getString(R.string.no_match_found), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void competitorFilterClickedFragment() {
+        try {
+            QUANTITY = null;
+
+            mDrawerLayout.openDrawer(GravityCompat.END);
+            if (getActionBar() != null)
+                setScreenTitle(getResources().getString(R.string.competitor_filter));
+
+            android.support.v4.app.FragmentManager fm = getActivity()
+                    .getSupportFragmentManager();
+            CompetitorFilterFragment frag = (CompetitorFilterFragment) fm
+                    .findFragmentByTag("competitor filter");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+
+            if (mSelectedIdByLevelId != null && businessModel.isMapEmpty(mSelectedIdByLevelId) == false) {
+                mCompetitorSelectedIdByLevelId=new HashMap<>();
+            }
+
+            // set Fragmentclass Arguments
+            CompetitorFilterFragment fragobj = new CompetitorFilterFragment();
+            Bundle b = new Bundle();
+            b.putSerializable("selectedFilter", mCompetitorSelectedIdByLevelId);
+            fragobj.setCompetitorFilterInterface(this);
+            fragobj.setArguments(b);
+            ft.replace(R.id.right_drawer, fragobj, "competitor filter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(businessModel.mSelectedActivityName);
+            getActionBar().setElevation(0);
+        }
+        hideandSeek();
+        prepareAdapters();
     }
 
     private ActionBar getActionBar() {
@@ -1454,12 +1629,18 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     public void updateBrandText(String mFilterText, int id) {
         priceTrackingHelper.mSelectedFilter = id;
         mDrawerLayout.closeDrawers();
+        String generalTxt = generalButton;
         onLoadModule();
     }
 
     @Override
     public void updateGeneralText(String mFilterText) {
-
+        if (mFilterText.equals("")) {
+            mFilterText = GENERAL;
+        }
+        generalButton = mFilterText;
+        if (mSelectedIdByLevelId != null)
+            mSelectedIdByLevelId.clear();
     }
 
     @Override
@@ -1527,5 +1708,146 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     public void onDestroy() {
         super.onDestroy();
         priceTrackingHelper.clearInstance();
+    }
+
+    private void loadSearchedList() {
+        loadSearchedList(mEdt_searchProductName.getText().toString());
+    }
+
+    public void loadSearchedList(String s) {
+        ProductMasterBO ret;
+
+        if (s.length() >= 3) {
+
+            Vector<ProductMasterBO> items = new Vector<>();
+            if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
+                for (ProductMasterBO productBo : businessModel.productHelper.getTaggedProducts()) {
+                    if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 1)
+                        items.add(productBo);
+                }
+            } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
+                for (ProductMasterBO productBo : businessModel.productHelper.getTaggedProducts()) {
+                    if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 0)
+                        items.add(productBo);
+                }
+            } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
+                items = businessModel.productHelper.getTaggedProducts();
+            }
+
+            if (items.isEmpty()) {
+                showAlert();
+                return;
+            }
+            int siz = items.size();
+
+            ArrayList<ProductMasterBO> stockList = new ArrayList<>();
+            String mSelectedFilter = businessModel.getProductFilter();
+
+            for (int i = 0; i < siz; ++i) {
+                ret = items.elementAt(i);
+
+                if (mSelectedFilter.equals(getContext().getResources().getString(
+                        R.string.order_dialog_barcode))) {
+
+                    if (ret.getBarCode() != null
+                            && (ret.getBarCode().toLowerCase()
+                            .contains(s.toLowerCase())
+                            || ret.getCasebarcode().toLowerCase().
+                            contains(s.toLowerCase())
+                            || ret.getOuterbarcode().toLowerCase().
+                            contains(s.toLowerCase())) && ret.getIsSaleable() == 1) {
+
+                        //if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
+                            stockList.add(ret);
+//                        else if (applyProductAndSpecialFilter(ret))
+//                            stockList.add(ret);
+                    }
+                }
+//                else if (mSelectedFilter.equals(context.getResources().getString(
+//                        R.string.order_gcas))) {
+//                    if (ret.getRField1() != null && ret.getRField1()
+//                            .toLowerCase()
+//                            .contains(
+//                                    s.toLowerCase()) && ret.getIsSaleable() == 1) {
+//                        if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
+//                            stockList.add(ret);
+//                        else if (applyProductAndSpecialFilter(ret))
+//                            stockList.add(ret);
+//                    }
+//                } 
+                else if (mSelectedFilter.equals(getContext().getResources().getString(
+                        R.string.product_name))) {
+                    if (ret.getProductShortName() != null && ret.getProductShortName()
+                            .toLowerCase()
+                            .contains(
+                                    s.toLowerCase()) && ret.getIsSaleable() == 1)
+//                        if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
+                            stockList.add(ret);
+//                        else if (applyProductAndSpecialFilter(ret))
+//                            stockList.add(ret);
+                }
+
+            }
+
+            updateListFromFilter(stockList);
+
+        } else if (s.length() == 0) {
+            onLoadModule();
+        } else {
+            showSearchValidationToast();
+        }
+    }
+
+    public void showAlert() {
+        businessModel.showAlert(getResources().getString(R.string.no_products_exists), 0);
+    }
+
+    public void updateListFromFilter(ArrayList<ProductMasterBO> stockList) {
+        this.mylist = stockList;
+        MyAdapter mSchedule = new MyAdapter(mylist);
+        lv.setAdapter(mSchedule);
+    }
+
+    public void showSearchValidationToast() {
+        Toast.makeText(getActivity(), getResources().getString(R.string.enter_atleast_three_letters), Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
+//        if (!GENERAL.equals(generalButton)) {
+//            // both filter selected
+//            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+//                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
+//                        && isSpecialFilterAppliedProduct(generalButton, ret))
+//                    return true;
+//            } else {
+//                if (isSpecialFilterAppliedProduct(generalButton, ret))
+//                    return true;
+//            }
+//        } else if (GENERAL.equals(generalButton)) {
+//            // product filter alone selected
+//            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+//                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
+//                    return true;
+//            } else {
+//                if (isSpecialFilterAppliedProduct(generalButton, ret))
+//                    return true;
+//            }
+//        }
+        return false;
+    }
+
+    @Override
+    public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
+        if (arg1 == EditorInfo.IME_ACTION_DONE) {
+            if (arg0.getText().length() > 0) {
+                getActivity().supportInvalidateOptionsMenu();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mEdt_searchProductName.getWindowToken(), 0);
+            }
+            loadSearchedList();
+            return true;
+        }
+        return false;
     }
 }
