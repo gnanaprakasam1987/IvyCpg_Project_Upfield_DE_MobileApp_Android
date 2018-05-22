@@ -5730,7 +5730,7 @@ public class ProductHelper {
             } else {
 
                 Cursor cur = db
-                        .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID "
+                        .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID,ifnull(CP.Barcode,'') "
                                 + " FROM CompetitorProductMaster CP"
                                 + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = CP.CPID"
                                 + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
@@ -5746,9 +5746,9 @@ public class ProductHelper {
                         product.setProductShortName(cur.getString(1));
                         product.setParentid(cur.getInt(2));
                         product.setIsSaleable(1);
-                        product.setBarCode("");
-                        product.setCasebarcode("");
-                        product.setOuterbarcode("");
+                        product.setBarCode(cur.getString(9));
+                        product.setCasebarcode(cur.getString(9));
+                        product.setOuterbarcode(cur.getString(9));
                         product.setOwn(0);
                         product.setCaseUomId(cur.getInt(3));
                         product.setOuUomid(cur.getInt(4));
@@ -7275,7 +7275,7 @@ public class ProductHelper {
                     "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.CASE_TYPE) + " and ListType = 'PRODUCT_UOM')as duomid," +
                     "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.OUTER_TYPE) + " and ListType = 'PRODUCT_UOM') as dOuomid," +
                     "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.PIECE_TYPE) + " and ListType = 'PRODUCT_UOM') as piece_uomid," +
-                    "A1.CPCode,A" + loopEnd + ".CPID as parentId from CompetitorProductMaster A1";
+                    "A1.CPCode,A" + loopEnd + ".CPID as parentId,ifnull(A1.Barcode,'') from CompetitorProductMaster A1";
             for (int i = 2; i <= loopEnd; i++)
                 sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
                         + ".CPID = A" + (i - 1) + ".CPTid";
@@ -7291,9 +7291,9 @@ public class ProductHelper {
                     product.setProductShortName(cur.getString(1));
                     product.setParentid(0);
                     product.setIsSaleable(1);
-                    product.setBarCode("");
-                    product.setCasebarcode("");
-                    product.setOuterbarcode("");
+                    product.setBarCode(cur.getString(7));
+                    product.setCasebarcode(cur.getString(7));
+                    product.setOuterbarcode(cur.getString(7));
                     product.setOwn(0);
                     product.setCaseUomId(cur.getInt(2));
                     product.setOuUomid(cur.getInt(3));

@@ -1299,7 +1299,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 stockCheckPresenter.hideSpecialFilter();
 
             boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-
+            if(businessModel.configurationMasterHelper.IS_BAR_CODE_STOCK_CHECK) {
+                menu.findItem(R.id.menu_barcode).setVisible(true);
+            }
             menu.findItem(R.id.menu_next).setVisible(false);
 
             if (stockCheckPresenter.remarks_button_enable)
@@ -1943,6 +1945,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 stockCheckPresenter.strBarCodeSearch = result.getContents();
+                if (stockCheckPresenter.strBarCodeSearch != null && !"".equals(stockCheckPresenter.strBarCodeSearch)) {
+                    businessModel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));
+                    mEdt_searchProductName.setText(stockCheckPresenter.strBarCodeSearch);
+                    if (viewFlipper.getDisplayedChild() == 0) {
+                        viewFlipper.showNext();
+                    }
+                }
             }
         } else {
             Toast.makeText(getActivity(), getResources().getString(R.string.no_match_found), Toast.LENGTH_LONG).show();

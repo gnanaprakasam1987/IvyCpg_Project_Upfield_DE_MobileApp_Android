@@ -1501,7 +1501,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {
                 bmodel.configurationMasterHelper.setBatchAllocationtitle("Batch Allocation");
@@ -1846,7 +1846,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }
             if (holder.list_view_stock_btn != null) {
-                if (holder.productObj.getLocations().get(0).getShelfPiece() == -1) {
+                if (holder.productObj.getLocations().get(0).getShelfPiece() == -1 &&
+                        holder.productObj.getLocations().get(0).getShelfCase() == -1 &&
+                        holder.productObj.getLocations().get(0).getShelfOuter() == -1) {
                     holder.list_view_stock_btn.setText("STOCK");
                 } else {
                     holder.list_view_stock_btn.setText("Stock - "
@@ -1856,7 +1858,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }
             if (holder.list_view_order_btn != null && holder.total != null) {
-                if (holder.productObj.getOrderedPcsQty() != 0) {
+                if (holder.productObj.getOrderedPcsQty() != 0 ||
+                        holder.productObj.getOrderedCaseQty() != 0 ||
+                        holder.productObj.getOrderedOuterQty() != 0) {
                     holder.list_view_order_btn.setText(getResources().getString(R.string.ordered) + " - "
                             + ((holder.productObj.getOrderedCaseQty() * holder.productObj.getCaseSize())
                             + (holder.productObj.getOrderedOuterQty() * holder.productObj.getOutersize())
@@ -1947,7 +1951,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private ImageView pdt_image;
-            private TextView catalog_order_listview_productname, ppq,ssrp,
+            private TextView catalog_order_listview_productname, ppq, ssrp,
                     mrp, total, sih, wsih, moq;
             private Button list_view_order_btn, list_view_stock_btn, list_view_sales_return_qty;
             private LinearLayout pdt_details_layout;
@@ -1996,7 +2000,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 } else {
                     list_view_stock_btn.setVisibility(View.VISIBLE);
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS &&
+                        !bmodel.configurationMasterHelper.SHOW_ORDER_CASE &&
+                        !bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
                     list_view_order_btn.setVisibility(View.GONE);
                 } else {
                     list_view_order_btn.setVisibility(View.VISIBLE);
