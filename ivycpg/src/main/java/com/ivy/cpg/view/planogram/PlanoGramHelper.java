@@ -60,7 +60,7 @@ public class PlanoGramHelper {
 
             String sql = "SELECT hhtCode, RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " WHERE flag='1'";
+                    + " WHERE flag='1' and ForSwitchSeller = 0";
 
             Cursor c = db.selectSQL(sql);
             if (c.getCount() > 0) {

@@ -140,7 +140,7 @@ public class SchemeDetailsMasterHelper {
     /**
      * Method to load all scheme related methods
      */
-    public void initializeScheme(Context mContext, int mUserId,boolean isBatchWiseProducts) {
+    public void initializeScheme(Context mContext, int mUserId, boolean isBatchWiseProducts) {
 
         DBUtil db;
         try {
@@ -163,7 +163,7 @@ public class SchemeDetailsMasterHelper {
 
             if (IS_SCHEME_ON_MASTER) {
 
-                this.isBatchWiseProducts=isBatchWiseProducts;
+                this.isBatchWiseProducts = isBatchWiseProducts;
 
                 //  for loading highest slab parent ids
                 downloadSchemeParentDetails(db, distributorId, retailerId, channelId, locationId, accountId, priorityProductId, mGroupIdList);
@@ -221,8 +221,8 @@ public class SchemeDetailsMasterHelper {
             db.openDataBase();
 
             String sql = "SELECT hhtCode, RField FROM "
-                    + DataMembers.tbl_HhtModuleMaster;
-                    //+ " WHERE menu_type = 'SCHEME' AND flag='1'";
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " WHERE ForSwitchSeller = 0";
 
             Cursor c = db.selectSQL(sql);
 
@@ -700,7 +700,7 @@ public class SchemeDetailsMasterHelper {
                             productBO.getGroupLogic());
 
                     //Preparing list of groupName by its slab Id
-                    if(productBO.getGroupName()!=null) {
+                    if (productBO.getGroupName() != null) {
                         if (mFreeGroupNameListBySchemeId.get(productBO.getSchemeId()) != null) {
                             ArrayList<String> mGroupNames = mFreeGroupNameListBySchemeId.get(productBO.getSchemeId());
                             if (!mGroupNames.contains(productBO.getGroupName())) {
@@ -791,10 +791,9 @@ public class SchemeDetailsMasterHelper {
                     }
 
                     //Preparing product Id list by parent Id
-                    if( mProductIdListByParentId.get(c.getInt(1))!=null){
+                    if (mProductIdListByParentId.get(c.getInt(1)) != null) {
                         mProductIdListByParentId.get(c.getInt(1), productIdList).add(c.getString(0));
-                    }
-                    else {
+                    } else {
                         productIdList = new ArrayList<>();
                         productIdList.add(c.getString(0));
                         mProductIdListByParentId.put(c.getInt(1), productIdList);
@@ -1170,8 +1169,7 @@ public class SchemeDetailsMasterHelper {
                     }
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
 
@@ -2674,16 +2672,16 @@ public class SchemeDetailsMasterHelper {
 
         //Updating current stock for free products of all applied scheme
         for (SchemeBO schemeBO : mAppliedSchemeList) {
-            for(SchemeProductBO schemeProductBO:schemeBO.getFreeProducts()){
-               ProductMasterBO productMasterBO = mProductMasterBOById.get(schemeProductBO.getProductId());
+            for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts()) {
+                ProductMasterBO productMasterBO = mProductMasterBOById.get(schemeProductBO.getProductId());
 
                 if (productMasterBO != null) {
                     int stock = productMasterBO.getSIH()
                             - ((productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
                             + (productMasterBO.getOrderedOuterQty() * productMasterBO
                             .getOutersize()) + productMasterBO.getOrderedPcsQty());
-                    if(stock>0)
-                    schemeProductBO.setStock(stock);
+                    if (stock > 0)
+                        schemeProductBO.setStock(stock);
                     else schemeProductBO.setStock(0);
                 }
             }
@@ -2695,7 +2693,8 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Checking whether SIH is available for given group
-     * @param schemeBO Slab object
+     *
+     * @param schemeBO  Slab object
      * @param groupName group Name
      * @return Is SIH available
      */
@@ -2705,7 +2704,7 @@ public class SchemeDetailsMasterHelper {
 
         if (freeProductList != null) {
             for (SchemeProductBO schemeProductBO : freeProductList) {
-                if (groupName!=null&&groupName.equals(schemeProductBO.getGroupName())) {
+                if (groupName != null && groupName.equals(schemeProductBO.getGroupName())) {
 
                     int stock;
                     ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
@@ -2918,8 +2917,9 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Insert scheme discounts
+     *
      * @param orderID order Id
-     * @param db Database Object
+     * @param db      Database Object
      */
     public void insertSchemeDetails(String orderID, DBUtil db) {
         if (mAppliedSchemeList != null) {
@@ -2944,9 +2944,10 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Insert Buy product details with discount type
+     *
      * @param schemeBO Slab to insert
-     * @param db database Object
-     * @param orderID order Id
+     * @param db       database Object
+     * @param orderID  order Id
      */
     private void insertSchemeBuyProductDetails(SchemeBO schemeBO, DBUtil db,
                                                String orderID) {
@@ -3018,7 +3019,7 @@ public class SchemeDetailsMasterHelper {
                         if (schemeBO.isQuantityTypeSelected()) {
                             sb.append(",'Y'");
                         } else {
-                                sb.append(",'N'");
+                            sb.append(",'N'");
                         }
 
                         // saving product wise discount value if scheme is amount type
@@ -3044,9 +3045,10 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Insert free products
+     *
      * @param schemeBO Slab to insert
-     * @param db database Object
-     * @param orderID order Id
+     * @param db       database Object
+     * @param orderID  order Id
      */
     private void insertFreeProductDetails(SchemeBO schemeBO, DBUtil db,
                                           String orderID) {
@@ -3085,7 +3087,6 @@ public class SchemeDetailsMasterHelper {
         }
 
     }
-
 
 
     /**
@@ -3154,10 +3155,10 @@ public class SchemeDetailsMasterHelper {
     /**
      * Insert free product  with batch
      *
-     * @param schemeBO Slab to insert
-     * @param db database object
-     * @param orderID Order Id
-     * @param schemeProductBo Free product object
+     * @param schemeBO         Slab to insert
+     * @param db               database object
+     * @param orderID          Order Id
+     * @param schemeProductBo  Free product object
      * @param freeDetailColumn column Names
      */
     private void insertFreeProductWithBatch(SchemeBO schemeBO, DBUtil db,
@@ -3205,9 +3206,10 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Insert Off invoice scheme free issues
+     *
      * @param mContext Current Context
-     * @param db Database Object
-     * @param orderID Order Id
+     * @param db       Database Object
+     * @param orderID  Order Id
      */
     public void insertAccumulationDetails(Context mContext, DBUtil db, String orderID) {
 
@@ -3265,7 +3267,8 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Load scheme from transactions
-     * @param mContext Current Context
+     *
+     * @param mContext   Current Context
      * @param retailerID Retailer Id
      */
     public void loadSchemeDetails(Context mContext, String retailerID) {
@@ -3308,6 +3311,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Load buy product details
+     *
      * @param id Order Id
      * @param db Database Object
      */
@@ -3354,6 +3358,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Load Scheme Free products
+     *
      * @param id Order Id
      * @param db Database Object
      */
@@ -3406,6 +3411,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Clear free products
+     *
      * @param schemeBO Slab object
      */
     private void clearSchemeFreeProduct(SchemeBO schemeBO) {
@@ -3422,6 +3428,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Reducing free products from SIH
+     *
      * @param db Database Objects
      */
     public void reduceFreeProductsFromSIH(DBUtil db) {
@@ -3470,7 +3477,7 @@ public class SchemeDetailsMasterHelper {
                                         + " else 0 end) where pid="
                                         + productBO.getProductID());
 
-                                if (isBatchWiseProducts&&productBO.getBatchwiseProductCount() > 0 ) {
+                                if (isBatchWiseProducts && productBO.getBatchwiseProductCount() > 0) {
                                     reduceFreeProductFromSIHBatchWise(
                                             schemeProductBO, db);
                                 } else {
@@ -3494,7 +3501,7 @@ public class SchemeDetailsMasterHelper {
             }
         }
 
-         // update sih off invoice scheme
+        // update sih off invoice scheme
         if (mOffInvoiceAppliedSchemeList != null) {
             for (SchemeBO schemeBO : mOffInvoiceAppliedSchemeList) {
                 if (schemeBO.isQuantityTypeSelected()) {
@@ -3538,7 +3545,7 @@ public class SchemeDetailsMasterHelper {
                                         + " else 0 end) where pid="
                                         + productBO.getProductID());
 
-                                if (isBatchWiseProducts&&productBO.getBatchwiseProductCount() > 0) {
+                                if (isBatchWiseProducts && productBO.getBatchwiseProductCount() > 0) {
                                     reduceFreeProductFromSIHBatchWise(
                                             schemeProductBO, db);
                                 } else {
@@ -3567,8 +3574,9 @@ public class SchemeDetailsMasterHelper {
     /**
      * Reducing scheme apply count
      * No need to update if count is -1. If it is -1 then scheme can be achieved n number of times
+     *
      * @param schemeId Scheme Id
-     * @param db Database Objects
+     * @param db       Database Objects
      */
     private void updateSchemeCountApply(String schemeId, DBUtil db) {
 
@@ -3587,8 +3595,9 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Reducing free products batch wise from SIH
+     *
      * @param schemeProductBo Free product Bo
-     * @param db Database Object
+     * @param db              Database Object
      */
     private void reduceFreeProductFromSIHBatchWise(SchemeProductBO schemeProductBo,
                                                    DBUtil db) {
@@ -3647,6 +3656,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Calculate discount(Price/percentage) value
+     *
      * @param productBo
      * @param value
      * @param type
@@ -3694,10 +3704,11 @@ public class SchemeDetailsMasterHelper {
     }
 
     /**
-     *  Calculate discount(Price/percentage) value batch wise
+     * Calculate discount(Price/percentage) value batch wise
+     *
      * @param productBO Buy product BO
-     * @param value Value of discount type
-     * @param type Discount type
+     * @param value     Value of discount type
+     * @param type      Discount type
      * @return Total discount value
      */
     private double calculateDiscountValueBatchWise(ProductMasterBO productBO,
@@ -3813,8 +3824,6 @@ public class SchemeDetailsMasterHelper {
 
         return totalDisPriceValue;
     }
-
-
 
 
     /**
@@ -4060,6 +4069,7 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Calculating scheme apply count based on every UOM qty given
+     *
      * @param schemeBO Scheme object to calculate
      * @return Applied count
      */
@@ -4173,9 +4183,10 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Load Scheme Report
+     *
      * @param mContext Current Context
-     * @param id Invoice.Order Id
-     * @param flag - true - invoice,false - order
+     * @param id       Invoice.Order Id
+     * @param flag     - true - invoice,false - order
      */
     public void loadSchemeReportDetails(Context mContext, String id, boolean flag) {
         mAppliedSchemeList = new ArrayList<>();
@@ -4337,9 +4348,9 @@ public class SchemeDetailsMasterHelper {
 
     /**
      * Loading scheme accumulation report
+     *
      * @param id   - it acts either invoiceId or orderId
      * @param flag - true - invoice,false - order     *
-     *
      */
     public ArrayList<SchemeProductBO> downLoadAccumulationSchemeDetailReport(Context mContext, String id, boolean flag) {
         ArrayList<SchemeProductBO> mAccumulationFreePrdList = null;
@@ -4626,8 +4637,7 @@ public class SchemeDetailsMasterHelper {
     /**
      * Download display scheme applicable products
      */
-    public ArrayList<String> downloadDisplaySchemeProducts(Context mContext, String schemeId)
-    {
+    public ArrayList<String> downloadDisplaySchemeProducts(Context mContext, String schemeId) {
         ArrayList<String> mProductList = new ArrayList<>();
         DBUtil db = null;
         try {
@@ -4823,8 +4833,6 @@ public class SchemeDetailsMasterHelper {
 
 
     }
-
-
 
 
 }
