@@ -261,6 +261,8 @@ public class ProductHelper {
     }
 
     public Vector<ProductMasterBO> getSalesReturnProducts() {
+        if (mSalesReturnProducts == null)
+            return new Vector<>();
         return mSalesReturnProducts;
     }
 
@@ -4403,6 +4405,8 @@ public class ProductHelper {
     }
 
     public ArrayList<BomReturnBO> getBomReturnTypeProducts() {
+        if (bomReturnTypeProducts == null)
+            return new ArrayList<>();
         return bomReturnTypeProducts;
     }
 

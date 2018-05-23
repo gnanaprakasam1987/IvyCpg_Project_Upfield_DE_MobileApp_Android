@@ -1827,7 +1827,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     finish();
                                 } else {
                                     showDialog(1);
-                                    isCreated = false;
                                 }
                             } else {
 
@@ -3829,7 +3828,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     finish();
                 } else {
                     showDialog(1);
-                    isCreated = false;
                 }
             } else {
                 bmodel.outletTimeStampHelper
@@ -3973,7 +3971,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-
+                                        isCreated = false;
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder1);
