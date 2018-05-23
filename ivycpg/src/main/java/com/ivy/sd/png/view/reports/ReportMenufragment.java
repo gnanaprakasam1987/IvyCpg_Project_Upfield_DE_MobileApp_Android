@@ -25,10 +25,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.OrderReportBO;
+
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.InvoiceReportBO;
+
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -43,25 +43,30 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
 /**
  * Created by vikraman.a on 05-05-2017.
+ *
+ * 1. Prepare the menu Fragment
+ * . get the menu item from database hht table
+ * . prepare the adapter for the given menu Items
+ * . Based on the item click  send the postRequest
+ * . Base the response will move to the corresponding screens
  */
 
 public class ReportMenufragment extends IvyBaseFragment {
+
     private View view;
 
     private BusinessModel bmodel;
-    private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
-    private Vector<ConfigureBO> menuDB = new Vector<ConfigureBO>();
+    private static final HashMap<String, Integer> menuIcons = new HashMap<>();
+    private Vector<ConfigureBO> menuDB = new Vector<>();
+
     private ActionBar actionBar;
-    private ArrayList<OrderReportBO> mylist;
-    private Vector<InvoiceReportBO> mylist1;
-    private Vector<ConfigureBO> mDayList;
+
 
     @SuppressLint("NewApi")
 
@@ -82,7 +87,6 @@ public class ReportMenufragment extends IvyBaseFragment {
                 actionBar.setDisplayShowTitleEnabled(false);
                 actionBar.setIcon(null);
                 actionBar.setElevation(0);
-                //  actionBar.setStackedBackgroundDrawable((new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.toolbar_ret_bg))));
             }
 
             setScreenTitle(bmodel.configurationMasterHelper.getTradecoveragetitle());
@@ -165,6 +169,11 @@ public class ReportMenufragment extends IvyBaseFragment {
                     R.drawable.icon_reports);
 
             // Load the HHTTable
+
+            /**
+             *
+             *  downloadNewActivityMenu  from Database  HHTTable
+             */
             menuDB = bmodel.configurationMasterHelper
                     .downloadNewActivityMenu(StandardListMasterConstants.REPORT_MENU);
 
@@ -180,8 +189,13 @@ public class ReportMenufragment extends IvyBaseFragment {
         return view;
     }
 
-    private boolean isCreated;
 
+    /**
+     * @param config - ConfigureBO object
+     *               move to corresponding fragment based on the configCode
+     *               check BusinessModel object for valid data then only move to corresponding Screen
+     *               else show corresponding error message
+     */
     protected void gotoSelectedFragement(ConfigureBO config) {
         if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INVOICE_REPORT)) {
             if (bmodel.reportHelper.downloadInvoicereport().size() >= 1) {
@@ -260,15 +274,26 @@ public class ReportMenufragment extends IvyBaseFragment {
 
     }
 
+
+    /**
+     * @param config - ConfigureBO object
+     *               start the Report Activity with corresponding Config object
+     */
     private void intoreportacti(ConfigureBO config) {
         Intent intent = new Intent(getActivity(), ReportActivity.class);
         Bundle bun = new Bundle();
         bun.putSerializable("config", config);
         intent.putExtras(bun);
-
         startActivity(intent);
-        //isCreated = false;
     }
+
+
+    /**
+     * Prepare the adapter for show the menu Items
+     * ViewHolder Pattern:   object hold the views for future reference instead of creating new views every time
+     * prepare the view for menus
+     * Move to corresponding screen based on list item click
+     */
 
     class MenuBaseAdapter extends BaseAdapter {
 
@@ -342,7 +367,6 @@ public class ReportMenufragment extends IvyBaseFragment {
                         Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
 
                     } else {
-                        //isCreated = true;
                         gotoSelectedFragement(holder.config);
                     }
 
@@ -351,6 +375,9 @@ public class ReportMenufragment extends IvyBaseFragment {
             });
 
 
+            /**
+             * set the different colors for odd and even rows
+             */
             if (position % 2 == 0)
                 convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             else
@@ -370,6 +397,14 @@ public class ReportMenufragment extends IvyBaseFragment {
         }
     }
 
+
+    /**
+     * setUp the updateAuthenticateToken() for post request
+     * send the post request and store the "rpt_downtime" in SharedPreferences from the response object
+     * <p>
+     * based on result of  (bmodel.reportHelper.isPerformReport()) ) this will move ReportActivity
+     * else show the alert for the error code
+     */
     class PerformRptDownloadData extends AsyncTask<String, String, String> {
         JSONObject jsonObject = null;
         ConfigureBO config;

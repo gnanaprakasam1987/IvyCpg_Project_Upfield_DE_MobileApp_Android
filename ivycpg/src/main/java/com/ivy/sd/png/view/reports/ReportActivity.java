@@ -1,7 +1,6 @@
 package com.ivy.sd.png.view.reports;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -10,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -46,8 +44,6 @@ import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -56,50 +52,7 @@ import java.util.Vector;
 public class ReportActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface, SellerListFragment.SellerSelectionInterface {
 
-    private OrderReportFragment orderFragment;
-    private SalesVolumeReportFragment salesVolumeReportFragment;
-    private PreviousDayOrderReportFragment pvsorderFragment;
-    private DailyReportFragmentNew dayFragment;
-    private InvoiceReportFragment invoiceReportFragment;
-    private PndInvoiceReportFragment pndInvoiceReportFragment;
-    private CurrentStockView stockReportFragment;
-    private BeginningStockFragment stockreportfragmentnew;
-    private CollectionReportFragment collectionReportFragment;
-    private TaskExecutionReportFragment taskReportFragment;
-    private EODStockReportFragment mEODStockReportFragment;
-    private TaskReportFragment taskreportfragment;
-    private QuestionReportFragment questionReportFragment;
-    private CurrentStockBatchViewFragment currentStockBatchViewFragment;
-    private DashboardReportFragment dashboardReportFragment;
-    private DistOrderReportFragment distOrderReportFrag;
-    private DynamicReportFragment dynamicReportFragment;
-    private RetailerReportFragment retailerReportFragment;
-    private LogReportFragment logReportFragment;
-    private SOreportFragment sOreportFragment;
-    CreditNoteReportFragment creditNoteReportFragment;
-    private AttendanceReport attendanceReport;
-    private ContractReportFragment mContractReport;
-    private SalesFundamentalGapReportFragment salesFundamentalGapReportFragment;
-    private PromotionTrackingReport promotionTrackingReportFragment;
-    private AssetTrackingReportFragment assetTrackingReportFragment;
-    private OutletPerformanceReportFragmnet mOutletPerformanceReportFragmnet;
-
     private BusinessModel bmodel;
-    private String menuTitle;
-    private FragmentTransaction transaction;
-
-    private BrandwisePerformance brandwisePerformanceFragment;
-    private OpportunitiesReport mOpportunitiesReport;
-    private TimeAndTravelReport mTimeAndTravelReport;
-    private ProductivityReport mProductivityReport;
-    private DeliveryStockReport mDeliveryStockReport;
-    private InventoryReportFragment mInventoryReport;
-    private SellerMapViewReportFragment mSellerMapviewReport;
-    private SellerPerformanceReportFragment mSellerPerformReport;
-    private SalesReturnReportFragment salesReturnReport;
-    private WebViewArchivalReportFragment webViewArchivalReportFragment;
-    private ClosingStockReportFragment closingStockReportFragment;
-    private RetailerActivityReportFragment mRetailerActivityReport;
 
     private Toolbar toolbar;
 
@@ -111,7 +64,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         try {
@@ -168,72 +121,11 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
         setLanguage();
 
-        mContractReport = new ContractReportFragment();
-        orderFragment = new OrderReportFragment();
-        orderFragment.setArguments(getIntent().getExtras());
-        salesVolumeReportFragment = new SalesVolumeReportFragment();
-        salesVolumeReportFragment.setArguments(getIntent().getExtras());
-        mDeliveryStockReport = new DeliveryStockReport();
-        mDeliveryStockReport.setArguments(getIntent().getExtras());
-        pvsorderFragment = new PreviousDayOrderReportFragment();
-        pvsorderFragment.setArguments(getIntent().getExtras());
-        dayFragment = new DailyReportFragmentNew();
-        dayFragment.setArguments(getIntent().getExtras());
-        invoiceReportFragment = new InvoiceReportFragment();
-        invoiceReportFragment.setArguments(getIntent().getExtras());
-        pndInvoiceReportFragment = new PndInvoiceReportFragment();
-        pndInvoiceReportFragment.setArguments(getIntent().getExtras());
-        stockReportFragment = new CurrentStockView();
-        stockReportFragment.setArguments(getIntent().getExtras());
-        stockreportfragmentnew = new BeginningStockFragment();
-        stockreportfragmentnew.setArguments(getIntent().getExtras());
-        collectionReportFragment = new CollectionReportFragment();
-        collectionReportFragment.setArguments(getIntent().getExtras());
-        salesReturnReport = new SalesReturnReportFragment();
-        salesReturnReport.setArguments(getIntent().getExtras());
-        creditNoteReportFragment = new CreditNoteReportFragment();
-        creditNoteReportFragment.setArguments(getIntent().getExtras());
-        taskReportFragment = new TaskExecutionReportFragment();
-        taskReportFragment.setArguments(getIntent().getExtras());
-        mEODStockReportFragment = new EODStockReportFragment();
-        mEODStockReportFragment.setArguments(getIntent().getExtras());
-        taskreportfragment = new TaskReportFragment();
-        questionReportFragment = new QuestionReportFragment();
-        currentStockBatchViewFragment = new CurrentStockBatchViewFragment();
-        dashboardReportFragment = new DashboardReportFragment();
-        distOrderReportFrag = new DistOrderReportFragment();
-        dynamicReportFragment = new DynamicReportFragment();
-        retailerReportFragment = new RetailerReportFragment();
-        logReportFragment = new LogReportFragment();
-        sOreportFragment = new SOreportFragment();
-        attendanceReport = new AttendanceReport();
-        brandwisePerformanceFragment = new BrandwisePerformance();
-        brandwisePerformanceFragment.setArguments(getIntent().getExtras());
-        mOpportunitiesReport = new OpportunitiesReport();
-        mOpportunitiesReport.setArguments(getIntent().getExtras());
-        mTimeAndTravelReport = new TimeAndTravelReport();
-        mTimeAndTravelReport.setArguments(getIntent().getExtras());
-        mProductivityReport = new ProductivityReport();
-        mProductivityReport.setArguments(getIntent().getExtras());
-        mInventoryReport = new InventoryReportFragment();
-        mSellerMapviewReport = new SellerMapViewReportFragment();
-        mSellerPerformReport = new SellerPerformanceReportFragment();
-        mOutletPerformanceReportFragmnet = new OutletPerformanceReportFragmnet();
-        webViewArchivalReportFragment = new WebViewArchivalReportFragment();
-        mRetailerActivityReport=new RetailerActivityReportFragment();
-
-        closingStockReportFragment = new ClosingStockReportFragment();
-
-
-        salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
-        salesFundamentalGapReportFragment.setArguments(getIntent().getExtras());
-        promotionTrackingReportFragment = new PromotionTrackingReport();
-        promotionTrackingReportFragment.setArguments(getIntent().getExtras());
-        assetTrackingReportFragment = new AssetTrackingReportFragment();
-        assetTrackingReportFragment.setArguments(getIntent().getExtras());
         Bundle bun = getIntent().getExtras();
-        ConfigureBO config = (ConfigureBO) bun.getSerializable("config");
-        switchFragments(config);
+        if (bun != null) {
+            ConfigureBO config = (ConfigureBO) bun.getSerializable("config");
+            switchFragments(config);
+        }
 
         if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN)
             bmodel.productHelper.taxHelper = TaxGstHelper.getInstance(this);
@@ -242,8 +134,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     }
 
     private void setLanguage() {
-        SharedPreferences sharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(this);
+        SharedPreferences sharedPrefs = PreferenceManager.
+                getDefaultSharedPreferences(this);
         String language = sharedPrefs.getString("languagePref",
                 ApplicationConfigs.LANGUAGE);
         Locale myLocale = new Locale(language);
@@ -286,157 +178,172 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     /**
      * Used to switch fragment
      *
-     * @param config
+     * @param config - ConfigureBo object
      */
     public void switchFragments(ConfigureBO config) {
 
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction();
 
+
+        setScreenTitle(config.getMenuName());
+
         if (config.getConfigCode().contains(
                 StandardListMasterConstants.MENU_DYN_REPORT)) {
             bmodel.dynamicReportHelper.downloadDynamicReport(config.getConfigCode());
-            dynamicReportFragment = new DynamicReportFragment();
+
+            DynamicReportFragment dynamicReportFragment = new DynamicReportFragment();
             Bundle bundle = new Bundle();
             bundle.putString("isFrom", "Reports");
             dynamicReportFragment.setArguments(bundle);
             transaction.replace(R.id.fragment_content, dynamicReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_ATTENDANCE_REPORT)) {
             bmodel.reportHelper.downloadAttendanceReport();
+
+            AttendanceReport attendanceReport = new AttendanceReport();
             transaction.replace(R.id.fragment_content, attendanceReport);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_RTR_RPT)) {
-            retailerReportFragment = new RetailerReportFragment();
+            RetailerReportFragment retailerReportFragment = new RetailerReportFragment();
             Bundle bundle = new Bundle();
             bundle.putInt("type_retailer", config.getModule_Order());
             retailerReportFragment.setArguments(bundle);
             transaction.replace(R.id.fragment_content, retailerReportFragment);
-            transaction.addToBackStack(null);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_ORDER_REPORT)) {
+
+
+            OrderReportFragment orderFragment = new OrderReportFragment();
+            orderFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, orderFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_DELIVERY_STOCK_REPORT)) {
 
+            DeliveryStockReport mDeliveryStockReport = new DeliveryStockReport();
+            mDeliveryStockReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mDeliveryStockReport);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
+
+            setSubTitle(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_PREVIOUS_ORDER_REPORT)) {
+
+            PreviousDayOrderReportFragment pvsorderFragment = new PreviousDayOrderReportFragment();
+            pvsorderFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, pvsorderFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
+
+            setSubTitle(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_DAY_REPORT)) {
+
+            DailyReportFragmentNew dayFragment = new DailyReportFragmentNew();
+            dayFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, dayFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_INVOICE_REPORT)) {
+
+            InvoiceReportFragment invoiceReportFragment = new InvoiceReportFragment();
+            invoiceReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, invoiceReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_PND_INVOICE_REPORT)) {
+
+            PndInvoiceReportFragment pndInvoiceReportFragment = new PndInvoiceReportFragment();
+            pndInvoiceReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, pndInvoiceReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SKU_REPORT)) {
 
             bmodel.reportHelper.downloadProductReportsWithFiveLevelFilter();
+
+            SalesVolumeReportFragment salesVolumeReportFragment = new SalesVolumeReportFragment();
+            salesVolumeReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, salesVolumeReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            transaction.commit();
+
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT)) {
             bmodel.productHelper
                     .downloadProductFilter("MENU_LOAD_MANAGEMENT");
 
+
+            CurrentStockView stockReportFragment = new CurrentStockView();
+            stockReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, stockReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_BEGINNING_STOCK_REPORT)) {
+
+            BeginningStockFragment stockreportfragmentnew = new BeginningStockFragment();
+            stockreportfragmentnew.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, stockreportfragmentnew);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_COLLECTION_REPORT)) {
-            transaction
-                    .replace(R.id.fragment_content, collectionReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            CollectionReportFragment collectionReportFragment = new CollectionReportFragment();
+            collectionReportFragment.setArguments(getIntent().getExtras());
+            transaction.replace(R.id.fragment_content, collectionReportFragment);
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CREDIT_NOTE_REPORT)) {
-            transaction
-                    .replace(R.id.fragment_content, creditNoteReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            CreditNoteReportFragment creditNoteReportFragment = new CreditNoteReportFragment();
+            creditNoteReportFragment.setArguments(getIntent().getExtras());
+            transaction.replace(R.id.fragment_content, creditNoteReportFragment);
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_TASK_EXECUTION_REPORT)) {
+
+            TaskExecutionReportFragment taskReportFragment = new TaskExecutionReportFragment();
+            taskReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, taskReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_EOD_STOCK_REPORT)) {
             bmodel.configurationMasterHelper.loadEODColumnConfiguration();
             bmodel.configurationMasterHelper.loadEODUOMConfiguration();
+
+            EODStockReportFragment mEODStockReportFragment = new EODStockReportFragment();
+            mEODStockReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mEODStockReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals("MENU_REPORT_CLOSE")) {
 
             startActivity(new Intent(this, HomeScreenActivity.class));
@@ -444,22 +351,19 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_TASK_REPORT)) {
 
+            TaskReportFragment taskreportfragment = new TaskReportFragment();
             transaction.replace(R.id.fragment_content, taskreportfragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_QUESTION_REPORT)) {
 
-            transaction
-                    .replace(R.id.fragment_content, questionReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+            QuestionReportFragment questionReportFragment = new QuestionReportFragment();
+            transaction.replace(R.id.fragment_content, questionReportFragment);
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT)) {
 
             if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
@@ -470,7 +374,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                         .downloadProductFilter("MENU_LOAD_MANAGEMENT");
             }
 
-
             if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
                 bmodel.productHelper.loadProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
@@ -478,90 +381,82 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                 bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
                         "MENU_CUR_STK_BATCH");
 
+            CurrentStockBatchViewFragment currentStockBatchViewFragment = new CurrentStockBatchViewFragment();
+            transaction.replace(R.id.fragment_content, currentStockBatchViewFragment, StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
 
-            transaction
-                    .replace(R.id.fragment_content, currentStockBatchViewFragment, StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SUP_TEST_SCORE)) {
 
+            DashboardReportFragment dashboardReportFragment = new DashboardReportFragment();
             transaction.replace(R.id.fragment_content, dashboardReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_PS_ORD_RPT)) {
 
-
+            DistOrderReportFragment distOrderReportFrag = new DistOrderReportFragment();
             transaction.replace(R.id.fragment_content, distOrderReportFrag);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_BRAND_PERFORMANCE_REPORT)) {
-            /*if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-                transaction.replace(R.id.fragment_content, ordrepfrag);
-            } else*/
+
+            BrandwisePerformance brandwisePerformanceFragment = new BrandwisePerformance();
+            brandwisePerformanceFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, brandwisePerformanceFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
+
+            setSubTitle(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_OPPORTUNITIES_REPORT)) {
-            /*if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-                transaction.replace(R.id.fragment_content, ordrepfrag);
-            } else*/
+
+            OpportunitiesReport mOpportunitiesReport = new OpportunitiesReport();
+            mOpportunitiesReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mOpportunitiesReport);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
+
+            setSubTitle(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_TIMEANDTRAVEL_REPORT)) {
-            /*if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-                transaction.replace(R.id.fragment_content, ordrepfrag);
-            } else*/
+
+            TimeAndTravelReport mTimeAndTravelReport = new TimeAndTravelReport();
+            mTimeAndTravelReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mTimeAndTravelReport);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_PRODUCTIVITY_REPORT)) {
-            /*if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-                transaction.replace(R.id.fragment_content, ordrepfrag);
-            } else*/
+
+            ProductivityReport mProductivityReport = new ProductivityReport();
+            mProductivityReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mProductivityReport);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
+
+            setSubTitle(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_LOG)) {
+
+            LogReportFragment logReportFragment = new LogReportFragment();
             transaction.replace(R.id.fragment_content, logReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_WEBVIEW_RPT01) ||
                 config.getConfigCode().equals(StandardListMasterConstants.MENU_WEBVIEW_RPT02)) {
 
             if (bmodel.isOnline()) {
                 bmodel.reportHelper.downloadWebViewReportUrl(config.getConfigCode());
                 if (!bmodel.reportHelper.getWebReportUrl().equals("")) {
-                    transaction
-                            .replace(R.id.fragment_content, sOreportFragment);
-                    transaction.addToBackStack(null);
-                    getSupportActionBar().setDisplayShowTitleEnabled(false);
-                    setScreenTitle(config.getMenuName());
-                    transaction.commit();
+
+                    SOreportFragment sOreportFragment = new SOreportFragment();
+                    transaction.replace(R.id.fragment_content, sOreportFragment);
+
+                    commitFragment(transaction, config);
+
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
                 }
@@ -570,116 +465,130 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             }
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CONTRACT_REPORT)) {
+
+            ContractReportFragment mContractReport = new ContractReportFragment();
             transaction.replace(R.id.fragment_content, mContractReport);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
+
+            setSubTitle(transaction, config);
+
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SFG_REPORT)) {
+
+            SalesFundamentalGapReportFragment salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
+            salesFundamentalGapReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, salesFundamentalGapReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_PROMO_REPORT)) {
+
+            PromotionTrackingReport promotionTrackingReportFragment = new PromotionTrackingReport();
+            promotionTrackingReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, promotionTrackingReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ASSET_REPORT)) {
+
+            AssetTrackingReportFragment assetTrackingReportFragment = new AssetTrackingReportFragment();
+            assetTrackingReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, assetTrackingReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_INVENTORY_RPT)) {
-            getSupportActionBar().setSubtitle(config.getMenuName());
+
+            InventoryReportFragment mInventoryReport = new InventoryReportFragment();
             transaction.replace(R.id.fragment_content, mInventoryReport);
             bmodel.mSelectedActivityName = config.getMenuName();
-            transaction.addToBackStack(null);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            setSubTitle(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
             bmodel.reportHelper.downloadUsers();
             if (bmodel.reportHelper.getLstUsers().size() > 0) {
+
+                SellerMapViewReportFragment mSellerMapviewReport = new SellerMapViewReportFragment();
                 transaction.replace(R.id.fragment_content, mSellerMapviewReport, StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-                setScreenTitle(config.getMenuName());
                 bmodel.mSelectedActivityName = config.getMenuName();
-                transaction.addToBackStack(null);
-                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                transaction.commit();
+
+                commitFragment(transaction, config);
+
             } else {
                 Toast.makeText(this, getResources().getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
             }
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT)) {
 
+            SellerPerformanceReportFragment mSellerPerformReport = new SellerPerformanceReportFragment();
             transaction.replace(R.id.fragment_content, mSellerPerformReport);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
             bmodel.mSelectedActivityName = config.getMenuName();
-            transaction.addToBackStack(null);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_RETPERFO_RPT)) {
             bmodel.reportHelper.downloadUsers();
             if (bmodel.reportHelper.getLstUsers().size() > 0) {
+
+                OutletPerformanceReportFragmnet mOutletPerformanceReportFragmnet = new OutletPerformanceReportFragmnet();
                 transaction.replace(R.id.fragment_content, mOutletPerformanceReportFragmnet, StandardListMasterConstants.MENU_RETPERFO_RPT);
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-                setScreenTitle(config.getMenuName());
                 bmodel.mSelectedActivityName = config.getMenuName();
-                transaction.addToBackStack(null);
-                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                transaction.commit();
+
+                commitFragment(transaction, config);
+
             } else {
                 Toast.makeText(this, getResources().getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
             }
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SALES_REPORT)) {
+
+            SalesReturnReportFragment salesReturnReport = new SalesReturnReportFragment();
+            salesReturnReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, salesReturnReport);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+
+            commitFragment(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_ARCHV_RPT)) {
+
+            WebViewArchivalReportFragment webViewArchivalReportFragment = new WebViewArchivalReportFragment();
             transaction.replace(R.id.fragment_content, webViewArchivalReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
+
+            setSubTitle(transaction, config);
+
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
 
+            ClosingStockReportFragment closingStockReportFragment = new ClosingStockReportFragment();
             transaction.replace(R.id.fragment_content, closingStockReportFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
+            commitFragment(transaction, config);
 
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_RETAILER_ACTIVITY_REPORT)) {
 
+            RetailerActivityReportFragment mRetailerActivityReport = new RetailerActivityReportFragment();
             transaction.replace(R.id.fragment_content, mRetailerActivityReport);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(config.getMenuName());
             bmodel.mSelectedActivityName = config.getMenuName();
-            transaction.addToBackStack(null);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            transaction.commit();
-
+            commitFragment(transaction, config);
         }
-        // Commit the transaction
+
+
+    }
+
+    private void setSubTitle(FragmentTransaction transaction, ConfigureBO config) {
+        transaction.addToBackStack(null);
+        getSupportActionBar().setSubtitle(config.getMenuName());
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        transaction.commit();
+    }
+
+    private void commitFragment(FragmentTransaction transaction, ConfigureBO config) {
+        transaction.addToBackStack(null);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setScreenTitle(config.getMenuName());
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        transaction.commit();
     }
 
     @Override
@@ -770,5 +679,11 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             fragment.updateClose();
         else if (outlet_perf_fragmnet != null)
             outlet_perf_fragmnet.updateClose();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        bmodel = null;
     }
 }

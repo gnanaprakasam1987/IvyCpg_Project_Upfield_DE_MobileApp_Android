@@ -1,12 +1,9 @@
 package com.ivy.sd.png.view.reports;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,11 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +32,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.SettingsHelper;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -48,30 +41,24 @@ import com.zebra.sdk.printer.PrinterLanguage;
 import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Vector;
 
 public class DailyReportFragmentNew extends IvyBaseFragment {
     private static final String TAG = "DailyReportFragmentNew";
+
     private BusinessModel bmodel;
-    private View view;
     private GridView dayReportgrid;
 
-    private ArrayList<ConfigureBO> removable_config;
     private Vector<ConfigureBO> mDayList;
     private static final String ZEBRA_3INCH = "3";
 
     boolean hasInititative, hasMerchandising;
-    private Spinner printcount;
-    private ArrayAdapter<CharSequence> spinadapter;
 
-    private ImageView mStatusIV;
-    private ZebraPrinter printer;
-    private boolean IsOriginal;
+    // private ImageView mStatusIV;
+    // private ZebraPrinter printer;
+
     private Connection zebraPrinterConnection;
-    private ProgressDialog pd;
-    private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
 
     @Override
@@ -80,20 +67,17 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        view = inflater.inflate(R.layout.fragment_daily_report_new, container,
+        View view = inflater.inflate(R.layout.fragment_daily_report_new, container,
                 false);
 
-        dayReportgrid = (GridView) view.findViewById(R.id.gridview);
+        dayReportgrid = view.findViewById(R.id.gridview);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        initializeBusinessModel();
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.sessionout_loginagain),
+            Toast.makeText(getActivity(), getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
-
         }
         try {
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
@@ -115,12 +99,20 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
         } catch (Exception e) {
             Commons.printException(e);
         }
+
         // loadData();
         bmodel.sbdMerchandisingHelper.loadSbdMerchCoverage();
         mDayList = bmodel.configurationMasterHelper.downloadDayReportList();
         updateDayReportData();
 
         return view;
+    }
+
+
+    private void initializeBusinessModel() {
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+
     }
 
     @Override
@@ -131,19 +123,14 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
         getActivity().getMenuInflater().inflate(R.menu.menu_dayreport, menu);
-
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        boolean drawerOpen = false;
         if (bmodel.configurationMasterHelper.IS_DAY_REPORT_PRINT)
             menu.findItem(R.id.menu_print).setVisible(true);
-
-
     }
 
     @Override
@@ -158,13 +145,11 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                     Looper.myLooper().quit();
                 }
             }).start();
-            builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
             customProgressDialog(builder, "Printing....");
             alertDialog = builder.create();
             alertDialog.show();
-
-
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -188,7 +173,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
         int totalcalls = bmodel.getTotalCallsForTheDay();
         int visitedcalls = bmodel.getVisitedCallsForTheDay();
-        removable_config = new ArrayList<ConfigureBO>();
+        ArrayList<ConfigureBO> removable_config = new ArrayList<>();
         for (ConfigureBO con : mDayList) {
 
             if (con.getConfigCode().equalsIgnoreCase("DAYRT01")) {
@@ -208,7 +193,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                             * bmodel.configurationMasterHelper
                             .getProductiveCallPercentage() / 100;
 
-                    int productiveCallsObj_PH_round = (int) Math
+                    int productiveCallsObj_PH_round = Math
                             .round(productiveCallsObj_PH);
                     if (productiveCallsObj_PH > productiveCallsObj_PH_round) {
                         productiveCallsObj_PH = productiveCallsObj_PH + 1;
@@ -220,10 +205,10 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                     con.setMenuNumber(productivecalls + "/" + visitedcalls);
                 }
 
-            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT05")) {
+            } /*else if (con.getConfigCode().equalsIgnoreCase("DAYRT05")) {
                 //con.setMenuNumber(bmodel.goldStoreValue());
 
-            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT06")) {
+            }*/ else if (con.getConfigCode().equalsIgnoreCase("DAYRT06")) {
                 con.setMenuNumber(outlet.getTotLines());
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT07")) {
@@ -237,7 +222,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                         avg1 = f1 / f2;
                     }
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
                 con.setMenuNumber(SDUtil.roundIt(avg1, 2));
 
@@ -379,7 +364,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                     String op = getResources().getString(R.string.item_piece);
                     String oc = getResources().getString(R.string.item_case);
                     String ou = getResources().getString(R.string.item_outer);
-                    /**----- update label from label master table based on key value**/
+                    //  /**----- update label from label master table based on key value**/
                     if (bmodel.labelsMasterHelper
                             .applyLabels("item_piece") != null)
                         op = bmodel.labelsMasterHelper
@@ -394,7 +379,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                         ou = bmodel.labelsMasterHelper
                                 .applyLabels("item_outer");
 
-                    /**-------end of the updated statement-------**/
+                    ///**-------end of the updated statement-------**/
 
                     if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
 
@@ -402,25 +387,29 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                     }
                     if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
 
-                        if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                            sb.append("\n" + (outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
-                                    + oc + " ");
-                        else
-                            sb.append((outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
-                                    + oc + " ");
+                        if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                            String s = "\n" + (outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
+                                    + oc + " ";
+                            sb.append(s);
+                        } else {
+                            String s = (outlet.getCsQty() == null ? 0 : outlet.getCsQty()) + " "
+                                    + oc + " ";
+                            sb.append(s);
+                        }
                     }
                     if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                        if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS || bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                            sb.append("\n" + (outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " "
-                                    + ou + " ");
-                        else
-                            sb.append((outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " "
-                                    + ou + " ");
+                        if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS || bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                            String s1 = "\n" + (outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " " + ou + " ";
+                            sb.append(s1);
+                        } else {
+                            String s1 = (outlet.getOuQty() == null ? 0 : outlet.getOuQty()) + " " + ou + " ";
+                            sb.append(s1);
+                        }
                     }
 
                     con.setMenuNumber(sb + "");
                 } catch (Exception e) {
-
+                    Commons.printException(e);
                 }
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT26")) {
@@ -435,22 +424,22 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             }
         }
 
-            mDayList.remove(removable_config);
+        mDayList.removeElement(removable_config);
 
         if (hasMerchandising) {
-            ConfigureBO con = new ConfigureBO();
+            ConfigureBO con;
             bmodel.sbdMerchandisingHelper.setMerchTypeCodes();
 
-            ArrayList<MerchandisingposmBO> MerchCov = new ArrayList<MerchandisingposmBO>();
+            ArrayList<MerchandisingposmBO> MerchCov;
             MerchCov = bmodel.sbdMerchandisingHelper.getSbdMerchCoverageBO();
 
-            ArrayList<MerchandisingposmBO> merchList = new ArrayList<MerchandisingposmBO>();
-            ArrayList<MerchandisingposmBO> merchInitList = new ArrayList<MerchandisingposmBO>();
+            ArrayList<MerchandisingposmBO> merchList = new ArrayList<>();
+            ArrayList<MerchandisingposmBO> merchInitList = new ArrayList<>();
 
             MerchandisingposmBO merch;
             for (int i = 0; i < MerchCov.size(); i++) {
                 con = new ConfigureBO();
-                merch = (MerchandisingposmBO) MerchCov.get(i);
+                merch = MerchCov.get(i);
                 con.setMenuName(merch.getPosmdescription());
                 con.setMenuNumber(merch.getAchieved() + "/" + merch.getTarget());
                 if (bmodel.sbdMerchandisingHelper.merchTypeListCode
@@ -500,7 +489,6 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
     }
 
-    ConfigureBO config;
 
     class MyAdapter extends BaseAdapter {
         Vector<ConfigureBO> items;
@@ -533,11 +521,11 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                         R.layout.row_daily_report_fragment, parent, false);
                 holder = new ViewHolder();
 
-                holder.name = (TextView) convertView
+                holder.name = convertView
                         .findViewById(R.id.name_txt);
-                holder.value = (TextView) convertView
+                holder.value = convertView
                         .findViewById(R.id.value_txt);
-                holder.value1 = (TextView) convertView
+                holder.value1 = convertView
                         .findViewById(R.id.value_txt1);
 
                 convertView.setTag(holder);
@@ -546,7 +534,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             }
             holder.name.setText(items.get(position).getMenuName());
             String menunumber = items.get(position).getMenuNumber();
-            if (menunumber.toString().contains("/")) {
+            if (menunumber.contains("/")) {
                 String a1 = menunumber.split("/")[0];
                 String b1 = menunumber.split("/")[1];
                 holder.value.setText(a1);
@@ -572,7 +560,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
     /**
      * Get today beat object by searching the beatmaster vector.
      *
-     * @return
+     * @return -  BeatMasterBO object
      */
     private BeatMasterBO getTodayBeat() {
         try {
@@ -585,21 +573,21 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             }
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return null;
     }
 
     public void onBackPressed() {
         // do something on back.
-        return;
+        //return;
     }
 
 
     private void doConnection(String printername) {
         try {
             bmodel.vanmodulehelper.downloadSubDepots();
-            printer = connect();
+            ZebraPrinter printer = connect();
             if (printer != null) {
                 // sendTestLabel();
                 printInvoice(printername);
@@ -661,7 +649,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
         Commons.print(TAG + "PRINT MAC : " + getMacAddressFieldText());
         try {
             zebraPrinterConnection.open();
-            mStatusIV.setImageResource(R.drawable.greenball);
+            //mStatusIV.setImageResource(R.drawable.greenball);
 
         } catch (ConnectionException e) {
 
@@ -719,11 +707,9 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             // String macAddress = "00:22:58:08:1E:37";
 
             SharedPreferences pref = getActivity().getSharedPreferences("PRINT",
-                    getActivity().MODE_PRIVATE);
+                    Context.MODE_PRIVATE);
             macAddress = pref.getString("MAC", "");
-//			SharedPreferences.Editor editor = pref.edit();
-//			macAddress=editor.
-//			editor.commit();
+
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -732,23 +718,17 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
     public void disconnect() {
         try {
-
-
             if (zebraPrinterConnection != null) {
                 zebraPrinterConnection.close();
             }
 
         } catch (ConnectionException e) {
-
             Commons.printException(e);
-        } finally {
-
         }
     }
 
 
     public byte[] printDatafor3inchprinter() {
-        byte[] configLabel = null;
         byte[] printDataBytes = null;
         try {
             StringBuilder sb = new StringBuilder();
@@ -756,34 +736,10 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             // 00:22:58:3D:7E:83 - RW420
             // AC:3F:A4:16:B9:AE - IMZ320
 
-            if (printerLanguage == PrinterLanguage.ZPL) {
-//				configLabel = "^XA^FO17,16^GB379,371,8^FS^FT65,255^A0N,135,134^FDTEST^FS^XZ"
-//						.getBytes();
-//				configLabel="^XA^FO20,20^A0N,25,25^FDThis is a ZPL test.^FS^XZ".getBytes();
-//				sb.append("^XA");
-//						sb.append("^LH100,150");
-//						sb.append("^CWT,E:TT0003M_.FNT");
-//						sb.append("^CFT,30,30");
-//						sb.append("^CI28");
-//						sb.append("^FT0,0^FH^FDTesting 1 2 3^FS");
-//						sb.append("^FT0,50^FH^FD_D0_94_D0_BE _D1_81_D0_B2_D0_B8_D0_B4_D0_B0_D0_BD_D0_B8_D1_8F^FS");
-//						sb.append("^FT0,100^B3^FDAAA001^FS");
-//						sb.append("^XZ");
 
-				/*sb.append("^XA^PR2^LL935^LH30,30");
-                        sb.append("^FO20,10^AF^FDZEBRA^FS");
-						sb.append("^FO20,60^B3,,40^FDAA001^FS\\&");
-						sb.append("^FO20,180^AF^SNSERIAL NUMBER 00000000111,1,Y^FS");
-						sb.append("^PQ10^XZ");*/
-            /*	sb.append("^XA^LRN^CI0^XZ");
-                sb.append("^XA^CWZ,E:TT0003M_.FNT^FS^XZ");
-				sb.append("^XA");
-				sb.append("^FO10,50^CI28^AZN,50,50^FDZebra Technologies^FS");
-				sb.append("^FO010,610^CI28^AZN,50,40^FD- Swiss 721 Arabic: ?????  ????????? ????? ????????^FS");
-				sb.append("^PQ1");
-				sb.append("^XZ");*/
-                printDataBytes = sb.toString().getBytes();
-            } else if (printerLanguage == PrinterLanguage.CPCL) {
+            //TODO:if the below condition is always true so remove the conditions
+
+            if (PrinterLanguage.CPCL == printerLanguage) {
                 ArrayList<SubDepotBo> distributorList = bmodel.vanmodulehelper.getSubDepotList();
                 String distributorAddress1 = "";
                 String distributorAddress2 = "";
@@ -798,7 +754,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                 }
 
 
-                int height = 0;
+                int height;
                 int x = 100;
                 height = x + 100
                         + (mDayList.size() * 50) + 80;
@@ -851,8 +807,11 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
                 sb.append("PRINT \r\n");
                 printDataBytes = sb.toString().getBytes();
+            }
+            //TODO:if the below condition is always false so it's never execute.  remove the below codes
+            else if (printerLanguage == PrinterLanguage.ZPL) {
 
-
+                printDataBytes = sb.toString().getBytes();
             }
         } catch (Exception e) {
             Commons.printException(e);
@@ -861,31 +820,11 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
     }
 
 
-    /**
-     * set image in the preview screen *
-     */
-    private Bitmap setIcon() {
-        Bitmap bit = null;
-        try {
-
-            File file = new File(
-                    getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                            + "/"
-                            + bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserid() + DataMembers.DIGITAL_CONTENT
-                            + "/" + "receiptImg.png");
-            Commons.print("file" + file.getAbsolutePath());
-            if (file.exists()) {
-
-                bit = BitmapFactory.decodeFile(file.getAbsolutePath());
-            }
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            Commons.printException(e);
-        }
-        return bit;
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bmodel = null;
+        mDayList = null;
+        zebraPrinterConnection = null;
     }
-
-
 }

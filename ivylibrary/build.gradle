@@ -25,8 +25,8 @@ android {
 }
 
 dependencies {
-    testCompile 'junit:junit:4.12'
-    compile files('libs/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar')
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'net.zetetic:android-database-sqlcipher:3.5.2@aar'
+    testImplementation 'junit:junit:4.12'
+    implementation files('libs/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar')
+    implementation 'com.android.support:appcompat-v7:23.2.0'
+    implementation 'net.zetetic:android-database-sqlcipher:3.5.2@aar'
 }

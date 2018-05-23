@@ -19,6 +19,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.Locale;
 
@@ -124,4 +125,11 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
         if (messagetv != null)
             messagetv.setText(msg);
     }
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = BusinessModel.getRefWatcher(getActivity());
+        refWatcher.watch(this);
+    }
+
 }
