@@ -383,6 +383,8 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 (row.findViewById(R.id.invoiceview_doted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 holder.focusbrandlabel = (TextView) row.findViewById(R.id.focusbrand_label);
                 holder.mustselllabel = (TextView) row.findViewById(R.id.mustsell_label);
+                holder.tvVolumeValue=(TextView) row.findViewById(R.id.tv_volume);
+                holder.tvVolumeLabel=(TextView) row.findViewById(R.id.tv_volume_title);
 
                 holder.tv_tax_value = (TextView) row.findViewById(R.id.tv_tax_amount);
                 holder.tv_discount_amt = (TextView) row.findViewById(R.id.tv_disc_amt);
@@ -423,6 +425,11 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                     holder.discTitle.setVisibility(View.GONE);
                 }
 
+                if(!businessModel.configurationMasterHelper.SHOW_VOLUME_QTY){
+                    holder.tvVolumeLabel.setVisibility(View.GONE);
+                    holder.tvVolumeValue.setVisibility(View.GONE);
+                }
+
 
                 row.setTag(holder);
             } else {
@@ -437,6 +444,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             holder.label_orderNumber.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tvOrderNo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.text_delivery_date.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tvVolumeValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tvMustSellCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -449,6 +457,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             holder.tv_discount_amt.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.taxTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.discTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvVolumeLabel.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
             try {
@@ -484,6 +493,55 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             holder.tvwDist.setText(reportBO.getDist());
             holder.tvOrderNo.setText(reportBO.getOrderID());
             holder.tvWeight.setText(String.valueOf(reportBO.getWeight()));
+
+            try {
+
+                StringBuilder sb = new StringBuilder();
+                String op = getResources().getString(R.string.item_piece);
+                String oc = getResources().getString(R.string.item_case);
+                String ou = getResources().getString(R.string.item_outer);
+
+                if (businessModel.labelsMasterHelper
+                        .applyLabels("item_piece") != null)
+                    op = businessModel.labelsMasterHelper
+                            .applyLabels("item_piece");
+                if (businessModel.labelsMasterHelper
+                        .applyLabels("item_case") != null)
+                    oc = businessModel.labelsMasterHelper
+                            .applyLabels("item_case");
+
+                if (businessModel.labelsMasterHelper
+                        .applyLabels("item_outer") != null)
+                    ou = businessModel.labelsMasterHelper
+                            .applyLabels("item_outer");
+
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
+
+                    sb.append(reportBO.getVolumePcsQty() + " " + op + " ");
+                }
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE) {
+
+                    if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+                        sb.append("\n" + (reportBO.getVolumeCaseQty()) + " "
+                                + oc + " ");
+                    else
+                        sb.append(reportBO.getVolumeCaseQty() + " "
+                                + oc + " ");
+                }
+                if (businessModel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                    if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS || businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+                        sb.append("\n" + (reportBO.getVolumeOuterQty()) + " "
+                                + ou + " ");
+                    else
+                        sb.append(reportBO.getVolumeCaseQty() + " "
+                                + ou + " ");
+                }
+
+                holder.tvVolumeValue.setText(sb.toString());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
             if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
@@ -548,10 +606,10 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
     class ViewHolder {
         TextView text_retailerName, label_orderNumber;
-        TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount;
+        TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount,tvVolumeValue;
         TextView text_delivery_date, tv_tax_value, tv_discount_amt, taxTitle, discTitle;
         ;
-        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel;
+        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel,tvVolumeLabel;
 
     }
 

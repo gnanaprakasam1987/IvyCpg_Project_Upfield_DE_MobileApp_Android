@@ -15,6 +15,13 @@
         android:orderInCategory="1012"/>
 
     <item
+        android:id="@+id/menu_sync_report"
+        IvyDist:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_icon_reports"
+        android:title="@string/report"
+        android:orderInCategory="1015"/>
+
+    <item
         android:id="@+id/menu_catalog_img"
         IvyDist:showAsAction="collapseActionView"
         android:icon="@drawable/ic_action_refresh"

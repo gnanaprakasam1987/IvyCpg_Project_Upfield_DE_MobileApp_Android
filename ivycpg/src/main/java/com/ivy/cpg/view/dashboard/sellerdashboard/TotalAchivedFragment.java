@@ -74,6 +74,7 @@ public class TotalAchivedFragment extends Fragment {
         } else {
             tvValue.setText(bmodel.formatValue(total_ach));
         }
+
     }
 
 }

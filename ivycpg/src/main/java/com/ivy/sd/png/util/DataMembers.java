@@ -1110,4 +1110,26 @@ public class DataMembers {
         uploadNewRetailerColumn.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
 
     }
+
+    public static final HashMap<String,String> statusReportTables=new HashMap<>();
+
+    static {
+        statusReportTables.put(tbl_orderHeader,"Order");
+        statusReportTables.put(tbl_OutletTimestamp,"Outlet Visit");
+        statusReportTables.put(tbl_SalesReturnHeader,"Sales Return");
+        statusReportTables.put(tbl_closingStockHeader,"Stock Check");
+        statusReportTables.put(tbl_distributor_closingstock_header,"Primary Stock");
+        statusReportTables.put(tbl_AnswerHeader,"Survey");
+        statusReportTables.put(tbl_PriceHeader,"Price Check");
+        statusReportTables.put(tbl_outletjoincall,"JointCall");
+        statusReportTables.put(tbl_expenseheader,"Expense");
+        statusReportTables.put(tbl_Photocaptureupload,"Photo Capture");
+        statusReportTables.put(tbl_AttendanceTimeDetails,"Attendance");
+        statusReportTables.put(tbl_leavedetail,"Leave");
+        statusReportTables.put(tbl_delivery_header,"Order Fulfillment");
+        statusReportTables.put(tbl_retailerMasterupload,"New Retailer");
+        statusReportTables.put(tbl_AssetHeader,"Asset Tracking");
+
+    }
+
 }

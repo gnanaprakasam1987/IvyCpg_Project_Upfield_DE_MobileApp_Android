@@ -951,6 +951,18 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MENU_COUNTER_ALERT; //FUN28
     public boolean isRetailerBOMEnabled = false;
 
+    //To show volume qty in order header report
+    private static final String CODE_ORDER_RPT_VOLUME = "ORDRPT03";
+    public boolean SHOW_VOLUME_QTY;
+
+    // To hide sales value in sales performance
+    private static final String CODE_OUTLET_SALES_VALUE = "SALES_VAL";
+    public boolean HIDE_SALES_VALUE_FIELD;
+
+    // TO show sync status report in Sync screen.
+    public static final String CODE_SYNC_INTERNAL_REPORT="SYNC11";
+    public boolean SHOW_SYNC_INTERNAL_REPORT;
+
 
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
@@ -1385,6 +1397,11 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_TASK_SELLER_RPT = "TASK_SELLER_RPT";
     public boolean IS_SELLER_TASK_RPT;
+
+
+
+
+
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2402,6 +2419,11 @@ public class ConfigurationMasterHelper {
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
 
         this.IS_ALLOW_CONTINUOUS_PRINT = hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
+
+        this.SHOW_VOLUME_QTY = hashMapHHTModuleConfig.get(CODE_ORDER_RPT_VOLUME) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_RPT_VOLUME) : false;
+        this.HIDE_SALES_VALUE_FIELD=hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) != null ? hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) :false;
+        this.SHOW_SYNC_INTERNAL_REPORT=hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT)!=null?hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT):false;
+
         this.retailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
         this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
 

@@ -655,6 +655,10 @@ public class SynchronizationFragment extends IvyBaseFragment
             menu.findItem(R.id.menu_switch_user).setVisible(true);
         else
             menu.findItem(R.id.menu_switch_user).setVisible(false);
+
+        if(!bmodel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT)
+            menu.findItem(R.id.menu_sync_report).setVisible(false);
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -684,6 +688,15 @@ public class SynchronizationFragment extends IvyBaseFragment
             dialog.setCancelable(false);
             dialog.show(ft, "MENU_SYNC");
 
+        }else if(i==R.id.menu_sync_report){
+            bmodel.reportHelper.downloadSyncStatusReport();
+            if(bmodel.reportHelper.getmSyncStatusBOList().size()>0){
+                startActivity(new Intent(getActivity(), SyncStatusActivity.class));
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            }else{
+                bmodel.showAlert(getResources().getString(R.string.no_data_exists),0);
+            }
         }
         return true;
     }
@@ -1331,6 +1344,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         BusinessModel.loadActivity(getActivity(),
                                 DataMembers.actHomeScreen);
                     } else {
+                        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance();
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
                     }
                     isClicked = false;
