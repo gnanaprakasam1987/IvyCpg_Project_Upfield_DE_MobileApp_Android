@@ -84,7 +84,7 @@ public class TaskFragment extends IvyBaseFragment {
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
-        Bundle extras = getActivity().getIntent().getExtras();
+        Bundle extras = getArguments();
         //Set Screen Title
         try {
             if (getArguments().getString("screentitle") == null)
