@@ -606,6 +606,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             if (holder.mCompTrackBO != null)
                 holder.spnReason.setSelection(getReasonIndex(holder.mCompTrackBO.getReasonID()
                         + ""));
+
             holder.spnReason.setSelected(true);
 
             return convertView;
