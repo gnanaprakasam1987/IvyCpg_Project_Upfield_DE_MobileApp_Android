@@ -604,12 +604,10 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         }
                     });
 
-            if (holder.mCompTrackBO!=null&&holder.mCompTrackBO.getReasonID()!=0) {
-                holder.spnReason.setSelection(getReasonIndex("1"));
-            } else {
+            if (holder.mCompTrackBO != null)
                 holder.spnReason.setSelection(getReasonIndex(holder.mCompTrackBO.getReasonID()
                         + ""));
-            }
+
             holder.spnReason.setSelected(true);
 
             return convertView;
