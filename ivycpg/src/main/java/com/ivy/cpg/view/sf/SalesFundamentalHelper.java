@@ -46,6 +46,7 @@ public class SalesFundamentalHelper {
     public int mSelectedBrandID = 0;
     public String mSelectedActivityName;
     public int mSOSTotalPopUpType;
+    public int mSOSCatgPopUpType;
     private int mChannelId, mLocationId;
 
     public int sosDigits = 4;
@@ -130,6 +131,15 @@ public class SalesFundamentalHelper {
             if (c != null) {
                 if (c.moveToNext() && c.getInt(0) > 0) {
                     mSOSTotalPopUpType = 1;
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("SELECT COUNT(HHTCode) FROM HhtModuleMaster"
+                    + " WHERE HHTCode='CATGSF' AND Flag='1' and  ForSwitchSeller = 0");
+            if (c != null) {
+                if (c.moveToNext() && c.getInt(0) > 0) {
+                    mSOSCatgPopUpType = 1;
                 }
                 c.close();
             }
@@ -1660,7 +1670,7 @@ public class SalesFundamentalHelper {
                     + " and (upload='N' OR refid!=0)";
             /*
              * + " AND Date = " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-			 */
+             */
 
             Cursor headerCursor = db.selectSQL(sql);
             if (headerCursor.getCount() > 0) {
