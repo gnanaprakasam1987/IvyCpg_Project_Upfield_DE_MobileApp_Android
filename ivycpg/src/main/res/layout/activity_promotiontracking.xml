@@ -13,6 +13,7 @@
 
     <fragment
         android:id="@+id/promotion_tracking_fragment"
+        android:tag="promotiontracking"
         android:name="com.ivy.cpg.view.promotion.PromotionTrackingFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"

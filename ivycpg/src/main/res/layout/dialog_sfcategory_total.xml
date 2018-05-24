@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:windowSoftInputMode="stateAlwaysHidden">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/sos_dialog_margin"
+        android:orientation="vertical"
+        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardElevation="0dp"
+        card_view:cardPreventCornerOverlap="true"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPadding="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/dialog_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/ic_camera_right_margin"
+                    android:text="@string/title_dialog"
+                    android:textColor="?primarycolor"
+                    android:textSize="@dimen/font_small" />
+
+                <ListView
+                    android:id="@+id/lv"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sos_dialog_height"
+                    android:layout_margin="@dimen/ic_camera_right_margin"
+                    android:cacheColorHint="@color/WHITE"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="@dimen/row_top_margin" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/ll_keypad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <include
+            android:id="@+id/keypad"
+            layout="@layout/keypad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/sos_dialog_margin"
+            android:background="@color/keypad_bg_color" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/card_margin_top"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="?attr/roundedCustomButtonNormalTransparent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_done"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_gravity="center_vertical"
+            android:text="@string/save"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
