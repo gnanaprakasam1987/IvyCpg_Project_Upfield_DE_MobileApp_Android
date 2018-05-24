@@ -923,6 +923,117 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
 
+    /**
+     * Open Dialog with Competitor to Get Actual Values and Calculate Total
+     * Value
+     */
+    private void getCategoryTotalValue(final int categoryId) {
+        mSelectedET = null;
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_sfcategory_total);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        }
+
+        ((TextView) dialog.findViewById(R.id.dialog_title)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((Button) dialog.findViewById(R.id.btn_done)).setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
+        mCategoryForDialog.clear();
+        // All Brands in Total PopUp
+        if (mSFHelper.getSOSList() != null) {
+            for (SOSBO sosBO : mSFHelper.getSOSList()) {
+                if (sosBO.getProductID() == categoryId) {
+                    mCategoryForDialog.add(sosBO);
+                    break;
+                }
+            }
+        }
+
+        ListView listView = (ListView) dialog.findViewById(R.id.lv);
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = displayMetrics.heightPixels / 3;
+        listView.setLayoutParams(params);
+        listView.setAdapter(new CategoryDialogAdapter());
+        dialog.findViewById(R.id.calczero)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcone)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calctwo)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcthree)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcfour)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcfive)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcsix)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcseven)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calceight)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcnine)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcdel)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcdot)
+                .setOnClickListener(new MyClickListener());
+        dialog.findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
+
+
+        dialog.findViewById(R.id.btn_done)
+                .setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!mCategoryForDialog.isEmpty()) {
+                            for (int i = 0; i < mCategoryForDialog.size(); i++) {
+
+                                SOSBO sosBO = mCategoryForDialog.get(i);
+
+
+                                if (SDUtil.convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal()) > 0) {
+
+                                    float parentTotal = SDUtil
+                                            .convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal());
+                                    float mNorm = sosBO.getNorm();
+                                    float actual = SDUtil.convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex)
+                                            .getActual());
+
+                                    float target = (parentTotal * mNorm) / 100;
+                                    float gap = target - actual;
+                                    float percentage = 0;
+                                    if (parentTotal > 0)
+                                        percentage = (actual / parentTotal) * 100;
+
+                                    sosBO.getLocations().get(mSelectedLocationIndex).setTarget(SDUtil.roundIt(target, 2));
+                                    sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(mBModel
+                                            .formatPercent(percentage));
+                                    sosBO.getLocations().get(mSelectedLocationIndex).setGap(SDUtil.roundIt(-gap, 2));
+                                } else {
+                                    sosBO.getLocations().get(mSelectedLocationIndex).setTarget(Integer.toString(0));
+                                    sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(Integer.toString(0));
+                                    sosBO.getLocations().get(mSelectedLocationIndex).setGap(Integer.toString(0));
+                                }
+                            }
+                        }
+                        calculateTotalValues();
+                        if (dialog != null)
+                            dialog.dismiss();
+                        mListView.invalidateViews();
+                        dialog = null;
+                    }
+                });
+
+
+        dialog.show();
+    }
+
+
     @Override
     public void updateMultiSelectionCategory(List<Integer> mCategory) {
 
@@ -1091,7 +1202,19 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        if (mSFHelper.mSOSTotalPopUpType == 0) {
+                        if (mSFHelper.mSOSCatgPopUpType == 1) {
+                            if (dialog != null && !dialog.isShowing()) {
+                                dialog.cancel();
+                                dialog = null;
+                            }
+                            // Open dialog
+                            if (dialog == null) {
+                                mSelectedHolder = (ViewHolder) v.getTag();
+                                getCategoryTotalValue(mSelectedHolder.mSOS
+                                        .getProductID());
+
+                            }
+                        } else if (mSFHelper.mSOSTotalPopUpType == 0) {
                             if (dialog != null && !dialog.isShowing()) {
                                 dialog.cancel();
                                 dialog = null;
@@ -1543,6 +1666,189 @@ public class SOSFragment extends IvyBaseFragment implements
         SOSBO sosBO;
         TextView tv;
         EditText et;
+    }
+
+
+    /**
+     * List of Products with Actual Edit Text
+     */
+    private class CategoryDialogAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return mCategoryForDialog.size();
+        }
+
+        @Override
+        public Object getItem(int arg0) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final CategoryHolder holder;
+            View row = convertView;
+            if (row == null) {
+                holder = new CategoryHolder();
+
+                LayoutInflater inflater = LayoutInflater.from(getActivity()
+                        .getBaseContext());
+
+                row = inflater.inflate(
+                        R.layout.row_sfcategory_total_list, parent, false);
+
+                holder.tv = (TextView) row.findViewById(R.id.tv);
+                holder.etTotal = (EditText) row.findViewById(R.id.et_total);
+                holder.etActual = (EditText) row.findViewById(R.id.et_actual);
+
+                holder.tv.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.etTotal.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.etActual.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) row.findViewById(R.id.tv_total_title)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) row.findViewById(R.id.tv_actual_title)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                // setting no of characters from configuration
+                InputFilter[] FilterArray = new InputFilter[1];
+                FilterArray[0] = new InputFilter.LengthFilter(mSFHelper.sosDigits);
+                holder.etTotal.setFilters(FilterArray);
+                holder.etActual.setFilters(FilterArray);
+
+                holder.etActual.setOnTouchListener(new OnTouchListener() {
+                    // @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        mSelectedET = holder.etActual;
+                        int inType = holder.etActual.getInputType();
+                        holder.etActual.setInputType(InputType.TYPE_NULL);
+                        holder.etActual.onTouchEvent(event);
+                        holder.etActual.setInputType(inType);
+                        if (holder.etActual.getText().toString().equals("0") || holder.etActual.getText().toString().equals("0.0")
+                                || holder.etActual.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.etActual.getText().toString().equals("0") || !holder.etActual.getText().toString().equals("0.0")
+                                || !holder.etActual.getText().toString().equals("0.00"))
+                            sb = holder.etActual.getText().toString();
+                        return true;
+                    }
+                });
+                holder.etActual.addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start,
+                                              int before, int count) {
+                        if (holder.etActual.getText().toString().equals("0") || holder.etActual.getText().toString().equals("0.0")
+                                || holder.etActual.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.etActual.getText().toString().equals("0") || !holder.etActual.getText().toString().equals("0.0")
+                                || !holder.etActual.getText().toString().equals("0.00"))
+                            sb = holder.etActual.getText().toString();
+
+                        if (!"".equals(s)) {
+
+                            try {
+                                holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
+                            } catch (Exception e) {
+                                holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(Integer.toString(0));
+                                Commons.printException("" + e);
+                            }
+                        } else {
+                            holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(Integer.toString(0));
+                        }
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start,
+                                                  int count, int after) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
+
+                holder.etTotal.setOnTouchListener(new OnTouchListener() {
+                    // @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        mSelectedET = holder.etTotal;
+                        int inType = holder.etTotal.getInputType();
+                        holder.etTotal.setInputType(InputType.TYPE_NULL);
+                        holder.etTotal.onTouchEvent(event);
+                        holder.etTotal.setInputType(inType);
+                        if (holder.etTotal.getText().toString().equals("0") || holder.etTotal.getText().toString().equals("0.0")
+                                || holder.etTotal.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.etTotal.getText().toString().equals("0") || !holder.etTotal.getText().toString().equals("0.0")
+                                || !holder.etTotal.getText().toString().equals("0.00"))
+                            sb = holder.etTotal.getText().toString();
+                        return true;
+                    }
+                });
+                holder.etTotal.addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start,
+                                              int before, int count) {
+                        if (holder.etTotal.getText().toString().equals("0") || holder.etTotal.getText().toString().equals("0.0")
+                                || holder.etTotal.getText().toString().equals("0.00"))
+                            sb = "";
+                        else if (!holder.etTotal.getText().toString().equals("0") || !holder.etTotal.getText().toString().equals("0.0")
+                                || !holder.etTotal.getText().toString().equals("0.00"))
+                            sb = holder.etTotal.getText().toString();
+
+                        if (!"".equals(s)) {
+
+                            try {
+                                holder.sosBO.getLocations().get(mSelectedLocationIndex).setParentTotal(s.toString());
+                            } catch (Exception e) {
+                                holder.sosBO.getLocations().get(mSelectedLocationIndex).setParentTotal(Integer.toString(0));
+                                Commons.printException("" + e);
+                            }
+                        } else {
+                            holder.sosBO.getLocations().get(mSelectedLocationIndex).setParentTotal(Integer.toString(0));
+                        }
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start,
+                                                  int count, int after) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
+
+                row.setTag(holder);
+
+            } else {
+                holder = (CategoryHolder) row.getTag();
+            }
+
+            if (position == 0 && mSelectedET == null) {
+                holder.etTotal.requestFocus();
+                mSelectedET = holder.etTotal;
+            }
+            SOSBO brand = mCategoryForDialog.get(position);
+            holder.sosBO = brand;
+
+
+            holder.tv.setText(brand.getProductName());
+            holder.etActual.setText(brand.getLocations().get(mSelectedLocationIndex).getActual());
+            holder.etTotal.setText(brand.getLocations().get(mSelectedLocationIndex).getParentTotal());
+
+            return row;
+        }
+
+    }
+
+    class CategoryHolder {
+        SOSBO sosBO;
+        TextView tv;
+        EditText etTotal, etActual;
     }
 
     /**
