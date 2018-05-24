@@ -392,7 +392,7 @@ public class DataMembers {
     private static final String tbl_splitted_order_cols = "RetailerID,OrderID";
 
     private static final String tbl_PromotionHeader_cols = "Uid,RetailerId,Date,Remark,distributorid,Weightage,Score";
-    private static final String tbl_PromotionDetail_cols = "Uid,PromotionID,BrandID,IsExecuted,ImageName,reasonid,flag,MappingId,locid,ExecRatingLovId,PromoQty,HasAnnouncer,Score";
+    private static final String tbl_PromotionDetail_cols = "Uid,PromotionID,BrandID,IsExecuted,ImageName,reasonid,flag,MappingId,locid,ExecRatingLovId,PromoQty,HasAnnouncer,Score,fromDate,toDate";
 
     private static final String tbl_MonthlyPlanHeaderMaster_cols = "RetailerID,Base,Promotion,Initiative,TargetMonth,Others,IsLock";
     private static final String tbl_MonthlyPlanDetail_cols = "RetailerId,InitId,Target";

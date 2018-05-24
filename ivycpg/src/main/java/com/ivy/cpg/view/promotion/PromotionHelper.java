@@ -9,6 +9,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
@@ -57,7 +58,7 @@ public class PromotionHelper {
         if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
-        businessModel.productHelper.getRetailerlevel(mMenuCode);
+        //businessModel.productHelper.getRetailerlevel(mMenuCode);
         downloadPromotionMaster(mContext);
         loadPromoEntered(mContext);
     }
@@ -135,11 +136,11 @@ public class PromotionHelper {
             db.openDataBase();
             Cursor c;
             String query = " where PM.AccId in (0," + businessModel.getRetailerMasterBO().getAccountid() + ")"
-                    + " and (PM.ChId in(0," + businessModel.getRetailerMasterBO().getSubchannelid() + ") OR PM.Chid in(0," + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(),mContext) + "))"
+                    + " and (PM.ChId in(0," + businessModel.getRetailerMasterBO().getSubchannelid() + ") OR PM.Chid in(0," + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))"
                     + " and PM.retailerid in (0," + businessModel.getRetailerMasterBO().getRetailerID() + ")"
                     + " and PM.ClassId in (0," + businessModel.getRetailerMasterBO().getClassid() + ")"
                     + " and (PM.LocId in (0," + businessModel.getRetailerMasterBO().getLocationId() + ") OR PM.LocId in(0," + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + "))"
-                    + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.Pid ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId ";
+                    + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.PromoId,PPM.Pid ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId ";
 
 
             if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
@@ -194,7 +195,7 @@ public class PromotionHelper {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         StringBuilder sbuffer = new StringBuilder();
         String headerColumns = "UiD,Date,RetailerId,Remark,distributorid";
-        String detailColumns = "Uid,PromotionId,BrandId,IsExecuted,RetailerId,ImageName,reasonid,flag,MappingId,Locid,ExecRatingLovId,PromoQty,imgName,HasAnnouncer";
+        String detailColumns = "Uid,PromotionId,BrandId,IsExecuted,RetailerId,ImageName,reasonid,flag,MappingId,Locid,ExecRatingLovId,PromoQty,imgName,HasAnnouncer,fromDate,toDate";
         try {
             db.openDataBase();
             String uid = businessModel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
@@ -251,6 +252,8 @@ public class PromotionHelper {
                     for (PromotionBO promotion : promotionList) {
 
                         if (promotion.getIsExecuted() == 1 || !"0".equals(promotion.getReasonID()) || (promotion.getRatingId() != null && !"0".equals(promotion.getRatingId()))) {
+                            String fromDate = DateUtil.convertToServerDateFormat(promotion.getFromDate(), "yyyy/MM/dd");
+                            String toDate = DateUtil.convertToServerDateFormat(promotion.getToDate(), "yyyy/MM/dd");
                             String sbDetails = QT(uid) +
                                     "," + promotion.getPromoId() +
                                     "," + promotion.getProductId() +
@@ -264,7 +267,9 @@ public class PromotionHelper {
                                     "," + promotion.getRatingId() +
                                     "," + promotion.getPromoQty() +
                                     "," + QT(promotion.getImageName()) +
-                                    "," + promotion.getHasAnnouncer();
+                                    "," + promotion.getHasAnnouncer() +
+                                    "," + businessModel.QT(fromDate == null ? "" : fromDate) +
+                                    "," + businessModel.QT(toDate == null ? "" : toDate);
 
                             if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                 sbDetails = sbDetails + "," + ((promotion.getPromoQty() > 0 || promotion.getIsExecuted() > 0) ? productWeightage : "0");
@@ -321,7 +326,7 @@ public class PromotionHelper {
 
             cursor.close();
 
-            String sql1 = "SELECT PromotionId, IsExecuted,imgName,reasonid,brandid,locid,ExecRatingLovId,promoqty,HasAnnouncer FROM PromotionDetail WHERE Uid="
+            String sql1 = "SELECT PromotionId, IsExecuted,imgName,reasonid,brandid,locid,ExecRatingLovId,promoqty,HasAnnouncer,fromDate,toDate FROM PromotionDetail WHERE Uid="
                     + QT(uid) + " and Upload ='N' and Flag = 'S'";
 
             Cursor orderDetailCursor = db.selectSQL(sql1);
@@ -338,15 +343,17 @@ public class PromotionHelper {
                         int execRatingLovid = orderDetailCursor.getInt(6);
                         int promoQty = orderDetailCursor.getInt(7);
                         int isAnnounced = orderDetailCursor.getInt(8);
+                        String fromDate = orderDetailCursor.getString(9);
+                        String toDate = orderDetailCursor.getString(10);
 
                         setPromoCheckDetails(promotionID, isExecuted, isAnnounced, imgName,
-                                reasonID, brandID, locid, execRatingLovid, promoQty);
+                                reasonID, brandID, locid, execRatingLovid, promoQty, fromDate, toDate);
                     }
                     orderDetailCursor.close();
                 } else {
                     // Loading Last visit transaction data
                     if (businessModel.configurationMasterHelper.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN) {
-                        sql1 = "SELECT PromotionId, IsExecuted,reasonid,locid,ExecRatingLovId,promoqty FROM LastVisitPromotion WHERE retailerId="
+                        sql1 = "SELECT PromotionId, IsExecuted,reasonid,locid,ExecRatingLovId,promoqty,fromDate,toDate FROM LastVisitPromotion WHERE retailerId="
                                 + businessModel.getRetailerMasterBO().getRetailerID() + " and Flag = 'S'";
                         orderDetailCursor = db.selectSQL(sql1);
                         if (orderDetailCursor != null) {
@@ -357,9 +364,11 @@ public class PromotionHelper {
                                 int locid = orderDetailCursor.getInt(3);
                                 int execRatingLovid = orderDetailCursor.getInt(4);
                                 int promoQty = orderDetailCursor.getInt(5);
+                                String fromDate = orderDetailCursor.getString(6);
+                                String toDate = orderDetailCursor.getString(7);
 
                                 setLastVisitPromoCheckDetails(promotionID, isExecuted,
-                                        reasonID, locid, execRatingLovid, promoQty);
+                                        reasonID, locid, execRatingLovid, promoQty, fromDate, toDate);
                             }
                             orderDetailCursor.close();
                         }
@@ -367,7 +376,7 @@ public class PromotionHelper {
                 }
             }
 
-            sql1 = "SELECT PD.PromotionId, PD.IsExecuted,pd.ImageName,PD.reasonid,PD.brandid,pm.PromoName,pd.ExecRatingLovId,PD.HasAnnouncer FROM PromotionDetail pd"
+            sql1 = "SELECT PD.PromotionId, PD.IsExecuted,pd.ImageName,PD.reasonid,PD.brandid,pm.PromoName,pd.ExecRatingLovId,PD.HasAnnouncer,PD.fromDate,PD.toDate FROM PromotionDetail pd"
                     + " inner join PromotionProductMapping  pm on pm.PromoId = pd.PromotionId"
                     + " WHERE Uid="
                     + QT(uid)
@@ -391,6 +400,8 @@ public class PromotionHelper {
                             .setFlag("I");
                     promotionMaster.setRatingId(orderDetailCursor.getString(6));
                     promotionMaster.setHasAnnouncer(orderDetailCursor.getInt(7));
+                    promotionMaster.setFromDate(orderDetailCursor.getString(8));
+                    promotionMaster.setToDate(orderDetailCursor.getString(9));
 
                     getPromotionList().add(promotionMaster);
 
@@ -407,7 +418,7 @@ public class PromotionHelper {
 
     // set the value in the PromotionMasterBo
     private void setPromoCheckDetails(int promotionID, int isExecuted, int isAnnounced,
-                                      String imgName, String reasonId, int brandID, int locationId, int executeLovId, int promoQty) {
+                                      String imgName, String reasonId, int brandID, int locationId, int executeLovId, int promoQty, String fromDate, String toDate) {
 
         for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
             if (standardListBO.getListID().equals(Integer.toString(locationId))) {
@@ -422,6 +433,8 @@ public class PromotionHelper {
                             promo.setReasonID(reasonId);
                             promo.setRatingId(Integer.toString(executeLovId));
                             promo.setPromoQty(promoQty);
+                            promo.setFromDate(fromDate);
+                            promo.setToDate(toDate);
                             break;
                         }
 
@@ -435,7 +448,7 @@ public class PromotionHelper {
 
     // set the Last tran value in the PromotionMasterBo
     private void setLastVisitPromoCheckDetails(int promotionID, int isExecuted,
-                                               String reasonId, int locationId, int executeLovId, int promoQty) {
+                                               String reasonId, int locationId, int executeLovId, int promoQty, String fromDate, String toDate) {
 
         for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
             if (standardListBO.getListID().equals(Integer.toString(locationId))) {
@@ -448,6 +461,8 @@ public class PromotionHelper {
                             promo.setReasonID(reasonId);
                             promo.setRatingId(Integer.toString(executeLovId));
                             promo.setPromoQty(promoQty);
+                            promo.setFromDate(fromDate);
+                            promo.setToDate(toDate);
                             break;
                         }
 

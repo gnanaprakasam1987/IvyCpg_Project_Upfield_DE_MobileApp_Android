@@ -1377,6 +1377,11 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = "CSSTK04";  //jnj project specific
     public boolean IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK;
 
+    private static final String CODE_ENABLE_PROMOTION_SKUNAME = "PROMO03";  //jnj project specific
+    public boolean IS_ENABLE_PROMOTION_SKUNAME;
+    private static final String CODE_ENABLE_PROMOTION_DATES = "PROMO04";  //jnj project specific
+    public boolean IS_ENABLE_PROMOTION_DATES;
+
     private static final String CODE_TASK_OPEN = "TASK_RPT_OPEN";
     public int TASK_OPEN;
 
@@ -2448,6 +2453,9 @@ public class ConfigurationMasterHelper {
         this.TASK_OPEN = hashMapHHTModuleOrder.get(CODE_TASK_OPEN) != null ? hashMapHHTModuleOrder.get(CODE_TASK_OPEN) : 0;
         this.TASK_PLANNED = hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) != null ? hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) : -1;
         this.IS_SELLER_TASK_RPT = hashMapHHTModuleConfig.get(CODE_TASK_SELLER_RPT) != null ? hashMapHHTModuleConfig.get(CODE_TASK_SELLER_RPT) : false;
+
+        this.IS_ENABLE_PROMOTION_SKUNAME = hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_SKUNAME) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_SKUNAME) : false;
+        this.IS_ENABLE_PROMOTION_DATES = hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_DATES) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_DATES) : false;
     }
 
     private boolean isInOutModule() {
