@@ -483,6 +483,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FOCUS_PACK_NOT_DONE = "ORDB71";
     public boolean IS_FOCUS_PACK_NOT_DONE;
 
+    private static final String CODE_DOWNLAOD_WAREHOUSE_STOCK = "ORDB72";
+    public boolean IS_DOWNLOAD_WAREHOUSE_STOCK;
+
     private static final String CODE_ORDER_FROM_EXCESS_STOCK = "FUN69";
     public boolean IS_ORDER_FROM_EXCESS_STOCK;
 
@@ -2372,6 +2375,7 @@ public class ConfigurationMasterHelper {
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
         this.IS_SHOW_ONLY_SERVER_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) : false;
         this.IS_FOCUS_PACK_NOT_DONE = hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) != null ? hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) : false;
+        this.IS_DOWNLOAD_WAREHOUSE_STOCK= hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) : false;
         this.IS_LOAD_ONLY_SUBD = hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) : false;
         this.IS_LOAD_NON_FIELD = hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) : false;
         this.IS_PLAN_RETIALER_NON_FIELD = hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) != null ? hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) : false;
@@ -5557,7 +5561,7 @@ public class ConfigurationMasterHelper {
         try {
             String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode=" + bmodel.QT(CODE_SHOW_ONLY_INDICATIVE_ORDER)
-                    + " and flag=2 and ForSwitchSeller = 0";
+                    + " and flag=1 and ForSwitchSeller = 0";
             IS_SHOW_ORDER_REASON = false;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -5567,7 +5571,8 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
 
                 while (c.moveToNext()) {
-                    IS_SHOW_ORDER_REASON = true;
+                    if(c.getInt(0)==1)
+                      IS_SHOW_ORDER_REASON = true;
                 }
                 c.close();
             }

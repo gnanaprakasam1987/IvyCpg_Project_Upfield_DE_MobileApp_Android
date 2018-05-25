@@ -3432,4 +3432,28 @@ public class OrderHelper {
     }
 
 
+    public void updateWareHouseStock(Context mContext) {
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            StringBuffer sb = new StringBuffer();
+            sb.append("select pid,qty from ProductWareHouseStockMaster");
+            Cursor cursor = db.selectSQL(sb.toString());
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(cursor.getString(0));
+                    if (productMasterBO != null) {
+                        productMasterBO.setWSIH(cursor.getInt(1));
+                    }
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
 }

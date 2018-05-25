@@ -42,7 +42,16 @@
         android:icon="@drawable/ic_action_navigation_next_item"
         android:orderInCategory="102"
         android:title="@string/next"
-        ivydist:showAsAction="always" />
+        ivydist:showAsAction="always"
+        android:visible="false"/>
+    <item
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:orderInCategory="102"
+        android:title="Refresh Stock"
+        ivydist:showAsAction="ifRoom"
+        android:visible="false"/>
+
     <item
         android:id="@+id/menu_crown"
         android:icon="@drawable/ic_action_crown"
@@ -61,6 +70,7 @@
         android:icon="@drawable/ic_action_location_place"
         android:title="L.F"
         ivydist:showAsAction="always" />
+
 
     <item
         android:id="@+id/menu_survey"

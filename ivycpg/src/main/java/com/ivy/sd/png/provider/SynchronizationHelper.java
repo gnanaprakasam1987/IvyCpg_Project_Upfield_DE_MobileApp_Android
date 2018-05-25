@@ -122,6 +122,7 @@ SynchronizationHelper {
     public static final int DISTRIBUTOR_WISE_DOWNLOAD_INSERT = 18;
     public static final int LAST_VISIT_TRAN_DOWNLOAD_INSERT = 19;
     public static final int MOBILE_EMAIL_VERIFICATION = 20;
+    public static final int WAREHOUSE_STOCK_DOWNLOAD = 21;
 
     public static final String AUTHENTICATION_SUCCESS_CODE = "0";
     public static final String UPDATE_TABLE_SUCCESS_CODE = "-1";
@@ -150,7 +151,9 @@ SynchronizationHelper {
         RETAILER_SELECTION(5),
         COUNTER_SALES_SELECTION(6),
         TL_ALLOCATION(7),
-        MOBILE_EMAIL_VERIFY(8);
+        MOBILE_EMAIL_VERIFY(8),
+        ORDER_SCREEN(9);
+
         private int value;
 
         FROM_SCREEN(int value) {
@@ -2994,6 +2997,50 @@ SynchronizationHelper {
             db.closeDB();
         }
 
+
+    }
+
+    public String downloadWareHouseStockURL() {
+        mJsonObjectResponseByTableName = new HashMap<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String downloadUrl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select url from urldownloadmaster where mastername='PRODUCTWAREHOUSESTOCKMASTER' and typecode='REFRESH_WH_STK'");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        downloadUrl = c.getString(0);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+
+       return downloadUrl;
+    }
+
+    public void downloadWareHouseStock(String wareHouseWebApi){
+
+        try {
+
+            JSONObject json = new JSONObject();
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+
+
+            String downloadUrl = DataMembers.SERVER_URL + wareHouseWebApi;
+            callVolley(downloadUrl, FROM_SCREEN.ORDER_SCREEN, 1, WAREHOUSE_STOCK_DOWNLOAD, json);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
 
     }
 
