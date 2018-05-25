@@ -108,7 +108,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
     SharedPreferences mLastSyncSharedPref;
     private static int REQUEST_CODE_RETAILER_WISE_UPLOAD = 100;
 
-    private String fromButtonStr = "CLOSE";
+    private boolean isSubmitButtonClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1152,7 +1152,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
 
-                                        fromButtonStr = "CLOSE";
+                                        isSubmitButtonClicked = false;
 
                                         closeCallDone();
 
@@ -1218,7 +1218,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
 
-                                        fromButtonStr = "SUBMIT";
+                                        isSubmitButtonClicked = true;
                                         closeCallDone();
 //                                        presenter.isFromCallAnalysis = true;
 //                                        presenter.validateAndUpload();
@@ -1360,7 +1360,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
         bmodel.productHelper.clearProductHelper();
 
-        if(fromButtonStr.equalsIgnoreCase("SUBMIT")){
+        if(isSubmitButtonClicked){
             presenter.isFromCallAnalysis = true;
             presenter.validateAndUpload();
         }else {
