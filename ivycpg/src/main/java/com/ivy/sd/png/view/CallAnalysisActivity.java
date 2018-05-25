@@ -1755,11 +1755,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         bmodel.showAlert(
                                 getResources().getString(
                                         R.string.successfully_uploaded),
-                                0);
+                                6004);
 
-                        BusinessModel.loadActivity(CallAnalysisActivity.this,
-                                DataMembers.actPlanning);
-                        finish();
+//                        BusinessModel.loadActivity(CallAnalysisActivity.this,
+//                                DataMembers.actPlanning);
+//                        finish();
 
 //                        displaymetrics = new DisplayMetrics();
 //                        CallAnalysisActivity.this.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -1809,11 +1809,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.successfully_uploaded),
-                            0);
-
-                    BusinessModel.loadActivity(CallAnalysisActivity.this,
-                            DataMembers.actPlanning);
-                    finish();
+                            6004);
 
                     break;
 
