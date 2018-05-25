@@ -666,6 +666,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_PC_SRP;
     public boolean SHOW_OUTER_SRP;
     public boolean SHOW_STK_ORD_SRP_EDT;
+    public boolean SHOW_STK_QTY_IN_ORDER;
     public boolean SHOW_D1;
     public boolean SHOW_D2;
     public boolean SHOW_D3;
@@ -3702,6 +3703,8 @@ public class ConfigurationMasterHelper {
                         SHOW_CLEANED_ORDER = true;
                     else if (temp.equals("SRPEDT"))
                         SHOW_STK_ORD_SRP_EDT = true;
+                    else if (temp.equals("STKQTY"))
+                        SHOW_STK_QTY_IN_ORDER = true;
                 }
             }
 

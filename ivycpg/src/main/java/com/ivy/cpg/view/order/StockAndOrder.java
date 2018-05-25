@@ -1220,6 +1220,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.cleanedOrder_oc = (TextView) row.findViewById(R.id.cleanedOrder_oc);
 
 
+                holder.layout_stock=row.findViewById(R.id.layout_stock);
+                holder.text_stock=row.findViewById(R.id.text_stock);
+
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 //setting typefaces
@@ -1254,6 +1257,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.cleanedOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.salesReturn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+                if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER)
+                    holder.layout_stock.setVisibility(View.VISIBLE);
 
                 if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
                     holder.psq.setVisibility(View.VISIBLE);
@@ -3282,6 +3287,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.rep_pcs.setText(strRepPcsQty);
 
 
+            holder.text_stock.setText(String.valueOf(holder.productObj.getTotalStockQty()));
+
             return row;
         }
     }
@@ -3323,25 +3330,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private ImageView iv_info, imageView_stock;
         private TextView salesReturn;
         private TextView moq;
+        private LinearLayout layout_stock;
+        private TextView text_stock;
     }
 
     private void calculateSONew(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
-        int totalStockInPcs = getProductTotalValue(productObj);
+
         int so = 0;
-        if (SOLogic == 1) {
-            so = bmodel.productHelper.calculateSO(productObj.getIco(),
-                    totalStockInPcs, productObj.isRPS(),
-                    productObj.getIsInitiativeProduct(),
-                    productObj.getDropQty(), productObj.getInitDropSize());
-        } else if (SOLogic == 2) {
+        if (SOLogic == 2) {
+            int totalStockInPcs = getProductTotalValue(productObj);
             so = productObj.getIco() - totalStockInPcs;
         } else if (SOLogic == 3) {
             so = productObj.getIco();
-        } else if (SOLogic == 4) {
-            int sellout = productObj.getIco() - totalStockInPcs;
-            so = ((bmodel.userMasterHelper.getUserMasterBO().getUpliftFactor() * sellout) - totalStockInPcs)
-                    * bmodel.userMasterHelper.getUserMasterBO()
-                    .getSchemeFactor();
         }
 
         if (so < 0)
