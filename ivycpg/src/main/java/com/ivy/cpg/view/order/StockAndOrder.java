@@ -1740,8 +1740,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.srpEdit = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_srpedit);
 
-                holder.salesReturn = (TextView) row
+                holder.salesReturn = row
                         .findViewById(R.id.stock_and_order_listview_sales_return_qty);
+                holder.salesReturn.setFocusable(false);
 
                 holder.total = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_total);
@@ -2610,7 +2611,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                         if (holder.productObj.isAllocation() == 1
                                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (totalQty <= holder.productObj.getSIH()) {
+                            if ((totalQty + holder.productObj.getRepCaseQty()) <= holder.productObj.getSIH()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedCaseQty(SDUtil
                                             .convertToInt(qty));
@@ -2647,7 +2648,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                         } else if (holder.productObj.isCbsihAvailable()) {
-                            if (totalQty <= holder.productObj.getCpsih()) {
+                            if ((totalQty + holder.productObj.getRepCaseQty()) <= holder.productObj.getCpsih()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedCaseQty(SDUtil
                                             .convertToInt(qty));
@@ -2875,7 +2876,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                         if (holder.productObj.isAllocation() == 1
                                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (totalQty <= holder.productObj.getSIH()) {
+                            if ((totalQty + holder.productObj.getRepPieceQty()) <= holder.productObj.getSIH()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedPcsQty(SDUtil
                                             .convertToInt(qty));
@@ -2908,7 +2909,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                         } else if (holder.productObj.isCbsihAvailable()) {
-                            if (totalQty <= holder.productObj.getCpsih()) {
+                            if ((totalQty + holder.productObj.getRepPieceQty()) <= holder.productObj.getCpsih()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedPcsQty(SDUtil
                                             .convertToInt(qty));
@@ -3052,7 +3053,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         holder.weight.setText(Utils.formatAsTwoDecimal((double) (totalQty * holder.productObj.getWeight())));
                         if (holder.productObj.isAllocation() == 1
                                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (totalQty <= holder.productObj.getSIH()) {
+                            if ((totalQty + holder.productObj.getRepOuterQty()) <= holder.productObj.getSIH()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedOuterQty(SDUtil
                                             .convertToInt(qty));
@@ -3088,7 +3089,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                         } else if (holder.productObj.isCbsihAvailable()) {
-                            if (totalQty <= holder.productObj.getCpsih()) {
+                            if ((totalQty + holder.productObj.getRepOuterQty()) <= holder.productObj.getCpsih()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedOuterQty(SDUtil
                                             .convertToInt(qty));
@@ -3859,7 +3860,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView rep_cs;
         private TextView rep_ou;
         private ImageView iv_info, imageView_stock;
-        private TextView salesReturn;
+        private EditText salesReturn;
         private TextView moq;
     }
 
@@ -4095,6 +4096,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
                     if (!orderHelper.isPendingReplaceAmt()) {
+                        updatesalesReturnValue();
                         onnext();
                     } else {
                         Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
@@ -4176,6 +4178,39 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
         }
+    }
+
+    private void updatesalesReturnValue() {
+        double totalvalue = 0;
+        Vector<ProductMasterBO> items = productList;
+        if (items == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.no_products_exists), 0);
+            return;
+        }
+        int siz = items.size();
+        if (siz == 0)
+            return;
+
+        for (int i = 0; i < siz; i++) {
+            ProductMasterBO ret = items.elementAt(i);
+
+            for (SalesReturnReasonBO bo : ret.getSalesReturnReasonList()) {
+                double temp;
+                if (bo.getPieceQty() != 0 || bo.getCaseQty() != 0
+                        || bo.getOuterQty() > 0) {
+                    temp = ((bo.getCaseQty() * bo.getCaseSize())
+                            + (bo.getOuterQty() * bo.getOuterSize()) + bo
+                            .getPieceQty()) * bo.getSrpedit();
+                    totalvalue = totalvalue + temp;
+                }
+
+            }
+
+        }
+        SalesReturnHelper salesReturnHelper=SalesReturnHelper.getInstance(this);
+        salesReturnHelper.setReturnValue(totalvalue);
+
     }
 
     private void onnext() {
