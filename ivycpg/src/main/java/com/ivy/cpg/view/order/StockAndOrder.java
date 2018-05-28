@@ -100,7 +100,6 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CrownReturnActivity;
 import com.ivy.sd.png.view.CustomKeyBoard;
@@ -117,8 +116,6 @@ import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.view.SchemeDialog;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1789,11 +1786,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfCaseQty.removeTextChangedListener(this);
                             holder.shelfCaseQty.addTextChangedListener(this);
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
-                                calculateSONew(holder.productObj, SOLogic, holder);
+                                calculateSO(holder.productObj, SOLogic, holder);
 
                             if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
                                     &&(!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
-                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=2))){
+                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=1))){
 
                                 int totalStockInPiece=getProductTotalValue(holder.productObj);
                                 holder.text_stock.setText(String.valueOf(totalStockInPiece));
@@ -1892,11 +1889,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfPcsQty.removeTextChangedListener(this);
                             holder.shelfPcsQty.addTextChangedListener(this);
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
-                                calculateSONew(holder.productObj, SOLogic, holder);
+                                calculateSO(holder.productObj, SOLogic, holder);
 
                             if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
                                     &&(!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
-                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=2))){
+                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=1))){
 
                                 int totalStockInPiece=getProductTotalValue(holder.productObj);
                                 holder.text_stock.setText(String.valueOf(totalStockInPiece));
@@ -1997,11 +1994,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfouter.removeTextChangedListener(this);
                             holder.shelfouter.addTextChangedListener(this);
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
-                                calculateSONew(holder.productObj, SOLogic, holder);
+                                calculateSO(holder.productObj, SOLogic, holder);
 
                             if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
                                     &&(!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
-                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=2))){
+                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=1))){
 
                                 int totalStockInPiece=getProductTotalValue(holder.productObj);
                                 holder.text_stock.setText(String.valueOf(totalStockInPiece));
@@ -3381,10 +3378,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView text_stock;
     }
 
-    private void calculateSONew(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
+    private void calculateSO(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
 
         int so = 0;
-        if (SOLogic == 2) {
+        if (SOLogic == 1) {
             int totalStockInPcs = getProductTotalValue(productObj);
             so = productObj.getIco() - totalStockInPcs;
 
@@ -3392,7 +3389,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
               holder.text_stock.setText(String.valueOf(totalStockInPcs));
             }
 
-        } else if (SOLogic == 3) {
+        } else if (SOLogic == 2) {
             so = productObj.getIco();
         }
 
