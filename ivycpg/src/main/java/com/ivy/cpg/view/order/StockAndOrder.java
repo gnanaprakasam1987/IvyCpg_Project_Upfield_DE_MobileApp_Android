@@ -1256,9 +1256,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.indicativeOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.cleanedOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.salesReturn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.text_stock.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER)
-                    holder.layout_stock.setVisibility(View.VISIBLE);
 
                 if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
                     holder.psq.setVisibility(View.VISIBLE);
@@ -1675,6 +1674,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e);
                     }
                 }
+
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
                     ((LinearLayout) row.findViewById(R.id.llRepPc)).setVisibility(View.GONE);
                 else {
@@ -1686,6 +1686,23 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     .setText(bmodel.labelsMasterHelper
                                             .applyLabels(row.findViewById(
                                                     R.id.rep_pcsTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+
+                if (!bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER)
+                    (row.findViewById(R.id.layout_stock)).setVisibility(View.GONE);
+                else {
+                    ((TextView) row.findViewById(R.id.text_stock_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.text_stock_title).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.text_stock_title))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.text_stock_title)
                                                     .getTag()));
                     } catch (Exception e) {
                         Commons.printException(e);
@@ -1773,6 +1790,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfCaseQty.addTextChangedListener(this);
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
                                 calculateSONew(holder.productObj, SOLogic, holder);
+
+                            if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
+                                    &&(!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
+                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=2))){
+
+                                int totalStockInPiece=getProductTotalValue(holder.productObj);
+                                holder.text_stock.setText(String.valueOf(totalStockInPiece));
+                                holder.productObj.setTotalStockQty(totalStockInPiece);
+                            }
+
                         } else {
                             holder.productObj
                                     .getLocations()
@@ -1866,6 +1893,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfPcsQty.addTextChangedListener(this);
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
                                 calculateSONew(holder.productObj, SOLogic, holder);
+
+                            if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
+                                    &&(!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
+                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=2))){
+
+                                int totalStockInPiece=getProductTotalValue(holder.productObj);
+                                holder.text_stock.setText(String.valueOf(totalStockInPiece));
+                                holder.productObj.setTotalStockQty(totalStockInPiece);
+                            }
+
                         } else {
                             holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex)
@@ -1961,6 +1998,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfouter.addTextChangedListener(this);
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
                                 calculateSONew(holder.productObj, SOLogic, holder);
+
+                            if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
+                                    &&(!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
+                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=2))){
+
+                                int totalStockInPiece=getProductTotalValue(holder.productObj);
+                                holder.text_stock.setText(String.valueOf(totalStockInPiece));
+                                holder.productObj.setTotalStockQty(totalStockInPiece);
+                            }
+
                         } else {
                             holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex)
@@ -3340,6 +3387,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (SOLogic == 2) {
             int totalStockInPcs = getProductTotalValue(productObj);
             so = productObj.getIco() - totalStockInPcs;
+
+            if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER){
+              holder.text_stock.setText(String.valueOf(totalStockInPcs));
+            }
+
         } else if (SOLogic == 3) {
             so = productObj.getIco();
         }
