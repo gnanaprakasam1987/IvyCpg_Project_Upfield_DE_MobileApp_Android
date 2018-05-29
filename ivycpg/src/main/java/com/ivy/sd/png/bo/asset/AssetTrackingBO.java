@@ -1,5 +1,7 @@
 package com.ivy.sd.png.bo.asset;
 
+import java.util.ArrayList;
+
 public class AssetTrackingBO {
     private int assetID;
     private int Target;
@@ -27,6 +29,9 @@ public class AssetTrackingBO {
     private String SerialNo = "0";
     private int mProductId;
     private boolean isSelectedToRemove;
+    private int targetLocId;
+    private String locationName;
+    private ArrayList<String> imageList;
 
     public AssetTrackingBO() {
 
@@ -60,6 +65,9 @@ public class AssetTrackingBO {
         this.executorQty = assetTrackingBO.getExecutorQty();
         this.SerialNo = assetTrackingBO.getSerialNo();
         this.mNFCTagId = assetTrackingBO.getNFCTagId();
+        this.targetLocId = assetTrackingBO.getTargetLocId();
+        this.locationName = assetTrackingBO.getLocationName();
+        this.imageList = assetTrackingBO.getImageList();
     }
 
     public int getExecutorQty() {
@@ -355,4 +363,30 @@ public class AssetTrackingBO {
     }
 
     private String imgName = "";
+
+    public int getTargetLocId() {
+        return targetLocId;
+    }
+
+    public void setTargetLocId(int targetLocId) {
+        this.targetLocId = targetLocId;
+    }
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
+
+    public ArrayList<String> getImageList() {
+        if(imageList==null)
+            return new ArrayList<String>();
+        return imageList;
+    }
+
+    public void setImageList(ArrayList<String> imageList) {
+        this.imageList = imageList;
+    }
 }
