@@ -1364,8 +1364,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             presenter.isFromCallAnalysis = true;
             presenter.validateAndUpload();
         }else {
-            BusinessModel.loadActivity(CallAnalysisActivity.this,
-                    DataMembers.actPlanning);
+//            BusinessModel.loadActivity(CallAnalysisActivity.this,
+//                    DataMembers.actPlanning);
             finish();
         }
 
@@ -1687,7 +1687,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         dismissCurrentProgressDialog();
                         displayMessage(errorMessage);
                     }
-                    startActivity(new Intent(CallAnalysisActivity.this, HomeScreenActivity.class));
+                    //startActivity(new Intent(CallAnalysisActivity.this, HomeScreenActivity.class));
                     CallAnalysisActivity.this.finish();
                     break;
 
