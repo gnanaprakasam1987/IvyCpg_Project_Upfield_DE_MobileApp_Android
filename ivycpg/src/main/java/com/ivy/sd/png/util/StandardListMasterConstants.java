@@ -121,7 +121,7 @@ public class StandardListMasterConstants {
 	public static final String PRINT_FILE_PATH = "PrintFile/";
 
 	public static final String MENU_CLOSING_STK_RPT = "MENU_CLOSING_STK_RPT";
-
+	public static final String MENU_ORD_STAT_RPT = "MENU_ORD_STAT_RPT";
 
 	public static final HashMap<String,String> mActivityCodeByMenuCode=new HashMap<>();
 

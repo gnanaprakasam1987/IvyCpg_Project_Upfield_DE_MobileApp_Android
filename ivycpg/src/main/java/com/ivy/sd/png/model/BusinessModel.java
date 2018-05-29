@@ -131,6 +131,7 @@ import com.ivy.sd.png.provider.NewOutletAttributeHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OrderFullfillmentHelper;
+import com.ivy.sd.png.provider.OrderStatusReportHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
@@ -301,6 +302,7 @@ public class BusinessModel extends Application {
     public ModuleTimeStampHelper moduleTimeStampHelper;
     public AcknowledgementHelper acknowledgeHelper;
     public FitScoreHelper fitscoreHelper;
+    public OrderStatusReportHelper orderStatusReportHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
     /* ******* Invoice Number To Print ******* */
@@ -476,6 +478,7 @@ public class BusinessModel extends Application {
         moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(this);
         acknowledgeHelper = AcknowledgementHelper.getInstance(this);
         fitscoreHelper = FitScoreHelper.getInstance(this);
+        orderStatusReportHelper = OrderStatusReportHelper.getInstance(this);
     }
 
 
