@@ -299,6 +299,7 @@ public class DataMembers {
     private static final String tbl_NonProductiveTable = "Nonproductivereasonmaster";
     public static final String tbl_AssetHeader = "AssetHeader";
     public static final String tbl_AssetDetail = "AssetDetail";
+    public static final String tbl_AssetImgInfo = "AssetImageDetails";
     public static final String tbl_NearExpiryHeader = "NearExpiry_Tracking_Header";
     private static final String tbl_NearExpiryHeader_cols = "Tid,RetailerId,Uid,Date,TimeZone,RefId";
     private static final String tbl_NearExpiryDetail = "NearExpiry_Tracking_Detail";
@@ -376,6 +377,7 @@ public class DataMembers {
     private static final String tbl_odameter_cols = "uid,start,end,starttime,endtime,startlatitude,startlongitude,endlatitude,endlongitude,date";
     private static final String tbl_AssetHeader_Cols = "uid,Date,RetailerId,remark,TypeLovId,tgtTotal,achTotal,Weightage,Score,distributorid";
     private static final String tbl_AssetDetail_Cols = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,Mappingid,Productid,installdate,servicedate,conditionId,CompQty,locid,PosmGroupLovId,isExecuted,Score";
+    private static final String tbl_AssetImgInfo_Cols = "tid,AssetID,ImageName,Mappingid,Productid,locid";
 
     private static final String tbl_stock_apply = "StockApply";
     private static final String tbl_stock_apply_cols = "uid,date,Status";
@@ -682,6 +684,7 @@ public class DataMembers {
         uploadColumn.put(tbl_vanunload_details, tbl_vanunload_details_cols);
         uploadColumn.put(tbl_AssetHeader, tbl_AssetHeader_Cols);
         uploadColumn.put(tbl_AssetDetail, tbl_AssetDetail_Cols);
+        uploadColumn.put(tbl_AssetImgInfo, tbl_AssetImgInfo_Cols);
         uploadColumn.put(tbl_SIH, tbl_SIH_cols);
         uploadColumn.put(tbl_NewOutletImage, tbl_NEWOUTLETIMAGE_cols);
 
