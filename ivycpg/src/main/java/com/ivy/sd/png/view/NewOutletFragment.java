@@ -2346,7 +2346,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                     @Override
                     public void afterTextChanged(Editable et) {
-                        String s = et.toString();
+                        String s = et != null ? et.toString() : "";
                         if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                             s = s.toUpperCase();
                             editText[mNumber + 50 + 5].setText(s);
@@ -2386,9 +2386,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 });
 
                 if (screenMode == VIEW || screenMode == EDIT) {
-                    if (outlet.getContact1titlelovid().equals("0") && !outlet.getContact1title().equals("0") && outlet.getContact1title().length() > 0) {
+                    if (outlet.getContact1titlelovid() != null && "0".equals(outlet.getContact1titlelovid()) && outlet.getContact1title() != null
+                            && !"0".equals(outlet.getContact1title()) && outlet.getContact1title().length() > 0) {
                         contactTitleSpinner1.setSelection(getPosition(profileConfig.get(mNumber).getConfigCode()));
-                        editText[mNumber + 50 + 5].setText(outlet.getContact1title());
+                        editText[mNumber + 50 + 5].setText(outlet.getContact1title() != null ? outlet.getContact1title() : "");
                     }
                     if (screenMode == VIEW)
                         contactTitleSpinner1.setEnabled(false);
@@ -2470,7 +2471,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 @Override
                 public void afterTextChanged(Editable et) {
-                    String s = et.toString();
+                    String s = et != null ? et.toString() : "";
                     if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                         s = s.toUpperCase();
                         editText[mNumber].setText(s);
@@ -2493,7 +2494,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 @Override
                 public void afterTextChanged(Editable et) {
-                    String s = et.toString();
+                    String s = et != null ? et.toString() : "";
                     if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                         s = s.toUpperCase();
                         editText[mNumber + 50].setText(s);
@@ -2605,9 +2606,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 });
 
                 if (screenMode == VIEW || screenMode == EDIT) {
-                    if (outlet.getContact1titlelovid().equals("0") && !outlet.getContact1title().equals("0") && outlet.getContact1title().length() > 0) {
+                    if (outlet.getContact1titlelovid() != null && outlet.getContact1titlelovid().equals("0") && outlet.getContact1title() != null
+                            && !outlet.getContact1title().equals("0") && outlet.getContact1title().length() > 0) {
                         contactTitleSpinner1.setSelection(getPosition(profileConfig.get(mNumber).getConfigCode()));
-                        editText[mNumber + 50 + 5].setText(outlet.getContact1title());
+                        editText[mNumber + 50 + 5].setText(outlet.getContact1title() != null ? outlet.getContact1title() : "");
                     }
                     if (screenMode == VIEW)
                         contactTitleSpinner2.setEnabled(false);
@@ -3198,7 +3200,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
                     outlet.getLocid(), true);
 
-            int loc2id = SDUtil.convertToInt((loc2[0]).toString());
+            int loc2id = 0;
+            if (loc2[0] != null)
+            loc2id = SDUtil.convertToInt(loc2[0]);
 
             for (int i = 0; i < locationAdapter2.getCount(); i++) {
                 if (locationAdapter2.getItem(i).getLocId() == loc2id) {
