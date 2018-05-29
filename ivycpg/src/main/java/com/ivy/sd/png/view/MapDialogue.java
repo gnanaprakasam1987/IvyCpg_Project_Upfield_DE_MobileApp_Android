@@ -54,6 +54,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -113,16 +114,16 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
         // this dialog will never close when outside touch
         // this function is for devices of api above 11... for lower versions no need
         this.setFinishOnTouchOutside(false);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        searchImgView = (ImageView) findViewById(R.id.search_img_view);
-        edt_search = (AutoCompleteTextView) findViewById(R.id.search_txt_view);
-        layout_titleBar = (LinearLayout) findViewById(R.id.txt_layout);
-        layout_searchView = (LinearLayout) findViewById(R.id.search_view_lty);
-        locationTxt = (TextView) findViewById(R.id.locTxtView);
+        toolbar = findViewById(R.id.toolbar);
+        searchImgView =  findViewById(R.id.search_img_view);
+        edt_search =  findViewById(R.id.search_txt_view);
+        layout_titleBar =  findViewById(R.id.txt_layout);
+        layout_searchView =  findViewById(R.id.search_view_lty);
+        locationTxt =  findViewById(R.id.locTxtView);
 //        currentLocView = (CardView)findViewById(R.id.current_loc);
-        selectedLocview = (CardView) findViewById(R.id.set_loc_cardview);
-        mMarkerImageView = (ImageView) findViewById(R.id.marker_icon_view);
-        mMarkerParentView = (FrameLayout) findViewById(R.id.map_view);
+        selectedLocview =  findViewById(R.id.set_loc_cardview);
+        mMarkerImageView =  findViewById(R.id.marker_icon_view);
+        mMarkerParentView =  findViewById(R.id.map_view);
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
@@ -218,7 +219,7 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
                 layoutParams.setMargins(0, 0, 30, 30);
 
             }
-            showMyLocation(lattitude, longitude);
+            showMyLocation(doubleConversion(lattitude), doubleConversion(longitude));
 
 
             mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -227,7 +228,7 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
                     clickable = true;
                     Location mylLocation = mMap.getMyLocation();
                     if (mylLocation != null) {
-                        LatLng latLng = new LatLng(mylLocation.getLatitude(), mylLocation.getLongitude());
+                        LatLng latLng = new LatLng(doubleConversion(mylLocation.getLatitude()), doubleConversion(mylLocation.getLongitude()));
                         showMeOnMap(latLng);
                         updateLocation(latLng);
                     }
@@ -531,7 +532,7 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
             }
 
 
-            showMyLocation(lat, lon);
+            showMyLocation(doubleConversion(lat), doubleConversion(lon));
 
         }
     }
@@ -586,21 +587,11 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
 
     }
 
-    public static int getPixelsFromDp(Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
-    }
-
     @Override
     public void onBackPressed() {
 
         return;
     }
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        return super.onTouchEvent(event);
-//    }
 
 
     @Override
@@ -611,5 +602,23 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //To avoid exponential value and trucate decimal digits to 10
+    public static double doubleConversion(Double aDouble) {
+
+        Double val = 0.0;
+        try {
+
+            DecimalFormat decimalFormat = new DecimalFormat("0.0000000000");
+            decimalFormat.setMinimumFractionDigits(2);
+            decimalFormat.setMaximumFractionDigits(10);
+
+            val = Double.valueOf(decimalFormat.format(aDouble));
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return val;
     }
 }

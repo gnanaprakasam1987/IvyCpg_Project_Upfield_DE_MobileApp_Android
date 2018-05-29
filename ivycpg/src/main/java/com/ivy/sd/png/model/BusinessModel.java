@@ -159,6 +159,7 @@ import com.ivy.sd.png.view.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
+import com.ivy.sd.png.view.CallAnalysisActivity;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -3551,6 +3552,11 @@ public class BusinessModel extends Application {
                 } else if (idd == 5004) {
                     CreditNotePrintPreviewScreen frm = (CreditNotePrintPreviewScreen) ctx;
                     frm.finish();
+                }
+                else if (idd == 6004){
+                    CallAnalysisActivity  callAnalysisActivity = (CallAnalysisActivity)ctx;
+                    BusinessModel.loadActivity(ctx,DataMembers.actPlanning);
+                    callAnalysisActivity.finish();
                 }
 
             }
