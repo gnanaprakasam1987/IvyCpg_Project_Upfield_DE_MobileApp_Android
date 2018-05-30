@@ -188,6 +188,8 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
             try {
                 mSFHelper.saveSOS_PRJSpecific_Transaction();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS_PROJ);
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                        .now(SDUtil.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e + "");

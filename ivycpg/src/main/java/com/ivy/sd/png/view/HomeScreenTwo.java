@@ -1795,7 +1795,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     .getIndicativeList())
                                 indicativeOrderAdapter.add(temp);
 
-                            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE) {
+                            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE &&
+                                    "CREDIT".equals(bmodel.getRetailerMasterBO().getRpTypeCode())) {
                                 if (bmodel.getRetailerMasterBO()
                                         .getCredit_balance() == -1
                                         || bmodel.getRetailerMasterBO()
@@ -1829,7 +1830,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     finish();
                                 } else {
                                     showDialog(1);
-                                    isCreated = false;
                                 }
                             } else {
 
@@ -3799,7 +3799,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             for (Integer temp : bmodel.productHelper
                     .getIndicativeList())
                 indicativeOrderAdapter.add(temp);
-            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE) {
+            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE &&
+                    "CREDIT".equals(bmodel.getRetailerMasterBO().getRpTypeCode())) {
                 if (bmodel.getRetailerMasterBO()
                         .getCredit_balance() == -1
                         || bmodel.getRetailerMasterBO()
@@ -3831,7 +3832,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     finish();
                 } else {
                     showDialog(1);
-                    isCreated = false;
                 }
             } else {
                 bmodel.outletTimeStampHelper
@@ -3975,7 +3975,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-
+                                        isCreated = false;
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder1);

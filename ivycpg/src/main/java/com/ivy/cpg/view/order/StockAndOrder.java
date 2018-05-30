@@ -986,11 +986,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             if (!screenCode.equals(ConfigurationMasterHelper.MENU_STOCK)) {
 
-                    if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS) {
+                    /*if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS) {
                         SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
                         salesReturnHelper.clearSalesReturnTable(true);
                         bmodel.productHelper.updateSalesReturnInfoInProductObj(null, "0", false);
-                    }
+                    }*/
 
             }
 
@@ -3547,6 +3547,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         bmodel.setContext(this);
         if (vw == mBtn_Search) {
             viewFlipper.showNext();
+            mEdt_searchproductName.requestFocus();
+            try {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null)
+                    imm.showSoftInput(mEdt_searchproductName, InputMethodManager.SHOW_FORCED);
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
         } else if (vw == mBtnFilterPopup) {
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(
@@ -3598,6 +3606,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
                     if (!orderHelper.isPendingReplaceAmt()) {
+                        updatesalesReturnValue();
                         onnext();
                     } else {
                         Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
@@ -3679,6 +3688,39 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
         }
+    }
+
+    private void updatesalesReturnValue() {
+        double totalvalue = 0;
+        Vector<ProductMasterBO> items = productList;
+        if (items == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.no_products_exists), 0);
+            return;
+        }
+        int siz = items.size();
+        if (siz == 0)
+            return;
+
+        for (int i = 0; i < siz; i++) {
+            ProductMasterBO ret = items.elementAt(i);
+
+            for (SalesReturnReasonBO bo : ret.getSalesReturnReasonList()) {
+                double temp;
+                if (bo.getPieceQty() != 0 || bo.getCaseQty() != 0
+                        || bo.getOuterQty() > 0) {
+                    temp = ((bo.getCaseQty() * bo.getCaseSize())
+                            + (bo.getOuterQty() * bo.getOuterSize()) + bo
+                            .getPieceQty()) * bo.getSrpedit();
+                    totalvalue = totalvalue + temp;
+                }
+
+            }
+
+        }
+        SalesReturnHelper salesReturnHelper=SalesReturnHelper.getInstance(this);
+        salesReturnHelper.setReturnValue(totalvalue);
+
     }
 
     private void onnext() {
@@ -4219,10 +4261,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
         else {
             if (result != null) {
-                if (result.getContents() == null) {
-                    Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-                } else {
-                    // Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                if (result.getContents() != null) {
                     strBarCodeSearch = result.getContents();
                     if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
                         bmodel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));

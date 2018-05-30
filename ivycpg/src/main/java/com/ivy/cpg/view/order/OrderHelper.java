@@ -593,7 +593,7 @@ public class OrderHelper {
 
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                 salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER",false);
-                salesReturnHelper.clearSalesReturnTable(true);
+               // salesReturnHelper.clearSalesReturnTable(true);
             }
 
             businessModel.setOrderHeaderNote("");
@@ -1101,7 +1101,7 @@ public class OrderHelper {
         int totalBalanceQty = 0;
         float totalBalanceAmount = 0;
 
-        for (ProductMasterBO product : businessModel.productHelper.getSalesReturnProducts()) {
+        for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
 
             int totalSalesReturnQty = 0;
@@ -3282,7 +3282,7 @@ public class OrderHelper {
         float totalReturnAmount = 0;
         float totalReplaceAmount = 0;
 
-        for (ProductMasterBO product : businessModel.productHelper.getSalesReturnProducts()) {
+        for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
             if (reasonList != null) {
                 for (SalesReturnReasonBO reasonBO : reasonList) {
