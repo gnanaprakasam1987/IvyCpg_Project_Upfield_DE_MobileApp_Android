@@ -51,25 +51,17 @@
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4"
+                        android:layout_weight="3.5"
                         android:gravity="start"
                         android:tag="posm_name"
                         android:text="@string/posm_name" />
-                    <!-- <TextView
-                         android:id="@+id/tv_header_grp"
-                         style="?attr/customListTitle"
-                         android:layout_width="@dimen/list_asset_qty_width"
-                         android:layout_height="wrap_content"
-
-                         android:tag="posm_group"
-                         android:text="@string/grp" />-->
 
                     <TextView
                         android:id="@+id/tv_header_target"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.4"
+                        android:layout_weight="1"
                         android:tag="posm_target"
                         android:text="@string/target" />
 
@@ -78,7 +70,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
+                        android:layout_weight="1"
                         android:tag="posm_actual"
                         android:text="@string/actual" />
 
@@ -87,7 +79,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
+                        android:layout_weight="1"
                         android:tag="exeqty"
                         android:text="@string/executed_qty" />
 
@@ -96,9 +88,18 @@
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
+                        android:layout_weight="1"
                         android:tag="posm_compqty"
                         android:text="@string/competitor_qty" />
+
+                    <TextView
+                        android:id="@+id/tv_store_loc"
+                        style="?attr/customListTitle"
+                        android:layout_width="@dimen/beat_spinner_min"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:tag="posm_in_store_loc"
+                        android:text="@string/location" />
 
 
                 </LinearLayout>
