@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.Vector;
@@ -32,6 +33,7 @@ public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvRetailerName, tvOutletCode, tvOrderDate, tvOrderValue, tvStatus, tvOrderId;
+        TextView lblOutletCode, lblOrderDate, lblOrderValue, lblStatus, lblOrderID;
 
         public MyViewHolder(View view) {
             super(view);
@@ -43,12 +45,54 @@ public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.
             tvStatus = view.findViewById(R.id.tv_order_status);
             tvOrderId = view.findViewById(R.id.tv_order_id);
 
+            lblOrderDate = view.findViewById(R.id.lbl_order_date);
+            lblOrderID = view.findViewById(R.id.lbl_order_id);
+            lblOrderValue = view.findViewById(R.id.lbl_order_value);
+            lblOutletCode = view.findViewById(R.id.lbl_outlet_code);
+            lblStatus = view.findViewById(R.id.lbl_order_status);
+
             tvRetailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tvOutletCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tvOrderDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tvOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tvStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             tvOrderId.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(lblOrderDate.getTag()) != null)
+                    lblOrderDate.setText(bmodel.labelsMasterHelper.applyLabels(lblOrderDate.getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+            lblOrderDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(lblOrderID.getTag()) != null)
+                    lblOrderID.setText(bmodel.labelsMasterHelper.applyLabels(lblOrderID.getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+            lblOrderID.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(lblOrderValue.getTag()) != null)
+                    lblOrderValue.setText(bmodel.labelsMasterHelper.applyLabels(lblOrderValue.getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+            lblOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(lblOutletCode.getTag()) != null)
+                    lblOutletCode.setText(bmodel.labelsMasterHelper.applyLabels(lblOutletCode.getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+            lblOutletCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(lblStatus.getTag()) != null)
+                    lblStatus.setText(bmodel.labelsMasterHelper.applyLabels(lblStatus.getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+            lblStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         }
     }
 

@@ -20,11 +20,11 @@
         app:contentPadding="0dp">
 
         <LinearLayout
-            android:weightSum="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/dimen_5dp">
+            android:paddingBottom="@dimen/dimen_5dp"
+            android:weightSum="1">
 
             <LinearLayout
                 android:id="@+id/linearlayout01"
@@ -70,8 +70,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:paddingStart="3dp"
                             android:paddingLeft="3dp"
+                            android:paddingStart="3dp"
+                            android:tag="outlet_code"
                             android:text="Outlet Code"
                             android:textColor="@color/Black"
                             android:textSize="@dimen/text_sz_small" />
@@ -81,8 +82,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:paddingStart="3dp"
                             android:paddingLeft="3dp"
+                            android:paddingStart="3dp"
                             android:text=""
                             android:textColor="?attr/primarycolor"
                             android:textSize="@dimen/font_small" />
@@ -104,16 +105,17 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingStart="@dimen/dimens_10dp"
-                        android:paddingLeft="@dimen/dimen_10dp">
+                        android:paddingLeft="@dimen/dimen_10dp"
+                        android:paddingStart="@dimen/dimens_10dp">
 
                         <TextView
                             android:id="@+id/lbl_order_date"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:paddingStart="3dp"
                             android:paddingLeft="3dp"
+                            android:paddingStart="3dp"
+                            android:tag="order_date"
                             android:text="Order Date"
                             android:textColor="@color/Black"
                             android:textSize="@dimen/text_sz_small" />
@@ -123,8 +125,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:paddingStart="3dp"
                             android:paddingLeft="3dp"
+                            android:paddingStart="3dp"
                             android:text="0000.00"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/font_small"
@@ -151,9 +153,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:paddingStart="3dp"
                             android:paddingLeft="3dp"
-                            android:text="Outlet Code"
+                            android:paddingStart="3dp"
+                            android:tag="order_id"
+                            android:text="Order ID"
                             android:textColor="@color/Black"
                             android:textSize="@dimen/text_sz_small" />
 
@@ -162,8 +165,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:paddingStart="3dp"
                             android:paddingLeft="3dp"
+                            android:paddingStart="3dp"
                             android:text=""
                             android:textColor="?attr/primarycolor"
                             android:textSize="@dimen/font_small" />
@@ -185,16 +188,17 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingStart="@dimen/dimens_10dp"
-                        android:paddingLeft="@dimen/dimen_10dp">
+                        android:paddingLeft="@dimen/dimen_10dp"
+                        android:paddingStart="@dimen/dimens_10dp">
 
                         <TextView
                             android:id="@+id/lbl_order_value"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:paddingStart="3dp"
                             android:paddingLeft="3dp"
+                            android:paddingStart="3dp"
+                            android:tag="order_value"
                             android:text="Value"
                             android:textColor="@color/Black"
                             android:textSize="@dimen/text_sz_small" />
@@ -204,8 +208,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:paddingStart="3dp"
                             android:paddingLeft="3dp"
+                            android:paddingStart="3dp"
                             android:text=""
                             android:textColor="?attr/primarycolor"
                             android:textSize="@dimen/font_small"
@@ -235,9 +239,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:paddingStart="3dp"
                         android:paddingLeft="3dp"
+                        android:paddingStart="3dp"
                         android:text="Status"
+                        android:tag="order_status"
                         android:textColor="@color/Black"
                         android:textSize="@dimen/text_sz_small" />
 
@@ -246,8 +251,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:paddingStart="3dp"
                         android:paddingLeft="3dp"
+                        android:paddingStart="3dp"
                         android:text=""
                         android:textColor="?attr/accentcolor"
                         android:textSize="@dimen/font_small" />
