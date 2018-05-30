@@ -984,16 +984,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void hideAndSeek() {
         try {
 
-            if (!screenCode.equals(ConfigurationMasterHelper.MENU_STOCK)) {
-
-                    /*if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU || bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS) {
-                        SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
-                        salesReturnHelper.clearSalesReturnTable(true);
-                        bmodel.productHelper.updateSalesReturnInfoInProductObj(null, "0", false);
-                    }*/
-
-            }
-
             if (bmodel.configurationMasterHelper.SHOW_CUSTOM_KEYBOARD_NEW) {
                 findViewById(R.id.card_keyboard).setVisibility(View.GONE);
             } else {
