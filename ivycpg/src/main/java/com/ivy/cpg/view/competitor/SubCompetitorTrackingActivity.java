@@ -572,7 +572,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 //                });
 
             } else {
-                holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(SubCompetitorTrackingActivity.this, R.drawable.ic_photo_camera));
+                holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(SubCompetitorTrackingActivity.this, R.drawable.ic_photo_camera_grey_24dp));
             }
             TypedArray typearr = SubCompetitorTrackingActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             if (position % 2 == 0) {

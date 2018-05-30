@@ -398,6 +398,7 @@ public class TaskFragment extends IvyBaseFragment {
             Intent i = new Intent(getActivity(), TaskCreation.class);
             i.putExtra("fromHomeScreen", fromHomeScreen);
             startActivity(i);
+            getActivity().finish();
             return true;
         } else if (i1 == R.id.menu_reason) {
             bmodel.reasonHelper.downloadNpReason(bmodel.retailerMasterBO.getRetailerID(), "MENU_TASK");

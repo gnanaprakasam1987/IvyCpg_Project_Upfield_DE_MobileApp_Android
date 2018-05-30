@@ -965,7 +965,7 @@ public class SchemeDetailsMasterHelper {
             sb.append("SELECT distinct productid,Pname,uomid,Qty,ASF.Slabid,ASF.schemeid,ASF.SchemeDesc,ASF.groupName");
             sb.append(",ASF.groupType,ASF.schemeLogic,UM.ListName  from AccumulationSchemeFreeIssues ASF");
             sb.append(" inner join Productmaster PM on PM.pid=ASF.productid");
-            sb.append("LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') UM ON ASF.uomid = UM.ListId ");
+            sb.append(" LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') UM ON ASF.uomid = UM.ListId ");
             sb.append(" where ASF.retailerid=");
             sb.append(retailerId);
             sb.append(" and ASF.slabid not in(select schemeid from SchemeFreeProductDetail where retailerid=" + retailerId + ") order by ASF.schemeid");
@@ -3833,6 +3833,7 @@ public class SchemeDetailsMasterHelper {
      * @return Is all selected scheme value is between the range or not
      */
     public boolean isValuesAppliedBetweenTheRange(ArrayList<SchemeBO> mSchemeDoneList) {
+        if (mSchemeDoneList != null && !mSchemeDoneList.isEmpty())
         for (SchemeBO schemeBO : mSchemeDoneList) {
             if (schemeBO != null) {
 
