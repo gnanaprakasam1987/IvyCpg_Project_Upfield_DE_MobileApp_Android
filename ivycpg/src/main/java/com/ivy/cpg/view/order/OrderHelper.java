@@ -52,6 +52,7 @@ public class OrderHelper {
     public String selectedOrderId = "";
     private String orderId;
     public String invoiceDiscount;
+    public double withHoldDiscount;
     private int print_count;
 
     private Vector<ProductMasterBO> mSortedOrderedProducts;
@@ -536,6 +537,9 @@ public class OrderHelper {
 
             }
 
+            if(businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+                DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
+            }
 
             try {
                 if (businessModel.configurationMasterHelper.IS_SIH_VALIDATION
@@ -589,7 +593,7 @@ public class OrderHelper {
 
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                 salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER",false);
-                //salesReturnHelper.clearSalesReturnTable(true);
+               // salesReturnHelper.clearSalesReturnTable(true);
             }
 
             businessModel.setOrderHeaderNote("");
@@ -1013,6 +1017,10 @@ public class OrderHelper {
                             businessModel.productHelper.insertBillWiseEntryDisc(db, uid);
                     }
 
+                }
+
+                if(businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+                    DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
                 }
 
 
@@ -1776,24 +1784,6 @@ public class OrderHelper {
             orderValue = businessModel.getOrderHeaderBO().getOrderValue();
         }
 
-        /*
-         * update tax in invoice master Changed by Felix on 30-04-2015 For
-         * getting tax detail from order value
-         */
-        if (businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
-            businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
-
-
-            orderValue = Double.parseDouble(SDUtil.format(orderValue,
-                    businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                    0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
-
-            final double totalTaxValue = businessModel.productHelper.taxHelper.applyBillWiseTax(orderValue);
-
-            if (businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
-                orderValue = orderValue + totalTaxValue;
-
-        }
 
 
         try {
@@ -1944,10 +1934,13 @@ public class OrderHelper {
 
 
             // update Invoice id in InvoiceDiscountDetail table
-            if (businessModel.configurationMasterHelper.SHOW_DISCOUNT || businessModel.configurationMasterHelper.discountType == 1
-                    || businessModel.configurationMasterHelper.discountType == 2 || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
+            if (businessModel.configurationMasterHelper.SHOW_DISCOUNT
+                    || businessModel.configurationMasterHelper.discountType == 1
+                    || businessModel.configurationMasterHelper.discountType == 2
+                    || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG
+                    || businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
 
-                businessModel.productHelper.updateInvoiceIdInItemLevelDiscount(db, invoiceId,
+                businessModel.productHelper.updateInvoiceIdInDiscountTable(db, invoiceId,
                         this.getOrderId());
             }
 
@@ -3432,4 +3425,28 @@ public class OrderHelper {
     }
 
 
+    public void updateWareHouseStock(Context mContext) {
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            StringBuffer sb = new StringBuffer();
+            sb.append("select pid,qty from ProductWareHouseStockMaster");
+            Cursor cursor = db.selectSQL(sb.toString());
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(cursor.getString(0));
+                    if (productMasterBO != null) {
+                        productMasterBO.setWSIH(cursor.getInt(1));
+                    }
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
 }

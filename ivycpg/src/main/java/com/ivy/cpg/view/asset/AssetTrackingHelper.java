@@ -1640,7 +1640,6 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(0);
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(QT(assetBo.getSerialNo()));
-                                assetDetailValues.append(",");
                                 if (assetBo.getConditionID() != null && !"null".equals(assetBo.getConditionID())) {
                                     assetDetailValues.append(",");
                                     assetDetailValues.append(QT(assetBo.getConditionID()));

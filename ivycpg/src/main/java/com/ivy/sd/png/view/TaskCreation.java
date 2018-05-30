@@ -411,8 +411,8 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                     getResources().getString(R.string.new_task_saved),
                     Toast.LENGTH_SHORT).show();
             if (fromHomeScreen)
-                startActivity(new Intent(TaskCreation.this,
-                        HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
+            startActivity(new Intent(TaskCreation.this,
+                    HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
 
             finish();
 

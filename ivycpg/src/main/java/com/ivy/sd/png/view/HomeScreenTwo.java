@@ -1698,10 +1698,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             || bmodel.getRetailerMasterBO().getCreditDays() == 0
                             || bmodel.productHelper.isCheckCreditPeriod()) {
 
-                        if (bmodel.hasAlreadyStockChecked(bmodel
-                                .getRetailerMasterBO().getRetailerID())) {
-                            bmodel.loadStockCheckedProducts(bmodel
-                                    .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
+                        if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
+                            if (bmodel.hasAlreadyStockChecked(bmodel
+                                    .getRetailerMasterBO().getRetailerID())) {
+                                bmodel.loadStockCheckedProducts(bmodel
+                                        .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
+                            }
                         }
 
                         bmodel.setEdit(false);

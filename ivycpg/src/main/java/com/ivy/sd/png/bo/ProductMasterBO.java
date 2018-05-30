@@ -89,6 +89,16 @@ public class ProductMasterBO {
     private int isDrug;
     private String parentHierarchy="";
 
+    public int getTotalStockQty() {
+        return totalStockQty;
+    }
+
+    public void setTotalStockQty(int totalStockQty) {
+        this.totalStockQty = totalStockQty;
+    }
+
+    private int totalStockQty;
+
     public double getDistiributorSchemeDiscount() {
         return distiributorSchemeDiscount;
     }

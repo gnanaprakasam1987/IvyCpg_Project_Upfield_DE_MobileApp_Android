@@ -594,7 +594,6 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                             } else {
                                 holder.mCompTrackBO.setReasonID(SDUtil
                                         .convertToInt(reString.getReasonID()));
-
                             }
 
                         }

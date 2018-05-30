@@ -3202,7 +3202,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             int loc2id = 0;
             if (loc2[0] != null)
-                loc2id = SDUtil.convertToInt(loc2[0]);
+            loc2id = SDUtil.convertToInt(loc2[0]);
 
             for (int i = 0; i < locationAdapter2.getCount(); i++) {
                 if (locationAdapter2.getItem(i).getLocId() == loc2id) {

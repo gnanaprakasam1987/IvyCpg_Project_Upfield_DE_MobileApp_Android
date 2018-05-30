@@ -2498,11 +2498,14 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     if (bmodel.getRetailerMasterBO().getCredit_balance() != -1
                             && totalvalue > bmodel.getRetailerMasterBO()
                             .getCredit_balance())
-                        bmodel.showAlert(
-                                getResources()
-                                        .getString(
-                                                R.string.order_exceeds_credit_balance),
-                                0);
+                    {
+                        if (bmodel.configurationMasterHelper.IS_CREDIT_LIMIT_WITH_SOFT_ALERT) {
+                            Toast.makeText(this, getResources().getString(R.string.order_exceeds_credit_balance), Toast.LENGTH_LONG).show();
+                            nextBtnSubTask();
+                        }
+                        else
+                            bmodel.showAlert(getResources().getString(R.string.order_exceeds_credit_balance), 0);
+                    }
                     else
                         nextBtnSubTask();
                 else

@@ -558,6 +558,40 @@
                     android:maxLines="1"
                     android:text="@string/zero" />
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layout_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_5px"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/text_stock_title"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:tag="item_sr_piece"
+                    android:text="@string/stock" />
+
+                <TextView
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_1dp"
+                    android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:maxLines="1"
+                    android:text=":" />
+
+                <TextView
+                    android:id="@+id/text_stock"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/zero" />
+            </LinearLayout>
 
         </LinearLayout>
 

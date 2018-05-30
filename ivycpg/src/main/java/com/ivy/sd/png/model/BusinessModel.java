@@ -3097,6 +3097,9 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setCockTailQty(cocktail);
                     product.getLocations().get(j).setAvailability(availability);
 
+                    int totalStockQty=(shelfpqty+(shelfcqty*product.getCaseSize())+(shelfoqty*product.getOutersize()));
+                    product.setTotalStockQty(product.getTotalStockQty()+totalStockQty);
+
                     return;
                 }
             }

@@ -799,6 +799,7 @@ public class SalesReturnHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+
             String cond = "";
             if (module.equalsIgnoreCase("order"))
                 cond = " invoiceId=0 AND ";
