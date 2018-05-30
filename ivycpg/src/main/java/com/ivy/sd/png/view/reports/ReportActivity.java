@@ -55,7 +55,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
     private OrderReportFragment orderFragment;
     private SalesVolumeReportFragment salesVolumeReportFragment;
-    private PreviousDayOrderReportFragment pvsorderFragment;
     private DailyReportFragmentNew dayFragment;
     private InvoiceReportFragment invoiceReportFragment;
     private PndInvoiceReportFragment pndInvoiceReportFragment;
@@ -174,8 +173,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         salesVolumeReportFragment.setArguments(getIntent().getExtras());
         mDeliveryStockReport = new DeliveryStockReport();
         mDeliveryStockReport.setArguments(getIntent().getExtras());
-        pvsorderFragment = new PreviousDayOrderReportFragment();
-        pvsorderFragment.setArguments(getIntent().getExtras());
         dayFragment = new DailyReportFragmentNew();
         dayFragment.setArguments(getIntent().getExtras());
         invoiceReportFragment = new InvoiceReportFragment();
@@ -347,13 +344,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             getSupportActionBar().setSubtitle(config.getMenuName());
             transaction.commit();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_PREVIOUS_ORDER_REPORT)) {
-            transaction.replace(R.id.fragment_content, pvsorderFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
-        } else if (config.getConfigCode().equals(
+        }  else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_DAY_REPORT)) {
             transaction.replace(R.id.fragment_content, dayFragment);
             transaction.addToBackStack(null);

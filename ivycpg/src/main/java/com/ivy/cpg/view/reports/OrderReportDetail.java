@@ -155,12 +155,8 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
 
             String orderID = obj.getOrderID();
-            if (isFromOrderReport)
-                list = businessModel.reportHelper.downloadOrderreportdetail(orderID);
+            list = businessModel.reportHelper.downloadOrderreportdetail(orderID);
 
-            else
-                list = businessModel.reportHelper
-                        .downloadPVSOrderreportdetail(orderID);
 
             //scheme products
             schemeProductList = businessModel.reportHelper.getSchemeProductDetails(orderID, false);

@@ -1859,7 +1859,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 //Calculating with hold tax
                 double withHoldDiscount=0;
-                BModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT =true;
                 if(BModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
                     discountHelper.downloadBillWiseWithHoldDiscount(getApplicationContext());
                     withHoldDiscount = discountHelper.calculateWithHoldDiscount(totalOrderValue);
@@ -1878,6 +1877,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 orderHelper.withHoldDiscount=withHoldDiscount;
                 BModel.getOrderHeaderBO().setOrderValue(totalOrderValue);
+
                 new MyThread(this, DataMembers.SAVEINVOICE).start();
             } else {
 
