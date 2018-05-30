@@ -319,8 +319,8 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
                 .now(SDUtil.TIME), "");
         bmodel.saveModuleCompletion("MENU_CALL_ANALYS_KELGS");
         bmodel.productHelper.clearProductHelper();
-        BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
-                DataMembers.actPlanning);
+//        BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
+//                DataMembers.actPlanning);
         finish();
 
     }

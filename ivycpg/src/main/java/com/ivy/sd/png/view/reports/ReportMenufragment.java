@@ -254,6 +254,8 @@ public class ReportMenufragment extends IvyBaseFragment {
             } else {
                 Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ORD_STAT_RPT)) {
+            intoreportacti(config);
         } else {
             intoreportacti(config);
         }
@@ -264,7 +266,7 @@ public class ReportMenufragment extends IvyBaseFragment {
         Intent intent = new Intent(getActivity(), ReportActivity.class);
         Bundle bun = new Bundle();
         bun.putSerializable("config", config);
-        bun.putString("FROM","REPORT");
+        bun.putString("FROM", "REPORT");
         intent.putExtras(bun);
 
         startActivity(intent);
@@ -435,7 +437,7 @@ public class ReportMenufragment extends IvyBaseFragment {
                         Intent intent = new Intent(getActivity(), ReportActivity.class);
                         Bundle bun = new Bundle();
                         bun.putSerializable("config", config);
-                        bun.putString("FROM","REPORT");
+                        bun.putString("FROM", "REPORT");
                         intent.putExtras(bun);
                         startActivity(intent);
                     } else {

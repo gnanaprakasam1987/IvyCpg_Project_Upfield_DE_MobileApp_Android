@@ -1199,8 +1199,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.srpEdit = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_srpedit);
 
-                holder.salesReturn = (TextView) row
+                holder.salesReturn = row
                         .findViewById(R.id.stock_and_order_listview_sales_return_qty);
+                holder.salesReturn.setFocusable(false);
 
                 holder.total = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_total);
@@ -2121,7 +2122,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                         if (holder.productObj.isAllocation() == 1
                                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (totalQty <= holder.productObj.getSIH()) {
+                            if ((totalQty + holder.productObj.getRepCaseQty()) <= holder.productObj.getSIH()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedCaseQty(SDUtil
                                             .convertToInt(qty));
@@ -2158,7 +2159,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                         } else if (holder.productObj.isCbsihAvailable()) {
-                            if (totalQty <= holder.productObj.getCpsih()) {
+                            if ((totalQty + holder.productObj.getRepCaseQty()) <= holder.productObj.getCpsih()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedCaseQty(SDUtil
                                             .convertToInt(qty));
@@ -2386,7 +2387,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                         if (holder.productObj.isAllocation() == 1
                                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (totalQty <= holder.productObj.getSIH()) {
+                            if ((totalQty + holder.productObj.getRepPieceQty()) <= holder.productObj.getSIH()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedPcsQty(SDUtil
                                             .convertToInt(qty));
@@ -2419,7 +2420,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                         } else if (holder.productObj.isCbsihAvailable()) {
-                            if (totalQty <= holder.productObj.getCpsih()) {
+                            if ((totalQty + holder.productObj.getRepPieceQty()) <= holder.productObj.getCpsih()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedPcsQty(SDUtil
                                             .convertToInt(qty));
@@ -2563,7 +2564,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         holder.weight.setText(Utils.formatAsTwoDecimal((double) (totalQty * holder.productObj.getWeight())));
                         if (holder.productObj.isAllocation() == 1
                                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (totalQty <= holder.productObj.getSIH()) {
+                            if ((totalQty + holder.productObj.getRepOuterQty()) <= holder.productObj.getSIH()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedOuterQty(SDUtil
                                             .convertToInt(qty));
@@ -2599,7 +2600,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                             }
                         } else if (holder.productObj.isCbsihAvailable()) {
-                            if (totalQty <= holder.productObj.getCpsih()) {
+                            if ((totalQty + holder.productObj.getRepOuterQty()) <= holder.productObj.getCpsih()) {
                                 if (!"".equals(qty)) {
                                     holder.productObj.setOrderedOuterQty(SDUtil
                                             .convertToInt(qty));
@@ -3372,7 +3373,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView rep_cs;
         private TextView rep_ou;
         private ImageView iv_info, imageView_stock;
-        private TextView salesReturn;
+        private EditText salesReturn;
         private TextView moq;
         private LinearLayout layout_stock;
         private TextView text_stock;

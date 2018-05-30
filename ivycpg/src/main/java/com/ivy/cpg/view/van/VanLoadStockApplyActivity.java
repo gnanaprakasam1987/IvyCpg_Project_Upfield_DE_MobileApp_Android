@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -243,20 +243,20 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             holder.totalLineTxt.setText(proTotLine + "");
 
             if (selected_position == position) {
-                holder.checkBoxList.setChecked(true);
+                holder.radioButtonList.setChecked(true);
 
             } else {
-                holder.checkBoxList.setChecked(false);
+                holder.radioButtonList.setChecked(false);
 
             }
-            holder.checkBoxList.setOnClickListener(new View.OnClickListener() {
+            holder.radioButtonList.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     uid = projObj.getUid();
 
 
-                    if (((AppCompatCheckBox) v).isChecked()) {
+                    if (((AppCompatRadioButton) v).isChecked()) {
                         selected_position = position;
 
                     } else {
@@ -312,14 +312,14 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             private LinearLayout listBgLayout;
-            private AppCompatCheckBox checkBoxList;
+            private AppCompatRadioButton radioButtonList;
             private TextView vanLoadNoTxt, totalLineTxt, vanLoadDateTxt;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
                 listBgLayout = (LinearLayout) itemView.findViewById(R.id.header_list);
-                checkBoxList = (AppCompatCheckBox) itemView.findViewById(R.id.stock_apply_listview_cb);
+                radioButtonList = itemView.findViewById(R.id.stock_apply_listview_cb);
                 vanLoadNoTxt = (TextView) itemView.findViewById(R.id.vanLoad_no_list);
                 vanLoadDateTxt = (TextView) itemView.findViewById(R.id.vanLoad_date);
                 totalLineTxt = (TextView) itemView.findViewById(R.id.total_lines_txt);

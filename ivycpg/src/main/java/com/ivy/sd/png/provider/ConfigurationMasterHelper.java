@@ -1382,16 +1382,25 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = "CSSTK04";  //jnj project specific
     public boolean IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK;
 
+    private static final String CODE_ENABLE_PROMOTION_SKUNAME = "PROMO03";  //jnj project specific
+    public boolean IS_ENABLE_PROMOTION_SKUNAME;
+    private static final String CODE_ENABLE_PROMOTION_DATES = "PROMO04";  //jnj project specific
+    public boolean IS_ENABLE_PROMOTION_DATES;
+
     private static final String CODE_TASK_OPEN = "TASK_RPT_OPEN";
     public int TASK_OPEN;
 
     private static final String CODE_TASK_PLANNED = "TASK_RPT_PLANNED";
-    public int TASK_PLANNED= -1  ;
+    public int TASK_PLANNED = -1;
 
     private static final String CODE_TASK_SELLER_RPT = "TASK_SELLER_RPT";
     public boolean IS_SELLER_TASK_RPT;
 
     public boolean IS_WITHHOLD_DISCOUNT;
+
+    private static final String CODE_ORDER_STATUS_REPORT = "ORD_STAT_RPT";
+    public boolean IS_ENABLE_ORDER_STATUS_REPORT;
+    public boolean IS_ORDER_STATUS_REPORT;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1585,7 +1594,7 @@ public class ConfigurationMasterHelper {
             ConfigureBO con;
 
             String sql = "select hhtCode, flag, RField,menu_type from "
-                    + DataMembers.tbl_HhtModuleMaster +" Where ForSwitchSeller = 0";
+                    + DataMembers.tbl_HhtModuleMaster + " Where ForSwitchSeller = 0";
 
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -2456,6 +2465,13 @@ public class ConfigurationMasterHelper {
         this.TASK_OPEN = hashMapHHTModuleOrder.get(CODE_TASK_OPEN) != null ? hashMapHHTModuleOrder.get(CODE_TASK_OPEN) : 0;
         this.TASK_PLANNED = hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) != null ? hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) : -1;
         this.IS_SELLER_TASK_RPT = hashMapHHTModuleConfig.get(CODE_TASK_SELLER_RPT) != null ? hashMapHHTModuleConfig.get(CODE_TASK_SELLER_RPT) : false;
+
+        this.IS_ENABLE_PROMOTION_SKUNAME = hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_SKUNAME) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_SKUNAME) : false;
+        this.IS_ENABLE_PROMOTION_DATES = hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_DATES) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_PROMOTION_DATES) : false;
+        this.IS_ENABLE_ORDER_STATUS_REPORT = hashMapHHTModuleConfig.get(CODE_ORDER_STATUS_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_STATUS_REPORT) : false;
+        if (IS_ENABLE_ORDER_STATUS_REPORT) {
+            loadOrderStatusReportConfiguration();
+        }
     }
 
     private boolean isInOutModule() {
@@ -2509,6 +2525,32 @@ public class ConfigurationMasterHelper {
                 }
             }
 
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void loadOrderStatusReportConfiguration() {
+        try {
+
+            IS_ORDER_STATUS_REPORT = false;
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_ORDER_STATUS_REPORT) + " and Flag=1 and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    if (c.getString(0).equals("0")) {
+                        IS_ORDER_STATUS_REPORT = true;
+                    }
+                }
+                c.close();
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -3838,7 +3880,7 @@ public class ConfigurationMasterHelper {
                 codeValue = null;
 
                 sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                        + " where hhtCode= " + bmodel.QT(CODE_VANLOAD_LABELS)+" and ForSwitchSeller = 0";
+                        + " where hhtCode= " + bmodel.QT(CODE_VANLOAD_LABELS) + " and ForSwitchSeller = 0";
                 c = db.selectSQL(sql);
                 if (c != null && c.getCount() != 0) {
                     if (c.moveToNext()) {
@@ -4167,7 +4209,7 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     IS_PRINT_SEQUENCE_REQUIRED = true;
-                    if (c.getInt(0)!=0) {
+                    if (c.getInt(0) != 0) {
                         IS_PRINT_SEQUENCE_BRANDWISE = true;
                         bmodel.setPrintSequenceLevelID(c.getInt(0));
                     }
@@ -4211,7 +4253,7 @@ public class ConfigurationMasterHelper {
 
 
                 String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                        + " where hhtCode=" + bmodel.QT(CODE_EOD_COLUMNS)+" and ForSwitchSeller = 0";
+                        + " where hhtCode=" + bmodel.QT(CODE_EOD_COLUMNS) + " and ForSwitchSeller = 0";
                 Cursor c = db.selectSQL(sql);
                 if (c != null && c.getCount() != 0) {
                     if (c.moveToNext()) {
@@ -4379,7 +4421,7 @@ public class ConfigurationMasterHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         String sql = "select Rfield from HhtModuleMaster where hhtCode="
-                + bmodel.QT(CODE_PRODUCTIVE_CALLS_OBJ) +"  and  ForSwitchSeller = 0";
+                + bmodel.QT(CODE_PRODUCTIVE_CALLS_OBJ) + "  and  ForSwitchSeller = 0";
 
         Cursor c = db.selectSQL(sql);
         if (c != null) {
@@ -4436,7 +4478,7 @@ public class ConfigurationMasterHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         String sql = "select Rfield from HhtModuleMaster where hhtCode="
-                + bmodel.QT(CODE_SUGGESTED_ORDER_LOGIC)+" and  ForSwitchSeller = 0";
+                + bmodel.QT(CODE_SUGGESTED_ORDER_LOGIC) + " and  ForSwitchSeller = 0";
 
         Cursor c = db.selectSQL(sql);
 
@@ -5026,7 +5068,7 @@ public class ConfigurationMasterHelper {
         try {
             db.openDataBase();
             String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
-                    bmodel.QT(CODE_SHOW_ALL_ROUTE_FILTER) +" and  ForSwitchSeller = 0";
+                    bmodel.QT(CODE_SHOW_ALL_ROUTE_FILTER) + " and  ForSwitchSeller = 0";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -5054,7 +5096,7 @@ public class ConfigurationMasterHelper {
         try {
             db.openDataBase();
             String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
-                    bmodel.QT(CODE_DOC_REF)+" and  ForSwitchSeller = 0";
+                    bmodel.QT(CODE_DOC_REF) + " and  ForSwitchSeller = 0";
             Cursor c = db.selectSQL(sb);
             String codeValue = "";
             if (c != null && c.getCount() != 0) {
@@ -5084,7 +5126,7 @@ public class ConfigurationMasterHelper {
         try {
             db.openDataBase();
             String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
-                    bmodel.QT(CODE_SALES_RETURN_VALIDATE) +" and  ForSwitchSeller = 0";
+                    bmodel.QT(CODE_SALES_RETURN_VALIDATE) + " and  ForSwitchSeller = 0";
             Cursor c = db.selectSQL(sb);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -5109,7 +5151,7 @@ public class ConfigurationMasterHelper {
         try {
             db.openDataBase();
             String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
-                    bmodel.QT(CODE_SALES_RETURN_SIGN)+" and  ForSwitchSeller = 0";
+                    bmodel.QT(CODE_SALES_RETURN_SIGN) + " and  ForSwitchSeller = 0";
             Cursor c = db.selectSQL(sb);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -5464,7 +5506,7 @@ public class ConfigurationMasterHelper {
             db.openDataBase();
             sb = new StringBuffer();
             sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(bmodel.QT(CODE_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) +" and  ForSwitchSeller = 0");
+            sb.append(bmodel.QT(CODE_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) + " and  ForSwitchSeller = 0");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -5477,7 +5519,7 @@ public class ConfigurationMasterHelper {
             }
             sb = new StringBuffer();
             sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(bmodel.QT(CODE_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN)+" and  ForSwitchSeller = 0");
+            sb.append(bmodel.QT(CODE_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN) + " and  ForSwitchSeller = 0");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -5490,7 +5532,7 @@ public class ConfigurationMasterHelper {
             }
             sb = new StringBuffer();
             sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(bmodel.QT(CODE_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN)+" and  ForSwitchSeller = 0");
+            sb.append(bmodel.QT(CODE_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN) + " and  ForSwitchSeller = 0");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -5503,7 +5545,7 @@ public class ConfigurationMasterHelper {
             }
             sb = new StringBuffer();
             sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(bmodel.QT(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN)+" and  ForSwitchSeller = 0");
+            sb.append(bmodel.QT(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) + " and  ForSwitchSeller = 0");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -5516,7 +5558,7 @@ public class ConfigurationMasterHelper {
             }
             sb = new StringBuffer();
             sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(bmodel.QT(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN)+" and  ForSwitchSeller = 0");
+            sb.append(bmodel.QT(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) + " and  ForSwitchSeller = 0");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -5529,7 +5571,7 @@ public class ConfigurationMasterHelper {
             }
             sb = new StringBuffer();
             sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(bmodel.QT(CODE_SOS_RETAIN_LAST_VISIT_TRAN)+" and  ForSwitchSeller = 0");
+            sb.append(bmodel.QT(CODE_SOS_RETAIN_LAST_VISIT_TRAN) + " and  ForSwitchSeller = 0");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {

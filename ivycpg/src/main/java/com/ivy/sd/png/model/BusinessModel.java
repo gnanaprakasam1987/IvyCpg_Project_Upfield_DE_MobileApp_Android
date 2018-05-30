@@ -131,6 +131,7 @@ import com.ivy.sd.png.provider.NewOutletAttributeHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OrderFullfillmentHelper;
+import com.ivy.sd.png.provider.OrderStatusReportHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
@@ -159,6 +160,7 @@ import com.ivy.sd.png.view.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
+import com.ivy.sd.png.view.CallAnalysisActivity;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -301,6 +303,7 @@ public class BusinessModel extends Application {
     public ModuleTimeStampHelper moduleTimeStampHelper;
     public AcknowledgementHelper acknowledgeHelper;
     public FitScoreHelper fitscoreHelper;
+    public OrderStatusReportHelper orderStatusReportHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
     /* ******* Invoice Number To Print ******* */
@@ -476,6 +479,7 @@ public class BusinessModel extends Application {
         moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(this);
         acknowledgeHelper = AcknowledgementHelper.getInstance(this);
         fitscoreHelper = FitScoreHelper.getInstance(this);
+        orderStatusReportHelper = OrderStatusReportHelper.getInstance(this);
     }
 
 
@@ -3554,6 +3558,11 @@ public class BusinessModel extends Application {
                 } else if (idd == 5004) {
                     CreditNotePrintPreviewScreen frm = (CreditNotePrintPreviewScreen) ctx;
                     frm.finish();
+                }
+                else if (idd == 6004){
+                    CallAnalysisActivity  callAnalysisActivity = (CallAnalysisActivity)ctx;
+                    BusinessModel.loadActivity(ctx,DataMembers.actPlanning);
+                    callAnalysisActivity.finish();
                 }
 
             }
