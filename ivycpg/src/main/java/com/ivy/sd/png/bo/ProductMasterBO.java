@@ -1120,6 +1120,8 @@ public class ProductMasterBO {
     };
 
     public List<SalesReturnReasonBO> getSalesReturnReasonList() {
+        if (salesReturnReasonList == null)
+            return new ArrayList<>();
         return salesReturnReasonList;
     }
 
