@@ -71,6 +71,8 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.order.scheme.UpSellingActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
@@ -86,9 +88,9 @@ import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -96,7 +98,6 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -114,7 +115,6 @@ import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.view.SchemeDialog;
 
 import java.util.ArrayList;
@@ -3794,12 +3794,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE)
                     if (bmodel.getRetailerMasterBO().getCredit_balance() != -1
                             && totalvalue > bmodel.getRetailerMasterBO()
-                            .getCredit_balance())
-                        bmodel.showAlert(
-                                getResources()
-                                        .getString(
-                                                R.string.order_exceeds_credit_balance),
-                                0);
+                            .getCredit_balance()) {
+
+                        if (bmodel.configurationMasterHelper.IS_CREDIT_LIMIT_WITH_SOFT_ALERT) {
+                            Toast.makeText(this, getResources().getString(R.string.order_exceeds_credit_balance), Toast.LENGTH_LONG).show();
+                            nextBtnSubTask();
+                        }
+                        else
+                            bmodel.showAlert(getResources().getString(R.string.order_exceeds_credit_balance), 0);
+                    }
                     else
                         nextBtnSubTask();
                 else

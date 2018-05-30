@@ -34,6 +34,7 @@ public class DiscountHelper {
     private HashMap<String, HashMap<Integer, Double>> mDiscountListByProductId = new HashMap<>();
     private ArrayList<StoreWiseDiscountBO> mBillWiseDiscountList;
     private ArrayList<StoreWiseDiscountBO> mBillWisePaytTermDiscountList;
+    private ArrayList<StoreWiseDiscountBO> mBillWiseWithHoldDiscountList;
 
     private DiscountHelper(Context context) {
         this.businessModel = (BusinessModel) context;
@@ -519,6 +520,39 @@ public class DiscountHelper {
     }
 
 
+    public double calculateWithHoldDiscount(double totalOrderValue) {
+        double totalValue = totalOrderValue;
+        double totalBillWiseDiscountValue = 0;
+        double billWiseCompanyDiscount = 0;
+        double billWiseDistributorDiscount = 0;
+        if (mBillWiseWithHoldDiscountList != null && mBillWiseWithHoldDiscountList.size() > 0) {
+            for (StoreWiseDiscountBO storeWiseDiscountBO : mBillWiseWithHoldDiscountList) {
+                if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
+                    totalOrderValue = totalValue - billWiseDistributorDiscount;
+                }
+                double discountValue = 0;
+                if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                    discountValue = totalOrderValue * storeWiseDiscountBO.getDiscount() / 100;
+                } else if (storeWiseDiscountBO.getType() == 0) {
+                    discountValue = storeWiseDiscountBO.getDiscount();
+                }
+
+                storeWiseDiscountBO.setDiscountValue(discountValue);
+                if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
+                    billWiseCompanyDiscount = billWiseCompanyDiscount + discountValue;
+                } else {
+                    billWiseDistributorDiscount = billWiseDistributorDiscount + discountValue;
+                }
+
+                totalBillWiseDiscountValue = totalBillWiseDiscountValue + discountValue;
+            }
+
+        }
+
+
+        return totalBillWiseDiscountValue;
+    }
+
     /**
      * Save bill wise discount
      *
@@ -528,6 +562,31 @@ public class DiscountHelper {
     public void insertBillWiseDiscount(DBUtil db, String uid) {
         String columns = "Orderid,pid,typeid,Value,Percentage,Applylevelid,Retailerid,DiscountId,isCompanyGiven";
         for (StoreWiseDiscountBO discountBO : mBillWiseDiscountList) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(uid + "," + "0," + discountBO.getType() + ",");
+            if (discountBO.getIsPercentage() == 1) {
+                sb.append(discountBO.getDiscountValue() + "," + discountBO.getDiscount());
+            } else {
+                sb.append(discountBO.getDiscountValue() + ",0");
+            }
+
+            sb.append("," + discountBO.getApplyLevel() + "," + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) + "," + discountBO.getDiscountId() + "," + discountBO.getIsCompanyGiven());
+            db.insertSQL(DataMembers.tbl_InvoiceDiscountDetail, columns, sb.toString());
+            db.insertSQL(DataMembers.tbl_OrderDiscountDetail, columns, sb.toString());
+        }
+
+
+    }
+
+    /**
+     * Save bill wise with hold discount
+     *
+     * @param db  database objects
+     * @param uid transaction Id
+     */
+    public void insertWithHoldDiscount(DBUtil db, String uid) {
+        String columns = "Orderid,pid,typeid,Value,Percentage,Applylevelid,Retailerid,DiscountId,isCompanyGiven";
+        for (StoreWiseDiscountBO discountBO : mBillWiseWithHoldDiscountList) {
             StringBuffer sb = new StringBuffer();
             sb.append(uid + "," + "0," + discountBO.getType() + ",");
             if (discountBO.getIsPercentage() == 1) {
@@ -645,6 +704,71 @@ public class DiscountHelper {
     public ArrayList<StoreWiseDiscountBO> getBillWisePayternDiscountList() {
         return mBillWisePaytTermDiscountList;
     }
+
+
+    public ArrayList<StoreWiseDiscountBO> getBillWiseWithHoldDiscountList() {
+        return mBillWiseWithHoldDiscountList;
+    }
+
+    /**
+     * Download bill wise with hold discount
+     *
+     * @param mContext current context
+     */
+    public void downloadBillWiseWithHoldDiscount(Context mContext) {
+
+        try {
+
+            StoreWiseDiscountBO discountBO;
+            mBillWiseWithHoldDiscountList = new ArrayList<>();
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c;
+
+
+            StringBuffer sb = new StringBuffer();
+            sb.append("select Value,IsPercentage,Typeid,Description,ApplyLevelid,Moduleid,ProductId,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
+            sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
+            sb.append("where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
+            sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
+            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(),mContext) + ") OR ");
+            sb.append(" locationid in(" + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
+            sb.append(" Accountid =" + businessModel.getRetailerMasterBO().getAccountid() + " and Accountid!=0 ))");
+            sb.append(" and dm.moduleid in(select ListId from StandardListMaster where ListCode='INVOICE') ");
+            sb.append(" and dm.ApplyLevelid in(select ListId from StandardListMaster where ListCode='BILL') ");
+            sb.append(" and dm.Typeid in (select ListId from StandardListMaster where ListCode='WHT')");
+            sb.append(" order by dm.isCompanyGiven asc");
+            c = db.selectSQL(sb.toString());
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    discountBO = new StoreWiseDiscountBO();
+                    discountBO.setDiscount(c.getDouble(0));
+                    discountBO.setIsPercentage(c.getInt(1));
+                    discountBO.setType(c.getInt(2));
+                    discountBO.setDescription(c.getString(3));
+                    discountBO.setApplyLevel(c.getInt(4));
+                    discountBO.setModule(c.getInt(5));
+                    discountBO.setProductId(c.getInt(6));
+                    discountBO.setDiscountId(c.getInt(7));
+                    discountBO.setIsCompanyGiven(c.getInt(8));
+                    discountBO.setToDiscount(c.getDouble(9));
+                    discountBO.setMinAmount(c.getDouble(10));
+                    discountBO.setMaxAmount(c.getDouble(11));
+                    mBillWiseWithHoldDiscountList.add(discountBO);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+
+    }
+
+
 
     /**
      * download pay term discount for current retailer

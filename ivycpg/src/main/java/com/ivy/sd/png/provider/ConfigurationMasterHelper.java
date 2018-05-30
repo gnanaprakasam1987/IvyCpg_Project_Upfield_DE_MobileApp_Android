@@ -208,6 +208,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_RET_SKIP_VALIDATION = "RSEQVAL";
     private static final String CODE_INV_CREDIT_BALANCE = "CREDIT01";
     public boolean IS_SUPPLIER_CREDIT_LIMIT = false;
+    public boolean IS_CREDIT_LIMIT_WITH_SOFT_ALERT = false;
     private static final String CODE_POST_DATE_ALLOW = "COLL01";
     private static final String CODE_DELIVERY_DATE = "ORDB30";
     private static final String CODE_ALLOW_DECIMAL = "ORDB31";
@@ -1389,6 +1390,8 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_TASK_SELLER_RPT = "TASK_SELLER_RPT";
     public boolean IS_SELLER_TASK_RPT;
+
+    public boolean IS_WITHHOLD_DISCOUNT;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -4115,8 +4118,15 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     int value = c.getInt(0);
-                    if (value == 1) {
+                    if(value==0||value==2){
+                        IS_SUPPLIER_CREDIT_LIMIT = false;
+                        if(value==2)
+                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT=true;
+                    }
+                    else if (value == 1||value==3) {
                         IS_SUPPLIER_CREDIT_LIMIT = true;
+                        if(value==3)
+                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT=true;
                     }
                 }
                 c.close();
@@ -4161,6 +4171,17 @@ public class ConfigurationMasterHelper {
                         IS_PRINT_SEQUENCE_BRANDWISE = true;
                         bmodel.setPrintSequenceLevelID(c.getInt(0));
                     }
+                }
+                c.close();
+            }
+
+            sql = "select listid from " + DataMembers.tbl_StandardListMaster
+                    + " where LovCode='WHT' and ListType='DISCOUNT_TYPE'";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    IS_WITHHOLD_DISCOUNT = true;
                 }
                 c.close();
             }

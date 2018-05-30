@@ -52,6 +52,7 @@ public class OrderHelper {
     public String selectedOrderId = "";
     private String orderId;
     public String invoiceDiscount;
+    public double withHoldDiscount;
     private int print_count;
 
     private Vector<ProductMasterBO> mSortedOrderedProducts;
@@ -536,6 +537,9 @@ public class OrderHelper {
 
             }
 
+            if(businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+                DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
+            }
 
             try {
                 if (businessModel.configurationMasterHelper.IS_SIH_VALIDATION
@@ -1013,6 +1017,10 @@ public class OrderHelper {
                             businessModel.productHelper.insertBillWiseEntryDisc(db, uid);
                     }
 
+                }
+
+                if(businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+                    DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
                 }
 
 
@@ -1776,24 +1784,6 @@ public class OrderHelper {
             orderValue = businessModel.getOrderHeaderBO().getOrderValue();
         }
 
-        /*
-         * update tax in invoice master Changed by Felix on 30-04-2015 For
-         * getting tax detail from order value
-         */
-        if (businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
-            businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
-
-
-            orderValue = Double.parseDouble(SDUtil.format(orderValue,
-                    businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                    0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
-
-            final double totalTaxValue = businessModel.productHelper.taxHelper.applyBillWiseTax(orderValue);
-
-            if (businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
-                orderValue = orderValue + totalTaxValue;
-
-        }
 
 
         try {
