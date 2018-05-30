@@ -1934,10 +1934,13 @@ public class OrderHelper {
 
 
             // update Invoice id in InvoiceDiscountDetail table
-            if (businessModel.configurationMasterHelper.SHOW_DISCOUNT || businessModel.configurationMasterHelper.discountType == 1
-                    || businessModel.configurationMasterHelper.discountType == 2 || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
+            if (businessModel.configurationMasterHelper.SHOW_DISCOUNT
+                    || businessModel.configurationMasterHelper.discountType == 1
+                    || businessModel.configurationMasterHelper.discountType == 2
+                    || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG
+                    || businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
 
-                businessModel.productHelper.updateInvoiceIdInItemLevelDiscount(db, invoiceId,
+                businessModel.productHelper.updateInvoiceIdInDiscountTable(db, invoiceId,
                         this.getOrderId());
             }
 

@@ -4176,7 +4176,7 @@ public class ConfigurationMasterHelper {
             }
 
             sql = "select listid from " + DataMembers.tbl_StandardListMaster
-                    + " where LovCode='WHT' and ListType='DISCOUNT_TYPE'";
+                    + " where ListCode='WHT' and ListType='DISCOUNT_TYPE'";
 
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
