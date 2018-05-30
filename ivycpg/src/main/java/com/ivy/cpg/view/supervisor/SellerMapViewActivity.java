@@ -62,8 +62,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     private int trackingType;
     MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
-    private TextView tvMapInfoUserName,tvUserName , tvTimeIn , tvTimeOut , tvBattery ,
-            tvActivity, tvAddress, tvLastSync,tvOutletCovered ;
+    private TextView tvMapInfoUserName,tvUserName , tvTimeIn   ,
+             tvAddress, tvOutletCovered ;
 
     private LinearLayout timeLayout,routeLayout,infoWindowLayout;
 
@@ -128,14 +128,9 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
         tvUserName = findViewById(R.id.tv_user_name);
         tvTimeIn = findViewById(R.id.tv_time_in);
-        tvTimeOut = findViewById(R.id.tv_time_out);
-        tvBattery = findViewById(R.id.tv_battery);
-        tvActivity = findViewById(R.id.tv_activity);
         tvAddress = findViewById(R.id.tv_address);
-        timeLayout = findViewById(R.id.time_layout);
         routeLayout = findViewById(R.id.route_layout);
         tvOutletCovered = findViewById(R.id.tv_outlet_covered);
-        tvLastSync = findViewById(R.id.tv_time);
 
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, 39 + 20));
@@ -248,20 +243,12 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
             infoWindowLayout.setVisibility(View.VISIBLE);
 
-            String activity = "Activity <b>" + detailsBo.getActivityName() + "</b>";
-            tvActivity.setText(Html.fromHtml(activity));
-
-            String battery = "Battery <b>" + detailsBo.getBatterStatus() + "% </b>";
-            tvBattery.setText(Html.fromHtml(battery));
-
-            tvLastSync.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getTime()));
 
             String address = "Address <b>" +
                     SupervisorActivityHelper.getInstance().getAddressLatLong(this, detailsBo.getMarker().getPosition()) + " </b>";
             tvAddress.setText(Html.fromHtml(address));
 
             tvTimeIn.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getInTime()));
-            tvTimeOut.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getOutTime()));
 
             routeLayout.setVisibility(View.GONE);
 

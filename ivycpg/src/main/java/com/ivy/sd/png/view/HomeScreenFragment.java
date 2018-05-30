@@ -146,7 +146,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_BACKUP_SELLER = "MENU_BACKUP_SELLER";
     private static final String MENU_SUPERVISOR_REALTIME = "MENU_SUPERVISOR_REALTIME";
     private static final String MENU_SUPERVISOR_MOVEMENT = "MENU_SUPERVISOR_MOVEMENT";
-    private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_CALLANALYSIS";
+    private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_ACTIVITY";
 //    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
 
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";

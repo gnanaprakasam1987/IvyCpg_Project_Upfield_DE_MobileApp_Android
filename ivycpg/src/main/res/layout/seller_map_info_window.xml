@@ -13,7 +13,7 @@
         android:layout_width="@dimen/dimens_40dp"
         android:layout_height="@dimen/dimens_40dp"
         android:src="@drawable/ic_profile_view"
-        android:layout_marginLeft="@dimen/dimen_18dp"/>
+        android:layout_marginLeft="@dimen/dimen_20dp"/>
 
     <TextView
         android:id="@+id/tv_usr_name"
@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:maxLines="1"
-        android:text="Testing"
+        android:text="Ravi shahtri balaji"
         android:background="@color/white"
         android:textColor="@color/FullBlack"
         android:padding="@dimen/dimen_4dp"/>

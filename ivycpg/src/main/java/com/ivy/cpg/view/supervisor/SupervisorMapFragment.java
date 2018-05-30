@@ -2,6 +2,9 @@ package com.ivy.cpg.view.supervisor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -10,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -17,9 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -47,14 +53,15 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     private GoogleMap mMap;
     boolean isFirst = true;
     private BottomSheetBehavior bottomSheetBehavior;
-    private TextView totalSeller,absentSeller,marketSeller,outSeller;
-    private ImageView imgUpArrow;
+    private TextView totalSeller,absentSeller,marketSeller
+//            ,outSeller
+            ;
     private int totalSellerCount = 0;
     MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
-    private TextView tvMapInfoUserName,tvUserName , tvTimeIn , tvTimeOut , tvBattery ,
-            tvActivity, tvAddress, tvLastSync,tvOutletCovered ;
-    private LinearLayout timeLayout,routeLayout,infoWindowLayout,bottomLayout;
+    private TextView tvMapInfoUserName,tvUserName , tvTimeIn, tvAddress, tvOutletCovered,tvOutletTarget
+            ,tvCoveredOutlet,tvUnbilledOutlet,tvTotalOutlet,tvOrderValue;
+    private LinearLayout routeLayout,infoWindowLayout,bottomLayout;
 
     private int trackingType; //0 - RealTime, 1 - Movement Tracking, 2 - Call analysis
 
@@ -115,40 +122,53 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
         this.mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_info_window, null);
 
-        totalSeller = view.findViewById(R.id.tv_total_seller);
-        absentSeller = view.findViewById(R.id.tv_absent_seller);
-        marketSeller = view.findViewById(R.id.tv_market_seller);
-        outSeller = view.findViewById(R.id.tv_out_seller);
+        totalSeller = view.findViewById(R.id.tv_ttl_seller);
+        absentSeller = view.findViewById(R.id.tv_ttl_absent_seller);
+        marketSeller = view.findViewById(R.id.tv_ttl_market_seller);
+        tvCoveredOutlet = view.findViewById(R.id.tv_covered_outlet);
+        tvUnbilledOutlet = view.findViewById(R.id.tv_unbilled_outlet);
+        tvTotalOutlet = view.findViewById(R.id.tv_ttl_outlet);
+        tvOrderValue = view.findViewById(R.id.tv_order_value);
 
         infoWindowLayout = view.findViewById(R.id.user_info_layout);
         infoWindowLayout.setVisibility(View.GONE);
 
         tvUserName = view.findViewById(R.id.tv_user_name);
-        tvTimeIn = view.findViewById(R.id.tv_time_in);
-        tvTimeOut = view.findViewById(R.id.tv_time_out);
-        tvBattery = view.findViewById(R.id.tv_battery);
-        tvActivity = view.findViewById(R.id.tv_activity);
+        tvTimeIn = view.findViewById(R.id.tv_start_time);
         tvAddress = view.findViewById(R.id.tv_address);
-        timeLayout = view.findViewById(R.id.time_layout);
+        tvOutletTarget = view.findViewById(R.id.tv_target_outlet);
+        tvOutletCovered = view.findViewById(R.id.tv_outlet_covered);
+
         routeLayout = view.findViewById(R.id.route_layout);
         bottomLayout = view.findViewById(R.id.bottom_layout);
-        tvOutletCovered = view.findViewById(R.id.tv_outlet_covered);
-        tvLastSync = view.findViewById(R.id.tv_time);
 
-        (view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        (view.findViewById(R.id.view_dotted_line_end)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        //Bottom sheet layout Typeface
+        ((TextView)view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)view.findViewById(R.id.tv_txt_ttl_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)view.findViewById(R.id.tv_txt_covered_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)view.findViewById(R.id.tv_txt_unbilled_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)view.findViewById(R.id.tv_txt_order_value)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
-        ((TextView)view.findViewById(R.id.tv_header_ttl_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_header_market_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_header_absent_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_header_out_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
         totalSeller.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         absentSeller.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         marketSeller.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        outSeller.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvCoveredOutlet.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvUnbilledOutlet.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvTotalOutlet.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        imgUpArrow = view.findViewById(R.id.up_arrow);
+        //Type face for info window Layout
+        tvUserName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvTimeIn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvOutletTarget.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvOutletCovered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+
+        ((TextView)view.findViewById(R.id.tv_message)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)view.findViewById(R.id.tv_route)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
         mapWrapperLayout = view.findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(SupervisorMapFragment.this.getActivity(), 39 + 20));
@@ -161,6 +181,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             view.findViewById(R.id.bottomSheetLayout).setVisibility(View.VISIBLE);
         else
             view.findViewById(R.id.bottomSheetLayout).setVisibility(View.GONE);
+
     }
 
     private int getPixelsFromDp(Context context, float dp) {
@@ -176,12 +197,10 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        imgUpArrow.setImageResource(R.drawable.ic_up_arrow);
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        imgUpArrow.setImageResource(R.drawable.ic_down);
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
@@ -195,9 +214,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             }
         });
 
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-        imgUpArrow.setOnClickListener(this);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         //Total Seller count under Supervisor
         totalSellerCount = SupervisorActivityHelper.getInstance().getSellersCount(getContext(),bmodel);
@@ -312,6 +329,9 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                         title(userName).position(destLatLng).snippet(key)));
 
                 userHashmap.put(key,detailsBo);
+
+//                userHashmap.get(key).getMarker().showInfoWindow();
+
             } else {
 
                 isFirst = false;
@@ -324,14 +344,12 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                 userHashmap.get(key).setTime(syncTime);
                 userHashmap.get(key).setUserId(Integer.valueOf(key));
 
+                //Animate the marker movement
                 SupervisorActivityHelper.getInstance().animateMarkerNew(destLatLng,userHashmap.get(key).getMarker(),mMap);
+
             }
 
-            BitmapDescriptor icon ;
-            if(status.equalsIgnoreCase("IN"))
-                icon= BitmapDescriptorFactory.fromResource(R.drawable.map_marker_car);
-            else
-                icon= BitmapDescriptorFactory.fromResource(R.drawable.map_marker_car_red);
+            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
 
             userHashmap.get(key).getMarker().setIcon(icon);
 
@@ -373,18 +391,11 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                 detailsBo.setStatus("In Market");
             }
         }
-
-        outSeller.setText(String.valueOf(outSellerCount));
     }
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.up_arrow){
-            if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
+
 
     }
 
@@ -392,10 +403,17 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     public boolean onMarkerClick(Marker marker) {
         Commons.print("on Marker Click called");
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+        double angle = 130.0;
+        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 3.3;
+        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
+        marker.setInfoWindowAnchor((float)x, (float)y);
 
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
         marker.showInfoWindow();
         showInfoWindow(marker);
+
+        if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         return true;
     }
@@ -410,31 +428,12 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
             tvUserName.setText(detailsBo.getUserName());
 
-            String activity = "Activity <b>" + detailsBo.getActivityName() + "</b>";
-            tvActivity.setText(Html.fromHtml(activity));
+            String address = "Last Visit : " +
+                    SupervisorActivityHelper.getInstance().getAddressLatLong(getContext(), detailsBo.getMarker().getPosition()) ;
+            tvAddress.setText(address);
 
-            String battery = "Battery <b>" + detailsBo.getBatterStatus() + "% </b>";
-            tvBattery.setText(Html.fromHtml(battery));
-
-            tvLastSync.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getTime()));
-
-            String address = "Address <b>" +
-                    SupervisorActivityHelper.getInstance().getAddressLatLong(getContext(), detailsBo.getMarker().getPosition()) + " </b>";
-            tvAddress.setText(Html.fromHtml(address));
-
-            tvTimeIn.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getInTime()));
-            tvTimeOut.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getOutTime()));
-
-            if(trackingType == 0){
-                bottomLayout.setVisibility(View.GONE);
-                timeLayout.setVisibility(View.VISIBLE);
-            }
-            else if (trackingType == 1) {
-                timeLayout.setVisibility(View.GONE);
-            }else if (trackingType == 2){
-                timeLayout.setVisibility(View.VISIBLE);
-                tvOutletCovered.setVisibility(View.VISIBLE);
-            }
+            tvTimeIn.setText("Day Start : " +
+                    SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getInTime()));
 
             routeLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

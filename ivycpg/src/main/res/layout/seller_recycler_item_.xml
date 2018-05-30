@@ -58,7 +58,7 @@
                             android:gravity="center_vertical"
                             android:maxLines="1"
                             android:text="Sandy"
-                            android:textStyle="bold" />
+                            android:textColor="#de000000"/>
 
                         <TextView
                             android:id="@+id/tv_outlet_covered"
@@ -67,6 +67,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/dimen_2dp"
                             android:maxLines="1"
+                            android:textColor="#8b000000"
                             android:visibility="visible"
                             android:text="Target/Covered : 103/100" />
 
@@ -167,13 +168,14 @@
 
                     <TextView
                         android:id="@+id/tv_message"
-                        style="?attr/customListItemValue"
+                        style="?attr/customListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
                         android:maxLines="1"
                         android:text="Message"
-                        android:textStyle="bold"
+                        android:textColor="#8a354667"
+                        android:textSize="@dimen/dimen_16dp"
                         android:visibility="visible" />
 
 
@@ -198,13 +200,14 @@
 
                     <TextView
                         android:id="@+id/tv_route"
-                        style="?attr/customListItemValue"
+                        style="?attr/customListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
                         android:maxLines="1"
                         android:text="Route"
-                        android:textStyle="bold"
+                        android:textSize="@dimen/dimen_16dp"
+                        android:textColor="#8a354667"
                         android:visibility="visible" />
 
 

@@ -43,6 +43,7 @@ import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -151,6 +152,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
     private int mSelectedSubId = -1;
 
 
+
     public static int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
@@ -180,8 +182,10 @@ public class PlanningMapFragment extends SupportMapFragment implements
                              Bundle savedInstanceState) {
 
         mapView = super.onCreateView(inflater, container, savedInstanceState);
+
         rootView = inflater.inflate(R.layout.fragment_planning_map, container,
                 false);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         layInflater = inflater;
@@ -377,10 +381,18 @@ public class PlanningMapFragment extends SupportMapFragment implements
                     clearRoute();
                     bottomLayout.setVisibility(View.GONE);
                     //car icon's
-                    carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                    }else{
+                        carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                    }
                     carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
                     //walk iocn's
-                    walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                    }else {
+                        walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                    }
                     walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
                 }
 
@@ -411,10 +423,18 @@ public class PlanningMapFragment extends SupportMapFragment implements
                     hrsTextView.setText(durationStr);
                 }
                 //car icon's
-                walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                }else{
+                    walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                }
                 walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
                 //walk iocn's
-                carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                }else{
+                    carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                }
                 carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
             }
         });
@@ -431,10 +451,18 @@ public class PlanningMapFragment extends SupportMapFragment implements
                     hrsTextView.setText(durationStr);
                 }
                 //car icon's
-                carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                }else{
+                    carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                }
                 carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
                 //walk iocn's
-                walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                }else{
+                    walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                }
                 walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
             }
         });
@@ -446,10 +474,18 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 isBywalk = false;
                 clearRoute();
                 //car icon's
-                carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                }else{
+                    carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
+                }
                 carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
                 //walk iocn's
-                walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                }else{
+                    walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
+                }
                 walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
             }
         });
@@ -466,7 +502,9 @@ public class PlanningMapFragment extends SupportMapFragment implements
         String testString;
         mainLayout = (MapWrapperLayout) rootView
                 .findViewById(R.id.planningmapnew);
-        mainLayout.addView(mapView);
+//        mainLayout.addView(mapView);
+
+
 //        LayoutParams linearlprams = new LayoutParams(LayoutParams.MATCH_PARENT,
 //                LayoutParams.MATCH_PARENT);
 //        LinearLayout linearWidget = new LinearLayout(getActivity());
@@ -630,7 +668,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
         try {
             final ViewGroup nullParent = null;
             if (mMap == null) {
-                SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.planningmapnew);
+                SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                 supportMapFragment.getMapAsync(this);
                 float pxlDp = 39 + 20;
                 mainLayout.init(mMap, getPixelsFromDp(PlanningMapFragment.this.getActivity(), pxlDp));
@@ -665,6 +703,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
                     }
                 };
                 startVisitLty.setOnTouchListener(infoButtonListener);
+
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -681,6 +720,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
             }
             mMap.setMyLocationEnabled(false);
             mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -843,10 +883,10 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 }
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    mapView.getViewTreeObserver().removeGlobalOnLayoutListener(
+                    mainLayout.getViewTreeObserver().removeGlobalOnLayoutListener(
                             this);
                 } else {
-                    mapView.getViewTreeObserver().removeOnGlobalLayoutListener(
+                    mainLayout.getViewTreeObserver().removeOnGlobalLayoutListener(
                             this);
                 }
                 if (bounds != null)
