@@ -517,21 +517,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         for (ConfigureBO menu : menuDB) {
             if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_CALL)) {
                 gotoNextActivity(menu, menu.getHasLink(), false);
-                return;
+                break;
+            }else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
+                gotoNextActivity(menu, menu.getHasLink(), false);
+                break;
+            }else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
+                gotoNextActivity(menu, menu.getHasLink(), false);
+                break;
             }
         }
 
-        for (ConfigureBO menu : menuDB) {
-            if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
-                gotoNextActivity(menu, menu.getHasLink(), false);
-            }
-        }
-
-        for (ConfigureBO menu : menuDB) {
-            if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
-                gotoNextActivity(menu, menu.getHasLink(), false);
-            }
-        }
     }
 
     private void prepareMenuIcons() {
