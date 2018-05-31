@@ -97,7 +97,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     int count = 0, selectedPos = -1;
                     for (ReasonMaster temp : businessModel.reasonHelper
                             .getShipMentType()) {
-                        if (temp.getReasonDesc().equals(businessModel.getRField1()))
+                        if (temp.getReasonID().equals(businessModel.getRField1()))
                             selectedPos = count + 1;
                         shipment_adapter.add(temp);
                         count++;
@@ -132,7 +132,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     int count = 0, selectedPos = -1;
                     for (ReasonMaster temp : businessModel.reasonHelper
                             .getPayTermType()) {
-                        if (temp.getReasonDesc().equals(businessModel.getRField2()))
+                        if (temp.getReasonID().equals(businessModel.getRField2()))
                             selectedPos = count + 1;
                         payment_adapter.add(temp);
                         count++;
@@ -168,7 +168,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     int count = 0, selectedPos = -1;
                     for (ReasonMaster temp : businessModel.reasonHelper
                             .getDistributionChannelType()) {
-                        if (temp.getReasonDesc().equals(businessModel.getRField3()))
+                        if (temp.getReasonID().equals(businessModel.getRField3()))
                             selectedPos = count + 1;
                         channel_adapter.add(temp);
                         count++;

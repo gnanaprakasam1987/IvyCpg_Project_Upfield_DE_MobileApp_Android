@@ -359,7 +359,8 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             } else if (businessModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL || businessModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                 showDialog(2);
             } else if (businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
-                    || businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
                 // Print file already saved.so not need to reload the object.we can get the object from print text file
                 businessModel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE + businessModel.invoiceNumber + ".txt");
                 intent.setClass(InvoiceReportDetail.this,
@@ -978,9 +979,9 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             }
 
             holder.productBO = mProductsForAdapter.get(groupPosition);
-            if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+            if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                 if (holder.productBO.getBatchNo() != null && !holder.productBO.getBatchNo().equals("null")) {
-                    String value = "12345" + holder.productBO.getBatchNo() + " , ";
+                    String value = "" + holder.productBO.getBatchNo() + " , ";
                     holder.tvBatchNo.setText(value);
                 }
             }

@@ -261,6 +261,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     SearchAsync searchAsync;
     private int sbdHistory = 0;
+    private int loadStockedProduct;
 
     private AlertDialog alertDialog;
 
@@ -403,6 +404,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+
+        /**
+         * To check stock validation
+         * product will load based on loadStockedProduct
+         * -1  - load all products
+         *  1  - load SIH available products
+         *  0  - load WSIH available products
+         */
+        loadStockedProduct = -1;
+        if (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY)
+            loadStockedProduct = checkStockValidation();
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
@@ -4282,10 +4296,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 ProductMasterBO ret = items.elementAt(i);
                 if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
                     continue;
-                if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                        && ret.getSIH() > 0)
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
+                if (loadStockedProduct == -1
+                        || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
 
                     if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
 
@@ -4388,17 +4400,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
                 continue;
 
-            if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                    && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                    && ret.getSIH() > 0
-                    && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
-                    || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                    && bmodel.getRetailerMasterBO().getIsVansales() == 0
-                    && ret.getWSIH() > 0)
-                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                    && bmodel.configurationMasterHelper.IS_INVOICE
-                    && ret.getSIH() > 0)) {
+            if (loadStockedProduct == -1
+                    || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
                 if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
                     if (mSelectedFilter.equals(getResources().getString(
                             R.string.order_dialog_barcode))) {
@@ -4534,6 +4537,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
     }
 
+    private int checkStockValidation() {
+        int flag;
+
+        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            flag = bmodel.getRetailerMasterBO().getIsVansales() == 1 ? 1 : 0;
+        } else {
+            flag = bmodel.configurationMasterHelper.IS_INVOICE ? 1 : 0;
+        }
+        return flag;
+    }
+
+
     @Override
     public void updateBrandText(String mFilterText, int bid) {
         mSelectedBrandID = bid;
@@ -4578,11 +4593,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
                         continue;
 
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && ret.getSIH() > 0 && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
-                            || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && ret.getSIH() > 0)) {
+                    if (loadStockedProduct == -1
+                            || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
 
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
                             if ((bid == -1 || bid == ret.getParentid()) && GENERAL.equalsIgnoreCase(generaltxt) && ret.getIsSaleable() == 1) {
@@ -5439,10 +5451,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         || ret.getCasebarcode().equals(strBarCodeSearch)
                         || ret.getOuterbarcode().equals(strBarCodeSearch)
                         || "ALL".equals(strBarCodeSearch)) {
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && ret.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0)) {
+                    if (loadStockedProduct == -1
+                            || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
                             if (!mFilterId.isEmpty()) {
                                 if (mFilterId.contains(ret.getParentid()) || (mFilterId.contains(-1))) {
@@ -5532,10 +5542,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         || ret.getCasebarcode().equals(strBarCodeSearch)
                         || ret.getOuterbarcode().equals(strBarCodeSearch)
                         || "ALL".equals(strBarCodeSearch)) {
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && ret.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
+                    if (loadStockedProduct == -1
+                            || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
                             if (mCategory != null) {
                                 if (!mCategory.isEmpty()) {
@@ -5746,11 +5754,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     for (LevelBO levelBO : mParentIdList) {
                         count++;
                         for (ProductMasterBO productBO : items) {
-                            if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                                    && productBO.getSIH() > 0)
-                                    || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
-                                    (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
+                            if (loadStockedProduct == -1
+                                    || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
                                 if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
@@ -5771,11 +5776,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 } else {
                     for (ProductMasterBO productBO : items) {
-                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                                && productBO.getSIH() > 0)
-                                || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
-                                (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
@@ -5797,11 +5799,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             } else {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
-                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                                && productBO.getSIH() > 0)
-                                || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
-                                (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
@@ -5822,15 +5821,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     count++;
                     for (ProductMasterBO productBO : items) {
 
-                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                                && productBO.getSIH() > 0)
-                                || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                                && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                && bmodel.configurationMasterHelper.IS_INVOICE
-                                && productBO.getSIH() > 0)) {
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                     || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
@@ -5848,15 +5840,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             } else {
                 for (ProductMasterBO productBO : items) {
 
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && productBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                            && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            && bmodel.configurationMasterHelper.IS_INVOICE
-                            && productBO.getSIH() > 0)) {
+                    if (loadStockedProduct == -1
+                            || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                 || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER

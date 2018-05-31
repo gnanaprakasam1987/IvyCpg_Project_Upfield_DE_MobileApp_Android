@@ -1,12 +1,11 @@
 package com.ivy.sd.png.view;
 
-import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,8 +21,7 @@ import java.util.ArrayList;
  * Created by Hanifa M on 21/2/18.
  */
 
-@SuppressLint("ValidFragment")
-public class ChannelSelectionDialogFragment extends android.support.v4.app.DialogFragment {
+public class ChannelSelectionDialog extends Dialog {
     private String mTitle = "";
     private String mMenuName = "";
 
@@ -32,41 +30,32 @@ public class ChannelSelectionDialogFragment extends android.support.v4.app.Dialo
     private ListView mChannelLV;
     private ArrayList<ChannelBO> mChannelList;
     private ChannelSelectionListener channelSelectionListener;
+    Context mcontext;
 
 
-    @SuppressLint("ValidFragment")
-    public ChannelSelectionDialogFragment(ArrayList<ChannelBO> ChannelList) {
-        mChannelList = ChannelList;
+    public ChannelSelectionDialog(Context context, ArrayList<ChannelBO> ChannelList, String title) {
+        super(context);
+        this.mcontext = context;
+        this.mChannelList = ChannelList;
+        this.mTitle = title;
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setCancelable(false);
-        mTitle = getArguments().getString("title");
-        mMenuName = getArguments().getString("screentitle");
-    }
+        mMenuName = mcontext.getResources().getString(R.string.new_retailer);
+        setContentView(R.layout.custom_dialog_fragment);
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.custom_dialog_fragment, container, false);
-
-        return rootView;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        getDialog().setTitle(null);
-        mTitleTV = (TextView) getView().findViewById(R.id.title);
-        mOkBtn = (Button) getView().findViewById(R.id.btn_ok);
+        mTitleTV = (TextView) findViewById(R.id.title);
+        mOkBtn = (Button) findViewById(R.id.btn_ok);
         mOkBtn.setVisibility(View.GONE);
-        mDismisBtn = (Button) getView().findViewById(R.id.btn_dismiss);
-        mChannelLV = (ListView) getView().findViewById(R.id.lv_colletion_print);
+        mDismisBtn = (Button) findViewById(R.id.btn_dismiss);
+        mChannelLV = (ListView) findViewById(R.id.lv_colletion_print);
 
         mTitleTV.setText(mTitle);
-        ArrayAdapter<ChannelBO> adapter = new ArrayAdapter<ChannelBO>(getActivity(), android.R.layout.simple_list_item_single_choice, mChannelList);
+        ArrayAdapter<ChannelBO> adapter = new ArrayAdapter<ChannelBO>(mcontext, android.R.layout.simple_list_item_single_choice, mChannelList);
         mChannelLV.setAdapter(adapter);
         mChannelLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -86,12 +75,11 @@ public class ChannelSelectionDialogFragment extends android.support.v4.app.Dialo
         mDismisBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getDialog().dismiss();
+                dismiss();
 
 
             }
         });
-
 
     }
 

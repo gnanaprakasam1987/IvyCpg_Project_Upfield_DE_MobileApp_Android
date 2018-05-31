@@ -313,22 +313,22 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             }
 
 
-            tv_store_status =  findViewById(R.id.tv_store_status);
+            tv_store_status = findViewById(R.id.tv_store_status);
             tv_store_status.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            tv_duration =  findViewById(R.id.tv_duration);
+            tv_duration = findViewById(R.id.tv_duration);
             tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-            tv_edt_time_taken =  findViewById(R.id.edt_time_taken);
+            tv_edt_time_taken = findViewById(R.id.edt_time_taken);
             tv_edt_time_taken.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
-            btn_close =  findViewById(R.id.button1);
+            btn_close = findViewById(R.id.button1);
             btn_close.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-            tv_sale =  findViewById(R.id.sale);
+            tv_sale = findViewById(R.id.sale);
             tv_sale.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-            view_sale_header =  findViewById(R.id.view_dotted_line);
+            view_sale_header = findViewById(R.id.view_dotted_line);
             view_sale_header.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
             //updating FIT score for current retailer
@@ -425,15 +425,15 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
             MyViewHolder(View row) {
                 super(row);
-                Name =  row.findViewById(R.id.menunametxt);
+                Name = row.findViewById(R.id.menunametxt);
                 Name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_achieved_value =  row.findViewById(R.id.tv_menuvalue_achieved);
+                tv_achieved_value = row.findViewById(R.id.tv_menuvalue_achieved);
                 tv_achieved_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                tv_target_value =  row.findViewById(R.id.tv_menuvalue_target);
+                tv_target_value = row.findViewById(R.id.tv_menuvalue_target);
                 tv_target_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ll_seekbar =  row.findViewById(R.id.ll_seekbar);
-                seekBar =  row.findViewById(R.id.seek);
-                tv_progress_text =  row.findViewById(R.id.tv_progress_text);
+                ll_seekbar = row.findViewById(R.id.ll_seekbar);
+                seekBar = row.findViewById(R.id.seek);
+                tv_progress_text = row.findViewById(R.id.tv_progress_text);
                 tv_progress_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
@@ -1811,6 +1811,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                                     R.string.successfully_uploaded),
                             6004);
 
+                    break;
+                case DataMembers.NOTIFY_CALL_ANALYSIS_TIMER:
+                    if (tv_edt_time_taken != null && msg.obj != null)
+                        tv_edt_time_taken.setText(msg.obj + "");
                     break;
 
 

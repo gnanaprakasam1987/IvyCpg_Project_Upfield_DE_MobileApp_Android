@@ -70,6 +70,18 @@ public class NewOutletBO {
 
     private ArrayList<StandardListBO> priorityProductList;
 
+
+
+    private ArrayList<String> editAttributeList;
+
+    public ArrayList<String> getEditAttributeList() {
+        return editAttributeList;
+    }
+
+    public void setEditAttributeList(ArrayList<String> editAttributeList) {
+        this.editAttributeList = editAttributeList;
+    }
+
     private ArrayList<NewOutletAttributeBO> attributeList;
 
     public ArrayList<NewOutletAttributeBO> getAttributeList() {

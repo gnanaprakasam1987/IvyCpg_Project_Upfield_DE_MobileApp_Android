@@ -1625,7 +1625,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     /** Following is not required to be called in every module **/
                     bmodel.productHelper.loadRetailerWiseProductWisePurchased();
-
+                    bmodel.productHelper.loadRetailerWiseProductWiseP4StockAndOrderQty();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
