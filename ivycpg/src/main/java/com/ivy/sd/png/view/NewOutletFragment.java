@@ -1537,10 +1537,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     }
 
 
-                } else if ((profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO1")
-                        && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO1")) {
+                } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO1")
+                        && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
 //                    if ((profileConfig.get(i).getMaxLengthNo() > 0)
 //                            ? editText[i].getText().toString().trim().length() == 0
@@ -1563,9 +1561,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         break;
                     }
                 } else if ((profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO2")
-                        && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO2")) {
+                        && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
                             editText[i].getText().toString().trim().length() == 0 ||
@@ -1730,10 +1726,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         }
                     }
                 } else if ((profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("FAX") && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("FAX")) {
+                        .equalsIgnoreCase("FAX")
+                        && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if ((profileConfig.get(i).getMaxLengthNo() > 0)
                             ? editText[i].getText().toString().trim().length() == 0
@@ -1807,10 +1801,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 } else if ((profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PINCODE")
-                        && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PINCODE")) {
+                        && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     Commons.print("pin code");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
@@ -1832,19 +1823,24 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("RFIELD3")
-                        && mandatory == 1) {
+                        && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     Commons.print("rf");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (editText[i].getText().toString().trim().length() == 0) {
+                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
+                            editText[i].getText().toString().trim().length() == 0
+                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
+                            : editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
 
                         edittextinputLayout.setErrorEnabled(true);
-                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        else
+                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
-
                     }
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("RFIELD5")
@@ -1946,10 +1942,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         break;
                     }
                 } else if ((profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("CREDITLIMIT") && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("CREDITLIMIT")) {
+                        .equalsIgnoreCase("CREDITLIMIT"))
+                        && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
                             editText[i].getText().toString().trim().length() == 0
@@ -2256,7 +2250,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     /**
-     *
      * @param mNumber
      * @param MName
      * @param edittexttype
@@ -3007,6 +3000,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
 
                 InputFilter filter = new InputFilter() {
+                    @SuppressLint("NewApi")
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                         for (int i = start; i < end; i++) {
                             String enteredValue = dest + String.valueOf(source.charAt(i));
@@ -3050,6 +3044,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
 
                 InputFilter filter = new InputFilter() {
+                    @SuppressLint("NewApi")
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                         for (int i = start; i < end; i++) {
                             String enteredValue = dest + String.valueOf(source.charAt(i));
@@ -3221,7 +3216,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             int loc2id = 0;
             if (loc2[0] != null)
-            loc2id = SDUtil.convertToInt(loc2[0]);
+                loc2id = SDUtil.convertToInt(loc2[0]);
 
             for (int i = 0; i < locationAdapter2.getCount(); i++) {
                 if (locationAdapter2.getItem(i).getLocId() == loc2id) {

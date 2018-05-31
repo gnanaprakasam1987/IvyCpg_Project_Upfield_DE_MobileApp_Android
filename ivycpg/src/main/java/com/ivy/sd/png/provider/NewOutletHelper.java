@@ -1007,24 +1007,6 @@ public class NewOutletHelper {
                     }
 
 
-                } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE46") && configBO.getModule_Order() == 1) {
-
-                    if (!configBO.getMenuNumber().equals("0")) {
-
-                        if ((bmodel.getRetailerMasterBO().getBeatID() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
-                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            isData = true;
-                        } else if ((!(bmodel.getRetailerMasterBO().getBeatID() + "").equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
-
-                            deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + configBO.getMenuNumber() + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
-
-                            isData = true;
-                        }
-                    }
-
-
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE81") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
                         if (bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
@@ -1190,10 +1172,6 @@ public class NewOutletHelper {
                 if (!queryInsert.equals(""))
                     db.executeQ(queryInsert);
 
-                if (isData && configBO.getConfigCode().equalsIgnoreCase("PROFILE46") && configBO.getModule_Order() == 1) {
-                    queryInsert = insertquery + bmodel.QT("PROFILE77") + "," + bmodel.getRetailerMasterBO().getBeatID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
-                    db.executeQ(queryInsert);
-                }
 
                 queryInsert = "";
 
