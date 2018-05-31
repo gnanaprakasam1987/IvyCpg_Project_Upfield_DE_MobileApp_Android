@@ -2,9 +2,12 @@ package com.ivy.sd.png.view;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -75,105 +79,23 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
             }
         });
         ((TextView) findViewById(R.id.titlebar)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView) findViewById(R.id.productnametitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.reasonTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON)
-            ((TextView) findViewById(R.id.titlebar)).setText(mContext.getResources().getString(R.string.reason_for_ordered_prods));
-        if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
-            findViewById(R.id.io_case_Title).setVisibility(
-                    View.GONE);
-        } else {
-            try {
-                ((TextView) findViewById(R.id.io_case_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.io_case_Title).getTag()) != null)
-                    ((TextView) findViewById(R.id.io_case_Title))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.io_case_Title)
-                                            .getTag()));
-            } catch (Exception e) {
-                Commons.printException(e + "");
-            }
-        }
 
         if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
-            findViewById(R.id.co_case_Title).setVisibility(
-                    View.GONE);
-        } else {
             try {
-                ((TextView) findViewById(R.id.co_case_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.co_case_Title).getTag()) != null)
-                    ((TextView) findViewById(R.id.co_case_Title))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.co_case_Title)
-                                            .getTag()));
-            } catch (Exception e) {
-                Commons.printException(e + "");
-            }
-        }
-        //Reason
-        try {
-            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                    R.id.reasonTitle).getTag()) != null)
-                ((TextView) findViewById(R.id.reasonTitle))
-                        .setText(bmodel.labelsMasterHelper
-                                .applyLabels(findViewById(
-                                        R.id.reasonTitle)
-                                        .getTag()));
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
+                if (bmodel.labelsMasterHelper.applyLabels(((TextView)
+                        findViewById(R.id.titlebar))
+                        .getTag()) != null)
+                    ((TextView) findViewById(R.id.titlebar)).setText(bmodel.labelsMasterHelper
+                            .applyLabels(((TextView) findViewById(R.id.titlebar)).getTag()));
+                else
+                    ((TextView) findViewById(R.id.titlebar)).setText(mContext.getResources().getString(R.string.reason_for_ordered_prods));
 
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-            findViewById(R.id.caseTitle).setVisibility(View.GONE);
-        } else {
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.caseTitle).getTag()) != null)
-                    ((TextView) findViewById(R.id.caseTitle))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.caseTitle).getTag()));
+
             } catch (Exception e) {
-                Commons.printException(e);
+                ((TextView) findViewById(R.id.titlebar)).setText(mContext.getResources().getString(R.string.reason_for_ordered_prods));
             }
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-            findViewById(R.id.outercaseTitle).setVisibility(View.GONE);
-        } else {
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.outercaseTitle).getTag()) != null)
-                    ((TextView) findViewById(R.id.outercaseTitle))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.outercaseTitle).getTag()));
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-        }
-
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-            findViewById(R.id.pcsTitle).setVisibility(View.GONE);
-        } else {
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.pcsTitle).getTag()) != null)
-                    ((TextView) findViewById(R.id.pcsTitle))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.pcsTitle).getTag()));
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-        }
 
         mReasonList = new ArrayList<>();
         mReasonList.add(0, new SpinnerBO(0, "Select"));
@@ -189,14 +111,12 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
         for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
             if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
                 if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
-                    if (product.getSoreasonId() == 0)
-                        mProducts.add(product);
+                    mProducts.add(product);
                 }
             } else {
                 if (product.getOrderedCaseQty() > 0)
                     if (product.getOrderedCaseQty() < product.getIndicativeOrder_oc())
-                        if (product.getSoreasonId() == 0)
-                            mProducts.add(product);
+                        mProducts.add(product);
             }
         }
 
@@ -233,6 +153,7 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
                 LayoutInflater inflater = getLayoutInflater();
                 row = inflater.inflate(R.layout.row_indicative_reason_dialog, parent,
                         false);
+                (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 holder = new ViewHolder();
                 holder.tv_pname = (TextView) row.findViewById(R.id.productname);
                 holder.tv_indicativeOrder = (TextView) row
@@ -247,19 +168,139 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
                         .findViewById(R.id.ordered_outer);
                 holder.tv_pcs = (TextView) row
                         .findViewById(R.id.ordered_pcs);
+                holder.editText_remark = (EditText) row.
+                        findViewById(R.id.remarks);
+
                 holder.tv_pname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
                 holder.tv_indicativeOrder.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_cleanOrder.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_case.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_outer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_pcs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    holder.tv_pcs.setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    holder.tv_pcs.setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                    holder.tv_outer.setVisibility(View.GONE);
+                holder.editText_remark.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
+
+                // set filter to not allow emoji's and mentioned(specialChars) symbol are not allowed
+                InputFilter filter = new InputFilter() {
+                    @Override
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            String specialChars = "\"'<>";
+
+                            int type = Character.getType(source.charAt(i));
+                            if (type == Character.SURROGATE || type == Character.OTHER_SYMBOL
+                                    || specialChars.contains("" + source)
+                                    || Character.isWhitespace(0)) {
+                                return "";
+                            }
+                        }
+                        return null;
+                    }
+                };
+
+                holder.editText_remark.setFilters(new InputFilter[]{filter});
+
+                if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
+                    row.findViewById(R.id.layout_io).setVisibility(View.GONE);
+                    row.findViewById(R.id.llio).setVisibility(View.GONE);
+                    row.findViewById(R.id.llco).setVisibility(
+                            View.GONE);
+                } else {
+                    row.findViewById(R.id.layout_io).setVisibility(View.VISIBLE);
+                    try {
+                        ((TextView) findViewById(R.id.ioTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                                R.id.ioTitle).getTag()) != null)
+                            ((TextView) findViewById(R.id.ioTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(findViewById(
+                                                    R.id.ioTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+
+                    try {
+                        ((TextView) findViewById(R.id.coTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                                R.id.coTitle).getTag()) != null)
+                            ((TextView) findViewById(R.id.coTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(findViewById(
+                                                    R.id.coTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+
+                }
+
+
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                    row.findViewById(R.id.llCase).setVisibility(View.GONE);
+                } else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.caseTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.caseTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.caseTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+
+                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                    row.findViewById(R.id.llOuter).setVisibility(View.GONE);
+                } else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.outercaseTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.outercaseTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.outercaseTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                    row.findViewById(R.id.llPiece).setVisibility(View.GONE);
+                } else {
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.pcsTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.pcsTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.pcsTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+
+
+                holder.editText_remark.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        String remark = editable.toString();
+                        holder.productObj.setRemarks(remark);
+
+
+                    }
+                });
                 holder.spn_reason.setAdapter(mReasonAdapter);
                 holder.spn_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -275,10 +316,6 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
                 });
                 row.setTag(holder);
 
-                if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
-                    holder.tv_indicativeOrder.setVisibility(View.GONE);
-                    holder.tv_cleanOrder.setVisibility(View.GONE);
-                }
             } else {
                 holder = (ViewHolder) row.getTag();
             }
@@ -300,12 +337,14 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
                     }
 
             }
-            TypedArray typearr = mContext.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+
+            holder.editText_remark.setText(holder.productObj.getRemarks());
+           /* TypedArray typearr = mContext.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             if (position % 2 == 0) {
                 row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
             } else {
                 row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-            }
+            }*/
             return (row);
         }
     }
@@ -315,6 +354,7 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
         ProductMasterBO productObj;
         TextView tv_pname, tv_indicativeOrder, tv_cleanOrder, tv_case, tv_outer, tv_pcs;
         Spinner spn_reason;
+        EditText editText_remark;
     }
 
     @Override

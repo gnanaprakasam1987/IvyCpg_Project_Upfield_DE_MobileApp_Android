@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:id="@+id/root"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/toolbar"
@@ -15,46 +15,20 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/ll_footer"
         android:layout_below="@+id/toolbar">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/search_edt_margin_left_n_right"
             android:layout_marginEnd="@dimen/search_edt_margin_left_n_right"
+            android:layout_marginStart="@dimen/search_edt_margin_left_n_right"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/rl_store_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tv_store_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/store_status"
-                    android:textColor="@color/store_status_text_color"
-                    android:textSize="@dimen/font_small" />
-
-
-                <ImageView
-                    android:id="@+id/goldstore_iv"
-                    android:layout_width="@dimen/store_status_star_width"
-                    android:layout_height="@dimen/store_status_star_height"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:contentDescription="@string/golden_store"
-                    android:visibility="gone"
-                    android:src="@drawable/icon_star" />
-            </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rl_store_status"
                 android:layout_marginTop="@dimen/dimen_6dp"
                 android:orientation="vertical">
+
                 <android.support.v7.widget.CardView
                     android:id="@+id/content_card"
                     android:layout_width="match_parent"
@@ -77,8 +51,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:paddingStart="@dimen/list_padding_left_n_right"
                                 android:paddingEnd="@dimen/list_padding_left_n_right"
+                                android:paddingStart="@dimen/list_padding_left_n_right"
                                 android:text="@string/sale"
                                 android:textColor="@color/store_status_text_color"
                                 android:textSize="@dimen/font_small" />
@@ -99,11 +73,12 @@
                             android:layout_height="wrap_content"
                             android:cacheColorHint="@null"
                             android:divider="@null"
+                            android:fitsSystemWindows="true"
                             android:nestedScrollingEnabled="false"
-                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                            android:fitsSystemWindows="true"/>
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
+
                 <android.support.v7.widget.CardView
                     android:id="@+id/content_closeCallCard"
                     android:layout_width="match_parent"
@@ -111,24 +86,25 @@
                     android:layout_below="@+id/content_card"
                     android:layout_marginTop="@dimen/dimen_6dp"
                     android:background="@color/WHITE">
+
                     <LinearLayout
+                        android:id="@+id/layoutCloseCall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:id="@+id/layoutCloseCall"
                         android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-                        android:paddingStart="@dimen/dimen_8dp"
                         android:paddingEnd="@dimen/dimen_8dp"
+                        android:paddingStart="@dimen/dimen_8dp"
                         android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
 
                         <TextView
-                            style="?attr/customListItemPrimary"
                             android:id="@+id/tvMenuName"
+                            style="?attr/customListItemPrimary"
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
                             android:gravity="center"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/font_small" />
 
                         <RelativeLayout
                             android:layout_width="wrap_content"
@@ -147,7 +123,7 @@
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
                                     android:textColor="@color/kpi_value_text_color"
-                                    android:textSize="@dimen/highlight_small"/>
+                                    android:textSize="@dimen/highlight_small" />
 
                             </LinearLayout>
 
@@ -170,8 +146,8 @@
         android:layout_alignParentBottom="true"
         android:background="?customLayoutBackground"
         android:minHeight="@dimen/call_analysis_footer_min_height"
-        android:paddingStart="@dimen/search_edt_margin_left_n_right"
-        android:paddingEnd="@dimen/search_edt_margin_left_n_right">
+        android:paddingEnd="@dimen/search_edt_margin_left_n_right"
+        android:paddingStart="@dimen/search_edt_margin_left_n_right">
 
         <LinearLayout
             android:id="@+id/ll_duration"
@@ -204,10 +180,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_marginEnd="@dimen/dimen_10dp"
-            android:layout_toStartOf="@+id/button1"
+            android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_toEndOf="@+id/ll_duration"
+            android:layout_toStartOf="@+id/button1"
             android:orientation="vertical">
 
             <LinearLayout
@@ -218,10 +194,10 @@
 
                 <Spinner
                     android:id="@+id/spinnerNoorderreason"
+                    style="?attr/customLayoutBackground"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/reason_spinner_height"
                     android:layout_weight="1"
-                    style="?attr/customLayoutBackground"
                     android:gravity="center"
                     android:overlapAnchor="false"
 
@@ -235,30 +211,31 @@
                     android:background="@drawable/ic_camera"
                     android:visibility="gone" />
             </LinearLayout>
+
             <EditText
                 android:id="@+id/edt_other_remarks"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"
                 android:layout_weight="1"
+                android:background="@drawable/edittext_bottom_coloraccent_border"
                 android:cursorVisible="false"
                 android:gravity="center_vertical"
+                android:hint="@string/remark_hint"
                 android:textColor="@color/call_duration_value_text_color"
-                android:background="@drawable/edittext_bottom_coloraccent_border"
+                android:textColorHint="@color/call_duration_value_hint_color"
                 android:textSize="@dimen/list_item_primary_text_size"
                 android:visibility="gone"
-                tools:text="f sfsdf sdfsdf sd"
-                android:hint="@string/remark_hint"
-                android:textColorHint="@color/call_duration_value_hint_color" />
+                tools:text="f sfsdf sdfsdf sd" />
 
             <EditText
                 android:id="@+id/edtNoorderreason"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"
                 android:layout_weight="1"
+                android:background="@drawable/edittext_bottom_coloraccent_border"
                 android:cursorVisible="false"
                 android:gravity="center_vertical"
                 android:textColor="@color/call_duration_value_text_color"
-                android:background="@drawable/edittext_bottom_coloraccent_border"
                 android:textSize="@dimen/list_item_primary_text_size"
                 android:visibility="gone"
                 tools:text="f sfsdf sdfsdf sd" />
@@ -266,21 +243,21 @@
 
             <Spinner
                 android:id="@+id/spinnerNooCollectionReason"
+                style="?attr/customLayoutBackground"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/reason_spinner_height"
                 android:layout_weight="1"
-                style="?attr/customLayoutBackground"
                 android:gravity="center"
-                android:overlapAnchor="false"/>
+                android:overlapAnchor="false" />
 
             <Spinner
                 android:id="@+id/spinner_feedback"
+                style="?attr/customLayoutBackground"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/reason_spinner_height"
                 android:layout_weight="1"
-                style="?attr/customLayoutBackground"
                 android:gravity="center"
-                android:overlapAnchor="false"      />
+                android:overlapAnchor="false" />
 
 
         </LinearLayout>

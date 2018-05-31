@@ -169,6 +169,7 @@ public class DataMembers {
     public static final int NOTIFY_PRINT = -10;
     public static final int NEWOUTLET_UPLOAD = -20;
     public static final int RETAILER_DOWNLOAD_FAILED = -22;
+    public static final int NOTIFY_CALL_ANALYSIS_TIMER = 200;
     public static final String SD = "IvyCPG";
 
     public static boolean invoicereportspinner = true;

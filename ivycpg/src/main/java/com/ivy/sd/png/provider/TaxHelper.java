@@ -21,13 +21,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by mansoor on 17/1/18.
  */
 
-public class TaxHelper implements TaxInterface{
+public class TaxHelper implements TaxInterface {
     private static TaxHelper instance = null;
     private BusinessModel mBusinessModel;
     private Context mContext;
@@ -263,7 +262,7 @@ public class TaxHelper implements TaxInterface{
                         .getRetailerID()) + ",");
                 sb.append(mBusinessModel.QT(invoiceid) + "," + taxBO.getTaxRate() + ",");
                 sb.append(mBusinessModel.QT(taxBO.getTaxType()) + ","
-                        + SDUtil.format(taxBO.getTotalTaxAmount(), 2, mBusinessModel.configurationMasterHelper.VALUE_COMMA_COUNT));
+                        + SDUtil.format(taxBO.getTotalTaxAmount(), 2, 0));
                 db.insertSQL("InvoiceTaxDetails", columns, sb.toString());
 
             }
@@ -835,7 +834,7 @@ public class TaxHelper implements TaxInterface{
     @Override
     public float updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS) {
         float totalTaxAmount = 0;
-        if (productMasterBOS != null && productMasterBOS.size()>0) {
+        if (productMasterBOS != null && productMasterBOS.size() > 0) {
             for (ProductMasterBO productMasterBO : productMasterBOS) {
                 ProductMasterBO productBo = productMasterBO;
                 if (productBo != null) {
@@ -849,7 +848,7 @@ public class TaxHelper implements TaxInterface{
 
                         productBo.setDiscount_order_value(temp);
 
-                        if(mTaxListByProductId!=null && mTaxListByProductId.get(productBo.getProductID())!=null) {
+                        if (mTaxListByProductId != null && mTaxListByProductId.get(productBo.getProductID()) != null) {
 
                             ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());
                             if (taxList != null) {
@@ -879,13 +878,14 @@ public class TaxHelper implements TaxInterface{
     public float getTaxAmountByProduct(ProductMasterBO bo) {
         float taxAmount = 0;
         try {
-            if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
-                for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
-                    if (taxBO.getParentType().equals("0")) {
-                        taxAmount += taxBO.getTotalTaxAmount();
+            if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId() != null)
+                if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
+                    for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
+                        if (taxBO.getParentType().equals("0")) {
+                            taxAmount += taxBO.getTotalTaxAmount();
+                        }
                     }
                 }
-            }
         } catch (Exception ex) {
             Commons.printException(ex);
         }

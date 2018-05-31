@@ -84,4 +84,13 @@
         android:visible="true"
         ivydist:showAsAction="always" />
 
+    <item
+        android:id="@+id/menu_indicative_order_reason"
+        android:icon="@drawable/icon_survey"
+        android:orderInCategory="103"
+        android:title="Indicative Order Reason"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+
 </menu>

@@ -81,13 +81,13 @@ public class ProductMasterBO {
     private int companyId = 0;
     private int DSIH;
 
-    private boolean isSeparateBill ;
+    private boolean isSeparateBill;
 
 
     // To maintain original SRP value given in master, in case of updating @srp with some other values(SRP without tax).
     private float originalSrp;
     private int isDrug;
-    private String parentHierarchy="";
+    private String parentHierarchy = "";
 
     public int getTotalStockQty() {
         return totalStockQty;
@@ -1830,6 +1830,7 @@ public class ProductMasterBO {
     public void setIsDrug(int isDrug) {
         this.isDrug = isDrug;
     }
+
     public int getIsDrug() {
         return isDrug;
     }
@@ -1864,5 +1865,15 @@ public class ProductMasterBO {
 
     public void setSeparateBill(boolean separateBill) {
         isSeparateBill = separateBill;
+    }
+
+    String remarks;
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getRemarks() {
+        return remarks;
     }
 }
