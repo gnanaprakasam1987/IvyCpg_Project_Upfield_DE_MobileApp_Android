@@ -21,7 +21,7 @@ public class JointCallFragmentDialog extends DialogFragment {
 
     private BusinessModel bmodel;
     private JoinDialogInterface mJoinDialogInterface;
-    private EditText mPasswordET;
+    private EditText mPasswordET,mRemarksET;
     private UserMasterBO mJoinUserBo;
 
     public JointCallFragmentDialog(){
@@ -45,6 +45,11 @@ public class JointCallFragmentDialog extends DialogFragment {
         mUserNameET.setEnabled(false);
         mPasswordET = (EditText) view.findViewById(R.id.edit_password);
         mPasswordET.requestFocus();
+        mRemarksET = (EditText) view.findViewById(R.id.edit_remarks);
+
+        if(!bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS)
+            mRemarksET.setVisibility(View.GONE);
+
         mUserNameET.setText(mJoinUserBo.getUserName());
         Button mDoneBTN = (Button) view.findViewById(R.id.btn_done);
         Button mCancelBTN = (Button) view.findViewById(R.id.btn_cancel);
@@ -62,11 +67,15 @@ public class JointCallFragmentDialog extends DialogFragment {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 if (mPasswordET.getText().toString().equals("")) {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.enter_password), Toast.LENGTH_SHORT).show();
-                } else {
+                    Toast.makeText(getActivity(), "Please enter password", Toast.LENGTH_SHORT).show();
+                } else if(bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS && mRemarksET.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Please enter remarks", Toast.LENGTH_SHORT).show();
+                }else {
                     if (isJointUserLoginValidation()) {
                         mJoinUserBo.setIsJointCall(1);
                         mJoinDialogInterface.updateJoinList();
+                        if(bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS)
+                            mJoinDialogInterface.insertJointCallDetails(mRemarksET.getText().toString());
                         dismiss();
                     } else {
                         Toast.makeText(getActivity(),  getResources().getString(R.string.enter_valid_password), Toast.LENGTH_SHORT).show();

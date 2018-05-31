@@ -472,6 +472,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_TIME_VIEW;
     public boolean SHOW_SPINNER;
 
+    private static final String CODE_SHOW_JOINT_CALL_REMARKS = "JC_REMARK";
+    public boolean IS_SHOW_JOINT_CALL_REMARKS;
+
     private static final String CODE_MOQ_ENABLED = "FUN66";//change config code
     public boolean IS_MOQ_ENABLED;
 
@@ -2444,6 +2447,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_PRINT_HEADERS = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) : false;
 
         this.IS_ORD_SR_VALUE_VALIDATE = hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) != null ? hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) : false;
+        this.IS_SHOW_JOINT_CALL_REMARKS=hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) : false;
 
         this.IS_INDICATIVE_SR = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
 
