@@ -37,6 +37,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
 
+import static com.ivy.lib.Utils.QT;
+
 /**
  * Created by rajkumar on 19/3/18.
  * Upload helper
@@ -278,6 +280,23 @@ public class UploadHelper {
                 }
             }
 
+
+            if (businessModel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT) {
+                String id = SDUtil.now(SDUtil.DATE_TIME);
+                Iterator<String> keyItr = jsonObjData.keys();
+                while (keyItr.hasNext()) {
+                    String key = keyItr.next();
+                    if (DataMembers.statusReportTables.keySet().contains(key)) {
+                        try {
+                            String name = DataMembers.statusReportTables.get(key);
+                            JSONArray jsonArray = jsonObjData.getJSONArray(key);
+                            db.insertSQL("SyncStatus_Internal", "id,TableName,LineCount", QT(id) + "," + QT(name) + "," + jsonArray.length());
+                        } catch (Exception ex) {
+                            Commons.printException("" + ex);
+                        }
+                    }
+                }
+            }
 
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
 

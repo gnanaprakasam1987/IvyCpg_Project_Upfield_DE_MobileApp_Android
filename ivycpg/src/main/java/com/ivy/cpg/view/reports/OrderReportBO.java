@@ -155,6 +155,33 @@ public class OrderReportBO implements Parcelable {
     private String productId;
     private int batchId;
     private String batchNo;
+    private int volumePcsQty;
+    private int volumeCaseQty;
+    private int volumeOuterQty;
+
+    public int getVolumeOuterQty() {
+        return volumeOuterQty;
+    }
+
+    public void setVolumeOuterQty(int volumeOuterQty) {
+        this.volumeOuterQty = volumeOuterQty;
+    }
+
+    public int getVolumePcsQty() {
+        return volumePcsQty;
+    }
+
+    public void setVolumePcsQty(int volumePcsQty) {
+        this.volumePcsQty = volumePcsQty;
+    }
+
+    public int getVolumeCaseQty() {
+        return volumeCaseQty;
+    }
+
+    public void setVolumeCaseQty(int volumeCaseQty) {
+        this.volumeCaseQty = volumeCaseQty;
+    }
 
     public int getIsVanSeller() {
         return isVanSeller;
