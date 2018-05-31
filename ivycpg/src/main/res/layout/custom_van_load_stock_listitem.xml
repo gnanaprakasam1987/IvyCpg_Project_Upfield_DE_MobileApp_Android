@@ -13,13 +13,13 @@
         android:paddingStart="@dimen/list_padding_left_n_right"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.AppCompatCheckBox
+        <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/stock_apply_listview_cb"
             android:layout_width="@dimen/order_stock_list_item_width_small"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="start|center"
-           ></android.support.v7.widget.AppCompatCheckBox>
+           ></android.support.v7.widget.AppCompatRadioButton>
 
         <LinearLayout
             android:layout_width="match_parent"

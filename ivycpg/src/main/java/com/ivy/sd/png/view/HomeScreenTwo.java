@@ -517,21 +517,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         for (ConfigureBO menu : menuDB) {
             if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_CALL)) {
                 gotoNextActivity(menu, menu.getHasLink(), false);
-                return;
+                break;
+            }else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
+                gotoNextActivity(menu, menu.getHasLink(), false);
+                break;
+            }else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
+                gotoNextActivity(menu, menu.getHasLink(), false);
+                break;
             }
         }
 
-        for (ConfigureBO menu : menuDB) {
-            if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
-                gotoNextActivity(menu, menu.getHasLink(), false);
-            }
-        }
-
-        for (ConfigureBO menu : menuDB) {
-            if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
-                gotoNextActivity(menu, menu.getHasLink(), false);
-            }
-        }
     }
 
     private void prepareMenuIcons() {
@@ -1703,10 +1698,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             || bmodel.getRetailerMasterBO().getCreditDays() == 0
                             || bmodel.productHelper.isCheckCreditPeriod()) {
 
-                        if (bmodel.hasAlreadyStockChecked(bmodel
-                                .getRetailerMasterBO().getRetailerID())) {
-                            bmodel.loadStockCheckedProducts(bmodel
-                                    .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
+                        if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
+                            if (bmodel.hasAlreadyStockChecked(bmodel
+                                    .getRetailerMasterBO().getRetailerID())) {
+                                bmodel.loadStockCheckedProducts(bmodel
+                                        .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
+                            }
                         }
 
                         bmodel.setEdit(false);
@@ -1793,7 +1790,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     .getIndicativeList())
                                 indicativeOrderAdapter.add(temp);
 
-                            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE) {
+                            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE &&
+                                    "CREDIT".equals(bmodel.getRetailerMasterBO().getRpTypeCode())) {
                                 if (bmodel.getRetailerMasterBO()
                                         .getCredit_balance() == -1
                                         || bmodel.getRetailerMasterBO()
@@ -1827,7 +1825,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     finish();
                                 } else {
                                     showDialog(1);
-                                    isCreated = false;
                                 }
                             } else {
 
@@ -3797,7 +3794,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             for (Integer temp : bmodel.productHelper
                     .getIndicativeList())
                 indicativeOrderAdapter.add(temp);
-            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE) {
+            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE &&
+                    "CREDIT".equals(bmodel.getRetailerMasterBO().getRpTypeCode())) {
                 if (bmodel.getRetailerMasterBO()
                         .getCredit_balance() == -1
                         || bmodel.getRetailerMasterBO()
@@ -3829,7 +3827,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     finish();
                 } else {
                     showDialog(1);
-                    isCreated = false;
                 }
             } else {
                 bmodel.outletTimeStampHelper
@@ -3973,7 +3970,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-
+                                        isCreated = false;
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder1);

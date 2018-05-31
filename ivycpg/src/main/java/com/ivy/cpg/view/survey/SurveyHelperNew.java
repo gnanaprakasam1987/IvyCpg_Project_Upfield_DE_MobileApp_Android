@@ -977,10 +977,10 @@ public class SurveyHelperNew {
                 }
             }
         }
-        if (invalidEmails.toString().isEmpty()) {
+        if (!invalidEmails.toString().isEmpty()) {
             return true;
         }
-        if (notInRange.toString().isEmpty()) {
+        if (!notInRange.toString().isEmpty()) {
             return true;
         }
         return false;

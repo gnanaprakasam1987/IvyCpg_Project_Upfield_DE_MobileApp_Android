@@ -219,8 +219,8 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
                 bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
                         .now(SDUtil.TIME), "");
                 bmodel.productHelper.clearProductHelper();
-                BusinessModel.loadActivity(CloseCallActivity.this,
-                        DataMembers.actPlanning);
+//                BusinessModel.loadActivity(CloseCallActivity.this,
+//                        DataMembers.actPlanning);
                 finish();
             } else {
                 bmodel.showAlert("Choose type of visit.", 0);
@@ -229,8 +229,8 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
         } else {
             bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
             bmodel.outletTimeStampHelper.deleteTimeStamp();
-            BusinessModel.loadActivity(CloseCallActivity.this,
-                    DataMembers.actPlanning);
+//            BusinessModel.loadActivity(CloseCallActivity.this,
+//                    DataMembers.actPlanning);
             finish();
         }
     }

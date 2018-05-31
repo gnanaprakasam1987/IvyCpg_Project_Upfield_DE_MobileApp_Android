@@ -250,8 +250,8 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
             finish();
-            BusinessModel.loadActivity(PlanningActivity.this,
-                    DataMembers.actPlanning);
+//            BusinessModel.loadActivity(PlanningActivity.this,
+//                    DataMembers.actPlanning);
             return true;
         }
 

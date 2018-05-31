@@ -169,9 +169,7 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
         if (isFromOrderReport)
             avglinesorderbooking = bmodel.reportHelper
                     .getavglinesfororderbooking("OrderHeader");
-        else
-            avglinesorderbooking = bmodel.reportHelper
-                    .getavglinesfororderbooking("PVSOrderHeader");
+
         totalLines.setText(TotalLines + "");
         // Format and set on the lable
         txttotal.setText(bmodel.formatValue(TotalValue) + "");

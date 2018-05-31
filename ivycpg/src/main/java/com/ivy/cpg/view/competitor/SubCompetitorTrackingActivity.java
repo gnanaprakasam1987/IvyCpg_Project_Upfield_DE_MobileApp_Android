@@ -572,7 +572,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 //                });
 
             } else {
-                holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(SubCompetitorTrackingActivity.this, R.drawable.ic_photo_camera));
+                holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(SubCompetitorTrackingActivity.this, R.drawable.ic_photo_camera_grey_24dp));
             }
             TypedArray typearr = SubCompetitorTrackingActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             if (position % 2 == 0) {
@@ -594,7 +594,6 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                             } else {
                                 holder.mCompTrackBO.setReasonID(SDUtil
                                         .convertToInt(reString.getReasonID()));
-
                             }
 
                         }
@@ -604,12 +603,10 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         }
                     });
 
-            if (holder.mCompTrackBO!=null&&holder.mCompTrackBO.getReasonID()!=0) {
-                holder.spnReason.setSelection(getReasonIndex("1"));
-            } else {
+            if (holder.mCompTrackBO != null)
                 holder.spnReason.setSelection(getReasonIndex(holder.mCompTrackBO.getReasonID()
                         + ""));
-            }
+
             holder.spnReason.setSelected(true);
 
             return convertView;

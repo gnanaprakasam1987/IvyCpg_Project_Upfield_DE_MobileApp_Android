@@ -508,7 +508,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 String strCount = "(" + (count + 1) + ")";
                 holder.tvAge.setText(strCount);
             }else{
-                holder.tvAge.setText("(" +holder.invoiceHeaderBO.getDueDays()+ ")");
+                String strDays = holder.invoiceHeaderBO.getDueDays() != null ? "(" + holder.invoiceHeaderBO.getDueDays() + ")" : "";
+                holder.tvAge.setText(strDays);
             }
 
             String strPayment = bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getBalance()) + "";

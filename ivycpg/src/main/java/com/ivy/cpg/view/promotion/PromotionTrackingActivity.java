@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.promotion;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,14 +13,17 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.CheckModeFragment;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
 public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implements
-		BrandDialogInterface {
+		BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,5 +129,12 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm
 				.findFragmentById(R.id.promotion_tracking_fragment);
 		asf.numberPressed(vw);
+	}
+
+	@Override
+	public void updateDate(Date date, String tag) {
+		PromotionTrackingFragment checkModeFragment = (PromotionTrackingFragment) getSupportFragmentManager().findFragmentByTag("promotiontracking");
+		if (checkModeFragment != null)
+			checkModeFragment.updateDate(date, tag);
 	}
 }

@@ -479,19 +479,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         try {
             boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
-            if (!mBrandButton.equals(BRAND))
-                menu.findItem(R.id.menu_product_filter).setIcon(
-                        R.drawable.ic_action_filter_select);
-
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
             menu.findItem(R.id.menu_next).setVisible(false);
             menu.findItem(R.id.menu_location_filter).setVisible(true);
 
             if (mPlanoGramHelper.getInStoreLocation().size() == 1) {
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             }
-            if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM)
-                menu.findItem(R.id.menu_product_filter).setVisible(false);
 
             menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
@@ -554,10 +547,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             return true;
         } else if (i == R.id.menu_location_filter) {
             showLocationFilterAlert();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
-            getActivity().invalidateOptionsMenu();
             return true;
         } else if (i == R.id.menu_remarks) {
             android.support.v4.app.FragmentManager ft = getActivity()

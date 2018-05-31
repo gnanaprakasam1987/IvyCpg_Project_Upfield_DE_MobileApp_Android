@@ -582,44 +582,6 @@ public class ReportHelper {
         return tot;
     }
 
-    /**
-     * This method will download the previous day orderHeader details like
-     * OrderId,RetailerId and Name , OrderValue and LPC
-     *
-     * @return ArrayList<OrderReportBO>
-     */
-    public ArrayList<OrderReportBO> downloadPVSOrderreport() {
-        ArrayList<OrderReportBO> reportordbooking = null;
-        try {
-            OrderReportBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT OrderID ,RetailerID , RetailerName,"
-                            + "OrderValue,LinesPerCall,distribution FROM PVSOrderHeader");
-            if (c != null) {
-
-                reportordbooking = new ArrayList<>();
-                while (c.moveToNext()) {
-                    orderreport = new OrderReportBO();
-                    orderreport.setOrderID(c.getString(0));
-                    orderreport.setRetailerId(c.getString(1));
-                    orderreport.setRetailerName(c.getString(2));
-                    orderreport.setOrderTotal(c.getDouble(3));
-                    orderreport.setLPC(c.getString(4));
-                    orderreport.setDist(c.getString(5));
-                    reportordbooking.add(orderreport);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return reportordbooking;
-    }
-
 
     ArrayList<ContractBO> contractList;
 
@@ -668,48 +630,6 @@ public class ReportHelper {
         }
     }
 
-    /**
-     * This method will downlaod the previous day OrderDetails of a particular
-     * order. ProductName,CaseQty,PcsQty,TotalAmount.
-     *
-     * @param orderID
-     * @return ArrayList<OrderReportBO> reportorddetbooking
-     */
-    public ArrayList<OrderReportBO> downloadPVSOrderreportdetail(
-            String orderID) {
-        ArrayList<OrderReportBO> reportorddetbooking = null;
-        try {
-            OrderReportBO orderdetreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            Cursor c = db
-                    .selectSQL("SELECT  ProductName,ProductShortName,caseQty,"
-                            + " pieceqty, totalamount,outerQty,productid  FROM PVSOrderDetail WHERE OrderID='"
-                            + orderID + "'");
-            if (c != null) {
-                reportorddetbooking = new ArrayList<>();
-                while (c.moveToNext()) {
-
-                    orderdetreport = new OrderReportBO();
-                    orderdetreport.setProductName(c.getString(0));
-                    orderdetreport.setProductShortName(c.getString(1));
-                    orderdetreport.setCQty(c.getInt(2));
-                    orderdetreport.setPQty(c.getInt(3));
-                    orderdetreport.setTot(c.getFloat(4));
-                    orderdetreport.setOuterOrderedCaseQty(c.getInt(5));
-                    orderdetreport.setProductId(c.getString(6));
-                    reportorddetbooking.add(orderdetreport);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return reportorddetbooking;
-    }
 
     /**
      * This method download the Invoice Header details from InvoiceMaster
@@ -793,52 +713,6 @@ public class ReportHelper {
         return false;
     }
 
-    /**
-     * This method will download the previous day order details
-     * SalesRepCode,SalesRepName
-     * ,RetailerCode,RetailerName,OrderNo,SKUCode,SKUDescription
-     * ,QrderQty(pcs),DeliveryDate for Export
-     *
-     * @return ArrayList<OrderReportBO>
-     */
-    public ArrayList<ArrayList<String>> downloadPreviousOrderForExport() {
-        ArrayList<ArrayList<String>> rows = new ArrayList<>();
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select OH.RetailerCode,OH.RetailerName,OH.OrderId,OH.OrderDate,OD.PCode,"
-                            + "OD.ProductName,OD.caseQty,OD.pieceQty,OH.deliveryDate,OD.outerQty  from "
-                            + "PVSOrderHeader OH inner join PVSOrderDetail OD on OH.OrderId=OD.OrderId");
-            if (c != null) {
-
-                while (c.moveToNext()) {
-                    ArrayList<String> row = new ArrayList<>();
-                    row.add(bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserCode() + "");
-                    row.add(bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserName());
-                    row.add(c.getString(0));
-                    row.add(c.getString(1));
-                    row.add(c.getString(2));
-                    row.add(c.getString(3));
-                    row.add(c.getString(4));
-                    row.add(c.getString(5));
-                    row.add(c.getString(6));
-                    row.add(c.getString(7));
-                    row.add(c.getString(8));
-
-                    rows.add(row);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return rows;
-    }
 
     public HashMap<String, ArrayList<ArrayList<String>>> getmOrderDetailsByDistributorName() {
         return mOrderDetailsByDistributorName;

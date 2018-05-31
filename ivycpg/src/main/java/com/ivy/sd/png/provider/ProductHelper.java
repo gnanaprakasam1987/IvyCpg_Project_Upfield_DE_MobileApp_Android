@@ -261,6 +261,8 @@ public class ProductHelper {
     }
 
     public Vector<ProductMasterBO> getSalesReturnProducts() {
+        if (mSalesReturnProducts == null)
+            return new Vector<>();
         return mSalesReturnProducts;
     }
 
@@ -4403,6 +4405,8 @@ public class ProductHelper {
     }
 
     public ArrayList<BomReturnBO> getBomReturnTypeProducts() {
+        if (bomReturnTypeProducts == null)
+            return new ArrayList<>();
         return bomReturnTypeProducts;
     }
 
@@ -5210,8 +5214,8 @@ public class ProductHelper {
     }
 
 
-    public void updateInvoiceIdInItemLevelDiscount(DBUtil db, String invid,
-                                                   String orderId) {
+    public void updateInvoiceIdInDiscountTable(DBUtil db, String invid,
+                                               String orderId) {
 
         String query = "update InvoiceDiscountDetail set InvoiceId=" + bmodel.QT(invid)
                 + " where OrderId=" + orderId;

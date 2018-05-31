@@ -1078,7 +1078,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     f1 = (int) (enteredDiscAmtOrPercent / 10);
                 }
 
-                String strDiscountAppliedValue = BModel.formatValue(getDiscountAppliedValue(SDUtil.convertToDouble(f1 + "")));
+                String strDiscountAppliedValue = BModel.formatValue(getDiscountValue(SDUtil.convertToDouble(f1 + ""),totalOrderValue));
 
                 text_totalOrderValue.setText(strDiscountAppliedValue);
 
@@ -1511,7 +1511,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 } else {
 
-                    BModel.getOrderHeaderBO().setOrderValue(getDiscountAppliedValue(enteredDiscAmtOrPercent));
+                    totalOrderValue=totalOrderValue- getDiscountValue(enteredDiscAmtOrPercent,totalOrderValue);
+
+                    BModel.getOrderHeaderBO().setOrderValue(totalOrderValue);
                     BModel.getOrderHeaderBO().setDiscount(enteredDiscAmtOrPercent);
                     BModel.getOrderHeaderBO().setDiscountId(0);
                     BModel.getOrderHeaderBO().setIsCompanyGiven(0);
@@ -1622,8 +1624,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
 
+            totalOrderValue -= getDiscountValue(enteredDiscAmtOrPercent,totalOrderValue);
 
-            BModel.getOrderHeaderBO().setOrderValue(getDiscountAppliedValue(enteredDiscAmtOrPercent));
+            BModel.getOrderHeaderBO().setOrderValue(totalOrderValue);
             BModel.getOrderHeaderBO().setDiscount(enteredDiscAmtOrPercent);
             BModel.getOrderHeaderBO().setDiscountId(0);
             BModel.getOrderHeaderBO().setIsCompanyGiven(0);
@@ -1692,28 +1695,25 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         return handler;
     }
 
-    private double getDiscountAppliedValue(double discount) {
-        double total;
-        total = totalOrderValue;
+    private double getDiscountValue(double discount, double orderValue) {
 
         double discountValue = 0;
         try {
             if (BModel.configurationMasterHelper.discountType == 1) {
                 if (discount > 100)
                     discount = 100;
-                discountValue = (total / 100) * discount;
+                discountValue = (orderValue / 100) * discount;
 
             } else if (BModel.configurationMasterHelper.discountType == 2) {
                 discountValue = discount;
 
             }
 
-            total = total - discountValue;
             BModel.getOrderHeaderBO().setDiscountValue(discountValue);
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return total;
+        return discountValue;
     }
 
 
@@ -1856,6 +1856,27 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
                 orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue, getApplicationContext());
+
+                //Calculating with hold tax
+                double withHoldDiscount=0;
+                if(BModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+                    discountHelper.downloadBillWiseWithHoldDiscount(getApplicationContext());
+                    withHoldDiscount = discountHelper.calculateWithHoldDiscount(totalOrderValue);
+                }
+
+                //Applying bill wise tax
+                if (BModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
+                    BModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
+                    totalOrderValue = Double.parseDouble(SDUtil.format(totalOrderValue, BModel.configurationMasterHelper.VALUE_PRECISION_COUNT,0, BModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+                    if (BModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
+                    totalOrderValue+= BModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
+                }
+
+                // with hold tax should be removed after bill level tax is applied.
+                totalOrderValue-=withHoldDiscount;
+
+                orderHelper.withHoldDiscount=withHoldDiscount;
+                BModel.getOrderHeaderBO().setOrderValue(totalOrderValue);
 
                 new MyThread(this, DataMembers.SAVEINVOICE).start();
             } else {
@@ -2767,7 +2788,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-            BModel.mCommonPrintHelper.xmlRead(".xml", false, orderList, null);
+            BModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null);
 
 
             BModel.writeToFile(String.valueOf(BModel.mCommonPrintHelper.getInvoiceData()),

@@ -82,6 +82,8 @@ public class AssetTrackingHelper {
     private static final String CODE_POSM_BARCODE = "POSM02";
     private static final String CODE_SHOW_ALL_POSM = "POSM05";
     private static final String CODE_SHOW_POSM_REMARKS = "POSM06";
+    private static final String CODE_SHOW_POSM_LOCATION = "POSM07";
+    private static final String CODE_POSM_PHOTO_COUNT = "POSM08";
     public boolean SHOW_POSM_TARGET;
     public boolean SHOW_POSM_QTY;
     public boolean SHOW_POSM_REASON;
@@ -95,6 +97,8 @@ public class AssetTrackingHelper {
     public boolean SHOW_POSM_BARCODE;
     public boolean SHOW_POSM_ALL;
     public boolean SHOW_REMARKS_POSM;
+    public boolean SHOW_LOCATION_POSM;
+    public int POSM_PHOTO_COUNT = 1;
 
     private static final String MERCH = "MERCH";
     private static final String MENU_ASSET = "MENU_ASSET";
@@ -296,6 +300,7 @@ public class AssetTrackingHelper {
             // SHOW_REMOVE_POSM = false;
             SHOW_POSM_ALL = false;
             SHOW_REMARKS_POSM = false;
+            SHOW_LOCATION_POSM = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -318,14 +323,23 @@ public class AssetTrackingHelper {
                         }
                     } else if (c.getString(0).equalsIgnoreCase(CODE_POSM_BARCODE))
                         SHOW_POSM_BARCODE = true;
-                   /* else if (c.getString(0).equalsIgnoreCase(CODE_POSM_ADD))
-                        SHOW_ADD_NEW_POSM = true;*/
-                    /*else if (c.getString(0).equalsIgnoreCase(CODE_REMOVE_POSM))
-                        SHOW_REMOVE_POSM = true;*/
                     else if (c.getString(0).equalsIgnoreCase(CODE_SHOW_ALL_POSM))
                         SHOW_POSM_ALL = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_SHOW_POSM_REMARKS))
                         SHOW_REMARKS_POSM = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_SHOW_POSM_LOCATION))
+                        SHOW_LOCATION_POSM = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_POSM_PHOTO_COUNT))
+                        if (c.getString(1) != null) {
+
+                            int photoCount = c.getInt(1);
+                            if (photoCount > 5)
+                                photoCount = 5;
+                            if (photoCount == 0)
+                                photoCount = 1;
+
+                            POSM_PHOTO_COUNT = photoCount;
+                        }
                 }
                 c.close();
             }
@@ -409,9 +423,10 @@ public class AssetTrackingHelper {
             db.openDataBase();
 
             mBusinessModel.productHelper.getRetailerlevel(moduleName);
-            sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId from PosmMaster P  ");
+            sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId,SBD.StoreLocId,SDM.listname as locname from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
-            sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and ListType='POSM_GROUP_TYPE' ");
+            sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and SLM.ListType='POSM_GROUP_TYPE' ");
+            sb.append("left join Standardlistmaster SDM on SDM.listid=SBD.StoreLocId and SDM.ListType='PL' ");
             sb.append("where  SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
             sb.append(mBusinessModel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
@@ -428,7 +443,7 @@ public class AssetTrackingHelper {
             sb.append(" and (Channelid in(0,");
             sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
             sb.append(" OR Channelid in (0,");
-            sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(),mContext) + "))");
+            sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))");
 
 
             if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
@@ -465,6 +480,8 @@ public class AssetTrackingHelper {
                     }
 
                     assetTrackingBO.setNFCTagId(c.getString(c.getColumnIndex("NfcTagId")));
+                    assetTrackingBO.setTargetLocId(c.getInt(c.getColumnIndex("StoreLocId")));
+                    assetTrackingBO.setLocationName(c.getString(c.getColumnIndex("locname")));
 
                     mAssetTrackingList.add(assetTrackingBO);
 
@@ -607,7 +624,7 @@ public class AssetTrackingHelper {
                     final int isExecuted = detailCursor.getInt(13);
 
 
-                    setAssetDetails(
+                    setAssetDetails(mContext,
                             mAssetId,
                             qty,
                             imageName,
@@ -966,7 +983,7 @@ public class AssetTrackingHelper {
             sb.append(" and (Channelid in(0,");
             sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
             sb.append(" OR Channelid in (0,");
-            sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(),mContext));
+            sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext));
             sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
 
@@ -1096,6 +1113,18 @@ public class AssetTrackingHelper {
         for (int i = 0; i < size; i++) {
             ReasonMaster reasonBO = reasonList.get(i);
             if (reasonBO.getReasonID().equals(reasonId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int getItemIndex(int listID, Vector<StandardListBO> locationList) {
+        int size = locationList.size();
+
+        for (int i = 0; i < size; i++) {
+            StandardListBO standardListBO = locationList.get(i);
+            if (Integer.parseInt(standardListBO.getListID()) == listID) {
                 return i;
             }
         }
@@ -1401,6 +1430,8 @@ public class AssetTrackingHelper {
                         "uid=" + QT(c.getString(0)), false);
                 db.deleteSQL(DataMembers.tbl_AssetDetail,
                         "uid=" + QT(c.getString(0)), false);
+                db.deleteSQL(DataMembers.tbl_AssetImgInfo,
+                        "tid=" + QT(c.getString(0)), false);
                 refId = c.getString(1);
             }
 
@@ -1425,10 +1456,14 @@ public class AssetTrackingHelper {
 
 
             String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
+            String AssetImageInfoColumns = "tid,AssetID,ImageName,ProductId,LocId";
             if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 assetHeaderColumns = assetHeaderColumns + ",Weightage,Score";
                 AssetDetailColumns = AssetDetailColumns + ",Score";
             }
+            if (SHOW_LOCATION_POSM)
+                AssetDetailColumns = AssetDetailColumns + ",TgtLocId";
+
             int totalTarget = 0;
             int totalActualQty = 0;
             for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
@@ -1534,7 +1569,10 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(standardListBO.getListID());
+                                if (MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM)
+                                    assetDetailValues.append(assetBo.getLocationID());
+                                else
+                                    assetDetailValues.append(standardListBO.getListID());
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getGroupLevelId());
                                 assetDetailValues.append(",");
@@ -1554,9 +1592,30 @@ public class AssetTrackingHelper {
                                         sum = sum + productWeightAge;
                                 }
 
+                                if (SHOW_LOCATION_POSM)
+                                    assetDetailValues.append("," + assetBo.getTargetLocId());
+
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns,
                                         assetDetailValues.toString());
+
+                                if (assetBo.getImageList().size() > 0) {
+                                    for (String imageName : assetBo.getImageList()) {
+                                        StringBuffer assetImgInofValues = new StringBuffer();
+                                        assetImgInofValues.append(id);
+                                        assetImgInofValues.append(",");
+                                        assetImgInofValues.append(assetBo.getAssetID());
+                                        assetImgInofValues.append(",");
+                                        assetImgInofValues.append(QT(imageName));
+                                        assetImgInofValues.append(",");
+                                        assetImgInofValues.append(assetBo.getProductId());
+                                        assetImgInofValues.append(",");
+                                        assetImgInofValues.append(assetBo.getLocationID());
+                                        db.insertSQL(DataMembers.tbl_AssetImgInfo,
+                                                AssetImageInfoColumns,
+                                                assetImgInofValues.toString());
+                                    }
+                                }
                             }
                         } else {
                             if (assetBo.getAvailQty() > 0
@@ -1581,7 +1640,6 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(0);
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(QT(assetBo.getSerialNo()));
-                                assetDetailValues.append(",");
                                 if (assetBo.getConditionID() != null && !"null".equals(assetBo.getConditionID())) {
                                     assetDetailValues.append(",");
                                     assetDetailValues.append(QT(assetBo.getConditionID()));
@@ -1648,7 +1706,10 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(standardListBO.getListID());
+                                if (MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM)
+                                    assetDetailValues.append(assetBo.getLocationID());
+                                else
+                                    assetDetailValues.append(standardListBO.getListID());
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getGroupLevelId());
                                 assetDetailValues.append(",");
@@ -1668,6 +1729,25 @@ public class AssetTrackingHelper {
                                 }
                                 db.insertSQL(DataMembers.tbl_AssetDetail,
                                         AssetDetailColumns, assetDetailValues.toString());
+
+                                if (assetBo.getImageList().size() > 0) {
+                                    for (String imageName : assetBo.getImageList()) {
+                                        StringBuffer assetImgInofValues = new StringBuffer();
+                                        assetImgInofValues.append(id);
+                                        assetImgInofValues.append(",");
+                                        assetImgInofValues.append(assetBo.getAssetID());
+                                        assetImgInofValues.append(",");
+                                        assetImgInofValues.append(QT(imageName));
+                                        assetImgInofValues.append(",");
+                                        assetImgInofValues.append(assetBo.getProductId());
+                                        assetImgInofValues.append(",");
+                                        assetImgInofValues.append(assetBo.getLocationID());
+                                        db.insertSQL(DataMembers.tbl_AssetImgInfo,
+                                                AssetImageInfoColumns,
+                                                assetImgInofValues.toString());
+                                    }
+                                }
+
                             }
                         }
 
@@ -1717,14 +1797,17 @@ public class AssetTrackingHelper {
      * @param serialNo  serial Number
      * @param imgName   image Name
      */
-    private void setAssetDetails(int assetID, int qty, String imageName,
+    private void setAssetDetails(Context mcontext, int assetID, int qty, String imageName,
                                  String mReasonId, String serialNo,
                                  String conditionId, String installDate, String serviceDate, int audit, int pid, int compQty, int locId, int isExec, String imgName) {
 
         AssetTrackingBO assetBO = null;
         mAssetTrackingList = null;
         for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
-            if (standardListBO.getListID().equals(Integer.toString(locId))) {
+            if (standardListBO.getListID().equals(Integer.toString(locId)) && !SHOW_LOCATION_POSM) {
+                mAssetTrackingList = standardListBO.getAssetTrackingList();
+                break;
+            } else {// for jnj dubai changes to have location inside assert list by mansoor
                 mAssetTrackingList = standardListBO.getAssetTrackingList();
                 break;
             }
@@ -1758,6 +1841,11 @@ public class AssetTrackingHelper {
 
                 assetBO.setExecutorQty(isExec);
                 assetBO.setImgName(imgName);
+
+                if (SHOW_LOCATION_POSM)
+                    assetBO.setLocationID(locId);
+
+                assetBO.setImageList(getImagesList(mcontext, assetID, locId));
 
             }
         }
@@ -1805,6 +1893,39 @@ public class AssetTrackingHelper {
                 retailerMovedData.add(c.getString(0));
             }
         return retailerMovedData;
+    }
+
+    public ArrayList<String> getImagesList(Context mContext, int assetId, int locId) {
+        ArrayList<String> imageList = new ArrayList<>();
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String sql;
+            Cursor c;
+
+            sql = "select ImageName from AssetImageDetails "
+                    + " where AssetID = " + assetId + " AND LocId = " + locId
+                    + " AND Upload = " + QT("N");
+            c = db.selectSQL(sql);
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    //String[] imjObj = c.getString(0).split("/");
+                    //imageList.add(imjObj[3]);
+                    imageList.add(c.getString(0));
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return imageList;
     }
 
 }
