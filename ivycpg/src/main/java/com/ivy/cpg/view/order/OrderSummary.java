@@ -1143,6 +1143,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                             i.putExtra("CurrentActivityCode", mCurrentActivityCode);
                                         }
                                         startActivity(i);
+                                        finish();
 
                                     }
                                 });
