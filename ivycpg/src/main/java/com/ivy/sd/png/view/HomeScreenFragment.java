@@ -281,6 +281,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         // Load the HHTMenuTable
         bmodel.configurationMasterHelper.downloadMainMenu();
+        if (getActivity().getIntent().getBooleanExtra("fromSettingScreen", false))
+            bmodel.labelsMasterHelper.downloadLabelsMaster();
 
         if (bmodel.mAttendanceHelper.checkLeaveAttendance())
             isLeave_today = true;
@@ -370,7 +372,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(),
-                        UserSettingsActivity.class);
+                        UserSettingsActivity.class).putExtra("fromHomeScreen",true);
                 startActivity(i);
             }
         });

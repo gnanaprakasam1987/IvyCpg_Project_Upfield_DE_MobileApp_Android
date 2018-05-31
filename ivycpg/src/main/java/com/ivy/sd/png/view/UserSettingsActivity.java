@@ -52,6 +52,7 @@ public class UserSettingsActivity extends PreferenceActivity {
     private static ProgressDialog progressDialog;
     private static Context context;
     Preference mpmac;
+    private boolean isFromHomeScreen;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,9 @@ public class UserSettingsActivity extends PreferenceActivity {
 
             getActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary)));
 
+            if (getIntent().getExtras() != null) {
+                isFromHomeScreen = getIntent().getExtras().getBoolean("fromHomeScreen", false);
+            }
 
             /*Load Languages from StdListMaster : ListType - LANGUAGE_TYPE
                By Default, English will be listed from xml
@@ -138,9 +142,9 @@ public class UserSettingsActivity extends PreferenceActivity {
 
 
             mpmac = findPreference("pmac");
-            String mac_summary=settings.getString("MAC", "");
-            if(mac_summary.trim().equals("")){
-                mac_summary="Enter MAC address";
+            String mac_summary = settings.getString("MAC", "");
+            if (mac_summary.trim().equals("")) {
+                mac_summary = "Enter MAC address";
             }
             mpmac.setSummary(mac_summary);
             mpmac.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -188,9 +192,9 @@ public class UserSettingsActivity extends PreferenceActivity {
                 }
             });
 
-            boolean isFromLogin=false;
-            if(getIntent().getExtras()!=null){
-                isFromLogin=getIntent().getExtras().getBoolean("isFromLogin");
+            boolean isFromLogin = false;
+            if (getIntent().getExtras() != null) {
+                isFromLogin = getIntent().getExtras().getBoolean("isFromLogin");
             }
 
             Preference change_password = findPreference("change_password");
@@ -204,7 +208,7 @@ public class UserSettingsActivity extends PreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     Intent i = new Intent(context, ChangePasswordActivity.class);
                     i.putExtra("isExpired", false);
-                    i.putExtra("isFromSetting",true);
+                    i.putExtra("isFromSetting", true);
                     startActivity(i);
                     return true;
                 }
@@ -235,6 +239,12 @@ public class UserSettingsActivity extends PreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            if (isFromHomeScreen) {
+                Intent intent = new Intent(UserSettingsActivity.this, HomeScreenActivity.class)
+                        .putExtra("fromSettingScreen", true);
+                startActivity(intent);
+            }
+
             finish();
 
             return true;

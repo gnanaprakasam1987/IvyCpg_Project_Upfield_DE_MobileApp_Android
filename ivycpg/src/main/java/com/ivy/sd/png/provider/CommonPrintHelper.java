@@ -621,9 +621,9 @@ public class CommonPrintHelper {
             value = label + bmodel.getRetailerMasterBO().getRetailerName();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_CODE)) {
             value = label + bmodel.getRetailerMasterBO().getRetailerCode();
-        }  else if (tag.equalsIgnoreCase(TAG_BEAT_CODE)) {
+        } else if (tag.equalsIgnoreCase(TAG_BEAT_CODE)) {
             value = label + bmodel.beatMasterHealper.getBeatMasterBOByID(bmodel.getRetailerMasterBO().getBeatID()).getBeatCode();
-        }else if (tag.equalsIgnoreCase(TAG_RETAILER_ADDRESS1)) {
+        } else if (tag.equalsIgnoreCase(TAG_RETAILER_ADDRESS1)) {
             value = label + bmodel.getRetailerMasterBO().getAddress1();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_ADDRESS2)) {
             value = label + bmodel.getRetailerMasterBO().getAddress2();
@@ -1137,16 +1137,19 @@ public class CommonPrintHelper {
                                 if (freeProduct.getCaseUomId() == schemeProductBO.getUomID()
                                         && freeProduct.getCaseUomId() != 0) {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
+                                    mProductCaseQtyTotal = mProductCaseQtyTotal + schemeProductBO.getQuantitySelected();
                                 }
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_PIECE)) {
                                 if (freeProduct.getPcUomid() == schemeProductBO.getUomID()
                                         && freeProduct.getPcUomid() != 0) {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
+                                    mProductPieceQtyTotal = mProductPieceQtyTotal + schemeProductBO.getQuantitySelected();
                                 }
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_OUTER)) {
                                 if (freeProduct.getOuUomid() == schemeProductBO.getUomID()
                                         && freeProduct.getOuUomid() != 0) {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
+                                    mProductOuterQtyTotal = mProductOuterQtyTotal + schemeProductBO.getQuantitySelected();
                                 }
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
                                 if (freeProduct.getCaseUomId() == schemeProductBO.getUomID()
@@ -1213,7 +1216,7 @@ public class CommonPrintHelper {
 
     private void calculateSchemeAmountDiscountValue() {
 
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(context);
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(context);
         ArrayList<SchemeBO> appliedSchemeList = schemeHelper.getAppliedSchemeList();
         double mBuyProdDiscountedValue = 0;
         if (appliedSchemeList != null) {
@@ -1249,7 +1252,7 @@ public class CommonPrintHelper {
     private void loadSchemeDiscount(Vector<AttributeListBO> mAttrList, String product_name_single_line, StringBuilder sb) {
         int mLengthUptoPName;
 
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(context);
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(context);
         ArrayList<SchemeBO> appliedSchemeList = schemeHelper.getAppliedSchemeList();
         if (appliedSchemeList != null) {
             for (SchemeBO schemeBO : appliedSchemeList) {
@@ -1624,7 +1627,7 @@ public class CommonPrintHelper {
         } else {
             discountValue = discount;
         }
-        mBillLevelDiscountValue = Double.parseDouble(bmodel.formatValue(discountValue));
+        mBillLevelDiscountValue = Double.parseDouble(SDUtil.format(discountValue, 2, 0));
     }
 
     private void getBillLevelTaxValue() {

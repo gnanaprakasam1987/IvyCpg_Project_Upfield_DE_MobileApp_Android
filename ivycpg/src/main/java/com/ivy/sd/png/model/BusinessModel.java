@@ -2261,6 +2261,55 @@ public class BusinessModel extends Application {
         return false;
     }
 
+    public boolean hasCombinedStkChecked() {
+        int cSize = productHelper.getTaggedProducts().size();
+        if (cSize == 0)
+            return false;
+        for (int j = 0; j < cSize; j++) {
+            ProductMasterBO product = productHelper
+                    .getTaggedProducts().get(j);
+
+            if (product.getIsDistributed() == 1 || product.getIsListed() == 1
+                    || product.getPriceChanged() == 1
+                    || SDUtil.convertToInt(product.getMrp_pc()) > 0
+                    || SDUtil.convertToInt(product.getMrp_ca()) > 0
+                    || SDUtil.convertToInt(product.getMrp_ou()) > 0) {
+                return true;
+            }
+            int cSize2 = product.getLocations().size();
+            for (int f = 0; f < cSize2; f++) {
+                if (product.getLocations().get(f).getFacingQty() > 0
+                        || product.getLocations().get(f).getAvailability() != -1
+                        || product.getLocations().get(f).getReasonId() != 0
+                        || product.getLocations().get(f).getShelfPiece() != -1
+                        || product.getLocations().get(f).getShelfCase() != -1
+                        || product.getLocations().get(f).getShelfOuter() != -1) {
+                    return true;
+                }
+
+
+                if (configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK) {
+                    int nearSize = product.getLocations().get(f).getNearexpiryDate().size();
+                    for (int x = 0; x < nearSize; x++) {
+                        if (!product.getLocations().get(f).getNearexpiryDate().get(x)
+                                .getNearexpPC().equals("0")
+                                || !product.getLocations().get(f).getNearexpiryDate().get(x)
+                                .getNearexpCA().equals("0")
+                                || !product.getLocations().get(f).getNearexpiryDate().get(x)
+                                .getNearexpOU().equals("0")) {
+
+                            return true;
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+        return false;
+    }
+
 
     public void resetSRPvalues() {
         try {
@@ -4429,6 +4478,9 @@ public class BusinessModel extends Application {
 
         } catch (Exception e) {
             Commons.printException("loadProductiveCallsConfigs " + e);
+        } finally {
+            if (!PRD_FOR_ORDER && !PRD_FOR_SKT)
+                PRD_FOR_ORDER = true;
         }
     }
 

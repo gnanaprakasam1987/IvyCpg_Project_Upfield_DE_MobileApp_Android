@@ -493,6 +493,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         else {
             menu.findItem(R.id.menu_delete).setVisible(true);
         }
+        if ((BModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                || BModel.configurationMasterHelper.IS_SHOW_ORDER_REASON)) {
+            menu.findItem(R.id.menu_indicative_order_reason).setVisible(true);
+        }
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -589,6 +593,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 showDialog(DIALOG_DELETE_STOCK_AND_ORDER);
             else
                 showDialog(DIALOG_DELETE_ONLY_ORDER);
+        } else if (i1 == R.id.menu_indicative_order_reason) {
+            IndicativeOrderReasonDialog indicativeReasonDialog = new IndicativeOrderReasonDialog(this, BModel);
+            indicativeReasonDialog.show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -2713,6 +2720,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("IsUpdatePrintCount", true);
+                i.putExtra("isFromInvoice", true);
                 i.putExtra("isHomeBtnEnable", true);
                 i.putExtra("sendMailAndLoadClass", "PRINT_FILE_ORDER");
                 startActivity(i);
@@ -2725,6 +2733,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("IsUpdatePrintCount", true);
                 i.putExtra("isHomeBtnEnable", true);
+                i.putExtra("isFromInvoice", true);
                 i.putExtra("sendMailAndLoadClass", "PRINT_FILE_ORDER");
                 startActivity(i);
                 overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);

@@ -3,6 +3,7 @@ package com.ivy.cpg.view.order;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -10,7 +11,6 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -364,7 +364,7 @@ public class DiscountHelper {
             sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append("where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
-            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(),mContext) + ") OR ");
+            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + ") OR ");
             sb.append(" locationid in(" + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + businessModel.getRetailerMasterBO().getAccountid() + " and Accountid!=0 ))");
             sb.append(" and dm.moduleid in(select ListId from StandardListMaster where ListCode='INVOICE') ");
@@ -399,8 +399,6 @@ public class DiscountHelper {
 
 
     }
-
-
 
 
     /**
@@ -662,7 +660,7 @@ public class DiscountHelper {
             sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append("where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
-            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(),mContext) + ") OR ");
+            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + ") OR ");
             sb.append(" locationid in(" + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + businessModel.getRetailerMasterBO().getAccountid() + "))");
             sb.append(" and dm.moduleid in(select ListId from StandardListMaster where ListCode='INVOICE') ");
@@ -915,7 +913,7 @@ public class DiscountHelper {
     public double calculateSchemeDiscounts(LinkedList<ProductMasterBO> mOrderedList, Context mContext) {
 
         double totalSchemeDiscountValue = 0;
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
 
         ArrayList<SchemeBO> appliedSchemeList = schemeHelper.getAppliedSchemeList();
         if (appliedSchemeList != null) {
@@ -933,7 +931,7 @@ public class DiscountHelper {
                     if (schemeProductList != null) {
 
                         // Getting total order value of buy products
-                        double totalOrderValueOfBuyProducts=0;
+                        double totalOrderValueOfBuyProducts = 0;
                         if (schemeBO.isAmountTypeSelected()) {
                             for (SchemeProductBO schemeProductBo : schemeProductList) {
                                 ProductMasterBO productBO = businessModel.productHelper
@@ -966,8 +964,8 @@ public class DiscountHelper {
                                             double line_value = (productBO.getOrderedCaseQty() * productBO.getCsrp())
                                                     + (productBO.getOrderedPcsQty() * productBO.getSrp())
                                                     + (productBO.getOrderedOuterQty() * productBO.getOsrp());
-                                            double percentage_productContribution=((line_value/totalOrderValueOfBuyProducts)*100);
-                                            double amount_free=schemeBO.getSelectedAmount()*(percentage_productContribution/100);
+                                            double percentage_productContribution = ((line_value / totalOrderValueOfBuyProducts) * 100);
+                                            double amount_free = schemeBO.getSelectedAmount() * (percentage_productContribution / 100);
                                             //
 
                                             if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
@@ -979,7 +977,7 @@ public class DiscountHelper {
                                                     if (batchList != null && !batchList.isEmpty()) {
 
                                                         // To get total order value of batch buy products
-                                                        double totalOrderValueOfBuyProducts_batch=0;
+                                                        double totalOrderValueOfBuyProducts_batch = 0;
                                                         for (ProductMasterBO batchProduct : batchList) {
                                                             totalOrderValueOfBuyProducts_batch += (batchProduct.getOrderedCaseQty() * productBO.getCsrp())
                                                                     + (batchProduct.getOrderedPcsQty() * productBO.getSrp())
@@ -993,11 +991,11 @@ public class DiscountHelper {
                                                             if (totalQty > 0) {
 
                                                                 // calculating free amount for current batch product(by contribution to total value(Sum of all line value of batches in a product)).
-                                                                double line_value_batch= (batchProduct.getOrderedCaseQty() * productBO.getCsrp())
+                                                                double line_value_batch = (batchProduct.getOrderedCaseQty() * productBO.getCsrp())
                                                                         + (batchProduct.getOrderedPcsQty() * productBO.getSrp())
                                                                         + (batchProduct.getOrderedOuterQty() * productBO.getOsrp());
-                                                                double percentage_batchProductContribution=((line_value_batch/totalOrderValueOfBuyProducts_batch)*100);
-                                                                double amount_free_batch=amount_free*(percentage_batchProductContribution/100);
+                                                                double percentage_batchProductContribution = ((line_value_batch / totalOrderValueOfBuyProducts_batch) * 100);
+                                                                double amount_free_batch = amount_free * (percentage_batchProductContribution / 100);
                                                                 //
 
                                                                 batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + amount_free_batch);
@@ -1142,15 +1140,16 @@ public class DiscountHelper {
      * @param mOrderedProductList Ordered product list
      */
     public void clearSchemeFreeProduct(LinkedList<ProductMasterBO> mOrderedProductList) {
-        for (ProductMasterBO productB0 : mOrderedProductList) {
-            if (productB0.getSchemeProducts() != null) {
-                productB0.getSchemeProducts().clear();
-            }
-            productB0.setCompanyTypeDiscount(0);
-            productB0.setDistributorTypeDiscount(0);
-            productB0.setSoreasonId(0);
+        if (mOrderedProductList != null)
+            for (ProductMasterBO productB0 : mOrderedProductList) {
+                if (productB0.getSchemeProducts() != null) {
+                    productB0.getSchemeProducts().clear();
+                }
+                productB0.setCompanyTypeDiscount(0);
+                productB0.setDistributorTypeDiscount(0);
+                productB0.setSoreasonId(0);
 
-        }
+            }
 
     }
 

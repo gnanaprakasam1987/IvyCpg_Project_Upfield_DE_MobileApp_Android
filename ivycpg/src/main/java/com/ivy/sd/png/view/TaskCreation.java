@@ -149,6 +149,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         //allow only create task only for retailer if not from seller Task
         if (!fromHomeScreen) {
             rb.setVisibility(View.GONE);
+            ((LinearLayout)this.findViewById(R.id.spinner_layouts)).setVisibility(View.GONE);
             applicable_tv.setVisibility(View.GONE);
             bmodel.taskHelper.mode = "retailer";
         }

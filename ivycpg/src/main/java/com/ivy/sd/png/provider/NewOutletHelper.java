@@ -1346,7 +1346,7 @@ public class NewOutletHelper {
                     ",RC1.contact_title as contact_title1,RC1.contact_title_lovid as contact_title_lovid1" +
                     ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
                     "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RM.RField5,RM.RField6,RM.TinExpDate," +
-                    "RM.pan_number,RM.food_licence_number,RM.food_licence_exp_date,RM.DLNo,RM.DLNoExpDate,RM.RField4,RM.RField7,RA.Mobile,RA.Region,RA.Country,RM.userid" +
+                    "RM.pan_number,RM.food_licence_number,RM.food_licence_exp_date,RM.DLNo,RM.DLNoExpDate,RM.RField4,RM.RField7,RA.Mobile,RA.Region,RA.Country,RM.userid,RM.GSTNumber" +
                     " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
                     " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
                     " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
@@ -1411,6 +1411,8 @@ public class NewOutletHelper {
                         retailer.setCountry(c.getString(c.getColumnIndex("Country")));
                         retailer.setMobile(c.getString(c.getColumnIndex("Mobile")));
                         retailer.setUserId(c.getInt(c.getColumnIndex("userid")));
+                        retailer.setGstNum(c.getString(c.getColumnIndex("GSTNumber")));
+                        retailer.setEditAttributeList(loadEditAttributes(retailer.getRetailerId(), db));
                         lst.add(retailer);
                         mNewRetailerById.put(retailer.getRetailerId(), retailer);
                     }
@@ -1425,6 +1427,34 @@ public class NewOutletHelper {
         }
         return lst;
     }
+
+
+    /*
+    Load Edit Attributes list
+     */
+    private ArrayList<String> loadEditAttributes(String retailerID, DBUtil db) {
+        ArrayList<String> attributeList = new ArrayList<>();
+        try {
+            Cursor c1;
+            String query = "Select AttributeId from RetailerAttribute where RetailerId=" + bmodel.QT(retailerID);
+            c1 = db.selectSQL(query);
+            if (c1 != null) {
+                if (c1.getCount() > 0) {
+                    NewOutletAttributeBO attrBo;
+                    while (c1.moveToNext()) {
+                        attrBo = new NewOutletAttributeBO();
+                        attrBo.setAttrId(c1.getInt(0));
+                        attributeList.add(String.valueOf(attrBo.getAttrId()));
+                    }
+                }
+                c1.close();
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return attributeList;
+    }
+
 
     private void deleteQuery(String query, String rid) {
         try {
