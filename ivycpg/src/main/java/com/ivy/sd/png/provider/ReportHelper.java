@@ -34,6 +34,7 @@ import com.ivy.sd.png.bo.SalesFundamentalGapReportBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
+import com.ivy.sd.png.bo.SyncStatusBO;
 import com.ivy.sd.png.bo.TaskReportBo;
 import com.ivy.sd.png.bo.asset.AssetTrackingBrandBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingReportBO;
@@ -80,6 +81,7 @@ public class ReportHelper {
 
     private Vector<RetailerMasterBO> retailerMaster;
     private HashMap<String, ArrayList<ProductMasterBO>> closingStkReportByRetailId;
+    private ArrayList<SyncStatusBO> mSyncStatusBOList;
 
     private ReportHelper(Context context) {
         this.mContext = context;
@@ -119,7 +121,8 @@ public class ReportHelper {
                             + "OrderHeader.OrderValue,OrderHeader.LinesPerCall ,RetailerMaster.sbd_dist_stock,RetailerMaster.sbd_dist_achieve,"
                             + "OrderHeader.upload,OrderHeader.totalweight,OrderHeader.FocusPackLines,OrderHeader.MSPLines,OrderHeader.is_vansales,"
                             + "IFNULL((select sum(taxValue) from OrderTaxDetails where OrderId = OrderHeader.OrderID ),0) as taxValue,"
-                            + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue "
+                            + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue, "
+                            + "IFNULL(SUM(OD.pieceqty),0),IFNULL(SUM(OD.caseQty),0),IFNULL(SUM(OD.outerQty),0) "
                             + "FROM OrderHeader INNER JOIN RetailerMaster "
                             + "ON OrderHeader.RetailerId = RetailerMaster.RetailerID INNER JOIN OrderDetail OD ON  OD.OrderID = OrderHeader.OrderID where OrderHeader.upload!='X' "
                             + "GROUP BY OrderHeader.OrderID ,OrderHeader.RetailerID,RetailerMaster.RetailerName,"
@@ -143,6 +146,9 @@ public class ReportHelper {
                     orderreport.setIsVanSeller(c.getInt(11));
                     orderreport.setTaxValue(c.getDouble(c.getColumnIndex("taxValue")));
                     orderreport.setDiscountValue(c.getDouble(c.getColumnIndex("discountValue")));
+                    orderreport.setVolumePcsQty(c.getInt(14));
+                    orderreport.setVolumeCaseQty(c.getInt(15));
+                    orderreport.setVolumeOuterQty(c.getInt(16));
                     reportordbooking.add(orderreport);
                 }
                 c.close();
@@ -3716,6 +3722,62 @@ public class ReportHelper {
         } catch (Exception e) {
             db.closeDB();
             Commons.printException(e);
+        }
+    }
+
+    public ArrayList<SyncStatusBO> getmSyncStatusBOList() {
+        return mSyncStatusBOList;
+    }
+
+    public void setmSyncStatusBOList(ArrayList<SyncStatusBO> mSyncStatusBOList) {
+        this.mSyncStatusBOList = mSyncStatusBOList;
+    }
+
+    public void downloadSyncStatusReport(){
+        try {
+
+            mSyncStatusBOList=new ArrayList<>();
+            SyncStatusBO syncStatusBO;
+            String id="0";
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "select ID,TableName,LineCount from SyncStatus_Internal order by ID desc";
+
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+
+                    syncStatusBO=new SyncStatusBO();
+                    syncStatusBO.setId(c.getString(0));
+                    syncStatusBO.setName(c.getString(1));
+                    syncStatusBO.setCount(c.getInt(2));
+
+                    if(!id.equalsIgnoreCase(syncStatusBO.getId())){
+
+                        if(!id.equals("0")){
+                            syncStatusBO.setShowDateTime(1);
+                            mSyncStatusBOList.add(syncStatusBO);
+                            id=syncStatusBO.getId();
+                        }else{
+                            syncStatusBO.setShowDateTime(1);
+                            mSyncStatusBOList.add(syncStatusBO);
+                            id=syncStatusBO.getId();
+                        }
+
+                    }else{
+                        syncStatusBO.setShowDateTime(0);
+                        mSyncStatusBOList.add(syncStatusBO);
+                    }
+
+                }
+
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

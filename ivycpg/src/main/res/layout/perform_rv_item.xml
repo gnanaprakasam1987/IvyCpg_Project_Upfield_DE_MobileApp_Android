@@ -80,9 +80,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/list_margin"
                 android:orientation="horizontal"
-                android:weightSum="5">
+                >
 
                 <LinearLayout
+                    android:id="@+id/salesValueLayout"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -99,6 +100,33 @@
 
                     <TextView
                         android:id="@+id/tvactualValue"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center|right"
+                        android:text="@string/zero"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/font_micro_small" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/dimen_0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_sales_volume_title"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="sales_volume"
+                        android:text="Sales Volume" />
+
+
+                    <TextView
+                        android:id="@+id/tv_sales_volume_value"
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -186,31 +214,7 @@
                         android:textSize="@dimen/font_micro_small" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="@dimen/dimen_0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_sales_volume_title"
-                        style="?attr/customListItemSecondary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sales Volume" />
-
-
-                    <TextView
-                        android:id="@+id/tv_sales_volume_value"
-                        style="?attr/customListItemSecondary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center|right"
-                        android:text="@string/zero"
-                        android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/font_micro_small" />
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

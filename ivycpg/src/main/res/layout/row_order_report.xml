@@ -221,6 +221,18 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tv_volume_title"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:tag="volumeTitle"
+                        android:text="@string/volume"
+                        android:textColor="@color/black_bg1"
+                        android:gravity="center"
+                        android:layout_weight="25"
+                        android:textSize="@dimen/text_sz_small"
+                        android:textStyle="bold"/>
+
+                    <TextView
                         android:id="@+id/tv_tax_title"
                         android:layout_width="@dimen/list_item_width"
                         android:layout_height="wrap_content"
@@ -316,6 +328,17 @@
                         android:padding="2dp"
                         android:text="@string/dist"
                         android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:id="@+id/tv_volume"
+                        android:textColor="@android:color/black"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="@string/volume"
+                        android:layout_weight="25"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
