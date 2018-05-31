@@ -23,7 +23,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar implements N
 
 
         bmodel = (BusinessModel) this.getApplicationContext();
-        bmodel.setContext(this);
+        bmodel.setContext(ProfileEditActivity.this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if (toolbar != null) {
@@ -37,9 +37,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar implements N
         }
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.sessionout_loginagain),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(ProfileEditActivity.this, getResources().getString(R.string.sessionout_loginagain), Toast.LENGTH_SHORT).show();
             finish();
         }
     }
