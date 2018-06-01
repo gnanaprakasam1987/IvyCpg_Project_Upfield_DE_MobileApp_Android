@@ -58,6 +58,7 @@ public class CatalogImageDownloadProvider {
         try {
             // Load last downloaed date from SDCard log file.
             String date = getLastDownloadedDateTime();
+            Commons.print("date in log file : " + date);
 
             //Initiate only if there is not log file.
             if (date.isEmpty()) {
@@ -292,5 +293,17 @@ public class CatalogImageDownloadProvider {
         }
         return docsFolder;
 
+    }
+
+    public boolean deleteLogFile() {
+        //Find the directory for the SD Card using the API
+        File folder = getStorageDir(businessModel.getResources().getString(R.string.app_name));
+        //Get the text file
+        File file = new File(folder, "log");
+
+        if (file.delete())
+            return true;
+        else
+            return false;
     }
 }
