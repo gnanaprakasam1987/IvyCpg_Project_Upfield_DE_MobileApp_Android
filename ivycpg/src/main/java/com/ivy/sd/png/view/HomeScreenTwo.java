@@ -3997,17 +3997,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                         int which) {
                                         String selectedType = mSalesTypeArray[which];
                                         if (selectedType.equals(VAN_SALES)) {
-                                            updateConfigurationSelectedSellerType(true);
-                                            bmodel.configurationMasterHelper.IS_WSIH = false;
-
+                                            updateConfigurationSelectedSellerType(false);
                                             updateRetailerwiseSellertype(1); // Vansales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(1);
 
                                         } else {
-                                            updateConfigurationSelectedSellerType(false);
-                                            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
-
+                                            updateConfigurationSelectedSellerType(true);
                                             updateRetailerwiseSellertype(0); // Presales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(0);
@@ -4260,10 +4256,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
      * Method to use change some specify configuration flag depends on selected
      * seller type
      *
-     * @param flag
+     * @param switchToPreSeller
      */
-    private void updateConfigurationSelectedSellerType(boolean flag) {
-        if (!flag) {
+    private void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
+        if (switchToPreSeller) {
             bmodel.configurationMasterHelper.downloadSwitchConfig();
         } else {
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
@@ -4275,6 +4271,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             bmodel.configurationMasterHelper.IS_GST_HSN = bmodel.configurationMasterHelper.IS_GST_HSN_MASTER;
             bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
             bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
+            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
         }
 
     }

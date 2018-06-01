@@ -100,10 +100,12 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 last_download_time.setText("");
                 tvDownloadStatus.setText(getResources().getString(R.string.loading));
 
-                // Detete the folder and log file.
-                catalogImageDownloadProvider.clearCatalogImages();
-                // Initiate full download.
-                CatalogImageDownloadProvider.getInstance(bmodel).callCatalogImageDownload(new DownloadListener(bmodel.getApplicationContext()));
+                if (catalogImageDownloadProvider.deleteLogFile()) {
+                    // Detete the folder.
+                    catalogImageDownloadProvider.clearCatalogImages();
+                    // Initiate full download.
+                    CatalogImageDownloadProvider.getInstance(bmodel).callCatalogImageDownload(new DownloadListener(bmodel.getApplicationContext()));
+                }
 
             }
         });

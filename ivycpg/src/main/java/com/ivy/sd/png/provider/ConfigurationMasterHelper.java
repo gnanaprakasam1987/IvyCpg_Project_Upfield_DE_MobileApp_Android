@@ -641,6 +641,10 @@ public class ConfigurationMasterHelper {
     public boolean CONVERT_EOD_SIH_CS;
     public boolean CONVERT_EOD_SIH_OU;
 
+    public boolean SHOW_VAN_STK_PS;
+    public boolean SHOW_VAN_STK_CS;
+    public boolean SHOW_VAN_STK_OU;
+
     // Added in 32 version
     public boolean IS_WSIH; // ORDB16
     public boolean SHOW_HIGHLIGHT_FOR_OOS; // ORDB15
@@ -724,6 +728,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PARTIAL_PAYMENT = true;
     public boolean IS_COLLECTION_ORDER;
     public boolean SHOW_COLLECTION_REASON;
+    public boolean IS_COLLECTION_MANDATE; // for Kellogs cash customer to do collection on the same day
     // Added in 40 version
     public boolean SHOW_ICO;
     public boolean SHOW_SO_SPLIT;
@@ -1653,6 +1658,7 @@ public class ConfigurationMasterHelper {
             this.IS_GST = false;
             this.SHOW_STORE_WISE_DISCOUNT_DLG = false;
             this.SHOW_TOTAL_DISCOUNT_EDITTEXT = false;
+            this.IS_WSIH = false;
 
             ConfigureBO con;
 
@@ -1697,6 +1703,8 @@ public class ConfigurationMasterHelper {
                         this.SHOW_STORE_WISE_DISCOUNT_DLG = true;
                     if (configureBO.getConfigCode().equals(CODE_DISCOUNT_EDITVIEW))
                         this.SHOW_TOTAL_DISCOUNT_EDITTEXT = true;
+                    if (configureBO.getConfigCode().equals(CODE_IS_WSIH))
+                        this.IS_WSIH = true;
                 }
 
             }
@@ -2168,6 +2176,12 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleOrder.get(SURVEY_GLOBAL_SAVE) != null) {
             if (hashMapHHTModuleOrder.get(SURVEY_GLOBAL_SAVE) == 1)
                 IS_SURVEY_ONCE = true;
+
+        }
+
+        if (hashMapHHTModuleOrder.get(CODE_COLLECTION_REASON) != null) {
+            if (hashMapHHTModuleOrder.get(CODE_COLLECTION_REASON) == 1)
+                IS_COLLECTION_MANDATE = true;
 
         }
 
@@ -2700,7 +2714,7 @@ public class ConfigurationMasterHelper {
                         + bmodel.QT(language)
                         + " and flag=1 and SubChannelId = "
                         + bmodel.retailerMasterBO.getSubchannelid()
-                        + " and MenuType="
+                        + " and AttributeId = 0 and MenuType="
                         + bmodel.QT(menuName)
                         + " order by MNumber";
 
@@ -2709,7 +2723,7 @@ public class ConfigurationMasterHelper {
                         + " where hhtCode like 'MENU_%' and lang="
                         + bmodel.QT(language)
                         + " and flag=1 and SubChannelId =0 "
-                        + " and MenuType="
+                        + " and AttributeId = 0 and MenuType="
                         + bmodel.QT(menuName)
                         + " order by MNumber";
             } else {
@@ -2777,7 +2791,7 @@ public class ConfigurationMasterHelper {
                         + DataMembers.tbl_HhtMenuMaster
                         + " where hhtCode like 'MENU_%' and lang="
                         + bmodel.QT(language)
-                        + " and flag=1 and SubChannelId = "
+                        + " and flag=1 and AttributeId = 0 and SubChannelId = "
                         + bmodel.retailerMasterBO.getSubchannelid()
                         + " and MenuType="
                         + bmodel.QT(menuName)
@@ -2787,7 +2801,7 @@ public class ConfigurationMasterHelper {
                         + DataMembers.tbl_HhtMenuMaster
                         + " where hhtCode like 'MENU_%' and lang="
                         + bmodel.QT(language)
-                        + " and flag=1 and SubChannelId =0 "
+                        + " and flag=1 and AttributeId = 0 and SubChannelId =0 "
                         + " and MenuType="
                         + bmodel.QT(menuName)
                         + " order by MNumber";
@@ -5857,6 +5871,43 @@ public class ConfigurationMasterHelper {
                 else if (codeValue.equals("OU"))
                     CONVERT_EOD_SIH_OU = true;
 
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    /*Van Accept and Reject UOM Configuration*/
+
+    public void loadVanStockUOMConfiguration() {
+
+        SHOW_VAN_STK_PS = false;
+        SHOW_VAN_STK_CS = false;
+        SHOW_VAN_STK_OU = false;
+
+        try {
+            String codeValue = null;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='VANSTKUOM' ";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+            if (codeValue != null) {
+
+                if (codeValue.equals("PS"))
+                    SHOW_VAN_STK_PS = true;
+                else if (codeValue.equals("CS"))
+                    SHOW_VAN_STK_CS = true;
+                else if (codeValue.equals("OU"))
+                    SHOW_VAN_STK_OU = true;
             }
         } catch (Exception e) {
             Commons.printException("" + e);

@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CollectionBO;
@@ -175,6 +176,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private AlertDialog.Builder builder10;
     private BroadcastReceiver mReceiver;
 
+    private TextView text_creditNote;
+    public static final String CREDIT_TYPE = "CREDIT";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -294,6 +298,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         button_invoice = findViewById(R.id.saveAndGoInvoice);
         text_totalOrderedQuantity = findViewById(R.id.tv_totalqty);
         imageView_amountSplitUp = findViewById(R.id.icAmountSpilitup);
+        text_creditNote = findViewById(R.id.tvCreditNote);
 
         //typefaces
         ((TextView) findViewById(R.id.tv_deliveryDate)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -314,6 +319,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         text_totalOrderedQuantity.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         button_order.setTypeface(BModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         button_invoice.setTypeface(BModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        text_creditNote.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
         button_deliveryDate.setOnClickListener(this);
         button_order.setOnClickListener(this);
@@ -981,6 +987,21 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             text_totalOrderValue.setText(BModel.formatValue(totalOrderValue));
             text_LPC.setText(String.valueOf(mOrderedProductList.size()));
             text_totalOrderedQuantity.setText(String.valueOf(totalQuantityOrdered));
+
+            if (BModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION &&
+                    BModel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase(CREDIT_TYPE) &&
+                    ((BModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && BModel.getRetailerMasterBO().getIsVansales() == 1)
+                            || BModel.configurationMasterHelper.IS_INVOICE)) {
+
+                double remReturnValue = orderHelper.getRemaingReturnAmt();
+                if (remReturnValue > 0) {
+                    double creditNoteAmt = orderHelper.getCreditNoteValue(OrderSummary.this, remReturnValue);
+                    text_creditNote.setText(getResources().getString(R.string.credit_note) + " : " + BModel.formatValue(creditNoteAmt));
+                } else
+                    text_creditNote.setVisibility(View.GONE);
+            } else
+                text_creditNote.setVisibility(View.GONE);
+
         }
         //jnj specific separate bill
         if (BModel.configurationMasterHelper.IS_ORDER_SPLIT) {
@@ -1962,18 +1983,23 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 row = inflater
                         .inflate(R.layout.row_ordersummary, parent, false);
                 holder = new ViewHolder();
-                holder.text_productName = (TextView) row
+                holder.text_productName =  row
                         .findViewById(R.id.PRODUCTNAME);
-                holder.pcsQty = (TextView) row.findViewById(R.id.P_QUANTITY);
-                holder.caseQty = (TextView) row.findViewById(R.id.C_QUANTITY);
-                holder.tw_srp = (TextView) row.findViewById(R.id.MRP);
-                holder.text_total = (TextView) row.findViewById(R.id.TOTAL);
-                holder.outerQty = (TextView) row.findViewById(R.id.OC_QUANTITY);
-                holder.weight = (TextView) row.findViewById(R.id.tv_weight);
-                holder.foc = (TextView) row.findViewById(R.id.FOC_QUANTITY);
-                holder.shelfCaseQty = (TextView) row.findViewById(R.id.sc_quantity);
-                holder.shelfOuterQty = (TextView) row.findViewById(R.id.sho_quantity);
-                holder.shelfPieceQty = (TextView) row.findViewById(R.id.sp_quantity);
+                holder.pcsQty =  row.findViewById(R.id.P_QUANTITY);
+                holder.caseQty =  row.findViewById(R.id.C_QUANTITY);
+                holder.tw_srp =  row.findViewById(R.id.MRP);
+                holder.text_total =  row.findViewById(R.id.TOTAL);
+                holder.outerQty =  row.findViewById(R.id.OC_QUANTITY);
+                holder.weight =  row.findViewById(R.id.tv_weight);
+                holder.foc =  row.findViewById(R.id.FOC_QUANTITY);
+                holder.shelfCaseQty =  row.findViewById(R.id.sc_quantity);
+                holder.shelfOuterQty =  row.findViewById(R.id.sho_quantity);
+                holder.shelfPieceQty =  row.findViewById(R.id.sp_quantity);
+
+                holder.salesReturn = row.findViewById(R.id.stock_and_order_listview_sales_return_qty);
+                holder.rep_cs = row.findViewById(R.id.rep_case);
+                holder.rep_ou = row.findViewById(R.id.rep_outer);
+                holder.rep_pcs = row.findViewById(R.id.rep_pcs);
 
                 holder.text_productName.setTypeface(BModel.configurationMasterHelper.getProductNameFont());
                 holder.text_total.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -2121,6 +2147,73 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                 }
 
+                if (!BModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                    (row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
+                else {
+                    try {
+                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        holder.salesReturn.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.stkRtTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.stkRtTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
+                if (!BModel.configurationMasterHelper.SHOW_REPLACED_QTY_CS)
+                    (row.findViewById(R.id.llRepCase)).setVisibility(View.GONE);
+                else {
+                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.rep_cs.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    try {
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.rep_caseTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.rep_caseTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.rep_caseTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+                if (!BModel.configurationMasterHelper.SHOW_REPLACED_QTY_OU)
+                    (row.findViewById(R.id.llRepOu)).setVisibility(View.GONE);
+                else {
+                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.rep_ou.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    try {
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.rep_outerTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.rep_outerTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.rep_outerTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+                if (!BModel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
+                    (row.findViewById(R.id.llRepPc)).setVisibility(View.GONE);
+                else {
+                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.rep_pcs.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    try {
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.rep_pcsTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.rep_pcsTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.rep_pcsTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -2230,6 +2323,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 holder.shelfPieceQty = row.findViewById(R.id.sp_quantity);
                 holder.foc = row.findViewById(R.id.FOC_QUANTITY);
                 holder.cbSeparateBill = row.findViewById(R.id.cbSeparateBill);
+
+                holder.salesReturn = row.findViewById(R.id.stock_and_order_listview_sales_return_qty);
+                holder.rep_cs = row.findViewById(R.id.rep_case);
+                holder.rep_ou = row.findViewById(R.id.rep_outer);
+                holder.rep_pcs = row.findViewById(R.id.rep_pcs);
+
                 holder.text_productName.setMaxLines(BModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.text_productName.setTypeface(BModel.configurationMasterHelper.getProductNameFont());
                 (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -2370,6 +2469,72 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         Commons.printException(" " + e);
                     }
                 }
+                if (!BModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                    (row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
+                else {
+                    try {
+                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        holder.salesReturn.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.stkRtTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.stkRtTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
+                if (!BModel.configurationMasterHelper.SHOW_REPLACED_QTY_CS)
+                    (row.findViewById(R.id.llRepCase)).setVisibility(View.GONE);
+                else {
+                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.rep_cs.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    try {
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.rep_caseTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.rep_caseTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.rep_caseTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+                if (!BModel.configurationMasterHelper.SHOW_REPLACED_QTY_OU)
+                    (row.findViewById(R.id.llRepOu)).setVisibility(View.GONE);
+                else {
+                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.rep_ou.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    try {
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.rep_outerTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.rep_outerTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.rep_outerTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
+                if (!BModel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
+                    (row.findViewById(R.id.llRepPc)).setVisibility(View.GONE);
+                else {
+                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.rep_pcs.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    try {
+                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.rep_pcsTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.rep_pcsTitle))
+                                    .setText(BModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.rep_pcsTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                }
                 if (!BModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                     (row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 } else {
@@ -2391,22 +2556,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     holder.text_total.setVisibility(View.GONE);
                 }
 
-                if (!BModel.configurationMasterHelper.SHOW_FOC) {
-                    (row.findViewById(R.id.llfoc)).setVisibility(View.GONE);
-                } else {
-                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.foc.setTypeface(BModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    try {
-                        if (BModel.labelsMasterHelper.applyLabels(row.findViewById(
-                                R.id.focTitle).getTag()) != null)
-                            ((TextView) row.findViewById(R.id.focTitle))
-                                    .setText(BModel.labelsMasterHelper
-                                            .applyLabels(row.findViewById(
-                                                    R.id.focTitle).getTag()));
-                    } catch (Exception e) {
-                        Commons.printException(" " + e);
-                    }
-                }
                 if (!BModel.configurationMasterHelper.SHOW_FOC) {
                     (row.findViewById(R.id.llfoc)).setVisibility(View.GONE);
                 } else {
@@ -2446,6 +2595,22 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             int weight = holder.productBO.getOrderedPcsQty() + (holder.productBO.getOrderedCaseQty() * holder.productBO.getCaseSize()) + (holder.productBO.getOrderedOuterQty() * holder.productBO.getOutersize());
             holder.weight.setText(String.valueOf(weight * holder.productBO.getWeight()));
 
+            if (BModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+                int total = 0;
+                if (holder.productBO.getSalesReturnReasonList() != null) {
+                    for (SalesReturnReasonBO obj : holder.productBO.getSalesReturnReasonList())
+                        total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
+                }
+                String strTotal = Integer.toString(total);
+                holder.salesReturn.setText(strTotal);
+            }
+
+            String strRepCaseQty = holder.productBO.getRepCaseQty() + "";
+            holder.rep_cs.setText(strRepCaseQty);
+            String strRepOuterQty = holder.productBO.getRepOuterQty() + "";
+            holder.rep_ou.setText(strRepOuterQty);
+            String strRepPcsQty = holder.productBO.getRepPieceQty() + "";
+            holder.rep_pcs.setText(strRepPcsQty);
 
             return row;
         }
@@ -2476,6 +2641,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         private TextView text_total;
         private TextView foc;
         private AppCompatCheckBox cbSeparateBill;
+        private TextView rep_pcs;
+        private TextView rep_cs;
+        private TextView rep_ou;
+        private TextView salesReturn;
     }
 
 

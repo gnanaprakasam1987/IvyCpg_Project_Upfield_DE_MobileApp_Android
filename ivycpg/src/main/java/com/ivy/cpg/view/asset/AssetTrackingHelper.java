@@ -1431,7 +1431,7 @@ public class AssetTrackingHelper {
                 db.deleteSQL(DataMembers.tbl_AssetDetail,
                         "uid=" + QT(c.getString(0)), false);
                 db.deleteSQL(DataMembers.tbl_AssetImgInfo,
-                        "tid=" + QT(c.getString(0)), false);
+                        "uid=" + QT(c.getString(0)), false);
                 refId = c.getString(1);
             }
 
@@ -1456,7 +1456,7 @@ public class AssetTrackingHelper {
 
 
             String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
-            String AssetImageInfoColumns = "tid,AssetID,ImageName,ProductId,LocId";
+            String AssetImageInfoColumns = "uid,AssetID,ImageName,ProductId,LocId";
             if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 assetHeaderColumns = assetHeaderColumns + ",Weightage,Score";
                 AssetDetailColumns = AssetDetailColumns + ",Score";
