@@ -518,10 +518,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_CALL)) {
                 gotoNextActivity(menu, menu.getHasLink(), false);
                 break;
-            }else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
+            } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
                 gotoNextActivity(menu, menu.getHasLink(), false);
                 break;
-            }else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
+            } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
                 gotoNextActivity(menu, menu.getHasLink(), false);
                 break;
             }
@@ -1586,10 +1586,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             }
                         }
                     } else {// to laod data from last vist transaction tables
-                        if (bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN) {
+                        boolean isDataAvailableforLastVisitHistory = false;
+                        if (bmodel.configurationMasterHelper.IS_ENABLE_LAST_VISIT_HISTORY) {
+                            // load last visit data
+                            isDataAvailableforLastVisitHistory =
+                                    bmodel.loadLastVisitHistoryStockCheckedProducts(bmodel.getRetailerMasterBO().getRetailerID());
+                        }
+
+                        if ((!bmodel.configurationMasterHelper.IS_ENABLE_LAST_VISIT_HISTORY || !isDataAvailableforLastVisitHistory) &&
+                                bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN) {
                             // load last visit data
                             bmodel.loadLastVisitStockCheckedProducts(bmodel.getRetailerMasterBO().getRetailerID());
                         }
+
 
                         //load Last Vist Near Expir Data
                         if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK) {
@@ -1698,7 +1707,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             || bmodel.getRetailerMasterBO().getCreditDays() == 0
                             || bmodel.productHelper.isCheckCreditPeriod()) {
 
-                        if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
+                        if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
                             if (bmodel.hasAlreadyStockChecked(bmodel
                                     .getRetailerMasterBO().getRetailerID())) {
                                 bmodel.loadStockCheckedProducts(bmodel

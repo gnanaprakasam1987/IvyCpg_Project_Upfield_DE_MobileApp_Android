@@ -343,6 +343,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_PRODUCT_TAGGING_VALIDATION = "TAGG01";
     public boolean IS_ENABLE_PRODUCT_TAGGING_VALIDATION = false;
 
+    private static final String CODE_ENABLE_LAST_VISIT_HISTORY = "CSSTK06";
+    public boolean IS_ENABLE_LAST_VISIT_HISTORY = false;
 
     public boolean IS_NEARBY_RETAILER = false;
     public int VALUE_NEARBY_RETAILER_MAX = 1;
@@ -2493,6 +2495,7 @@ public class ConfigurationMasterHelper {
         if (IS_ENABLE_ORDER_STATUS_REPORT) {
             loadOrderStatusReportConfiguration();
         }
+        this.IS_ENABLE_LAST_VISIT_HISTORY = hashMapHHTModuleConfig.get(CODE_ENABLE_LAST_VISIT_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_LAST_VISIT_HISTORY) : false;
     }
 
     private boolean isInOutModule() {
