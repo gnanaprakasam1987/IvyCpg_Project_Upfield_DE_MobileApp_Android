@@ -3989,16 +3989,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                         String selectedType = mSalesTypeArray[which];
                                         if (selectedType.equals(VAN_SALES)) {
                                             updateConfigurationSelectedSellerType(false);
-                                            bmodel.configurationMasterHelper.IS_WSIH = false;
-
                                             updateRetailerwiseSellertype(1); // Vansales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(1);
 
                                         } else {
                                             updateConfigurationSelectedSellerType(true);
-                                            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
-
                                             updateRetailerwiseSellertype(0); // Presales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(0);
@@ -4266,6 +4262,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             bmodel.configurationMasterHelper.IS_GST_HSN = bmodel.configurationMasterHelper.IS_GST_HSN_MASTER;
             bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
             bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
+            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
         }
 
     }

@@ -1656,6 +1656,7 @@ public class ConfigurationMasterHelper {
             this.IS_GST = false;
             this.SHOW_STORE_WISE_DISCOUNT_DLG = false;
             this.SHOW_TOTAL_DISCOUNT_EDITTEXT = false;
+            this.IS_WSIH = false;
 
             ConfigureBO con;
 
@@ -1700,6 +1701,8 @@ public class ConfigurationMasterHelper {
                         this.SHOW_STORE_WISE_DISCOUNT_DLG = true;
                     if (configureBO.getConfigCode().equals(CODE_DISCOUNT_EDITVIEW))
                         this.SHOW_TOTAL_DISCOUNT_EDITTEXT = true;
+                    if (configureBO.getConfigCode().equals(CODE_IS_WSIH))
+                        this.IS_WSIH = true;
                 }
 
             }
