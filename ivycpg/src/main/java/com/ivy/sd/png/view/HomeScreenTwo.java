@@ -518,10 +518,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_CALL)) {
                 gotoNextActivity(menu, menu.getHasLink(), false);
                 break;
-            }else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
+            } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
                 gotoNextActivity(menu, menu.getHasLink(), false);
                 break;
-            }else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
+            } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
                 gotoNextActivity(menu, menu.getHasLink(), false);
                 break;
             }
@@ -1698,7 +1698,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             || bmodel.getRetailerMasterBO().getCreditDays() == 0
                             || bmodel.productHelper.isCheckCreditPeriod()) {
 
-                        if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
+                        if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
                             if (bmodel.hasAlreadyStockChecked(bmodel
                                     .getRetailerMasterBO().getRetailerID())) {
                                 bmodel.loadStockCheckedProducts(bmodel
@@ -3988,7 +3988,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                         int which) {
                                         String selectedType = mSalesTypeArray[which];
                                         if (selectedType.equals(VAN_SALES)) {
-                                            updateConfigurationSelectedSellerType(true);
+                                            updateConfigurationSelectedSellerType(false);
                                             bmodel.configurationMasterHelper.IS_WSIH = false;
 
                                             updateRetailerwiseSellertype(1); // Vansales
@@ -3996,7 +3996,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                     .setIsVansales(1);
 
                                         } else {
-                                            updateConfigurationSelectedSellerType(false);
+                                            updateConfigurationSelectedSellerType(true);
                                             bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
 
                                             updateRetailerwiseSellertype(0); // Presales
@@ -4251,10 +4251,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
      * Method to use change some specify configuration flag depends on selected
      * seller type
      *
-     * @param flag
+     * @param switchToPreSeller
      */
-    private void updateConfigurationSelectedSellerType(boolean flag) {
-        if (!flag) {
+    private void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
+        if (switchToPreSeller) {
             bmodel.configurationMasterHelper.downloadSwitchConfig();
         } else {
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;

@@ -2697,7 +2697,7 @@ public class ConfigurationMasterHelper {
                         + bmodel.QT(language)
                         + " and flag=1 and SubChannelId = "
                         + bmodel.retailerMasterBO.getSubchannelid()
-                        + " and MenuType="
+                        + " and AttributeId = 0 and MenuType="
                         + bmodel.QT(menuName)
                         + " order by MNumber";
 
@@ -2706,7 +2706,7 @@ public class ConfigurationMasterHelper {
                         + " where hhtCode like 'MENU_%' and lang="
                         + bmodel.QT(language)
                         + " and flag=1 and SubChannelId =0 "
-                        + " and MenuType="
+                        + " and AttributeId = 0 and MenuType="
                         + bmodel.QT(menuName)
                         + " order by MNumber";
             } else {
@@ -2774,7 +2774,7 @@ public class ConfigurationMasterHelper {
                         + DataMembers.tbl_HhtMenuMaster
                         + " where hhtCode like 'MENU_%' and lang="
                         + bmodel.QT(language)
-                        + " and flag=1 and SubChannelId = "
+                        + " and flag=1 and AttributeId = 0 and SubChannelId = "
                         + bmodel.retailerMasterBO.getSubchannelid()
                         + " and MenuType="
                         + bmodel.QT(menuName)
@@ -2784,7 +2784,7 @@ public class ConfigurationMasterHelper {
                         + DataMembers.tbl_HhtMenuMaster
                         + " where hhtCode like 'MENU_%' and lang="
                         + bmodel.QT(language)
-                        + " and flag=1 and SubChannelId =0 "
+                        + " and flag=1 and AttributeId = 0 and SubChannelId =0 "
                         + " and MenuType="
                         + bmodel.QT(menuName)
                         + " order by MNumber";
