@@ -220,6 +220,7 @@
                 <LinearLayout
                     android:id="@+id/llShelfWeight"
                     android:layout_width="wrap_content"
+                    android:layout_marginEnd="@dimen/card_margin"
                     android:layout_height="wrap_content">
 
                     <TextView
@@ -252,7 +253,165 @@
                         android:text="@string/zero" />
 
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/llStkRtEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_height="wrap_content">
 
+                    <TextView
+                        android:id="@+id/stkRtTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:tag="sales_return"
+                        android:text="@string/sr"
+                        android:textColor="@color/GRAY_TEXT"
+                        android:textSize="@dimen/greyed_text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/card_margin"
+                        android:text=":"
+                        android:textSize="@dimen/greyed_text_size" />
+
+                    <TextView
+                        android:id="@+id/stock_and_order_listview_sales_return_qty"
+                        style="?attr/customListItemValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:text="@string/zero"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/value_text_size" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRepCase"
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/rep_caseTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:tag="item_sr_case"
+                        android:text="@string/rep_case"
+                        android:textColor="@color/GRAY_TEXT"
+                        android:textSize="@dimen/greyed_text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/card_margin"
+                        android:text=":"
+                        android:textSize="@dimen/greyed_text_size" />
+
+                    <TextView
+                        android:id="@+id/rep_case"
+                        style="?attr/customListItemValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:text="@string/zero"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/value_text_size" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRepOu"
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/rep_outerTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:tag="item_sr_outer"
+                        android:text="@string/rep_outer"
+                        android:textColor="@color/GRAY_TEXT"
+                        android:textSize="@dimen/greyed_text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/card_margin"
+                        android:text=":"
+                        android:textSize="@dimen/greyed_text_size" />
+
+                    <TextView
+                        android:id="@+id/rep_outer"
+                        style="?attr/customListItemValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:text="@string/zero"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/value_text_size" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRepPc"
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/rep_pcsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:tag="item_sr_piece"
+                        android:text="@string/rep_pcs"
+                        android:textColor="@color/GRAY_TEXT"
+                        android:textSize="@dimen/greyed_text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/card_margin"
+                        android:text=":"
+                        android:textSize="@dimen/greyed_text_size" />
+
+                    <TextView
+                        android:id="@+id/rep_pcs"
+                        style="?attr/customListItemValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:text="@string/zero"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/value_text_size" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

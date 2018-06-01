@@ -415,7 +415,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             mSelectedFilterMap.put("General", "All");
             mSelectedFilterMap.put("Brand", "All");
             mSelectedFilterMap.put("Category", "All");
-            if (mSelectedFilterMap != null) {
+            if (mSelectedFilterMap != null && mSelectedIdByLevelId != null){
                 if (mSelectedIdByLevelId != null)
                     mSelectedIdByLevelId.clear();
             }

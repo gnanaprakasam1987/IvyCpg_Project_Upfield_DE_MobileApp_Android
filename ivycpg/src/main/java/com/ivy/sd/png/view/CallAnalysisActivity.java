@@ -207,7 +207,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_REASON
-                    && hasInvoice()) {
+                    && hasInvoice() && !bmodel.configurationMasterHelper.IS_COLLECTION_MANDATE) {
                 if (hasCollectionMenuActivityDone())
                     spinnerNooCollectionReason.setVisibility(View.GONE);
                 else {
@@ -958,6 +958,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
                     showCollectionReasonOrDialog();
                 }
+            } else if (bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH") &&
+                    bmodel.configurationMasterHelper.IS_COLLECTION_MANDATE && hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL))) {
+                Toast.makeText(this, getResources().getString(R.string.collection_mandatory), Toast.LENGTH_SHORT).show();
             } else if (!hasActivityDone() && bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL) {
                 showFeedbackReasonOrDialog();
             } else {
@@ -1357,10 +1360,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
         bmodel.productHelper.clearProductHelper();
 
-        if(isSubmitButtonClicked){
+        if (isSubmitButtonClicked) {
             presenter.isFromCallAnalysis = true;
             presenter.validateAndUpload();
-        }else {
+        } else {
 //            BusinessModel.loadActivity(CallAnalysisActivity.this,
 //                    DataMembers.actPlanning);
             finish();
@@ -1476,6 +1479,32 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 }
 
             }
+            db.closeDB();
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    public boolean hasPendingInvoice(String date) {
+        try {
+            double balance = 0;
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select Inv.InvoiceNo,Round(Inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as balance from "
+                    + DataMembers.tbl_InvoiceMaster + " Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo where Inv.Retailerid='"
+                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + "' and Inv.InvoiceDate ='" + date + "'and Inv.upload = 'N'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    balance = balance + c.getDouble(c.getColumnIndex("balance"));
+                }
+                c.close();
+                if (balance > 0)
+                    return true;
+            }
+
             db.closeDB();
         } catch (Exception e) {
             return false;

@@ -903,6 +903,8 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     public String getRpTypeCode() {
+        if (rpTypeCode == null)
+            return "";
         return rpTypeCode;
     }
 
