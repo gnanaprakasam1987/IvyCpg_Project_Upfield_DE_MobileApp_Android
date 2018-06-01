@@ -143,5 +143,6 @@
     <string name="invoice_next_print">invoice_next_print</string>
     <string name="Order_Summary_dialog_header">Order_Summary_dialog_header</string>
 
+    <string name="collection_mandatory">Please do collection for Pending Invoice !</string>
 
 </resources>
