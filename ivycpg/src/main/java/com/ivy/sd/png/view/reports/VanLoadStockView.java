@@ -147,7 +147,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         updateVanload(uid);
 
 
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+        if (!bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
             view.findViewById(R.id.caseTitle).setVisibility(View.GONE);
         } else {
             try {
@@ -160,7 +160,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 Commons.printException("" + e);
             }
         }
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+        if (!bmodel.configurationMasterHelper.SHOW_VAN_STK_PS) {
             view.findViewById(R.id.pcsTitle).setVisibility(View.GONE);
         } else {
             try {
@@ -183,7 +183,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         } catch (Exception e) {
             Commons.printException("" + e);
         }
-        if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+        if (!bmodel.configurationMasterHelper.SHOW_VAN_STK_OU)
             view.findViewById(R.id.outerTitle).setVisibility(View.GONE);
         else {
             try {
@@ -454,15 +454,15 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 printItem.append("LEFT \r\n");
                 printItem.append("T 5 0 10 400 ");
                 printItem.append("Product" + "\r\n");
-                if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
                     printItem.append("T 5 0 260 400 ");
                     printItem.append(getResources().getString(R.string.case_u)).append("\r\n");
                 }
-                if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (bmodel.configurationMasterHelper.SHOW_VAN_STK_OU) {
                     printItem.append("T 5 0 320 400 ");
                     printItem.append(getResources().getString(R.string.item_outer)).append("\r\n");
                 }
-                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                if (bmodel.configurationMasterHelper.SHOW_VAN_STK_PS) {
                     String pc_text = "Bottles";
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(getResources().getString(R.string.van_load_bottles)) != null)
@@ -492,15 +492,15 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                     printItem.append(productBO.getProductname().toLowerCase()).append("\r\n");
 
                     x += 30;
-                    if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                    if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
                         printItem.append("T 5 0 280 ").append(x).append(" ");
                         printItem.append(productBO.getCaseqty()).append("\r\n");
                     }
-                    if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                    if (bmodel.configurationMasterHelper.SHOW_VAN_STK_OU) {
                         printItem.append("T 5 0 330 ").append(x).append(" ");
                         printItem.append(productBO.getOuterQty()).append("\r\n");
                     }
-                    if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                    if (bmodel.configurationMasterHelper.SHOW_VAN_STK_PS) {
                         printItem.append("T 5 0 390 ").append(x).append(" ");
                         printItem.append(productBO.getPieceqty()).append("\r\n");
                     }
@@ -511,7 +511,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 printItem.append("T 5 0 10 ").append(x);
 
                 printItem.append(" --------------------------------------------------\r\n");
-                if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
 
                     x += 30;
                     printItem.append("T 5 0 10 ").append(x);
@@ -525,7 +525,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                     printItem.append(" --------------------------------------------------\r\n");
 
                 }
-                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                if (bmodel.configurationMasterHelper.SHOW_VAN_STK_PS) {
                     String pc_text = "Bottles";
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(getResources().getString(R.string.van_load_bottles)) != null)
@@ -545,7 +545,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                     printItem.append(" --------------------------------------------------\r\n");
 
                 }
-                if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (bmodel.configurationMasterHelper.SHOW_VAN_STK_OU) {
                     x += 30;
                     printItem.append("T 5 0 10 ").append(x);
                     printItem.append("Total Outer:").append("\r\n");
@@ -763,11 +763,11 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                     }
                 });
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                if (!bmodel.configurationMasterHelper.SHOW_VAN_STK_CS)
                     holder.caseqty.setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                if (!bmodel.configurationMasterHelper.SHOW_VAN_STK_PS)
                     holder.pcsqty.setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                if (!bmodel.configurationMasterHelper.SHOW_VAN_STK_OU)
                     holder.outerqty.setVisibility(View.GONE);
 
                 row.setTag(holder);
@@ -969,7 +969,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT");
 
-            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+            if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
                 tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 " + getResources().getString(R.string.case_u) + "\r\n");
@@ -977,7 +977,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 tempsb.append("PRINT");
             }
 
-            if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+            if (bmodel.configurationMasterHelper.SHOW_VAN_STK_OU) {
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
                 tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 " + getResources().getString(R.string.item_outer) + "\r\n");
@@ -985,7 +985,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 tempsb.append("PRINT");
             }
 
-            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+            if (bmodel.configurationMasterHelper.SHOW_VAN_STK_PS) {
                 String pc_text = "Bottles";
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(getResources().getString(R.string.van_load_bottles)) != null)
@@ -1022,7 +1022,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
 
-                if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 " + productBO.getCaseqty() + "\r\n");
@@ -1030,7 +1030,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                     tempsb.append("PRINT");
                 }
 
-                if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (bmodel.configurationMasterHelper.SHOW_VAN_STK_OU) {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 " + productBO.getOuterQty() + "\r\n");
@@ -1038,7 +1038,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                     tempsb.append("PRINT");
                 }
 
-                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                if (bmodel.configurationMasterHelper.SHOW_VAN_STK_PS) {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 420 + " 1 " + productBO.getPieceqty() + "\r\n");
@@ -1053,7 +1053,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 
-            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+            if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
@@ -1074,7 +1074,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 tempsb.append("PRINT\r\n");
 
             }
-            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+            if (bmodel.configurationMasterHelper.SHOW_VAN_STK_PS) {
                 String pc_text = "Bottles";
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(getResources().getString(R.string.van_load_bottles)) != null)
@@ -1103,7 +1103,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 tempsb.append("PRINT\r\n");
 
             }
-            if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+            if (bmodel.configurationMasterHelper.SHOW_VAN_STK_OU) {
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
                 tempsb.append("TEXT ANG12PT.CPF 0 " + 440 + " 1 " + "Total Outer:" + "\r\n");
