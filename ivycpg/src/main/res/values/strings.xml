@@ -1274,9 +1274,6 @@
     <string name="seller_already_assigned">Seller is assigned to some other backup seller</string>
     <string name="backup_seller_already_assigned">Backup seller is assigned to some other user</string>
     <string name="foc">FfoOC</string>
-    <string name="volume">Volume</string>
-    <string name="todate_validation">To Date should be greater than From Date</string>
-    <string name="no_config_exist">No Configuration Exist</string>
 
     <string-array name="task_tab_header">
         <item>All</item>
