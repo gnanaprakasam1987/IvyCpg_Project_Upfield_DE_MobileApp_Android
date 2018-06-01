@@ -8,9 +8,14 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -21,11 +26,15 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     private ViewPager viewPager;
     private ArrayList<DetailsBo> detailsBos = new ArrayList<>();
     private HashMap<Integer,Integer> integerHashMap = new HashMap<>();
+    private BusinessModel mBModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seller_list);
+
+        mBModel = (BusinessModel) getApplicationContext();
+        mBModel.setContext(this);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
@@ -90,6 +99,8 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         } catch (Exception e) {
             Commons.printException(e);
         }
+
+        changeTabsFont(tabLayout);
     }
 
     @Override
@@ -161,4 +172,20 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
 
         return detailsBos;
     }
+    private void changeTabsFont(TabLayout tabLayout) {
+
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    ((TextView) tabViewChild).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                }
+            }
+        }
+    }
+
 }

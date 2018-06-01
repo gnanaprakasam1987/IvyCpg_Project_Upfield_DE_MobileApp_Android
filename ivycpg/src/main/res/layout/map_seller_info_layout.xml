@@ -6,8 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
-    android:layout_marginLeft="@dimen/dimen_10dp"
-    android:layout_marginRight="@dimen/dimen_10dp"
     android:layout_marginBottom="@dimen/dimen_40dp"
     android:orientation="vertical"
     android:visibility="visible">

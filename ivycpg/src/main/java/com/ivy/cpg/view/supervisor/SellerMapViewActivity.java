@@ -117,10 +117,6 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
         mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_info_window, null);
 
-        (findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        (findViewById(R.id.view_dotted_line_end)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-
         infoWindowLayout = findViewById(R.id.user_info_layout);
         infoWindowLayout.setVisibility(View.GONE);
 

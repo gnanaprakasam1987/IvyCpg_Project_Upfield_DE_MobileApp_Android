@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/info_window_bg"
+    android:layout_height="25dp"
     android:clickable="false"
     android:focusable="false"
     android:focusableInTouchMode="false"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
 
 
     <ImageView
-        android:layout_width="@dimen/dimens_40dp"
-        android:layout_height="@dimen/dimens_40dp"
-        android:src="@drawable/ic_profile_view"
-        android:layout_marginLeft="@dimen/dimen_18dp"/>
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:src="@drawable/marker_info_seller"
+        android:scaleType="fitXY"/>
 
     <TextView
         android:id="@+id/tv_usr_name"
         style="?attr/customListItemPrimary"
         android:layout_width="wrap_content"
-        android:minWidth="@dimen/dimen_100dp"
-        android:layout_height="match_parent"
+        android:minWidth="@dimen/dimens_50dp"
+        android:layout_height="25dp"
         android:gravity="center_vertical"
         android:maxLines="1"
         android:text="Testing"

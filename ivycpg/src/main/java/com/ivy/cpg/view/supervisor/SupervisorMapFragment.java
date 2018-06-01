@@ -2,12 +2,11 @@ package com.ivy.cpg.view.supervisor;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -42,7 +41,9 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SupervisorMapFragment extends IvyBaseFragment implements
         OnMapReadyCallback, Seller,View.OnClickListener,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener {
@@ -64,6 +65,8 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     private LinearLayout routeLayout,infoWindowLayout,bottomLayout;
 
     private int trackingType; //0 - RealTime, 1 - Movement Tracking, 2 - Call analysis
+    ViewPagerAdapter viewPagerAdapter;
+    ViewPager viewPager;
 
 
     @Override
@@ -214,6 +217,13 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             }
         });
 
+        viewPager = view.findViewById(R.id.view_pager);
+
+        viewPager.setClipToPadding(false);
+//        viewPager.setPadding(48, 0, 48, 0);
+        viewPager.setPageMargin(1);
+        viewPager.setOffscreenPageLimit(1);
+
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         //Total Seller count under Supervisor
@@ -229,6 +239,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(),SellerListActivity.class);
                 intent.putExtra("TabPos",0);
+                intent.putExtra("Screen","Seller");
                 startActivity(intent);
             }
         });
@@ -238,6 +249,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(),SellerListActivity.class);
                 intent.putExtra("TabPos",1);
+                intent.putExtra("Screen","Seller");
                 startActivity(intent);
             }
         });
@@ -247,6 +259,17 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(),SellerListActivity.class);
                 intent.putExtra("TabPos",2);
+                intent.putExtra("Screen","Seller");
+                startActivity(intent);
+            }
+        });
+
+        tvTotalOutlet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),OutletMapListActivity.class);
+                intent.putExtra("TabPos",1);
+                intent.putExtra("Screen","Outlet");
                 startActivity(intent);
             }
         });
@@ -363,6 +386,10 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
             }
+
+//            viewPagerAdapter = new ViewPagerAdapter(getContext(), new ArrayList<>(userHashmap.values()));
+//            viewPager.setAdapter(viewPagerAdapter);
+//            viewPagerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -404,8 +431,8 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         Commons.print("on Marker Click called");
 
         double angle = 130.0;
-        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 3.3;
-        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
+        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.0;
+        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.6);
         marker.setInfoWindowAnchor((float)x, (float)y);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
@@ -470,13 +497,50 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         @Override
         public View getInfoWindow(final Marker marker) {
 
-            tvMapInfoUserName.setText(marker.getTitle());
+            tvMapInfoUserName.setText("Big Text To test the info");
 
             mapWrapperLayout.setMarkerWithInfoWindow(marker, mymarkerview);
 
             return mymarkerview;
         }
 
+    }
+
+    public class ViewPagerAdapter extends PagerAdapter {
+
+        private Context mContext;
+        private List<DetailsBo> userHashmap = new ArrayList<>();
+
+        public ViewPagerAdapter(Context context, List<DetailsBo> userHashmap) {
+            mContext = context;
+            this.userHashmap = userHashmap;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public int getCount() {
+            return userHashmap.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, final int position) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            ViewGroup view = (ViewGroup) inflater.inflate(R.layout.map_seller_info_layout, container, false);
+
+            userHashmap.get(position).getMarker().showInfoWindow();
+
+            container.addView(view);
+            return view;
+        }
     }
 
 }

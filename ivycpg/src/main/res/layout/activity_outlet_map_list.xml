@@ -20,20 +20,6 @@
 
     </com.ivy.maplib.MapWrapperLayout>
 
-    <com.ivy.cpg.view.supervisor.helper.EnhancedWrapContentViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/dimens_40dp"/>
-
-    <include layout="@layout/map_seller_info_layout"
-        android:id="@+id/user_info_layout"
-        android:visibility="gone"/>
-
-    <include layout="@layout/supervisor_bottom_layout"
-        android:visibility="visible"/>
-
     <include layout="@layout/map_seller_day_info_layout"
         android:visibility="visible"/>
 

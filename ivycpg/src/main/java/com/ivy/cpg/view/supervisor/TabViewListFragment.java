@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
 
@@ -22,6 +24,7 @@ public class TabViewListFragment extends IvyBaseFragment{
     private RecyclerView recyclerView;
     private ArrayList<DetailsBo> detailsBos = new ArrayList<>();
     private boolean showStatus;
+    private BusinessModel bmodel;
 
     public TabViewListFragment() {
     }
@@ -39,6 +42,8 @@ public class TabViewListFragment extends IvyBaseFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
     }
 
     @Override
@@ -70,7 +75,7 @@ public class TabViewListFragment extends IvyBaseFragment{
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            private TextView userName,routeText,statusTextview;
+            private TextView userName,routeText,statusTextview,performancePercent,outletCoveredTxt,messageText;
             private RelativeLayout statusLayout;
 
             public MyViewHolder(View view) {
@@ -79,8 +84,17 @@ public class TabViewListFragment extends IvyBaseFragment{
                 routeText = view.findViewById(R.id.tv_route);
                 statusTextview = view.findViewById(R.id.tv_status);
                 statusLayout = view.findViewById(R.id.status_layout);
+                performancePercent = view.findViewById(R.id.tv_percent_txt);
+                outletCoveredTxt = view.findViewById(R.id.tv_outlet_covered);
+                messageText = view.findViewById(R.id.tv_message);
 
-                ((View)view.findViewById(R.id.view_dotted_line_end)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                userName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                routeText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                statusTextview.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                performancePercent.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                outletCoveredTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                messageText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+
             }
         }
 
@@ -101,10 +115,10 @@ public class TabViewListFragment extends IvyBaseFragment{
 
             if(detailsBos.get(position).getStatus().equalsIgnoreCase("In Market")){
                 holder.statusTextview.setText(detailsBos.get(position).getStatus());
-                holder.statusLayout.setBackgroundDrawable(ContextCompat.getDrawable(getContext(),R.drawable.curved_green));
+                holder.statusLayout.setBackgroundDrawable(ContextCompat.getDrawable(getContext(),R.drawable.covered_bg_gradient));
             }else{
                 holder.statusTextview.setText(detailsBos.get(position).getStatus());
-                holder.statusLayout.setBackgroundDrawable(ContextCompat.getDrawable(getContext(),R.drawable.curved_red));
+                holder.statusLayout.setBackgroundDrawable(ContextCompat.getDrawable(getContext(),R.drawable.absent_seller_text_bg_gradient));
             }
 
             holder.routeText.setOnClickListener(new View.OnClickListener() {

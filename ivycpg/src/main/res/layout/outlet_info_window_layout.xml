@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardview_ttl_seller"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="5dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="0dp"
+    android:layout_gravity="bottom"
+    android:layout_marginLeft="@dimen/dimen_10dp"
+    android:layout_marginRight="@dimen/dimen_10dp"
+    android:layout_marginBottom="@dimen/dimens_20dp"
+    android:layout_alignParentBottom="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/dimen_10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_weight="0.7"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_store_name"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_2dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="Alagusamy Malligai"
+                    android:textColor="#de000000"
+                    android:textSize="@dimen/dimen_16dp" />
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:maxLines="1"
+                    android:text="103 Voc St Kb nagar"
+                    android:textColor="#64000000"
+                    android:textSize="@dimen/dimen_12dp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:padding="@dimen/dimen_2dp">
+
+                <TextView
+                    android:id="@+id/tv_status_text"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="@dimen/dimen_2dp"
+                    android:layout_toLeftOf="@+id/status_color_view"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="Covered"
+                    android:textColor="#de000000"
+                    android:textSize="@dimen/dimen_12dp" />
+
+                <View
+                    android:id="@+id/status_color_view"
+                    android:layout_width="@dimen/padding_l"
+                    android:layout_height="@dimen/padding_l"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:background="@drawable/covered_green" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_marginTop="@dimen/dimens_30dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_weight="0.7"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_assigned_txt"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_2dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="Assigned Seller"
+                    android:textColor="#de000000"
+                    android:textSize="@dimen/dimen_12dp" />
+
+                <TextView
+                    android:id="@+id/tv_seller_name"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:maxLines="1"
+                    android:text="Ravi Sastri"
+                    android:textColor="#4a90e2"
+                    android:textSize="@dimen/dimen_16dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_weight="0.3"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_order_val_txt"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_2dp"
+                    android:gravity="center_vertical|right"
+                    android:maxLines="1"
+                    android:text="Order Value"
+                    android:textColor="#de000000"
+                    android:textSize="@dimen/dimen_14dp" />
+
+                <TextView
+                    android:id="@+id/tv_order_value"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:maxLines="1"
+                    android:gravity="center_vertical|right"
+                    android:text="121258.14"
+                    android:textColor="#d0021b"
+                    android:textSize="@dimen/dimen_18dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/user_info_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:id="@+id/user_info_layout"
     android:layout_marginLeft="@dimen/dimen_10dp"
-    android:layout_marginRight="@dimen/dimen_10dp">
+    android:layout_marginRight="@dimen/dimen_10dp"
+    android:layout_marginTop="@dimen/dimen_5dp"
+    android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardview_ttl_seller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_5dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="2dp"
-        app:cardElevation="5dp"
+        app:cardElevation="2dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         app:contentPadding="0dp">
@@ -29,13 +29,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/dimen_5dp">
+                android:padding="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/dimen_5dp">
 
                 <com.ivy.cpg.view.supervisor.CircleImageView
                     android:layout_width="@dimen/list_item_height_double_line"
                     android:layout_height="@dimen/list_item_height_double_line"
-                    android:src="@drawable/face"
-                    android:layout_margin="@dimen/dimen_5dp"/>
+                    android:layout_margin="@dimen/dimen_5dp"
+                    android:src="@drawable/face" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -46,8 +47,8 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="0.7">
+                        android:layout_weight="0.7"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv_user_name"
@@ -58,7 +59,7 @@
                             android:gravity="center_vertical"
                             android:maxLines="1"
                             android:text="Sandy"
-                            android:textColor="#de000000"/>
+                            android:textColor="#de000000" />
 
                         <TextView
                             android:id="@+id/tv_outlet_covered"
@@ -67,63 +68,81 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/dimen_2dp"
                             android:maxLines="1"
+                            android:text="Target/Covered : 103/100"
                             android:textColor="#8b000000"
-                            android:visibility="visible"
-                            android:text="Target/Covered : 103/100" />
+                            android:visibility="visible" />
 
-                        <TextView
-                            android:id="@+id/tv_address"
-                            style="?attr/customListItemSecondary"
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/dimen_2dp"
-                            android:maxLines="1"
-                            android:text="Current Route : ECR" />
+                            android:layout_marginLeft="@dimen/dimen_2dp"
+                            android:layout_marginTop="@dimen/dimen_5dp">
 
+                            <ProgressBar
+                                android:id="@+id/progress_bar"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="150dp"
+                                android:layout_height="10dp"
+                                android:indeterminate="false"
+                                android:progress="35"
+                                android:layout_centerVertical="true"
+                                android:progressDrawable="@drawable/horizontal_progress_bg" />
 
+                            <TextView
+                                android:id="@+id/tv_percent_txt"
+                                style="?attr/customListItemSecondary"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dimen_10dp"
+                                android:maxLines="1"
+                                android:text="35%"
+                                android:textColor="#8b000000"
+                                android:visibility="visible"
+                                android:gravity="center_vertical"
+                                android:layout_centerVertical="true"
+                                android:layout_toRightOf="@+id/progress_bar"/>
+
+                        </RelativeLayout>
 
                     </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:layout_weight="0.3">
+                        android:layout_weight="0.3"
+                        android:gravity="right">
 
                         <RelativeLayout
                             android:id="@+id/status_layout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/curved_green"
-                            android:paddingTop="@dimen/dimen_5dp"
-                            android:paddingBottom="@dimen/dimen_5dp"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/covered_bg_gradient"
+                            android:paddingBottom="@dimen/dimen_2dp"
                             android:paddingLeft="@dimen/dimen_10dp"
-                            android:paddingRight="@dimen/dimen_10dp"
-                            android:layout_alignParentRight="true">
+                            android:paddingRight="@dimen/dimen_4dp"
+                            android:paddingTop="@dimen/dimen_2dp">
 
                             <TextView
                                 android:id="@+id/tv_status"
                                 style="?attr/customListItemSecondary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
                                 android:gravity="center_vertical|right"
                                 android:maxLines="1"
                                 android:text="In Market"
-                                android:textColor="@color/white"
-                                android:layout_centerVertical="true"
-                                />
+                                android:textColor="@color/white" />
 
                             <ImageView
                                 android:layout_width="@dimen/padding_l"
                                 android:layout_height="@dimen/padding_l"
-                                android:src="@drawable/ic_vector_about"
-                                android:layout_marginLeft="5dp"
-                                android:tint="@color/white"
                                 android:layout_centerVertical="true"
-                                android:layout_toRightOf="@+id/tv_status"/>
+                                android:layout_marginLeft="5dp"
+                                android:layout_toRightOf="@+id/tv_status"
+                                android:src="@drawable/info_icon" />
 
                         </RelativeLayout>
-
 
 
                     </RelativeLayout>
@@ -136,29 +155,29 @@
             <View
                 android:id="@+id/view_dotted_line_end"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_2dp"
+                android:layout_height="@dimen/dimen_1dp"
                 android:layout_marginBottom="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/dimen_5dp"
-                android:background="@drawable/line_dotted" />
+                android:background="#1e000000" />
 
             <LinearLayout
                 android:id="@+id/bottom_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_5dp"
                 android:orientation="horizontal"
                 android:visibility="visible"
-                android:weightSum="1"
-                android:layout_marginBottom="@dimen/dimen_5dp">
+                android:weightSum="1">
 
                 <LinearLayout
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:background="@color/white"
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="horizontal"
-                    android:paddingTop="@dimen/dimen_5dp"
                     android:paddingBottom="@dimen/dimen_5dp"
-                    android:background="@color/white">
+                    android:paddingTop="@dimen/dimen_5dp">
 
                     <ImageView
                         android:layout_width="@dimen/dimen_20dp"
@@ -181,22 +200,28 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="@dimen/dimen_1dp"
+                    android:layout_height="match_parent"
+                    android:background="#1e000000" />
+
+
                 <LinearLayout
+                    android:id="@+id/route_layout"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:background="@color/white"
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="horizontal"
-                    android:paddingTop="@dimen/dimen_5dp"
                     android:paddingBottom="@dimen/dimen_5dp"
-                    android:background="@color/white"
-                    android:id="@+id/route_layout">
+                    android:paddingTop="@dimen/dimen_5dp">
 
                     <ImageView
                         android:layout_width="@dimen/dimen_20dp"
                         android:layout_height="@dimen/dimen_20dp"
                         android:layout_marginRight="@dimen/dimen_5dp"
-                        android:src="@drawable/ic_direction_light" />
+                        android:src="@drawable/ic_location_icon" />
 
                     <TextView
                         android:id="@+id/tv_route"
@@ -206,8 +231,8 @@
                         android:gravity="center_vertical|center_horizontal"
                         android:maxLines="1"
                         android:text="Route"
-                        android:textSize="@dimen/dimen_16dp"
                         android:textColor="#8a354667"
+                        android:textSize="@dimen/dimen_16dp"
                         android:visibility="visible" />
 
 
