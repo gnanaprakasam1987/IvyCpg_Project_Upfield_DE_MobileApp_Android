@@ -378,7 +378,7 @@ public class DataMembers {
     private static final String tbl_odameter_cols = "uid,start,end,starttime,endtime,startlatitude,startlongitude,endlatitude,endlongitude,date";
     private static final String tbl_AssetHeader_Cols = "uid,Date,RetailerId,remark,TypeLovId,tgtTotal,achTotal,Weightage,Score,distributorid";
     private static final String tbl_AssetDetail_Cols = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,Mappingid,Productid,installdate,servicedate,conditionId,CompQty,locid,PosmGroupLovId,isExecuted,Score";
-    private static final String tbl_AssetImgInfo_Cols = "tid,AssetID,ImageName,Mappingid,Productid,locid";
+    private static final String tbl_AssetImgInfo_Cols = "uid,AssetID,ImageName,Mappingid,Productid,locid";
 
     private static final String tbl_stock_apply = "StockApply";
     private static final String tbl_stock_apply_cols = "uid,date,Status";
