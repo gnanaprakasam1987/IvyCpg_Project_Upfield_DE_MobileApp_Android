@@ -313,8 +313,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             }
 
 
-            tv_store_status = findViewById(R.id.tv_store_status);
-            tv_store_status.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+           // tv_store_status = findViewById(R.id.tv_store_status);
+           // tv_store_status.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             tv_duration = findViewById(R.id.tv_duration);
             tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

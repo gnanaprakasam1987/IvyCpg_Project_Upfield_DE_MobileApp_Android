@@ -243,7 +243,7 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
     }
 
     public class signature extends View {
-        private static final float STROKE_WIDTH = 5f;
+        private static final float STROKE_WIDTH = 15f;
         private static final float HALF_STROKE_WIDTH = STROKE_WIDTH / 2;
         private Paint paint = new Paint();
         private Path path = new Path();
@@ -396,13 +396,13 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
             b.putString("status", "done");
 
             if (module.equals("ORDER")) {
-                Intent intent = new Intent(CaptureSignatureActivity.this, OrderSummary.class);
+               /* Intent intent = new Intent(CaptureSignatureActivity.this, OrderSummary.class);
                 intent.putExtra("SIGNATURE", true);
                 intent.putExtra("PHOTO_PATH", PHOTO_PATH);
                 intent.putExtra("IMAGE_NAME", imageName);
                 intent.putExtras(b);
                 startActivity(intent);
-                setResult(RESULT_OK, intent);
+                setResult(RESULT_OK, intent);*/
                 finish();
             } else if (module.equals("DELIVERY") || module.equals("COL_REF")) {
 
@@ -425,12 +425,12 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
      */
     private void backButtonClick() {
         if (module.equals("ORDER")) {
-            Intent intent = new Intent(CaptureSignatureActivity.this, OrderSummary.class);
+           /* Intent intent = new Intent(CaptureSignatureActivity.this, OrderSummary.class);
             intent.putExtra("SIGNATURE", false);
             intent.putExtra("PHOTO_PATH", "");
             intent.putExtra("IMAGE_NAME", "");
             startActivity(intent);
-            setResult(RESULT_OK, intent);
+            setResult(RESULT_OK, intent);*/
             finish();
         } else if (module.equals("DELIVERY") || module.equals("COL_REF") || module.equals("SALES_RETURN")) {
             finish();

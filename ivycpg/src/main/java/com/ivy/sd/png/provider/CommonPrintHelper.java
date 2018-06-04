@@ -171,7 +171,6 @@ public class CommonPrintHelper {
 
     private double total_line_value_incl_tax = 0;
     private double mBillLevelDiscountValue = 0;
-    private double mWithHoldDiscountValue = 0;
     private double mBillLevelTaxValue = 0;
     private double mEmptyTotalValue = 0;
     private double total_net_payable = 0;
@@ -204,7 +203,8 @@ public class CommonPrintHelper {
         this.mInvoiceData = mInvoiceData;
     }
 
-    public boolean isLogoEnabled;
+    public boolean isLogoEnabled,isSignatureEnabled;
+    public String signatureName;
 
     private Vector<AttributeListBO> mAttributeList;
 
@@ -219,13 +219,13 @@ public class CommonPrintHelper {
      * @param fileNameWithPath
      * @param isFromAsset
      */
-    public void xmlRead(String fileNameWithPath, boolean isFromAsset, Vector<ProductMasterBO> productList, HashMap<String, String> keyValues) {
+    public void xmlRead(String fileNameWithPath, boolean isFromAsset, Vector<ProductMasterBO> productList, HashMap<String, String> keyValues,String signatureName) {
         try {
 
             resetValues();
 
             mKeyValues = keyValues;
-
+            this.signatureName=signatureName;
 
             InputStream xmlFile = null;
             StringBuilder sb = new StringBuilder();
@@ -453,6 +453,8 @@ public class CommonPrintHelper {
                             isFromLabelMaster = (isFromLabel == null ? false : ((isFromLabel.equalsIgnoreCase("yes")) ? true : false));
                         } else if (name.equalsIgnoreCase("logo")) {
                             isLogoEnabled = true;
+                        }else if (name.equalsIgnoreCase("signature")) {
+                            isSignatureEnabled = true;
                         } else if (name.equalsIgnoreCase("newline")) {
                             String attr_count_str = xmlParser.getAttributeValue(null, "count");
                             int attr_count = attr_count_str == null ? 1 : Integer.parseInt(attr_count_str);
@@ -484,11 +486,8 @@ public class CommonPrintHelper {
                                 getBillLevelTaxValue();
                                 getEmptyReturnValue();
 
-                                if(bmodel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
-                                    mWithHoldDiscountValue = orderHelper.withHoldDiscount;
-                                }
 
-                                total_net_payable = total_line_value_incl_tax - mBillLevelDiscountValue + mBillLevelTaxValue + mEmptyTotalValue-mWithHoldDiscountValue;
+                                total_net_payable = total_line_value_incl_tax - mBillLevelDiscountValue + mBillLevelTaxValue + mEmptyTotalValue;
                             } else if (group_name != null && group_name.equalsIgnoreCase("empty_return")) {
                                 printEmptyReturn(mAttributeList, sb);
                             }
@@ -652,7 +651,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_BILL_ENTRY)) {
             value = alignWithLabelForSingleLine(label, formatValueInPrint(mBillLevelDiscountValue, precisionCount) + "");
         }  else if (tag.equalsIgnoreCase(TAG_DISCOUNT_WITH_HOLD)) {
-            value = alignWithLabelForSingleLine(label, formatValueInPrint(mWithHoldDiscountValue, precisionCount) + "");
+            value = alignWithLabelForSingleLine(label, formatValueInPrint(orderHelper.withHoldDiscount, precisionCount) + "");
         } else if (tag.equalsIgnoreCase(TAG_TAX_BILL)) {
             value = printBillLevelTax(precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL)) {
@@ -1989,6 +1988,7 @@ public class CommonPrintHelper {
         total_net_payable = 0;
         totalPriceOffValue = 0;
         isLogoEnabled = false;
+        isSignatureEnabled=false;
         mSchemeValueByAmountType = 0;
         netSchemeAmount = 0;
     }

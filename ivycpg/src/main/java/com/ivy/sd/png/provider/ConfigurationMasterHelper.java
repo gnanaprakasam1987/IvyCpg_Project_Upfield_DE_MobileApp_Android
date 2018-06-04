@@ -1328,6 +1328,7 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL = "FUN65";
     public boolean IS_ORDER_SUMMERY_EXPORT_AND_EMAIL;
+    public boolean IS_ATTACH_PDF;
 
     public int MVPTheme = 0;
     public String fontSize = "";
@@ -2428,6 +2429,9 @@ public class ConfigurationMasterHelper {
             loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
+        if(hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL)!=null&&hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL)==1) {
+            IS_ATTACH_PDF=true;
+        }
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
 
         this.IS_ALLOW_CONTINUOUS_PRINT = hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
