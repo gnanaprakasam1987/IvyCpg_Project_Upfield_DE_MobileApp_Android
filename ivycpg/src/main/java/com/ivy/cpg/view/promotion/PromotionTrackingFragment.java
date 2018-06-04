@@ -48,6 +48,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -1117,10 +1118,14 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 row.setBackgroundColor(getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView).getColor(R.styleable.MyTextView_listcolor, 0));
             }
 
-            holder.tvProductName.setText(businessModel.productHelper.getProductMasterBOById(String.valueOf(holder.mPromotionMasterBO.getProductId())).getProductName());
+            holder.tvProductName.setText(holder.mPromotionMasterBO.getpName() == null ? "" : holder.mPromotionMasterBO.getpName());
             holder.tvProductName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.mFromDateBTN.setText(holder.mPromotionMasterBO.getFromDate());
-            holder.mToDateBTN.setText(holder.mPromotionMasterBO.getToDate());
+            holder.mFromDateBTN.setText(holder.mPromotionMasterBO.getFromDate() == null ? "" :
+                    DateUtil.convertFromServerDateToRequestedFormat(
+                            holder.mPromotionMasterBO.getFromDate(), ConfigurationMasterHelper.outDateFormat));
+            holder.mToDateBTN.setText(holder.mPromotionMasterBO.getToDate() == null ? "" :
+                    DateUtil.convertFromServerDateToRequestedFormat(
+                            holder.mPromotionMasterBO.getToDate(), ConfigurationMasterHelper.outDateFormat));
             return row;
         }
     }

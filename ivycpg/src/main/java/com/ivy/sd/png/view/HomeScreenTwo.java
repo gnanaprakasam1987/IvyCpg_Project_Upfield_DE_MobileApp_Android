@@ -1586,10 +1586,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             }
                         }
                     } else {// to laod data from last vist transaction tables
-                        if (bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN) {
+                        boolean isDataAvailableforLastVisitHistory = false;
+                        if (bmodel.configurationMasterHelper.IS_ENABLE_LAST_VISIT_HISTORY) {
+                            // load last visit data
+                            isDataAvailableforLastVisitHistory =
+                                    bmodel.loadLastVisitHistoryStockCheckedProducts(bmodel.getRetailerMasterBO().getRetailerID());
+                        }
+
+                        if ((!bmodel.configurationMasterHelper.IS_ENABLE_LAST_VISIT_HISTORY || !isDataAvailableforLastVisitHistory) &&
+                                bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN) {
                             // load last visit data
                             bmodel.loadLastVisitStockCheckedProducts(bmodel.getRetailerMasterBO().getRetailerID());
                         }
+
 
                         //load Last Vist Near Expir Data
                         if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK) {

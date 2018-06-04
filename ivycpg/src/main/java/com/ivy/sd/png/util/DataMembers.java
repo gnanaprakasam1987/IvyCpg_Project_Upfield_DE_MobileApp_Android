@@ -186,6 +186,7 @@ public class DataMembers {
     public static final String tbl_SbdMerchandisingDetail = "SbdMerchandisingDetail";
     public static final String tbl_SbdMerchandisingHeader = "SbdMerchandisingHeader";
     public static final String tbl_LastVisitStock = "LastVisitStock";
+    public static final String tbl_LastVisitStock_History = "LastVisitStock_History";
 
     public static final String tbl_cs_closingstockheader = "CS_StockEntryHeader";
     public static final String tbl_cs_closingstockdetail = "CS_StockEntryDetails";
