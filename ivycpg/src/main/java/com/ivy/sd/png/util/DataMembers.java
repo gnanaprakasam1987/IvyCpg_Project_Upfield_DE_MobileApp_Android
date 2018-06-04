@@ -299,6 +299,7 @@ public class DataMembers {
     private static final String tbl_NonProductiveTable = "Nonproductivereasonmaster";
     public static final String tbl_AssetHeader = "AssetHeader";
     public static final String tbl_AssetDetail = "AssetDetail";
+    public static final String tbl_AssetImgInfo = "AssetImageDetails";
     public static final String tbl_NearExpiryHeader = "NearExpiry_Tracking_Header";
     private static final String tbl_NearExpiryHeader_cols = "Tid,RetailerId,Uid,Date,TimeZone,RefId";
     private static final String tbl_NearExpiryDetail = "NearExpiry_Tracking_Detail";
@@ -356,7 +357,7 @@ public class DataMembers {
     private static final String tbl_InvoiceDetailsUpload_cols = "InvoiceId,ProductId,Qty,Rate,UomId,uomCount,pcsQty,caseQty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,batchid,casePrice,outerPrice,pcsUOMId,OrderType,totalamount,PriceOffId,PriceOffValue,isFreeProduct,weight,hasSerial,TaxAmount,SchemeAmount,DiscountAmount,NetAmount,HsnCode,RField1";
     private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath,DistParentID,BankName,BranchName";
     private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath";
-    private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID,Battery,LocationProvider,IsLocatioEnabled,IsDeviated";
+    private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,outLatitude,outLongitude";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
     private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate,pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
     private static final String tbl_deviateReasontableupload_cols = "uid,retailerid,date,reasonid,DistributorID,remarks";
@@ -376,6 +377,7 @@ public class DataMembers {
     private static final String tbl_odameter_cols = "uid,start,end,starttime,endtime,startlatitude,startlongitude,endlatitude,endlongitude,date";
     private static final String tbl_AssetHeader_Cols = "uid,Date,RetailerId,remark,TypeLovId,tgtTotal,achTotal,Weightage,Score,distributorid";
     private static final String tbl_AssetDetail_Cols = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,Mappingid,Productid,installdate,servicedate,conditionId,CompQty,locid,PosmGroupLovId,isExecuted,Score";
+    private static final String tbl_AssetImgInfo_Cols = "tid,AssetID,ImageName,Mappingid,Productid,locid";
 
     private static final String tbl_stock_apply = "StockApply";
     private static final String tbl_stock_apply_cols = "uid,date,Status";
@@ -682,6 +684,7 @@ public class DataMembers {
         uploadColumn.put(tbl_vanunload_details, tbl_vanunload_details_cols);
         uploadColumn.put(tbl_AssetHeader, tbl_AssetHeader_Cols);
         uploadColumn.put(tbl_AssetDetail, tbl_AssetDetail_Cols);
+        uploadColumn.put(tbl_AssetImgInfo, tbl_AssetImgInfo_Cols);
         uploadColumn.put(tbl_SIH, tbl_SIH_cols);
         uploadColumn.put(tbl_NewOutletImage, tbl_NEWOUTLETIMAGE_cols);
 

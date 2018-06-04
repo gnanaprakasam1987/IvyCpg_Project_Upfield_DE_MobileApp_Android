@@ -34,10 +34,12 @@ public class DataPickerDialogFragment extends DialogFragment implements DatePick
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c = Calendar.getInstance();
-        if (getArguments().getString("MODULE") != null) {
-            moduleName = getArguments().getString("MODULE");
-            minDate = (getArguments().getInt("CHQMINDATE") != 0) ? getArguments().getInt("CHQMINDATE") : 0;
-            maxDate = (getArguments().getInt("CHQMAXDATE") != 0) ? getArguments().getInt("CHQMAXDATE") : 0;
+        if (getArguments() != null) {
+            if (getArguments().getString("MODULE") != null) {
+                moduleName = getArguments().getString("MODULE");
+                minDate = (getArguments().getInt("CHQMINDATE") != 0) ? getArguments().getInt("CHQMINDATE") : 0;
+                maxDate = (getArguments().getInt("CHQMAXDATE") != 0) ? getArguments().getInt("CHQMAXDATE") : 0;
+            }
         }
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);

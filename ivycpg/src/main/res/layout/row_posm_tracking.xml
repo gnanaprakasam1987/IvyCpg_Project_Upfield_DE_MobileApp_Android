@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingStart="@dimen/list_padding_left_n_right"
     android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
     <LinearLayout
@@ -13,9 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:weightSum="10"
-
-        >
+        android:weightSum="10">
 
         <LinearLayout
             android:id="@+id/ll_audit"
@@ -37,7 +35,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
+            android:layout_weight="3.5"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -51,12 +49,20 @@
                 android:maxLines="2" />
 
             <TextView
+                android:id="@+id/tv_location_name"
+                style="?attr/customListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start"
+                android:text="@string/location" />
+
+            <TextView
                 android:id="@+id/tv_grp"
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="start"
-                android:text="@string/zero"/>
+                android:text="@string/zero" />
 
 
         </LinearLayout>
@@ -64,19 +70,19 @@
 
         <TextView
             android:id="@+id/tv_target"
+            style="?attr/customListItemPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.4"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="@string/zero"
-            style="?attr/customListItemPrimary"
             android:textSize="@dimen/font_micro_small" />
 
         <EditText
             android:id="@+id/edit_availability_qty"
             style="@style/EditText_ListItem"
             android:layout_width="0dp"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="@string/zero" />
 
@@ -84,7 +90,7 @@
             android:id="@+id/edit_exe_qty"
             style="@style/EditText_ListItem"
             android:layout_width="0dp"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="@string/zero" />
 
@@ -93,19 +99,51 @@
             android:id="@+id/edit_competitor_qty"
             style="@style/EditText_ListItem"
             android:layout_width="@dimen/dimen_0dp"
-            android:layout_weight="1.2"
-            android:gravity="center"
-            android:text="@string/zero" />
-
-        <ImageView
-            android:id="@+id/btn_photo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
             android:layout_weight="1"
             android:gravity="center"
-            android:contentDescription="@string/photo"
-            android:src="@drawable/ic_photo_camera_blue_24dp" />
+            android:text="@string/zero"
+            android:visibility="gone" />
+
+
+        <Spinner
+            android:id="@+id/spin_location"
+            android:layout_width="@dimen/beat_spinner_min"
+            android:layout_height="@dimen/reason_spinner_height"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:overlapAnchor="false"
+            android:textAlignment="center" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/btn_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:contentDescription="@string/photo"
+                android:gravity="center"
+                android:src="@drawable/ic_photo_camera_blue_24dp" />
+
+            <TextView
+                android:id="@+id/txt_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-10dp"
+                android:layout_toRightOf="@+id/btn_photo"
+                android:background="@drawable/img_count"
+                android:contentDescription="badge"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_nano_small"
+                android:textStyle="bold"
+                android:visibility="visible" />
+        </RelativeLayout>
     </LinearLayout>
 
     <RelativeLayout
@@ -125,10 +163,10 @@
             >
 
             <TextView
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/installed_on"
-                style="?attr/customListItemSecondary"
                 android:textSize="@dimen/text_sz_extra_small" />
 
             <Button
@@ -136,8 +174,8 @@
                 style="@style/datePickerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_marginRight="@dimen/dimen_2dp"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="@string/instaldate" />
@@ -151,10 +189,10 @@
             android:orientation="vertical">
 
             <TextView
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/serviced_on"
-                style="?attr/customListItemSecondary"
                 android:textSize="@dimen/text_sz_extra_small" />
 
             <Button
@@ -173,21 +211,20 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/spinner_height"
             android:layout_marginEnd="@dimen/dimen_2dp"
+            android:layout_toEndOf="@+id/ll_service_date"
             android:background="@android:color/transparent"
             android:overlapAnchor="false"
-            android:textAlignment="center"
-            android:layout_toEndOf="@+id/ll_service_date" />
+            android:textAlignment="center" />
 
         <Spinner
             android:id="@+id/spin_condition"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/spinner_height"
             android:layout_marginEnd="@dimen/dimen_2dp"
-            android:overlapAnchor="false"
+            android:layout_toEndOf="@+id/spin_reason1"
             android:background="@android:color/transparent"
-            android:textAlignment="center"
-            android:layout_toEndOf="@+id/spin_reason1" />
-
+            android:overlapAnchor="false"
+            android:textAlignment="center" />
 
 
     </RelativeLayout>
