@@ -697,7 +697,50 @@ public class DownloadService extends IntentService {
                     sendBroadcast(vanloadintent);
                 }
                 break;
+            case SynchronizationHelper.WAREHOUSE_STOCK_DOWNLOAD:
+                Intent warehouseStockIntent ;
+                if (response == SynchronizationHelper.VOLLEY_SUCCESS_RESPONSE) {
 
+                    ArrayList<String> tableList = intent.getStringArrayListExtra(SynchronizationHelper.JSON_OBJECT_TABLE_LIST);
+                    String errorLoginCode = "";
+
+                    try {
+
+                        for (int i = 0; i < tableList.size(); i++) {
+                            JSONObject jsonObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tableList.get(i));
+                            errorLoginCode = jsonObject.getString(SynchronizationHelper.ERROR_CODE);
+                            if (errorLoginCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                bmodel.synchronizationHelper.parseJSONAndInsert(jsonObject,true);
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+
+
+                    warehouseStockIntent = new Intent();
+                    warehouseStockIntent
+                            .setAction("com.ivy.intent.action.WareHouseStock");
+
+                    insertBundle = new Bundle();
+                    insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS, SynchronizationHelper.WAREHOUSE_STOCK_DOWNLOAD);
+                    insertBundle.putSerializable("isFromWhere", isFromWhere);
+                    insertBundle.putString(SynchronizationHelper.ERROR_CODE, errorLoginCode);
+                    warehouseStockIntent.putExtras(insertBundle);
+                    sendBroadcast(warehouseStockIntent);
+                } else {
+                    warehouseStockIntent = new Intent();
+                    warehouseStockIntent.setAction("com.ivy.intent.action.WareHouseStock");
+                    insertBundle = new Bundle();
+                    String mobileErrorCode = intent.getStringExtra(SynchronizationHelper.ERROR_CODE);
+                    insertBundle.putString(SynchronizationHelper.ERROR_CODE, mobileErrorCode);
+                    insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS, SynchronizationHelper.WAREHOUSE_STOCK_DOWNLOAD);
+                    insertBundle.putSerializable("isFromWhere", isFromWhere);
+                    warehouseStockIntent.putExtras(insertBundle);
+                    sendBroadcast(warehouseStockIntent);
+                }
+                break;
             case SynchronizationHelper.RETAILER_DOWNLOAD_BY_LOCATION:
                 Intent retailerDownloadIntent = null;
                 if (response == SynchronizationHelper.VOLLEY_SUCCESS_RESPONSE) {

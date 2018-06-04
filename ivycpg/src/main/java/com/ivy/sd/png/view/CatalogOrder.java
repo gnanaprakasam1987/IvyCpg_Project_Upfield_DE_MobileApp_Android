@@ -2,8 +2,11 @@ package com.ivy.sd.png.view;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -48,10 +51,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
-import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -67,7 +72,7 @@ import com.ivy.sd.png.model.CatalogOrderValueUpdate;
 import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.ScreenOrientation;
@@ -169,6 +174,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private MOQHighlightDialog mMOQHighlightDialog;
     SearchAsync searchAsync;
     private int sbdHistory = 0;
+
+    private AlertDialog alertDialog;
+    private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -492,6 +500,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (orderTimer != null) {
             orderTimer.cancel();
         }
+        if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
+            unregisterReceiver(mWareHouseStockReceiver);
+        }
     }
 
     @Override
@@ -502,6 +513,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (mBundleRecyclerViewState != null) {
             Parcelable listState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
             pdt_recycler_view.getLayoutManager().onRestoreInstanceState(listState);
+        }
+        if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
+            registerReceiver();
         }
     }
 
@@ -963,23 +977,38 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
         } else {
 
+            if (filtertext.length() > 0) {
+                for (ProductMasterBO productBO : items) {
+                    for (LevelBO levelBO : parentidList) {
+                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                && productBO.getSIH() > 0)
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
 
-            for (ProductMasterBO productBO : items) {
-                for (LevelBO levelBO : parentidList) {
+                            if (productBO.getIsSaleable() == 1) {
+                                if (levelBO.getProductID() == productBO.getParentid()) {
+                                    //  filtertext = levelBO.getLevelName();
+                                    mylist.add(productBO);
+                                    fiveFilter_productIDs.add(productBO.getProductID());
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (ProductMasterBO productBO : items) {
                     if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
                             && productBO.getSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
 
                         if (productBO.getIsSaleable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-                                //  filtertext = levelBO.getLevelName();
-                                mylist.add(productBO);
-                                fiveFilter_productIDs.add(productBO.getProductID());
-                                break;
-                            }
+                            //  filtertext = levelBO.getLevelName();
+                            mylist.add(productBO);
+                            fiveFilter_productIDs.add(productBO.getProductID());
                         }
                     }
+
                 }
             }
         }
@@ -1077,6 +1106,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
         }
 
+        if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
+            menu.findItem(R.id.menu_refresh).setVisible(true);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -1131,6 +1163,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             item.setVisible(false);
             supportInvalidateOptionsMenu();
             return true;
+        } else if (i == R.id.menu_refresh) {
+            if (bmodel.isOnline()) {
+                new DownloadNewStock().execute();
+            } else {
+                bmodel.showAlert(
+                        getResources()
+                                .getString(R.string.no_network_connection), 0);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -2167,6 +2207,105 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             mMOQHighlightDialog = new MOQHighlightDialog();
             mMOQHighlightDialog.setCancelable(false);
             mMOQHighlightDialog.show(ft, "Sample Fragment");
+        }
+    }
+
+
+    public class wareHouseStockBroadCastReceiver extends BroadcastReceiver {
+        public static final String RESPONSE = "com.ivy.intent.action.WareHouseStock";
+
+        @Override
+        public void onReceive(Context arg0, Intent arg1) {
+            updateReceiver(arg1);
+        }
+
+    }
+
+    private void registerReceiver() {
+        IntentFilter filter = new IntentFilter(
+                StockAndOrder.wareHouseStockBroadCastReceiver.RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        mWareHouseStockReceiver = new wareHouseStockBroadCastReceiver();
+        registerReceiver(mWareHouseStockReceiver, filter);
+    }
+
+    private void updateReceiver(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        int method = bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0);
+        String errorCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
+
+        switch (method) {
+            case SynchronizationHelper.WAREHOUSE_STOCK_DOWNLOAD:
+                if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    alertDialog.dismiss();
+                    bmodel.showAlert(getResources().getString(R.string.stock_download_successfully), 0);
+                    OrderHelper.getInstance(this).updateWareHouseStock(getApplicationContext());
+                    adapter.notifyDataSetChanged();
+
+                } else {
+                    String errorDownloadCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
+                    String errorDownloadMessage = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(errorDownloadCode);
+                    if (errorDownloadMessage != null) {
+                        Toast.makeText(this, errorDownloadMessage, Toast.LENGTH_SHORT).show();
+                    }
+                    alertDialog.dismiss();
+                    break;
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    class DownloadNewStock extends AsyncTask<Integer, Integer, Integer> {
+
+        private int downloadStatus = 0;
+        private AlertDialog.Builder builder;
+
+
+        protected void onPreExecute() {
+            builder = new AlertDialog.Builder(CatalogOrder.this);
+
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            try {
+                bmodel.synchronizationHelper.updateAuthenticateToken();
+
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return downloadStatus;
+            }
+            return downloadStatus;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                String warehouseWebApi = bmodel.synchronizationHelper.downloadWareHouseStockURL();
+                if (!warehouseWebApi.equals("")) {
+                    bmodel.synchronizationHelper.downloadWareHouseStock(warehouseWebApi);
+                } else {
+                    Toast.makeText(CatalogOrder.this, getResources().getString(R.string.url_not_mapped), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(CatalogOrder.this, errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(CatalogOrder.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 

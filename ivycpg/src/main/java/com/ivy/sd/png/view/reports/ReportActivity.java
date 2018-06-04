@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.InvoiceReportFragment;
 import com.ivy.cpg.view.reports.OrderReportFragment;
+import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
 import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
@@ -55,7 +56,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
     private OrderReportFragment orderFragment;
     private SalesVolumeReportFragment salesVolumeReportFragment;
-    private PreviousDayOrderReportFragment pvsorderFragment;
     private DailyReportFragmentNew dayFragment;
     private InvoiceReportFragment invoiceReportFragment;
     private PndInvoiceReportFragment pndInvoiceReportFragment;
@@ -97,6 +97,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     private WebViewArchivalReportFragment webViewArchivalReportFragment;
     private ClosingStockReportFragment closingStockReportFragment;
     private RetailerActivityReportFragment mRetailerActivityReport;
+    private OrderStatusReportFragment mOrderStatusReportFragment;
 
     private String fromMenu;
 
@@ -174,8 +175,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         salesVolumeReportFragment.setArguments(getIntent().getExtras());
         mDeliveryStockReport = new DeliveryStockReport();
         mDeliveryStockReport.setArguments(getIntent().getExtras());
-        pvsorderFragment = new PreviousDayOrderReportFragment();
-        pvsorderFragment.setArguments(getIntent().getExtras());
         dayFragment = new DailyReportFragmentNew();
         dayFragment.setArguments(getIntent().getExtras());
         invoiceReportFragment = new InvoiceReportFragment();
@@ -219,10 +218,10 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         mSellerPerformReport = new SellerPerformanceReportFragment();
         mOutletPerformanceReportFragmnet = new OutletPerformanceReportFragmnet();
         webViewArchivalReportFragment = new WebViewArchivalReportFragment();
-        mRetailerActivityReport=new RetailerActivityReportFragment();
+        mRetailerActivityReport = new RetailerActivityReportFragment();
 
         closingStockReportFragment = new ClosingStockReportFragment();
-
+        mOrderStatusReportFragment = new OrderStatusReportFragment();
 
         salesFundamentalGapReportFragment = new SalesFundamentalGapReportFragment();
         salesFundamentalGapReportFragment.setArguments(getIntent().getExtras());
@@ -232,7 +231,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         assetTrackingReportFragment.setArguments(getIntent().getExtras());
         Bundle bun = getIntent().getExtras();
         ConfigureBO config = (ConfigureBO) bun.getSerializable("config");
-        fromMenu = bun.getString("FROM")!=null?bun.getString("FROM"):"";
+        fromMenu = bun.getString("FROM") != null ? bun.getString("FROM") : "";
         switchFragments(config);
 
         if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN)
@@ -265,11 +264,10 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             if (currentStockBatchViewFragment != null) {
                 currentStockBatchViewFragment.onBackButtonClick();
             } else {
-                if(fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
+                if (fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
                     finish();
                     overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                }
-                else
+                } else
                     onBackButtonClick();
             }
 
@@ -347,13 +345,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.addToBackStack(null);
             getSupportActionBar().setSubtitle(config.getMenuName());
             transaction.commit();
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_PREVIOUS_ORDER_REPORT)) {
-            transaction.replace(R.id.fragment_content, pvsorderFragment);
-            transaction.addToBackStack(null);
-            getSupportActionBar().setSubtitle(config.getMenuName());
-            transaction.commit();
-        } else if (config.getConfigCode().equals(
+        }  else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_DAY_REPORT)) {
             transaction.replace(R.id.fragment_content, dayFragment);
             transaction.addToBackStack(null);
@@ -671,11 +663,21 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             transaction.commit();
 
-        }
-        else if (config.getConfigCode().equals(
+        } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_RETAILER_ACTIVITY_REPORT)) {
 
             transaction.replace(R.id.fragment_content, mRetailerActivityReport);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(config.getMenuName());
+            bmodel.mSelectedActivityName = config.getMenuName();
+            transaction.addToBackStack(null);
+            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            transaction.commit();
+
+        } else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_ORD_STAT_RPT)) {
+
+            transaction.replace(R.id.fragment_content, mOrderStatusReportFragment);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(config.getMenuName());
             bmodel.mSelectedActivityName = config.getMenuName();

@@ -34,6 +34,7 @@ import com.ivy.sd.png.bo.SalesFundamentalGapReportBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
+import com.ivy.sd.png.bo.SyncStatusBO;
 import com.ivy.sd.png.bo.TaskReportBo;
 import com.ivy.sd.png.bo.asset.AssetTrackingBrandBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingReportBO;
@@ -80,6 +81,7 @@ public class ReportHelper {
 
     private Vector<RetailerMasterBO> retailerMaster;
     private HashMap<String, ArrayList<ProductMasterBO>> closingStkReportByRetailId;
+    private ArrayList<SyncStatusBO> mSyncStatusBOList;
 
     private ReportHelper(Context context) {
         this.mContext = context;
@@ -119,7 +121,8 @@ public class ReportHelper {
                             + "OrderHeader.OrderValue,OrderHeader.LinesPerCall ,RetailerMaster.sbd_dist_stock,RetailerMaster.sbd_dist_achieve,"
                             + "OrderHeader.upload,OrderHeader.totalweight,OrderHeader.FocusPackLines,OrderHeader.MSPLines,OrderHeader.is_vansales,"
                             + "IFNULL((select sum(taxValue) from OrderTaxDetails where OrderId = OrderHeader.OrderID ),0) as taxValue,"
-                            + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue "
+                            + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue, "
+                            + "IFNULL(SUM(OD.pieceqty),0),IFNULL(SUM(OD.caseQty),0),IFNULL(SUM(OD.outerQty),0) "
                             + "FROM OrderHeader INNER JOIN RetailerMaster "
                             + "ON OrderHeader.RetailerId = RetailerMaster.RetailerID INNER JOIN OrderDetail OD ON  OD.OrderID = OrderHeader.OrderID where OrderHeader.upload!='X' "
                             + "GROUP BY OrderHeader.OrderID ,OrderHeader.RetailerID,RetailerMaster.RetailerName,"
@@ -143,6 +146,9 @@ public class ReportHelper {
                     orderreport.setIsVanSeller(c.getInt(11));
                     orderreport.setTaxValue(c.getDouble(c.getColumnIndex("taxValue")));
                     orderreport.setDiscountValue(c.getDouble(c.getColumnIndex("discountValue")));
+                    orderreport.setVolumePcsQty(c.getInt(14));
+                    orderreport.setVolumeCaseQty(c.getInt(15));
+                    orderreport.setVolumeOuterQty(c.getInt(16));
                     reportordbooking.add(orderreport);
                 }
                 c.close();
@@ -576,44 +582,6 @@ public class ReportHelper {
         return tot;
     }
 
-    /**
-     * This method will download the previous day orderHeader details like
-     * OrderId,RetailerId and Name , OrderValue and LPC
-     *
-     * @return ArrayList<OrderReportBO>
-     */
-    public ArrayList<OrderReportBO> downloadPVSOrderreport() {
-        ArrayList<OrderReportBO> reportordbooking = null;
-        try {
-            OrderReportBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT OrderID ,RetailerID , RetailerName,"
-                            + "OrderValue,LinesPerCall,distribution FROM PVSOrderHeader");
-            if (c != null) {
-
-                reportordbooking = new ArrayList<>();
-                while (c.moveToNext()) {
-                    orderreport = new OrderReportBO();
-                    orderreport.setOrderID(c.getString(0));
-                    orderreport.setRetailerId(c.getString(1));
-                    orderreport.setRetailerName(c.getString(2));
-                    orderreport.setOrderTotal(c.getDouble(3));
-                    orderreport.setLPC(c.getString(4));
-                    orderreport.setDist(c.getString(5));
-                    reportordbooking.add(orderreport);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return reportordbooking;
-    }
-
 
     ArrayList<ContractBO> contractList;
 
@@ -662,48 +630,6 @@ public class ReportHelper {
         }
     }
 
-    /**
-     * This method will downlaod the previous day OrderDetails of a particular
-     * order. ProductName,CaseQty,PcsQty,TotalAmount.
-     *
-     * @param orderID
-     * @return ArrayList<OrderReportBO> reportorddetbooking
-     */
-    public ArrayList<OrderReportBO> downloadPVSOrderreportdetail(
-            String orderID) {
-        ArrayList<OrderReportBO> reportorddetbooking = null;
-        try {
-            OrderReportBO orderdetreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            Cursor c = db
-                    .selectSQL("SELECT  ProductName,ProductShortName,caseQty,"
-                            + " pieceqty, totalamount,outerQty,productid  FROM PVSOrderDetail WHERE OrderID='"
-                            + orderID + "'");
-            if (c != null) {
-                reportorddetbooking = new ArrayList<>();
-                while (c.moveToNext()) {
-
-                    orderdetreport = new OrderReportBO();
-                    orderdetreport.setProductName(c.getString(0));
-                    orderdetreport.setProductShortName(c.getString(1));
-                    orderdetreport.setCQty(c.getInt(2));
-                    orderdetreport.setPQty(c.getInt(3));
-                    orderdetreport.setTot(c.getFloat(4));
-                    orderdetreport.setOuterOrderedCaseQty(c.getInt(5));
-                    orderdetreport.setProductId(c.getString(6));
-                    reportorddetbooking.add(orderdetreport);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return reportorddetbooking;
-    }
 
     /**
      * This method download the Invoice Header details from InvoiceMaster
@@ -787,52 +713,6 @@ public class ReportHelper {
         return false;
     }
 
-    /**
-     * This method will download the previous day order details
-     * SalesRepCode,SalesRepName
-     * ,RetailerCode,RetailerName,OrderNo,SKUCode,SKUDescription
-     * ,QrderQty(pcs),DeliveryDate for Export
-     *
-     * @return ArrayList<OrderReportBO>
-     */
-    public ArrayList<ArrayList<String>> downloadPreviousOrderForExport() {
-        ArrayList<ArrayList<String>> rows = new ArrayList<>();
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select OH.RetailerCode,OH.RetailerName,OH.OrderId,OH.OrderDate,OD.PCode,"
-                            + "OD.ProductName,OD.caseQty,OD.pieceQty,OH.deliveryDate,OD.outerQty  from "
-                            + "PVSOrderHeader OH inner join PVSOrderDetail OD on OH.OrderId=OD.OrderId");
-            if (c != null) {
-
-                while (c.moveToNext()) {
-                    ArrayList<String> row = new ArrayList<>();
-                    row.add(bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserCode() + "");
-                    row.add(bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserName());
-                    row.add(c.getString(0));
-                    row.add(c.getString(1));
-                    row.add(c.getString(2));
-                    row.add(c.getString(3));
-                    row.add(c.getString(4));
-                    row.add(c.getString(5));
-                    row.add(c.getString(6));
-                    row.add(c.getString(7));
-                    row.add(c.getString(8));
-
-                    rows.add(row);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return rows;
-    }
 
     public HashMap<String, ArrayList<ArrayList<String>>> getmOrderDetailsByDistributorName() {
         return mOrderDetailsByDistributorName;
@@ -886,10 +766,14 @@ public class ReportHelper {
                     row.add(c.getString(4));
                     row.add(c.getString(5));
                     row.add(c.getString(6));
-                    row.add(c.getString(7));
-                    row.add(c.getString(8));
-                    row.add(c.getString(9));
+                    if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                        row.add(c.getString(7));
+                    if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                        row.add(c.getString(8));
+                    if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                        row.add(c.getString(9));
                     row.add(c.getString(10));
+
 
                     rows.add(row);
 
@@ -2591,7 +2475,7 @@ public class ReportHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT CN.id,CN.amount,RM.RetailerName,isused FROM CreditNote CN INNER JOIN RetailerMaster RM ON RM.retailerid=CN.retailerid");
+                    .selectSQL("SELECT DISTINCT CN.id,CN.amount,RM.RetailerName,isused FROM CreditNote CN INNER JOIN RetailerMaster RM ON RM.retailerid=CN.retailerid");
             if (c != null) {
                 while (c.moveToNext()) {
                     CreditNoteListBO obj = new CreditNoteListBO();
@@ -3838,6 +3722,62 @@ public class ReportHelper {
         } catch (Exception e) {
             db.closeDB();
             Commons.printException(e);
+        }
+    }
+
+    public ArrayList<SyncStatusBO> getmSyncStatusBOList() {
+        return mSyncStatusBOList;
+    }
+
+    public void setmSyncStatusBOList(ArrayList<SyncStatusBO> mSyncStatusBOList) {
+        this.mSyncStatusBOList = mSyncStatusBOList;
+    }
+
+    public void downloadSyncStatusReport(){
+        try {
+
+            mSyncStatusBOList=new ArrayList<>();
+            SyncStatusBO syncStatusBO;
+            String id="0";
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "select ID,TableName,LineCount from SyncStatus_Internal order by ID desc";
+
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+
+                    syncStatusBO=new SyncStatusBO();
+                    syncStatusBO.setId(c.getString(0));
+                    syncStatusBO.setName(c.getString(1));
+                    syncStatusBO.setCount(c.getInt(2));
+
+                    if(!id.equalsIgnoreCase(syncStatusBO.getId())){
+
+                        if(!id.equals("0")){
+                            syncStatusBO.setShowDateTime(1);
+                            mSyncStatusBOList.add(syncStatusBO);
+                            id=syncStatusBO.getId();
+                        }else{
+                            syncStatusBO.setShowDateTime(1);
+                            mSyncStatusBOList.add(syncStatusBO);
+                            id=syncStatusBO.getId();
+                        }
+
+                    }else{
+                        syncStatusBO.setShowDateTime(0);
+                        mSyncStatusBOList.add(syncStatusBO);
+                    }
+
+                }
+
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

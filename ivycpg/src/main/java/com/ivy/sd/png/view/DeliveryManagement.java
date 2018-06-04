@@ -19,6 +19,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
@@ -153,6 +154,27 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                 ((TextView) convertView.findViewById(R.id.tv_amount)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 ((TextView) convertView.findViewById(R.id.tv_invoice_date)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 ((TextView) convertView.findViewById(R.id.tv_total_lines)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels(convertView.findViewById(
+                            R.id.tv_date_title).getTag()) != null)
+                        ((TextView) convertView.findViewById(R.id.tv_date_title))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(convertView.findViewById(
+                                                R.id.tv_date_title)
+                                                .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(convertView.findViewById(
+                            R.id.tv_invoiceno_title).getTag()) != null)
+                        ((TextView) convertView.findViewById(R.id.tv_invoiceno_title))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(convertView.findViewById(
+                                                R.id.tv_invoiceno_title)
+                                                .getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+
 
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override

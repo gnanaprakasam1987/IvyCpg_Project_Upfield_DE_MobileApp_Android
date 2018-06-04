@@ -56,6 +56,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_invoice_no"
                         android:gravity="start|center_vertical"
+                        android:tag="dly_mgt_inv_num"
                         android:text="@string/invoice_no"
                         android:textColor="#616161"
                         android:textSize="@dimen/font_micro_small" />
@@ -122,6 +123,7 @@
                         android:gravity="start|center_vertical"
                         android:text="@string/invoice_date"
                         android:textColor="#616161"
+                        android:tag="dly_mgt_inv_date"
                         android:textSize="@dimen/font_micro_small" />
                 </LinearLayout>
 

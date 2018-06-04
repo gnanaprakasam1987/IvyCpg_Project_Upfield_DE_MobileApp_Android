@@ -2698,7 +2698,7 @@ public class ProductHelper {
                         mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
 
                     else if (c1.getString(0).equals("CHANNEL")) {
-                        mappingId = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(),mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
+                        mappingId = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
 
                         if (c1.getInt(3) != 0)
                             locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();
@@ -2955,55 +2955,56 @@ public class ProductHelper {
 
     public void clearOrderTable() {
         ProductMasterBO product;
-        int siz = productMaster.size();
-        for (int i = 0; i < siz; ++i) {
-            product = productMaster.get(i);
-            product.setOrderedPcsQty(0);
-            product.setOrderedCaseQty(0);
-            product.setOrderedOuterQty(0);
-            product.setLocalOrderPieceqty(0);
-            product.setLocalOrderCaseqty(0);
-            product.setLocalOrderOuterQty(0);
-            product.setFoc(0);
-            //clear product wise reason
-            product.setSoreasonId(0);
-            // clear discount fields
-            product.setD1(0);
-            product.setD2(0);
-            product.setD3(0);
-            product.setDA(0);
-            product.setSBDAcheivedLocal(false);
-            // clear Crown Management Fields
-            product.setCrownOrderedCaseQty(0);
-            product.setCrownOrderedOuterQty(0);
-            product.setCrownOrderedPieceQty(0);
-            // clear Free Product Fields
-            product.setFreeCaseQty(0);
-            product.setFreeOuterQty(0);
-            product.setFreePieceQty(0);
-            product.setSchemeDiscAmount(0);
-            product.setProductDiscAmount(0);
-            product.setDistributorTypeDiscount(0);
-            product.setCompanyTypeDiscount(0);
-            int size = product.getLocations().size();
-            for (int z = 0; z < size; z++) {
-                product.getLocations().get(z).setShelfOuter(-1);
-                product.getLocations().get(z).setShelfCase(-1);
-                product.getLocations().get(z).setShelfPiece(-1);
+        if (productMaster != null) {
+            int siz = productMaster.size();
+            for (int i = 0; i < siz; ++i) {
+                product = productMaster.get(i);
+                product.setOrderedPcsQty(0);
+                product.setOrderedCaseQty(0);
+                product.setOrderedOuterQty(0);
+                product.setLocalOrderPieceqty(0);
+                product.setLocalOrderCaseqty(0);
+                product.setLocalOrderOuterQty(0);
+                product.setFoc(0);
+                //clear product wise reason
+                product.setSoreasonId(0);
+                // clear discount fields
+                product.setD1(0);
+                product.setD2(0);
+                product.setD3(0);
+                product.setDA(0);
+                product.setSBDAcheivedLocal(false);
+                // clear Crown Management Fields
+                product.setCrownOrderedCaseQty(0);
+                product.setCrownOrderedOuterQty(0);
+                product.setCrownOrderedPieceQty(0);
+                // clear Free Product Fields
+                product.setFreeCaseQty(0);
+                product.setFreeOuterQty(0);
+                product.setFreePieceQty(0);
+                product.setSchemeDiscAmount(0);
+                product.setProductDiscAmount(0);
+                product.setDistributorTypeDiscount(0);
+                product.setCompanyTypeDiscount(0);
+                int size = product.getLocations().size();
+                for (int z = 0; z < size; z++) {
+                    product.getLocations().get(z).setShelfOuter(-1);
+                    product.getLocations().get(z).setShelfCase(-1);
+                    product.getLocations().get(z).setShelfPiece(-1);
 
-                product.getLocations().get(z).setAvailability(-1);
+                    product.getLocations().get(z).setAvailability(-1);
 
-                product.getLocations().get(z).setWHOuter(0);
-                product.getLocations().get(z).setWHCase(0);
-                product.getLocations().get(z).setWHPiece(0);
+                    product.getLocations().get(z).setWHOuter(0);
+                    product.getLocations().get(z).setWHCase(0);
+                    product.getLocations().get(z).setWHPiece(0);
+                }
+
+                //clear delivered qty
+                product.setDeliveredCaseQty(0);
+                product.setDeliveredOuterQty(0);
+                product.setDeliveredPcsQty(0);
             }
-
-            //clear delivered qty
-            product.setDeliveredCaseQty(0);
-            product.setDeliveredOuterQty(0);
-            product.setDeliveredPcsQty(0);
         }
-
 
     }
 
@@ -3026,6 +3027,57 @@ public class ProductHelper {
             }
         }
     }
+
+
+    public void clearCombindStockCheckedTable() {
+        ProductMasterBO product;
+        int siz = productMaster.size();
+        for (int i = 0; i < siz; ++i) {
+            product = productMaster.get(i);
+
+
+            product.setIsDistributed(0);
+            product.setIsListed(0);
+            product.setPrice_ca("0");
+            product.setPrice_oo("0");
+            product.setPrice_pc("0");
+            product.setReasonID("0");
+            product.setPriceChanged(0);
+            product.setPriceCompliance(0);
+
+            product.setMrp_pc("0");
+            product.setMrp_ca("0");
+            product.setMrp_ou("0");
+            int size = product.getLocations().size();
+            for (int z = 0; z < size; z++) {
+                product.getLocations().get(z).setShelfOuter(-1);
+                product.getLocations().get(z).setShelfCase(-1);
+                product.getLocations().get(z).setShelfPiece(-1);
+
+                product.getLocations().get(z).setAvailability(-1);
+                product.getLocations().get(z).setReasonId(0);
+                product.getLocations().get(z).setFacingQty(0);
+
+                if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK) {
+                    int nearSize = product.getLocations().get(z).getNearexpiryDate().size();
+                    for (int x = 0; x < nearSize; x++) {
+                        product.getLocations().get(z).getNearexpiryDate().get(x)
+                                .setNearexpPC("0");
+
+                        product.getLocations().get(z).getNearexpiryDate().get(x)
+                                .setNearexpCA("0");
+
+                        product.getLocations().get(z).getNearexpiryDate().get(x)
+                                .setNearexpOU("0");
+                    }
+                }
+
+            }
+
+
+        }
+    }
+
 
     public void clearOrderTableChecked() {
         ProductMasterBO product;
@@ -3069,14 +3121,13 @@ public class ProductHelper {
         boolean isSkuFilled = true;
 
         Vector<ProductMasterBO> productList;
-        if(isTaggedProducts){
-            productList=getTaggedProducts();
-        }
-        else {
-            productList=getProductMaster();
+        if (isTaggedProducts) {
+            productList = getTaggedProducts();
+        } else {
+            productList = getProductMaster();
         }
 
-        int siz =productList.size();
+        int siz = productList.size();
         if (siz == 0)
             return false;
         loop:
@@ -5078,7 +5129,7 @@ public class ProductHelper {
             sb.append("where (Retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR ");
             sb.append(" Channelid=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR ");
-            sb.append(" Channelid in(" + bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(),mContext) + ") OR ");
+            sb.append(" Channelid in(" + bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + ") OR ");
             sb.append(" locationid in(" + bmodel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + bmodel.getRetailerMasterBO().getAccountid() + " AND Accountid != 0" + ") OR ");
             sb.append(" (Retailerid=0 AND distributorid=0 AND Channelid=0 AND locationid =0 AND Accountid =0))");
@@ -5214,8 +5265,8 @@ public class ProductHelper {
     }
 
 
-    public void updateInvoiceIdInItemLevelDiscount(DBUtil db, String invid,
-                                                   String orderId) {
+    public void updateInvoiceIdInDiscountTable(DBUtil db, String invid,
+                                               String orderId) {
 
         String query = "update InvoiceDiscountDetail set InvoiceId=" + bmodel.QT(invid)
                 + " where OrderId=" + orderId;
@@ -5712,7 +5763,7 @@ public class ProductHelper {
             if (mCompetitorSequenceValues != null && mCompetitorSequenceValues.size() > 0) {
                 mFiltrtLevel = mCompetitorSequenceValues.get(mCompetitorSequenceValues.size() - 1).getSequence();
             }
-            if(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS!= null) {
+            if (bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS != null) {
                 List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
 
                 if (mLevels.size() > 0) {
@@ -7349,7 +7400,7 @@ public class ProductHelper {
 
 
                     if (c1.getString(0).equals("CHANNEL")) {
-                        mappingId = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(),mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
+                        mappingId = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
 
                         if (c1.getInt(3) != 0)
                             locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();

@@ -834,7 +834,7 @@
     <dimen name="header_card_margin_top">140dp</dimen>
     <dimen name="all_score_card_height">20dp</dimen>
     <dimen name="card_content_padding">2dp</dimen>
-    \
+
     <dimen name="category_recycler_height">40dp</dimen>
     <dimen name="card_view_height">60dp</dimen>
     <dimen name="store_card_image">20dp</dimen>

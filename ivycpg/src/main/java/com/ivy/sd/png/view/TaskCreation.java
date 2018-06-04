@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -148,6 +149,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         //allow only create task only for retailer if not from seller Task
         if (!fromHomeScreen) {
             rb.setVisibility(View.GONE);
+            ((LinearLayout)this.findViewById(R.id.spinner_layouts)).setVisibility(View.GONE);
             applicable_tv.setVisibility(View.GONE);
             bmodel.taskHelper.mode = "retailer";
         }
@@ -321,6 +323,9 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            if (fromHomeScreen)
+                startActivity(new Intent(TaskCreation.this,
+                        HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
             finish();
             return true;
         }
@@ -406,7 +411,9 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
             Toast.makeText(TaskCreation.this,
                     getResources().getString(R.string.new_task_saved),
                     Toast.LENGTH_SHORT).show();
-
+            if (fromHomeScreen)
+            startActivity(new Intent(TaskCreation.this,
+                    HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
 
             finish();
 

@@ -68,6 +68,7 @@ public class TimerCount {
 		if (mHandler != null) {
 			Message msg = new Message();
 			msg.obj = time;
+			msg.what = DataMembers.NOTIFY_CALL_ANALYSIS_TIMER;
 			mHandler.sendMessage(msg);
 		}
 	}

@@ -50,6 +50,7 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
@@ -67,7 +68,6 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
@@ -783,7 +783,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                                 || !holder.productObj.getLocations().get(mSelectedLocationIndex).getNearexpiryDate().get(0).getNearexpCA().equals("0")
                                 || !holder.productObj.getLocations().get(mSelectedLocationIndex).getNearexpiryDate().get(0).getNearexpOU().equals("0"))
                         || (holder.productObj.getLocations().get(mSelectedLocationIndex).getFacingQty() > 0)
-                        ) {
+                        || holder.productObj.getIsListed() == 1
+                        || holder.productObj.getIsDistributed() == 1
+                        || holder.productObj.getLocations().get(mSelectedLocationIndex).getAvailability() > -1) {
                     holder.ivAvailable.setVisibility(View.VISIBLE);
                 } else
                     holder.ivAvailable.setVisibility(View.GONE);
@@ -947,6 +949,25 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
     }
 
+
+    private void onBackButonClick() {
+
+        if (bmodel.hasCombinedStkChecked()) {
+            mDialog1(0);
+        } else {
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                    .now(SDUtil.TIME));
+            if (isFromChild)
+                startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                        .putExtra("isStoreMenu", true));
+            else
+                startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+            getActivity().finish();
+        }
+        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
@@ -954,14 +975,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
-                if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
-                else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
+                onBackButonClick();
             }
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
@@ -1121,27 +1135,70 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         if (bmodel.hasStockCheck()) {
             new SaveAsyncTask().execute();
         } else {
-            mDialog1();
+            mDialog1(1);
         }
     }
 
-    private void mDialog1() {
-        AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
-                getActivity());
-        alertDialogBuilder1
-                .setIcon(null)
-                .setCancelable(false)
-                .setTitle(getResources().getString(R.string.no_items_added))
-                .setPositiveButton(getResources().getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
+    private void mDialog1(int id) {
+
+        switch (id) {
+
+            case 0:
+                AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
+                        getActivity());
+                alertDialogBuilder1
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(getResources().getString(R.string.doyouwantgoback))
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+
+                                        bmodel.productHelper.clearCombindStockCheckedTable();
+
+                                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                                                .now(SDUtil.TIME));
+                                        if (isFromChild)
+                                            startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                                                    .putExtra("isStoreMenu", true));
+                                        else
+                                            startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                                        getActivity().finish();
+                                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                                    }
+                                }).setNegativeButton(getResources().getString(R.string.cancel)
+                        , new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
                             }
                         });
 
-        AlertDialog alertDialog1 = alertDialogBuilder1.create();
-        alertDialog1.show();
+                AlertDialog alertDialog1 = alertDialogBuilder1.create();
+                bmodel.applyAlertDialogTheme(alertDialogBuilder1);
+                break;
+            case 1:
+                AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(
+                        getActivity());
+                alertDialogBuilder2
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(getResources().getString(R.string.no_items_added))
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+
+                                    }
+                                });
+
+                AlertDialog alertDialog2 = alertDialogBuilder2.create();
+                bmodel.applyAlertDialogTheme(alertDialogBuilder2);
+                break;
+
+        }
+
     }
 
     private void loadSpecialFilterView(View view) {

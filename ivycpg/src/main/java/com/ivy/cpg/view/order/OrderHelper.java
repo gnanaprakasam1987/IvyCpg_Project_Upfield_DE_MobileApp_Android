@@ -17,6 +17,7 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
+import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -52,6 +53,7 @@ public class OrderHelper {
     public String selectedOrderId = "";
     private String orderId;
     public String invoiceDiscount;
+    public double withHoldDiscount;
     private int print_count;
 
     private Vector<ProductMasterBO> mSortedOrderedProducts;
@@ -536,6 +538,9 @@ public class OrderHelper {
 
             }
 
+            if(businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+                DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
+            }
 
             try {
                 if (businessModel.configurationMasterHelper.IS_SIH_VALIDATION
@@ -589,7 +594,7 @@ public class OrderHelper {
 
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                 salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER",false);
-                salesReturnHelper.clearSalesReturnTable(true);
+               // salesReturnHelper.clearSalesReturnTable(true);
             }
 
             businessModel.setOrderHeaderNote("");
@@ -1015,6 +1020,10 @@ public class OrderHelper {
 
                 }
 
+                if(businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+                    DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
+                }
+
 
                 try {
                     if (businessModel.configurationMasterHelper.IS_SIH_VALIDATION
@@ -1093,7 +1102,7 @@ public class OrderHelper {
         int totalBalanceQty = 0;
         float totalBalanceAmount = 0;
 
-        for (ProductMasterBO product : businessModel.productHelper.getSalesReturnProducts()) {
+        for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
 
             int totalSalesReturnQty = 0;
@@ -1148,7 +1157,6 @@ public class OrderHelper {
         double osrp;
         int orderPieceQty;
         int orderCaseQty;
-        int foc;
         int orderOuterQty;
         String batchid;
         double priceOffValue;
@@ -1156,6 +1164,7 @@ public class OrderHelper {
         int reasonId;
         double line_total_price;
         double totalValue;
+        String rfield;
 
         if (isBatchWise) {
             pieceCount = batchProductBO.getOrderedPcsQty()
@@ -1168,7 +1177,6 @@ public class OrderHelper {
             osrp = batchProductBO.getOsrp();
             orderPieceQty = batchProductBO.getOrderedPcsQty();
             orderCaseQty = batchProductBO.getOrderedCaseQty();
-            foc = batchProductBO.getFoc();
             orderOuterQty = batchProductBO.getOrderedOuterQty();
             batchid = batchProductBO.getBatchid();
             priceOffValue = batchProductBO.getPriceoffvalue() * pieceCount;
@@ -1179,6 +1187,9 @@ public class OrderHelper {
                     + (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
                     + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
             totalValue = batchProductBO.getDiscount_order_value();
+            if (businessModel.configurationMasterHelper.SHOW_FOC)
+                rfield = String.valueOf(batchProductBO.getFoc());
+            else rfield = batchProductBO.getRemarks();
         } else {
             pieceCount = productBo.getOrderedPcsQty()
                     + productBo.getOrderedCaseQty() * productBo.getCaseSize()
@@ -1188,7 +1199,6 @@ public class OrderHelper {
             osrp = productBo.getOsrp();
             orderPieceQty = productBo.getOrderedPcsQty();
             orderCaseQty = productBo.getOrderedCaseQty();
-            foc = productBo.getFoc();
             orderOuterQty = productBo.getOrderedOuterQty();
             batchid = 0 + "";
             priceOffValue = productBo.getPriceoffvalue() * pieceCount;
@@ -1202,13 +1212,17 @@ public class OrderHelper {
             totalValue = productBo.getDiscount_order_value();
             if (!businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
                 line_total_price = line_total_price + businessModel.productHelper.taxHelper.getTaxAmountByProduct(productBo);
+
+            if (businessModel.configurationMasterHelper.SHOW_FOC)
+                rfield = String.valueOf(productBo.getFoc());
+            else rfield = productBo.getRemarks();
         }
 
 
         StringBuffer sb = new StringBuffer();
         sb.append(orderId + "," + productBo.getProductID() + ",");
         sb.append(pieceCount + "," + srp + "," + productBo.getCaseSize() + ","
-                + orderPieceQty + "," + orderCaseQty + "," + foc + ",");
+                + orderPieceQty + "," + orderCaseQty + "," + businessModel.QT(rfield) + ",");
         sb.append(productBo.getCaseUomId() + ","
                 + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) + ","
                 + productBo.getMSQty() + ",");
@@ -1424,7 +1438,7 @@ public class OrderHelper {
                 } else {
                     sb.append("0,");
                 }
-                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2 from "
+                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3 from "
                         + DataMembers.tbl_orderHeader + " OD");
 
                 sb.append(" left join InvoiceDiscountDetail ID on ID.OrderId=OD.orderid and ID.typeid=0 and ID.pid=0 ");
@@ -1442,7 +1456,7 @@ public class OrderHelper {
                 } else {
                     sb.append("0,");
                 }
-                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2 from "
+                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3 from "
                         + DataMembers.tbl_orderHeader + " OD ");
 
                 sb.append(" left join InvoiceDiscountDetail ID on OD.OrderId=OD.orderid and ID.typeid=0 and ID.pid=0 ");
@@ -1508,17 +1522,22 @@ public class OrderHelper {
                     businessModel.getOrderHeaderBO()
                             .setRField2(orderHeaderCursor.getString(15));
 
+                    businessModel.setRField1(orderHeaderCursor.getString(14));
+                    businessModel.setRField2(orderHeaderCursor.getString(15));
+                    businessModel.setRField3(orderHeaderCursor.getString(16));
+
                 }
                 orderHeaderCursor.close();
             } else {
                 businessModel.setOrderHeaderNote("");
                 businessModel.setRField1("");
                 businessModel.setRField2("");
+                businessModel.setRField3("");
             }
 
 
             String sql1 = "select productId,caseqty,pieceqty,  Rate, D1, D2, D3,"
-                    + "uomcount,DA,totalamount,outerQty,dOuomQty,batchid,weight,ReasonId from "
+                    + "uomcount,DA,totalamount,outerQty,dOuomQty,batchid,weight,ReasonId,Rfield1 from "
                     + DataMembers.tbl_orderDetails
                     + " where orderId="
                     + businessModel.QT(orderID) + " order by rowid";
@@ -1538,8 +1557,10 @@ public class OrderHelper {
                     float weight = orderDetailCursor.getFloat(13);
                     float srp = orderDetailCursor.getFloat(3);
                     int skuResonId = orderDetailCursor.getInt(14);
+                    String remarks = orderDetailCursor.getString(15);
 
                     productId = orderDetailCursor.getString(0);
+
 
                     if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
 
@@ -1564,19 +1585,19 @@ public class OrderHelper {
                                         productId, caseQty, pieceQty, outerQty, srp,
                                         orderDetailCursor.getDouble(4),
                                         orderDetailCursor, caseSize, outerSize,
-                                        batchId,skuResonId);
+                                        batchId,skuResonId,remarks);
                             } else {
                                 setProductDetails(productId, caseQty, pieceQty,
                                         outerQty, srp,
                                         orderDetailCursor.getDouble(4),
-                                        orderDetailCursor, caseSize, outerSize, weight,skuResonId);
+                                        orderDetailCursor, caseSize, outerSize, weight,skuResonId,remarks);
                             }
                         }
 
                     } else {
                         setProductDetails(productId, caseQty, pieceQty,
                                 outerQty, srp, orderDetailCursor.getDouble(4),
-                                orderDetailCursor, caseSize, outerSize, weight,skuResonId);
+                                orderDetailCursor, caseSize, outerSize, weight,skuResonId,remarks);
                     }
 
 
@@ -1692,7 +1713,7 @@ public class OrderHelper {
      */
     private void setProductDetails(String productId, int caseQty, int pieceQty,
                                    int outerQty, float srp, double pricePerPiece, Cursor OrderDetails,
-                                   int caseSize, int outerSize, float weight,int skuResonId) {
+                                   int caseSize, int outerSize, float weight,int skuResonId,String remarks) {
         ProductMasterBO product;
         int siz = businessModel.productHelper.getProductMaster().size();
         if (siz == 0)
@@ -1713,6 +1734,8 @@ public class OrderHelper {
                 product.setOrderPricePiece(pricePerPiece);
                 product.setSrp(srp);
                 product.setSoreasonId(skuResonId);
+                if (!businessModel.configurationMasterHelper.SHOW_FOC)
+                    product.setRemarks(remarks);
 
                 if (product.getSchemeBO() != null) {
                     product.setSchemeBO(new SchemeBO());
@@ -1776,24 +1799,6 @@ public class OrderHelper {
             orderValue = businessModel.getOrderHeaderBO().getOrderValue();
         }
 
-        /*
-         * update tax in invoice master Changed by Felix on 30-04-2015 For
-         * getting tax detail from order value
-         */
-        if (businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
-            businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
-
-
-            orderValue = Double.parseDouble(SDUtil.format(orderValue,
-                    businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                    0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
-
-            final double totalTaxValue = businessModel.productHelper.taxHelper.applyBillWiseTax(orderValue);
-
-            if (businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
-                orderValue = orderValue + totalTaxValue;
-
-        }
 
 
         try {
@@ -1944,10 +1949,13 @@ public class OrderHelper {
 
 
             // update Invoice id in InvoiceDiscountDetail table
-            if (businessModel.configurationMasterHelper.SHOW_DISCOUNT || businessModel.configurationMasterHelper.discountType == 1
-                    || businessModel.configurationMasterHelper.discountType == 2 || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
+            if (businessModel.configurationMasterHelper.SHOW_DISCOUNT
+                    || businessModel.configurationMasterHelper.discountType == 1
+                    || businessModel.configurationMasterHelper.discountType == 2
+                    || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG
+                    || businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
 
-                businessModel.productHelper.updateInvoiceIdInItemLevelDiscount(db, invoiceId,
+                businessModel.productHelper.updateInvoiceIdInDiscountTable(db, invoiceId,
                         this.getOrderId());
             }
 
@@ -2118,7 +2126,6 @@ public class OrderHelper {
         int orderedPcsQty;
         int orderedCaseQty;
         int orderedOuterQty;
-        int foc;
 
         String batchId;
         double priceOffValue;
@@ -2133,13 +2140,12 @@ public class OrderHelper {
         double taxAmount;
         double line_total_price;
         double totalValue;
-
+        String rfield;
         try {
             if (isBatchWise) {
                 batchWiseProductBO = batchWiseBO;
                 orderedPcsQty = batchWiseProductBO.getOrderedPcsQty();
                 orderedCaseQty = batchWiseProductBO.getOrderedCaseQty();
-                foc = batchWiseProductBO.getFoc();
                 orderedOuterQty = batchWiseProductBO.getOrderedOuterQty();
                 batchId = batchWiseProductBO.getBatchid();
                 schemeOrderType = businessModel.productHelper.getmOrderType().get(1);
@@ -2169,12 +2175,13 @@ public class OrderHelper {
                         + (batchWiseProductBO.getOrderedOuterQty() * batchWiseProductBO.getOsrp());
                 totalValue = batchWiseProductBO.getDiscount_order_value();
 
-
+                if (businessModel.configurationMasterHelper.SHOW_FOC)
+                    rfield = String.valueOf(batchWiseProductBO.getFoc());
+                else rfield = batchWiseProductBO.getRemarks();
             } else {
                 orderedPcsQty = product.getOrderedPcsQty();
                 orderedCaseQty = product.getOrderedCaseQty();
                 orderedOuterQty = product.getOrderedOuterQty();
-                foc = product.getFoc();
                 srp = product.getSrp();
                 csrp = product.getCsrp();
                 osrp = product.getOsrp();
@@ -2196,6 +2203,9 @@ public class OrderHelper {
                         + (productBO.getOrderedOuterQty() * productBO.getOsrp());
                 totalValue = productBO.getDiscount_order_value();
 
+                if (businessModel.configurationMasterHelper.SHOW_FOC)
+                    rfield = String.valueOf(productBO.getFoc());
+                else rfield = productBO.getRemarks();
             }
 
             // update SIH
@@ -2226,7 +2236,7 @@ public class OrderHelper {
             sb.append(product.getCaseSize() + ",");
             sb.append(orderedCaseQty + ",");
             sb.append(orderedPcsQty + ",");
-            sb.append(foc + ",");
+            sb.append(businessModel.QT(rfield) + ",");
             sb.append(product.getD1() + "," + product.getD2());
             sb.append("," + product.getD3() + ",");
             sb.append(product.getDA() + ",");
@@ -2460,7 +2470,7 @@ public class OrderHelper {
                 productId = invoiceDetailCursor.getString(0);
                 setProductDetails(productId, caseQty, pieceQty, outerQty, srp,
                         invoiceDetailCursor.getDouble(3), invoiceDetailCursor,
-                        0, 0, weight,0);
+                        0, 0, weight,0,"");
 
             }
             invoiceDetailCursor.close();
@@ -3289,7 +3299,7 @@ public class OrderHelper {
         float totalReturnAmount = 0;
         float totalReplaceAmount = 0;
 
-        for (ProductMasterBO product : businessModel.productHelper.getSalesReturnProducts()) {
+        for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
             if (reasonList != null) {
                 for (SalesReturnReasonBO reasonBO : reasonList) {
@@ -3432,4 +3442,90 @@ public class OrderHelper {
     }
 
 
+    public void updateWareHouseStock(Context mContext) {
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            StringBuffer sb = new StringBuffer();
+            sb.append("select pid,qty from ProductWareHouseStockMaster");
+            Cursor cursor = db.selectSQL(sb.toString());
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(cursor.getString(0));
+                    if (productMasterBO != null) {
+                        productMasterBO.setWSIH(cursor.getInt(1));
+                    }
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
+
+
+    //to show Creditnote value in order summary
+
+    public double getRemaingReturnAmt() {
+
+        double totalReturnAmount = 0;
+        double totalReplaceAmount = 0;
+
+        for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
+            List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
+            if (reasonList != null) {
+                for (SalesReturnReasonBO reasonBO : reasonList) {
+                    if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
+                        //Calculate sales return total qty and price.
+                        int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
+                        totalReturnAmount = totalReturnAmount + (totalQty * product.getSrp());
+                    }
+                }
+            }
+            // Calculate replacement qty price.
+            int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
+            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * product.getSrp();
+        }
+        return totalReturnAmount - totalReplaceAmount;
+
+    }
+
+    public double getCreditNoteValue(Context mContext, double totalValue) {
+
+        double creditNoteAmt = 0;
+        double totalTaxValue = 0;
+        if (SalesReturnHelper.getInstance(mContext).IS_APPLY_TAX_IN_SR) {
+            businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
+            // Method to use Apply Tax
+            final ArrayList<TaxBO> taxList = businessModel.productHelper.taxHelper.getBillTaxList();
+
+            double totalTaxRate = 0;
+            double withOutTaxValue = 0;
+            if (!businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
+                for (TaxBO taxBO : taxList) {
+                    totalTaxRate = totalTaxRate + taxBO.getTaxRate();
+                }
+                withOutTaxValue = totalValue + (1 + (totalTaxRate / 100));
+            }
+            for (TaxBO taxBO : taxList) {
+
+                double taxValue;
+                if (businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
+                    taxValue = totalValue * (taxBO.getTaxRate() / 100);
+                } else {
+                    taxValue = withOutTaxValue * taxBO.getTaxRate() / 100;
+                }
+                totalTaxValue = totalTaxValue + taxValue;
+            }
+        }
+
+        creditNoteAmt = totalValue +totalTaxValue;
+
+        return creditNoteAmt;
+
+    }
 }

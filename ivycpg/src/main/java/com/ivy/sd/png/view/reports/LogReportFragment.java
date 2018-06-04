@@ -19,6 +19,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,7 +67,15 @@ public class LogReportFragment extends Fragment {
                 }
             });
             list.setAdapter(new MyAdapter(myList));
-            calculateHrsSpent(myList.get(0).getOutTime(), myList.get(myList.size() - 1).getOutTime());
+            for (LogReportBO logBo : myList) {
+                calculateHrsSpent(logBo.getInTime(), logBo.getOutTime());
+            }
+            DecimalFormat df = new DecimalFormat("##");
+
+            /*String minutes = String.format("%02d", (totMinutes % 60));
+            String hours = String.format("%02d", (totMinutes / 60));*/
+            String hrsMin = (int) (totMinutes / 60) + ":" + (int) (totMinutes % 60);
+            tvTotalHrs.setText(hrsMin);
         } else {
             Toast.makeText(getActivity(), getString(R.string.alert_activity_log), Toast.LENGTH_LONG).show();
         }
@@ -74,6 +83,8 @@ public class LogReportFragment extends Fragment {
 
         return view;
     }
+
+    double totMinutes = 0;
 
     private void calculateHrsSpent(String startTime, String endTime) {
 
@@ -83,10 +94,10 @@ public class LogReportFragment extends Fragment {
             Date date2 = sdf1.parse(endTime);
 
             long durationInMillis = date2.getTime() - date1.getTime();
-            String minutes =String.format("%02d", (durationInMillis / (1000 * 60)) % 60);
+            String minutes = String.format("%02d", (durationInMillis / (1000 * 60)) % 60);
             String hours = String.format("%02d", (durationInMillis / (1000 * 60 * 60)) % 24);
 
-            tvTotalHrs.setText(hours + ":" + minutes);
+            totMinutes = totMinutes + ((durationInMillis / (1000 * 60)) % 60);
 
 
         } catch (ParseException e) {
