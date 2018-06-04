@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -62,7 +63,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName,tvUserName , tvTimeIn, tvAddress, tvOutletCovered,tvOutletTarget
             ,tvCoveredOutlet,tvUnbilledOutlet,tvTotalOutlet,tvOrderValue;
-    private LinearLayout routeLayout,infoWindowLayout,bottomLayout;
+    private LinearLayout routeLayout,infoWindowLayout;
 
     private int trackingType; //0 - RealTime, 1 - Movement Tracking, 2 - Call analysis
     ViewPagerAdapter viewPagerAdapter;
@@ -143,7 +144,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         tvOutletCovered = view.findViewById(R.id.tv_outlet_covered);
 
         routeLayout = view.findViewById(R.id.route_layout);
-        bottomLayout = view.findViewById(R.id.bottom_layout);
 
         //Bottom sheet layout Typeface
         ((TextView)view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -180,11 +180,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
 
-        if(trackingType == 2)
-            view.findViewById(R.id.bottomSheetLayout).setVisibility(View.VISIBLE);
-        else
-            view.findViewById(R.id.bottomSheetLayout).setVisibility(View.GONE);
-
     }
 
     private int getPixelsFromDp(Context context, float dp) {
@@ -193,6 +188,11 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     }
 
     private void setviewValues(){
+
+        if(trackingType == 2)
+            view.findViewById(R.id.bottomSheetLayout).setVisibility(View.VISIBLE);
+        else
+            view.findViewById(R.id.bottomSheetLayout).setVisibility(View.GONE);
 
         bottomSheetBehavior.setHideable(false);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -234,15 +234,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         //Initialize the firebase instance and update the seller details
         SupervisorActivityHelper.getInstance().subscribeSellersUpdates(getContext(),this);
 
-        totalSeller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),SellerListActivity.class);
-                intent.putExtra("TabPos",0);
-                intent.putExtra("Screen","Seller");
-                startActivity(intent);
-            }
-        });
 
         absentSeller.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -264,11 +255,41 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             }
         });
 
-        tvTotalOutlet.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.ttl_seller_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),SellerListActivity.class);
+                intent.putExtra("TabPos",0);
+                intent.putExtra("Screen","Seller");
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.ttl_outlet_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),OutletMapListActivity.class);
+                intent.putExtra("TabPos",0);
+                intent.putExtra("Screen","Outlet");
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.covered_outlet_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(),OutletMapListActivity.class);
                 intent.putExtra("TabPos",1);
+                intent.putExtra("Screen","Outlet");
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.unbilled_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),OutletMapListActivity.class);
+                intent.putExtra("TabPos",2);
                 intent.putExtra("Screen","Outlet");
                 startActivity(intent);
             }
@@ -393,7 +414,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         }
     }
 
-
     /**
      * This method receives the absent Seller count and Closed Seller count from firebase data
      */
@@ -431,8 +451,8 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         Commons.print("on Marker Click called");
 
         double angle = 130.0;
-        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.0;
-        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.6);
+        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;
+        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
         marker.setInfoWindowAnchor((float)x, (float)y);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
@@ -472,18 +492,12 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                     startActivity(intent);
                 }
             });
-
         }
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
 
-//        Intent intent = new Intent(getActivity(),SellerMapViewActivity.class);
-//        intent.putExtra("SellerId",marker.getSnippet());
-//        intent.putExtra("screentitle",marker.getTitle());
-//        intent.putExtra("TrackingType",trackingType);
-//        startActivity(intent);
 
     }
 
@@ -497,7 +511,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         @Override
         public View getInfoWindow(final Marker marker) {
 
-            tvMapInfoUserName.setText("Big Text To test the info");
+//            tvMapInfoUserName.setText("Big Info message to check the content in info wiondow");
 
             mapWrapperLayout.setMarkerWithInfoWindow(marker, mymarkerview);
 

@@ -4,17 +4,26 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,10 +40,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
+import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import org.json.JSONObject;
@@ -50,7 +62,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements OnMapReadyCallback,Seller,GoogleMap.OnMarkerClickListener {
+public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements OnMapReadyCallback,Seller,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener  {
 
     private GoogleMap mMap;
     private LinkedHashMap<String,DetailsBo> sellerDetailHashmap = new LinkedHashMap<>();
@@ -62,10 +74,11 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     private int trackingType;
     MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
-    private TextView tvMapInfoUserName,tvUserName , tvTimeIn   ,
-             tvAddress, tvOutletCovered ;
+    private TextView tvMapInfoUserName,tvSellerName,tvSellerStartTime,tvSellerLastVisit,tvSellerPerformanceBtn,tvTarget,tvCovered;
+    private ImageView imgMessage;
+    private BusinessModel bmodel;
 
-    private LinearLayout timeLayout,routeLayout,infoWindowLayout;
+    private LinearLayout infoWindowLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +87,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        bmodel = (BusinessModel) getApplicationContext();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -115,21 +130,49 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_info_window, null);
+        mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_outlet_info_window, null);
 
         infoWindowLayout = findViewById(R.id.user_info_layout);
-        infoWindowLayout.setVisibility(View.GONE);
-
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
 
-        tvUserName = findViewById(R.id.tv_user_name);
-        tvTimeIn = findViewById(R.id.tv_time_in);
-        tvAddress = findViewById(R.id.tv_address);
-        routeLayout = findViewById(R.id.route_layout);
-        tvOutletCovered = findViewById(R.id.tv_outlet_covered);
+        tvSellerName = findViewById(R.id.tv_user_name);
+        tvSellerStartTime = findViewById(R.id.tv_start_time);
+        tvSellerLastVisit = findViewById(R.id.tv_address);
+        tvSellerPerformanceBtn = findViewById(R.id.seller_performance_btn);
+        tvTarget = findViewById(R.id.tv_target_outlet);
+        tvCovered = findViewById(R.id.tv_outlet_covered);
+
+        imgMessage = findViewById(R.id.message_img);
+
+        tvSellerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvSellerStartTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvSellerLastVisit.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvSellerPerformanceBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvTarget.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvCovered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+
+        ((TextView)findViewById(R.id.number_text)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)findViewById(R.id.store_text)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)findViewById(R.id.time_in_text)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)findViewById(R.id.time_out_text)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
-        mapWrapperLayout.init(mMap, getPixelsFromDp(this, 39 + 20));
+        mapWrapperLayout.init(mMap, getPixelsFromDp(this, getPixelsFromDp(this, 39 + 20)));
+
+        RecyclerView recyclerView = findViewById(R.id.outlet_list);;
+
+        MyAdapter myAdapter = new MyAdapter();
+        recyclerView.setAdapter(myAdapter);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        imgMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -144,8 +187,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
             @Override
             public void onMapClick(LatLng latLng) {
-                if(infoWindowLayout.getVisibility() == View.VISIBLE)
-                    infoWindowLayout.setVisibility(View.GONE);
+//                if(infoWindowLayout.getVisibility() == View.VISIBLE)
+//                    infoWindowLayout.setVisibility(View.GONE);
             }
         });
 
@@ -174,8 +217,18 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
             LatLng destLatLng = new LatLng(lat, lng);
 
-            count = count+1;
-            BitmapDescriptor icon= BitmapDescriptorFactory.fromBitmap(SupervisorActivityHelper.getInstance().setMarkerDrawable(count,this));
+//            count = count+1;
+//            BitmapDescriptor icon= BitmapDescriptorFactory.fromBitmap(SupervisorActivityHelper.getInstance().setMarkerDrawable(count,this));
+
+            BitmapDescriptor icon;
+            if(orderValue.equalsIgnoreCase("1"))
+                icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+            else if(orderValue.equalsIgnoreCase("2"))
+                icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+            else if(orderValue.equalsIgnoreCase("10"))
+                icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+            else
+                icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
 
             DetailsBo detailsBo = new DetailsBo();
             detailsBo.setUserName(userName);
@@ -223,45 +276,30 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     public boolean onMarkerClick(Marker marker) {
         Commons.print("on Marker Click called");
 
+        double angle = 130.0;
+        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 3.9;
+        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 1.1);
+        marker.setInfoWindowAnchor((float)x, (float)y);
+
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
 
         marker.showInfoWindow();
-        showInfoWindow(marker);
+//        showInfoWindow(marker);
+
+//        if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+//            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+        OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
+        outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+        outletPagerDialogFragment.setCancelable(false);
+        outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
 
         return true;
     }
 
     private void showInfoWindow(final Marker marker){
 
-        DetailsBo detailsBo = sellerDetailHashmap.get(marker.getSnippet());
 
-        if(detailsBo != null) {
-
-            infoWindowLayout.setVisibility(View.VISIBLE);
-
-
-            String address = "Address <b>" +
-                    SupervisorActivityHelper.getInstance().getAddressLatLong(this, detailsBo.getMarker().getPosition()) + " </b>";
-            tvAddress.setText(Html.fromHtml(address));
-
-            tvTimeIn.setText(SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getInTime()));
-
-            routeLayout.setVisibility(View.GONE);
-
-            if (trackingType == 1) {
-                timeLayout.setVisibility(View.GONE);
-                tvUserName.setText(detailsBo.getUserName());
-                (findViewById(R.id.view_dotted_line_end)).setVisibility(View.GONE);
-            }else if (trackingType == 2){
-                timeLayout.setVisibility(View.VISIBLE);
-                tvOutletCovered.setVisibility(View.VISIBLE);
-                tvUserName.setText(detailsBo.getRetailerName());
-
-                findViewById(R.id.ll_sales_value).setVisibility(View.VISIBLE);
-                ((TextView)findViewById(R.id.tv_sales_value)).setText(detailsBo.getOrderValue());
-            }
-
-        }
     }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
@@ -274,21 +312,20 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         @Override
         public View getInfoWindow(final Marker marker) {
 
-            DetailsBo detailsBo = sellerDetailHashmap.get(marker.getSnippet());
-
-            if(detailsBo != null) {
-                if (trackingType == 1)
-                    tvMapInfoUserName.setText(detailsBo.getUserName());
-                else if (trackingType == 2)
-                    tvMapInfoUserName.setText(detailsBo.getRetailerName());
-
-            }else
-                tvMapInfoUserName.setText(marker.getTitle());
+            tvMapInfoUserName.setText("Big Text message for the info window to test size of info window");
 
             mapWrapperLayout.setMarkerWithInfoWindow(marker, mymarkerview);
 
             return mymarkerview;
         }
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+        OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
+        outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+
     }
 
     @Override
@@ -577,6 +614,53 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     private int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
+    }
+
+    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            private LinearLayout linearLayout;
+            private TextView tvSerialNumber,tvStoreName,tvTimeIn,tvTimeOut;
+
+            public MyViewHolder(View view) {
+                super(view);
+                linearLayout = view.findViewById(R.id.outlet_item_layout);
+
+                tvSerialNumber = view.findViewById(R.id.number_text);
+                tvStoreName = view.findViewById(R.id.store_text);
+                tvTimeIn = view.findViewById(R.id.time_in_text);
+                tvTimeOut = view.findViewById(R.id.time_out_text);
+
+                tvSerialNumber.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                tvStoreName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                tvTimeIn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                tvTimeOut.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+
+            }
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.outlet_list_item, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, final int position) {
+
+            if(position%2 == 0)
+                holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.white));
+            else
+                holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.outlet_item_bg));
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return 20;
+        }
     }
 
 }

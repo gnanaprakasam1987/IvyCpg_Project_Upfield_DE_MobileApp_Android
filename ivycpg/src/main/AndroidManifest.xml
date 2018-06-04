@@ -59,7 +59,6 @@
 
     <!-- Google Map - used for map in planning screen -->
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-
     <uses-permission android:name="com.ivy.sd.png.asean.view.permission.MAPS_RECEIVE" />
 
     <!-- GCM  - used for push notification -->
@@ -794,10 +793,14 @@
         <activity
             android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.SellerListActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.OutletMapListActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

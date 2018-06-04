@@ -138,20 +138,20 @@
                 android:id="@+id/bottom_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_5dp"
                 android:orientation="horizontal"
                 android:visibility="visible"
-                android:weightSum="1"
-                android:layout_marginBottom="@dimen/dimen_10dp">
+                android:weightSum="1">
 
                 <LinearLayout
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:background="@color/white"
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="horizontal"
-                    android:paddingTop="@dimen/dimen_5dp"
                     android:paddingBottom="@dimen/dimen_5dp"
-                    android:background="@color/white">
+                    android:paddingTop="@dimen/dimen_5dp">
 
                     <ImageView
                         android:layout_width="@dimen/dimen_20dp"
@@ -161,14 +161,14 @@
 
                     <TextView
                         android:id="@+id/tv_message"
-                        style="?attr/customListItemValue"
+                        style="?attr/customListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
                         android:maxLines="1"
                         android:text="Message"
                         android:textColor="#8a354667"
-                        android:textStyle="bold"
+                        android:textSize="@dimen/dimen_16dp"
                         android:visibility="visible" />
 
 
@@ -179,33 +179,34 @@
                     android:layout_height="match_parent"
                     android:background="#1e000000" />
 
+
                 <LinearLayout
+                    android:id="@+id/route_layout"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:background="@color/white"
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="horizontal"
-                    android:paddingTop="@dimen/dimen_5dp"
                     android:paddingBottom="@dimen/dimen_5dp"
-                    android:background="@color/white"
-                    android:id="@+id/route_layout">
+                    android:paddingTop="@dimen/dimen_5dp">
 
                     <ImageView
                         android:layout_width="@dimen/dimen_20dp"
                         android:layout_height="@dimen/dimen_20dp"
                         android:layout_marginRight="@dimen/dimen_5dp"
-                        android:src="@drawable/ic_direction_light" />
+                        android:src="@drawable/ic_location_icon" />
 
                     <TextView
                         android:id="@+id/tv_route"
-                        style="?attr/customListItemValue"
+                        style="?attr/customListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
                         android:maxLines="1"
                         android:text="Route"
-                        android:textStyle="bold"
                         android:textColor="#8a354667"
+                        android:textSize="@dimen/dimen_16dp"
                         android:visibility="visible" />
 
 

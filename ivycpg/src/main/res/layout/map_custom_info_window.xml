@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="25dp"
-    android:clickable="false"
-    android:focusable="false"
-    android:focusableInTouchMode="false"
-    android:orientation="horizontal"
-    android:gravity="center_vertical">
+    android:layout_height="wrap_content">
 
-
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="25dp"
-        android:src="@drawable/marker_info_seller"
-        android:scaleType="fitXY"/>
-
-    <TextView
-        android:id="@+id/tv_usr_name"
-        style="?attr/customListItemPrimary"
-        android:layout_width="wrap_content"
-        android:minWidth="@dimen/dimens_50dp"
-        android:layout_height="25dp"
+    <LinearLayout
+        android:layout_width="@dimen/pp_row_upc"
+        android:layout_height="@dimen/dimen_30dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:gravity="center_vertical"
-        android:maxLines="1"
-        android:text="Testing"
-        android:background="@color/white"
-        android:textColor="@color/FullBlack"
-        android:padding="@dimen/dimen_4dp"/>
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/marker_info_seller" />
+
+        <TextView
+            android:id="@+id/tv_usr_name"
+            style="?attr/customListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:ellipsize="middle"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dimen_2dp"
+            android:singleLine="true"
+            android:text="Big info window to test the size of the info window XML values"
+            android:textColor="#de000000"
+            android:textSize="@dimen/font_nano_small" />
+
+    </LinearLayout>
 
 </LinearLayout>

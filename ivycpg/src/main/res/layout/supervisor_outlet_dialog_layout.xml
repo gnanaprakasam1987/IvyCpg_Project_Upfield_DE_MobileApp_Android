@@ -2,22 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_centerInParent="true"
-    android:background="#b1000000">
-
-    <TextView
-        android:id="@+id/tv_store_count"
-        style="?attr/customListItemPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:gravity="center"
-        android:text="Total Store 8"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/dimen_18dp"
-        android:padding="@dimen/dimen_5dp"
-        android:layout_marginBottom="@dimen/dimens_50dp"
-        android:layout_above="@+id/dialog_layout"/>
+    android:layout_centerInParent="true">
 
     <RelativeLayout
         android:id="@+id/dialog_layout"
@@ -26,12 +11,12 @@
         android:layout_centerInParent="true"
         android:layout_marginLeft="@dimen/dimen_30dp"
         android:layout_marginRight="@dimen/dimen_30dp"
-        android:background="@drawable/round_dialog_bg">
+        android:background="@drawable/bg_card">
 
         <ImageView
             android:id="@+id/outlet_image"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="135dp"
             android:src="@drawable/unbilled_bg_gradient"
             android:layout_alignParentTop="true"/>
 
@@ -253,14 +238,5 @@
         </LinearLayout>
 
     </RelativeLayout>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_close_icon_white"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dimens_50dp"/>
-
 
 </RelativeLayout>

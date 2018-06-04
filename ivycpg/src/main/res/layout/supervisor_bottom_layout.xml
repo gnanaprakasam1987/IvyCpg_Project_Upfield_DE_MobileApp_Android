@@ -233,6 +233,7 @@
                 android:id="@+id/card_3">
 
                 <RelativeLayout
+                    android:id="@+id/ttl_outlet_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/total_outlet_bg_gradient"
@@ -298,7 +299,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/covered_outlet_bg_gradient"
                     android:gravity="center"
-                    android:padding="@dimen/dimen_10dp">
+                    android:padding="@dimen/dimen_10dp"
+                    android:id="@+id/covered_outlet_layout">
 
                     <TextView
                         android:id="@+id/tv_covered_outlet"
@@ -357,7 +359,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/unbilled_bg_gradient"
                     android:gravity="center"
-                    android:padding="@dimen/dimen_10dp">
+                    android:padding="@dimen/dimen_10dp"
+                    android:id="@+id/unbilled_layout">
 
                     <TextView
                         android:id="@+id/tv_unbilled_outlet"

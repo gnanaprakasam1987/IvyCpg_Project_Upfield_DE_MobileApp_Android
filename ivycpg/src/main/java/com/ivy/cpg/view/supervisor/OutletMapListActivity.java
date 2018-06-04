@@ -47,8 +47,6 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         infoWindowLayout = findViewById(R.id.user_info_layout);
-        infoWindowLayout.setVisibility(View.GONE);
-
 
         Bundle extras = getIntent().getExtras();
         try {

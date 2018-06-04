@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/material_tool_bar"/>
+
     <com.ivy.maplib.MapWrapperLayout
         android:id="@+id/map_wrap_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/topimage_view"
+        android:layout_below="@+id/tool_bar"
         android:orientation="vertical">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,7 +24,7 @@
 
     </com.ivy.maplib.MapWrapperLayout>
 
-    <include layout="@layout/map_seller_day_info_layout"
+    <include layout="@layout/outlet_info_window_layout"
         android:visibility="visible"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

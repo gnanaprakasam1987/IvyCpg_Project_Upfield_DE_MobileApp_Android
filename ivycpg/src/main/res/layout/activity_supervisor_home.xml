@@ -34,7 +34,4 @@
     <include layout="@layout/supervisor_bottom_layout"
         android:visibility="visible"/>
 
-    <include layout="@layout/map_seller_day_info_layout"
-        android:visibility="visible"/>
-
 </android.support.design.widget.CoordinatorLayout>
