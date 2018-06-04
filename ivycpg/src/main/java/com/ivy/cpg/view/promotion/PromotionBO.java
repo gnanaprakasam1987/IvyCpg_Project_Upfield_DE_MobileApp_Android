@@ -36,6 +36,7 @@ public class PromotionBO {
         this.ratingDec = promotionBO.getRatingDec();
         this.ratingId = promotionBO.getRatingId();
         this.groupName = promotionBO.getGroupName();
+        this.pName = promotionBO.getpName();
     }
 
     public String getImagePath() {
@@ -182,5 +183,15 @@ public class PromotionBO {
 
     public void setToDate(String toDate) {
         this.toDate = toDate;
+    }
+
+    private String pName;
+
+    public String getpName() {
+        return pName;
+    }
+
+    public void setpName(String pName) {
+        this.pName = pName;
     }
 }

@@ -766,10 +766,14 @@ public class ReportHelper {
                     row.add(c.getString(4));
                     row.add(c.getString(5));
                     row.add(c.getString(6));
-                    row.add(c.getString(7));
-                    row.add(c.getString(8));
-                    row.add(c.getString(9));
+                    if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                        row.add(c.getString(7));
+                    if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                        row.add(c.getString(8));
+                    if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                        row.add(c.getString(9));
                     row.add(c.getString(10));
+
 
                     rows.add(row);
 
@@ -2471,7 +2475,7 @@ public class ReportHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT CN.id,CN.amount,RM.RetailerName,isused FROM CreditNote CN INNER JOIN RetailerMaster RM ON RM.retailerid=CN.retailerid");
+                    .selectSQL("SELECT DISTINCT CN.id,CN.amount,RM.RetailerName,isused FROM CreditNote CN INNER JOIN RetailerMaster RM ON RM.retailerid=CN.retailerid");
             if (c != null) {
                 while (c.moveToNext()) {
                     CreditNoteListBO obj = new CreditNoteListBO();

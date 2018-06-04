@@ -289,6 +289,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             holder.listBgLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    bmodel.configurationMasterHelper.loadVanStockUOMConfiguration();
                     bmodel.stockreportmasterhelper.setStockReportMaster(mylist);
                     Intent i = new Intent(VanLoadStockApplyActivity.this, VanLoadStockView_activity.class);
                     i.putExtra("screentitle", screenTitle);

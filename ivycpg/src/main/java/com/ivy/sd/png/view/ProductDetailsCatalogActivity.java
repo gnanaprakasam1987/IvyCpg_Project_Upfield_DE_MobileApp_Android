@@ -77,7 +77,7 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         TextView pdt_name = (TextView) findViewById(R.id.pdt_name);
         sih_detail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         pdt_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
+        pdt_name.setText(bmodel.selectedPdt.getProductName());
         sih_detail.setText("SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()));
         pdt_name.setText(bmodel.selectedPdt.getProductName());
         StringBuilder sihDetail = new StringBuilder();

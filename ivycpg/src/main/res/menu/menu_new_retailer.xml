@@ -19,7 +19,7 @@
         ivydist:showAsAction="always" />
     <item
         android:id="@+id/menu_sort"
-        android:icon="@drawable/ic_updown_arrow"
+        android:icon="@drawable/ic_menu_order"
         android:orderInCategory="103"
         android:title="Next"
         android:visible="false"

@@ -147,6 +147,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
 
         setScreenTitle(bmodel.configurationMasterHelper.getTradecoveragetitle());
+        bmodel.loadProductiveCallsConfig();
 
         if (bmodel.beatMasterHealper.getBeatMaster() == null || bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),

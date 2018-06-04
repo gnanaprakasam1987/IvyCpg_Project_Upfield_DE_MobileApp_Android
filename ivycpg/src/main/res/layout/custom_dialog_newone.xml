@@ -7,7 +7,7 @@
         android:id="@+id/top_layouts"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_row_upc_padding"
-        android:background="?attr/colorPrimaryDark"
+        android:background="?attr/colorPrimary"
         android:orientation="vertical"
         android:src="@drawable/ic_delete"
         android:tint="@color/white"></ImageView>
@@ -16,29 +16,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-       android:layout_margin="@dimen/profile_history_20dp"
+        android:layout_margin="@dimen/profile_history_20dp"
         >
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/header_txt"
-    android:padding="@dimen/retailer_5dp"
-    android:layout_marginEnd="@dimen/profile_history_20dp"
-    android:layout_marginStart="@dimen/profile_history_20dp"
-    android:text="Title"
-    android:textSize="@dimen/highlight_small"
-    android:textColor="@color/FullBlack"
-    />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/header_txt"
+            android:padding="@dimen/retailer_5dp"
+            android:layout_marginRight="@dimen/profile_history_20dp"
+            android:layout_marginLeft="@dimen/profile_history_20dp"
+            android:text="Title"
+            android:textSize="@dimen/highlight_small"
+            android:textColor="@color/FullBlack"
+            />
     </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:src="@drawable/downloadsuccess"
         android:layout_gravity="center"
-        android:layout_marginEnd="@dimen/profile_history_10dp"
-        android:layout_marginStart="@dimen/profile_history_10dp"
         android:layout_marginTop="@dimen/profile_history_20dp"
-        android:layout_marginBottom="@dimen/profile_history_20dp"
         android:background="@color/GRAY"
         android:id="@+id/reason_view"
         android:layout_above="@+id/reason_btns" />
@@ -49,7 +46,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/white"
-        android:gravity="bottom|center|end">
+        android:gravity="bottom|center|right">
 
 
         <Button
@@ -58,10 +55,11 @@
             android:layout_height="wrap_content"
             android:background="@color/zxing_transparent"
             android:onClick="onClick"
+            android:layout_margin="@dimen/dimen_5dp"
             android:text="@string/ok"
-            android:textColor="?attr/colorPrimaryDark"
-            android:layout_marginBottom="@dimen/profile_history_10dp"
-            android:layout_gravity="end|center"
+            android:textSize="@dimen/font_micro_small"
+            android:textColor="?attr/colorAccent"
+            android:layout_gravity="right|center"
             />
 
         <Button
@@ -70,10 +68,11 @@
             android:layout_height="wrap_content"
             android:background="@color/zxing_transparent"
             android:onClick="onClick"
-            android:textColor="?attr/colorPrimaryDark"
+            android:textColor="?attr/colorAccent"
             android:text="@string/cancel"
-            android:layout_marginBottom="@dimen/profile_history_10dp"
-            android:layout_gravity="end|center"
+            android:textSize="@dimen/font_micro_small"
+            android:layout_margin="@dimen/dimen_5dp"
+            android:layout_gravity="right|center"
             />
 
     </LinearLayout>

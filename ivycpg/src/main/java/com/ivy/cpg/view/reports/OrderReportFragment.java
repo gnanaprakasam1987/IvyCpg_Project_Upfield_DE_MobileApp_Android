@@ -397,13 +397,14 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 }
                 if (!businessModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT) {
                     holder.tvFocusBrandCount.setVisibility(View.GONE);
-                    holder.focusbrandlabel.setVisibility(View.GONE);
+                    holder.label_focusBrand.setVisibility(View.GONE);
                     holder.focus_brand_count1.setVisibility(View.GONE);
                 }
 
                 if (!businessModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT) {
                     holder.text_mustSellCount.setVisibility(View.GONE);
                     holder.mustselllabel.setVisibility(View.GONE);
+                    holder.text_mustSellCount.setVisibility(View.GONE);
                 }
 
                 if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
@@ -428,6 +429,17 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 if(!businessModel.configurationMasterHelper.SHOW_VOLUME_QTY){
                     holder.tvVolumeLabel.setVisibility(View.GONE);
                     holder.tvVolumeValue.setVisibility(View.GONE);
+                }
+
+                if (!businessModel.configurationMasterHelper.SHOW_TOTAL_LINES) {
+                    holder.text_LPC.setVisibility(View.GONE);
+                    holder.label_LPC.setVisibility(View.GONE);
+                }
+
+                if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+                    holder.label_PreORPost.setVisibility(View.GONE);
+                    holder.tvwDist.setVisibility(View.GONE);
+
                 }
 
 
@@ -665,9 +677,12 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 columnNames.add("OrderDate");
                 columnNames.add("SKUCode");
                 columnNames.add("SKUDescription");
-                columnNames.add("OrderQty(Piece)");
-                columnNames.add("OrderQty(Case)");
-                columnNames.add("OrderQty(Outer)");
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    columnNames.add("OrderQty(Piece)");
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    columnNames.add("OrderQty(Case)");
+                if (businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
+                    columnNames.add("OrderQty(Outer)");
                 columnNames.add("DeliveryDate");
 
                 businessModel.reportHelper

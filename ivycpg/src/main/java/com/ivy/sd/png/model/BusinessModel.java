@@ -2267,6 +2267,55 @@ public class BusinessModel extends Application {
         return false;
     }
 
+    public boolean hasCombinedStkChecked() {
+        int cSize = productHelper.getTaggedProducts().size();
+        if (cSize == 0)
+            return false;
+        for (int j = 0; j < cSize; j++) {
+            ProductMasterBO product = productHelper
+                    .getTaggedProducts().get(j);
+
+            if (product.getIsDistributed() == 1 || product.getIsListed() == 1
+                    || product.getPriceChanged() == 1
+                    || SDUtil.convertToInt(product.getMrp_pc()) > 0
+                    || SDUtil.convertToInt(product.getMrp_ca()) > 0
+                    || SDUtil.convertToInt(product.getMrp_ou()) > 0) {
+                return true;
+            }
+            int cSize2 = product.getLocations().size();
+            for (int f = 0; f < cSize2; f++) {
+                if (product.getLocations().get(f).getFacingQty() > 0
+                        || product.getLocations().get(f).getAvailability() != -1
+                        || product.getLocations().get(f).getReasonId() != 0
+                        || product.getLocations().get(f).getShelfPiece() != -1
+                        || product.getLocations().get(f).getShelfCase() != -1
+                        || product.getLocations().get(f).getShelfOuter() != -1) {
+                    return true;
+                }
+
+
+                if (configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK) {
+                    int nearSize = product.getLocations().get(f).getNearexpiryDate().size();
+                    for (int x = 0; x < nearSize; x++) {
+                        if (!product.getLocations().get(f).getNearexpiryDate().get(x)
+                                .getNearexpPC().equals("0")
+                                || !product.getLocations().get(f).getNearexpiryDate().get(x)
+                                .getNearexpCA().equals("0")
+                                || !product.getLocations().get(f).getNearexpiryDate().get(x)
+                                .getNearexpOU().equals("0")) {
+
+                            return true;
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+        return false;
+    }
+
 
     public void resetSRPvalues() {
         try {
@@ -2988,6 +3037,42 @@ public class BusinessModel extends Application {
         }
     }
 
+    public boolean loadLastVisitHistoryStockCheckedProducts(String retailerId) {
+        boolean isDataVailable = false;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql1 = "select productid, qty, StoreLocId from " + DataMembers.tbl_LastVisitStock_History + " where retailerid=" + QT(retailerId) + "";
+            Cursor orderDetailCursor = db.selectSQL(sql1);
+            if (orderDetailCursor != null) {
+                while (orderDetailCursor.moveToNext()) {
+                    String productId = orderDetailCursor.getString(0);
+                    int shelfpqty = orderDetailCursor.getInt(1);
+                    int locationid = orderDetailCursor.getInt(2);
+                    int pouring = 0;
+                    int cocktail = 0;
+                    int availability = 0;
+                    if (shelfpqty > 0)
+                        availability = 1;
+
+                    setStockCheckQtyHistoryDetails(productId, shelfpqty, 0,
+                            0, 0, 0, 0, locationid,
+                            0, 0, 0, 0, 1, 0, pouring, cocktail, "MENU_STOCK", availability);
+                    isDataVailable = true;
+
+                }
+                orderDetailCursor.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return isDataVailable;
+    }
+
     /**
      * Load the ClosingStock Details and ClosingStock Header datas into product
      * master to Edit Order.
@@ -3070,6 +3155,51 @@ public class BusinessModel extends Application {
      * @param productid
      * @param --qty
      */
+    private void setStockCheckQtyHistoryDetails(String productid, int shelfpqty,
+                                                int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
+                                                int locationId, int isDistributed, int isListed, int reasonID,
+                                                int audit, int isOwn, int facing, int pouring, int cocktail,
+                                                String menuCode, int availability) {
+
+        //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
+        ProductMasterBO product = null;
+        if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
+            product = productHelper.getTaggedProductBOById(productid);
+        } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
+            product = productHelper.getProductMasterBOById(productid);
+        }
+
+        if (product != null && product.getOwn() == isOwn) {
+            for (int j = 0; j < product.getLocations().size(); j++) {
+                if (product.getLocations().get(j).getLocationId() == locationId) {
+                    product.getLocations().get(j).setShelfPiece(shelfpqty);
+                    product.getLocations().get(j).setShelfCase(shelfcqty);
+                    product.getLocations().get(j).setShelfOuter(shelfoqty);
+                    product.getLocations().get(j).setWHPiece(whpqty);
+                    product.getLocations().get(j).setWHCase(whcqty);
+                    product.getLocations().get(j).setWHOuter(whoqty);
+                    product.setIsDistributed(isDistributed);
+                    product.setIsListed(isListed);
+                    product.getLocations().get(j).setReasonId(reasonID);
+                    product.getLocations().get(j).setAudit(audit);
+                    product.getLocations().get(j).setFacingQty(facing);
+                    product.getLocations().get(j).setIsPouring(pouring);
+                    product.getLocations().get(j).setCockTailQty(cocktail);
+                    product.getLocations().get(j).setAvailability(availability);
+                    return;
+                }
+            }
+        }
+
+
+    }
+
+    /**
+     * Update product Quantity for particular product Id.
+     *
+     * @param productid
+     * @param --qty
+     */
     private void setStockCheckQtyDetails(String productid, int shelfpqty,
                                          int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
                                          int locationId, int isDistributed, int isListed, int reasonID,
@@ -3103,8 +3233,8 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setCockTailQty(cocktail);
                     product.getLocations().get(j).setAvailability(availability);
 
-                    int totalStockQty=(shelfpqty+(shelfcqty*product.getCaseSize())+(shelfoqty*product.getOutersize()));
-                    product.setTotalStockQty(product.getTotalStockQty()+totalStockQty);
+                    int totalStockQty = (shelfpqty + (shelfcqty * product.getCaseSize()) + (shelfoqty * product.getOutersize()));
+                    product.setTotalStockQty(product.getTotalStockQty() + totalStockQty);
 
                     return;
                 }
@@ -3564,10 +3694,9 @@ public class BusinessModel extends Application {
                 } else if (idd == 5004) {
                     CreditNotePrintPreviewScreen frm = (CreditNotePrintPreviewScreen) ctx;
                     frm.finish();
-                }
-                else if (idd == 6004){
-                    CallAnalysisActivity  callAnalysisActivity = (CallAnalysisActivity)ctx;
-                    BusinessModel.loadActivity(ctx,DataMembers.actPlanning);
+                } else if (idd == 6004) {
+                    CallAnalysisActivity callAnalysisActivity = (CallAnalysisActivity) ctx;
+                    BusinessModel.loadActivity(ctx, DataMembers.actPlanning);
                     callAnalysisActivity.finish();
                 }
 
@@ -4435,6 +4564,9 @@ public class BusinessModel extends Application {
 
         } catch (Exception e) {
             Commons.printException("loadProductiveCallsConfigs " + e);
+        } finally {
+            if (!PRD_FOR_ORDER && !PRD_FOR_SKT)
+                PRD_FOR_ORDER = true;
         }
     }
 

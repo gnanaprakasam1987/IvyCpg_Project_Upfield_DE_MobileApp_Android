@@ -54,8 +54,9 @@ import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
-import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -71,7 +72,6 @@ import com.ivy.sd.png.model.CatalogOrderValueUpdate;
 import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -500,7 +500,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (orderTimer != null) {
             orderTimer.cancel();
         }
-        if(bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
+        if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
             unregisterReceiver(mWareHouseStockReceiver);
         }
     }
@@ -514,7 +514,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             Parcelable listState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
             pdt_recycler_view.getLayoutManager().onRestoreInstanceState(listState);
         }
-        if(bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
+        if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
             registerReceiver();
         }
     }
@@ -977,23 +977,38 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
         } else {
 
+            if (filtertext.length() > 0) {
+                for (ProductMasterBO productBO : items) {
+                    for (LevelBO levelBO : parentidList) {
+                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                                && productBO.getSIH() > 0)
+                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
 
-            for (ProductMasterBO productBO : items) {
-                for (LevelBO levelBO : parentidList) {
+                            if (productBO.getIsSaleable() == 1) {
+                                if (levelBO.getProductID() == productBO.getParentid()) {
+                                    //  filtertext = levelBO.getLevelName();
+                                    mylist.add(productBO);
+                                    fiveFilter_productIDs.add(productBO.getProductID());
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (ProductMasterBO productBO : items) {
                     if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
                             && productBO.getSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
 
                         if (productBO.getIsSaleable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-                                //  filtertext = levelBO.getLevelName();
-                                mylist.add(productBO);
-                                fiveFilter_productIDs.add(productBO.getProductID());
-                                break;
-                            }
+                            //  filtertext = levelBO.getLevelName();
+                            mylist.add(productBO);
+                            fiveFilter_productIDs.add(productBO.getProductID());
                         }
                     }
+
                 }
             }
         }
@@ -1091,7 +1106,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
         }
 
-        if(bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK){
+        if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
             menu.findItem(R.id.menu_refresh).setVisible(true);
         }
         return super.onPrepareOptionsMenu(menu);
@@ -1148,8 +1163,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             item.setVisible(false);
             supportInvalidateOptionsMenu();
             return true;
-        }
-        else if (i == R.id.menu_refresh) {
+        } else if (i == R.id.menu_refresh) {
             if (bmodel.isOnline()) {
                 new DownloadNewStock().execute();
             } else {
@@ -2206,6 +2220,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         }
 
     }
+
     private void registerReceiver() {
         IntentFilter filter = new IntentFilter(
                 StockAndOrder.wareHouseStockBroadCastReceiver.RESPONSE);
@@ -2277,11 +2292,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
             if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                String warehouseWebApi=bmodel.synchronizationHelper.downloadWareHouseStockURL();
-                if(!warehouseWebApi.equals("")){
+                String warehouseWebApi = bmodel.synchronizationHelper.downloadWareHouseStockURL();
+                if (!warehouseWebApi.equals("")) {
                     bmodel.synchronizationHelper.downloadWareHouseStock(warehouseWebApi);
-                }
-                else {
+                } else {
                     Toast.makeText(CatalogOrder.this, getResources().getString(R.string.url_not_mapped), Toast.LENGTH_SHORT).show();
                 }
             } else {

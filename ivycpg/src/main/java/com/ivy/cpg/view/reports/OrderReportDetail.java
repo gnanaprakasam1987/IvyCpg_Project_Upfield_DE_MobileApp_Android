@@ -383,10 +383,10 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                     holder.outerQty.setVisibility(View.GONE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                    holder.tvWeight.setVisibility(View.GONE);
+                    holder.tvWeight.setVisibility(View.INVISIBLE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
-                    holder.tvBatchNo.setVisibility(View.GONE);
+                    holder.tvBatchNo.setVisibility(View.INVISIBLE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP)
                     holder.tvwval.setVisibility(View.GONE);
