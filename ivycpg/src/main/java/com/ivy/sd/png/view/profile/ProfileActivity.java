@@ -1409,11 +1409,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     @Override
     protected void onStop() {
         super.onStop();
-        if(handler!=null)
+        if(handler!=null){
             handler.removeCallbacks(runnable);
             handler=null;
             runnable=null;
-
+        }
     }
 
     @Override
@@ -1983,9 +1983,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                     .getSubchannelid());
 
                     if (bmodel.productHelper.isSBDFilterAvaiable())
-                       // SBDHelper.getInstance(ProfileActivity.this).loadSBDFocusData();
-                        SBDHelper.getInstance(getApplicationContext()).loadSBDFocusData();
-
+                        SBDHelper.getInstance(ProfileActivity.this).loadSBDFocusData(getApplicationContext());
 
                     if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         bmodel.batchAllocationHelper.downloadBatchDetails(bmodel

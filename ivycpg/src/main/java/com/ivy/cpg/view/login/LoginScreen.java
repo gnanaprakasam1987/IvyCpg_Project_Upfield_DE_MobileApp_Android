@@ -139,8 +139,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
             /* Display version information on the login screen. */
         TextView version = (TextView) findViewById(R.id.version);
-        version.setText(getResources().getString(R.string.version)
-                + businessModel.getApplicationVersionName());
+        version.setText(getResources().getString(R.string.version) + businessModel.getApplicationVersionName());
         version.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         LinearLayout ll_footer = (LinearLayout) findViewById(R.id.ll_footer);

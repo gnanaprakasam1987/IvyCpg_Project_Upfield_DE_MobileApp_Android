@@ -331,7 +331,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             //updating FIT score for current retailer
             bmodel.updateCurrentFITscore(bmodel.getRetailerMasterBO());
 
-            SBDHelper.getInstance(this).calculateSBDDistribution();
+            SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext());
         } catch (Exception e) {
             Commons.printException(e);
 
@@ -615,7 +615,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         .equalsIgnoreCase("CallA11")) {
 
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    SBDHelper.getInstance(this).calculateSBDDistribution();
+                    SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext());
                     con.setMenuNumber(bmodel.getRetailerMasterBO()
                             .getSbdDistributionAchieve()
                             + "/"

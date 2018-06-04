@@ -214,8 +214,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     boolean isLatLongCameravailable = false;
 
     private ArrayList<InputFilter> inputFilters = new ArrayList<>();
-    static TextView dlExpDateTextView;
-    static TextView flExpDateTextView;
+     TextView dlExpDateTextView;
+     TextView flExpDateTextView;
     private AlertDialog alertDialog;
     private String str_mob_email = "", str_type = "";
     private boolean otpShown = false, isMobileNoVerfied = false, isEmailVerfied = false;
@@ -5117,7 +5117,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     }
 
     @SuppressLint("ValidFragment")
-    public static class DatePickerFragment extends DialogFragment implements
+    public  class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
         int year;
         int month;
@@ -5136,6 +5136,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
         }
 
+        @Override
         public void onDateSet(DatePicker view, int year, int month, int day) {
 
             Calendar selectedDate = new GregorianCalendar(year, month, day);

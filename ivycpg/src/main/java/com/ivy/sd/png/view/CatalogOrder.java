@@ -238,7 +238,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         screenCode = HomeScreenTwo.MENU_CATALOG_ORDER;
         OrderedFlag = HomeScreenTwo.MENU_CATALOG_ORDER;
-        SBDHelper.getInstance(this).calculateSBDDistribution(); //sbd calculation
+        SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext()); //sbd calculation
         sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
 
         Bundle extras = getIntent().getExtras();
@@ -257,7 +257,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 tempRField2 = (extras.getString("tempRField2") == null ? ""
                         : extras.getString("tempRField2"));
             }
-
 
         } else {
             OrderedFlag = (String) (savedInstanceState

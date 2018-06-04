@@ -23,7 +23,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar implements N
 
 
         bmodel = (BusinessModel) this.getApplicationContext();
-        bmodel.setContext(ProfileEditActivity.this);
+        bmodel.setContext(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if (toolbar != null) {
