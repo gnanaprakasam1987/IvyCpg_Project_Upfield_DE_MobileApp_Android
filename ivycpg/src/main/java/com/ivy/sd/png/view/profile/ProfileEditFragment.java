@@ -214,8 +214,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     boolean isLatLongCameravailable = false;
 
     private ArrayList<InputFilter> inputFilters = new ArrayList<>();
-     TextView dlExpDateTextView;
-     TextView flExpDateTextView;
+    static  TextView dlExpDateTextView=null;
+    static  TextView flExpDateTextView=null;
     private AlertDialog alertDialog;
     private String str_mob_email = "", str_type = "";
     private boolean otpShown = false, isMobileNoVerfied = false, isEmailVerfied = false;
@@ -313,6 +313,17 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             if (permissionStatus == PackageManager.PERMISSION_GRANTED)
                 bmodel.locationUtil.stopLocationListener();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("Tag", "onDestroyView() has been called.");
+
+        if(dlExpDateTextView!=null)
+            dlExpDateTextView=null;
+        if(flExpDateTextView!=null)
+            flExpDateTextView=null;
     }
 
     @SuppressLint("RestrictedApi")
@@ -5117,7 +5128,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     }
 
     @SuppressLint("ValidFragment")
-    public  class DatePickerFragment extends DialogFragment implements
+    public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
         int year;
         int month;
@@ -5144,18 +5155,18 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
                 if (code.equalsIgnoreCase("DLEXPDATE"))
                     dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+
                 else if (code.equalsIgnoreCase("FLEXPDATE"))
                     flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
                 this.year = year;
                 this.day = day;
                 this.month = month;
             } else {
-                Toast.makeText(getActivity(),
-                        "Select future date",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Select future date", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 
     public boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();

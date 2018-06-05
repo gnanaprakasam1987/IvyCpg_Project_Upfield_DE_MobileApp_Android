@@ -284,7 +284,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         if (getActivity().getIntent().getBooleanExtra("fromSettingScreen", false))
             bmodel.labelsMasterHelper.downloadLabelsMaster();
 
-        if (bmodel.mAttendanceHelper.checkLeaveAttendance())
+        if (bmodel.mAttendanceHelper.checkLeaveAttendance(getActivity()))
             isLeave_today = true;
 
         TextView userNameTv = (TextView) view.findViewById(R.id.tv_username);
@@ -785,9 +785,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             }
         } else if (menuItem.getConfigCode().equals(MENU_ATTENDANCE)) {
-            bmodel.mAttendanceHelper.downNonFieldReasons();
-            bmodel.mAttendanceHelper.downLeaveTypes();
-            bmodel.mAttendanceHelper.dynamicRadioButtton();
+            bmodel.mAttendanceHelper.downNonFieldReasons(getActivity());
+            bmodel.mAttendanceHelper.downLeaveTypes(getActivity());
+            bmodel.mAttendanceHelper.dynamicRadioButtton(getActivity());
             bmodel.configurationMasterHelper.setTradecoveragetitle(menuItem
                     .getMenuName());
             switchFragment(MENU_ATTENDANCE, menuItem.getMenuName());

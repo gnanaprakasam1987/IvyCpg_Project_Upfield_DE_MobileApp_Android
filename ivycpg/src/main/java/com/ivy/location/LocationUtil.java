@@ -313,9 +313,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
     protected void startLocationUpdates() {
         if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi
-                    .requestLocationUpdates(mGoogleApiClient, mLocationRequest,
-                            this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             Log.d(TAG, " Provider===> " + mProviderName + " Location Latitude ===> " + latitude + " Longitude===> " + longitude);
             if (iLocationUpdater != null)
                 iLocationUpdater.locationUpdate();

@@ -1805,7 +1805,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     }
 
     @SuppressLint("ValidFragment")
-    public class CustomFragment extends DialogFragment {
+    public  class CustomFragment extends DialogFragment {
         private String mTitle = "";
 
 

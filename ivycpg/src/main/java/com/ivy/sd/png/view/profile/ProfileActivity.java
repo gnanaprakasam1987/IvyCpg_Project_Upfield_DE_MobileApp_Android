@@ -695,11 +695,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
 
         try {
-            int length = bmodel.retailerMasterBO.getRetailerName().indexOf("/");
-            if (length == -1)
-                length = bmodel.retailerMasterBO.getRetailerName().length();
-            title = bmodel.retailerMasterBO.getRetailerName().substring(0,
-                    length);
+            if(bmodel.retailerMasterBO.getRetailerName()!=null ){
+                int length = bmodel.retailerMasterBO.getRetailerName().indexOf("/");
+                if (length == -1)
+                    length = bmodel.retailerMasterBO.getRetailerName().length();
+                title = bmodel.retailerMasterBO.getRetailerName().substring(0,
+                        length);
+            }
         } catch (Exception e) {
             Commons.printException(e);
         }

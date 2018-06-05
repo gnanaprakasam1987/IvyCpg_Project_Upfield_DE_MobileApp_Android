@@ -67,7 +67,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener, SyncContractor.SyncView {
+public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
+        implements View.OnClickListener, SyncContractor.SyncView {
 
     private BusinessModel bmodel;
     private Spinner spinnerNoOrderReason, spinnerNooCollectionReason, spinnerFeedback;
@@ -141,7 +142,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
         mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(this);
         mUploadHelper = UploadHelper.getInstance(this);
-        presenter = new UploadPresenterImpl(this, bmodel, this, mUploadHelper, mVanUnloadHelper);
+        presenter = new UploadPresenterImpl(getApplicationContext(), bmodel, this, mUploadHelper, mVanUnloadHelper);
 
 
         /** set handler for the Timer class */

@@ -66,7 +66,8 @@ import java.io.FilenameFilter;
 import java.util.HashMap;
 
 
-public class LoginScreen extends IvyBaseActivityNoActionBar implements ApplicationConfigs, LoginContractor.LoginView {
+public class LoginScreen extends IvyBaseActivityNoActionBar
+        implements ApplicationConfigs, LoginContractor.LoginView {
 
     private BusinessModel businessModel;
 

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -495,7 +496,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                     if (isRuleAvailable) {
                         bmodel.mAttendanceHelper.computeLeaves(leaveTypeLovId,
                                 DateUtil.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat),
-                                DateUtil.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat), 0, session);
+                                DateUtil.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat), 0, session,getApplicationContext());
                         ArrayList<LeaveRuleBO> multipleLeaves = bmodel.mAttendanceHelper.getLeavesBo();
                         if (!multipleLeaves.isEmpty()) {
                             if (multipleLeaves.get(0).isAvailable()) {
@@ -546,7 +547,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             if ((leaveTypeLovId != 0 && isLeave) ||
                     (!btnTempToDate.equals(getResources().getString(R.string.select))
                             && !btn_frmDate.getText().toString().equals(getResources().getString(R.string.select)))) {
-                if (!bmodel.mAttendanceHelper.getCheckAlreadyApplied(parentReasonId, btn_frmDate.getText().toString(), btnTempToDate,session)) {
+                if (!bmodel.mAttendanceHelper.getCheckAlreadyApplied(parentReasonId, btn_frmDate.getText().toString(), btnTempToDate,session,getApplicationContext())) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
                     Date toDate;
                     Date frmDate;
@@ -655,9 +656,9 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             try {
                 bmodel.mAttendanceHelper.setNonFieldList(nonFieldnewList);
                 if (isLeave && isRuleAvailable)
-                    bmodel.mAttendanceHelper.saveLeaveDetails(nonfieldBO.getTotalDays(), leaveTypeLovId);
+                    bmodel.mAttendanceHelper.saveLeaveDetails(nonfieldBO.getTotalDays(), leaveTypeLovId,getApplicationContext());
                 else
-                    bmodel.mAttendanceHelper.saveNonFieldWorkDetails();
+                    bmodel.mAttendanceHelper.saveNonFieldWorkDetails(getApplicationContext());
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -711,8 +712,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             if (bmodel.configurationMasterHelper.ALLOW_BACK_DATE || selectedDate.getTimeInMillis() >= calendar.getTimeInMillis()) {
                 if ("datePicker1".equals(this.getTag())) {
                     if (isLeave) {
-                        LeaveRuleBO leaveRuleBO = bmodel.mAttendanceHelper.checkRule(leaveTypeLovId,
-                                DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat));
+                        LeaveRuleBO leaveRuleBO = bmodel.mAttendanceHelper.checkRule(leaveTypeLovId, DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),getActivity().getApplicationContext());
                         if (leaveRuleBO != null) {
                             if (leaveRuleBO.getNoticeDays() == 0 && leaveRuleBO.getEffectiveTo().length() == 0) {
                                 isRuleAvailable = false;
@@ -720,7 +720,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                                         selectedDate.getTime(), outPutDateFormat));
                                 if (!isSingleDay &&
                                         !btn_toDate.getText().toString().equals(getResources().getString(R.string.select)))
-                                    updateTotalDays(selectedDate);
+                                    updateTotalDays(selectedDate,getActivity().getApplicationContext());
 
                                 if (isSingleDay) {
                                     String strNoOfDays = "" + getNoofDays(btn_frmDate.getText().toString(), btn_frmDate.getText().toString());
@@ -729,8 +729,8 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                             } else {
                                 isRuleAvailable = true;
                                 if (isSingleDay) {
-                                    if (bmodel.mAttendanceHelper.isHoliday(DateUtil.convertDateObjectToRequestedFormat(
-                                            selectedDate.getTime(), outPutDateFormat)))
+                                    if (bmodel.mAttendanceHelper.isHoliday(DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
+                                            getActivity().getApplicationContext()))
                                         Toast.makeText(getActivity(), getResources().getString(R.string.text_select_holiday), Toast.LENGTH_SHORT).show();
                                     else if (bmodel.mAttendanceHelper.isWeekOff(DateUtil.convertDateObjectToRequestedFormat(
                                             selectedDate.getTime(), outPutDateFormat)))
@@ -739,8 +739,10 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                                         Toast.makeText(getActivity(), getResources().getString(R.string.text_initmation_period), Toast.LENGTH_SHORT).show();
                                     else {
                                         bmodel.mAttendanceHelper.computeLeaves(leaveTypeLovId,
-                                                DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
-                                                DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat), 0, session);
+                                                DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(),
+                                                        outPutDateFormat), DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(),
+                                                        outPutDateFormat), 0, session,getActivity().getApplicationContext());
+
                                         ArrayList<LeaveRuleBO> multipleLeaves = bmodel.mAttendanceHelper.getLeavesBo();
                                         if (!multipleLeaves.isEmpty()) {
                                             if (multipleLeaves.get(0).isAvailable()) {
@@ -761,7 +763,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                                         btn_frmDate.setText(DateUtil.convertDateObjectToRequestedFormat(
                                                 selectedDate.getTime(), outPutDateFormat));
                                         if (!btn_toDate.getText().toString().equals(getResources().getString(R.string.select)))
-                                            updateTotalDays(selectedDate);
+                                            updateTotalDays(selectedDate,getActivity().getApplicationContext());
                                     }
                                 }
                             }
@@ -780,7 +782,8 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                     } else if (isRuleAvailable && isLeave) {
                         bmodel.mAttendanceHelper.computeLeaves(leaveTypeLovId,
                                 DateUtil.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat),
-                                DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat), 1, session);
+                                DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
+                                1, session,getActivity().getApplicationContext());
                         ArrayList<LeaveRuleBO> multipleLeaves = bmodel.mAttendanceHelper.getLeavesBo();
                         if (!multipleLeaves.isEmpty()) {
                             boolean isAvailable = true;
@@ -828,13 +831,13 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             };
 
 
-    private static void updateTotalDays(Calendar selectedDate) {
+    private static void updateTotalDays(Calendar selectedDate, Context context) {
         boolean isAvailable = true;
         double total = 0;
         if (!btn_toDate.getText().toString().equals(select)) {
             bmodel.mAttendanceHelper.computeLeaves(leaveTypeLovId,
-                    DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
-                    DateUtil.convertFromServerDateToRequestedFormat(btn_toDate.getText().toString(), outPutDateFormat), 1, session);
+                    DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(),outPutDateFormat),
+                    DateUtil.convertFromServerDateToRequestedFormat(btn_toDate.getText().toString(), outPutDateFormat), 1, session,context);
             ArrayList<LeaveRuleBO> multipleLeaves = bmodel.mAttendanceHelper.getLeavesBo();
             for (LeaveRuleBO obj : multipleLeaves) {
                 if (!obj.isAvailable()) {
