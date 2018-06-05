@@ -184,7 +184,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
     }
 
     private void showUserDialog() {
-        childList = bmodel.mAttendanceHelper.loadChildUserList();
+        childList = bmodel.mAttendanceHelper.loadChildUserList(getActivity().getApplicationContext());
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();
@@ -233,7 +233,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
     }
 
     private void loadListData() {
-        bmodel.mAttendanceHelper.downloadNonFieldDetails();
+        bmodel.mAttendanceHelper.downloadNonFieldDetails(getActivity().getApplicationContext());
         nonFieldList = bmodel.mAttendanceHelper.getNonFieldList();
 
         //data empty or not
@@ -433,7 +433,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.mAttendanceHelper.deleteNonfield();
+                bmodel.mAttendanceHelper.deleteNonfield(getActivity().getApplicationContext());
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);

@@ -74,7 +74,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     @Override
     public void validateAndUpload() {
 
-        if (mUploadHelper.isAttendanceCompleted()) {
+        if (mUploadHelper.isAttendanceCompleted(mContext.getApplicationContext())) {
             if (mBModel.isOnline()) {
 
                 if (!mBModel.configurationMasterHelper.IS_INVOICE
@@ -131,8 +131,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
 
         mBModel.mEmptyReconciliationhelper.updateTable();
         if (mBModel.configurationMasterHelper.CALCULATE_UNLOAD) {
-            mVanUnloadHelper
-                    .vanUnloadAutomatically();
+            mVanUnloadHelper.vanUnloadAutomatically(mContext.getApplicationContext());
         }
 
         if (mBModel.synchronizationHelper.checkDataForSync()
@@ -217,8 +216,8 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
 
     private void startSync(int callFlag) {
         Commons.print(" callFlag : " + callFlag);
-        if (mBModel.mAttendanceHelper.checkMenuInOut())
-            mBModel.mAttendanceHelper.updateAttendaceDetailInTime();
+        if (mBModel.mAttendanceHelper.checkMenuInOut(mContext.getApplicationContext()))
+            mBModel.mAttendanceHelper.updateAttendaceDetailInTime(mContext.getApplicationContext());
 
        view.showProgressUploading();
 

@@ -248,7 +248,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }
 
     private void showUserDialog() {
-        childList = bmodel.mAttendanceHelper.loadChildUserList();
+        childList = bmodel.mAttendanceHelper.loadChildUserList(getActivity().getApplicationContext());
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();

@@ -5815,7 +5815,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
-                String rid = mUploadHelper.uploadNewOutlet(getHandler());
+                String rid = mUploadHelper.uploadNewOutlet(getHandler(),getActivity().getApplicationContext());
 
                 if (rid.equals("-1")) {
                     getHandler().sendEmptyMessage(

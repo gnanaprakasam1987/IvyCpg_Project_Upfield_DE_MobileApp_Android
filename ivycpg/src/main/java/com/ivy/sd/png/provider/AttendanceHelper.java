@@ -28,7 +28,6 @@ import java.util.Vector;
 
 public class AttendanceHelper {
 
-    private Context context;
     private BusinessModel bmodel;
     private static AttendanceHelper instance = null;
     private Vector<AttendanceBO> reasonList = new Vector<AttendanceBO>();
@@ -65,7 +64,6 @@ public class AttendanceHelper {
     }
 
     protected AttendanceHelper(Context context) {
-        this.context = context;
         bmodel = (BusinessModel) context;
     }
 
@@ -79,11 +77,11 @@ public class AttendanceHelper {
     /*
      * DownLoad the Reason for Attendance
      */
-    public void downloadAttendanceReasons() {
+    public void downloadAttendanceReasons(Context context) {
         reasonList.clear();
         try {
             AttendanceBO reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
@@ -115,12 +113,12 @@ public class AttendanceHelper {
         }
     }
 
-    public boolean checkLeaveAttendance() {
+    public boolean checkLeaveAttendance(Context context) {
         try {
             String sessionType = "";
             StringBuilder query = new StringBuilder();
             String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
@@ -173,10 +171,10 @@ public class AttendanceHelper {
 
     }
 
-    public boolean loadAttendanceMaster() {
+    public boolean loadAttendanceMaster(Context context) {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -201,9 +199,10 @@ public class AttendanceHelper {
      * Save Attendance Details
      */
     public boolean saveAttendanceDetails(String date, int atdID, int reasonid,
-                                         String fromDate, String toDate, String atdCode) {
+                                         String fromDate, String toDate,
+                                         String atdCode ,Context context) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -230,11 +229,11 @@ public class AttendanceHelper {
     /**
      * Down load Non fiels Reasons
      */
-    public void downNonFieldReasons() {
+    public void downNonFieldReasons(Context context) {
         try {
             reasonBOByreasonID = new HashMap<Integer, NonFieldBO>();
             nonFieldReasonList.clear();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListId,ListCode,ListName,isRequired,ParentId from StandardListMaster where ListType='ATTENDANCE_TYPE'");
@@ -270,11 +269,11 @@ public class AttendanceHelper {
     }
 
 
-    public void downNonFieldTwoReasons() {
+    public void downNonFieldTwoReasons(Context context) {
         try {
             reasonBOByreasonID = new HashMap<Integer, NonFieldBO>();
             nonFieldReasonList.clear();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
@@ -315,10 +314,10 @@ public class AttendanceHelper {
 
     }
 
-    public String getReasonName(String id) {
+    public String getReasonName(String id,Context context) {
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListName FROM StandardListMaster"
@@ -339,10 +338,10 @@ public class AttendanceHelper {
     /**
      * Download Session Types
      */
-    public void dynamicRadioButtton() {
+    public void dynamicRadioButtton(Context context) {
         try {
             lstRadioBtn.clear();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
@@ -415,9 +414,9 @@ public class AttendanceHelper {
     /**
      * Save Non field Work Details
      */
-    public boolean saveNonFieldWorkDetails() {
+    public boolean saveNonFieldWorkDetails(Context context) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -463,15 +462,15 @@ public class AttendanceHelper {
     /**
      * Down load Non Field Details After saving add details
      */
-    public void downloadNonFieldDetails() {
-        getMonthList();
+    public void downloadNonFieldDetails(Context context) {
+        getMonthList(context);
         try {
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
             if (bmodel.configurationMasterHelper.IS_CNT01) {
                 userid = bmodel.getSelectedUserId();
             }
             nonFieldList.clear();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
@@ -531,10 +530,10 @@ public class AttendanceHelper {
      *
      * @return bool
      */
-    public boolean deleteNonfield() {
+    public boolean deleteNonfield(Context context) {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             for (NonFieldBO nonFeildBo : getNonFieldList()) {
@@ -553,11 +552,11 @@ public class AttendanceHelper {
     }
 
 
-    public boolean checkMenuAttendCS() {
+    public boolean checkMenuAttendCS(Context context) {
 
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -580,10 +579,10 @@ public class AttendanceHelper {
         return false;
     }
 
-    public boolean checkMenuInOut() {
+    public boolean checkMenuInOut(Context context) {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -607,7 +606,7 @@ public class AttendanceHelper {
         return false;
     }
 
-    public void downloadNonFieldTwoDetails() {
+    public void downloadNonFieldTwoDetails(Context context) {
         getNonFieldTwoBoList().clear();
 
         int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
@@ -617,7 +616,7 @@ public class AttendanceHelper {
 
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -674,12 +673,12 @@ public class AttendanceHelper {
         getNonFieldTwoBoList().add(nonFieldTwoBo);
     }
 
-    public void saveNonFieldWorkTwoDetail(NonFieldTwoBo nonFieldTwoBo) {
+    public void saveNonFieldWorkTwoDetail(NonFieldTwoBo nonFieldTwoBo,Context context) {
 
         if (nonFieldTwoBo != null && nonFieldTwoBo.getId() != null) {
             DBUtil db = null;
             try {
-                db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
                 db.createDataBase();
                 db.openDataBase();
 
@@ -711,14 +710,14 @@ public class AttendanceHelper {
         Commons.print("Attendance Helper," + "Save : " + nonFieldTwoBo);
     }
 
-    public void updateNonFieldWorkTwoDetail(NonFieldTwoBo nonFieldTwoBo) {
+    public void updateNonFieldWorkTwoDetail(NonFieldTwoBo nonFieldTwoBo,Context context) {
         //getNonFieldTwoBoList().add(nonFieldTwoBo);
         Commons.print("Attendance Helper," + "Update  : " + nonFieldTwoBo);
 
         if (nonFieldTwoBo != null && nonFieldTwoBo.getRowid() > 0) {
             DBUtil db = null;
             try {
-                db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
                 db.createDataBase();
                 db.openDataBase();
 
@@ -791,7 +790,7 @@ public class AttendanceHelper {
     }
 
 
-    public void updateAttendaceDetailInTime() {
+    public void updateAttendaceDetailInTime(Context context) {
         DBUtil db = null;
         String uid = "";
         for (int i = 0; i < getNonFieldTwoBoList().size(); i++)
@@ -799,7 +798,7 @@ public class AttendanceHelper {
                 uid = getNonFieldTwoBoList().get(i).getId();
 
 
-        db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
 
@@ -812,10 +811,10 @@ public class AttendanceHelper {
         db.closeDB();
     }
 
-    public void downLeaveTypes() {
+    public void downLeaveTypes(Context context) {
         try {
             leaveTypeByID = new HashMap<Integer, LeaveSpinnerBO>();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListId,ListName,Flex1 from StandardListMaster where ListType='LEAVE_TYPE'");
@@ -856,10 +855,10 @@ public class AttendanceHelper {
 
     }
 
-    public LeaveRuleBO checkRule(int lovId, String fromDate) {
+    public LeaveRuleBO checkRule(int lovId, String fromDate,Context context) {
         LeaveRuleBO leaveRuleBO = new LeaveRuleBO();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT EffectiveTo,NoticeDays from LeaveRule " +
@@ -884,10 +883,10 @@ public class AttendanceHelper {
         return leaveRuleBO;
     }
 
-    public boolean isHoliday(String date) {
+    public boolean isHoliday(String date,Context context) {
         boolean isHoliday = false;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT Description from HolidayMaster " +
@@ -934,10 +933,10 @@ public class AttendanceHelper {
     }
 
 
-    public void computeLeaves(int lovId, String fromDate, String toDate, int flag, int session) {
+    public void computeLeaves(int lovId, String fromDate, String toDate, int flag, int session,Context context) {
         leavesBo = new ArrayList<LeaveRuleBO>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT LeaveType_LovId,FrequencyType,EffectiveFrom,EffectiveTo,AllowedDays,NoticeDays,IsAutoApproval from LeaveRule " +
@@ -986,11 +985,11 @@ public class AttendanceHelper {
                     }
                     if (flag == 1) {
                         for (int i = dates.size() - 1; i >= 0; i--) {
-                            if (isHoliday(dates.get(i).toString()) || isWeekOff(dates.get(i).toString()))
+                            if (isHoliday(dates.get(i).toString(),context.getApplicationContext()) || isWeekOff(dates.get(i).toString()))
                                 dates.remove(i);
                         }
 
-                        double appliedleaves = getAlreadyAppliedLeaves(leaveRuleBO);
+                        double appliedleaves = getAlreadyAppliedLeaves(leaveRuleBO,context);
                         Commons.print("appliedleaves," + "" + appliedleaves);
                         double total_leaves = appliedleaves + dates.size();
                         Commons.print("total_leaves," + "" + total_leaves);
@@ -1002,7 +1001,7 @@ public class AttendanceHelper {
                             leaveRuleBO.setAvailable(false);
                         }
                     } else {
-                        double appliedleaves = getAlreadyAppliedLeaves(leaveRuleBO);
+                        double appliedleaves = getAlreadyAppliedLeaves(leaveRuleBO,context);
                         double session_leave = getSessionLeaveById(session);
                         Commons.print("appliedleaves," + "" + appliedleaves);
                         double total_leaves = appliedleaves + session_leave;
@@ -1028,11 +1027,11 @@ public class AttendanceHelper {
         }
     }
 
-    private float getAlreadyAppliedLeaves(LeaveRuleBO ruleBO) {
+    private float getAlreadyAppliedLeaves(LeaveRuleBO ruleBO,Context context) {
         float leaves = 0;
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT AD.Tid, LD.ApplyDays from AttendanceDetail AD " +
@@ -1060,9 +1059,9 @@ public class AttendanceHelper {
     /**
      * Save Leave Details
      */
-    public boolean saveLeaveDetails(double totaldays, int lovid) {
+    public boolean saveLeaveDetails(double totaldays, int lovid,Context context) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -1126,7 +1125,7 @@ public class AttendanceHelper {
     }
 
     //cmd for to check leave already applied for given date
-    public boolean getCheckAlreadyApplied(int atdId, String fromDate, String toDate, int sessionId) {
+    public boolean getCheckAlreadyApplied(int atdId, String fromDate, String toDate, int sessionId,Context context) {
         boolean is_applied = false;
         String sesCode = "";
         int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
@@ -1134,7 +1133,7 @@ public class AttendanceHelper {
             if (bmodel.configurationMasterHelper.IS_CNT01) {
                 userid = bmodel.getSelectedUserId();
             }
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT Tid from AttendanceDetail " +
@@ -1242,9 +1241,9 @@ public class AttendanceHelper {
      *
      * @return - Manoht Name List
      */
-    ArrayList<String> getMonthList() {
-        String date1 = getTopDate();
-        String date2 = getEndDate();
+    ArrayList<String> getMonthList(Context context) {
+        String date1 = getTopDate(context);
+        String date2 = getEndDate(context);
 
         dateList = new ArrayList<>();
         DateFormat formater1 = new SimpleDateFormat("yyyy/MM/dd");
@@ -1276,11 +1275,11 @@ public class AttendanceHelper {
      *
      * @return -string Highest Date
      */
-    String getTopDate() {
+    String getTopDate(Context context) {
         String date = "";
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT Fromdate FROM AttendanceDetail ORDER BY Fromdate  asc LIMIT 1");
@@ -1307,11 +1306,11 @@ public class AttendanceHelper {
      *
      * @return -string Lowest Date
      */
-    String getEndDate() {
+    String getEndDate(Context context) {
         String date = "";
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT Fromdate FROM AttendanceDetail ORDER BY Fromdate  desc LIMIT 1");
@@ -1354,11 +1353,11 @@ public class AttendanceHelper {
         return monthName;
     }
 
-    public ArrayList<StandardListBO> loadChildUserList() {
+    public ArrayList<StandardListBO> loadChildUserList(Context context) {
         ArrayList<StandardListBO> childUserBOs = new ArrayList<>();
         StandardListBO childUserBO;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
@@ -1379,6 +1378,7 @@ public class AttendanceHelper {
         }
         return childUserBOs;
     }
+
 
 
 }

@@ -21,15 +21,13 @@ import java.util.Vector;
 
 public class SBDHelper {
 
-    private Context mContext;
     private BusinessModel bmodel;
     private static SBDHelper instance = null;
     private HashMap<String, HashMap<Integer, Integer>> mProductIdListByGroupName;
     private HashMap<String, HashMap<Integer, Integer>> mHistoryOrderedListByGroupName;
     private HashMap<String, String> mParentHierarchyByProductId = new HashMap<>();
 
-    public SBDHelper(Context context) {
-        mContext = context;
+    private SBDHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -44,10 +42,9 @@ public class SBDHelper {
      * This method will set whether product is RPS product or not. Since its
      * based on the subchannel we are setting this after selecting the retailer.
      */
-    public void loadSBDFocusData() {
+    public void loadSBDFocusData(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
@@ -104,7 +101,7 @@ public class SBDHelper {
     }
 
 
-    public HashMap<String, HashMap<String, String>> calculateSBDDistribution() {
+    public HashMap<String, HashMap<String, String>> calculateSBDDistribution(Context mContext) {
         HashMap<String, HashMap<String, String>> mSBDGapProductsByGroup = new HashMap<>();
         try {
             HashMap<String, HashMap<Integer, Integer>> mProductIdListByGroupName = new HashMap<>();
@@ -403,7 +400,7 @@ public class SBDHelper {
         this.mParentHierarchyByProductId = mParentHierarchyByProductId;
     }
 
-    public void saveDayTarget(int kpiid, double target){
+    public void saveDayTarget(int kpiid, double target,Context mContext){
 
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
