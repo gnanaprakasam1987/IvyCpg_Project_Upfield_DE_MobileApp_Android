@@ -1456,7 +1456,7 @@ public class AssetTrackingHelper {
 
 
             String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
-            String AssetImageInfoColumns = "uid,AssetID,ImageName,ProductId,LocId";
+            String AssetImageInfoColumns = "uid,AssetID,ImageName,PId,LocId";
             if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 assetHeaderColumns = assetHeaderColumns + ",Weightage,Score";
                 AssetDetailColumns = AssetDetailColumns + ",Score";
