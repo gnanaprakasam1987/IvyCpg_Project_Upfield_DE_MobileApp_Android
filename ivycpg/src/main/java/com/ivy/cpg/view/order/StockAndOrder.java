@@ -4985,12 +4985,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
         }
         menu.findItem(R.id.menu_next).setVisible(false);
-        if (drawerOpen)
-            menu.clear();
+
 
         if(bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK){
             menu.findItem(R.id.menu_refresh).setVisible(true);
         }
+        if (drawerOpen)
+            menu.clear();
 
         return super.onPrepareOptionsMenu(menu);
     }

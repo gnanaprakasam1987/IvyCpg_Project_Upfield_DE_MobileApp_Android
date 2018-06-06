@@ -57,6 +57,9 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.ivy.appmodule.AppComponent;
+import com.ivy.appmodule.AppModule;
+import com.ivy.appmodule.DaggerAppComponent;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
@@ -722,6 +725,8 @@ public class BusinessModel extends Application {
         this.printSequenceLevelID = printSequenceLevelID;
     }
 
+    private AppComponent appComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -735,11 +740,17 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
+            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+            appComponent.inject(this);
 
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
 
     @Override
@@ -6323,7 +6334,7 @@ public class BusinessModel extends Application {
 
     public void getRetailerWiseSellerType() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
