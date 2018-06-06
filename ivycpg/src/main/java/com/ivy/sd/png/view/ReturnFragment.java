@@ -236,18 +236,31 @@ public class ReturnFragment extends IvyBaseFragment {
         ArrayList<String> mSelectedReasonIds = new ArrayList<>();
         ArrayList<String> mSelectedInvNos = new ArrayList<>();
         ArrayList<String> mSelectedLotNos = new ArrayList<>();
+        ArrayList<Integer> mSelectedQty = new ArrayList<>();
+
+        boolean invFlag;
+        boolean isLot;
 
         for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
             if (sb.getReasonID() != null && !sb.getReasonID().equals("0")) {
 
+                invFlag = true;
+                isLot = true;
+                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER)
+                    invFlag = mSelectedInvNos.contains(sb.getInvoiceno());
+                if (salesReturnHelper.SHOW_LOTNUMBER)
+                    isLot = mSelectedLotNos.contains(sb.getLotNumber());
+
                 if (mSelectedReasonIds.contains(sb.getReasonID())
-                        && (salesReturnHelper.SHOW_SR_INVOICE_NUMBER && mSelectedInvNos.contains(sb.getInvoiceno()))
-                        && (salesReturnHelper.SHOW_LOTNUMBER && mSelectedLotNos.contains(sb.getLotNumber()))) {
+                        && invFlag
+                        && mSelectedQty.contains(sb.getPieceQty())
+                        && isLot) {
                     return true;
                 } else {
                     mSelectedReasonIds.add(sb.getReasonID());
                     mSelectedInvNos.add(sb.getInvoiceno());
                     mSelectedLotNos.add(sb.getLotNumber());
+                    mSelectedQty.add(sb.getPieceQty());
                 }
             }
         }

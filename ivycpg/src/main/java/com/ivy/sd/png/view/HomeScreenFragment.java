@@ -48,10 +48,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
-import com.ivy.cpg.view.dashboard.olddashboard.DashboardFragment;
 import com.ivy.cpg.view.dashboard.IncentiveDashboardFragment;
-import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.dashboard.olddashboard.DashboardFragment;
 import com.ivy.cpg.view.dashboard.olddashboard.SkuWiseTargetFragment;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
@@ -88,7 +88,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener, PlanningMapFragment.DataPulling, ChannelSelectionDialogFragment.ChannelSelectionListener {
+public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener, PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
     private BusinessModel bmodel;
 
     //used to save the photo
@@ -146,7 +146,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_BACKUP_SELLER = "MENU_BACKUP_SELLER";
     private static final String MENU_SUPERVISOR_REALTIME = "MENU_SUPERVISOR_REALTIME";
     private static final String MENU_SUPERVISOR_MOVEMENT = "MENU_SUPERVISOR_MOVEMENT";
-    private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_CALLANALYSIS";
+    private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_ACTIVITY";
 //    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
 
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
@@ -205,7 +205,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final int CAMERA_REQUEST_CODE = 1;
     private String imageFileName;
     private ListView listView;
-    private ChannelSelectionDialogFragment dialogFragment;
+    private ChannelSelectionDialog dialogFragment;
     private ImageButton chatBtn, divStatusBtn, feedBackBtn;
 
 
@@ -281,8 +281,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         // Load the HHTMenuTable
         bmodel.configurationMasterHelper.downloadMainMenu();
+        if (getActivity().getIntent().getBooleanExtra("fromSettingScreen", false))
+            bmodel.labelsMasterHelper.downloadLabelsMaster();
 
-        if (bmodel.mAttendanceHelper.checkLeaveAttendance())
+        if (bmodel.mAttendanceHelper.checkLeaveAttendance(getActivity()))
             isLeave_today = true;
 
         TextView userNameTv = (TextView) view.findViewById(R.id.tv_username);
@@ -370,7 +372,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(),
-                        UserSettingsActivity.class);
+                        UserSettingsActivity.class).putExtra("fromHomeScreen", true);
                 startActivity(i);
             }
         });
@@ -783,9 +785,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             }
         } else if (menuItem.getConfigCode().equals(MENU_ATTENDANCE)) {
-            bmodel.mAttendanceHelper.downNonFieldReasons();
-            bmodel.mAttendanceHelper.downLeaveTypes();
-            bmodel.mAttendanceHelper.dynamicRadioButtton();
+            bmodel.mAttendanceHelper.downNonFieldReasons(getActivity());
+            bmodel.mAttendanceHelper.downLeaveTypes(getActivity());
+            bmodel.mAttendanceHelper.dynamicRadioButtton(getActivity());
             bmodel.configurationMasterHelper.setTradecoveragetitle(menuItem
                     .getMenuName());
             switchFragment(MENU_ATTENDANCE, menuItem.getMenuName());
@@ -827,13 +829,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 mChannelList = bmodel.newOutletHelper.getChannelList();
                 if (mChannelList != null && mChannelList.size() > 0) {
                     FragmentManager fm = getActivity().getSupportFragmentManager();
-                    dialogFragment = new ChannelSelectionDialogFragment(mChannelList);
+                    dialogFragment = new ChannelSelectionDialog(getActivity(), mChannelList, bmodel.newOutletHelper.getLevelame());
                     dialogFragment.setChannelSelectionListener(this);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title", bmodel.newOutletHelper.getLevelame());
-                    bundle.putString("screentitle", menuItem.getMenuName());
-                    dialogFragment.setArguments(bundle);
-                    dialogFragment.show(fm, "Sample Fragment");
+                    dialogFragment.show();
                     dialogFragment.setCancelable(false);
                 } else {
                     Toast.makeText(getActivity(), "Channel Not Mapped ", Toast.LENGTH_SHORT).show();
@@ -1544,8 +1542,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bmodel.userMasterHelper.downloadBackupSeller();
                 switchFragment(MENU_BACKUP_SELLER, menuItem.getMenuName());
             }
-        }
-        else if (menuItem.getConfigCode().equals(MENU_SUPERVISOR_REALTIME)
+        } else if (menuItem.getConfigCode().equals(MENU_SUPERVISOR_REALTIME)
                 || menuItem.getConfigCode().equals(MENU_SUPERVISOR_MOVEMENT)
                 || menuItem.getConfigCode().equals(MENU_SUPERVISOR_CALLANALYSIS)) {
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
@@ -1765,12 +1762,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (supervisorMapRFragment != null && (fragmentName.equals(MENU_SUPERVISOR_REALTIME))
                 && supervisorMapRFragment.isVisible()) {
             return;
-        }
-        else if (supervisorMapMFragment != null && (fragmentName.equals(MENU_SUPERVISOR_MOVEMENT))
+        } else if (supervisorMapMFragment != null && (fragmentName.equals(MENU_SUPERVISOR_MOVEMENT))
                 && supervisorMapMFragment.isVisible()) {
             return;
-        }
-        else if (supervisorMapCFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
+        } else if (supervisorMapCFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
                 && supervisorMapCFragment.isVisible()) {
             return;
         }
@@ -1848,11 +1843,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(taskFragment);
         if (backUpSellerFragment != null)
             ft.remove(backUpSellerFragment);
-        if(supervisorMapRFragment!=null)
+        if (supervisorMapRFragment != null)
             ft.remove(supervisorMapRFragment);
-        if(supervisorMapMFragment!=null)
+        if (supervisorMapMFragment != null)
             ft.remove(supervisorMapMFragment);
-        if(supervisorMapCFragment!=null)
+        if (supervisorMapCFragment != null)
             ft.remove(supervisorMapCFragment);
 
         Bundle bndl;
@@ -2176,7 +2171,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_SUPERVISOR_REALTIME:
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                bndl.putInt("TrackingType",0);
+                bndl.putInt("TrackingType", 0);
                 fragment = new SupervisorMapFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -2185,7 +2180,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_SUPERVISOR_MOVEMENT:
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                bndl.putInt("TrackingType",1);
+                bndl.putInt("TrackingType", 1);
                 fragment = new SupervisorMapFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -2194,7 +2189,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_SUPERVISOR_CALLANALYSIS:
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                bndl.putInt("TrackingType",2);
+                bndl.putInt("TrackingType", 2);
                 fragment = new SupervisorMapFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,

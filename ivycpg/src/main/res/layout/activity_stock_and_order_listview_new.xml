@@ -459,7 +459,7 @@
 
             <LinearLayout
                 android:id="@+id/llRepCase"
-                android:layout_width="@dimen/widht_medium"
+                android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
@@ -493,7 +493,7 @@
 
             <LinearLayout
                 android:id="@+id/llRepOu"
-                android:layout_width="@dimen/widht_medium"
+                android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
@@ -527,7 +527,7 @@
 
             <LinearLayout
                 android:id="@+id/llRepPc"
-                android:layout_width="@dimen/widht_medium"
+                android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
@@ -552,6 +552,40 @@
 
                 <TextView
                     android:id="@+id/rep_pcs"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/zero" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layout_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_5px"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/text_stock_title"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:tag="item_sr_piece"
+                    android:text="@string/stock" />
+
+                <TextView
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_1dp"
+                    android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:maxLines="1"
+                    android:text=":" />
+
+                <TextView
+                    android:id="@+id/text_stock"
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -826,12 +860,12 @@
                         android:tag="sales_return"
                         android:text="@string/sr" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/stock_and_order_listview_sales_return_qty"
-                        style="?attr/customListItemSecondary"
+                        style="@style/EditText_ListItem"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="left|center"
+                        android:gravity="start"
                         android:text="@string/zero"
                         android:maxLength="8"
                         android:visibility="gone"/>

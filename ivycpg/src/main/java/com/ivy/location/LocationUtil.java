@@ -22,6 +22,8 @@ import com.google.android.gms.location.LocationServices;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 
+import java.text.DecimalFormat;
+
 public class LocationUtil implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "LocationUtil";
@@ -168,8 +170,8 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
             } else
                 Log.d(TAG, "Location Manager latitude :" + latitude + ",Location Manager longitude :" + longitude);
 
-            latitude = loc.getLatitude();
-            longitude = loc.getLongitude();
+            latitude = doubleConversion(loc.getLatitude());
+            longitude = doubleConversion(loc.getLongitude());
             accuracy = loc.getAccuracy();
             mProviderName = loc.getProvider();
 
@@ -294,8 +296,8 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
         } else
             Log.d(TAG, "Fused Api latitude :" + latitude + ",Fused Api longitude :" + longitude);
 
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
+        latitude = doubleConversion(location.getLatitude());
+        longitude = doubleConversion(location.getLongitude());
         accuracy = location.getAccuracy();
         mProviderName = location.getProvider();
         if (iLocationUpdater != null)
@@ -311,9 +313,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
     protected void startLocationUpdates() {
         if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi
-                    .requestLocationUpdates(mGoogleApiClient, mLocationRequest,
-                            this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             Log.d(TAG, " Provider===> " + mProviderName + " Location Latitude ===> " + latitude + " Longitude===> " + longitude);
             if (iLocationUpdater != null)
                 iLocationUpdater.locationUpdate();
@@ -333,17 +333,36 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                                           double retailerLongitude) {
         try {
             Location retLoc = new Location("");
-            retLoc.setLatitude(retailerLatitude);
-            retLoc.setLongitude(retailerLongitude);
+            retLoc.setLatitude(doubleConversion(retailerLatitude));
+            retLoc.setLongitude(doubleConversion(retailerLongitude));
             Location userLoc = new Location("");
-            userLoc.setLatitude(LocationUtil.latitude);
-            userLoc.setLongitude(LocationUtil.longitude);
+            userLoc.setLatitude(doubleConversion(LocationUtil.latitude));
+            userLoc.setLongitude(doubleConversion(LocationUtil.longitude));
             float distance = userLoc.distanceTo(retLoc);
             return distance;
         } catch (Exception e) {
             return 0;
         }
     }
+
+    //To avoid exponential value and trucate decimal digits to 10
+    private static double doubleConversion(Double aDouble) {
+
+        Double val = 0.0;
+        try {
+
+            DecimalFormat decimalFormat = new DecimalFormat("0.0000000000");
+            decimalFormat.setMinimumFractionDigits(2);
+            decimalFormat.setMaximumFractionDigits(10);
+
+            val = Double.valueOf(decimalFormat.format(aDouble));
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return val;
+    }
+
 
 
 }

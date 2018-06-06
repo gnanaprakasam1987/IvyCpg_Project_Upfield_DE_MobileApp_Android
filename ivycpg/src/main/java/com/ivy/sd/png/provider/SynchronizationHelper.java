@@ -122,6 +122,7 @@ SynchronizationHelper {
     public static final int DISTRIBUTOR_WISE_DOWNLOAD_INSERT = 18;
     public static final int LAST_VISIT_TRAN_DOWNLOAD_INSERT = 19;
     public static final int MOBILE_EMAIL_VERIFICATION = 20;
+    public static final int WAREHOUSE_STOCK_DOWNLOAD = 21;
 
     public static final String AUTHENTICATION_SUCCESS_CODE = "0";
     public static final String UPDATE_TABLE_SUCCESS_CODE = "-1";
@@ -150,7 +151,9 @@ SynchronizationHelper {
         RETAILER_SELECTION(5),
         COUNTER_SALES_SELECTION(6),
         TL_ALLOCATION(7),
-        MOBILE_EMAIL_VERIFY(8);
+        MOBILE_EMAIL_VERIFY(8),
+        ORDER_SCREEN(9);
+
         private int value;
 
         FROM_SCREEN(int value) {
@@ -585,22 +588,6 @@ SynchronizationHelper {
         }
     }
 
-    /**
-     * This will delete all the records from OrderHeader and OrderDetail.
-     */
-    public void deleteOrderHistory() {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            db.executeQ("delete from OrderHeader");
-            db.executeQ("delete from OrderDetail");
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
     private void updateOrderStatus() {
         //Update RetailerMaster set isVisited = 'Y', isOrdered = 'Y' where RetailerID in(Select RetailerID from OrderHeader)
@@ -723,8 +710,6 @@ SynchronizationHelper {
             exceptionTableList.add(DataMembers.tbl_EmptyReconciliationDetail);
         }
         exceptionTableList.add("android_metadata");
-        exceptionTableList.add(DataMembers.tbl_orderHeader);
-        exceptionTableList.add(DataMembers.tbl_orderDetails);
         exceptionTableList.add(DataMembers.tbl_SIH);
         exceptionTableList.add("UrlDownloadMaster");
 
@@ -784,10 +769,7 @@ SynchronizationHelper {
 
             db.closeDB();
 
-            /** Added following line to fix the Order split download issues. **/
-            if (!bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-                deleteOrderHistory();
-            }
+
 
             deleteDBFromSD();
 
@@ -813,103 +795,6 @@ SynchronizationHelper {
 
     }
 
-
-    /**
-     * This function will fetch the orders from OrderHeader and Details and move
-     * it to PVSOrderHeader and Detail. Along with orders are storing the
-     * reailer infomation and Productnames.
-     */
-    public void backUpPreviousDayOrder() {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            // Copy OrderHeader and past in PVSOrderHeader
-            String mappingCoulmn = "OrderID,OrderDate,OrderValue,LinesPerCall,RetailerId,RouteId,upload,invoicestatus,discount,deliveryDate,isToday,RetailerName,RetailerCode,downloadDate,distribution";
-            String mappingOrder = "distinct OrderID,OrderDate,OrderValue,LinesPerCall,o.RetailerId,RouteId,o.upload,invoicestatus,discount,deliveryDate,o.isToday,o.RetailerName,o.RetailerCode,downloadDate,r.sbd_dist_stock||'/'||r.sbd_dist_achieve";
-            db.executeQ("INSERT INTO PVSOrderHeader "
-                    + "("
-                    + mappingCoulmn
-                    + ") "
-                    + "SELECT "
-                    + mappingOrder
-                    + " FROM OrderHeader o,retailerMaster r where o.retailerid=r.retailerid");
-
-            // Copy OrderDetail and paste in PVSOrderDetail
-            mappingCoulmn = "OrderID,ProductId,Qty,Rate,uomcount,PieceQty,CaseQty,uomid,retailerid,msqqty,totalamount,upload,ProductName,ProductShortName,Pcode,outerQty,dOuomQty,dOuomid";
-            db.executeQ("INSERT INTO PVSOrderDetail " + "(" + mappingCoulmn
-                    + ") " + "SELECT " + mappingCoulmn + " FROM OrderDetail");
-
-            if (!hasOrderExistInHistoryForDownloadedDate())
-                deleteOldBackUpOrders();
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    private boolean hasOrderExistInHistoryForDownloadedDate() {
-        int i = 0;
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select  count(OrderId)  from PVSOrderHeader where downloadDate="
-                            + bmodel.QT(bmodel.userMasterHelper
-                            .getUserMasterBO().getDownloadDate()));
-            if (c != null) {
-                if (c.moveToNext()) {
-                    i = c.getInt(0);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        if (i > 0)
-            return true;
-        else
-            return false;
-    }
-
-    public void deleteOldBackUpOrders() {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            // Collect All the distinct dates
-            Cursor c = db
-                    .selectSQL("select  distinct(downloadDate)  from PVSOrderHeader");
-            ArrayList<String> oldDates = new ArrayList<>();
-            if (c != null) {
-                while (c.moveToNext()) {
-                    oldDates.add(c.getString(0));
-                }
-                c.close();
-            }
-            // If size is 0 , then do nothing
-            if (oldDates.size() == 0)
-                return;
-            // Get the Max date
-            String previousDay = getMaxDate(oldDates);
-            // Delete PVSOrders
-            db.executeQ("delete from PVSOrderDetail where OrderId=(select orderid from PVSOrderHeader where downloadDate !="
-                    + bmodel.QT(previousDay) + ")");
-            db.executeQ("delete from PVSOrderHeader where downloadDate !="
-                    + bmodel.QT(previousDay));
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
     private String getMaxDate(ArrayList<String> date) {
         String maxDate = date.get(0);
@@ -1098,7 +983,8 @@ SynchronizationHelper {
                     "union select count(Tid) from DisplaySchemeTrackingHeader where upload='N'" +
                     "union select count(PlanId) from DatewisePlan where upload='N'" +
                     "union select count(KPIId) from RetailerKPIModifiedDetail where upload='N'" +
-                    "union select count(uid) from VanLoad where upload='N'";
+                    "union select count(uid) from VanLoad where upload='N'" +
+                    "union select count(Uid) from JointCallDetail where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -2997,6 +2883,50 @@ SynchronizationHelper {
 
     }
 
+    public String downloadWareHouseStockURL() {
+        mJsonObjectResponseByTableName = new HashMap<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String downloadUrl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select url from urldownloadmaster where mastername='PRODUCTWAREHOUSESTOCKMASTER' and typecode='REFRESH_WH_STK'");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        downloadUrl = c.getString(0);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+
+       return downloadUrl;
+    }
+
+    public void downloadWareHouseStock(String wareHouseWebApi){
+
+        try {
+
+            JSONObject json = new JSONObject();
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+
+
+            String downloadUrl = DataMembers.SERVER_URL + wareHouseWebApi;
+            callVolley(downloadUrl, FROM_SCREEN.ORDER_SCREEN, 1, WAREHOUSE_STOCK_DOWNLOAD, json);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+    }
+
     public void downloadRetailerByLocFromServer(int id, boolean islocwise) {
 
         mJsonObjectResponseByTableName = new HashMap<>();
@@ -3977,10 +3907,6 @@ SynchronizationHelper {
 
         bmodel.configurationMasterHelper.getPrinterConfig();
 
-        if (bmodel.configurationMasterHelper.SHOW_PREV_ORDER_REPORT) {
-            backUpPreviousDayOrder();
-            deleteOrderHistory();
-        }
         if (bmodel.configurationMasterHelper.IS_DELETE_TABLE) {
             updateOrderStatus();
         }

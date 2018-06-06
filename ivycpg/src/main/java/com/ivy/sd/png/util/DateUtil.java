@@ -25,8 +25,7 @@ public class DateUtil {
      * @param outDateFormat expected output date format
      * @return date string in requested format
      */
-    public static String convertDateObjectToRequestedFormat(Date dateInput,
-                                                            String outDateFormat) {
+    public static String convertDateObjectToRequestedFormat(Date dateInput, String outDateFormat) {
         String outDate;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat(outDateFormat,
@@ -51,8 +50,7 @@ public class DateUtil {
      * @param outDateFormat expected output date format
      * @return date String in requested format
      */
-    public static String convertFromServerDateToRequestedFormat(String dateInput,
-                                                                String outDateFormat) {
+    public static String convertFromServerDateToRequestedFormat(String dateInput, String outDateFormat) {
         String outDate;
         try {
 

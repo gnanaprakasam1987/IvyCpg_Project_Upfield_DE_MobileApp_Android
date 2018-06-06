@@ -159,11 +159,11 @@ public class ReplaceFragment extends IvyBaseFragment {
                             totalReturnQty = totalReturnQty + reasonBO.getPieceQty() + (reasonBO.getCaseQty() * productMasterBO.getCaseSize()) + (reasonBO.getOuterQty() * productMasterBO.getOutersize());
                         }
 
-                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= totalRepQty || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
+                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= (totalRepQty + productMasterBO.getOrderedPcsQty()) || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
                             productMasterBO.setRepPieceQty(enteredQty);
                         } else {
                             if (!("0".equals(qty))) {
-                                if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION && productMasterBO.getSIH() < totalRepQty)
+                                if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION && productMasterBO.getSIH() < (totalRepQty + productMasterBO.getOrderedPcsQty()))
                                     Toast.makeText(
                                             getActivity(),
                                             String.format(
@@ -217,12 +217,12 @@ public class ReplaceFragment extends IvyBaseFragment {
                             totalReturnQty = totalReturnQty + reasonBO.getPieceQty() + (reasonBO.getCaseQty() * productMasterBO.getCaseSize()) + (reasonBO.getOuterQty() * productMasterBO.getOutersize());
                         }
 
-                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= totalRepQty || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
+                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= (totalRepQty + productMasterBO.getOrderedCaseQty()) || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
                             productMasterBO.setRepCaseQty(SDUtil
                                     .convertToInt(qty));
                         } else {
                             if (!("0".equals(qty))) {
-                                if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION && productMasterBO.getSIH() < totalRepQty)
+                                if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION && productMasterBO.getSIH() < (totalRepQty + productMasterBO.getOrderedCaseQty()))
                                     Toast.makeText(
                                             getActivity(),
                                             String.format(
@@ -279,12 +279,12 @@ public class ReplaceFragment extends IvyBaseFragment {
                             totalReturnQty = totalReturnQty + reasonBO.getPieceQty() + (reasonBO.getCaseQty() * productMasterBO.getCaseSize()) + (reasonBO.getOuterQty() * productMasterBO.getOutersize());
                         }
 
-                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= totalRepQty || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
+                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= (totalRepQty + productMasterBO.getOrderedOuterQty()) || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
                             productMasterBO.setRepOuterQty(SDUtil
                                     .convertToInt(qty));
                         } else {
                             if (!("0".equals(qty))) {
-                                if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION && productMasterBO.getSIH() < totalRepQty)
+                                if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION && productMasterBO.getSIH() < (totalRepQty + productMasterBO.getOrderedOuterQty()))
                                     Toast.makeText(
                                             getActivity(),
                                             String.format(
@@ -539,32 +539,36 @@ public class ReplaceFragment extends IvyBaseFragment {
 
         @Override
         public void onClick(View v) {
+            if (mSelectedET == null) {
+                bmodel.showAlert(
+                        getResources().getString(R.string.please_select_item), 0);
+            } else {
+                int i = v.getId();
+                if (i == R.id.calczero || i == R.id.calcone || i == R.id.calctwo || i == R.id.calcthree
+                        || i == R.id.calcfour || i == R.id.calcfive || i == R.id.calcsix
+                        || i == R.id.calcseven || i == R.id.calceight || i == R.id.calcnine) {
+                    eff(((Button) v).getText().toString());
+                } else if (i == R.id.calcdel) {
+                    String s = mSelectedET.getText().toString();
 
-            int i = v.getId();
-            if (i == R.id.calczero || i == R.id.calcone || i == R.id.calctwo || i == R.id.calcthree
-                    || i == R.id.calcfour || i == R.id.calcfive || i == R.id.calcsix
-                    || i == R.id.calcseven || i == R.id.calceight || i == R.id.calcnine) {
-                eff(((Button) v).getText().toString());
-            } else if (i == R.id.calcdel) {
-                String s = mSelectedET.getText().toString();
-
-                if (!(s.length() == 0)) {
-                    s = s.substring(0, s.length() - 1);
-                    if (s.length() == 0)
-                        s = "0";
-                }
-                mSelectedET.setText(s);
-
-            } else if (i == R.id.calcdot) {
-                String s = mSelectedET.getText().toString();
-                String s1 = (String) mSelectedET.getTag();
-                if (s1 != null) {
-                    if (!s.contains(".") && "DOT".equals(s1)) {
-                        String strQty = s + ".";
-                        mSelectedET.setText(strQty);
+                    if (!(s.length() == 0)) {
+                        s = s.substring(0, s.length() - 1);
+                        if (s.length() == 0)
+                            s = "0";
                     }
-                }
+                    mSelectedET.setText(s);
 
+                } else if (i == R.id.calcdot) {
+                    String s = mSelectedET.getText().toString();
+                    String s1 = (String) mSelectedET.getTag();
+                    if (s1 != null) {
+                        if (!s.contains(".") && "DOT".equals(s1)) {
+                            String strQty = s + ".";
+                            mSelectedET.setText(strQty);
+                        }
+                    }
+
+                }
             }
 
         }

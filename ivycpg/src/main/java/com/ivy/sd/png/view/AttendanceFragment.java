@@ -128,7 +128,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         leaveAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
-        bmodel.mAttendanceHelper.downloadAttendanceReasons();
+        bmodel.mAttendanceHelper.downloadAttendanceReasons(getActivity());
 
         for (int j = 0; j < bmodel.mAttendanceHelper.getReasonList().size(); ++j) {
             if (bmodel.mAttendanceHelper.getReasonList().get(j).getAtd_PLId() == 0) {
@@ -307,7 +307,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
                             bmodel.mAttendanceHelper.saveAttendanceDetails(
                                     SDUtil.now(SDUtil.DATE_GLOBAL), atd_id,
                                     reason_id, tvFromDate.getText().toString(),
-                                    tvToDate.getText().toString(), atd_code);
+                                    tvToDate.getText().toString(), atd_code,getActivity());
 
                             if (!bmodel.configurationMasterHelper.IS_ATTENDANCE_SYNCUPLOAD) {
                                 showUploadAlert(
@@ -494,7 +494,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         protected Integer doInBackground(Void... params) {
 
             UploadHelper mUploadHelper=UploadHelper.getInstance(getActivity());
-            return mUploadHelper.uploadUsingHttp(getHandler(), DataMembers.ATTENDANCE_UPLOAD);
+            return mUploadHelper.uploadUsingHttp(getHandler(), DataMembers.ATTENDANCE_UPLOAD,getActivity().getApplicationContext());
         }
 
         @Override

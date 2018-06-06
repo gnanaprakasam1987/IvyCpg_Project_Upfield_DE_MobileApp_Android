@@ -37,6 +37,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -56,19 +58,26 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 
-public class PromotionTrackingFragment extends IvyBaseFragment implements BrandDialogInterface {
+public class PromotionTrackingFragment extends IvyBaseFragment implements BrandDialogInterface,
+        DataPickerDialogFragment.UpdateDateInterface {
 
     private BusinessModel businessModel;
     private PromotionHelper promotionHelper;
@@ -97,6 +106,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     private MyAdapter promotionAdapter;
     private ArrayAdapter<ReasonMaster> reasonAdapter;
     private ArrayAdapter<StandardListBO> mRatingAdapter;
+    int selectedposition = -1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -715,6 +725,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         Spinner reasonSpin;
         Spinner ratingSpin;
         TextView tvGroupName;
+        TextView tvProductName;
+        Button mFromDateBTN;
+        Button mToDateBTN;
+        LinearLayout llSkuPromolayout;
     }
 
     private class MyAdapter extends ArrayAdapter<PromotionBO> {
@@ -739,7 +753,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
         @NonNull
         @Override
-        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             View row = convertView;
             if (row == null) {
@@ -765,6 +779,13 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
                 holder.reasonSpin = (Spinner) row
                         .findViewById(R.id.spin_reason);
+
+                //Promotion Enhancement
+                holder.tvProductName = (TextView) row
+                        .findViewById(R.id.tv_product_name);
+                holder.mFromDateBTN = (Button) row.findViewById(R.id.btn_fromdatepicker);
+                holder.mToDateBTN = (Button) row.findViewById(R.id.btn_todatepicker);
+                holder.llSkuPromolayout = (LinearLayout) row.findViewById(R.id.skuPromolayout);
 
                 holder.reasonSpin.setAdapter(reasonAdapter);
                 holder.ratingSpin = (Spinner) row.findViewById(R.id.spin_rating);
@@ -978,6 +999,47 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     }
                 });
 
+                //Promotion Enhancement
+                if (businessModel.configurationMasterHelper.IS_ENABLE_PROMOTION_SKUNAME) {
+                    holder.tvProductName.setVisibility(View.VISIBLE);
+                    row.findViewById(R.id.tv_group_name_header).setVisibility(View.GONE);
+                    holder.tvGroupName.setVisibility(View.GONE);
+                } else {
+                    holder.tvProductName.setVisibility(View.GONE);
+                    row.findViewById(R.id.tv_group_name_header).setVisibility(View.VISIBLE);
+                    holder.tvGroupName.setVisibility(View.VISIBLE);
+                }
+
+                if (businessModel.configurationMasterHelper.IS_ENABLE_PROMOTION_DATES) {
+                    holder.llSkuPromolayout.setVisibility(View.VISIBLE);
+                } else {
+                    holder.llSkuPromolayout.setVisibility(View.GONE);
+                }
+
+                holder.mFromDateBTN.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectedposition = position;
+                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+                        Bundle args = new Bundle();
+                        args.putString("MODULE", "");
+                        newFragment.setArguments(args);
+                        newFragment.show(getChildFragmentManager(), "fromdatePicker");
+                    }
+                });
+
+                holder.mToDateBTN.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectedposition = position;
+                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+                        Bundle args = new Bundle();
+                        args.putString("MODULE", "");
+                        newFragment.setArguments(args);
+                        newFragment.show(getChildFragmentManager(), "toPicker");
+                    }
+                });
+
                 row.setTag(holder);
 
             } else {
@@ -1056,6 +1118,14 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 row.setBackgroundColor(getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView).getColor(R.styleable.MyTextView_listcolor, 0));
             }
 
+            holder.tvProductName.setText(holder.mPromotionMasterBO.getpName() == null ? "" : holder.mPromotionMasterBO.getpName());
+            holder.tvProductName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.mFromDateBTN.setText(holder.mPromotionMasterBO.getFromDate() == null ? "" :
+                    DateUtil.convertFromServerDateToRequestedFormat(
+                            holder.mPromotionMasterBO.getFromDate(), ConfigurationMasterHelper.outDateFormat));
+            holder.mToDateBTN.setText(holder.mPromotionMasterBO.getToDate() == null ? "" :
+                    DateUtil.convertFromServerDateToRequestedFormat(
+                            holder.mPromotionMasterBO.getToDate(), ConfigurationMasterHelper.outDateFormat));
             return row;
         }
     }
@@ -1226,5 +1296,38 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     public void onDestroy() {
         super.onDestroy();
         promotionHelper.clearInstance();
+    }
+
+    @Override
+    public void updateDate(Date date, String tag) {
+        String paidDate = DateUtil.convertDateObjectToRequestedFormat(
+                date, "yyyy/MM/dd");
+        if (selectedposition != -1) {
+            if (tag.equals("fromdatePicker")) {
+                promoList.get(selectedposition).setFromDate(paidDate);
+                promoList.get(selectedposition).setToDate("");
+            } else {
+                if (promoList.get(selectedposition).getFromDate() != null && promoList.get(selectedposition).getFromDate().length() > 0) {
+                    Date fromDate = null;
+                    try {
+                        fromDate = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH).parse(promoList.get(selectedposition).getFromDate());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    if (dateValidation(fromDate, date))
+                        promoList.get(selectedposition).setToDate(paidDate);
+                    else
+                        Toast.makeText(getContext(), getResources().getString(R.string.todate_validation), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getContext(), getResources().getString(R.string.text_select_fromdate), Toast.LENGTH_LONG).show();
+                }
+            }
+            promotionAdapter.notifyDataSetChanged();
+            selectedposition = -1;
+        }
+    }
+
+    public boolean dateValidation(Date fromDate, Date toDate) {
+        return toDate.after(fromDate) || toDate.equals(fromDate);
     }
 }

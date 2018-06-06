@@ -155,12 +155,8 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
 
             String orderID = obj.getOrderID();
-            if (isFromOrderReport)
-                list = businessModel.reportHelper.downloadOrderreportdetail(orderID);
+            list = businessModel.reportHelper.downloadOrderreportdetail(orderID);
 
-            else
-                list = businessModel.reportHelper
-                        .downloadPVSOrderreportdetail(orderID);
 
             //scheme products
             schemeProductList = businessModel.reportHelper.getSchemeProductDetails(orderID, false);
@@ -387,10 +383,10 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                     holder.outerQty.setVisibility(View.GONE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                    holder.tvWeight.setVisibility(View.GONE);
+                    holder.tvWeight.setVisibility(View.INVISIBLE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
-                    holder.tvBatchNo.setVisibility(View.GONE);
+                    holder.tvBatchNo.setVisibility(View.INVISIBLE);
 
                 if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP)
                     holder.tvwval.setVisibility(View.GONE);

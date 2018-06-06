@@ -191,6 +191,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
         if (bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS) {
             try {
+
                 BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
                         .getDefaultAdapter();
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(getMacAddressFieldText().toUpperCase());

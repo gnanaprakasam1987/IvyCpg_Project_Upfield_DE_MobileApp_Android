@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1300"
-    android:versionName="2.130.0.1665">
+    android:versionName="2.130.0.1676">
 
     <supports-screens
         android:anyDensity="true"
@@ -796,6 +796,9 @@
             android:screenOrientation="portrait" />
         <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity" />
         <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity"></activity>
+        <activity
+            android:name="com.ivy.sd.png.view.SyncStatusActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

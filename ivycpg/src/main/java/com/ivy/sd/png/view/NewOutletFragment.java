@@ -194,7 +194,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private TextInputLayout edittextinputLayout, edittextinputLayout2, edittextinputLayout3, edittextinputLayout4;
 
     private LinearLayout.LayoutParams commonsparams, commonsparams3, commonsparams4, params, params2, params3, params3new, params4new, params4aflollipop, params4, params5, params5new, params5aflollipop, params6, paramsaflollipop, params6aflollipop, params8, params9, params10, params11, params12, params13, paramsAttrib, paramsAttribSpinner;
-    private LinearLayout.LayoutParams weight1, weight2, weight3, weight6, weight0, weight0wrap, weight0marginbottom, editweightmargin, weight1new;
+    private LinearLayout.LayoutParams weight1, weight2, weight3, weight6, weight0, weight0wrap, weight0marginbottom, editweightmargin, weight1new, weight2new;
 
     boolean isChannel = false;
     boolean issubChannel = false;
@@ -487,7 +487,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 isRoute = true;
             } else if (profileConfig.get(i).getConfigCode()
                     .equalsIgnoreCase("LOCATION")) {
-
+                leastlocId = outlet.getLocid();
                 isLocation = true;
             } else if (profileConfig.get(i).getConfigCode()
                     .equalsIgnoreCase("LOCATION01")) {
@@ -789,6 +789,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         weight1new.weight = 1;
         weight1new.setMargins(70, 0, 0, 10);
+
+        weight2new = new LinearLayout.LayoutParams(width / 2, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        weight2new.weight = 1;
 
         weight2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1534,10 +1537,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     }
 
 
-                } else if ((profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO1")
-                        && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO1")) {
+                } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO1")
+                        && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
 //                    if ((profileConfig.get(i).getMaxLengthNo() > 0)
 //                            ? editText[i].getText().toString().trim().length() == 0
@@ -1560,9 +1561,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         break;
                     }
                 } else if ((profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO2")
-                        && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO2")) {
+                        && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
                             editText[i].getText().toString().trim().length() == 0 ||
@@ -1727,10 +1726,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         }
                     }
                 } else if ((profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("FAX") && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("FAX")) {
+                        .equalsIgnoreCase("FAX")
+                        && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if ((profileConfig.get(i).getMaxLengthNo() > 0)
                             ? editText[i].getText().toString().trim().length() == 0
@@ -1804,10 +1801,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 } else if ((profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PINCODE")
-                        && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PINCODE")) {
+                        && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     Commons.print("pin code");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
@@ -1829,19 +1823,24 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("RFIELD3")
-                        && mandatory == 1) {
+                        && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     Commons.print("rf");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (editText[i].getText().toString().trim().length() == 0) {
+                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
+                            editText[i].getText().toString().trim().length() == 0
+                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
+                            : editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
 
                         edittextinputLayout.setErrorEnabled(true);
-                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        else
+                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
-
                     }
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("RFIELD5")
@@ -1943,10 +1942,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         break;
                     }
                 } else if ((profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("CREDITLIMIT") && profileConfig.get(i).getMaxLengthNo() > 0)
-                        ? mandatory == 1 || mandatory == 0
-                        : mandatory == 1 && profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("CREDITLIMIT")) {
+                        .equalsIgnoreCase("CREDITLIMIT"))
+                        && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
                             editText[i].getText().toString().trim().length() == 0
@@ -2071,8 +2068,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
 
 
-                        int length=editText[i].getText().toString().trim().length();
-                        if (length == 0 && mandatory==1) {
+                        int length = editText[i].getText().toString().trim().length();
+                        if (length == 0 && mandatory == 1) {
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
                             editText[i].requestFocus();
@@ -2080,7 +2077,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
                             editText[i].addTextChangedListener(watcher);
                             break;
-                        }else if (length>0 && length < profileConfig.get(i).getMaxLengthNo()) {
+                        } else if (length > 0 && length < profileConfig.get(i).getMaxLengthNo()) {
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
                             editText[i].requestFocus();
@@ -2088,7 +2085,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                             editText[i].addTextChangedListener(watcher);
                             break;
-                        }else if (length>0 && !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex())) {
+                        } else if (length > 0 && !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex())) {
 
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
@@ -2097,7 +2094,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName());
                             editText[i].addTextChangedListener(watcher);
                             break;
-                        } else if (length>0 && !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+                        } else if (length > 0 && !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
 
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
@@ -2118,9 +2115,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
 
 
-                        int length=editText[i].getText().toString().trim().length();
+                        int length = editText[i].getText().toString().trim().length();
 
-                        if (mandatory==1 && editText[i].getText().toString().trim().length() == 0) {
+                        if (mandatory == 1 && editText[i].getText().toString().trim().length() == 0) {
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
                             editText[i].requestFocus();
@@ -2128,7 +2125,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
                             editText[i].addTextChangedListener(watcher);
                             break;
-                        }else if (length>0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
+                        } else if (length > 0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
                             editText[i].requestFocus();
@@ -2136,7 +2133,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                             edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                             editText[i].addTextChangedListener(watcher);
                             break;
-                        }else if (length>0 && !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
+                        } else if (length > 0 && !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
                             editText[i].requestFocus();
@@ -2253,7 +2250,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     /**
-     *
      * @param mNumber
      * @param MName
      * @param edittexttype
@@ -2346,7 +2342,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                     @Override
                     public void afterTextChanged(Editable et) {
-                        String s = et.toString();
+                        String s = et != null ? et.toString() : "";
                         if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                             s = s.toUpperCase();
                             editText[mNumber + 50 + 5].setText(s);
@@ -2386,9 +2382,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 });
 
                 if (screenMode == VIEW || screenMode == EDIT) {
-                    if (outlet.getContact1titlelovid().equals("0") && !outlet.getContact1title().equals("0") && outlet.getContact1title().length() > 0) {
+                    if (outlet.getContact1titlelovid() != null && "0".equals(outlet.getContact1titlelovid()) && outlet.getContact1title() != null
+                            && !"0".equals(outlet.getContact1title()) && outlet.getContact1title().length() > 0) {
                         contactTitleSpinner1.setSelection(getPosition(profileConfig.get(mNumber).getConfigCode()));
-                        editText[mNumber + 50 + 5].setText(outlet.getContact1title());
+                        editText[mNumber + 50 + 5].setText(outlet.getContact1title() != null ? outlet.getContact1title() : "");
                     }
                     if (screenMode == VIEW)
                         contactTitleSpinner1.setEnabled(false);
@@ -2470,7 +2467,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 @Override
                 public void afterTextChanged(Editable et) {
-                    String s = et.toString();
+                    String s = et != null ? et.toString() : "";
                     if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                         s = s.toUpperCase();
                         editText[mNumber].setText(s);
@@ -2493,7 +2490,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 @Override
                 public void afterTextChanged(Editable et) {
-                    String s = et.toString();
+                    String s = et != null ? et.toString() : "";
                     if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                         s = s.toUpperCase();
                         editText[mNumber + 50].setText(s);
@@ -2503,10 +2500,17 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             });
 
 
-            edittextinputLayout.addView(editText[mNumber], params3);
-            linearlayout.addView(edittextinputLayout, params3);
-            edittextinputLayout2.addView(editText[mNumber + 50], params3);
-            linearlayout.addView(edittextinputLayout2, params3);
+            if (isContactTitle) {
+                edittextinputLayout.addView(editText[mNumber], params3);
+                linearlayout.addView(edittextinputLayout, params3);
+                edittextinputLayout2.addView(editText[mNumber + 50], params3);
+                linearlayout.addView(edittextinputLayout2, params3);
+            } else {
+                edittextinputLayout.addView(editText[mNumber], weight2new);
+                linearlayout.addView(edittextinputLayout, weight2new);
+                edittextinputLayout2.addView(editText[mNumber + 50], weight2new);
+                linearlayout.addView(edittextinputLayout2, weight2new);
+            }
 
 
         } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("CONTACTPERSON2")) {
@@ -2605,9 +2609,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 });
 
                 if (screenMode == VIEW || screenMode == EDIT) {
-                    if (outlet.getContact1titlelovid().equals("0") && !outlet.getContact1title().equals("0") && outlet.getContact1title().length() > 0) {
+                    if (outlet.getContact1titlelovid() != null && outlet.getContact1titlelovid().equals("0") && outlet.getContact1title() != null
+                            && !outlet.getContact1title().equals("0") && outlet.getContact1title().length() > 0) {
                         contactTitleSpinner1.setSelection(getPosition(profileConfig.get(mNumber).getConfigCode()));
-                        editText[mNumber + 50 + 5].setText(outlet.getContact1title());
+                        editText[mNumber + 50 + 5].setText(outlet.getContact1title() != null ? outlet.getContact1title() : "");
                     }
                     if (screenMode == VIEW)
                         contactTitleSpinner2.setEnabled(false);
@@ -2725,10 +2730,17 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
             });
 
-            edittextinputLayout.addView(editText[mNumber], params3);
-            linearlayout.addView(edittextinputLayout, params3);
-            edittextinputLayout2.addView(editText[mNumber + 51], params3);
-            linearlayout.addView(edittextinputLayout2, params3);
+            if (isContactTitle) {
+                edittextinputLayout.addView(editText[mNumber], params3);
+                linearlayout.addView(edittextinputLayout, params3);
+                edittextinputLayout2.addView(editText[mNumber + 51], params3);
+                linearlayout.addView(edittextinputLayout2, params3);
+            } else {
+                edittextinputLayout.addView(editText[mNumber], weight2new);
+                linearlayout.addView(edittextinputLayout, weight2new);
+                edittextinputLayout2.addView(editText[mNumber + 51], weight2new);
+                linearlayout.addView(edittextinputLayout2, weight2new);
+            }
 
 
         } else {
@@ -2988,6 +3000,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
 
                 InputFilter filter = new InputFilter() {
+                    @SuppressLint("NewApi")
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                         for (int i = start; i < end; i++) {
                             String enteredValue = dest + String.valueOf(source.charAt(i));
@@ -3031,6 +3044,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 }
 
                 InputFilter filter = new InputFilter() {
+                    @SuppressLint("NewApi")
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                         for (int i = start; i < end; i++) {
                             String enteredValue = dest + String.valueOf(source.charAt(i));
@@ -3155,6 +3169,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         return "";
     }
 
+    int leastlocId;
+
     private int getPosition(String code) {
         int default_value = 0;
         if (code.equals("CONTACTPERSON1")) {
@@ -3179,7 +3195,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             if (outlet.getLocid() != 0) {
                 String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
-                        outlet.getLocid(), true);
+                        leastlocId, true);
                 int loc2id = SDUtil.convertToInt((loc2[0]).toString());
 
                 String[] loc3 = bmodel.mRetailerHelper.getParentLevelName(
@@ -3196,9 +3212,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
         } else if (code.equals("LOCATION01")) {
             String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
-                    outlet.getLocid(), true);
+                    leastlocId, true);
 
-            int loc2id = SDUtil.convertToInt((loc2[0]).toString());
+            int loc2id = 0;
+            if (loc2[0] != null)
+                loc2id = SDUtil.convertToInt(loc2[0]);
 
             for (int i = 0; i < locationAdapter2.getCount(); i++) {
                 if (locationAdapter2.getItem(i).getLocId() == loc2id) {
@@ -3208,7 +3226,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
         } else if (code.equals("LOCATION")) {
             for (int i = 0; i < locationAdapter1.getCount(); i++) {
-                if (locationAdapter1.getItem(i).getLocId() == outlet.getLocid()) {
+                if (locationAdapter1.getItem(i).getLocId() == leastlocId) {
                     return i;
                 }
             }
@@ -3287,6 +3305,17 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         }
 
 
+        return default_value;
+    }
+
+    private int getAttriButePostion(ArrayAdapter<NewOutletAttributeBO> attributeList) {
+        int default_value = 0;
+        for (int i = 0; i < attributeList.getCount(); i++) {
+            NewOutletAttributeBO tempBo = attributeList.getItem(i);
+            if (outlet.getEditAttributeList().contains(String.valueOf(tempBo.getAttrId()))) {
+                return i;
+            }
+        }
         return default_value;
     }
 
@@ -4725,7 +4754,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
                                 android.R.layout.simple_spinner_item, attrbList);
                         spinner.setAdapter(arrayAdapter);
-                        spinner.setSelection(0);
                         arrayAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
                         spinner.setLayoutParams(innerParams);
                         innerHL.addView(spinner);
@@ -4745,6 +4773,14 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                             }
                         });
+
+                        if (screenMode == VIEW || screenMode == EDIT) {
+                            spinner.setSelection(getAttriButePostion(arrayAdapter));
+                            if (screenMode == 1)
+                                spinner.setEnabled(false);
+                        } else {
+                            spinner.setSelection(0);
+                        }
                     } else {
                         spinner = new MaterialSpinner(getActivity());
                         attrbList = new ArrayList<>();
@@ -4754,7 +4790,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
                                 android.R.layout.simple_spinner_item, attrbList);
                         spinner.setAdapter(arrayAdapter);
-                        spinner.setSelection(0);
                         arrayAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
                         spinner.setLayoutParams(innerParams);
                         innerHL.addView(spinner);
@@ -4776,6 +4811,14 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                             }
                         });
+
+                        if (screenMode == VIEW || screenMode == EDIT) {
+                            spinner.setSelection(getAttriButePostion(arrayAdapter));
+                            if (screenMode == 1)
+                                spinner.setEnabled(false);
+                        } else {
+                            spinner.setSelection(0);
+                        }
                     }
                     spinnerHashMap.put(attribName + index, spinner);
                     if ((j + 1) % 2 == 0) {
@@ -5772,7 +5815,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
-                String rid = mUploadHelper.uploadNewOutlet(getHandler());
+                String rid = mUploadHelper.uploadNewOutlet(getHandler(),getActivity().getApplicationContext());
 
                 if (rid.equals("-1")) {
                     getHandler().sendEmptyMessage(
@@ -6163,7 +6206,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     public boolean isValidRegx(CharSequence target, String regx) {
 
-        if(regx.equals("")){
+        if (regx.equals("")) {
             return true;
         }
         String value = regx.replaceAll("\\<.*?\\>", "");
@@ -6177,12 +6220,12 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     .equalsIgnoreCase("PAN_NUMBER")) {
                 String panNumber = editText[index].getText().toString().trim();
 
-                if(panNumber.length()>0){
+                if (panNumber.length() > 0) {
                     if (target.subSequence(2, target.length() - 3).equals(panNumber))
                         return true;
                     else
                         return false;
-                }else
+                } else
                     return true;
 
             }

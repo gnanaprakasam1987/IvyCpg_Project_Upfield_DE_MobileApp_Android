@@ -92,7 +92,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
 
         setScreenTitle(getResources().getString(R.string.discount));
         totalval = (TextView) findViewById(R.id.totalValue);
-        productName = (TextView) findViewById(R.id.productName2);
+        productName = (TextView) findViewById(R.id.tvProductNameTitle);
         productName.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 int inType = productName.getInputType();

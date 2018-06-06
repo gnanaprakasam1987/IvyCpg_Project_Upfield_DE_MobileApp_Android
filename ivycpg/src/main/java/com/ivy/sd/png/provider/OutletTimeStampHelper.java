@@ -159,7 +159,7 @@ public class OutletTimeStampHelper {
 			db.createDataBase();
 			db.openDataBase();
 			
-			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocatioEnabled,IsDeviated,OrderValue";
+			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue";
 
 			if(isJointCall(joinCallList)){  // check join call or not
 				joinCallFlag=1;
@@ -228,12 +228,12 @@ public class OutletTimeStampHelper {
 			String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
 					+"',feedback="+bmodel.QT(reasonDesc)
 					+", OrderValue = "+QT(String.valueOf(bmodel.getOrderValue()))
-					+", latitude = "+ QT(LocationUtil.latitude + "")
-					+", longitude = "+ QT(LocationUtil.longitude + "")
+					+", outLatitude = "+ QT(LocationUtil.latitude + "")
+					+", outLongitude = "+ QT(LocationUtil.longitude + "")
 					+", LocationProvider = "+QT(LocationUtil.mProviderName)
 					+", gpsAccuracy = "+ QT(LocationUtil.accuracy+"")
 					+", Battery = "+getBatteryPercentage(context)
-					+", IsLocatioEnabled = "+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
+					+", IsLocationEnabled = "+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
 					+", IsDeviated = "+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
 					+"  WHERE RetailerID = '"
 					+bmodel.retailerMasterBO.getRetailerID()

@@ -517,21 +517,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         for (ConfigureBO menu : menuDB) {
             if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_CALL)) {
                 gotoNextActivity(menu, menu.getHasLink(), false);
-                return;
+                break;
+            } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
+                gotoNextActivity(menu, menu.getHasLink(), false);
+                break;
+            } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
+                gotoNextActivity(menu, menu.getHasLink(), false);
+                break;
             }
         }
 
-        for (ConfigureBO menu : menuDB) {
-            if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
-                gotoNextActivity(menu, menu.getHasLink(), false);
-            }
-        }
-
-        for (ConfigureBO menu : menuDB) {
-            if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
-                gotoNextActivity(menu, menu.getHasLink(), false);
-            }
-        }
     }
 
     private void prepareMenuIcons() {
@@ -1591,10 +1586,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             }
                         }
                     } else {// to laod data from last vist transaction tables
-                        if (bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN) {
+                        boolean isDataAvailableforLastVisitHistory = false;
+                        if (bmodel.configurationMasterHelper.IS_ENABLE_LAST_VISIT_HISTORY) {
+                            // load last visit data
+                            isDataAvailableforLastVisitHistory =
+                                    bmodel.loadLastVisitHistoryStockCheckedProducts(bmodel.getRetailerMasterBO().getRetailerID());
+                        }
+
+                        if ((!bmodel.configurationMasterHelper.IS_ENABLE_LAST_VISIT_HISTORY || !isDataAvailableforLastVisitHistory) &&
+                                bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN) {
                             // load last visit data
                             bmodel.loadLastVisitStockCheckedProducts(bmodel.getRetailerMasterBO().getRetailerID());
                         }
+
 
                         //load Last Vist Near Expir Data
                         if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK) {
@@ -1630,7 +1634,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     /** Following is not required to be called in every module **/
                     bmodel.productHelper.loadRetailerWiseProductWisePurchased();
-
+                    bmodel.productHelper.loadRetailerWiseProductWiseP4StockAndOrderQty();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
@@ -1703,10 +1707,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             || bmodel.getRetailerMasterBO().getCreditDays() == 0
                             || bmodel.productHelper.isCheckCreditPeriod()) {
 
-                        if (bmodel.hasAlreadyStockChecked(bmodel
-                                .getRetailerMasterBO().getRetailerID())) {
-                            bmodel.loadStockCheckedProducts(bmodel
-                                    .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
+                        if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
+                            if (bmodel.hasAlreadyStockChecked(bmodel
+                                    .getRetailerMasterBO().getRetailerID())) {
+                                bmodel.loadStockCheckedProducts(bmodel
+                                        .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
+                            }
                         }
 
                         bmodel.setEdit(false);
@@ -1793,7 +1799,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     .getIndicativeList())
                                 indicativeOrderAdapter.add(temp);
 
-                            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE) {
+                            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE &&
+                                    "CREDIT".equals(bmodel.getRetailerMasterBO().getRpTypeCode())) {
                                 if (bmodel.getRetailerMasterBO()
                                         .getCredit_balance() == -1
                                         || bmodel.getRetailerMasterBO()
@@ -3796,7 +3803,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             for (Integer temp : bmodel.productHelper
                     .getIndicativeList())
                 indicativeOrderAdapter.add(temp);
-            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE) {
+            if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE &&
+                    "CREDIT".equals(bmodel.getRetailerMasterBO().getRpTypeCode())) {
                 if (bmodel.getRetailerMasterBO()
                         .getCredit_balance() == -1
                         || bmodel.getRetailerMasterBO()
@@ -3989,17 +3997,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                         int which) {
                                         String selectedType = mSalesTypeArray[which];
                                         if (selectedType.equals(VAN_SALES)) {
-                                            updateConfigurationSelectedSellerType(true);
-                                            bmodel.configurationMasterHelper.IS_WSIH = false;
-
+                                            updateConfigurationSelectedSellerType(false);
                                             updateRetailerwiseSellertype(1); // Vansales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(1);
 
                                         } else {
-                                            updateConfigurationSelectedSellerType(false);
-                                            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
-
+                                            updateConfigurationSelectedSellerType(true);
                                             updateRetailerwiseSellertype(0); // Presales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(0);
@@ -4252,10 +4256,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
      * Method to use change some specify configuration flag depends on selected
      * seller type
      *
-     * @param flag
+     * @param switchToPreSeller
      */
-    private void updateConfigurationSelectedSellerType(boolean flag) {
-        if (!flag) {
+    private void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
+        if (switchToPreSeller) {
             bmodel.configurationMasterHelper.downloadSwitchConfig();
         } else {
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
@@ -4267,6 +4271,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             bmodel.configurationMasterHelper.IS_GST_HSN = bmodel.configurationMasterHelper.IS_GST_HSN_MASTER;
             bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
             bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
+            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
         }
 
     }

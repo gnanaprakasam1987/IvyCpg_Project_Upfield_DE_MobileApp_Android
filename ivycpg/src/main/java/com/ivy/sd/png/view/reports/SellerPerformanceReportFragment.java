@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -269,7 +270,8 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         private ArrayList<SellerPerformanceBO> performList;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            public TextView tvUserName, tvLastSync, tvTimeSpent, tvActual, tvVistPer, tvProdPer, tvPlannedCall, tvDeviateCall, tvActualCall, tvProdCall, tvSalesVolume;
+            public TextView tvUserName, tvLastSync, tvTimeSpent, tvActual, tvVistPer, tvProdPer, tvPlannedCall, tvDeviateCall, tvActualCall, tvProdCall, tvSalesVolume,tvSalesVolumeTitle;
+            public LinearLayout salesValueLayout;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -284,6 +286,8 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                 tvActualCall = (TextView) view.findViewById(R.id.tvActualCallValue);
                 tvProdCall = (TextView) view.findViewById(R.id.tvProdCallValue);
                 tvSalesVolume = (TextView) view.findViewById(R.id.tv_sales_volume_value);
+                tvSalesVolumeTitle=(TextView) view.findViewById(R.id.tv_sales_volume_title);
+                salesValueLayout=(LinearLayout) view.findViewById(R.id.salesValueLayout);
 
                 tvUserName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 tvLastSync.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -307,6 +311,17 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                 ((TextView) view.findViewById(R.id.tvActCallTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) view.findViewById(R.id.tvProdCallTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) view.findViewById(R.id.tv_sales_volume_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+
+                if (bmodel.labelsMasterHelper
+                        .applyLabels("actual_volume") != null){
+                    tvSalesVolumeTitle.setText(bmodel.labelsMasterHelper
+                            .applyLabels("actual_volume"));
+                }
+
+                if(bmodel.configurationMasterHelper.HIDE_SALES_VALUE_FIELD){
+                    salesValueLayout.setVisibility(View.GONE);
+                }
 
             }
         }
