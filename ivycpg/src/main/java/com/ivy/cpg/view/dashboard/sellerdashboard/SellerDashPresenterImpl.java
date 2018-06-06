@@ -30,6 +30,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
     private static final String CODE6 = "COV";
     private static final String CODE7 = "PRM";
     private static final String CODE8 = "MSL";
+    private static final String CODE9 = "COVD";
+    private static final String CODE10 = "COL";
     private static final String CODE_EFF_VISIT = "EFV";
     private static final String CODE_EFF_SALE = "EFS";
     private static final String CODE_DROP_SIZE_INV = "DSZ_INVOICE";
@@ -87,7 +89,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 mFilterUser += ",";
         }
 
-        dashboardView.loadUserSpinner(mFilterUser,userArray);
+        dashboardView.loadUserSpinner(mFilterUser, userArray);
     }
 
     @Override
@@ -328,6 +330,73 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                             .getCalculatedPercentage());
                 }
 
+            } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE9)) {
+                int plannedRetailerCount = getRetailerDetailWithDevation("P");
+                int plannedRetailerVisitCount = getRetailerDetailWithDevation("V");
+
+                dashBoardBO.setKpiAcheived(plannedRetailerVisitCount + "");
+                dashBoardBO.setKpiTarget(plannedRetailerCount + "");
+                int kpiAcheived = plannedRetailerVisitCount;
+                int kpiTarget;
+
+                try {
+                    kpiTarget = (plannedRetailerCount);
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
+
+            } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE10)) {
+                ArrayList<Double> collectedList = businessModel.getCollectedValue();
+                double kpiAcheived = 0, kpiTarget = 0;
+
+                try {
+                    double osAmt = collectedList.get(0);
+                    double paidAmt = collectedList.get(1);
+
+                    dashBoardBO.setKpiAcheived(paidAmt + "");
+                    dashBoardBO.setKpiTarget(osAmt + "");
+                    kpiAcheived = paidAmt;
+                    kpiTarget = osAmt;
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    float value = SDUtil.convertToFloat("" + (kpiAcheived * 100) / kpiTarget);
+                    dashBoardBO.setCalculatedPercentage(value);
+                }
+
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_VISIT)) {
                 int visitedcalls = businessModel.getVisitedCallsForTheDayExcludingDeviatedVisits();
                 if (totalcalls == 0) {
@@ -386,6 +455,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
 
         }
     }
+
     private int getRetailerDetail(String flag) {
         int size = businessModel.getRetailerMaster().size();
         int count = 0;
@@ -400,6 +470,30 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
         } else {
             for (int i = 0; i < size; i++) {
                 if (businessModel.getRetailerMaster().get(i).getIsVisited().equals("Y")) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+
+    }
+
+    private int getRetailerDetailWithDevation(String flag) {
+        int size = businessModel.getRetailerMaster().size();
+        int count = 0;
+        /** Add today's retailers. **/
+        if (flag.equals("P")) {
+            for (int i = 0; i < size; i++) {
+                if (businessModel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    count++;
+                }
+
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (businessModel.getRetailerMaster().get(i).getIsVisited().equals("Y") ||
+                        businessModel.getRetailerMaster().get(i).getIsDeviated().equalsIgnoreCase("Y")) {
                     count++;
                 }
             }
