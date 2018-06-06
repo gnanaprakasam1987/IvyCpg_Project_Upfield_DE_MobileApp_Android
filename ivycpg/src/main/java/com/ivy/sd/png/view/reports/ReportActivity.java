@@ -43,6 +43,7 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
 import com.ivy.sd.png.view.reports.eodstockreport.EODStockReportFragmentRe;
 import com.ivy.sd.png.view.reports.refactor.DayReportFragment;
+import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -243,15 +244,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             DeliveryStockReport mDeliveryStockReport = new DeliveryStockReport();
             mDeliveryStockReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mDeliveryStockReport);
-
-            setSubTitle(transaction, config);
-
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_PREVIOUS_ORDER_REPORT)) {
-
-            PreviousDayOrderReportFragment pvsorderFragment = new PreviousDayOrderReportFragment();
-            pvsorderFragment.setArguments(getIntent().getExtras());
-            transaction.replace(R.id.fragment_content, pvsorderFragment);
 
             setSubTitle(transaction, config);
 
@@ -582,6 +574,12 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             RetailerActivityReportFragment mRetailerActivityReport = new RetailerActivityReportFragment();
             transaction.replace(R.id.fragment_content, mRetailerActivityReport);
             bmodel.mSelectedActivityName = config.getMenuName();
+            commitFragment(transaction, config);
+        }else if(config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_ORD_STAT_RPT)){
+
+            OrderStatusReportFragment orderStatusReportFragment  = new OrderStatusReportFragment();
+            transaction.replace(R.id.fragment_content, orderStatusReportFragment);
             commitFragment(transaction, config);
         }
 
