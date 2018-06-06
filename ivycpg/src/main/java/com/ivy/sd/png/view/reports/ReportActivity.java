@@ -41,6 +41,8 @@ import com.ivy.sd.png.view.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
+import com.ivy.sd.png.view.reports.eodstockreport.EODStockReportFragmentRe;
+import com.ivy.sd.png.view.reports.refactor.DayReportFragment;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -256,7 +258,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_DAY_REPORT)) {
 
-            DailyReportFragmentNew dayFragment = new DailyReportFragmentNew();
+            //DailyReportFragmentNew dayFragment = new DailyReportFragmentNew();
+            DayReportFragment dayFragment = new DayReportFragment();
             dayFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, dayFragment);
 
@@ -344,7 +347,10 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             bmodel.configurationMasterHelper.loadEODColumnConfiguration();
             bmodel.configurationMasterHelper.loadEODUOMConfiguration();
 
-            EODStockReportFragment mEODStockReportFragment = new EODStockReportFragment();
+           // EODStockReportFragment mEODStockReportFragment = new EODStockReportFragment();
+            EODStockReportFragmentRe mEODStockReportFragment = new EODStockReportFragmentRe();
+
+
             mEODStockReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mEODStockReportFragment);
 
@@ -599,7 +605,6 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void onBackPressed() {
-
     }
 
     @Override

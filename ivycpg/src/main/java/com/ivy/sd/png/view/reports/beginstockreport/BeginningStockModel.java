@@ -1,8 +1,15 @@
 package com.ivy.sd.png.view.reports.beginstockreport;
 
-/**
- * Created by velraj.p on 6/4/2018.
- */
 
-public class BeginningStocModel {
+import android.content.Context;
+
+import com.ivy.sd.png.model.BusinessModel;
+
+public class BeginningStockModel implements IBeginningStockModelPresenter {
+
+
+    public BeginningStockModel(Context context, BusinessModel businessModel,
+                               IBeginningStockView iBeginningStockView) {
+
+    }
 }

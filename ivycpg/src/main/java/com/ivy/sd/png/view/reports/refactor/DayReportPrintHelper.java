@@ -24,11 +24,7 @@ public class DayReportPrintHelper {
     private IDayReportModelPresenter iDayReportModelPresenter;
 
     private Connection zebraPrinterConnection;
-
-
-//    private static final String ZEBRA_3INCH = "3";
     private static final String TAG = "DailyReportFragmentNew";
-
     private AlertDialog alertDialog;
 
 

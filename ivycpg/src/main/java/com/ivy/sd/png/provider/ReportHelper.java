@@ -55,8 +55,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
-public class ReportHelper {
+import javax.inject.Inject;
 
+public class ReportHelper {
     private static ReportHelper instance = null;
     private final Context mContext;
     private final BusinessModel bmodel;
@@ -81,7 +82,9 @@ public class ReportHelper {
     private Vector<RetailerMasterBO> retailerMaster;
     private HashMap<String, ArrayList<ProductMasterBO>> closingStkReportByRetailId;
 
-    private ReportHelper(Context context) {
+
+
+    public ReportHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
     }
@@ -3202,7 +3205,7 @@ public class ReportHelper {
      * @param id - selected invoice
      * @return - free product list
      */
-    public ArrayList<SchemeProductBO> getSchemeProductDetails(String id,boolean isInvoice) {
+    public ArrayList<SchemeProductBO> getSchemeProductDetails(String id, boolean isInvoice) {
         ArrayList<SchemeProductBO> freeProductList = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -3214,7 +3217,7 @@ public class ReportHelper {
         sb.append("from SchemeFreeProductDetail SFP ");
         sb.append("inner join Productmaster PM on SFP.freeproductid=PM.pid ");
         sb.append("left join Batchmaster BM on SFP.freeproductid=BM.pid and SFP.batchid=BM.batchid ");
-        if(isInvoice)
+        if (isInvoice)
             sb.append("where invoiceid=" + bmodel.QT(id));
         else // Order Report
             sb.append("where OrderID=" + bmodel.QT(id));

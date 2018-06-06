@@ -1,8 +1,19 @@
 package com.ivy.sd.png.view.reports.component;
 
-/**
- * Created by velraj.p on 5/24/2018.
- */
+import com.ivy.sd.png.view.reports.module.ReportModule;
+import com.ivy.sd.png.view.reports.orderreport.OrderReportModel;
+import com.ivy.sd.png.view.reports.refactor.DayReportHelper;
+import com.ivy.sd.png.view.reports.refactor.DayReportModel;
 
-public class ReportComponent {
+import javax.inject.Singleton;
+
+import dagger.Component;
+
+
+@Singleton
+@Component(modules = {ReportModule.class})
+public interface ReportComponent {
+    DayReportHelper provideDayReportHelper();
+    void inject(DayReportModel main);
+    void inject(OrderReportModel main);
 }

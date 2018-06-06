@@ -1,8 +1,13 @@
 package com.ivy.sd.png.view.reports.eodstockreport;
 
-/**
- * Created by velraj.p on 6/5/2018.
- */
 
-public class IEodStockModelPresenter {
+import com.ivy.sd.png.bo.StockReportBO;
+
+import java.util.ArrayList;
+
+public interface IEodStockModelPresenter {
+    void setAdapter();
+    void downloadEodReport();
+
+
 }

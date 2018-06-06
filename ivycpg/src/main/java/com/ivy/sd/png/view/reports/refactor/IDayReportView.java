@@ -5,6 +5,6 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import java.util.Vector;
 
 
-public interface IDayReportViewPresenter {
+public interface IDayReportView {
     void setAdapter(MyAdapter myAdapter);
 }

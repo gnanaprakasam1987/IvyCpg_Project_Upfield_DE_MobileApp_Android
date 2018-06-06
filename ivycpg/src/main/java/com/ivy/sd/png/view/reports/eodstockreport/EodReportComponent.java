@@ -1,8 +1,18 @@
 package com.ivy.sd.png.view.reports.eodstockreport;
 
-/**
- * Created by velraj.p on 6/5/2018.
- */
+import com.ivy.sd.png.view.reports.module.ReportModule;
+import com.ivy.sd.png.view.reports.refactor.DayReportModel;
 
-public class EodReportComponent {
+import javax.inject.Singleton;
+
+import dagger.Component;
+
+@Singleton
+@Component(modules = {EodStockReportModule.class})
+public interface EodReportComponent {
+
+    EodReportHelper provideEodReport();
+    void inject(EodStockModel main);
+
 }
+
