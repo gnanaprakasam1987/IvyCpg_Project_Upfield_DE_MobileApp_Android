@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
@@ -172,6 +173,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
 
         return detailsBos;
     }
+
     private void changeTabsFont(TabLayout tabLayout) {
 
         ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);

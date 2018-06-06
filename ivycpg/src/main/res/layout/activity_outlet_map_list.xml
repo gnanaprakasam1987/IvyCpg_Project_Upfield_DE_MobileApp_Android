@@ -3,17 +3,53 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
-        android:id="@+id/tool_bar"
-        layout="@layout/material_tool_bar"/>
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        style="?attr/tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        app:tabIndicatorColor="@android:color/white"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+        android:minHeight="?attr/actionBarSize"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="#ddd">
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:background="@color/white"
+            android:text="Total Outlet" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="Covered" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="Unbilled" />
+
+    </android.support.design.widget.TabLayout>
+
 
     <com.ivy.maplib.MapWrapperLayout
         android:id="@+id/map_wrap_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tool_bar"
+        android:layout_below="@+id/tab_layout"
         android:orientation="vertical">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -24,7 +60,158 @@
 
     </com.ivy.maplib.MapWrapperLayout>
 
-    <include layout="@layout/outlet_info_window_layout"
-        android:visibility="visible"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cardview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_10dp"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="3dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="0dp"
+            android:layout_above="@+id/user_info_layout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dimen_2dp"
+                android:paddingLeft="@dimen/dimen_5dp"
+                android:paddingRight="@dimen/dimen_5dp"
+                android:paddingTop="@dimen/dimen_2dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dimen_2dp">
+
+                    <View
+                        android:id="@+id/planned_color_view"
+                        android:layout_width="@dimen/dimen_14dp"
+                        android:layout_height="@dimen/dimen_14dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/planned_gradient_grey" />
+
+                    <TextView
+                        android:id="@+id/tv_planned_text"
+                        style="?attr/customListItemPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dimen_5dp"
+                        android:layout_toRightOf="@+id/planned_color_view"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="Planned"
+                        android:textColor="#de000000"
+                        android:textSize="@dimen/dimen_12dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:padding="@dimen/dimen_2dp">
+
+                    <View
+                        android:id="@+id/covered_color_view"
+                        android:layout_width="@dimen/dimen_14dp"
+                        android:layout_height="@dimen/dimen_14dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/covered_green" />
+
+                    <TextView
+                        android:id="@+id/tv_covered_text"
+                        style="?attr/customListItemPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dimen_5dp"
+                        android:layout_toRightOf="@+id/covered_color_view"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="Covered"
+                        android:textColor="#de000000"
+                        android:textSize="@dimen/dimen_12dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:padding="@dimen/dimen_2dp">
+
+                    <View
+                        android:id="@+id/unbilled_color_view"
+                        android:layout_width="@dimen/dimen_14dp"
+                        android:layout_height="@dimen/dimen_14dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/unbilled_gradient_red" />
+
+                    <TextView
+                        android:id="@+id/tv_unbilled_text"
+                        style="?attr/customListItemPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dimen_5dp"
+                        android:layout_toRightOf="@+id/unbilled_color_view"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="Unbilled"
+                        android:textColor="#de000000"
+                        android:textSize="@dimen/dimen_12dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:padding="@dimen/dimen_2dp"
+                    android:visibility="gone">
+
+                    <View
+                        android:id="@+id/skipped_color_view"
+                        android:layout_width="@dimen/dimen_14dp"
+                        android:layout_height="@dimen/dimen_14dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/unbilled_gradient_red" />
+
+                    <TextView
+                        android:id="@+id/tv_skipped_text"
+                        style="?attr/customListItemPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dimen_5dp"
+                        android:layout_toRightOf="@+id/skipped_color_view"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="Unbilled"
+                        android:textColor="#de000000"
+                        android:textSize="@dimen/dimen_12dp" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <include
+            android:id="@+id/user_info_layout"
+            layout="@layout/outlet_info_window_layout"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

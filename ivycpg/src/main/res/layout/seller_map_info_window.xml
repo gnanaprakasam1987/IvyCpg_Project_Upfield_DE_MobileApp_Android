@@ -29,3 +29,51 @@
         android:padding="@dimen/dimen_4dp"/>
 
 </LinearLayout>
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:orientation="horizontal">-->
+
+<!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@drawable/marker"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:visibility="gone"/>-->
+
+<!--<LinearLayout-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/info_window_bg"-->
+    <!--android:clickable="false"-->
+    <!--android:focusable="false"-->
+    <!--android:focusableInTouchMode="false"-->
+    <!--android:orientation="horizontal">-->
+
+
+    <!--<ImageView-->
+        <!--android:layout_width="@dimen/dimens_40dp"-->
+        <!--android:layout_height="@dimen/dimens_40dp"-->
+        <!--android:layout_marginLeft="@dimen/dimen_20dp"-->
+        <!--android:src="@drawable/ic_profile_view" />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_usr_name"-->
+        <!--style="?attr/customListItemPrimary"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@color/white"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:maxLines="1"-->
+        <!--android:minWidth="@dimen/dimen_100dp"-->
+        <!--android:padding="@dimen/dimen_4dp"-->
+        <!--android:text="Ravi shahtri balaji"-->
+        <!--android:textColor="@color/FullBlack" />-->
+
+<!--</LinearLayout>-->
+
+<!--</LinearLayout>-->
+

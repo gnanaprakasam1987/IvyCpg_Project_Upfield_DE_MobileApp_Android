@@ -1,11 +1,10 @@
-package com.ivy.cpg.view.supervisor.helper;
+package com.ivy.cpg.view.supervisor.adapter;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class EnhancedWrapContentViewPager extends ViewPager{
+public class EnhancedWrapContentViewPager extends CustomViewPager{
 
     public EnhancedWrapContentViewPager (Context context) {
         super(context);
@@ -37,7 +36,4 @@ public class EnhancedWrapContentViewPager extends ViewPager{
         // super has to be called again so the new specs are treated as exact measurements
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-
-
-
 }

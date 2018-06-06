@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.helper;
 
 import android.content.Context;
 import android.content.res.TypedArray;

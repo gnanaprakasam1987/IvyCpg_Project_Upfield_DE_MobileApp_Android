@@ -6,8 +6,10 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    app:behavior_hideable="false"
-    app:behavior_peekHeight="@dimen/dimen_40dp"
+    app:behavior_hideable="true"
+    android:clickable="true"
+    android:paddingTop="@dimen/dimen_10dp"
+    app:behavior_peekHeight="53dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
 
@@ -30,7 +32,7 @@
             android:padding="@dimen/dimen_10dp"
             android:text="03"
             android:textColor="@color/white"
-            android:textSize="@dimen/dimen_16dp" />
+            android:textSize="@dimen/font_small" />
 
         <TextView
             android:id="@+id/tv_txt_ttl_market_seller"
@@ -74,7 +76,7 @@
             android:padding="@dimen/dimen_10dp"
             android:text="06"
             android:textColor="@color/white"
-            android:textSize="@dimen/dimen_16dp" />
+            android:textSize="@dimen/font_small" />
 
 
     </LinearLayout>
@@ -127,7 +129,7 @@
                         android:paddingTop="@dimen/dimen_5dp"
                         android:text="07"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/dimen_16dp" />
+                        android:textSize="@dimen/font_medium" />
 
                     <TextView
                         android:id="@+id/tv_txt_ttl_seller"
@@ -185,7 +187,7 @@
                         android:paddingTop="@dimen/dimen_5dp"
                         android:text="12345.45"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/dimen_16dp" />
+                        android:textSize="@dimen/font_medium" />
 
                     <TextView
                         android:id="@+id/tv_txt_order_value"
@@ -197,7 +199,7 @@
                         android:gravity="center"
                         android:paddingBottom="@dimen/dimen_5dp"
                         android:paddingTop="@dimen/dimen_5dp"
-                        android:text="Order Value"
+                        android:text="Current Order Value"
                         android:textColor="@color/WHITE"
                         android:textSize="@dimen/dimen_12dp" />
 
@@ -253,7 +255,7 @@
                         android:paddingTop="@dimen/dimen_5dp"
                         android:text="07"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/dimen_16dp" />
+                        android:textSize="@dimen/font_medium" />
 
                     <TextView
                         android:id="@+id/tv_txt_ttl_outlet"
@@ -315,7 +317,7 @@
                         android:paddingTop="@dimen/dimen_5dp"
                         android:text="07"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/dimen_16dp" />
+                        android:textSize="@dimen/font_medium" />
 
                     <TextView
                         android:id="@+id/tv_txt_covered_outlet"
@@ -375,7 +377,7 @@
                         android:paddingTop="@dimen/dimen_5dp"
                         android:text="07"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/dimen_16dp" />
+                        android:textSize="@dimen/font_medium" />
 
                     <TextView
                         android:id="@+id/tv_txt_unbilled_outlet"

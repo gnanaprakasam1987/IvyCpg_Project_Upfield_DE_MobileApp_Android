@@ -2,30 +2,29 @@ package com.ivy.cpg.view.supervisor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -34,6 +33,9 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
+import com.ivy.cpg.view.supervisor.adapter.EnhancedWrapContentViewPager;
+import com.ivy.cpg.view.supervisor.helper.DetailsBo;
+import com.ivy.cpg.view.supervisor.helper.RecyclerViewPager;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -66,8 +68,14 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     private LinearLayout routeLayout,infoWindowLayout;
 
     private int trackingType; //0 - RealTime, 1 - Movement Tracking, 2 - Call analysis
-    ViewPagerAdapter viewPagerAdapter;
-    ViewPager viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
+    private EnhancedWrapContentViewPager viewPager;
+    private RecyclerViewPager mRecyclerView;
+//    private LayoutAdapter layoutAdapter;
+
+    private MyAdapter myAdapter;
+
+    ArrayList<DetailsBo>  detailsBos = new ArrayList<>();
 
 
     @Override
@@ -114,6 +122,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         }
 
         initViews(view);
+        initViewPager();
         setviewValues();
 
         return view;
@@ -220,9 +229,10 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         viewPager = view.findViewById(R.id.view_pager);
 
         viewPager.setClipToPadding(false);
-//        viewPager.setPadding(48, 0, 48, 0);
+        viewPager.setPadding(48, 0, 48, 0);
         viewPager.setPageMargin(1);
-        viewPager.setOffscreenPageLimit(1);
+        viewPager.setOffscreenPageLimit(0);
+
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
@@ -235,25 +245,25 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         SupervisorActivityHelper.getInstance().subscribeSellersUpdates(getContext(),this);
 
 
-        absentSeller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),SellerListActivity.class);
-                intent.putExtra("TabPos",1);
-                intent.putExtra("Screen","Seller");
-                startActivity(intent);
-            }
-        });
-
-        marketSeller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),SellerListActivity.class);
-                intent.putExtra("TabPos",2);
-                intent.putExtra("Screen","Seller");
-                startActivity(intent);
-            }
-        });
+//        absentSeller.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(),SellerListActivity.class);
+//                intent.putExtra("TabPos",1);
+//                intent.putExtra("Screen","Seller");
+//                startActivity(intent);
+//            }
+//        });
+//
+//        marketSeller.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(),SellerListActivity.class);
+//                intent.putExtra("TabPos",2);
+//                intent.putExtra("Screen","Seller");
+//                startActivity(intent);
+//            }
+//        });
 
         view.findViewById(R.id.ttl_seller_layout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,12 +326,25 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.setOnMarkerClickListener(this);
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+        mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng latLng) {
-                if(infoWindowLayout.getVisibility() == View.VISIBLE)
-                    infoWindowLayout.setVisibility(View.GONE);
+//                if(infoWindowLayout.getVisibility() == View.VISIBLE)
+//                    infoWindowLayout.setVisibility(View.GONE);
+                viewPager.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.GONE);
+
+                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetBehavior.setHideable(true);
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+                else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
             }
         });
 
@@ -376,6 +399,22 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
 //                userHashmap.get(key).getMarker().showInfoWindow();
 
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+
+//                LinearLayout tv = (LinearLayout) this.getLayoutInflater().inflate(R.layout.seller_map_info_window, null, false);
+//                tv.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+//                tv.layout(0, 0, tv.getMeasuredWidth(), tv.getMeasuredHeight());
+//
+//                tv.setDrawingCacheEnabled(true);
+//                tv.buildDrawingCache();
+//                Bitmap bm = tv.getDrawingCache();
+//
+//                BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(bm);
+
+                userHashmap.get(key).getMarker().setIcon(icon);
+
+
             } else {
 
                 isFirst = false;
@@ -393,9 +432,16 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
             }
 
-            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
 
-            userHashmap.get(key).getMarker().setIcon(icon);
+
+//            double angle = 130.0;
+//            double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;
+//            double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
+//            userHashmap.get(key).getMarker().setInfoWindowAnchor((float)x, (float)y);
+//
+//            if(userHashmap.get(key).getMarker()!=null &
+//                    !userHashmap.get(key).getMarker().isInfoWindowShown())
+//                userHashmap.get(key).getMarker().showInfoWindow();
 
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
@@ -408,9 +454,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                 mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
             }
 
-//            viewPagerAdapter = new ViewPagerAdapter(getContext(), new ArrayList<>(userHashmap.values()));
-//            viewPager.setAdapter(viewPagerAdapter);
-//            viewPagerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -457,10 +500,15 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
         marker.showInfoWindow();
-        showInfoWindow(marker);
+//        showInfoWindow(marker);
 
-        if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if(mRecyclerView.getVisibility() == View.VISIBLE)
+            mRecyclerView.setVisibility(View.GONE);
+
+        if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            bottomSheetBehavior.setHideable(true);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
 
         return true;
     }
@@ -498,6 +546,34 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     @Override
     public void onInfoWindowClick(Marker marker) {
 
+        Toast.makeText(getContext(), "Info window clicked", Toast.LENGTH_SHORT).show();
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+        marker.showInfoWindow();
+//        showInfoWindow(marker);
+
+        if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            bottomSheetBehavior.setHideable(true);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
+
+        mRecyclerView.setVisibility(View.VISIBLE);
+
+        detailsBos =  new ArrayList<>(userHashmap.values());
+
+        myAdapter.notifyDataSetChanged();
+
+        int pagerPos = 0;
+        int count=0;
+        for(DetailsBo detailsBo : userHashmap.values()){
+            if(detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())){
+                pagerPos = count;
+                break;
+            }
+            count = count+1;
+        }
+
+        mRecyclerView.scrollToPosition(pagerPos);
 
     }
 
@@ -511,7 +587,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         @Override
         public View getInfoWindow(final Marker marker) {
 
-//            tvMapInfoUserName.setText("Big Info message to check the content in info wiondow");
+            tvMapInfoUserName.setText(marker.getTitle()+" Id "+marker.getSnippet());
 
             mapWrapperLayout.setMarkerWithInfoWindow(marker, mymarkerview);
 
@@ -550,10 +626,160 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             LayoutInflater inflater = LayoutInflater.from(mContext);
             ViewGroup view = (ViewGroup) inflater.inflate(R.layout.map_seller_info_layout, container, false);
 
-            userHashmap.get(position).getMarker().showInfoWindow();
+            if(userHashmap!=null && userHashmap.size() > 0)
+                userHashmap.get(position).getMarker().showInfoWindow();
 
             container.addView(view);
             return view;
+        }
+    }
+
+    protected void initViewPager() {
+        mRecyclerView = view.findViewById(R.id.viewpager);
+        mRecyclerView.setVisibility(View.GONE);
+        LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL,
+                false);
+        mRecyclerView.setLayoutManager(layout);
+
+        myAdapter = new MyAdapter();
+        mRecyclerView.setAdapter(myAdapter);
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLongClickable(true);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
+//                updateState(scrollState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int i, int i2) {
+//                mPositionText.setText("First: " + mRecyclerViewPager.getFirstVisiblePosition());
+                int childCount = mRecyclerView.getChildCount();
+                int width = mRecyclerView.getChildAt(0).getWidth();
+                int padding = (mRecyclerView.getWidth() - width) / 2;
+//                mCountText.setText("Count: " + childCount);
+
+                for (int j = 0; j < childCount; j++) {
+                    View v = recyclerView.getChildAt(j);
+                    //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
+                    float rate = 0;
+                    ;
+                    if (v.getLeft() <= padding) {
+                        if (v.getLeft() >= padding - v.getWidth()) {
+                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
+                        } else {
+                            rate = 1;
+                        }
+                        v.setScaleY(1 - rate * 0.1f);
+                        v.setScaleX(1 - rate * 0.1f);
+
+                    } else {
+                        //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
+                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
+                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
+                        }
+                        v.setScaleY(0.9f + rate * 0.1f);
+                        v.setScaleX(0.9f + rate * 0.1f);
+                    }
+                }
+            }
+        });
+
+        mRecyclerView.addOnPageChangedListener(new RecyclerViewPager.OnPageChangedListener() {
+            @Override
+            public void OnPageChanged(int oldPosition, int newPosition) {
+
+                onMarkerClick(detailsBos.get(newPosition).getMarker());
+
+            }
+        });
+
+        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (mRecyclerView.getChildCount() < 3) {
+                    if (mRecyclerView.getChildAt(1) != null) {
+                        if (mRecyclerView.getCurrentPosition() == 0) {
+                            View v1 = mRecyclerView.getChildAt(1);
+                            v1.setScaleY(0.9f);
+                            v1.setScaleX(0.9f);
+                        } else {
+                            View v1 = mRecyclerView.getChildAt(0);
+                            v1.setScaleY(0.9f);
+                            v1.setScaleX(0.9f);
+                        }
+                    }
+                } else {
+                    if (mRecyclerView.getChildAt(0) != null) {
+                        View v0 = mRecyclerView.getChildAt(0);
+                        v0.setScaleY(0.9f);
+                        v0.setScaleX(0.9f);
+                    }
+                    if (mRecyclerView.getChildAt(2) != null) {
+                        View v2 = mRecyclerView.getChildAt(2);
+                        v2.setScaleY(0.9f);
+                        v2.setScaleX(0.9f);
+                    }
+                }
+
+            }
+        });
+    }
+
+    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView userName;
+
+            public MyViewHolder(View view) {
+                super(view);
+
+                userName = view.findViewById(R.id.tv_user_name);
+
+            }
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.map_seller_info_layout, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, final int position) {
+
+            final View itemView = holder.itemView;
+
+            if(detailsBos!=null && detailsBos.size()>0) {
+
+                holder.userName.setText(detailsBos.get(position).getUserName() + "---" + detailsBos.get(position).getMarker().getSnippet());
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), SellerMapViewActivity.class);
+                        intent.putExtra("SellerId", "1695");
+                        intent.putExtra("screentitle", "Seller");
+                        intent.putExtra("TrackingType", 1);
+                        getContext().startActivity(intent);
+                    }
+                });
+                final DetailsBo detailsBo = detailsBos.get(position);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemCount() {
+            return detailsBos.size();
         }
     }
 

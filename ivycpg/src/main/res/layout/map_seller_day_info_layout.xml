@@ -185,7 +185,7 @@
                     android:layout_marginTop="@dimen/dimen_10dp"
                     android:orientation="horizontal">
 
-                    <com.ivy.cpg.view.supervisor.CircleImageView
+                    <com.ivy.cpg.view.supervisor.helper.CircleImageView
                         android:layout_width="@dimen/dimens_100dp"
                         android:layout_height="@dimen/dimens_100dp"
                         android:layout_marginLeft="@dimen/dimen_10dp"

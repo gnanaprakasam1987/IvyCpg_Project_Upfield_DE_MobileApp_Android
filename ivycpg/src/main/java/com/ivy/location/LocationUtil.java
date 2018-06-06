@@ -170,8 +170,8 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
             } else
                 Log.d(TAG, "Location Manager latitude :" + latitude + ",Location Manager longitude :" + longitude);
 
-            latitude = doubleConversion(loc.getLatitude());
-            longitude = doubleConversion(loc.getLongitude());
+            latitude = truncateLocation(loc.getLatitude());
+            longitude = truncateLocation(loc.getLongitude());
             accuracy = loc.getAccuracy();
             mProviderName = loc.getProvider();
 
@@ -296,8 +296,8 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
         } else
             Log.d(TAG, "Fused Api latitude :" + latitude + ",Fused Api longitude :" + longitude);
 
-        latitude = doubleConversion(location.getLatitude());
-        longitude = doubleConversion(location.getLongitude());
+        latitude = truncateLocation(location.getLatitude());
+        longitude = truncateLocation(location.getLongitude());
         accuracy = location.getAccuracy();
         mProviderName = location.getProvider();
         if (iLocationUpdater != null)
@@ -335,11 +335,11 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                                           double retailerLongitude) {
         try {
             Location retLoc = new Location("");
-            retLoc.setLatitude(doubleConversion(retailerLatitude));
-            retLoc.setLongitude(doubleConversion(retailerLongitude));
+            retLoc.setLatitude(truncateLocation(retailerLatitude));
+            retLoc.setLongitude(truncateLocation(retailerLongitude));
             Location userLoc = new Location("");
-            userLoc.setLatitude(doubleConversion(LocationUtil.latitude));
-            userLoc.setLongitude(doubleConversion(LocationUtil.longitude));
+            userLoc.setLatitude(truncateLocation(LocationUtil.latitude));
+            userLoc.setLongitude(truncateLocation(LocationUtil.longitude));
             float distance = userLoc.distanceTo(retLoc);
             return distance;
         } catch (Exception e) {
@@ -347,8 +347,13 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
         }
     }
 
-    //To avoid exponential value and trucate decimal digits to 10
-    private static double doubleConversion(Double aDouble) {
+
+    /**
+     * To avoid exponential value and truncate decimal digits to 10
+     * @param originalLocation Original Location
+     * @return Truncated location
+     */
+    private static double truncateLocation(Double originalLocation) {
 
         Double val = 0.0;
         try {
@@ -357,7 +362,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
             decimalFormat.setMinimumFractionDigits(2);
             decimalFormat.setMaximumFractionDigits(10);
 
-            val = Double.valueOf(decimalFormat.format(aDouble));
+            val = Double.valueOf(decimalFormat.format(originalLocation));
         }catch(Exception e){
             Commons.printException(e);
         }

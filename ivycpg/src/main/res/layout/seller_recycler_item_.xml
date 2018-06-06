@@ -32,7 +32,7 @@
                 android:padding="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/dimen_5dp">
 
-                <com.ivy.cpg.view.supervisor.CircleImageView
+                <com.ivy.cpg.view.supervisor.helper.CircleImageView
                     android:layout_width="@dimen/list_item_height_double_line"
                     android:layout_height="@dimen/list_item_height_double_line"
                     android:layout_margin="@dimen/dimen_5dp"

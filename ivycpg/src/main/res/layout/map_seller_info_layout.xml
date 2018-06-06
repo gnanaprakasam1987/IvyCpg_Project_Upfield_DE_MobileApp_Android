@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
-    android:layout_marginBottom="@dimen/dimen_40dp"
+    android:layout_marginBottom="@dimen/dimen_10dp"
     android:orientation="vertical"
     android:visibility="visible">
 
@@ -33,7 +33,7 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/dimen_10dp">
 
-                <com.ivy.cpg.view.supervisor.CircleImageView
+                <com.ivy.cpg.view.supervisor.helper.CircleImageView
                     android:layout_width="@dimen/dimens_60dp"
                     android:layout_height="@dimen/dimens_60dp"
                     android:src="@drawable/face"
@@ -130,7 +130,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_1dp"
-                android:layout_marginBottom="@dimen/dimen_10dp"
+                android:layout_marginBottom="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/dimen_10dp"
                 android:background="#1e000000" />
 

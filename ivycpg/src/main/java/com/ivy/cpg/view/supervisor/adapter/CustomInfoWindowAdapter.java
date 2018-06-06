@@ -1,15 +1,13 @@
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.adapter;
 
 
 import android.content.Context;
-import android.text.Html;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 

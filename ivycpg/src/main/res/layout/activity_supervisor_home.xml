@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.ivy.maplib.MapWrapperLayout
         android:id="@+id/map_wrap_layout"
@@ -20,12 +21,25 @@
 
     </com.ivy.maplib.MapWrapperLayout>
 
-    <com.ivy.cpg.view.supervisor.helper.EnhancedWrapContentViewPager
+    <com.ivy.cpg.view.supervisor.adapter.EnhancedWrapContentViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/dimens_40dp"/>
+        android:layout_marginBottom="@dimen/dimens_20dp"
+        android:visibility="gone"/>
+
+    <com.ivy.cpg.view.supervisor.helper.RecyclerViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:clipToPadding="false"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        app:rvp_singlePageFling="true"
+        app:rvp_triggerOffset="0.1"/>
 
     <include layout="@layout/map_seller_info_layout"
         android:id="@+id/user_info_layout"
