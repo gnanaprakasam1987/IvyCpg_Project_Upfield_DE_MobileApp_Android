@@ -16,6 +16,7 @@ import com.ivy.sd.png.bo.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.HashSet;
@@ -52,24 +53,30 @@ public class SellerTaskReportFragment extends IvyBaseFragment {
 
     private void prepareScreenData(){
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        try {
 
-        myAdapter = new MyAdapter(mylist);
-        recyclerView.setAdapter(myAdapter);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        //Loading Userwise data
-        mylist.addAll(TaskReportHelper.getInstance(getContext()).getSellerWiseTaskReport());
+            myAdapter = new MyAdapter(mylist);
+            recyclerView.setAdapter(myAdapter);
 
-        //Item Decoration for Header as User name
-        RecyclerSectionItemDecoration sectionItemDecoration =
-                new RecyclerSectionItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_30dp),
-                        false,
-                        getSectionCallback(mylist));
-        recyclerView.addItemDecoration(sectionItemDecoration);
+            //Loading Userwise data
+            mylist.addAll(TaskReportHelper.getInstance(getContext()).getSellerWiseTaskReport());
 
-        myAdapter.notifyDataSetChanged();
+            //Item Decoration for Header as User name
+            RecyclerSectionItemDecoration sectionItemDecoration =
+                    new RecyclerSectionItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_30dp),
+                            false,
+                            getSectionCallback(mylist));
+            recyclerView.addItemDecoration(sectionItemDecoration);
+
+            myAdapter.notifyDataSetChanged();
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
 
     }
 
