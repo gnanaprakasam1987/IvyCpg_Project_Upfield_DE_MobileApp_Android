@@ -103,8 +103,7 @@ public class ProfileFragment extends IvyBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_profile, container,
-                false);
+        view = inflater.inflate(R.layout.fragment_profile, container, false);
         if (!_hasLoadedOnce) {
             initializeViews();
         }

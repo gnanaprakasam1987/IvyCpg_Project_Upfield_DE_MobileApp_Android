@@ -173,7 +173,7 @@ public class MyThread extends Thread {
             if (bmodel.isOnline()) {
 
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOAD);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOAD,ctx.getApplicationContext());
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 0);
 
                 if (bool == 1) {
@@ -201,7 +201,7 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(frm.getHandler(), DataMembers.SYNC_REALLOC_UPLOAD);
+                int bool = mUploadHelper.uploadUsingHttp(frm.getHandler(), DataMembers.SYNC_REALLOC_UPLOAD,ctx.getApplicationContext());
                 if (bool == 1) {
                     frm.getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOADED);
@@ -231,7 +231,7 @@ public class MyThread extends Thread {
             if (bmodel.isOnline()) {
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 1);
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOADRETAILERWISE);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOADRETAILERWISE,ctx.getApplicationContext());
 
                 if (bool == 1) {
 
@@ -253,7 +253,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
             UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
             // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 2);
-            int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNC_EXPORT);
+            int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNC_EXPORT,ctx.getApplicationContext());
 
             if (bool == 1) {
                 fragment.getHandler().sendEmptyMessage(
@@ -751,7 +751,7 @@ public class MyThread extends Thread {
             }
 
             if (bmodel.isOnline()) {
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSIHUPLOAD);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSIHUPLOAD,ctx.getApplicationContext());
 
                 if (bool == 2) {
                     handler.sendEmptyMessage(
@@ -784,7 +784,7 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSTKAPPLYUPLOAD);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSTKAPPLYUPLOAD,ctx.getApplicationContext());
 
                 if (bool == 2) {
                     handler.sendEmptyMessage(
@@ -810,7 +810,7 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_SIH_UPLOAD);
+                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_SIH_UPLOAD,ctx.getApplicationContext());
 
                 if (bool == 2) {
                     fragment.getHandler().sendEmptyMessage(
@@ -833,7 +833,7 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_STOCK_APPLY_UPLOAD);
+                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_STOCK_APPLY_UPLOAD,ctx.getApplicationContext());
 
                 if (bool == 2) {
                     fragment.getHandler().sendEmptyMessage(
@@ -856,7 +856,7 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.CS_REJECTED_VARIANCE_UPLOAD);
+                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.CS_REJECTED_VARIANCE_UPLOAD,ctx.getApplicationContext());
 
                 if (bool == 2) {
                     fragment.getHandler().sendEmptyMessage(
@@ -887,7 +887,7 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCLYTYPTUPLOAD);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCLYTYPTUPLOAD,ctx.getApplicationContext());
 
                 if (bool == 2) {
                     handler.sendEmptyMessage(

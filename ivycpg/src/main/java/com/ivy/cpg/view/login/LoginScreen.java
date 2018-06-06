@@ -66,7 +66,8 @@ import java.io.FilenameFilter;
 import java.util.HashMap;
 
 
-public class LoginScreen extends IvyBaseActivityNoActionBar implements ApplicationConfigs, LoginContractor.LoginView {
+public class LoginScreen extends IvyBaseActivityNoActionBar
+        implements ApplicationConfigs, LoginContractor.LoginView {
 
     private BusinessModel businessModel;
 
@@ -139,8 +140,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
             /* Display version information on the login screen. */
         TextView version = (TextView) findViewById(R.id.version);
-        version.setText(getResources().getString(R.string.version)
-                + businessModel.getApplicationVersionName());
+        version.setText(getResources().getString(R.string.version) + businessModel.getApplicationVersionName());
         version.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         LinearLayout ll_footer = (LinearLayout) findViewById(R.id.ll_footer);

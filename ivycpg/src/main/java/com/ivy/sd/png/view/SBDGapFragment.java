@@ -49,8 +49,9 @@ public class SBDGapFragment extends IvyBaseFragment {
             public void onClick(View view) {
                 if (!editText_target.getText().toString().isEmpty()) {
                     if (bmodel.getRetailerMasterBO().getKpiid_day() != 0) {
-                        SBDHelper.getInstance(getActivity()).saveDayTarget(bmodel.getRetailerMasterBO().getKpiid_day(),
-                                Double.valueOf(editText_target.getText().toString()));
+                        SBDHelper.getInstance(getActivity())
+                                .saveDayTarget(bmodel.getRetailerMasterBO().getKpiid_day(),
+                                        Double.valueOf(editText_target.getText().toString()),getActivity().getApplicationContext());
                         Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getActivity(), getResources().getString(R.string.retailer_kpi_not_available), Toast.LENGTH_LONG).show();
@@ -76,7 +77,8 @@ public class SBDGapFragment extends IvyBaseFragment {
 
 
     private void prepareScreen(View rootView){
-        HashMap<String,HashMap<String,String>> mSBDGap = SBDHelper.getInstance(getActivity()).calculateSBDDistribution();
+        HashMap<String,HashMap<String,String>> mSBDGap = SBDHelper.getInstance(getActivity())
+                .calculateSBDDistribution(getActivity().getApplicationContext());
 
         LinearLayout layout_root = rootView.findViewById(R.id.root);
 

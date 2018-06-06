@@ -542,7 +542,7 @@ public class OTRNewRequest extends IvyBaseActivityNoActionBar implements OnClick
         protected Boolean doInBackground(String... arg0) {
             try {
                 bmodel.mAttendanceHelper.setNonFieldList(nonFieldList);
-                bmodel.mAttendanceHelper.saveNonFieldWorkDetails();
+                bmodel.mAttendanceHelper.saveNonFieldWorkDetails(getApplicationContext());
 
                 return Boolean.TRUE;
             } catch (Exception e) {

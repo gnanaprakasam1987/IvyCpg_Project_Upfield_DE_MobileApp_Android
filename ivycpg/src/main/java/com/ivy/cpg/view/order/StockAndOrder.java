@@ -482,7 +482,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
-        SBDHelper.getInstance(this).calculateSBDDistribution(); //sbd calculation
+        SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext()); //sbd calculation
         sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
         productList = filterWareHouseProducts();
         /* Calculate the SBD Dist Acheivement value */

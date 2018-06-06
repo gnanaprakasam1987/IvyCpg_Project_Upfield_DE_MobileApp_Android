@@ -565,7 +565,7 @@ public class OrderHelper {
                 businessModel.productHelper.updateEntryLevelDiscount(db, this.getOrderId(), entryLevelDistSum);
 
             // update SBD Distribution Percentage based on its history and ordered detail's
-            SBDHelper.getInstance(mContext).calculateSBDDistribution();
+            SBDHelper.getInstance(mContext).calculateSBDDistribution(mContext.getApplicationContext());
             int sbdTgt = businessModel.getRetailerMasterBO()
                     .getSbdDistributionTarget();
             double sbdPercent = 0;
@@ -1048,7 +1048,7 @@ public class OrderHelper {
                     businessModel.productHelper.updateEntryLevelDiscount(db, this.getOrderId(), entryLevelDistSum);
 
                 // update SBD Distribution Percentage based on its history and ordered detail's
-                SBDHelper.getInstance(mContext).calculateSBDDistribution();
+                SBDHelper.getInstance(mContext).calculateSBDDistribution(mContext.getApplicationContext());
                 int sbdTgt = businessModel.getRetailerMasterBO()
                         .getSbdDistributionTarget();
                 double sbdPercent = 0;
@@ -1386,7 +1386,7 @@ public class OrderHelper {
             db.deleteSQL(DataMembers.tbl_OrderDiscountDetail, "OrderID="
                     + businessModel.QT(orderId) + " and upload='N'", false);
             // update SBD Distribution Percentage based on its history and ordered detail's
-            SBDHelper.getInstance(context).calculateSBDDistribution();
+            SBDHelper.getInstance(context).calculateSBDDistribution(context.getApplicationContext());
             int sbdTgt = businessModel.getRetailerMasterBO()
                     .getSbdDistributionTarget();
             double sbdPercent = 0;
