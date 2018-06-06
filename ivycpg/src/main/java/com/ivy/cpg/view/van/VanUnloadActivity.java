@@ -239,6 +239,12 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         else
             menu.findItem(R.id.menu_product_filter).setVisible(true);
 
+        if (bmodel.configurationMasterHelper.IS_BAR_CODE_VAN_UNLOAD) {
+            menu.findItem(R.id.menu_barcode).setVisible(true);
+        } else {
+            menu.findItem(R.id.menu_barcode).setVisible(false);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -305,30 +311,32 @@ public class VanUnloadActivity extends ToolBarwithFilter {
             String mSelectedFilter = bmodel.getProductFilter();
             for (int i = 0; i < siz; ++i) {
                 LoadManagementBO ret = items.elementAt(i);
-                if ("BarCode".equals(mSelectedFilter)) {
-                    if (ret.getBarcode() != null && ret.getBarcode()
-                            .toLowerCase()
-                            .contains(
-                                    mEdt_searchproductName.getText().toString()
-                                            .toLowerCase()))
-                        mylist.add(ret);
+                if(ret.getSih() > 0) {
+                    if ("BarCode".equals(mSelectedFilter)) {
+                        if (ret.getBarcode() != null && ret.getBarcode()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()))
+                            mylist.add(ret);
 
-                } else if ("GCAS Code".equals(mSelectedFilter)) {
-                    if (ret.getRField1() != null && ret.getRField1()
-                            .toLowerCase()
-                            .contains(
-                                    mEdt_searchproductName.getText().toString()
-                                            .toLowerCase()))
-                        mylist.add(ret);
+                    } else if ("GCAS Code".equals(mSelectedFilter)) {
+                        if (ret.getRField1() != null && ret.getRField1()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()))
+                            mylist.add(ret);
 
-                } else if (getResources().getString(
-                        R.string.product_name).equals(mSelectedFilter)) {
-                    if (ret.getProductshortname() != null && ret.getProductshortname()
-                            .toLowerCase()
-                            .contains(
-                                    mEdt_searchproductName.getText().toString()
-                                            .toLowerCase()))
-                        mylist.add(ret);
+                    } else if (getResources().getString(
+                            R.string.product_name).equals(mSelectedFilter)) {
+                        if (ret.getProductshortname() != null && ret.getProductshortname()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()))
+                            mylist.add(ret);
+                    }
                 }
             }
 

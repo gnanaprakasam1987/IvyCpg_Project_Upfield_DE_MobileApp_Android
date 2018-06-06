@@ -3,6 +3,10 @@ package com.ivy.cpg.view.reports;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ivy.sd.png.bo.SchemeProductBO;
+
+import java.util.List;
+
 public class OrderReportBO implements Parcelable {
 
     public OrderReportBO() {
@@ -287,4 +291,42 @@ public class OrderReportBO implements Parcelable {
     }
 
     private int mFocusBrandCount,mMustSellCount;
+
+
+    private double taxValue;
+    private double discountValue;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public double getTaxValue() {
+        return taxValue;
+    }
+
+    public void setTaxValue(double taxValue) {
+        this.taxValue = taxValue;
+    }
+
+    public double getDiscountValue() {
+        return discountValue;
+    }
+
+    public void setDiscountValue(double discountValue) {
+        this.discountValue = discountValue;
+    }
+    private List<SchemeProductBO> schemeProducts;
+
+    public List<SchemeProductBO> getSchemeProducts() {
+        return schemeProducts;
+    }
+
+    public void setSchemeProducts(List<SchemeProductBO> schemeProducts) {
+        this.schemeProducts = schemeProducts;
+    }
+
 }

@@ -689,6 +689,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
+                        loginPresenter.updateDownloadedTime();
                     }
                 } else {
                     reDownloadAlert(bundle);
@@ -701,6 +702,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
+                        loginPresenter.updateDownloadedTime();
                     }
                 } else if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     loginPresenter.callDistributorFinish();
@@ -715,6 +717,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
+                        loginPresenter.updateDownloadedTime();
                     }
                 } else if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     loginPresenter.callRetailerFinish();

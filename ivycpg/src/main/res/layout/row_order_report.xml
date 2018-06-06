@@ -1,303 +1,350 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
+
     <android.support.v7.widget.CardView
         android:id="@+id/cardviewlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         card_view:cardBackgroundColor="@color/WHITE"
         card_view:cardCornerRadius="0dp"
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="true"
         card_view:cardUseCompatPadding="true"
-        card_view:contentPadding="0dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
-    <RelativeLayout
-        android:id="@+id/widget73"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/footer">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_1dp"
-        android:orientation="vertical"
-        android:layout_marginStart="@dimen/btn_round_corner_padding">
+        card_view:contentPadding="0dp">
+
         <RelativeLayout
-            android:id="@+id/ll_PRDNAME"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-     <TextView
-        android:id="@+id/PRDNAME"
-         android:textColor="@android:color/black"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center|start"
-       android:maxLines="1"
-        android:text="@string/product_name"
-         android:layout_marginTop="@dimen/list_margin"
-         android:textSize="@dimen/font_micro_small">
-     </TextView>
-         <TextView
-             android:id="@+id/tv_seller_type"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:padding="2dp"
-             android:text=""
-             android:tag="must_sell"
-             android:textColor="@android:color/black"
-             android:background="@drawable/rounded_corner_black"
-             android:layout_toEndOf="@+id/PRDNAME"
-             android:visibility="visible"
-             android:maxLines="1"
-             android:layout_marginStart="@dimen/tab_selection_identifier_height"
-             android:layout_marginTop="@dimen/tab_selection_identifier_height"/>
+            android:id="@+id/widget73"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/footer">
 
-
-        <TextView
-            android:id="@+id/focus_brand_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="2dp"
-            android:text=""
-            android:tag="focus_brand"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small"
-            android:visibility="gone"
-            android:maxLines="1"
-            android:layout_below="@+id/PRDNAME"/>
-        <TextView
-            android:id="@+id/mustsell_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/focus_brand_count"
-            android:padding="2dp"
-            android:text="@string/ou"
-            android:tag="must_sell"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small"
-            android:visibility="gone"
-            android:maxLines="1"
-            android:layout_below="@+id/PRDNAME"
-            />
-
-        <TextView
-            android:id="@+id/ordertxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/focus_brand_count"
-            android:padding="2dp"
-            android:text="@string/order_number"
-            android:tag="must_sell"
-            android:textColor="@color/BLUE"
-            android:textSize="@dimen/font_micro_small"
-            android:maxLines="1"
-            android:visibility="gone"/>
-            <TextView
-                android:id="@+id/orderno"
-                android:textColor="@color/BLUE"
-                android:layout_width="wrap_content"
-                android:layout_below="@+id/focus_brand_count"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/dist"
-                android:textSize="@dimen/font_micro_small"
-                android:layout_marginTop="2dp"/>
+                android:layout_marginStart="@dimen/btn_round_corner_padding"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_1dp">
 
-            <TextView
-                android:id="@+id/text_delivery_date"
-                android:textColor="@android:color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/orderno"
-                android:padding="2dp"
-                android:text="@string/delivery_date_label"
-                android:tag="delivery_date"
-                android:textSize="@dimen/font_micro_small"
-                android:maxLines="1" />
-            <TextView
-                android:id="@+id/PRDMRP"
-                android:textColor="@android:color/black"
-                android:layout_width="@dimen/list_item_width_large"
-                android:layout_height="35dp"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/mrp"
-                android:textSize="@dimen/font_large"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                />
+                <RelativeLayout
+                    android:id="@+id/ll_PRDNAME"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-</RelativeLayout>
-        <View
-            android:id="@+id/invoiceview_doted_line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_2dp"
-            android:layout_marginBottom="@dimen/list_item_inter_margin"
-            android:layout_below="@+id/ll_PRDNAME"
-            android:background="@drawable/line_dotted"/>
+                    <TextView
+                        android:id="@+id/PRDNAME"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/list_margin"
+                        android:gravity="center|start"
+                        android:maxLines="1"
+                        android:text="@string/product_name"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_micro_small"></TextView>
+
+                    <TextView
+                        android:id="@+id/tv_seller_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/tab_selection_identifier_height"
+                        android:layout_marginTop="@dimen/tab_selection_identifier_height"
+                        android:layout_toEndOf="@+id/PRDNAME"
+                        android:background="@drawable/rounded_corner_black"
+                        android:maxLines="1"
+                        android:padding="2dp"
+                        android:tag="must_sell"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:visibility="visible" />
 
 
-        <LinearLayout
-            android:id="@+id/linearLayout_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@+id/invoiceview_doted_line"
-            android:layout_marginTop="5dp">
+                    <TextView
+                        android:id="@+id/focus_brand_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/PRDNAME"
+                        android:maxLines="1"
+                        android:padding="2dp"
+                        android:tag="focus_brand"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_micro_small"
+                        android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/focusbrand_label"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="25"
-                android:textStyle="bold"
-                android:tag="value_or_volume"
-                android:text="@string/focus_brand"
-                android:textColor="@color/kpi_value_text_color"
-                android:textSize="@dimen/text_sz_small"/>
-            <TextView
-                android:id="@+id/mustsell_label"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="25"
-                android:textStyle="bold"
-                android:tag="value_or_volume"
-                android:text="@string/must_sell"
-                android:textColor="@color/kpi_value_text_color"
-                android:textSize="@dimen/text_sz_small"/>
-            <TextView
-                android:id="@+id/outid"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="25"
-                android:textStyle="bold"
-                android:tag="value_or_volume"
-                android:text="@string/pre_post"
-                android:textColor="@color/kpi_value_text_color"
-                android:textSize="@dimen/text_sz_small"/>
-            <TextView
-                android:id="@+id/lpc"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:tag="lines"
-                android:text="@string/lines"
-                android:textColor="@color/kpi_value_text_color"
-                android:layout_weight="25"
-                android:gravity="center"
-                android:textSize="@dimen/text_sz_small"
-                android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/mustsell_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/PRDNAME"
+                        android:layout_toEndOf="@+id/focus_brand_count"
+                        android:maxLines="1"
+                        android:padding="2dp"
+                        android:tag="must_sell"
+                        android:text="@string/ou"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_micro_small"
+                        android:visibility="gone" />
 
-       <!--     <TextView
-                android:id="@+id/dist"
-                style="?attr/customListTitle"
-                android:layout_width="@dimen/list_item_width_double"
-                android:layout_height="wrap_content"
-                android:text="@string/value"
-                android:textColor="@color/black_bg1"
-                android:layout_gravity="center"
-                android:textSize="@dimen/list_item_primary_text_size"/>-->
-            <TextView
-                android:id="@+id/weighttitle"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:tag="weighttitle"
-                android:text="@string/weight"
-                android:textColor="@color/black_bg1"
-                android:gravity="center"
-                android:layout_weight="25"
-                android:textSize="@dimen/text_sz_small"
-                android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/ordertxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/focus_brand_count"
+                        android:maxLines="1"
+                        android:padding="2dp"
+                        android:tag="must_sell"
+                        android:text="@string/order_number"
+                        android:textColor="@color/BLUE"
+                        android:textSize="@dimen/font_micro_small"
+                        android:visibility="gone" />
 
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/linearLayout_values"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@+id/linearLayout_label"
-            >
-            <TextView
-                android:id="@+id/focus_brand_count1"
-                android:textColor="@color/FullBlack"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/dist"
-                android:layout_weight="25"
-                android:textSize="@dimen/font_small"
-                />
-            <TextView
-                android:id="@+id/mustsellcount"
-                android:textColor="@color/FullBlack"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/dist"
-                android:layout_weight="25"
-                android:textSize="@dimen/font_small"
-                />
-            <TextView
-                android:id="@+id/dist_txt"
-                android:textColor="@color/FullBlack"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/dist"
-                android:layout_weight="25"
-                android:textSize="@dimen/font_small"
-                />
-            <TextView
-                android:id="@+id/PRDRP"
-                android:textColor="@android:color/black"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/rp"
-                android:textSize="@dimen/font_small"
-                android:layout_weight="25"
-               />
+                    <TextView
+                        android:id="@+id/orderno"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/focus_brand_count"
+                        android:layout_marginTop="2dp"
+                        android:gravity="center"
+                        android:text="@string/dist"
+                        android:textColor="@color/BLUE"
+                        android:textSize="@dimen/font_micro_small" />
+
+                    <TextView
+                        android:id="@+id/text_delivery_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/orderno"
+                        android:maxLines="1"
+                        android:padding="2dp"
+                        android:tag="delivery_date"
+                        android:text="@string/delivery_date_label"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_micro_small" />
+
+                    <TextView
+                        android:id="@+id/PRDMRP"
+                        android:layout_width="@dimen/list_item_width_large"
+                        android:layout_height="35dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="@string/mrp"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_large" />
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/invoiceview_doted_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_below="@+id/ll_PRDNAME"
+                    android:layout_marginBottom="@dimen/list_item_inter_margin"
+                    android:background="@drawable/line_dotted" />
 
 
+                <LinearLayout
+                    android:id="@+id/linearLayout_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/invoiceview_doted_line"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
 
-            <!--  <TextView
-                 android:id="@+id/orderno"
-                  android:textColor="@android:color/black"
-                 android:layout_width="@dimen/list_product_name_width_small"
-                 android:layout_height="35dp"
-                 android:gravity="center"
-                 android:padding="2dp"
-                 android:text="@string/dist"
-                  android:textSize="@dimen/font_small" />-->
-            <TextView
-                android:id="@+id/tv_weight"
-                android:textColor="@android:color/black"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/dist"
-                android:layout_weight="25"
-                android:textSize="@dimen/font_small" />
-            </LinearLayout>
-    </RelativeLayout>
+                    <TextView
+                        android:id="@+id/focusbrand_label"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:tag="value_or_volume"
+                        android:text="@string/focus_brand"
+                        android:textColor="@color/kpi_value_text_color"
+                        android:textSize="@dimen/text_sz_small"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/mustsell_label"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:tag="value_or_volume"
+                        android:text="@string/must_sell"
+                        android:textColor="@color/kpi_value_text_color"
+                        android:textSize="@dimen/text_sz_small"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/outid"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:tag="value_or_volume"
+                        android:text="@string/pre_post"
+                        android:textColor="@color/kpi_value_text_color"
+                        android:textSize="@dimen/text_sz_small"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/lpc"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:tag="lines"
+                        android:text="@string/lines"
+                        android:textColor="@color/kpi_value_text_color"
+                        android:textSize="@dimen/text_sz_small"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/weighttitle"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:tag="weighttitle"
+                        android:text="@string/weight"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/text_sz_small"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_tax_title"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:tag="taxtitle"
+                        android:text="@string/tax_value"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/text_sz_small"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_disc_title"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:tag="disctitle"
+                        android:text="@string/discount"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/text_sz_small"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout_values"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/linearLayout_label"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/focus_brand_count1"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="@string/dist"
+                        android:textColor="@color/FullBlack"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:id="@+id/mustsellcount"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="@string/dist"
+                        android:textColor="@color/FullBlack"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:id="@+id/dist_txt"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="@string/dist"
+                        android:textColor="@color/FullBlack"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:id="@+id/PRDRP"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="@string/rp"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_small" />
 
 
-</RelativeLayout>
+                    <!--  <TextView
+                         android:id="@+id/orderno"
+                          android:textColor="@android:color/black"
+                         android:layout_width="@dimen/list_product_name_width_small"
+                         android:layout_height="35dp"
+                         android:gravity="center"
+                         android:padding="2dp"
+                         android:text="@string/dist"
+                          android:textSize="@dimen/font_small" />-->
+                    <TextView
+                        android:id="@+id/tv_weight"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="@string/dist"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:id="@+id/tv_tax_amount"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="@string/tax_value"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_small" />
+
+
+                    <TextView
+                        android:id="@+id/tv_disc_amt"
+                        android:layout_width="@dimen/list_item_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="@string/discount"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_small" />
+                </LinearLayout>
+            </RelativeLayout>
+
+
+        </RelativeLayout>
     </android.support.v7.widget.CardView>
 
 </RelativeLayout>

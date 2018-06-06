@@ -4,17 +4,19 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 public class PriceTrackingHelper {
-
+    private Context context;
     private final BusinessModel bmodel;
     private static PriceTrackingHelper instance = null;
 
@@ -42,8 +44,11 @@ public class PriceTrackingHelper {
     private String CODE_PRICE_COMPLIANCE = "PRICE_COMPLIANCE";
     private String CODE_SHOW_PREV_MRP_IN_PRICE = "PRICE_LAST_VP_MRP";
     private String CODE_PRICE_LASTVP = "PRICE_LAST_VP";
+    public ArrayList<String> mSearchTypeArray = new ArrayList<>();
+
 
     private PriceTrackingHelper(Context context) {
+        this.context = context;
         this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -54,6 +59,12 @@ public class PriceTrackingHelper {
         return instance;
     }
 
+    public void prepareAdapters(){
+        mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(context.getResources().getString(R.string.product_name));
+        mSearchTypeArray.add(context.getResources().getString(
+                R.string.order_dialog_barcode));
+    }
 
     public void clearInstance() {
         instance = null;
@@ -582,7 +593,7 @@ public class PriceTrackingHelper {
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_UOM) + " and Flag=1 and subchannelid=" + subChannelId;
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=" + subChannelId;
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -592,7 +603,7 @@ public class PriceTrackingHelper {
             } else {
                 sql = "select RField from "
                         + DataMembers.tbl_HhtModuleMaster
-                        + " where hhtCode=" + bmodel.QT(CODE_PRICE_UOM) + " and Flag=1 and subchannelid=0";
+                        + " where hhtCode=" + bmodel.QT(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=0";
                 c = db.selectSQL(sql);
                 if (c != null && c.getCount() != 0) {
                     if (c.moveToNext()) {
@@ -621,7 +632,7 @@ public class PriceTrackingHelper {
             }
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_SRP) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_SRP) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -632,7 +643,7 @@ public class PriceTrackingHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_CHANGED) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_CHANGED) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -643,7 +654,7 @@ public class PriceTrackingHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPLIANCE) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPLIANCE) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -653,7 +664,7 @@ public class PriceTrackingHelper {
             }
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPETITOR) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPETITOR) + " and ForSwitchSeller = 0 and Flag=1";
 
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
@@ -666,7 +677,7 @@ public class PriceTrackingHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_PREV_MRP_IN_PRICE) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_PREV_MRP_IN_PRICE) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -677,7 +688,7 @@ public class PriceTrackingHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_LASTVP) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_LASTVP) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {

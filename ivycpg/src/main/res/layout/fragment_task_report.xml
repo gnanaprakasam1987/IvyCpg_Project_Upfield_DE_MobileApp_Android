@@ -3,7 +3,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -31,8 +31,8 @@
             android:id="@+id/select_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
             android:text="@string/date"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/font_small" />
 
         <Spinner
@@ -41,6 +41,21 @@
             android:layout_height="wrap_content"
             android:focusable="true" />
 
+        <TextView
+            android:id="@+id/select_seller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Seller"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small" />
+
+        <Spinner
+            android:id="@+id/spinner_sellid_taskreport"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="wrap_content"
+            android:focusable="true" />
+
+
     </LinearLayout>
 
 
@@ -48,99 +63,115 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
             <LinearLayout
-                android:layout_width="@dimen/list_item_width_dashboard_medium"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical">
+                android:orientation="horizontal"
+                android:background="@color/list_title_bg_color"
+                android:paddingTop="@dimen/dimen_5dp"
+                android:paddingBottom="@dimen/dimen_5dp">
 
-                <TextView
-                    style="?attr/customListTitle"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="@dimen/list_item_width_dashboard_medium"
                     android:layout_height="wrap_content"
-                    android:text="@string/retailer"
-                    android:textColor="@android:color/white" />
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/retailer"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/list_item_width_dashboard_medium"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:tag=""
+                        android:text="@string/Name"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/list_item_width_dashboard_medium"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/description1"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/list_item_width_dashboard_small"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/task_createdby"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/list_item_width_dashboard_small"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/status"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/list_item_width_dashboard_small"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        style="?attr/customListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/date"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="@dimen/list_item_width_dashboard_medium"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical">
+            <ListView
+                android:id="@+id/lv_taskreport_list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:cacheColorHint="@null"
+                android:divider="@android:color/white"
+                android:dividerHeight="1dp"
+                android:fitsSystemWindows="true"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true">
 
-                <TextView
-                    style="?attr/customListTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:tag=""
-                    android:text="@string/Name" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="@dimen/list_item_width_dashboard_medium"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                >
-
-                <TextView
-                    style="?attr/customListTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/description1"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="@dimen/list_item_width_dashboard_small"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                >
-
-                <TextView
-                    style="?attr/customListTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/task_createdby"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="@dimen/list_item_width_dashboard_small"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                >
-
-                <TextView
-                    style="?attr/customListTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/date"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ListView
-            android:id="@+id/lv_taskreport_list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:cacheColorHint="@null"
-            android:divider="@android:color/white"
-            android:dividerHeight="1dp"
-            android:fitsSystemWindows="true"
-            android:scrollbarAlwaysDrawHorizontalTrack="true"
-            android:scrollbarAlwaysDrawVerticalTrack="true">
-
-        </ListView>
+            </ListView>
         </LinearLayout>
     </HorizontalScrollView>
 

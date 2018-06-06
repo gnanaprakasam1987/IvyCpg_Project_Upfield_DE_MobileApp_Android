@@ -72,12 +72,6 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
     private ArrayList<OrderReportBO> list;
 
-    private void initializeBusinessModel() {
-        businessModel = (BusinessModel) getActivity().getApplicationContext();
-        businessModel.setContext(getActivity());
-
-    }
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -86,8 +80,9 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
 
         View view = inflater.inflate(R.layout.fragment_order_report, container, false);
+        businessModel = (BusinessModel) getActivity().getApplicationContext();
+        businessModel.setContext(getActivity());
 
-        initializeBusinessModel();
         if (businessModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -96,14 +91,14 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         }
 
 
-        text_totalOrderValue = view.findViewById(R.id.txttotal);
-        TextView averageLines = view.findViewById(R.id.txtavglines);
-        text_averagePreOrPost = view.findViewById(R.id.txt_dist_pre_post);
-        TextView text_LPC = view.findViewById(R.id.lpc);
-        TextView totalLines = view.findViewById(R.id.txttotallines);
-        TextView tv_lbl_total_lines = view.findViewById(R.id.lbl_total_lines);
+        text_totalOrderValue = (TextView) view.findViewById(R.id.txttotal);
+        TextView averageLines = (TextView) view.findViewById(R.id.txtavglines);
+        text_averagePreOrPost = (TextView) view.findViewById(R.id.txt_dist_pre_post);
+        TextView text_LPC = (TextView) view.findViewById(R.id.lpc);
+        TextView totalLines = (TextView) view.findViewById(R.id.txttotallines);
+        TextView tv_lbl_total_lines = (TextView) view.findViewById(R.id.lbl_total_lines);
 
-        xlsExport = view.findViewById(R.id.btn_export);
+        xlsExport = (Button) view.findViewById(R.id.btn_export);
         if (businessModel.configurationMasterHelper.IS_EXPORT_ORDER_REPORT) {
             xlsExport.setVisibility(View.VISIBLE);
         }
@@ -115,13 +110,13 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         } else {
             xlsExport.setText(getResources().getString(R.string.export));
         }
-        listView = view.findViewById(R.id.list);
+        listView = (ListView) view.findViewById(R.id.list);
         listView.setCacheColorHint(0);
         xlsExport.setOnClickListener(this);
 
         listView.setOnItemClickListener(this);
-        TextView text_totalValueTitle = view.findViewById(R.id.totalvaluetitle);
-        TextView lab_dist_pre_post = view.findViewById(R.id.lab_dist_pre_post);
+        TextView text_totalValueTitle = (TextView) view.findViewById(R.id.totalvaluetitle);
+        TextView lab_dist_pre_post = (TextView) view.findViewById(R.id.lab_dist_pre_post);
         text_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         text_totalValueTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lab_dist_pre_post.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -357,7 +352,8 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
         public View getView(int position, View convertView, @NotNull ViewGroup parent) {
             final ViewHolder holder;
 
-            OrderReportBO reportBO = items.get(position);
+            OrderReportBO reportBO = items
+                    .get(position);
             View row = convertView;
 
             if (row == null) {
@@ -365,28 +361,33 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 row = inflater
                         .inflate(R.layout.row_order_report, parent, false);
                 holder = new ViewHolder();
-                holder.text_retailerName = row.findViewById(R.id.PRDNAME);
-                holder.label_orderNumber = row.findViewById(R.id.ordertxt);
-                holder.text_delivery_date = row.findViewById(R.id.text_delivery_date);
-                holder.tvFocusBrandCount = row.findViewById(R.id.focus_brand_count);
-                holder.tvMustSellCount = row.findViewById(R.id.mustsell_count);
+                holder.text_retailerName = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.label_orderNumber = (TextView) row.findViewById(R.id.ordertxt);
+                holder.text_delivery_date = (TextView) row.findViewById(R.id.text_delivery_date);
+                holder.tvFocusBrandCount = (TextView) row.findViewById(R.id.focus_brand_count);
+                holder.tvMustSellCount = (TextView) row.findViewById(R.id.mustsell_count);
 
-                holder.text_orderValue = row.findViewById(R.id.PRDMRP);
-                holder.text_LPC = row.findViewById(R.id.PRDRP);
-                holder.tvwDist = row.findViewById(R.id.dist_txt);
-                holder.tvOrderNo = row.findViewById(R.id.orderno);
-                holder.tvWeight = row.findViewById(R.id.tv_weight);
-                holder.label_weight = row.findViewById(R.id.weighttitle);
-                holder.tv_seller_type = row.findViewById(R.id.tv_seller_type);
-                holder.label_LPC = row.findViewById(R.id.lpc);
-                holder.label_PreORPost = row.findViewById(R.id.outid);
-                holder.label_focusBrand = row.findViewById(R.id.focusbrand_label);
-                holder.label_MustSell = row.findViewById(R.id.mustsell_label);
-                holder.focus_brand_count1 = row.findViewById(R.id.focus_brand_count1);
-                holder.text_mustSellCount = row.findViewById(R.id.mustsellcount);
+                holder.text_orderValue = (TextView) row.findViewById(R.id.PRDMRP);
+                holder.text_LPC = (TextView) row.findViewById(R.id.PRDRP);
+                holder.tvwDist = (TextView) row.findViewById(R.id.dist_txt);
+                holder.tvOrderNo = (TextView) row.findViewById(R.id.orderno);
+                holder.tvWeight = (TextView) row.findViewById(R.id.tv_weight);
+                holder.label_weight = (TextView) row.findViewById(R.id.weighttitle);
+                holder.tv_seller_type = (TextView) row.findViewById(R.id.tv_seller_type);
+                holder.label_LPC = (TextView) row.findViewById(R.id.lpc);
+                holder.label_PreORPost = (TextView) row.findViewById(R.id.outid);
+                holder.label_focusBrand = (TextView) row.findViewById(R.id.focusbrand_label);
+                holder.label_MustSell = (TextView) row.findViewById(R.id.mustsell_label);
+                holder.focus_brand_count1 = (TextView) row.findViewById(R.id.focus_brand_count1);
+                holder.text_mustSellCount = (TextView) row.findViewById(R.id.mustsellcount);
                 (row.findViewById(R.id.invoiceview_doted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                // holder.focusbrandlabel = row.findViewById(R.id.focusbrand_label);
-                // holder.mustselllabel = row.findViewById(R.id.mustsell_label);
+                holder.focusbrandlabel = (TextView) row.findViewById(R.id.focusbrand_label);
+                holder.mustselllabel = (TextView) row.findViewById(R.id.mustsell_label);
+
+                holder.tv_tax_value = (TextView) row.findViewById(R.id.tv_tax_amount);
+                holder.tv_discount_amt = (TextView) row.findViewById(R.id.tv_disc_amt);
+                holder.taxTitle = (TextView) row.findViewById(R.id.tv_tax_title);
+                holder.discTitle = (TextView) row.findViewById(R.id.tv_disc_title);
 
                 if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                     holder.tvWeight.setVisibility(View.GONE);
@@ -394,17 +395,33 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 }
                 if (!businessModel.configurationMasterHelper.IS_FOCUSBRAND_COUNT_IN_REPORT) {
                     holder.tvFocusBrandCount.setVisibility(View.GONE);
-                    holder.label_focusBrand.setVisibility(View.GONE);
+                    holder.focusbrandlabel.setVisibility(View.GONE);
                     holder.focus_brand_count1.setVisibility(View.GONE);
                 }
 
                 if (!businessModel.configurationMasterHelper.IS_MUSTSELL_COUNT_IN_REPORT) {
-                    holder.tvMustSellCount.setVisibility(View.GONE);
-                    holder.label_MustSell.setVisibility(View.GONE);
+                    holder.text_mustSellCount.setVisibility(View.GONE);
+                    holder.mustselllabel.setVisibility(View.GONE);
                 }
+
+                if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
+                    holder.label_PreORPost.setVisibility(View.GONE);
+                    holder.tvwDist.setVisibility(View.GONE);
+                }
+
 
                 if (!businessModel.configurationMasterHelper.SHOW_DELIVERY_DATE_IN_ORDER_RPT)
                     holder.text_delivery_date.setVisibility(View.GONE);
+
+                if (!businessModel.configurationMasterHelper.IS_SHOW_TAX_IN_REPORT) {
+                    holder.tv_tax_value.setVisibility(View.GONE);
+                    holder.taxTitle.setVisibility(View.GONE);
+                }
+
+                if (!businessModel.configurationMasterHelper.IS_SHOW_DISCOUNT_IN_REPORT) {
+                    holder.tv_discount_amt.setVisibility(View.GONE);
+                    holder.discTitle.setVisibility(View.GONE);
+                }
 
 
                 row.setTag(holder);
@@ -412,11 +429,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 holder = (ViewHolder) row.getTag();
             }
 
-            if (!businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
-                holder.label_PreORPost.setVisibility(View.GONE);
-                holder.tvwDist.setVisibility(View.GONE);
 
-            }
 
             holder.text_retailerName.setText(reportBO.getRetailerName());
             holder.text_retailerName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -432,6 +445,10 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             holder.label_PreORPost.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.label_focusBrand.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.label_MustSell.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tv_tax_value.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.tv_discount_amt.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.taxTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.discTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
             try {
@@ -508,6 +525,18 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                     String value = getResources().getString(R.string.delivery_date_label) + " : " + delivery_date;
                     holder.text_delivery_date.setText(value);
                 }
+
+                if (businessModel.labelsMasterHelper.applyLabels(holder.taxTitle.getTag()) != null)
+                    holder.taxTitle.setText(businessModel.labelsMasterHelper.applyLabels(holder.taxTitle.getTag()));
+
+                holder.tv_tax_value.setText(businessModel.formatValue(reportBO.getTaxValue()));
+
+
+                if (businessModel.labelsMasterHelper.applyLabels(holder.discTitle.getTag()) != null)
+                    holder.discTitle.setText(businessModel.labelsMasterHelper.applyLabels(holder.discTitle.getTag()));
+
+                holder.tv_discount_amt.setText(businessModel.formatValue(reportBO.getDiscountValue()));
+
             } catch (Exception e) {
                 Commons.printException(e);
             }
@@ -520,8 +549,9 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
     class ViewHolder {
         TextView text_retailerName, label_orderNumber;
         TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount;
-        TextView text_delivery_date;
-        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell; /*focusbrandlabel, mustselllabel*/
+        TextView text_delivery_date, tv_tax_value, tv_discount_amt, taxTitle, discTitle;
+        ;
+        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel;
 
     }
 
@@ -547,9 +577,6 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
     public void onBackPressed() {
 
     }
-
-
-    //TODO:Avoid reference of outer class because it's leading to memory leak.
 
     class XlsExport extends AsyncTask<Void, Void, Boolean> {
 
@@ -585,8 +612,8 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
                 columnNames.add("OrderQty(Outer)");
                 columnNames.add("DeliveryDate");
 
-                businessModel.reportHelper.downloadOrderReportToExport();
-
+                businessModel.reportHelper
+                        .downloadOrderReportToExport();
                 HashMap<String, ArrayList<ArrayList<String>>> mOrderDetailsByDistributorName = businessModel.reportHelper
                         .getmOrderDetailsByDistributorName();
 
@@ -674,6 +701,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
     public class SendMail extends AsyncTask<Void, Void, Boolean> {
 
         Session session;
+
         Context mContext;
         private String subject;
         private String body;
@@ -683,6 +711,7 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
 
         public SendMail(Context ctx, String subject, String message) {
             this.mContext = ctx;
+
             this.subject = subject;
             this.body = message;
 

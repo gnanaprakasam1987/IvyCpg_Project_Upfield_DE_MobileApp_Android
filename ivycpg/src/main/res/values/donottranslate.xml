@@ -131,5 +131,14 @@
 
     <string name="enter_account">Enter account no</string>
     <string name="share_percent">Share %</string>
+    <string name="otp_download_url_empty">OTP Generate Url is Empty </string>
+    <string name="profile_edit_verify_email_id">Please verify Email Id</string>
+    <string name="profile_edit_verify_mobile_no">Please verify Mobile No</string>
+
+    <string name="planogram_image_count_reached">Reached Maximum planogram image count</string>
+    <string name="planogram_image_count_not_reached">Planogram image not added</string>
+
+    <string name="enter_valid">Enter valid </string>
+
 
 </resources>

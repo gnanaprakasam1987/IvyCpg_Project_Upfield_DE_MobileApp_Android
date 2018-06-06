@@ -1,5 +1,7 @@
 package com.ivy.cpg.view.planogram;
 
+import java.util.ArrayList;
+
 public class PlanoGramBO {
 
     private String imageName;
@@ -11,6 +13,8 @@ public class PlanoGramBO {
 	private int audit=2;
 	private String reasonID ="0";
 	private String productName;
+
+	private ArrayList<String> planoGramCameraImgList = new ArrayList<>();
 	
 	public String getReasonID() {
 		return reasonID;
@@ -84,4 +88,11 @@ public class PlanoGramBO {
 		this.productName = productName;
 	}
 
+	public ArrayList<String> getPlanoGramCameraImgList() {
+		return planoGramCameraImgList;
+	}
+
+	public void setPlanoGramCameraImgList(ArrayList<String> planoGramCameraImgList) {
+		this.planoGramCameraImgList = planoGramCameraImgList;
+	}
 }

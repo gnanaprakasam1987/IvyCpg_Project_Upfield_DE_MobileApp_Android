@@ -283,6 +283,7 @@ public class ReportMenufragment extends IvyBaseFragment {
         Intent intent = new Intent(getActivity(), ReportActivity.class);
         Bundle bun = new Bundle();
         bun.putSerializable("config", config);
+        bun.putString("FROM","REPORT");
         intent.putExtras(bun);
         startActivity(intent);
     }
@@ -469,6 +470,7 @@ public class ReportMenufragment extends IvyBaseFragment {
                         Intent intent = new Intent(getActivity(), ReportActivity.class);
                         Bundle bun = new Bundle();
                         bun.putSerializable("config", config);
+                        bun.putString("FROM","REPORT");
                         intent.putExtras(bun);
                         startActivity(intent);
                     } else {

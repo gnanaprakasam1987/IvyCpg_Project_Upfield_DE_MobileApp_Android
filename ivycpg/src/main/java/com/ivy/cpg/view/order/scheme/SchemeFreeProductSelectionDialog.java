@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +24,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +53,8 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
 
 
     private EditText QUANTITY;
+
+    private String groupName="";
 
 
 
@@ -81,6 +87,7 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
         TextView mTitle =  toolbar.findViewById(R.id.tv_toolbar_title);
         mTitle.setTypeface(bModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
+       // toolbar.setSubtitle(schemeBO.getFreeType());
 
         int[] mButtonIds = new int[]{R.id.calcone, R.id.calctwo,
                 R.id.calcthree, R.id.calcfour, R.id.calcfive, R.id.calcsix,
@@ -113,6 +120,7 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
         mListView.setAdapter(new ProductAdapter());
 
     }
+
 
     class ProductAdapter extends BaseAdapter {
         LayoutInflater mInflater;
@@ -160,8 +168,10 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                 holder.maxValueTV =  view
                         .findViewById(R.id.tv_maxvalue);
 
-                holder.groupTypeTV =  view
-                        .findViewById(R.id.tv_group_type);
+                holder.card_group=view.findViewById(R.id.card_group);
+
+                holder.layout_group=view.findViewById(R.id.layout_group);
+                holder.text_groupName=view.findViewById(R.id.text_group);
 
 
                 holder.productNameTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -169,7 +179,9 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                 holder.sihTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 holder.minValueTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 holder.maxValueTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.groupTypeTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+                holder.text_groupName.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
 
 
                 holder.productNameTV
@@ -225,7 +237,7 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                                     mContext.getResources().getString(
                                             R.string.exceed_free_product),
                                     Toast.LENGTH_SHORT).show();
-                        } else if (!schemeHelper.isEnteredQuantityExceedsMaximumOffered(mSchemeBO,holder.schemeProductBO,
+                        } else if (schemeHelper.isEnteredQuantityExceedsMaximumOffered(mSchemeBO,holder.schemeProductBO,
                                 quantityEntered,mFreeProductsList)) {
                             holder.quantityET.removeTextChangedListener(this);
 
@@ -313,9 +325,42 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                 holder = (FreeProductHolder) view.getTag();
             }
 
-
             holder.schemeBO = mSchemeBO;
             holder.schemeProductBO = mFreeProductsList.get(position);
+
+            if(groupName.equals("")||!groupName.equals(holder.schemeProductBO.getGroupName())){
+                holder.card_group.setVisibility(View.VISIBLE);
+
+                if(!holder.schemeProductBO.getGroupLogic().equals(schemeHelper.ONLY_LOGIC))
+                  holder.text_groupName.setText(holder.schemeProductBO.getGroupName()+" ("+holder.schemeProductBO.getGroupLogic()+")");
+                else holder.text_groupName.setText(holder.schemeProductBO.getGroupName());
+
+
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT
+                );
+                if(position>0) {
+
+                    Resources r = mContext.getResources();
+                    int px = (int) TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            10,
+                            r.getDisplayMetrics()
+                    );
+                    params.setMargins(0, px, 0, 0);
+                    holder.card_group.setLayoutParams(params);
+                }
+                else {
+                    params.setMargins(0, 0, 0, 0);
+                    holder.card_group.setLayoutParams(params);
+                }
+            }
+            else {
+                holder.card_group.setVisibility(View.GONE);
+            }
+            groupName=holder.schemeProductBO.getGroupName();
+
 
             holder.productNameTV.setText(holder.schemeProductBO
                     .getProductName());
@@ -329,13 +374,7 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                     .setText("Max : "
                             + holder.schemeProductBO
                             .getQuantityMaxiumCalculated() + "");
-            if (mSchemeBO.getIsFreeCombination() == 1) {
-                holder.groupTypeTV.setText(""
-                        + holder.schemeProductBO.getGroupLogic());
-            } else {
-                holder.groupTypeTV.setText(""
-                        + mSchemeBO.getFreeType());
-            }
+
 
             if (bModel.configurationMasterHelper.IS_INVOICE) {
                 holder.sihTV.setVisibility(View.VISIBLE);
@@ -365,7 +404,9 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
         EditText quantityET;
         TextView minValueTV;
         TextView maxValueTV;
-        TextView groupTypeTV;
+        RelativeLayout layout_group;
+        TextView text_groupName;
+        CardView card_group;
     }
 
     @Override

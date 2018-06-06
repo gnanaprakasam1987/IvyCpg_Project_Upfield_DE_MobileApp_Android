@@ -251,7 +251,7 @@ public class SalesReturnHelper {
             db.createDataBase();
             db.openDataBase();
             String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='SR01'";
+                    + " where hhtCode='SR01' and ForSwitchSeller = 0";
             Cursor c = db.selectSQL(sql);
             String codeValue = null;
             if (c != null && c.getCount() != 0) {
@@ -298,7 +298,7 @@ public class SalesReturnHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_CHECK_MRP) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_CHECK_MRP) + " and Flag=1 and ForSwitchSeller = 0";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -309,7 +309,7 @@ public class SalesReturnHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_REMARKS_SAL_RET) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_REMARKS_SAL_RET) + " and Flag=1 and ForSwitchSeller = 0";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -320,7 +320,7 @@ public class SalesReturnHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SR_DISCOUNT) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_SR_DISCOUNT) + " and Flag=1 and ForSwitchSeller = 0";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -331,7 +331,7 @@ public class SalesReturnHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SR_TAX) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_SR_TAX) + " and Flag=1 and ForSwitchSeller = 0";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -342,7 +342,7 @@ public class SalesReturnHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SR_DIFF_CNT) + " and Flag=1";
+                    + " where hhtCode=" + bmodel.QT(CODE_SR_DIFF_CNT) + " and Flag=1 and ForSwitchSeller = 0";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {

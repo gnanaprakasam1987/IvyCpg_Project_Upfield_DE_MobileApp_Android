@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.InvoiceReportFragment;
 import com.ivy.cpg.view.reports.OrderReportFragment;
+import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
+import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -39,7 +41,6 @@ import com.ivy.sd.png.view.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
-import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -53,6 +54,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface, SellerListFragment.SellerSelectionInterface {
 
     private BusinessModel bmodel;
+
+    private String fromMenu;
 
     private Toolbar toolbar;
 
@@ -122,10 +125,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         setLanguage();
 
         Bundle bun = getIntent().getExtras();
-        if (bun != null) {
-            ConfigureBO config = (ConfigureBO) bun.getSerializable("config");
-            switchFragments(config);
-        }
+        if (bun != null) {ConfigureBO config = (ConfigureBO) bun.getSerializable("config");
+        fromMenu = bun.getString("FROM")!=null?bun.getString("FROM"):"";switchFragments(config);}
 
         if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN)
             bmodel.productHelper.taxHelper = TaxGstHelper.getInstance(this);
@@ -157,7 +158,12 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             if (currentStockBatchViewFragment != null) {
                 currentStockBatchViewFragment.onBackButtonClick();
             } else {
-                onBackButtonClick();
+                if(fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
+                    finish();
+                    overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                }
+                else
+                    onBackButtonClick();
             }
 
             return true;

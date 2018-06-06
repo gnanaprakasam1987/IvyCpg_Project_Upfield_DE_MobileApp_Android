@@ -14,6 +14,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class PlanoGramHelper {
@@ -28,7 +29,7 @@ public class PlanoGramHelper {
     public String mSelectedActivityName;
 
     private static final String CODE_LOCATION_WISE_PLANOGRAM = "FUN39";
-    public boolean IS_LOCATION_WISE_PLANOGRAM;
+    boolean IS_LOCATION_WISE_PLANOGRAM;
 
 
     private PlanoGramHelper(Context context) {
@@ -60,7 +61,7 @@ public class PlanoGramHelper {
 
             String sql = "SELECT hhtCode, RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " WHERE flag='1'";
+                    + " WHERE flag='1' and ForSwitchSeller = 0";
 
             Cursor c = db.selectSQL(sql);
             if (c.getCount() > 0) {
@@ -118,7 +119,7 @@ public class PlanoGramHelper {
                 }
                 filterCur.close();
             }
-            String str = "";
+            String str;
             int level = mBModel.productHelper.getRetailerlevel("MENU_PLANOGRAM");
             if (level == -1) {
                 Toast.makeText(mContext, mContext.getResources().getString(R.string.data_not_mapped_correctly), Toast.LENGTH_SHORT).show();
@@ -273,7 +274,7 @@ public class PlanoGramHelper {
             PlanoGramBO planogram;
             db.openDataBase();
             String query;
-            String query1 = "";
+            String query1 ;
             String retailerID;
             if (mBModel.getCounterRetailerId() != null && !mBModel.getCounterRetailerId().equals("0"))
                 retailerID = mBModel.getCounterRetailerId();
@@ -391,56 +392,6 @@ public class PlanoGramHelper {
     }
 
     /**
-     * Load PlanoGram in edit mode for counter
-     *
-     * @param counterId Counter Id
-     */
-    public void loadPlanoGramInEditMode(Context mContext, int counterId) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        try {
-            db.openDataBase();
-            String tid;
-            String sql = "SELECT Tid FROM PlanogramHeader WHERE RetailerId = 0"
-                    + " AND CounterId = " + counterId + " AND Date = "
-                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-
-            Cursor orderHeaderCursor = db.selectSQL(sql);
-            tid = "";
-            if (orderHeaderCursor != null) {
-                if (orderHeaderCursor.moveToNext())
-                    tid = orderHeaderCursor.getString(0);
-            } else
-                return;
-
-            orderHeaderCursor.close();
-
-            String sql1 = "SELECT ImageId, PLID, ImageName, Adherence, ReasonID, IFNULL(Audit,'2')"
-                    + " FROM PlanogramDetails WHERE tid=" + QT(tid);
-
-            Cursor orderDetailCursor = db.selectSQL(sql1);
-
-            if (orderDetailCursor != null) {
-                while (orderDetailCursor.moveToNext()) {
-                    int imageId = orderDetailCursor.getInt(0);
-                    String imageName = orderDetailCursor.getString(2);
-                    String adherence = orderDetailCursor.getString(3);
-                    String reasonID = orderDetailCursor.getString(4);
-                    int aduit = orderDetailCursor.getInt(5);
-                    setCounterPlanoGramDetails(imageId, imageName, adherence, reasonID,
-                            aduit, counterId);
-                }
-                orderDetailCursor.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            db.closeDB();
-            Commons.printException("" + e);
-        }
-    }
-
-
-    /**
      * Load PlanoGram in edit mode
      *
      * @param retailerId Retailer Id
@@ -477,7 +428,7 @@ public class PlanoGramHelper {
                     int locationID = orderDetailCursor.getInt(5);
                     int aduit = orderDetailCursor.getInt(6);
                     setPlanoGramDetails(pid, imageName, adherence, reasonID,
-                            locationID, aduit);
+                            locationID, aduit,tid,mContext);
                 }
                 orderDetailCursor.close();
             }
@@ -500,7 +451,7 @@ public class PlanoGramHelper {
      * @param isAudit      audit
      */
     private void setPlanoGramDetails(int planogramPId, String imageName,
-                                     String adherence, String reasonID, int locationID, int isAudit) {
+                                     String adherence, String reasonID, int locationID, int isAudit,String tId,Context context) {
         PlanoGramBO planogram;
         int siz = getPlanogramMaster().size();
         if (siz == 0)
@@ -514,45 +465,39 @@ public class PlanoGramHelper {
                 planogram.setAdherence(adherence);
                 planogram.setReasonID(reasonID);
                 planogram.setAudit(isAudit);
+                planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramPId,tId,context));
                 getPlanogramMaster().setElementAt(planogram, i);
                 return;
             }
         }
     }
 
-    /**
-     * Set counter planoGram objects
-     *
-     * @param imageId   Image Id
-     * @param imageName Image Name
-     * @param adherence Adherence
-     * @param reasonID  Reason Id
-     * @param isAudit   Audit
-     * @param counterId counter Id
-     */
-    private void setCounterPlanoGramDetails(int imageId, String imageName,
-                                            String adherence, String reasonID, int isAudit, int counterId) {
-        CounterPlanoGramBO planogram;
-        int siz = getCsPlanogramMaster().size();
-        if (siz == 0)
-            return;
+    private ArrayList<String> getPlanogramImage(int planogramId,String tId,Context context){
 
-        for (int i = 0; i < siz; ++i) {
-            planogram = getCsPlanogramMaster().get(i);
-            if (planogram.getImageId() == imageId) {
-                planogram.setImageId(imageId);
-                planogram.setPlanogramCameraImgName(imageName);
-                planogram.setAdherence(adherence);
-                planogram.setReasonID(reasonID);
-                planogram.setAudit(isAudit);
-                planogram.setCounterId(counterId);
-                getCsPlanogramMaster().setElementAt(planogram, i);
-                return;
+        ArrayList<String> planogramImagList = new ArrayList<>();
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+
+            String query = "Select imageName from PlanogramImageDetails where Tid ="+QT(tId)+" and PId ="+planogramId;
+            Cursor planoImgCursor = db.selectSQL(query);
+
+            if (planoImgCursor != null) {
+                while (planoImgCursor.moveToNext()) {
+                    planogramImagList.add(planoImgCursor.getString(0));
+                }
             }
+
+            db.closeDB();
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
         }
 
-    }
+        return planogramImagList;
 
+    }
 
     /**
      * Set Image path based on selection
@@ -583,7 +528,7 @@ public class PlanoGramHelper {
      * @param mImagePath Image Path
      * @param imageId    Image Id
      */
-    public void setCSImagePath(String mImagePath, int imageId) {
+    void setCSImagePath(String mImagePath, int imageId) {
         CounterPlanoGramBO planogrambo;
         int siz = getCsPlanogramMaster().size();
         if (siz == 0)
@@ -604,7 +549,7 @@ public class PlanoGramHelper {
      * @param adherence Adherence
      * @param imageId   Image Id
      */
-    public void setCSImageAdherence(String adherence, int imageId) {
+    void setCSImageAdherence(String adherence, int imageId) {
         CounterPlanoGramBO planogrambo;
         int siz = getCsPlanogramMaster().size();
         if (siz == 0)
@@ -624,7 +569,7 @@ public class PlanoGramHelper {
      *
      * @return Is Saved
      */
-    public boolean savePlanoGram(Context mContext) {
+    boolean savePlanoGram(Context mContext) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
@@ -663,6 +608,8 @@ public class PlanoGramHelper {
                         "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
                 db.deleteSQL("PlanogramDetails",
                         "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
+                db.deleteSQL("PlanogramImageDetails",
+                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
                 refId = headerCursor.getString(1);
                 headerCursor.close();
             }
@@ -686,6 +633,10 @@ public class PlanoGramHelper {
                             + planogram.getAudit() + ",0";
 
                     db.insertSQL("PlanogramDetails", detailColumns, values);
+
+                    savePlanogramImage(db,tid,planogram.getPid(),
+                            planogram.getPlanoGramCameraImgList(),planogram.getMappingID(),imagePath);
+
                     isData = true;
                 }
 
@@ -713,13 +664,28 @@ public class PlanoGramHelper {
         }
     }
 
+    private void savePlanogramImage(DBUtil db,String tid,int planogramId,
+                                    ArrayList<String> planogramImageList,int mappingId,String path){
+
+        String columns = "Tid,PId,imageName,mappingid,imagePath";
+
+        for(int i = 0;i<planogramImageList.size();i++){
+
+            String values = QT(tid) + "," + planogramId + ","
+                    + QT(planogramImageList.get(i))+ ","+mappingId+ ","+QT(path);
+
+            db.insertSQL("PlanogramImageDetails", columns, values);
+
+        }
+    }
+
     /**
      * Save counter PlanoGram in transaction
      *
      * @param counterId Counter Id
      * @return Is saved
      */
-    public boolean saveCounterPlanoGram(Context mContext, int counterId) {
+    boolean saveCounterPlanoGram(Context mContext, int counterId) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
@@ -816,7 +782,7 @@ public class PlanoGramHelper {
      * @param mReasonId Reason Id
      * @param imageId   Image iD
      */
-    public void setCSImageAdherenceReason(String mReasonId, int imageId) {
+    void setCSImageAdherenceReason(String mReasonId, int imageId) {
         CounterPlanoGramBO planogrambo;
         int siz = getCsPlanogramMaster().size();
         if (siz == 0)
@@ -836,7 +802,7 @@ public class PlanoGramHelper {
         return "'" + data + "'";
     }
 
-    public Vector<ParentLevelBo> getmParentLevelBo() {
+    Vector<ParentLevelBo> getmParentLevelBo() {
         return mParentLevelBo;
     }
 
@@ -844,7 +810,7 @@ public class PlanoGramHelper {
         this.mParentLevelBo = mParentLevelBo;
     }
 
-    public Vector<ChildLevelBo> getmChildLevelBo() {
+    Vector<ChildLevelBo> getmChildLevelBo() {
         return mChildLevelBo;
     }
 
@@ -861,7 +827,7 @@ public class PlanoGramHelper {
     }
 
 
-    public Vector<CounterPlanoGramBO> getCsPlanogramMaster() {
+    Vector<CounterPlanoGramBO> getCsPlanogramMaster() {
         return csPlanogramMaster;
     }
 
@@ -874,13 +840,13 @@ public class PlanoGramHelper {
      *
      * @param imgName Image name
      */
-    public void deleteImageName(Context mContext, String imgName) {
+    void deleteImageName(Context mContext, String imgName) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
-        db.updateSQL("UPDATE " + DataMembers.tbl_PlanogramDetail
-                + " SET  ImageName =" + QT("") + ",ImageName=" + QT("") + " where ImageName LIKE"
+
+        db.updateSQL("delete from " + DataMembers.tbl_planogram_image_detail+ " where ImageName LIKE"
                 + QT(imgName + "%"));
         db.closeDB();
     }

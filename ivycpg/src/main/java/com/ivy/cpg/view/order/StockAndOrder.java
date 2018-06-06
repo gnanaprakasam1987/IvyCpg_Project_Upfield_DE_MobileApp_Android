@@ -2784,7 +2784,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         else
                             holder.productObj.setFoc(SDUtil.convertToInt(qty));
 
-                        Log.e("saved------", "saved=======foc==========" + holder.productObj.getFoc());
                     }
 
                     public void beforeTextChanged(CharSequence s, int start,
@@ -4037,6 +4036,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         bmodel.setContext(this);
         if (vw == mBtn_Search) {
             viewFlipper.showNext();
+            mEdt_searchproductName.requestFocus();
+            try {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null)
+                    imm.showSoftInput(mEdt_searchproductName, InputMethodManager.SHOW_FORCED);
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
         } else if (vw == mBtnFilterPopup) {
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(

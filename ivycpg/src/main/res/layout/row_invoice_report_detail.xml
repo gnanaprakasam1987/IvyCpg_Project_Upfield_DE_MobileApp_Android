@@ -2,101 +2,104 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="@dimen/list_product_name_width"
             android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/PRDNAME"
-        android:textColor="@android:color/black"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/product_name"
-        android:layout_marginStart="@dimen/dimen_12dp"
-        android:textSize="@dimen/font_micro_small"
-        android:layout_marginTop="@dimen/divder_margin"/>
 
-    <TextView
-        android:id="@+id/batch_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?attr/customListItemSecondary"
-        android:text=""
-        android:gravity="center"
-        android:layout_below="@+id/PRDNAME"
-        android:layout_marginStart="@dimen/dimen_12dp"
-        android:layout_marginBottom="@dimen/icons_top_margin"
-       />
             <TextView
-                android:id="@+id/prdweight"
+                android:id="@+id/PRDNAME"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:tag="sih"
-                android:gravity="center"
-                android:text="56656"
-                android:layout_toEndOf="@+id/batch_no"
-                android:layout_below="@+id/PRDNAME"
+                android:layout_marginStart="@dimen/dimen_12dp"
+                android:layout_marginTop="@dimen/divder_margin"
+                android:text="@string/product_name"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_micro_small" />
+
+            <TextView
+                android:id="@+id/batch_no"
                 style="?attr/customListItemSecondary"
-                android:layout_marginBottom="@dimen/icons_top_margin"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/PRDNAME"
+                android:layout_marginBottom="@dimen/icons_top_margin"
+                android:layout_marginStart="@dimen/dimen_12dp"
+                android:gravity="center"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/prdweight"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/PRDNAME"
+                android:layout_marginBottom="@dimen/icons_top_margin"
+                android:layout_toEndOf="@+id/batch_no"
+                android:gravity="center"
+                android:tag="sih"
+                android:text="56656" />
         </RelativeLayout>
     </LinearLayout>
 
     <TextView
         android:id="@+id/PRDQTY"
-        android:textColor="@android:color/black"
         android:layout_width="@dimen/list_item_width"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:maxLines="1"
         android:text="0"
-        android:textSize="@dimen/font_micro_small"
-        android:maxLines="1" />
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_micro_small" />
 
     <TextView
         android:id="@+id/PRDPCSQTY"
-        android:textColor="@android:color/black"
         android:layout_width="@dimen/list_item_width"
         android:layout_height="match_parent"
         android:gravity="center"
         android:singleLine="true"
         android:tag="sih_piece"
         android:text="0"
+        android:textColor="@android:color/black"
         android:textSize="@dimen/font_micro_small" />
 
     <TextView
         android:id="@+id/outerCaseQty"
-        android:textColor="@android:color/black"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
         android:singleLine="true"
         android:text="0"
+        android:textColor="@android:color/black"
         android:textSize="@dimen/font_micro_small" />
 
     <TextView
         android:id="@+id/PRDVAL"
-        android:textColor="@android:color/black"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dimens_10dp"
+        android:gravity="center"
         android:singleLine="true"
         android:tag="sih_piece"
-        android:gravity="center"
         android:text="56656"
-android:layout_marginStart="@dimen/dimens_10dp"
-        android:textSize="@dimen/font_micro_small" />
-   <!-- <TextView
-        android:id="@+id/prdweight"
         android:textColor="@android:color/black"
-        android:layout_width="@dimen/list_item_width_large"
-        android:layout_height="match_parent"
-        android:singleLine="true"
-        android:tag="sih"
-        android:gravity="center"
-        android:text="56656"
+        android:textSize="@dimen/font_micro_small" />
+    <!-- <TextView
+         android:id="@+id/prdweight"
+         android:textColor="@android:color/black"
+         android:layout_width="@dimen/list_item_width_large"
+         android:layout_height="match_parent"
+         android:singleLine="true"
+         android:tag="sih"
+         android:gravity="center"
+         android:text="56656"
 
-        android:textSize="@dimen/font_micro_small" />-->
+         android:textSize="@dimen/font_micro_small" />-->
 
 </LinearLayout>

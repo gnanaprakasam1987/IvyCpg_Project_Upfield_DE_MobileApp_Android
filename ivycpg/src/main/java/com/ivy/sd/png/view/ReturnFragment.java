@@ -105,9 +105,9 @@ public class ReturnFragment extends IvyBaseFragment {
 
     private void initializeViews() {
         mSelectedET = null;
-        btnSave = (Button) view.findViewById(R.id.btn_save);
-        tvAddreason = (TextView) view.findViewById(R.id.tvAddreason);
-        returnList = (ListView) view.findViewById(R.id.list);
+        btnSave =  view.findViewById(R.id.btn_save);
+        tvAddreason =  view.findViewById(R.id.tvAddreason);
+        returnList =  view.findViewById(R.id.list);
         returnList.setCacheColorHint(0);
 
         btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -402,7 +402,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     Commons.printException(e);
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                if (!salesReturnHelper.SHOW_SALES_RET_CASE)
                     ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
                 else {
                     try {
@@ -417,7 +417,7 @@ public class ReturnFragment extends IvyBaseFragment {
                         Commons.printException(e);
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                if (!salesReturnHelper.SHOW_SALES_RET_PCS)
                     ((LinearLayout) row.findViewById(R.id.ll_piece)).setVisibility(View.GONE);
                 else {
                     try {
@@ -432,7 +432,7 @@ public class ReturnFragment extends IvyBaseFragment {
                         Commons.printException(e);
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                if (!salesReturnHelper.SHOW_SALES_RET_OUTER_CASE)
                     ((LinearLayout) row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
                 else {
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_task_header"
+    style="?attr/customListItemPrimary"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_30dp"
+    android:layout_marginLeft="@dimen/dimen_5dp"
+    android:layout_marginRight="@dimen/dimen_5dp"
+    android:layout_marginTop="@dimen/dimen_10dp"
+    android:layout_marginBottom="@dimen/dimen_2dp"
+    android:maxLines="1"
+    android:text="Task Header"
+    android:textStyle="bold"
+    android:textSize="@dimen/dimen_14dp"
+    android:gravity="bottom"/>

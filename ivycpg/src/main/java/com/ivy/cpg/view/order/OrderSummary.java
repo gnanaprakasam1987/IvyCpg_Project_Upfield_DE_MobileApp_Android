@@ -265,7 +265,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             if (!BModel.isEdit() || !BModel.isDoubleEdit_temp()) {
                 SchemeDetailsMasterHelper.getInstance(getApplicationContext())
-                        .updataFreeProductBottleReturn();
+                        .updateFreeProductBottleReturn();
             }
             // update empty bottle return group wise
             if (BModel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
@@ -871,6 +871,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 mSortedList.addAll(mOrderedProductList);
             }
 
+            if (BModel.configurationMasterHelper.IS_PRINT_SEQUENCE_REQUIRED) {
+                if (BModel.configurationMasterHelper.IS_PRINT_SEQUENCE_BRANDWISE) {
+                    mOrderedProductList = BModel.orderAndInvoiceHelper.sortbyBrand(mOrderedProductList);
+                } else {
+                    mOrderedProductList = BModel.orderAndInvoiceHelper.sort(mOrderedProductList);
+                }
+            }
 
             if (BModel.getOrderHeaderBO() != null)
                 BModel.getOrderHeaderBO().setTotalWeight(totalWeight);
@@ -926,6 +933,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 listView.expandGroup(i);
             }
 
+            //Applying Bill wise Discount
             if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
                 //find the  range of discount by using total value
                 final double billWiseRangeDiscount = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
@@ -1943,6 +1951,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
+                holder.cbSeparateBill = row.findViewById(R.id.cbSeparateBill);
+                holder.cbSeparateBill.setVisibility(View.GONE);
 
                 if (!"MENU_ORDER".equals(screenCode) && BModel.configurationMasterHelper.SHOW_STOCK_IN_SUMMARY) {
 
@@ -2141,7 +2151,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     && (mOrderedProductList.get(groupPosition).getSchemeProducts() != null
                     && mOrderedProductList.get(groupPosition).getSchemeProducts().size() > 0)) {
 
-                if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mOrderedProductList.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
+                if (!SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mOrderedProductList.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
                     return mOrderedProductList.get(groupPosition).getSchemeProducts().size();
                 }
             }

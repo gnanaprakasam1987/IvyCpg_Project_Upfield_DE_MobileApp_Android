@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SOSBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -220,6 +221,8 @@ public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnC
                         .putExtra("isStoreMenu", true));
             else
                 startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+            mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                    .now(SDUtil.TIME));
             getActivity().finish();
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;

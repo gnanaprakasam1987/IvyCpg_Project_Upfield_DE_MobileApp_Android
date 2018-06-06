@@ -78,7 +78,7 @@ public class PromotionHelper {
             db.openDataBase();
 
             String sql = "SELECT RField FROM " + DataMembers.tbl_HhtModuleMaster
-                    + " WHERE hhtCode='PROMO01' AND Flag=1";
+                    + " WHERE hhtCode='PROMO01' AND Flag=1 and ForSwitchSeller = 0";
 
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {

@@ -7,11 +7,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -60,6 +58,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.ivy.lib.Utils;
+import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.location.LocationUtil;
 import com.ivy.maplib.BaiduMapDialogue;
 import com.ivy.sd.camera.CameraActivity;
@@ -88,6 +88,9 @@ import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,6 +98,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -107,14 +111,12 @@ import static android.app.Activity.RESULT_OK;
  * Created by hanifa.m on 3/28/2017.
  */
 
-public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPDialog.OTPListener{
+public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPDialog.OTPListener {
 
     private BusinessModel bmodel;
 
     private int REQUEST_CODE = 100;
 
-    WindowManager wmanager;
-    Display display;
     int width = 0;
     private Vector<ChannelBO> channelMaster;
 
@@ -215,9 +217,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     static TextView dlExpDateTextView;
     static TextView flExpDateTextView;
     private AlertDialog alertDialog;
-    private String str_mob_email = "";
-    private boolean otpShown = false;
-    private OTPReceiver otpReceiver;
+    private String str_mob_email = "", str_type = "";
+    private boolean otpShown = false, isMobileNoVerfied = false, isEmailVerfied = false;
+
+    private int subChannelSpinnerCount = 0;
 
     @Nullable
     @Override
@@ -286,24 +289,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     @Override
     public void onStart() {
         super.onStart();
-      /*  bmodel.newOutletHelper.downloadLinkRetailer();
-        new DownloadAsync().execute();
-        bmodel.configurationMasterHelper.downloadProfileModuleConfig();
-        // get previous changes from retailerEdit  Header and Detail table
-        bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
-        createTabViewForProfileForEdit();
-           saveTxtBtn.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                   try {
-                       if (validateEditProfile())
-                           new SaveEditAsyncTask().execute();
-
-                   } catch (Exception e) {
-                       Commons.printException(e);
-                   }
-               }
-           });*/
     }
 
     @Override
@@ -317,7 +302,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
         }
 
-        registerReceiver();
     }
 
     @Override
@@ -329,7 +313,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             if (permissionStatus == PackageManager.PERMISSION_GRANTED)
                 bmodel.locationUtil.stopLocationListener();
         }
-        unRegister();
     }
 
     @SuppressLint("RestrictedApi")
@@ -374,34 +357,66 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
 
             if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE58") && configureBO.isFlag() == 1) {
+
+
                 ArrayList<NewOutletAttributeBO> tempList = bmodel.newOutletHelper.updateRetailerMasterAttribute(
                         bmodel.newOutletAttributeHelper.getEditAttributeList(retailerObj.getRetailerID()));
 
                 bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
                 mAttributeListByChannelId = bmodel.newOutletAttributeHelper.downloadChannelWiseAttributeList();
 
+                //Load Retailer Based Attribute list and store in retailer master bo
                 bmodel.getAttributeListForRetailer();
+
+                //Load Attribute List which
                 attributeList = bmodel.newOutletHelper.updateRetailerMasterAttribute(retailerObj.getAttributeBOArrayList());
 
                 attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
 
-                if (!tempList.isEmpty()) {
-                    NewOutletAttributeBO tempBO1;
-                    NewOutletAttributeBO tempBO2;
-                    if (attributeList.size() > 0) {
-                        for (int i = 0; i < attributeList.size(); i++) {
-                            tempBO1 = attributeList.get(i);
-                            for (int j = 0; j < tempList.size(); j++) {
-                                tempBO2 = tempList.get(j);
-                                if (tempBO1.getParentId() == tempBO2.getParentId()) {
-                                    if (tempBO1.getAttrId() != tempBO2.getAttrId() && "N".equals(tempBO2.getStatus()))
-                                        attributeList.set(i, tempBO2);
+                try {
+                    if (!tempList.isEmpty()) {
+
+                        int size = attributeList.size();
+                        if (attributeList.size() > 0) {
+                            ArrayList<NewOutletAttributeBO> newOutletAttributeBOS = new ArrayList<>();
+                            newOutletAttributeBOS.addAll(attributeList);
+                            for (int i = 0; i < tempList.size(); i++) {
+                                for (int j = 0; j < size; j++) {
+
+                                    if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
+                                            && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
+                                            && tempList.get(i).getStatus().equalsIgnoreCase("D")) {
+
+                                        for (int k = 0; k < attributeList.size(); k++)
+                                            if (attributeList.get(k).getParentId() == tempList.get(i).getParentId()
+                                                    && attributeList.get(k).getAttrId() == tempList.get(i).getAttrId()
+                                                    && tempList.get(i).getStatus().equalsIgnoreCase("D"))
+                                                attributeList.remove(j);
+
+                                    } else {
+                                        if (j == size - 1) {
+                                            attributeList.add(tempList.get(i));
+                                        }
+                                    }
+
+//                                if (attributeList.get(j).getParentId() == tempList.get(i).getParentId()
+//                                        && attributeList.get(j).getAttrId() == tempList.get(i).getAttrId()
+//                                        && tempList.get(i).getStatus().equalsIgnoreCase("D")) {
+//                                    attributeList.remove(j);
+//                                    size = size -1;
+//                                } else {
+//                                    if (j == size - 1) {
+//                                        attributeList.add(tempList.get(i));
+//                                    }
+//                                }
                                 }
                             }
+                        } else {
+                            attributeList.addAll(tempList);
                         }
-                    } else {
-                        attributeList.addAll(tempList);
                     }
+                }catch(Exception e){
+                    Commons.printException(e);
                 }
 
 
@@ -1521,11 +1536,22 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
         LinearLayout secondlayout = new LinearLayout(getActivity());
         //secondlayout.addView(editText[mNumber], params);
-        if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78")) {
-
+        if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78") ||
+                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE81") ||
+                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE61")) {
             //regex
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
+        }
+
+        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE81")) {
+            addLengthFilter(profileConfig.get(mNumber).getRegex());
+            //checkPANRegex(mNumber);
+        }
+
+        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE61")) {
+            addLengthFilter(profileConfig.get(mNumber).getRegex());
+            //checkGSTRegex(mNumber);
         }
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE02") ||
                 profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE03") ||
@@ -1618,7 +1644,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 emailParam.weight = 7;
                 LinearLayout.LayoutParams emailParam1 = new LinearLayout.LayoutParams(0,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                emailParam1.setMargins(0,0,0,2);
+                emailParam1.setMargins(0, 0, 0, 2);
                 emailParam1.weight = 3;
                 emailParam1.gravity = Gravity.BOTTOM;
                 emailLayout.addView(editTextInputLayout, emailParam);
@@ -1638,7 +1664,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                 linearlayout.addView(emailLayout, weight1);
             } else
-            linearlayout.addView(editTextInputLayout, weight1);
+                linearlayout.addView(editTextInputLayout, weight1);
 
         }
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE30") ||
@@ -1689,7 +1715,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 mobileParam.weight = 7;
                 LinearLayout.LayoutParams mobileParam1 = new LinearLayout.LayoutParams(0,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                mobileParam1.setMargins(0,0,0,2);
+                mobileParam1.setMargins(0, 0, 0, 2);
                 mobileParam1.weight = 3;
                 mobileParam1.gravity = Gravity.BOTTOM;
                 mobileLayout.addView(editTextInputLayout, mobileParam);
@@ -1709,7 +1735,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                 linearlayout.addView(mobileLayout, weight1);
             } else
-            linearlayout.addView(editTextInputLayout, weight1);
+                linearlayout.addView(editTextInputLayout, weight1);
 
         }
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE25")) {
@@ -1796,7 +1822,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
             else
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
             if (inputFilters != null && inputFilters.size() > 0) {
@@ -1847,7 +1873,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 if (inputFilters != null && inputFilters.size() > 0) {
@@ -1915,7 +1941,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 if (inputFilters != null && inputFilters.size() > 0) {
@@ -1986,7 +2012,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 if (inputFilters != null && inputFilters.size() > 0) {
@@ -2109,7 +2135,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
                 else
-                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
 
                 editText[other2_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
@@ -2240,9 +2266,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         InputFilter fil = new InputFilter.LengthFilter(25);
         String str = regex;
         if (str != null && !str.isEmpty()) {
-            if (str.contains("{") && str.contains("}")) {
+            if (str.contains("<") && str.contains(">")) {
 
-                String len = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
+                String len = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
                 if (len != null && !len.isEmpty()) {
                     if (len.contains(",")) {
                         try {
@@ -2262,21 +2288,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     private void checkRegex(String regex) {
         final String reg;
-        String temp;
+
         try {
             if (regex != null && !regex.isEmpty()) {
                 if (regex.contains("<") && regex.contains(">")) {
-                    temp = regex.replaceAll("\\<.*?\\>", "");
+                    reg = regex.replaceAll("\\<.*?\\>", "");
                 } else {
-                    temp = regex;
+                    reg = regex;
                 }
-                String[] a = temp.split("\\{");
-                if (a.length >= 2)
-                    temp = "[" + a[0] + "]{" + a[1];
-                else {
-                    temp = "[" + temp + "]";
-                }
-                reg = temp;
+
                 //data.replaceAll("\\(.*?\\)", "()"); //if you want to keep the brackets
                 InputFilter filter = new InputFilter() {
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -2287,6 +2307,113 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 Log.d("", "invalid");
                                 return "";
                             }
+                        }
+                        return null;
+                    }
+                };
+                inputFilters.add(filter);
+
+            }
+        } catch (Exception ex) {
+            Commons.printException("regex check", ex);
+        }
+    }
+
+
+    private void checkPANRegex(final int number) {
+        final String reg;
+
+        try {
+            String regex = profileConfig.get(number).getRegex();
+            if (regex != null && !regex.isEmpty()) {
+                if (regex.contains("<") && regex.contains(">")) {
+                    reg = regex.replaceAll("\\<.*?\\>", "");
+                } else {
+                    reg = regex;
+                }
+
+                InputFilter filter = new InputFilter() {
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            String enteredValue = dest + String.valueOf(source.charAt(i));
+                            String panNumber = "AAAAA1111A";
+
+                            String checkValid = enteredValue + "" + panNumber.substring(dest.length() + 1, panNumber.length());
+
+                            if (!Pattern.compile(reg).matcher(checkValid).matches()) {
+                                Toast.makeText(getActivity(),
+                                        getResources().getString(R.string.enter_valid) + " " + profileConfig.get(number).getMenuName(), Toast.LENGTH_SHORT)
+                                        .show();
+                                Log.d("", "invalid");
+                                return "";
+                            }
+
+                        }
+                        return null;
+                    }
+                };
+                inputFilters.add(filter);
+
+            }
+        } catch (Exception ex) {
+            Commons.printException("regex check", ex);
+        }
+    }
+
+    private void checkGSTRegex(final int number) {
+        final String reg;
+
+        try {
+            String regex = profileConfig.get(number).getRegex();
+
+
+            if (regex != null && !regex.isEmpty()) {
+                if (regex.contains("<") && regex.contains(">")) {
+                    reg = regex.replaceAll("\\<.*?\\>", "");
+                } else {
+                    reg = regex;
+                }
+
+                InputFilter filter = new InputFilter() {
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            String enteredValue = dest + String.valueOf(source.charAt(i));
+                            String gstNumber = "11AAAAA1111A1A1";
+
+                            String panNumber = "";
+
+                            for (int index = 0; index < profileConfig.size(); index++) {
+                                if (profileConfig.get(index).getConfigCode().equalsIgnoreCase("PAN_NUMBER")) {
+                                    panNumber = editText[index].getText().toString();
+                                }
+                            }
+
+                            boolean isValidPan = false;
+                            if (enteredValue.length() > 2 && panNumber != null && panNumber.length() == 10) {
+                                String panSubString = "";
+
+                                if (enteredValue.length() < 13) {
+                                    panSubString = enteredValue.substring(2, enteredValue.length());
+                                } else {
+                                    panSubString = enteredValue.substring(2, 12);
+                                }
+
+                                if (panNumber.substring(0, panSubString.length()).equals(panSubString)) {
+                                    isValidPan = true;
+                                }
+                            } else {
+                                isValidPan = true;
+                            }
+                            String checkValid = enteredValue + "" + gstNumber.substring(dest.length() + 1, gstNumber.length());
+                            if (!Pattern.compile(reg).matcher(checkValid).matches() || !isValidPan) {
+                                Log.d("", "invalid");
+
+                                Toast.makeText(getActivity(),
+                                        getResources().getString(R.string.enter_valid) + " " + profileConfig.get(number).getMenuName(), Toast.LENGTH_SHORT)
+                                        .show();
+                                return "";
+                            }
+
                         }
                         return null;
                     }
@@ -2817,7 +2944,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         subchannel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 //SpinnerBO tempBo = (SpinnerBO) parent.getSelectedItem();
-                addAttributeView(1);
+
+                if(++subChannelSpinnerCount > 1)
+                    addAttributeView(1);
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -3188,10 +3317,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             } else if (isFromChannel) {
 
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null
-                        && (Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")) == ((SpinnerBO) subchannel.getSelectedItem()).getId())) {
-                    isNewChannel = false;
-                } else if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
+//                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null
+//                        && (Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")) == ((SpinnerBO) subchannel.getSelectedItem()).getId())) {
+//                    isNewChannel = false;
+//                } else if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
                     // in case of user selecting new sub channel.. then view wil be updated here..
                     isNewChannel = true;
 
@@ -3210,7 +3339,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     if (mAttributeListByChannelId != null && mAttributeListByChannelId.get(((SpinnerBO) subchannel.getSelectedItem()).getId()) != null)
                         mNewChannelAttributeList.addAll(mAttributeListByChannelId.get(((SpinnerBO) subchannel.getSelectedItem()).getId()));
 
-                }
+//                }
 
             }
 
@@ -3858,7 +3987,18 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     @Override
     public void generateOTP() {
         otpShown = true;
-        new VerifyTask(str_mob_email).execute();
+        new VerifyTask(str_mob_email, str_type).execute();
+    }
+
+    @Override
+    public void dismissListener(String type, boolean isVerfied) {
+        if (isVerfied) {
+            if (type.equals("MOBILE"))
+                isMobileNoVerfied = true;
+            if (type.equals("EMAIL"))
+                isEmailVerfied = true;
+        }
+
     }
 
     @SuppressLint("ValidFragment")
@@ -4183,6 +4323,91 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         break;
                     }
 
+                    if (!isEmailVerfied) {
+                        editText[i].requestFocus();
+                        validate = false;
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.profile_edit_verify_email_id), Toast.LENGTH_SHORT)
+                                .show();
+                        break;
+                    }
+
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("PROFILE79")
+                        && profileConfig.get(i).getModule_Order() == 1
+                        && editText[i].getText().toString().trim().length() != 0) {
+
+                    if (!isMobileNoVerfied) {
+                        editText[i].requestFocus();
+                        validate = false;
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.profile_edit_verify_mobile_no), Toast.LENGTH_SHORT)
+                                .show();
+                        break;
+                    }
+
+                }else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("PROFILE81")
+                        && profileConfig.get(i).getModule_Order() == 1) {
+
+                    if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
+                            !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
+
+                        int length = editText[i].getText().toString().trim().length();
+
+                        if (length > 0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    profileConfig.get(i).getMenuName() + " Length Must Be " + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        } else if (length > 0 && !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        }
+                    }
+
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("PROFILE61")
+                        && profileConfig.get(i).getModule_Order() == 1) {
+
+                    if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
+                            !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex()) ||
+                            !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+
+
+                        int length = editText[i].getText().toString().trim().length();
+
+                        if (length > 0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    profileConfig.get(i).getMenuName() + " Length Must Be " + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        } else if (length > 0 && !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex())) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        } else if (length > 0 && !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+                            validate = false;
+                            editText[i].requestFocus();
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT)
+                                    .show();
+                            break;
+                        }
+
+                    }
+
                 }
 
 
@@ -4194,6 +4419,36 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         return validate;
     }
 
+
+    public boolean isValidRegx(CharSequence target, String regx) {
+
+        if (regx.equals("")) {
+            return true;
+        }
+        String value = regx.replaceAll("\\<.*?\\>", "");
+        return !TextUtils.isEmpty(target) && Pattern.compile(value).matcher(target).matches();
+    }
+
+
+    public boolean isValidGSTINWithPAN(CharSequence target) {
+
+        for (int index = 0; index < profileConfig.size(); index++) {
+            if (profileConfig.get(index).getConfigCode()
+                    .equalsIgnoreCase("PROFILE81")) {
+
+                String panNumber = editText[index].getText().toString().trim();
+                if (panNumber.length() > 0) {
+                    if (target.subSequence(2, target.length() - 3).equals(panNumber))
+                        return true;
+                    else
+                        return false;
+                } else
+                    return true;
+            }
+        }
+
+        return true;
+    }
 
     //handled only for single selection products
     private ArrayList<StandardListBO> computeSelectedPriorityList() {
@@ -4907,30 +5162,38 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     private void verifyOTP(String type, String value) {
         otpShown = false;
-        switch (type) {
-            case "MOBILE":
-                if (value != null && !value.isEmpty() && value.length() == 10)
-                    new VerifyTask(value).execute();
-                else
-                    Toast.makeText(getActivity(), "Invalid Mobile Number", Toast.LENGTH_LONG).show();
-                break;
-            case "EMAIL":
-                if (isValidEmail(value))
-                    new VerifyTask(value).execute();
-                else
-                    Toast.makeText(getActivity(), getResources().
-                            getString(R.string.invalid_email_address), Toast.LENGTH_LONG).show();
-                break;
-        }
+        String otpGenerateUrl = bmodel.synchronizationHelper.generateOtpUrl();
+        if (otpGenerateUrl.length() > 0) {
+            switch (type) {
+                case "MOBILE":
+                    if (value != null && !value.isEmpty() && value.length() == 10)
+                        new VerifyTask(value, type).execute();
+                    else
+                        Toast.makeText(getActivity(), "Invalid Mobile Number", Toast.LENGTH_LONG).show();
+                    break;
+                case "EMAIL":
+                    if (isValidEmail(value))
+                        new VerifyTask(value, type).execute();
+                    else
+                        Toast.makeText(getActivity(), getResources().
+                                getString(R.string.invalid_email_address), Toast.LENGTH_LONG).show();
+                    break;
+            }
+        } else
+            Toast.makeText(getActivity(), getResources().
+                    getString(R.string.otp_download_url_empty), Toast.LENGTH_LONG).show();
     }
 
     class VerifyTask extends AsyncTask<Integer, Integer, Integer> {
 
         private AlertDialog.Builder builder;
         private String value;
+        private String type;
+        private int downloadStatus = 0;
 
-        VerifyTask(String value){
+        VerifyTask(String value, String type) {
             this.value = value;
+            this.type = type;
         }
 
 
@@ -4945,86 +5208,105 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+
+                int listid = bmodel.configurationMasterHelper.getActivtyType("RE");
+
+                JSONObject jsonData = new JSONObject();
+                jsonData.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid());
+                jsonData.put("RetailerId", bmodel.getRetailerMasterBO().getRetailerID());
+                jsonData.put("ActivityType", listid);
+                JSONObject notObj = new JSONObject();
+                notObj.put("Type", type);
+                notObj.put("Receiver", value);
+                JSONArray notificationArray = new JSONArray();
+                notificationArray.put(notObj);
+                jsonData.put("Notification", notificationArray);
+
+
+                JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+
+                jsonFormatter.addParameter("UserId", bmodel.userMasterHelper
+                        .getUserMasterBO().getUserid());
+                jsonFormatter.addParameter("VersionCode",
+                        bmodel.getApplicationVersionNumber());
+                jsonFormatter.addParameter("LoginId", bmodel.userNameTemp.trim());
+                jsonFormatter.addParameter("MobileDateTime",
+                        Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+                jsonFormatter.addParameter("MobileUTCDateTime",
+                        Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+                jsonFormatter.addParameter("DeviceId",
+                        bmodel.activationHelper.getIMEINumber());
+                jsonFormatter.addParameter("VersionCode",
+                        bmodel.getApplicationVersionNumber());
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+                jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
+                        .getUserMasterBO().getOrganizationId());
+
+                String appendUrl = bmodel.synchronizationHelper.generateOtpUrl();
+
+                Vector<String> responseVector = bmodel.synchronizationHelper.getOtpGenerateResponse(jsonFormatter.getDataInJson(),
+                        jsonData.toString(), appendUrl);
+
+                if (responseVector.size() > 0) {
+                    for (String s : responseVector) {
+                        JSONObject jsonObjectResponse = new JSONObject(s);
+
+                        Iterator itr = jsonObjectResponse.keys();
+                        while (itr.hasNext()) {
+                            String key = (String) itr.next();
+                            if (key.equals("Response")) {
+                                downloadStatus = jsonObjectResponse.getInt("Response");
+                            } else if (key.equals("ErrorCode")) {
+                                String tokenResponse = jsonObjectResponse.getString("ErrorCode");
+                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+
+                                    return -4;
+
+                                }
+                            }
+                        }
+                    }
+                }
+
             } catch (Exception e) {
                 Commons.printException(e);
+                return downloadStatus;
             }
-            return 0;
+            return downloadStatus;
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                bmodel.synchronizationHelper.verifyMobileOrEmail(value);
-                str_mob_email = value;
-            } else {
-                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
-                if (errorMsg != null) {
-                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+
+            alertDialog.dismiss();
+
+            if (result == 1) {
+                alertDialog.dismiss();
+                if (getActivity() != null) {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    RetailerOTPDialog dialog1 = new RetailerOTPDialog(ProfileEditFragment.this, type);
+                    dialog1.setCancelable(false);
+                    dialog1.show(ft, "mobiledialog");
                 }
+
             }
-        }
-    }
-
-    private void registerReceiver() {
-        IntentFilter filter = new IntentFilter(
-                OTPReceiver.PROCESS_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        otpReceiver = new OTPReceiver();
-        getActivity().registerReceiver(otpReceiver, filter);
-    }
-
-    private void unRegister() {
-        if (otpReceiver != null) {
-            getActivity().unregisterReceiver(otpReceiver);
-            otpReceiver = null;
-        }
-    }
-
-    public class OTPReceiver extends BroadcastReceiver {
-        public static final String PROCESS_RESPONSE = "com.ivy.intent.action.RetailerOTP";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateReceiver(intent);
-        }
-    }
-
-    private void updateReceiver(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        int method = bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0);
-        String errorCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
-
-        switch (method) {
-            case SynchronizationHelper.MOBILE_EMAIL_VERIFICATION:
-                if (errorCode != null && errorCode
-                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    alertDialog.dismiss();
-                    if (getActivity() != null && !otpShown) {
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        RetailerOTPDialog dialog1 = new RetailerOTPDialog(ProfileEditFragment.this);
-                        dialog1.setCancelable(false);
-                        dialog1.show(ft, "mobiledialog");
-                    } else if (otpShown)
-                        Toast.makeText(getActivity(), "OTP Sent Successfully", Toast.LENGTH_LONG).show();
-
-                } else {
-                    String errorDownloadMessage = bmodel.synchronizationHelper
-                            .getErrormessageByErrorCode().get(errorCode);
-                    if (errorDownloadMessage != null) {
-                        Toast.makeText(getActivity(), errorDownloadMessage,
-                                Toast.LENGTH_SHORT).show();
+            if (result == -4) {
+                if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), getActivity().getResources().
+                                getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                     }
-                    alertDialog.dismiss();
-                    break;
                 }
-                break;
-            default:
-                break;
+            }
         }
-
     }
+
+
 }

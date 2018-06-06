@@ -167,6 +167,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             menuIcons.put(StandardListMasterConstants.MENU_DAMAGE_STOCK,
                     R.drawable.icon_stock);
 
+
             Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
                     .downloadLoadManagementMenu();
             if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
@@ -443,6 +444,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 } else
                     Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
                 break;
+
             default:
                 break;
         }

@@ -10,8 +10,6 @@
                 android:id="@+id/lvwplist"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/base"
-                android:layout_below="@+id/header"
                 android:cacheColorHint="@null"
                 android:divider="@android:color/white"
                 android:dividerHeight="1dp"

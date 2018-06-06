@@ -218,7 +218,7 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
                 holder.tvwqty = (TextView) row.findViewById(R.id.PRDQTY);
                 holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDCASEQTY);
                 holder.outerQty = (TextView) row
-                        .findViewById(R.id.outerCaseQty);
+                        .findViewById(R.id.PRDOUTERQTY);
                 holder.tvbatchid = (TextView) row.findViewById(R.id.prdbatchid);
 
                 /** hide Pcs,case,outer **/

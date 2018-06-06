@@ -178,8 +178,6 @@ import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -394,6 +392,7 @@ public class BusinessModel extends Application {
     private static final String PRD_STK = "STK";
 
     private String availablilityShare;
+    private int printSequenceLevelID;
 
     public BusinessModel() {
 
@@ -710,6 +709,13 @@ public class BusinessModel extends Application {
         this.isEditStockCheck = isEditStockCheck;
     }
 
+    public int getPrintSequenceLevelID() {
+        return printSequenceLevelID;
+    }
+
+    public void setPrintSequenceLevelID(int printSequenceLevelID) {
+        this.printSequenceLevelID = printSequenceLevelID;
+    }
 
     @Override
     public void onCreate() {
@@ -719,25 +725,12 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
-        /*    if (LeakCanary.isInAnalyzerProcess(this)) {
-                // This process is dedicated to LeakCanary for heap analysis.
-                // You should not init your app in this process.
-                return;
-            }*/
-            refWatcher= LeakCanary.install(this);
-            // Normal app init code...
 
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
     }
-    private RefWatcher refWatcher;
-    public static RefWatcher getRefWatcher(Context context) {
-        BusinessModel application = (BusinessModel) context.getApplicationContext();
-        return application.refWatcher;
-    }
-
 
     @Override
     public void onTerminate() {
@@ -3667,7 +3660,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1");
+                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1 and ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     isAmazonUpload = true;
@@ -4406,7 +4399,7 @@ public class BusinessModel extends Application {
 
             String sql = "SELECT RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1'";
+                    + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1' and ForSwitchSeller = 0";
 
             Cursor c = db.selectSQL(sql);
 

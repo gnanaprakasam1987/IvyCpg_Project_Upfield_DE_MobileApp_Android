@@ -74,7 +74,7 @@ public class SalesFundamentalHelper {
         try {
 
             String sql = "select hhtCode, RField,menu_type from "
-                    + DataMembers.tbl_HhtModuleMaster + " where menu_type='COMMON' and flag=1";
+                    + DataMembers.tbl_HhtModuleMaster + " where menu_type='COMMON' and flag=1 and ForSwitchSeller = 0";
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -126,7 +126,7 @@ public class SalesFundamentalHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT COUNT(HHTCode) FROM HhtModuleMaster"
-                    + " WHERE HHTCode='VISUALSF' AND Flag='1'");
+                    + " WHERE HHTCode='VISUALSF' AND Flag='1' and  ForSwitchSeller = 0");
             if (c != null) {
                 if (c.moveToNext() && c.getInt(0) > 0) {
                     mSOSTotalPopUpType = 1;

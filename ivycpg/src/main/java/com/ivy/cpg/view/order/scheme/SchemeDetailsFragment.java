@@ -123,7 +123,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                 if (schemes != null && schemes.size() > 0) {
                     for (SchemeBO schemeBO : schemes) {
                         for (SchemeProductBO buyProductBO : schemeBO.getBuyingProducts()) {
-                            if (productMasterBO.getParentHierarchy().contains("/" + buyProductBO.getProductId() + "/"))
+                            if (buyProductBO.getProductId().equals(productMasterBO.getProductID())||productMasterBO.getParentHierarchy().contains("/" + buyProductBO.getProductId() + "/"))
                             isSchemeAvailable = true;
                         }
                     }
@@ -163,7 +163,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         }
         else {
             for (String productId : schemeHelper.getParentIdListByProductId().keySet()) {
-                if (productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
+                if (productId.equals(productMasterBO.getProductID())|| productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
                     parentIdList = schemeHelper.getParentIdListByProductId().get(productId);
                 }
 
@@ -389,12 +389,12 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                                 TextView groupLogicType = getTextView(false, Gravity.LEFT, false);
                                                 groupLogicType.setTextColor(getResources().getColor(R.color.FullBlack));
 
-                                                if (schemeBO.getParentLogic().equalsIgnoreCase("AND")) {
+                                                if (schemeBO.getFreeType().equalsIgnoreCase("AND")) {
                                                     groupLogicType.setText("&");
-                                                } else if (schemeBO.getParentLogic().equalsIgnoreCase("ANY")) {
+                                                } else if (schemeBO.getFreeType().equalsIgnoreCase("ANY")) {
                                                     groupLogicType.setText("OR");
                                                 } else {
-                                                    groupLogicType.setText(schemeBO.getParentLogic());
+                                                    groupLogicType.setText(schemeBO.getFreeType());
                                                 }
 
                                                 groupLogicType.setTypeface(null, Typeface.ITALIC);
