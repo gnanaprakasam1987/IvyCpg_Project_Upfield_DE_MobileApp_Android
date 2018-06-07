@@ -118,6 +118,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX = "prod_line_value_excl_tax";
     private static String TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX = "prod_line_value_incl_tax";
     private static String TAG_PRODUCT_TAX_PERCENTAGE = "prod_line_tax_percentage";
+    private static String TAG_PRODUCT_TAX_VALUE = "prod_line_tax_value";
 
     private static String TAG_PRODUCT_TAG_DESC = "prod_tag_desc";
 
@@ -796,8 +797,18 @@ public class CommonPrintHelper {
 
         for (ProductMasterBO prod : mOrderedProductList) {
             mLengthUptoPName = 0;
+
+            //int position=0;
+            ///position=mAttrList.size();
             //load the ordered product line item - start
             for (AttributeListBO attr : mAttrList) {
+
+                //Below line added for RTL support - Rajkumar
+               /* if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
+                    position -= 1;
+                    attr = mAttrList.get(position);
+                }*/
+
                 mProductValue = "";
                 if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)) {
                     mProductValue = prod.getProductCode();
@@ -861,6 +872,17 @@ public class CommonPrintHelper {
                         }
                     }
                     mProductValue = SDUtil.format(taxPercentage, 1, 0);
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAX_VALUE)) {
+                    double productTaxAmount = 0;
+                    if (bmodel.productHelper.taxHelper.getmTaxListByProductId() != null) {
+                        ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getmTaxListByProductId().get(prod.getProductID());
+                        if (taxList != null) {
+                            for (int index = 0; index < taxList.size(); index++) {
+                                productTaxAmount += taxList.get(index).getTotalTaxAmount();
+                            }
+                        }
+                    }
+                    mProductValue = formatValueInPrint(productTaxAmount, attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_PROMO_TYPE)) {
                     mProductValue = getPromoType(context, prod);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
