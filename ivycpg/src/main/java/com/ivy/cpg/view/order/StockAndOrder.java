@@ -4925,6 +4925,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         menu.findItem(R.id.menu_remarks).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_loc_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_barcode).setVisible(!drawerOpen);
+        menu.findItem(R.id.menu_refresh).setVisible(!drawerOpen);
 
         if (bmodel.configurationMasterHelper.SHOW_ORD_CALC)
             menu.findItem(R.id.menu_calculator).setVisible(true);

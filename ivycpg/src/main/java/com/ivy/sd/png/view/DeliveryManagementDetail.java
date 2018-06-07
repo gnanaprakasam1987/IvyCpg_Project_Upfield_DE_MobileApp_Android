@@ -853,7 +853,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
                     Vector<ProductMasterBO> productList = new Vector<ProductMasterBO>(mProductList);
                     //Collections.copy(productList, mProductList);
-                    bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null);
+                    bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null,null);
                     Intent i = new Intent(DeliveryManagementDetail.this, CommonPrintPreviewActivity.class);
                     i.putExtra("IsFromOrder", true);
                     i.putExtra("isHomeBtnEnable", true);
@@ -1152,7 +1152,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
                 Vector<ProductMasterBO> productList = new Vector<ProductMasterBO>(mProductList);
                 //Collections.copy(productList, mProductList);
-                bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null);
+                bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null,null);
                 Intent i = new Intent(DeliveryManagementDetail.this, CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("isHomeBtnEnable", true);
