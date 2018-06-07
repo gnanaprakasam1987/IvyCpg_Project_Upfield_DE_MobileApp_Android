@@ -3129,7 +3129,7 @@ public class ReportHelper {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct UseriD,UserName,Retailerid,RetailerName,LocationName,Address,isPlanned,isVisited");
-            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong,SalesVolume from OutletPerfomanceReport order by UseriD,timein,timeout");
+            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong,SalesVolume,FitScore from OutletPerfomanceReport order by UseriD,timein,timeout");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
@@ -3151,7 +3151,7 @@ public class ReportHelper {
                     outletReportBO.setLatitude(c.getDouble(12));
                     outletReportBO.setLongitude(c.getDouble(13));
                     outletReportBO.setSalesVolume(c.getString(14));
-
+                    outletReportBO.setFitScore(c.getString(15));
                     lst.add(outletReportBO);
 
                 }
