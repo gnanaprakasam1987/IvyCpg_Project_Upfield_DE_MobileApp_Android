@@ -848,8 +848,7 @@ public class VanStockAdjustFragment extends IvyBaseFragment implements BrandDial
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                mVanUnLoadModuleHelper
-                        .saveVanStockAdjustment(vanunloadlist);
+                mVanUnLoadModuleHelper.saveVanStockAdjustment(vanunloadlist,getActivity().getApplicationContext());
             } catch (Exception e) {
                 Commons.printException("" + e);
                 return Boolean.FALSE;

@@ -95,7 +95,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         businessModel.synchronizationHelper.loadErrorCode();
         /* Set default language */
         sharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
+                .getDefaultSharedPreferences(context.getApplicationContext());
 
         if (!Locale.getDefault().equals(
                 sharedPrefs.getString("languagePref", LANGUAGE))) {
@@ -104,8 +104,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             Locale.setDefault(locale);
             Configuration config = new Configuration();
             config.locale = locale;
-            context.getResources().updateConfiguration(config,
-                    context.getResources().getDisplayMetrics());
+            context.getApplicationContext().getResources().updateConfiguration(config,
+                    context.getApplicationContext().getResources().getDisplayMetrics());
 
         }
         // Getting back date
@@ -113,8 +113,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         reloadActivity();
 
-        mLastSyncSharedPref = context.getSharedPreferences("lastSync", MODE_PRIVATE);
-        mPasswordLockCountPref = context.getSharedPreferences("passwordlock", MODE_PRIVATE);
+        mLastSyncSharedPref = context.getApplicationContext().getSharedPreferences("lastSync", MODE_PRIVATE);
+        mPasswordLockCountPref = context.getApplicationContext().getSharedPreferences("passwordlock", MODE_PRIVATE);
         SharedPreferences.Editor edt = mPasswordLockCountPref.edit();
         edt.putInt("lockcount", mPasswordLockCountPref.getInt("lockcount", 0));
         edt.apply();
@@ -122,7 +122,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         if (businessModel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
             if (!businessModel.locationUtil.isGPSProviderEnabled()) {
                 GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
-                int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(context);
+                int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(context.getApplicationContext());
                 if (resultCode == ConnectionResult.SUCCESS) {
                     loginView.requestLocation();
                 } else {
@@ -158,7 +158,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     @Override
     public void updateDownloadedTime() {
 
-        SharedPreferences mLastUploadAndDownloadPref = context.getSharedPreferences("lastUploadAndDownload", MODE_PRIVATE);
+        SharedPreferences mLastUploadAndDownloadPref = context.getApplicationContext().getSharedPreferences("lastUploadAndDownload", MODE_PRIVATE);
         SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
         edt.putString("downloadDate",
                 SDUtil.now(SDUtil.DATE_GLOBAL));
@@ -186,7 +186,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     @Override
     public void getSupportNo() {
-        loginView.setSupportNoTV(loginHelper.getSupportNo(context));
+        loginView.setSupportNoTV(loginHelper.getSupportNo(context.getApplicationContext()));
     }
 
     /*
@@ -203,7 +203,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             } else {
                 try {
                     File backupDB = new File(
-                            context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                            context.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                                     + "/pandg/" + DataMembers.DB_NAME);
                     if (backupDB.exists()) {
                         new RestoreDB().execute();
@@ -213,7 +213,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 }
             }
         } else {
-            loginView.showAlert(context.getResources().getString(R.string.external_storage_not_avail), true);
+            loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.external_storage_not_avail), true);
         }
     }
 
@@ -224,25 +224,25 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected void onPreExecute() {
-            loginView.showProgressDialog(context.getResources().getString(R.string.Restoring_database));
+            loginView.showProgressDialog(context.getApplicationContext().getResources().getString(R.string.Restoring_database));
         }
 
         @Override
         protected Boolean doInBackground(Integer... params) {
-            return loginHelper.reStoreDB(context);
+            return loginHelper.reStoreDB(context.getApplicationContext());
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
             loginView.dismissAlertDialog();
             if (result) {
-                loginView.showAlert(context.getResources().getString(R.string.database_restored), false);
+                loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.database_restored), false);
                 syncDone = businessModel.userMasterHelper.getSyncStatus();
                 if (syncDone) {
                     businessModel.userMasterHelper.downloadDistributionDetails();
                     loginView.retrieveDBData();
                 } else {
-                    loginView.showAlert(context.getResources().getString(R.string.database_not_restored), false);
+                    loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.database_not_restored), false);
                 }
             }
         }
@@ -255,13 +255,13 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     public void assignServerUrl() {
         if (ApplicationConfigs.withActivation) {
             DataMembers.SERVER_URL = PreferenceManager
-                    .getDefaultSharedPreferences(context).getString("appUrlNew", "");
+                    .getDefaultSharedPreferences(context.getApplicationContext()).getString("appUrlNew", "");
             DataMembers.ACTIVATION_KEY = PreferenceManager
-                    .getDefaultSharedPreferences(context).getString("activationKey", "");
+                    .getDefaultSharedPreferences(context.getApplicationContext()).getString("activationKey", "");
         }
 
          /* Display application Phase if the environment is other than live.*/
-        String phase = PreferenceManager.getDefaultSharedPreferences(context)
+        String phase = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext())
                 .getString("application", "");
         if (!phase.equals(""))
             if (Pattern.compile(Pattern.quote("ivy"), Pattern.CASE_INSENSITIVE)
@@ -273,7 +273,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     public void checkLogin() {
         if (loginHelper.SHOW_CHANGE_PASSWORD) {
-            String createdDate = loginHelper.getPasswordCreatedDate(context);
+            String createdDate = loginHelper.getPasswordCreatedDate(context.getApplicationContext());
             if (createdDate != null && !createdDate.equals("")) {
                 int result = SDUtil.compareDate(loginHelper.getPasswordExpiryDate(createdDate),
                         businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
@@ -308,12 +308,12 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     private void checkAttendance() {
-        loginHelper.loadPasswordConfiguration(context);
+        loginHelper.loadPasswordConfiguration(context.getApplicationContext());
         businessModel.userMasterHelper.downloadDistributionDetails();
         if (loginHelper.IS_PASSWORD_ENCRYPTED)
             businessModel.synchronizationHelper.setEncryptType();
         if (businessModel.configurationMasterHelper.SHOW_ATTENDANCE) {
-            if (AttendanceHelper.getInstance(context).loadAttendanceMaster()) {
+            if (AttendanceHelper.getInstance(context).loadAttendanceMaster(context)) {
                 loginView.goToHomeScreen();
             } else {
                 loginView.goToAttendance();
@@ -339,17 +339,17 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                     mIterateCount = businessModel.synchronizationHelper.getmRetailerWiseIterateCount();
                     callInitialAuthentication(false);
                 } else {
-                    loginView.showAlert(context.getResources().getString(R.string.download_url_empty), false);
+                    loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.download_url_empty), false);
                     loginView.dismissAlertDialog();
                 }
             } else {
-                loginView.showAlert(context.getResources().getString(R.string.please_connect_to_internet), false);
+                loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.please_connect_to_internet), false);
             }
         }
     }
 
     private void proceedToLocalLogin() {
-        loginView.showProgressDialog(context.getResources().getString(R.string.loading_data));
+        loginView.showProgressDialog(context.getApplicationContext().getResources().getString(R.string.loading_data));
 
         //handle password lock in offline based on reached maximum_attempt_count compare with mPasswordLockCountPref count
         int count = mPasswordLockCountPref.getInt("passwordlock", 0);
@@ -376,7 +376,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         @Override
         protected void onPreExecute() {
             loginView.dismissAlertDialog();
-            loginView.showProgressDialog(context.getResources().getString(R.string.checking_time));
+            loginView.showProgressDialog(context.getApplicationContext().getResources().getString(R.string.checking_time));
         }
 
         @Override
@@ -393,7 +393,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         protected void onPostExecute(Integer result) {
             loginView.dismissAlertDialog();
             if (result == 2) {
-                loginView.showAlert(context.getResources().getString(R.string.error_e24), true); // error_24 invalid date time
+                loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.error_e24), true); // error_24 invalid date time
             } else {
                 proceedToLocalLogin();
             }
@@ -480,7 +480,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 if (output.equals("E27")) {
                     loginView.showDeviceLockedDialog();
                 } else if (output.equals("E28")) {
-                    businessModel.showAlert(context.getResources().
+                    businessModel.showAlert(context.getApplicationContext().getResources().
                             getString(R.string.user_already_assigned), 0);
                 } else {
 
@@ -525,14 +525,14 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected void onPreExecute() {
-            loginView.showProgressDialog(context.getResources().getString(R.string.checking_new_version));
+            loginView.showProgressDialog(context.getApplicationContext().getResources().getString(R.string.checking_new_version));
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
             if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 if (!result) {
-                    if (loginHelper.isPasswordReset(context)) {
+                    if (loginHelper.isPasswordReset(context.getApplicationContext())) {
                         loginView.dismissAlertDialog();
                         loginView.resetPassword();
                     } else {
@@ -542,7 +542,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
                 } else {
                     loginView.dismissAlertDialog();
-                    loginView.showAppUpdateAlert(context.getResources().getString(R.string.update_available));
+                    loginView.showAppUpdateAlert(context.getApplicationContext().getResources().getString(R.string.update_available));
                 }
             } else {
                 String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
@@ -606,7 +606,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                         .getUrlList().size() > 0) {
                     businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
                 } else {
-                    loginView.showAlert(context.getResources().getString(R.string.no_data_download), false);
+                    loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.no_data_download), false);
                     loginView.dismissAlertDialog();
                 }
             } else {
@@ -906,7 +906,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             super.onPreExecute();
             try {
 
-                loginView.showProgressDialog(context.getResources().getString(R.string.loading));
+                loginView.showProgressDialog(context.getApplicationContext().getResources().getString(R.string.loading));
 
                 ArrayList<DistributorMasterBO> distributorList = businessModel.distributorMasterHelper.getDistributors();
                 json = businessModel.synchronizationHelper.getCommonJsonObject();
@@ -1057,7 +1057,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         //outlet Performance
         if (businessModel.reportHelper.getPerformRptUrl().length() > 0) {
             SharedPreferences.Editor editor = PreferenceManager
-                    .getDefaultSharedPreferences(context)
+                    .getDefaultSharedPreferences(context.getApplicationContext())
                     .edit();
             editor.putString("rpt_dwntime",
                     SDUtil.now(SDUtil.DATE_TIME_NEW));
@@ -1078,7 +1078,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             if (!s.equals("")) {
                 loginView.callResetPassword();
             } else {
-                loginView.showAlert(context.getResources().getString(R.string.token_expired), false);
+                loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.token_expired), false);
             }
         }
     }

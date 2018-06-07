@@ -47,6 +47,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.baidu.platform.comapi.map.A;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -57,6 +58,9 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.ivy.appmodule.AppComponent;
+import com.ivy.appmodule.AppModule;
+import com.ivy.appmodule.DaggerAppComponent;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
@@ -180,6 +184,7 @@ import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
+import com.squareup.leakcanary.LeakCanary;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -721,19 +726,32 @@ public class BusinessModel extends Application {
         this.printSequenceLevelID = printSequenceLevelID;
     }
 
+    private AppComponent appComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
         try {
+            if (LeakCanary.isInAnalyzerProcess(this)) {
+// This process is dedicated to LeakCanary for heap analysis.
+// You should not init your app in this process.
+            }
+            LeakCanary.install(this);
 
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
+            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+            appComponent.inject(this);
 
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
 
     @Override
@@ -3031,6 +3049,42 @@ public class BusinessModel extends Application {
         }
     }
 
+    public boolean loadLastVisitHistoryStockCheckedProducts(String retailerId) {
+        boolean isDataVailable = false;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql1 = "select productid, qty, StoreLocId from " + DataMembers.tbl_LastVisitStock_History + " where retailerid=" + QT(retailerId) + "";
+            Cursor orderDetailCursor = db.selectSQL(sql1);
+            if (orderDetailCursor != null) {
+                while (orderDetailCursor.moveToNext()) {
+                    String productId = orderDetailCursor.getString(0);
+                    int shelfpqty = orderDetailCursor.getInt(1);
+                    int locationid = orderDetailCursor.getInt(2);
+                    int pouring = 0;
+                    int cocktail = 0;
+                    int availability = 0;
+                    if (shelfpqty > 0)
+                        availability = 1;
+
+                    setStockCheckQtyHistoryDetails(productId, shelfpqty, 0,
+                            0, 0, 0, 0, locationid,
+                            0, 0, 0, 0, 1, 0, pouring, cocktail, "MENU_STOCK", availability);
+                    isDataVailable = true;
+
+                }
+                orderDetailCursor.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return isDataVailable;
+    }
+
     /**
      * Load the ClosingStock Details and ClosingStock Header datas into product
      * master to Edit Order.
@@ -3113,6 +3167,51 @@ public class BusinessModel extends Application {
      * @param productid
      * @param --qty
      */
+    private void setStockCheckQtyHistoryDetails(String productid, int shelfpqty,
+                                                int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
+                                                int locationId, int isDistributed, int isListed, int reasonID,
+                                                int audit, int isOwn, int facing, int pouring, int cocktail,
+                                                String menuCode, int availability) {
+
+        //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
+        ProductMasterBO product = null;
+        if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
+            product = productHelper.getTaggedProductBOById(productid);
+        } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
+            product = productHelper.getProductMasterBOById(productid);
+        }
+
+        if (product != null && product.getOwn() == isOwn) {
+            for (int j = 0; j < product.getLocations().size(); j++) {
+                if (product.getLocations().get(j).getLocationId() == locationId) {
+                    product.getLocations().get(j).setShelfPiece(shelfpqty);
+                    product.getLocations().get(j).setShelfCase(shelfcqty);
+                    product.getLocations().get(j).setShelfOuter(shelfoqty);
+                    product.getLocations().get(j).setWHPiece(whpqty);
+                    product.getLocations().get(j).setWHCase(whcqty);
+                    product.getLocations().get(j).setWHOuter(whoqty);
+                    product.setIsDistributed(isDistributed);
+                    product.setIsListed(isListed);
+                    product.getLocations().get(j).setReasonId(reasonID);
+                    product.getLocations().get(j).setAudit(audit);
+                    product.getLocations().get(j).setFacingQty(facing);
+                    product.getLocations().get(j).setIsPouring(pouring);
+                    product.getLocations().get(j).setCockTailQty(cocktail);
+                    product.getLocations().get(j).setAvailability(availability);
+                    return;
+                }
+            }
+        }
+
+
+    }
+
+    /**
+     * Update product Quantity for particular product Id.
+     *
+     * @param productid
+     * @param --qty
+     */
     private void setStockCheckQtyDetails(String productid, int shelfpqty,
                                          int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
                                          int locationId, int isDistributed, int isListed, int reasonID,
@@ -3146,8 +3245,8 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setCockTailQty(cocktail);
                     product.getLocations().get(j).setAvailability(availability);
 
-                    int totalStockQty=(shelfpqty+(shelfcqty*product.getCaseSize())+(shelfoqty*product.getOutersize()));
-                    product.setTotalStockQty(product.getTotalStockQty()+totalStockQty);
+                    int totalStockQty = (shelfpqty + (shelfcqty * product.getCaseSize()) + (shelfoqty * product.getOutersize()));
+                    product.setTotalStockQty(product.getTotalStockQty() + totalStockQty);
 
                     return;
                 }
@@ -3607,10 +3706,9 @@ public class BusinessModel extends Application {
                 } else if (idd == 5004) {
                     CreditNotePrintPreviewScreen frm = (CreditNotePrintPreviewScreen) ctx;
                     frm.finish();
-                }
-                else if (idd == 6004){
-                    CallAnalysisActivity  callAnalysisActivity = (CallAnalysisActivity)ctx;
-                    BusinessModel.loadActivity(ctx,DataMembers.actPlanning);
+                } else if (idd == 6004) {
+                    CallAnalysisActivity callAnalysisActivity = (CallAnalysisActivity) ctx;
+                    BusinessModel.loadActivity(ctx, DataMembers.actPlanning);
                     callAnalysisActivity.finish();
                 }
 
@@ -6237,7 +6335,7 @@ public class BusinessModel extends Application {
 
     public void getRetailerWiseSellerType() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -8906,6 +9004,46 @@ public class BusinessModel extends Application {
             Commons.printException("" + e);
         }
         return str;
+    }
+
+    public ArrayList<Double> getCollectedValue() {
+        ArrayList<Double> collectedList = new ArrayList<>();
+        double osAmt = 0, paidAmt = 0;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("SELECT Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
+            sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os ");
+            sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
+            sb.append(" Where Inv.InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            Cursor c = db
+                    .selectSQL(sb.toString());
+
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        paidAmt = paidAmt + c.getDouble(c.getColumnIndex("RcvdAmt"));
+                        osAmt = osAmt + c.getDouble(c.getColumnIndex("os"));
+                    }
+
+                }
+                c.close();
+            }
+
+            collectedList.add(osAmt);
+            collectedList.add(paidAmt);
+
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getCollectedValue", e);
+        }
+        return collectedList;
+
     }
 }
 

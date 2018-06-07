@@ -17,6 +17,7 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
+import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -564,7 +565,7 @@ public class OrderHelper {
                 businessModel.productHelper.updateEntryLevelDiscount(db, this.getOrderId(), entryLevelDistSum);
 
             // update SBD Distribution Percentage based on its history and ordered detail's
-            SBDHelper.getInstance(mContext).calculateSBDDistribution();
+            SBDHelper.getInstance(mContext).calculateSBDDistribution(mContext.getApplicationContext());
             int sbdTgt = businessModel.getRetailerMasterBO()
                     .getSbdDistributionTarget();
             double sbdPercent = 0;
@@ -1047,7 +1048,7 @@ public class OrderHelper {
                     businessModel.productHelper.updateEntryLevelDiscount(db, this.getOrderId(), entryLevelDistSum);
 
                 // update SBD Distribution Percentage based on its history and ordered detail's
-                SBDHelper.getInstance(mContext).calculateSBDDistribution();
+                SBDHelper.getInstance(mContext).calculateSBDDistribution(mContext.getApplicationContext());
                 int sbdTgt = businessModel.getRetailerMasterBO()
                         .getSbdDistributionTarget();
                 double sbdPercent = 0;
@@ -1385,7 +1386,7 @@ public class OrderHelper {
             db.deleteSQL(DataMembers.tbl_OrderDiscountDetail, "OrderID="
                     + businessModel.QT(orderId) + " and upload='N'", false);
             // update SBD Distribution Percentage based on its history and ordered detail's
-            SBDHelper.getInstance(context).calculateSBDDistribution();
+            SBDHelper.getInstance(context).calculateSBDDistribution(context.getApplicationContext());
             int sbdTgt = businessModel.getRetailerMasterBO()
                     .getSbdDistributionTarget();
             double sbdPercent = 0;
@@ -3464,5 +3465,67 @@ public class OrderHelper {
         catch (Exception ex){
             Commons.printException(ex);
         }
+    }
+
+
+    //to show Creditnote value in order summary
+
+    public double getRemaingReturnAmt() {
+
+        double totalReturnAmount = 0;
+        double totalReplaceAmount = 0;
+
+        for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
+            List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
+            if (reasonList != null) {
+                for (SalesReturnReasonBO reasonBO : reasonList) {
+                    if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
+                        //Calculate sales return total qty and price.
+                        int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
+                        totalReturnAmount = totalReturnAmount + (totalQty * product.getSrp());
+                    }
+                }
+            }
+            // Calculate replacement qty price.
+            int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
+            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * product.getSrp();
+        }
+        return totalReturnAmount - totalReplaceAmount;
+
+    }
+
+    public double getCreditNoteValue(Context mContext, double totalValue) {
+
+        double creditNoteAmt = 0;
+        double totalTaxValue = 0;
+        if (SalesReturnHelper.getInstance(mContext).IS_APPLY_TAX_IN_SR) {
+            businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
+            // Method to use Apply Tax
+            final ArrayList<TaxBO> taxList = businessModel.productHelper.taxHelper.getBillTaxList();
+
+            double totalTaxRate = 0;
+            double withOutTaxValue = 0;
+            if (!businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
+                for (TaxBO taxBO : taxList) {
+                    totalTaxRate = totalTaxRate + taxBO.getTaxRate();
+                }
+                withOutTaxValue = totalValue + (1 + (totalTaxRate / 100));
+            }
+            for (TaxBO taxBO : taxList) {
+
+                double taxValue;
+                if (businessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
+                    taxValue = totalValue * (taxBO.getTaxRate() / 100);
+                } else {
+                    taxValue = withOutTaxValue * taxBO.getTaxRate() / 100;
+                }
+                totalTaxValue = totalTaxValue + taxValue;
+            }
+        }
+
+        creditNoteAmt = totalValue +totalTaxValue;
+
+        return creditNoteAmt;
+
     }
 }

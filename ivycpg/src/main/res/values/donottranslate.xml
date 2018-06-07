@@ -143,5 +143,10 @@
     <string name="invoice_next_print">invoice_next_print</string>
     <string name="Order_Summary_dialog_header">Order_Summary_dialog_header</string>
 
+    <string name="collection_mandatory">Please do collection for Pending Invoice !</string>
+
+    <string name="volume">Volume</string>
+    <string name="todate_validation">To Date should be greater than From Date</string>
+    <string name="no_config_exist">No Configuration Exist</string>
 
 </resources>

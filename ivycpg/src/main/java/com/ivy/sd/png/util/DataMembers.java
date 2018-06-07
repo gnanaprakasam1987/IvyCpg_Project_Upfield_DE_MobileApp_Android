@@ -186,6 +186,7 @@ public class DataMembers {
     public static final String tbl_SbdMerchandisingDetail = "SbdMerchandisingDetail";
     public static final String tbl_SbdMerchandisingHeader = "SbdMerchandisingHeader";
     public static final String tbl_LastVisitStock = "LastVisitStock";
+    public static final String tbl_LastVisitStock_History = "LastVisitStock_History";
 
     public static final String tbl_cs_closingstockheader = "CS_StockEntryHeader";
     public static final String tbl_cs_closingstockdetail = "CS_StockEntryDetails";
@@ -377,8 +378,8 @@ public class DataMembers {
     private static final String tbl_vanload_cols = "pid,uid,qty,date,outerQty,caseQty,pcsQty,duomQty,duomid,dOuomQty,dOuomId,BatchId,batchno,SubDepotId";
     private static final String tbl_odameter_cols = "uid,start,end,starttime,endtime,startlatitude,startlongitude,endlatitude,endlongitude,date";
     private static final String tbl_AssetHeader_Cols = "uid,Date,RetailerId,remark,TypeLovId,tgtTotal,achTotal,Weightage,Score,distributorid";
-    private static final String tbl_AssetDetail_Cols = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,Mappingid,Productid,installdate,servicedate,conditionId,CompQty,locid,PosmGroupLovId,isExecuted,Score";
-    private static final String tbl_AssetImgInfo_Cols = "tid,AssetID,ImageName,Mappingid,Productid,locid";
+    private static final String tbl_AssetDetail_Cols = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,Mappingid,Productid,installdate,servicedate,conditionId,CompQty,locid,PosmGroupLovId,isExecuted,Score,TgtLocId";
+    private static final String tbl_AssetImgInfo_Cols = "uid,AssetID,ImageName,Mappingid,PId,locid";
 
     private static final String tbl_stock_apply = "StockApply";
     private static final String tbl_stock_apply_cols = "uid,date,Status";
@@ -636,6 +637,9 @@ public class DataMembers {
     public static final String tbl_planogram_image_detail = "PlanogramImageDetails";
     public static final String tbl_planogram_image_detail_cols = "Tid,PId,imageName,mappingid,imagePath";
 
+    private static final String tbl_JointCallDetail="JointCallDetail";
+    private static final String tbl_JointCallDetail_cols="Uid,UserId,JointCallUserId,TimeIn,TimeOut,DateTime,Remarks";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -810,7 +814,7 @@ public class DataMembers {
         uploadColumn.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
         uploadColumn.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
         uploadColumn.put(tbl_retailer_kpi_modified, tbl_retailer_kpi_modified_cols);
-
+        uploadColumn.put(tbl_JointCallDetail,tbl_JointCallDetail_cols);
         uploadColumn.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
 
     }
@@ -1010,7 +1014,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_NonFieldActivity, tbl_NonFieldActivity_cols);
         uploadColumnWithOutRetailer.put(tbl_retailer_kpi_modified, tbl_retailer_kpi_modified_cols);
-
+        uploadColumnWithOutRetailer.put(tbl_JointCallDetail,tbl_JointCallDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
     }
 

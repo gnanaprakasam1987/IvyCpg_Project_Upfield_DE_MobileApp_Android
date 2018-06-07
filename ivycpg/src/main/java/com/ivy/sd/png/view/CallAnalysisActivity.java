@@ -67,7 +67,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener, SyncContractor.SyncView {
+public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
+        implements View.OnClickListener, SyncContractor.SyncView {
 
     private BusinessModel bmodel;
     private Spinner spinnerNoOrderReason, spinnerNooCollectionReason, spinnerFeedback;
@@ -141,7 +142,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
         mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(this);
         mUploadHelper = UploadHelper.getInstance(this);
-        presenter = new UploadPresenterImpl(this, bmodel, this, mUploadHelper, mVanUnloadHelper);
+        presenter = new UploadPresenterImpl(getApplicationContext(), bmodel, this, mUploadHelper, mVanUnloadHelper);
 
 
         /** set handler for the Timer class */
@@ -207,7 +208,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_REASON
-                    && hasInvoice()) {
+                    && hasInvoice() && !bmodel.configurationMasterHelper.IS_COLLECTION_MANDATE) {
                 if (hasCollectionMenuActivityDone())
                     spinnerNooCollectionReason.setVisibility(View.GONE);
                 else {
@@ -313,9 +314,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             }
 
 
-           // tv_store_status = findViewById(R.id.tv_store_status);
-           // tv_store_status.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
             tv_duration = findViewById(R.id.tv_duration);
             tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
@@ -334,7 +332,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             //updating FIT score for current retailer
             bmodel.updateCurrentFITscore(bmodel.getRetailerMasterBO());
 
-            SBDHelper.getInstance(this).calculateSBDDistribution();
+            SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext());
         } catch (Exception e) {
             Commons.printException(e);
 
@@ -618,7 +616,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         .equalsIgnoreCase("CallA11")) {
 
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    SBDHelper.getInstance(this).calculateSBDDistribution();
+                    SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext());
                     con.setMenuNumber(bmodel.getRetailerMasterBO()
                             .getSbdDistributionAchieve()
                             + "/"
@@ -961,6 +959,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
 
                     showCollectionReasonOrDialog();
                 }
+            } else if (bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH") &&
+                    bmodel.configurationMasterHelper.IS_COLLECTION_MANDATE && hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL))) {
+                Toast.makeText(this, getResources().getString(R.string.collection_mandatory), Toast.LENGTH_SHORT).show();
             } else if (!hasActivityDone() && bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL) {
                 showFeedbackReasonOrDialog();
             } else {
@@ -1360,10 +1361,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
         bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
         bmodel.productHelper.clearProductHelper();
 
-        if(isSubmitButtonClicked){
+        if (isSubmitButtonClicked) {
             presenter.isFromCallAnalysis = true;
             presenter.validateAndUpload();
-        }else {
+        } else {
 //            BusinessModel.loadActivity(CallAnalysisActivity.this,
 //                    DataMembers.actPlanning);
             finish();
@@ -1479,6 +1480,32 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 }
 
             }
+            db.closeDB();
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    public boolean hasPendingInvoice(String date) {
+        try {
+            double balance = 0;
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select Inv.InvoiceNo,Round(Inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as balance from "
+                    + DataMembers.tbl_InvoiceMaster + " Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo where Inv.Retailerid='"
+                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + "' and Inv.InvoiceDate ='" + date + "'and Inv.upload = 'N'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    balance = balance + c.getDouble(c.getColumnIndex("balance"));
+                }
+                c.close();
+                if (balance > 0)
+                    return true;
+            }
+
             db.closeDB();
         } catch (Exception e) {
             return false;

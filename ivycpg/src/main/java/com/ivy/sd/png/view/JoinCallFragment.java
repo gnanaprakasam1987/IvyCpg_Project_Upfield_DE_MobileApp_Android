@@ -29,6 +29,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.JoinDialogInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -36,6 +37,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
+
+import static com.ivy.lib.Utils.QT;
 
 public class JoinCallFragment extends IvyBaseFragment {
 
@@ -225,6 +228,12 @@ public class JoinCallFragment extends IvyBaseFragment {
                                             loadJoincalldata();
                                             updateJoinDetails(1);
                                         }
+                                        @Override
+                                        public void insertJointCallDetails(String remarks){
+                                            insertJoinCallDetails(remarks);
+                                        }
+
+
                                     });
 
                             dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
@@ -277,6 +286,8 @@ public class JoinCallFragment extends IvyBaseFragment {
                 mSelectedUserBO.setIsJointCall(0);
                 loadJoincalldata();
                 updateJoinDetails(0);
+                if(bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS)
+                    updateJoinCallDetails();
                 dialog.dismiss();
             }
         });
@@ -321,6 +332,57 @@ public class JoinCallFragment extends IvyBaseFragment {
             db.openDataBase();
             db.updateSQL("update usermaster set isJointCall=" + value
                     + " where userid=" + mSelectedUserBO.getUserid());
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private void insertJoinCallDetails(String remarks) {
+        try {
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+
+            ArrayList<UserMasterBO> joinCallUserList=bmodel.userMasterHelper
+                    .getUserMasterBO().getJoinCallUserList();
+            if(joinCallUserList!=null){
+                String columns="Uid,UserId,JointCallUserId,TimeIn,TimeOut,Remarks,DateTime";
+                for(UserMasterBO userMasterBO:joinCallUserList){
+                    if(userMasterBO.getIsJointCall()==1){
+                        String date = SDUtil.now(SDUtil.DATE_GLOBAL);
+                        String time = SDUtil.now(SDUtil.TIME);
+
+                        String uId=SDUtil.now(SDUtil.DATE_TIME_ID);
+                        StringBuilder values=new StringBuilder();
+
+                        values.append(uId+","+bmodel.userMasterHelper.getUserMasterBO().getUserid()+","+userMasterBO.getUserid()+",");
+                        values.append(QT(date + " " + time)+","+QT(date + " " + time)+","+QT(remarks)+","+QT(SDUtil.now(SDUtil.DATE_TIME)));
+
+                        db.insertSQL("JointCallDetail",columns,values.toString());
+                    }
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private void updateJoinCallDetails() {
+        try {
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String date = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String time = SDUtil.now(SDUtil.TIME);
+            db.updateSQL("update JointCallDetail set upload='N',TimeOut=" + QT(date+" "+time)
+                    + " where TimeIn=TimeOut and JointCallUserId=" + mSelectedUserBO.getUserid());
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
