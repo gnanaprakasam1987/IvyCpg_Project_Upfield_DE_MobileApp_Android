@@ -6,6 +6,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
+import com.ivy.sd.png.view.reports.orderreport.OrderReportHelper;
 import com.ivy.sd.png.view.reports.refactor.DayReportHelper;
 import com.ivy.sd.png.view.reports.refactor.DayReportModel;
 
@@ -42,6 +43,10 @@ public class ReportModule {
         return new DayReportHelper(application);
     }
 
+    @Provides
+    OrderReportHelper proOrderReportHelper() {
+        return new OrderReportHelper(application);
+    }
 
 
 }

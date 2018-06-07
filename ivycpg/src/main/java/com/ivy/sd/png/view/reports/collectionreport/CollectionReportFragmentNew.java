@@ -14,6 +14,7 @@ import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,7 +23,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.ExpandedListView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +46,7 @@ public class CollectionReportFragmentNew extends Fragment implements ICollection
     Double totalAd = 0.0;
 
     @BindView(R.id.collection_listview)
-    ExpandedListView collectionListView;
+    ExpandableListView collectionListView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,8 +58,6 @@ public class CollectionReportFragmentNew extends Fragment implements ICollection
     private void initializeBusinessModel() {
         bModel = (BusinessModel) getActivity().getApplicationContext();
         bModel.setContext(getActivity());
-        bModel.reportHelper.loadCollectionReport();
-        initializeModel();
     }
 
     public void initializeModel() {
@@ -73,7 +71,8 @@ public class CollectionReportFragmentNew extends Fragment implements ICollection
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.collection_report_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-
+        initializeModel();
+        mCollectionReportModelPresenter.loadCollectionReport();
         mCollectionReportModelPresenter.setUpAdapter();
         updateDetails();
         initFooter(view);
@@ -205,6 +204,6 @@ public class CollectionReportFragmentNew extends Fragment implements ICollection
 
     @Override
     public void setAdapter(CollectionFragmentAdapter collectionAdapter) {
-        //collectionListView.setAdapter(collectionAdapter);
+        collectionListView.setAdapter(collectionAdapter);
     }
 }

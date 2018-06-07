@@ -31,6 +31,11 @@ public class CollectionReportHelper {
         this.bModel = (BusinessModel) context.getApplicationContext();
     }
 
+
+    public HashMap<String, ArrayList<PaymentBO>> getLstPaymentBObyGroupId() {
+        return lstPaymentBObyGroupId;
+    }
+
     public void loadCollectionReport() {
         try {
             paymentList = new ArrayList<>();
@@ -183,6 +188,16 @@ public class CollectionReportHelper {
         }
         return balance;
     }
+
+
+    public List<PaymentBO> getParentPaymentList() {
+        return parentPaymentList;
+    }
+
+    public List<List<PaymentBO>> getChildPaymentList() {
+        return childPaymentList;
+    }
+
 
     private HashMap<String, ArrayList<PaymentBO>> lstPaymentBObyGroupId;
 

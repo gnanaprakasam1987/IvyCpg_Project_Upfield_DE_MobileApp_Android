@@ -30,7 +30,11 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.reports.component.DaggerReportComponent;
+import com.ivy.sd.png.view.reports.component.ReportComponent;
+import com.ivy.sd.png.view.reports.module.ReportModule;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -77,6 +81,8 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
 
     private ArrayList<OrderReportBO> list;
 
+    private OrderReportHelper reportHelper;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +94,8 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
     private void initializeApplication() {
         businessModel = (BusinessModel) getActivity().getApplicationContext();
         businessModel.setContext(getActivity());
+        ReportComponent reportComponent = DaggerReportComponent.builder().reportModule(new ReportModule((BusinessModel) getActivity().getApplicationContext())).build();
+        reportHelper = reportComponent.provideOrderReportHelper();
     }
 
 
@@ -135,16 +143,16 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
         text_totalValueTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lab_dist_pre_post.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        // list = businessModel.reportHelper.downloadOrderreport();
+        list = businessModel.reportHelper.downloadOrderreport();
 
         list = mOrderReportModelPresenter.getOrderReport();
 
         updateOrderGrid();
 
-        int mLPC = businessModel.reportHelper.getavglinesfororderbooking("OrderHeader");
+        int mLPC = reportHelper.getavglinesfororderbooking("OrderHeader");
 
         if (businessModel.configurationMasterHelper.SHOW_LPC_ORDER) {
-            double mTotalOutlets = businessModel.reportHelper
+            double mTotalOutlets = reportHelper
                     .getorderbookingCount("OrderHeader");
             double result = mLPC / mTotalOutlets;
             String resultS = result + "";
@@ -162,7 +170,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             if (businessModel.configurationMasterHelper.SHOW_TOTAL_QTY_IN_ORDER_REPORT) {
                 int totalQty = 0;
                 for (OrderReportBO bo : list)
-                    totalQty = totalQty + businessModel.reportHelper.getTotalQtyfororder(bo.getOrderID());
+                    totalQty = totalQty + reportHelper.getTotalQtyfororder(bo.getOrderID());
                 totalLines.setText(String.valueOf(totalQty));
                 tv_lbl_total_lines.setText(getResources().getString(R.string.tot_qty));
             } else {
@@ -370,13 +378,14 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                     businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                     businessModel.configurationMasterHelper.VALUE_COMMA_COUNT, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
         else
-            text_totalOrderValue.setText(SDUtil.format(businessModel.reportHelper.getTotValues(getActivity().getApplicationContext()) - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue(getActivity().getApplicationContext()),
+            text_totalOrderValue.setText(SDUtil.format(reportHelper.getTotValues(getActivity().getApplicationContext()) - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue(getActivity().getApplicationContext()),
                     businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                     businessModel.configurationMasterHelper.VALUE_COMMA_COUNT, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
         // Load ListView
         //  com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter mSchedule = new com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter(list);
-        // listView.setAdapter(mSchedule);
+        OrderReportAdapter mSchedule = new OrderReportAdapter(list, getActivity(), businessModel);
+        listView.setAdapter(mSchedule);
 
     }
 
@@ -415,9 +424,9 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                 columnNames.add("OrderQty(Outer)");
                 columnNames.add("DeliveryDate");
 
-                businessModel.reportHelper
+                reportHelper
                         .downloadOrderReportToExport();
-                HashMap<String, ArrayList<ArrayList<String>>> mOrderDetailsByDistributorName = businessModel.reportHelper
+                HashMap<String, ArrayList<ArrayList<String>>> mOrderDetailsByDistributorName = reportHelper
                         .getmOrderDetailsByDistributorName();
 
 
@@ -433,7 +442,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                 }
 
                 if (businessModel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_EMAIL)
-                    businessModel.reportHelper.downloadOrderEmailAccountCredentials();
+                    reportHelper.downloadOrderEmailAccountCredentials();
 
 
             } catch (Exception e) {
@@ -459,7 +468,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                         Intent sharingIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 
                         ArrayList<Uri> uriList = new ArrayList<>();
-                        for (String distributorName : businessModel.reportHelper
+                        for (String distributorName : reportHelper
                                 .getmOrderDetailsByDistributorName().keySet()) {
                             File newFile = new File(getActivity().getExternalFilesDir(null) + "", "OrderReport_" + distributorName + ".xls");
                             if (Build.VERSION.SDK_INT >= 24) {
@@ -480,8 +489,8 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_order_report_using)));
                     } else if (businessModel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_EMAIL) {
 
-                        if (businessModel.reportHelper.getUserName() != null && !businessModel.reportHelper.getUserName().equals("")
-                                && businessModel.reportHelper.getUserPassword() != null && !businessModel.reportHelper.getUserPassword().equals(""))
+                        if (reportHelper.getUserName() != null && !reportHelper.getUserName().equals("")
+                                && reportHelper.getUserPassword() != null && !reportHelper.getUserPassword().equals(""))
                             new SendMail(getActivity()
                                     , "Order Report", "PFA").execute();
                         else
@@ -546,22 +555,22 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                     new javax.mail.Authenticator() {
                         //Authenticating the password
                         protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(businessModel.reportHelper.getUserName(), businessModel.reportHelper.getUserPassword());
+                            return new PasswordAuthentication(reportHelper.getUserName(), reportHelper.getUserPassword());
                         }
                     });
 
             try {
 
                 // sending distributor wise..
-                for (String distributorName : businessModel.reportHelper
+                for (String distributorName : reportHelper
                         .getmOrderDetailsByDistributorName().keySet()) {
 
                     //not allowed if email not available
-                    if (businessModel.reportHelper.getmEmailIdByDistributorName().get(distributorName) != null) {
+                    if (reportHelper.getmEmailIdByDistributorName().get(distributorName) != null) {
 
                         Message message = new MimeMessage(session);
-                        message.setFrom(new InternetAddress(businessModel.reportHelper.getUserName()));
-                        message.setRecipient(Message.RecipientType.TO, new InternetAddress(businessModel.reportHelper.getmEmailIdByDistributorName().get(distributorName)));
+                        message.setFrom(new InternetAddress(reportHelper.getUserName()));
+                        message.setRecipient(Message.RecipientType.TO, new InternetAddress(reportHelper.getmEmailIdByDistributorName().get(distributorName)));
                         message.setSubject(subject);
                         message.setText(body);
                         //  mm.setContent(message,"text/html; charset=utf-8");
@@ -615,4 +624,9 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
 }

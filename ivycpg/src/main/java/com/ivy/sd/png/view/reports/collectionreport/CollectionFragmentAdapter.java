@@ -27,14 +27,24 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
 
     private BusinessModel bModel;
     private Context mContext;
 
-    public CollectionFragmentAdapter(Context context) {
+    @Inject
+    public CollectionReportHelper collectionReportHelper;
+
+    public CollectionFragmentAdapter(Context context, BusinessModel businessModel) {
         this.mContext = context;
-        this.bModel = (BusinessModel) context.getApplicationContext();
+        this.bModel = businessModel;
+        CollectionComponent collectionComponent = DaggerCollectionComponent.builder().
+                collectionModule(new CollectionModule((BusinessModel) mContext.getApplicationContext())).build();
+        collectionReportHelper = collectionComponent.provideCollectionReportHelper();
+        collectionComponent.inject(this);
+        collectionReportHelper.loadCollectionReport();
     }
 
     @Override
@@ -53,7 +63,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
         final ChildViewHolder childHolder;
         View row = convertView;
         if (getGroupType(groupPosition) == 0) {
-            List<PaymentBO> payment = bModel.reportHelper.getChildPaymentList()
+            List<PaymentBO> payment =collectionReportHelper.getChildPaymentList()
                     .get(groupPosition);
 
 
@@ -251,22 +261,22 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (bModel.reportHelper.getParentPaymentList().get(groupPosition).getAdvancePaymentId() != null
-                && bModel.reportHelper.getParentPaymentList().get(groupPosition).getAdvancePaymentId().startsWith("AP"))
+        if (collectionReportHelper.getParentPaymentList().get(groupPosition).getAdvancePaymentId() != null
+                && collectionReportHelper.getParentPaymentList().get(groupPosition).getAdvancePaymentId().startsWith("AP"))
             return 0;
         else
-            return bModel.reportHelper.getChildPaymentList().get(groupPosition).size();
+            return collectionReportHelper.getChildPaymentList().get(groupPosition).size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return bModel.reportHelper.getParentPaymentList()
+        return collectionReportHelper.getParentPaymentList()
                 .get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return bModel.reportHelper.getParentPaymentList().size();
+        return collectionReportHelper.getParentPaymentList().size();
     }
 
     @Override
@@ -281,8 +291,8 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupType(int groupPosition) {
-        if (bModel.reportHelper.getParentPaymentList().get(groupPosition).getAdvancePaymentId() != null
-                && bModel.reportHelper.getParentPaymentList().get(groupPosition).getAdvancePaymentId().startsWith("AP"))
+        if (collectionReportHelper.getParentPaymentList().get(groupPosition).getAdvancePaymentId() != null
+                && collectionReportHelper.getParentPaymentList().get(groupPosition).getAdvancePaymentId().startsWith("AP"))
             return 1;
         else
             return 0;
@@ -292,7 +302,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         final GroupViewHolder holder;
-        PaymentBO paymentGroup = bModel.reportHelper
+        PaymentBO paymentGroup = collectionReportHelper
                 .getParentPaymentList().get(groupPosition);
 
         View row = convertView;
@@ -435,22 +445,24 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                 bitmap.getHeight(), matrix, true);
     }
 
+    class GroupViewHolder {
+        TextView invNoTv, retailerNameTv, invAmtTv, invDateTv, outAmtTv, invoice, invoice_amt, invoice_date, os_amt;
+        TextView adv_amountTV, adv_cash_modeTV, advTitle, date, invoiceAmt;
+        ImageView down_arrow;
+        PaymentBO paymentObj;
+        LinearLayout line;
+    }
+
+    class ChildViewHolder {
+        TextView modeTv, paymentOrChqDateTv, chqRefTitleTv, chqRefTv,
+                paidAmtTv, disAmtTV, amountPaidTv, discAmtTv;
+        ImageView top_line;
+        LinearLayout collectionDiscLL, line1, line2;
+        List<PaymentBO> paymentChldObj;
+        int childpos;
+    }
+
 }
 
-class GroupViewHolder {
-    TextView invNoTv, retailerNameTv, invAmtTv, invDateTv, outAmtTv, invoice, invoice_amt, invoice_date, os_amt;
-    TextView adv_amountTV, adv_cash_modeTV, advTitle, date, invoiceAmt;
-    ImageView down_arrow;
-    PaymentBO paymentObj;
-    LinearLayout line;
-}
 
-class ChildViewHolder {
-    TextView modeTv, paymentOrChqDateTv, chqRefTitleTv, chqRefTv,
-            paidAmtTv, disAmtTV, amountPaidTv, discAmtTv;
-    ImageView top_line;
-    LinearLayout collectionDiscLL, line1, line2;
-    List<PaymentBO> paymentChldObj;
-    int childpos;
-}
 

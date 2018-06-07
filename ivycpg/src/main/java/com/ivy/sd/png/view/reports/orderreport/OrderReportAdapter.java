@@ -31,6 +31,8 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
     public OrderReportAdapter(ArrayList<OrderReportBO> items, Context mContext, BusinessModel businessModel) {
         super(mContext, R.layout.row_order_report, items);
         this.items = items;
+        this.mContext = mContext;
+       this. businessModel = businessModel;
     }
 
     @Override

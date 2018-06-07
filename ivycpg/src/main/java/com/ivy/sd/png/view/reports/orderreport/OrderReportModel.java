@@ -28,7 +28,7 @@ public class OrderReportModel implements IOrderReportModelPresenter {
         this.mContext = activityContext;
         this.mOrderReportView = iOrderReportView;
         ReportComponent reportComponent = DaggerReportComponent.builder().reportModule(new ReportModule((BusinessModel) mContext.getApplicationContext())).build();
-        reportComponent.inject(this);
+        reportHelper =    reportComponent.provideDayReportHelper();
     }
 
     @Override

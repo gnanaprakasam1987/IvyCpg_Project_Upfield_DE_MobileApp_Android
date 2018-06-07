@@ -23,7 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.InvoiceReportFragment;
-import com.ivy.cpg.view.reports.OrderReportFragment;
+import com.ivy.sd.png.view.reports.orderreport.OrderReportFragment;
 import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
@@ -41,6 +41,7 @@ import com.ivy.sd.png.view.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
+import com.ivy.sd.png.view.reports.collectionreport.CollectionReportFragmentNew;
 import com.ivy.sd.png.view.reports.eodstockreport.EODStockReportFragmentRe;
 import com.ivy.sd.png.view.reports.refactor.DayReportFragment;
 import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
@@ -232,6 +233,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                 StandardListMasterConstants.MENU_ORDER_REPORT)) {
 
 
+           // OrderReportFragment orderFragment = new OrderReportFragment();
             OrderReportFragment orderFragment = new OrderReportFragment();
             orderFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, orderFragment);
@@ -310,7 +312,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_COLLECTION_REPORT)) {
 
-            CollectionReportFragment collectionReportFragment = new CollectionReportFragment();
+          //  CollectionReportFragment collectionReportFragment = new CollectionReportFragment();
+            CollectionReportFragmentNew collectionReportFragment = new CollectionReportFragmentNew();
             collectionReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, collectionReportFragment);
 
