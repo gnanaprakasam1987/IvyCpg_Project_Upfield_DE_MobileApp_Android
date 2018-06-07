@@ -511,6 +511,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PLANO_IMG_COUNT = "PLANO_IMG_COUNT";
     public int PLANO_IMG_COUNT;
 
+    private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
+    public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
+
     /**
      * RoadActivity config *
      */
@@ -2510,6 +2513,11 @@ public class ConfigurationMasterHelper {
             loadOrderStatusReportConfiguration();
         }
         this.IS_ENABLE_LAST_VISIT_HISTORY = hashMapHHTModuleConfig.get(CODE_ENABLE_LAST_VISIT_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_LAST_VISIT_HISTORY) : false;
+
+        this.IS_ENABLE_USER_FILTER_DASHBOARD = hashMapHHTModuleConfig.get(CODE_ENABLE_USER_FILTER_DASHBOARD) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_USER_FILTER_DASHBOARD) : false;
+        if (IS_ENABLE_USER_FILTER_DASHBOARD) {
+            loadDashboardUserFilter();
+        }
     }
 
     private boolean isInOutModule() {
@@ -2586,6 +2594,27 @@ public class ConfigurationMasterHelper {
                     if (c.getString(0).equals("0")) {
                         IS_ORDER_STATUS_REPORT = true;
                     }
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void loadDashboardUserFilter() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_ENABLE_USER_FILTER_DASHBOARD) + " and Flag=1 and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    bmodel.setDashboardUserFilterString(c.getString(0).replaceAll("^|$", "'").replaceAll(",", "','"));
                 }
                 c.close();
             }

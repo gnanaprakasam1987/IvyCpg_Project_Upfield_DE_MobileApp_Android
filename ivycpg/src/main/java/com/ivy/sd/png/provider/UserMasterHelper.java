@@ -301,10 +301,9 @@ public class UserMasterHelper {
 
             String password = "";
             if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
-                password=bmodel.synchronizationHelper.encryptPassword(pwd);
-            }else
-            {
-                password=pwd;
+                password = bmodel.synchronizationHelper.encryptPassword(pwd);
+            } else {
+                password = pwd;
             }
             String query = "Update UserMaster set Password='" + password
                     + "' where userID=" + UserID;
@@ -321,7 +320,7 @@ public class UserMasterHelper {
         }
     }
 
-    public void updateDistributorId(String distid, String parentId, String distname){
+    public void updateDistributorId(String distid, String parentId, String distname) {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -330,7 +329,7 @@ public class UserMasterHelper {
             db.openDataBase();
 
             String query = "update userMaster set distributorid=" + parentId
-                    + ", branchid="+distid+", distributorName='"+distname+"' where userID=" + userMasterBO.getUserid();
+                    + ", branchid=" + distid + ", distributorName='" + distname + "' where userID=" + userMasterBO.getUserid();
 
             db.executeQ(query);
             db.close();
@@ -343,6 +342,7 @@ public class UserMasterHelper {
             db.close();
         }
     }
+
     public ArrayList<UserMasterBO> downloadUserList() {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -350,7 +350,14 @@ public class UserMasterHelper {
         try {
             db.createDataBase();
             db.openDataBase();
-            String query = "select userid,username from usermaster where isDeviceuser!=1";
+
+            String subQuery = "";
+            if (bmodel.configurationMasterHelper.IS_ENABLE_USER_FILTER_DASHBOARD) {
+                if (bmodel.getDashboardUserFilterString().trim().length() > 0) {
+                    subQuery = " and UserLevel in (" + bmodel.getDashboardUserFilterString() + ")";
+                }
+            }
+            String query = "select userid,username from usermaster where isDeviceuser!=1" + subQuery;
             Cursor c = db.selectSQL(query);
             if (c != null) {
                 userList = new ArrayList<>();
@@ -427,6 +434,7 @@ public class UserMasterHelper {
         }
         return userList;
     }
+
     public ArrayList<UserMasterBO> downloadUserList(String distributorId) {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -457,7 +465,7 @@ public class UserMasterHelper {
         return userList;
     }
 
-    public boolean hasProfileImagePath(UserMasterBO userMasterBO){
+    public boolean hasProfileImagePath(UserMasterBO userMasterBO) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -493,10 +501,10 @@ public class UserMasterHelper {
             String imagePath = "User" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
                     + "/"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "/"+userMasterBO.getImagePath();
+                    + "/" + userMasterBO.getImagePath();
             String insertquery = "insert into UserEditDetail (Tid,UserID,Code,Value,Upload)" +
-                    "values (" + bmodel.QT(tid)+","+userMasterBO.getUserid()
-                    + ",'ProfileImagePath'," + bmodel.QT(imagePath)+ ",'N')";
+                    "values (" + bmodel.QT(tid) + "," + userMasterBO.getUserid()
+                    + ",'ProfileImagePath'," + bmodel.QT(imagePath) + ",'N')";
             db.executeQ(insertquery);
 
 

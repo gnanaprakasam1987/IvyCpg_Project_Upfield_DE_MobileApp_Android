@@ -1876,4 +1876,14 @@ public class ProductMasterBO {
     public String getRemarks() {
         return remarks;
     }
+
+    private String allocationQty;
+
+    public String getAllocationQty() {
+        return allocationQty;
+    }
+
+    public void setAllocationQty(String allocationQty) {
+        this.allocationQty = allocationQty;
+    }
 }

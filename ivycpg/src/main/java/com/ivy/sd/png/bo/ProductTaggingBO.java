@@ -6,14 +6,15 @@ package com.ivy.sd.png.bo;
 
 public class ProductTaggingBO {
 
-    private String groupid,pid, toNorm;
+    private String headerID, pid;
+    private int fromNorm, toNorm, weightage;
 
-    public String getGroupid() {
-        return groupid;
+    public String getHeaderID() {
+        return headerID;
     }
 
-    public void setGroupid(String groupid) {
-        this.groupid = groupid;
+    public void setHeaderID(String headerID) {
+        this.headerID = headerID;
     }
 
     public String getPid() {
@@ -24,11 +25,27 @@ public class ProductTaggingBO {
         this.pid = pid;
     }
 
-    public String getToNorm() {
+    public int getFromNorm() {
+        return fromNorm;
+    }
+
+    public void setFromNorm(int fromNorm) {
+        this.fromNorm = fromNorm;
+    }
+
+    public int getToNorm() {
         return toNorm;
     }
 
-    public void setToNorm(String toNorm) {
+    public void setToNorm(int toNorm) {
         this.toNorm = toNorm;
+    }
+
+    public int getWeightage() {
+        return weightage;
+    }
+
+    public void setWeightage(int weightage) {
+        this.weightage = weightage;
     }
 }

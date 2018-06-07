@@ -273,9 +273,6 @@ public class PriceTrackingHelper {
                     + bmodel.retailerMasterBO.getDistributorId();
 
             if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                headerColumns = headerColumns + ",Weightage,Score";
-                moduleWeightage = bmodel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_PRICE);
-                values = values + "," + moduleWeightage + ",0";
                 detailColumns = detailColumns + ",Score";
             }
 
@@ -370,11 +367,8 @@ public class PriceTrackingHelper {
                 }
             }
 
-            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                double achieved = (((double) sum / (double) 100) * moduleWeightage);
-                db.updateSQL("Update PriceCheckHeader set Score = " + achieved + " where TID = " + QT(tid) + " and" +
-                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
-                        " and RetailerID = " + QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                bmodel.calculateFitscoreandInsert(db, sum, DataMembers.FIT_PRICE);
             }
 
             db.closeDB();

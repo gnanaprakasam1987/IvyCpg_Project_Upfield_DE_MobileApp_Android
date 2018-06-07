@@ -378,7 +378,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
-            bmodel.fitscoreHelper.getTaggingDetails("MAX_ORD_VAL"); //MAX_ORD_VAL
+            bmodel.productHelper.getTaggingDetails("MAX_ORD_VAL"); //MAX_ORD_VAL
         }
 
         String title;
@@ -486,6 +486,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         SBDHelper.getInstance(this).calculateSBDDistribution(); //sbd calculation
         sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
         productList = filterWareHouseProducts();
+        if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+            setTaggingDetails();
+        }
         /* Calculate the SBD Dist Acheivement value */
         loadSBDAchievementLocal();
         /* Calculate the total and LPC value */
@@ -1222,8 +1225,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.cleanedOrder_oc = (TextView) row.findViewById(R.id.cleanedOrder_oc);
 
 
-                holder.layout_stock=row.findViewById(R.id.layout_stock);
-                holder.text_stock=row.findViewById(R.id.text_stock);
+                holder.layout_stock = row.findViewById(R.id.layout_stock);
+                holder.text_stock = row.findViewById(R.id.text_stock);
+
+                holder.text_allocation = row.findViewById(R.id.stock_and_order_listview_allocation);
+                holder.layout_allocation = row.findViewById(R.id.llAllocation);
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -1260,6 +1266,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.salesReturn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.text_stock.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+                holder.text_allocation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+                    holder.layout_allocation.setVisibility(View.VISIBLE);
+                    ((TextView) row.findViewById(R.id.allocationTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(R.id.allocationTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.allocationTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(R.id.allocationTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
 
                 if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
                     holder.psq.setVisibility(View.VISIBLE);
@@ -3337,7 +3356,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
             holder.text_stock.setText(String.valueOf(holder.productObj.getTotalStockQty()));
-
+            holder.text_allocation.setText(holder.productObj.getAllocationQty() != null &&
+                    holder.productObj.getAllocationQty().length() > 0
+                    ? holder.productObj.getAllocationQty() : "0");
             return row;
         }
     }
@@ -3381,6 +3402,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView moq;
         private LinearLayout layout_stock;
         private TextView text_stock;
+
+        private TextView text_allocation;
+        private LinearLayout layout_allocation;
     }
 
     private void calculateSO(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
@@ -3661,18 +3685,30 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     private boolean checkTaggingDetails(ProductMasterBO productMasterBO) {
-        ArrayList<ProductTaggingBO> productTaggingList = bmodel.fitscoreHelper.getProductTaggingList();
+        ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
         for (ProductTaggingBO productTagging : productTaggingList) {
             float totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
                     + (productMasterBO.getOrderedPcsQty())
                     + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
             if (productMasterBO.getProductID().equals(productTagging.getPid()) &&
                     totalQty > 0
-                    && totalQty > Integer.parseInt(productTagging.getToNorm())) {
+                    && totalQty > productTagging.getToNorm()) {
                 return false;
             }
         }
         return true;
+    }
+
+    private void setTaggingDetails() {
+        ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+        for (ProductTaggingBO productTagging : productTaggingList) {
+            for (ProductMasterBO productMasterBO : productList) {
+                if (productMasterBO.getProductID().equals(productTagging.getPid())) {
+                    productMasterBO.setAllocationQty(String.valueOf(productTagging.getToNorm()));
+                    break;
+                }
+            }
+        }
     }
 
     private void showToastForGuidedSelling(GuidedSellingBO bo) {
