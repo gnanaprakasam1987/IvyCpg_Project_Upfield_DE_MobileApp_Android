@@ -142,7 +142,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
         mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(this);
         mUploadHelper = UploadHelper.getInstance(this);
-        presenter = new UploadPresenterImpl(getApplicationContext(), bmodel, this, mUploadHelper, mVanUnloadHelper);
+        presenter = new UploadPresenterImpl(this, bmodel, this, mUploadHelper, mVanUnloadHelper);
 
 
         /** set handler for the Timer class */
