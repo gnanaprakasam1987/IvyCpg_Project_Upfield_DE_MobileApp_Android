@@ -3,7 +3,7 @@
 <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sp_reason"
     android:layout_width="match_parent"
-    android:minWidth="@dimen/dimen_60dp"
+    android:minWidth="@dimen/dimen_80dp"
     android:layout_height="@dimen/spinner_height"
     android:background="@null"
     android:gravity="center" />

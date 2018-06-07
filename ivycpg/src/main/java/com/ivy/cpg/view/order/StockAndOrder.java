@@ -5371,6 +5371,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
                         .show();
             }
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             return true;
         }
         return false;

@@ -367,6 +367,8 @@ public class SalesReturnHelper {
             db.createDataBase();
             db.openDataBase();
 
+            boolean isData;
+
             setSalesReturnID(QT("SR"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID)));
@@ -411,40 +413,13 @@ public class SalesReturnHelper {
                 }
             }
 
-            // Preapre and save salesreturn header.
-            String columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule";
-            String values = getSalesReturnID() + ","
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                    + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
-                    + bmodel.retailerMasterBO.getBeatID() + ","
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "," + QT(SDUtil.format(returnValue,
-                    bmodel.configurationMasterHelper.PERCENT_PRECISION_COUNT, 0)) + "," + lpcValue + ","
-                    + QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
-                    + QT(bmodel.getSaleReturnNote()) + ","
-                    + QT(bmodel.mSelectedRetailerLatitude + "") + ","
-                    + QT(bmodel.mSelectedRetailerLongitude + "") + ","
-                    + bmodel.retailerMasterBO.getDistributorId() + ","
-                    + bmodel.retailerMasterBO.getDistParentId() + ","
-                    + QT(getSignaturePath() != null ? getSignaturePath() : "") + ","
-                    + QT(getSignatureName()) + ","
-                    + indicativeFlag;
-
-            if (!orderId.equals(""))
-                values = values + "," + orderId + "," + QT(module);
-            else
-                values = values + "," + QT("") + "," + QT("");
-
-            db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
-
-            // insert sales replacement and decrease the stock in hand.
-            if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
-                saveReplacementDetails(db, getSalesReturnID(), module);
-            }
+            isData = false;
+            String columns;
+            String values;
 
             columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode";
 
-            int siz = 0;
+            int siz;
             if (module.equals("ORDER"))
                 siz = bmodel.productHelper.getProductMaster().size();
             else
@@ -581,10 +556,44 @@ public class SalesReturnHelper {
                                                 , salRetSih, false);
                             }
                         }
+                        isData = true;
                     }
                 }
                 product.setSalesReturnReasonList(ProductHelper
                         .cloneIsolateList(product));
+            }
+
+            // insert sales replacement and decrease the stock in hand.
+            if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
+                saveReplacementDetails(db, getSalesReturnID(), module);
+            }
+
+            if (isData) {
+                // Preapre and save salesreturn header.
+                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule";
+                values = getSalesReturnID() + ","
+                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                        + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
+                        + bmodel.retailerMasterBO.getBeatID() + ","
+                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + "," + QT(SDUtil.format(returnValue,
+                        bmodel.configurationMasterHelper.PERCENT_PRECISION_COUNT, 0)) + "," + lpcValue + ","
+                        + QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
+                        + QT(bmodel.getSaleReturnNote()) + ","
+                        + QT(bmodel.mSelectedRetailerLatitude + "") + ","
+                        + QT(bmodel.mSelectedRetailerLongitude + "") + ","
+                        + bmodel.retailerMasterBO.getDistributorId() + ","
+                        + bmodel.retailerMasterBO.getDistParentId() + ","
+                        + QT(getSignaturePath() != null ? getSignaturePath() : "") + ","
+                        + QT(getSignatureName()) + ","
+                        + indicativeFlag;
+
+                if (!orderId.equals(""))
+                    values = values + "," + orderId + "," + QT(module);
+                else
+                    values = values + "," + QT("") + "," + QT("");
+
+                db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
             }
 
             // If credit note is generated, then tax appyled details should get saved.

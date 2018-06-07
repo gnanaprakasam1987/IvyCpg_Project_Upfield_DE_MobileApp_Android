@@ -1675,8 +1675,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         et.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_micro_small));
         et.setMaxLines(1);
         et.setCursorVisible(true);
-        //et.requestFocus();
-        //et.requestFocusFromTouch();
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         et.setLayoutParams(lp);
         et.setPadding(15, 7, 7, 7);
@@ -1835,6 +1833,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             //date = dateFormat.parse(mCurrentQuestionBO.getToValue());
                             datePicker1.setMaxDate(c1.getTimeInMillis());
                         } catch (Exception e) {
+                            Commons.printException(e);
                         }
                     }
 
