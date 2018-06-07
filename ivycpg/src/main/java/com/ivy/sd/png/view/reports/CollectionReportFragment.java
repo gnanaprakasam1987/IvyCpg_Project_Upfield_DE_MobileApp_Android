@@ -39,7 +39,7 @@ public class CollectionReportFragment extends Fragment {
     ExpandableListView collectionListView;
 
     BusinessModel bModel;
-    private View view;
+
     Double totalCash = 0.0;
     Double totalCheque = 0.0;
     Double totalColl = 0.0;
@@ -56,41 +56,47 @@ public class CollectionReportFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.collection_report_fragment,
-                container, false);
+    private void initializeBusinessModel() {
         bModel = (BusinessModel) getActivity().getApplicationContext();
         bModel.setContext(getActivity());
         bModel.reportHelper.loadCollectionReport();
-        collectionListView = (ExpandableListView) view
-                .findViewById(R.id.collection_listview);
-        CollectionFragmentAdapter collectionadapter = new CollectionFragmentAdapter();
 
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.collection_report_fragment, container, false);
+
+        initializeBusinessModel();
+
+        collectionListView = view.findViewById(R.id.collection_listview);
+        CollectionFragmentAdapter collectionadapter = new CollectionFragmentAdapter();
         collectionListView.setAdapter(collectionadapter);
+
         updateDetails();
-        initFooter();
+        initFooter(view);
+
         return view;
     }
 
-    private void initFooter() {
-        final LinearLayout ll_cash = (LinearLayout) view.findViewById(R.id.ll_cash);
-        final LinearLayout ll_cheque = (LinearLayout) view.findViewById(R.id.ll_cheque);
-        final LinearLayout ll_dd = (LinearLayout) view.findViewById(R.id.ll_dd);
-        final LinearLayout ll_credit_note = (LinearLayout) view.findViewById(R.id.ll_creditNote);
-        final LinearLayout ll_adPayment = (LinearLayout) view.findViewById(R.id.ll_adPayment);
-        final LinearLayout ll_rtgs = (LinearLayout) view.findViewById(R.id.ll_rtgs);
-        final LinearLayout ll_mob_pymt = (LinearLayout) view.findViewById(R.id.ll_mob_pymt);
-        final ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-        TextView tv_collected = (TextView) view.findViewById(R.id.tot);
-        TextView tv_cash = (TextView) view.findViewById(R.id.totcash);
-        TextView tv_cheque = (TextView) view.findViewById(R.id.tocheque);
-        TextView tv_dd = (TextView) view.findViewById(R.id.total_dd);
-        TextView tv_cn = (TextView) view.findViewById(R.id.totCn);
-        TextView tv_rtgs = (TextView) view.findViewById(R.id.total_rtgs);
-        TextView tv_mob_pymt = (TextView) view.findViewById(R.id.total_mob_payment);
-        TextView tv_ad = (TextView) view.findViewById(R.id.totAd);
+    private void initFooter(View view) {
+        final LinearLayout ll_cash = view.findViewById(R.id.ll_cash);
+        final LinearLayout ll_cheque = view.findViewById(R.id.ll_cheque);
+        final LinearLayout ll_dd = view.findViewById(R.id.ll_dd);
+        final LinearLayout ll_credit_note = view.findViewById(R.id.ll_creditNote);
+        final LinearLayout ll_adPayment = view.findViewById(R.id.ll_adPayment);
+        final LinearLayout ll_rtgs = view.findViewById(R.id.ll_rtgs);
+        final LinearLayout ll_mob_pymt = view.findViewById(R.id.ll_mob_pymt);
+        final ImageView imageView = view.findViewById(R.id.imageView);
+        TextView tv_collected = view.findViewById(R.id.tot);
+        TextView tv_cash = view.findViewById(R.id.totcash);
+        TextView tv_cheque = view.findViewById(R.id.tocheque);
+        TextView tv_dd = view.findViewById(R.id.total_dd);
+        TextView tv_cn = view.findViewById(R.id.totCn);
+        TextView tv_rtgs = view.findViewById(R.id.total_rtgs);
+        TextView tv_mob_pymt = view.findViewById(R.id.total_mob_payment);
+        TextView tv_ad = view.findViewById(R.id.totAd);
 
         if (totalCash != null)
             tv_cash.setText(bModel.formatValue(totalCash));
@@ -208,22 +214,22 @@ public class CollectionReportFragment extends Fragment {
                     row = inflater.inflate(R.layout.row_collection_report_child,
                             parent, false);
                     childHolder = new ChildViewHolder();
-                    childHolder.modeTv = (TextView) row.findViewById(R.id.modeTv);
-                    childHolder.paymentOrChqDateTv = (TextView) row
+                    childHolder.modeTv = row.findViewById(R.id.modeTv);
+                    childHolder.paymentOrChqDateTv = row
                             .findViewById(R.id.paymentOrChqDateTv);
-                    childHolder.chqRefTitleTv = (TextView) row
+                    childHolder.chqRefTitleTv = row
                             .findViewById(R.id.chqRefTitleTv);
-                    childHolder.chqRefTv = (TextView) row
+                    childHolder.chqRefTv = row
                             .findViewById(R.id.chqRefTv);
-                    childHolder.paidAmtTv = (TextView) row
+                    childHolder.paidAmtTv = row
                             .findViewById(R.id.paidAmtTv);
-                    childHolder.disAmtTV = (TextView) row.findViewById(R.id.disAmtTv);
-                    childHolder.amountPaidTv = (TextView) row.findViewById(R.id.amountPaidTv);
-                    childHolder.discAmtTv = (TextView) row.findViewById(R.id.discAmtTv);
-                    childHolder.collectionDiscLL = (LinearLayout) row.findViewById(R.id.ll_collection_disc);
-                    childHolder.line1 = (LinearLayout) row.findViewById(R.id.line1);
-                    childHolder.line2 = (LinearLayout) row.findViewById(R.id.line2);
-                    childHolder.top_line = (ImageView) row.findViewById(R.id.top_line);
+                    childHolder.disAmtTV = row.findViewById(R.id.disAmtTv);
+                    childHolder.amountPaidTv = row.findViewById(R.id.amountPaidTv);
+                    childHolder.discAmtTv = row.findViewById(R.id.discAmtTv);
+                    childHolder.collectionDiscLL = row.findViewById(R.id.ll_collection_disc);
+                    childHolder.line1 = row.findViewById(R.id.line1);
+                    childHolder.line2 = row.findViewById(R.id.line2);
+                    childHolder.top_line = row.findViewById(R.id.top_line);
 
                     childHolder.modeTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     childHolder.paymentOrChqDateTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -245,8 +251,7 @@ public class CollectionReportFragment extends Fragment {
                 }
                 childHolder.paymentChldObj = payment;
                 childHolder.childpos = childPosition;
-                childHolder.disAmtTV.setText(bModel.formatValue(childHolder.paymentChldObj.get(
-                        childHolder.childpos).getAppliedDiscountAmount()) + "");
+                childHolder.disAmtTV.setText(bModel.formatValue(childHolder.paymentChldObj.get(childHolder.childpos).getAppliedDiscountAmount()));
                 if (childHolder.paymentChldObj.get(childHolder.childpos)
                         .getCashMode().equals(StandardListMasterConstants.CHEQUE)) {
 
@@ -254,7 +259,7 @@ public class CollectionReportFragment extends Fragment {
                         childHolder.paymentOrChqDateTv
                                 .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                         childHolder.childpos).getChequeDate(),
-                                        bModel.configurationMasterHelper.outDateFormat));
+                                        ConfigurationMasterHelper.outDateFormat));
                     } catch (Exception e) {
                         childHolder.paymentOrChqDateTv
                                 .setText("");
@@ -262,13 +267,11 @@ public class CollectionReportFragment extends Fragment {
                     }
                     childHolder.chqRefTitleTv.setText(getResources().getString(
                             R.string.chq_no));
-                    childHolder.chqRefTv.setText(childHolder.paymentChldObj.get(
-                            childHolder.childpos).getChequeNumber());
+                    childHolder.chqRefTv.setText(childHolder.paymentChldObj.get(childHolder.childpos).getChequeNumber());
                     childHolder.chqRefTitleTv.setVisibility(View.VISIBLE);
                     childHolder.chqRefTv.setVisibility(View.VISIBLE);
                     childHolder.line1.setVisibility(View.VISIBLE);
-                } else if (childHolder.paymentChldObj.get(childHolder.childpos)
-                        .getCashMode()
+                } else if (childHolder.paymentChldObj.get(childHolder.childpos).getCashMode()
                         .equals(StandardListMasterConstants.CREDIT_NOTE)) {
                     childHolder.chqRefTitleTv.setText(getResources().getString(
                             R.string.ref_no));
@@ -278,10 +281,9 @@ public class CollectionReportFragment extends Fragment {
                         childHolder.paymentOrChqDateTv
                                 .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                         childHolder.childpos).getCollectionDate(),
-                                        bModel.configurationMasterHelper.outDateFormat));
+                                        ConfigurationMasterHelper.outDateFormat));
                     } catch (Exception e) {
-                        childHolder.paymentOrChqDateTv
-                                .setText("");
+                        childHolder.paymentOrChqDateTv.setText("");
                         Commons.printException(e);
                     }
                     childHolder.chqRefTitleTv.setVisibility(View.VISIBLE);
@@ -298,7 +300,7 @@ public class CollectionReportFragment extends Fragment {
                         childHolder.paymentOrChqDateTv
                                 .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                         childHolder.childpos).getCollectionDate(),
-                                        bModel.configurationMasterHelper.outDateFormat));
+                                        ConfigurationMasterHelper.outDateFormat));
                     } catch (Exception e) {
                         childHolder.paymentOrChqDateTv
                                 .setText("");
@@ -317,8 +319,7 @@ public class CollectionReportFragment extends Fragment {
                     try {
                         childHolder.paymentOrChqDateTv
                                 .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
-                                        childHolder.childpos).getCollectionDate(),
-                                        bModel.configurationMasterHelper.outDateFormat));
+                                        childHolder.childpos).getCollectionDate(), ConfigurationMasterHelper.outDateFormat));
                     } catch (Exception e) {
                         childHolder.paymentOrChqDateTv
                                 .setText("");
@@ -338,7 +339,7 @@ public class CollectionReportFragment extends Fragment {
                         childHolder.paymentOrChqDateTv
                                 .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                         childHolder.childpos).getCollectionDate(),
-                                        bModel.configurationMasterHelper.outDateFormat));
+                                        ConfigurationMasterHelper.outDateFormat));
                     } catch (Exception e) {
                         childHolder.paymentOrChqDateTv
                                 .setText("");
@@ -352,7 +353,7 @@ public class CollectionReportFragment extends Fragment {
                         childHolder.paymentOrChqDateTv
                                 .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                         childHolder.childpos).getCollectionDate(),
-                                        bModel.configurationMasterHelper.outDateFormat));
+                                        ConfigurationMasterHelper.outDateFormat));
                     } catch (Exception e) {
                         childHolder.paymentOrChqDateTv
                                 .setText("");
@@ -398,9 +399,7 @@ public class CollectionReportFragment extends Fragment {
                     && bModel.reportHelper.getParentPaymentList().get(groupPosition).getAdvancePaymentId().startsWith("AP"))
                 return 0;
             else
-
-                return bModel.reportHelper.getChildPaymentList().get(groupPosition)
-                        .size();
+                return bModel.reportHelper.getChildPaymentList().get(groupPosition).size();
         }
 
         @Override
@@ -447,14 +446,14 @@ public class CollectionReportFragment extends Fragment {
                 if (getGroupType(groupPosition) == 1) {
                     row = inflater.inflate(R.layout.row_advance_payment_report, parent,
                             false);
-                    holder.retailerNameTv = (TextView) row
+                    holder.retailerNameTv = row
                             .findViewById(R.id.retailerNameTv);
-                    holder.adv_cash_modeTV = (TextView) row.findViewById(R.id.cashMode);
-                    holder.advTitle = (TextView) row.findViewById(R.id.advTitle);
-                    holder.date = (TextView) row.findViewById(R.id.date);
-                    holder.invoiceAmt = (TextView) row.findViewById(R.id.invoiceAmt);
-                    holder.invDateTv = (TextView) row.findViewById(R.id.invDateTv);
-                    holder.adv_amountTV = (TextView) row.findViewById(R.id.adv_amount);
+                    holder.adv_cash_modeTV = row.findViewById(R.id.cashMode);
+                    holder.advTitle = row.findViewById(R.id.advTitle);
+                    holder.date = row.findViewById(R.id.date);
+                    holder.invoiceAmt = row.findViewById(R.id.invoiceAmt);
+                    holder.invDateTv = row.findViewById(R.id.invDateTv);
+                    holder.adv_amountTV = row.findViewById(R.id.adv_amount);
 
                     holder.retailerNameTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.advTitle.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -467,18 +466,18 @@ public class CollectionReportFragment extends Fragment {
                     row = inflater.inflate(R.layout.row_collection_report, parent,
                             false);
 
-                    holder.retailerNameTv = (TextView) row
+                    holder.retailerNameTv = row
                             .findViewById(R.id.retailerNameTv);
-                    holder.invAmtTv = (TextView) row.findViewById(R.id.invAmtTv);
-                    holder.invNoTv = (TextView) row.findViewById(R.id.invNoTv);
-                    holder.outAmtTv = (TextView) row.findViewById(R.id.outAmtTv);
-                    holder.invDateTv = (TextView) row.findViewById(R.id.invDateTv);
-                    holder.invoice = (TextView) row.findViewById(R.id.invoice_tv);
-                    holder.invoice_amt = (TextView) row.findViewById(R.id.invoice_amt);
-                    holder.invoice_date = (TextView) row.findViewById(R.id.invoice_date);
-                    holder.os_amt = (TextView) row.findViewById(R.id.os_amt);
-                    holder.down_arrow = (ImageView) row.findViewById(R.id.img_arrow);
-                    holder.line = (LinearLayout) row.findViewById(R.id.line);
+                    holder.invAmtTv = row.findViewById(R.id.invAmtTv);
+                    holder.invNoTv = row.findViewById(R.id.invNoTv);
+                    holder.outAmtTv = row.findViewById(R.id.outAmtTv);
+                    holder.invDateTv = row.findViewById(R.id.invDateTv);
+                    holder.invoice = row.findViewById(R.id.invoice_tv);
+                    holder.invoice_amt = row.findViewById(R.id.invoice_amt);
+                    holder.invoice_date = row.findViewById(R.id.invoice_date);
+                    holder.os_amt = row.findViewById(R.id.os_amt);
+                    holder.down_arrow = row.findViewById(R.id.img_arrow);
+                    holder.line = row.findViewById(R.id.line);
 
                     @SuppressLint("RestrictedApi")
                     Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.activity_icon_next);
@@ -515,7 +514,7 @@ public class CollectionReportFragment extends Fragment {
                     holder.line.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
-
+                Commons.printException(e);
             }
             holder.paymentObj = paymentGroup;
             holder.retailerNameTv.setText(holder.paymentObj.getRetailerName());
@@ -525,7 +524,7 @@ public class CollectionReportFragment extends Fragment {
                 holder.adv_amountTV.setText(bModel.formatValue(holder.paymentObj.getAmount()));
                 try {
                     holder.invDateTv.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.paymentObj.getAdvancePaymentDate(),
-                            bModel.configurationMasterHelper.outDateFormat));
+                            ConfigurationMasterHelper.outDateFormat));
                 } catch (Exception e) {
                     holder.invDateTv.setText("");
                     Commons.printException(e);
@@ -539,7 +538,7 @@ public class CollectionReportFragment extends Fragment {
 
                 try {
                     holder.invDateTv.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.paymentObj.getInvoiceDate(),
-                            bModel.configurationMasterHelper.outDateFormat));
+                            ConfigurationMasterHelper.outDateFormat));
                 } catch (Exception e) {
                     holder.invDateTv.setText("");
                     Commons.printException(e);

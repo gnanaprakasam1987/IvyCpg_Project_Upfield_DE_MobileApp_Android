@@ -47,6 +47,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.baidu.platform.comapi.map.A;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -57,6 +58,9 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.ivy.appmodule.AppComponent;
+import com.ivy.appmodule.AppModule;
+import com.ivy.appmodule.DaggerAppComponent;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
@@ -722,6 +726,8 @@ public class BusinessModel extends Application {
         this.printSequenceLevelID = printSequenceLevelID;
     }
 
+    private AppComponent appComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -735,11 +741,17 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
+            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+            appComponent.inject(this);
 
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
 
     @Override
@@ -6323,7 +6335,7 @@ public class BusinessModel extends Application {
 
     public void getRetailerWiseSellerType() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -8992,6 +9004,46 @@ public class BusinessModel extends Application {
             Commons.printException("" + e);
         }
         return str;
+    }
+
+    public ArrayList<Double> getCollectedValue() {
+        ArrayList<Double> collectedList = new ArrayList<>();
+        double osAmt = 0, paidAmt = 0;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append("SELECT Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
+            sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os ");
+            sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
+            sb.append(" Where Inv.InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            Cursor c = db
+                    .selectSQL(sb.toString());
+
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        paidAmt = paidAmt + c.getDouble(c.getColumnIndex("RcvdAmt"));
+                        osAmt = osAmt + c.getDouble(c.getColumnIndex("os"));
+                    }
+
+                }
+                c.close();
+            }
+
+            collectedList.add(osAmt);
+            collectedList.add(paidAmt);
+
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at getCollectedValue", e);
+        }
+        return collectedList;
+
     }
 }
 
