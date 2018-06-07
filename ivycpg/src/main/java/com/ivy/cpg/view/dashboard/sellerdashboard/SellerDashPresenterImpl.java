@@ -402,7 +402,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 if (totalcalls == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
-                    dashBoardBO.setKpiAcheived(((visitedcalls / totalcalls) * 100) + "");
+                    dashBoardBO.setKpiAcheived((((float)visitedcalls / (float)totalcalls) * 100) + "");
                 }
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_SALE)) {
@@ -410,7 +410,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 if (totalcalls == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
-                    dashBoardBO.setKpiAcheived(((productivecalls / totalcalls) * 100) + "");
+                    dashBoardBO.setKpiAcheived((((float)productivecalls / (float)totalcalls) * 100) + "");
                 }
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_DROP_SIZE_INV)) {
                 if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {

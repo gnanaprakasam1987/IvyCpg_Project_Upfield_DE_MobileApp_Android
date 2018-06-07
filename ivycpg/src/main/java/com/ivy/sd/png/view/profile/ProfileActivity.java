@@ -278,6 +278,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     mMap = googleMap;
+                    //Disable Map Toolbar:
+                    mMap.getUiSettings().setMapToolbarEnabled(false);
+                    mMap.getUiSettings().setZoomControlsEnabled(false);
                 }
             });
 

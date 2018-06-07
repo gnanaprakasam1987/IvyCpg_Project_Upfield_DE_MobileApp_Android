@@ -205,7 +205,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                     }
                     else if (token.contains("REM")) {
                         if(token.equalsIgnoreCase("REMD")){
-
+                            layout_remark.setVisibility(View.GONE);
                             layout_remark_type.setVisibility(View.VISIBLE);
 
                             bmodel.reasonHelper.downloadRemarksType();
