@@ -635,7 +635,7 @@ public class DataMembers {
     public static final String tbl_retailer_kpi_modified_cols = "KPIId,KPITypeLovId,KPIParamLovId,Target";
 
     public static final String tbl_planogram_image_detail = "PlanogramImageDetails";
-    public static final String tbl_planogram_image_detail_cols = "Tid,PId,imageName,mappingid,imagePath";
+    public static final String tbl_planogram_image_detail_cols = "Tid,PId,imageName,mappingid,imagePath,imageId";
 
     private static final String tbl_JointCallDetail="JointCallDetail";
     private static final String tbl_JointCallDetail_cols="Uid,UserId,JointCallUserId,TimeIn,TimeOut,DateTime,Remarks";
