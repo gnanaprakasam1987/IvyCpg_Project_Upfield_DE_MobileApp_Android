@@ -3,6 +3,7 @@ package com.ivy.sd.png.view.reports;
 import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,18 +28,25 @@ public class BeginningStockFragment extends IvyBaseFragment {
 
     private ListView lvwplist;
     private BusinessModel bmodel;
-    private Vector<StockReportMasterBO> mylist;
     private TextView productname;
-    private View view;
+
+
+    // private Vector<StockReportMasterBO> mylist;
+    //  private View view;
+
+    private void initializeBusinessModel() {
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_begining_stock, container,
+        View view = inflater.inflate(R.layout.fragment_begining_stock, container,
                 false);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        initializeBusinessModel();
         try {
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.caseTitle).getTag()) != null)
@@ -55,16 +63,15 @@ public class BeginningStockFragment extends IvyBaseFragment {
         }
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.sessionout_loginagain),
+            Toast.makeText(getActivity(), getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
 
-        lvwplist = (ListView) view.findViewById(R.id.list);
+        lvwplist = view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
-        productname = (TextView) view.findViewById(R.id.productName);
+        productname = view.findViewById(R.id.productName);
 
         productname.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -121,7 +128,7 @@ public class BeginningStockFragment extends IvyBaseFragment {
 
     }
 
-    private StockReportMasterBO product;
+    // private StockReportMasterBO product;
 
     private class MyAdapter extends ArrayAdapter<StockReportMasterBO> {
         private Vector<StockReportMasterBO> items;
@@ -143,10 +150,11 @@ public class BeginningStockFragment extends IvyBaseFragment {
             return items.size();
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
             final ViewHolder holder;
-            product = (StockReportMasterBO) items.get(position);
+            StockReportMasterBO product = items.get(position);
 
             View row = convertView;
             if (row == null) {
@@ -154,11 +162,11 @@ public class BeginningStockFragment extends IvyBaseFragment {
                 row = inflater.inflate(R.layout.row_begining_stock_listview,
                         parent, false);
                 holder = new ViewHolder();
-                holder.psname = (TextView) row.findViewById(R.id.productname);
-                holder.caseqty = (TextView) row.findViewById(R.id.caseqty);
-                holder.pcsqty = (TextView) row.findViewById(R.id.pieceqty);
-                holder.unitprice = (TextView) row.findViewById(R.id.unitprice);
-                holder.outerqty = (TextView) row.findViewById(R.id.outerqty);
+                holder.psname = row.findViewById(R.id.productname);
+                holder.caseqty = row.findViewById(R.id.caseqty);
+                holder.pcsqty = row.findViewById(R.id.pieceqty);
+                holder.unitprice = row.findViewById(R.id.unitprice);
+                holder.outerqty = row.findViewById(R.id.outerqty);
                 row.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
                         productname.setText(holder.pname);
@@ -178,13 +186,13 @@ public class BeginningStockFragment extends IvyBaseFragment {
             }
 
             holder.psname.setText(product.getProductshortname());
-            holder.caseqty.setText(product.getCaseqty() + "");
-            holder.pcsqty.setText(product.getPieceqty() + "");
-            holder.outerqty.setText(product.getOuterQty() + "");
+            holder.caseqty.setText(String.valueOf(product.getCaseqty()));
+            holder.pcsqty.setText(String.valueOf(product.getPieceqty()));
+            holder.outerqty.setText(String.valueOf(product.getOuterQty()));
             holder.pname = product.getProductname();
             double unitprice = (product.getCaseqty() * product.getCasesize() + product
                     .getPieceqty()) * product.getBasePrice();
-            holder.unitprice.setText(bmodel.formatValue(unitprice) + "");
+            holder.unitprice.setText(bmodel.formatValue(unitprice));
             return row;
         }
     }
@@ -199,10 +207,11 @@ public class BeginningStockFragment extends IvyBaseFragment {
         //private ProgressDialog progressDialogue;
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
+        Vector<StockReportMasterBO> mylist;
 
         protected void onPreExecute() {
             /*progressDialogue = ProgressDialog.show(getActivity(),
-					DataMembers.SD, "Loading", true, false);*/
+                    DataMembers.SD, "Loading", true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
             customProgressDialog(builder, getResources().getString(R.string.loading));

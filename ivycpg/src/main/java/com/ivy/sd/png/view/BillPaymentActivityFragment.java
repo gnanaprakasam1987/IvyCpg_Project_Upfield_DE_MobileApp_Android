@@ -451,14 +451,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 }
             }
         }
-        paymentBO = mPaymentBOByMode.get(StandardListMasterConstants.MOBILE_PAYMENT);
-        if (paymentBO != null && paymentBO.getAmount() > 0) {
 
-            if ("".equals(paymentBO.getChequeNumber())) {
-                mErrorMsg = getResources().getString(R.string.please_enter_referenceno) + " in Mobile Payment";
-                return false;
-            }
-        }
         return true;
     }
 

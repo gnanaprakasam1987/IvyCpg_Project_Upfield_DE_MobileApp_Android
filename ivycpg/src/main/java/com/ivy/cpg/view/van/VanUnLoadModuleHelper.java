@@ -15,11 +15,10 @@ import java.util.Vector;
 
 public class VanUnLoadModuleHelper {
     private static VanUnLoadModuleHelper instance = null;
-    private Context context;
+
     private BusinessModel bmodel;
 
-    public VanUnLoadModuleHelper(Context context) {
-        this.context = context;
+    private VanUnLoadModuleHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
 
     }
@@ -31,9 +30,9 @@ public class VanUnLoadModuleHelper {
         return instance;
     }
 
-    public void saveVanUnLoad(Vector<LoadManagementBO> mylist) {
+    public void saveVanUnLoad(Vector<LoadManagementBO> mylist,Context context) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -86,9 +85,9 @@ public class VanUnLoadModuleHelper {
         }
     }
 
-    public void saveVanStockAdjustment(Vector<LoadManagementBO> mylist) {
+    public void saveVanStockAdjustment(Vector<LoadManagementBO> mylist,Context context) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -143,9 +142,9 @@ public class VanUnLoadModuleHelper {
     }
 
 
-    public void UpdateSIH(Vector<LoadManagementBO> vanunloadlist) {
+    public void UpdateSIH(Vector<LoadManagementBO> vanunloadlist,Context context) {
         LoadManagementBO product;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+        DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -172,10 +171,9 @@ public class VanUnLoadModuleHelper {
         db.closeDB();
     }
 
-    public void updateEmptyReconilationTable(Vector<LoadManagementBO> vanunloadlist) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+    public void updateEmptyReconilationTable(Vector<LoadManagementBO> vanunloadlist,Context context) {
+        DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
-
             LoadManagementBO product;
             db.openDataBase();
             Cursor cursor;
@@ -242,13 +240,13 @@ public class VanUnLoadModuleHelper {
      * Automatically Unload the products while day close if STKPRO20
      * Configuration enable, Update Product Mater and StockIn Hand Master
      */
-    public void vanUnloadAutomatically() {
+    public void vanUnloadAutomatically(Context context) {
         String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type";
         String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                 + SDUtil.now(SDUtil.DATE_TIME_ID);
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();

@@ -406,7 +406,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
-
         /**
          * To check stock validation
          * product will load based on loadStockedProduct
@@ -483,7 +482,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lvwplist = (ListView) findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
-        SBDHelper.getInstance(this).calculateSBDDistribution(); //sbd calculation
+        SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext()); //sbd calculation
         sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
         productList = filterWareHouseProducts();
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
@@ -1091,7 +1090,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         bmodel.setContext(this);
         switchProfile();
 
-        if(bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
+        if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
             registerReceiver();
         }
     }
@@ -1812,11 +1811,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
                                 calculateSO(holder.productObj, SOLogic, holder);
 
-                            if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
-                                    &&(!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
-                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=1))){
+                            if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
+                                    && (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
+                                    || (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC && SOLogic != 1))) {
 
-                                int totalStockInPiece=getProductTotalValue(holder.productObj);
+                                int totalStockInPiece = getProductTotalValue(holder.productObj);
                                 holder.text_stock.setText(String.valueOf(totalStockInPiece));
                                 holder.productObj.setTotalStockQty(totalStockInPiece);
                             }
@@ -1915,11 +1914,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
                                 calculateSO(holder.productObj, SOLogic, holder);
 
-                            if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
-                                    &&(!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
-                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=1))){
+                            if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
+                                    && (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
+                                    || (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC && SOLogic != 1))) {
 
-                                int totalStockInPiece=getProductTotalValue(holder.productObj);
+                                int totalStockInPiece = getProductTotalValue(holder.productObj);
                                 holder.text_stock.setText(String.valueOf(totalStockInPiece));
                                 holder.productObj.setTotalStockQty(totalStockInPiece);
                             }
@@ -2020,11 +2019,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC)
                                 calculateSO(holder.productObj, SOLogic, holder);
 
-                            if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
-                                    &&(!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
-                                    ||(bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC&&SOLogic!=1))){
+                            if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
+                                    && (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
+                                    || (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC && SOLogic != 1))) {
 
-                                int totalStockInPiece=getProductTotalValue(holder.productObj);
+                                int totalStockInPiece = getProductTotalValue(holder.productObj);
                                 holder.text_stock.setText(String.valueOf(totalStockInPiece));
                                 holder.productObj.setTotalStockQty(totalStockInPiece);
                             }
@@ -2912,7 +2911,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         bmodel = (BusinessModel) getApplicationContext();
                         bmodel.setContext(StockAndOrder.this);
 
-                        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+                        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
                         if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
                             if (schemeHelper
@@ -2935,7 +2934,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             Intent intent = new Intent(StockAndOrder.this, ProductSchemeDetailsActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("productId",holder.productId);
+                            intent.putExtra("productId", holder.productId);
                             startActivity(intent);
 
                         } else {
@@ -3414,8 +3413,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             int totalStockInPcs = getProductTotalValue(productObj);
             so = productObj.getIco() - totalStockInPcs;
 
-            if(bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER){
-              holder.text_stock.setText(String.valueOf(totalStockInPcs));
+            if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
+                holder.text_stock.setText(String.valueOf(totalStockInPcs));
             }
 
         } else if (SOLogic == 2) {
@@ -3762,7 +3761,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
         }
-        SalesReturnHelper salesReturnHelper=SalesReturnHelper.getInstance(this);
+        SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
         salesReturnHelper.setReturnValue(totalvalue);
 
     }
@@ -3885,11 +3884,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (bmodel.configurationMasterHelper.IS_CREDIT_LIMIT_WITH_SOFT_ALERT) {
                             Toast.makeText(this, getResources().getString(R.string.order_exceeds_credit_balance), Toast.LENGTH_LONG).show();
                             nextBtnSubTask();
-                        }
-                        else
+                        } else
                             bmodel.showAlert(getResources().getString(R.string.order_exceeds_credit_balance), 0);
-                    }
-                    else
+                    } else
                         nextBtnSubTask();
                 else
                     nextBtnSubTask();
@@ -3930,7 +3927,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             bmodel.productHelper.taxHelper.removeTaxFromPrice();
         }
 
-        if(SchemeDetailsMasterHelper.getInstance(this).IS_UP_SELLING) {
+        if (SchemeDetailsMasterHelper.getInstance(this).IS_UP_SELLING) {
             ArrayList<String> nearestSchemes = SchemeDetailsMasterHelper.getInstance(this).upSelling(bmodel.productHelper.getProductMaster());
             if (nearestSchemes.size() > 0) {
                 Intent intent = new Intent(this, UpSellingActivity.class);
@@ -3950,13 +3947,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
      * Moving to next screen based on the config
      * NOTE: Please don't add any validations inside this method. This method should only contain intents
      */
-    private void moveToNextScreen(){
+    private void moveToNextScreen() {
 
 
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
 
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {
@@ -4267,12 +4264,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (mylist.size() > 0)
                     lvwplist.setSelectionFromTop(holderPosition, holderTop);
             }
-        }
-        else if(requestCode==REQUEST_CODE_UPSELLING){
+        } else if (requestCode == REQUEST_CODE_UPSELLING) {
             if (resultCode == 1) {
-              moveToNextScreen();
-            }
-            else if(resultCode==2){
+                moveToNextScreen();
+            } else if (resultCode == 2) {
                 try {
 
                     if (data != null) {
@@ -4296,14 +4291,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
 
                     }
-                }
-                catch (Exception ex){
+                } catch (Exception ex) {
                     Commons.printException(ex);
                 }
             }
 
-        }
-        else {
+        } else {
             if (result != null) {
                 if (result.getContents() != null) {
                     strBarCodeSearch = result.getContents();
@@ -4968,6 +4961,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         menu.findItem(R.id.menu_remarks).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_loc_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_barcode).setVisible(!drawerOpen);
+        menu.findItem(R.id.menu_refresh).setVisible(!drawerOpen);
 
         if (bmodel.configurationMasterHelper.SHOW_ORD_CALC)
             menu.findItem(R.id.menu_calculator).setVisible(true);
@@ -5021,12 +5015,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
         }
         menu.findItem(R.id.menu_next).setVisible(false);
+
+        if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK)
+            menu.findItem(R.id.menu_refresh).setVisible(true);
+
         if (drawerOpen)
             menu.clear();
 
-        if(bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK){
-            menu.findItem(R.id.menu_refresh).setVisible(true);
-        }
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -5181,8 +5176,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 Commons.printException("" + e);
             }
             return true;
-        }
-        else if (i == R.id.menu_refresh) {
+        } else if (i == R.id.menu_refresh) {
             if (bmodel.isOnline()) {
                 new DownloadNewStock().execute();
             } else {
@@ -5193,7 +5187,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     private void showLocation() {
@@ -5375,7 +5368,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         super.onDestroy();
         unbindDrawables(findViewById(R.id.root));
 
-        if(bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
+        if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
             unregisterReceiver(mWareHouseStockReceiver);
         }
     }
@@ -6711,6 +6704,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
     }
+
     private void registerReceiver() {
         IntentFilter filter = new IntentFilter(
                 wareHouseStockBroadCastReceiver.RESPONSE);
@@ -6728,9 +6722,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             case SynchronizationHelper.WAREHOUSE_STOCK_DOWNLOAD:
                 if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     alertDialog.dismiss();
-                        bmodel.showAlert(getResources().getString(R.string.stock_download_successfully), 0);
-                     orderHelper.updateWareHouseStock(getApplicationContext());
-                     lvwplist.invalidateViews();
+                    bmodel.showAlert(getResources().getString(R.string.stock_download_successfully), 0);
+                    orderHelper.updateWareHouseStock(getApplicationContext());
+                    lvwplist.invalidateViews();
 
                 } else {
                     String errorDownloadCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
@@ -6782,11 +6776,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
             if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                String warehouseWebApi=bmodel.synchronizationHelper.downloadWareHouseStockURL();
-                if(!warehouseWebApi.equals("")){
-                     bmodel.synchronizationHelper.downloadWareHouseStock(warehouseWebApi);
-                }
-                else {
+                String warehouseWebApi = bmodel.synchronizationHelper.downloadWareHouseStockURL();
+                if (!warehouseWebApi.equals("")) {
+                    bmodel.synchronizationHelper.downloadWareHouseStock(warehouseWebApi);
+                } else {
                     Toast.makeText(StockAndOrder.this, getResources().getString(R.string.url_not_mapped), Toast.LENGTH_SHORT).show();
                 }
             } else {

@@ -29,7 +29,7 @@ public class RoadActivityHelper {
     private String LocationName1;
     private String LocationName2;
 
-    protected RoadActivityHelper(Context context) {
+    public RoadActivityHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
     }

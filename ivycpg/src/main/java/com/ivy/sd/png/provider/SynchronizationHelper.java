@@ -2423,6 +2423,12 @@ SynchronizationHelper {
                         if (key.equals("ErrorCode")) {
                             mAuthErrorCode = jsonObject.get("ErrorCode").toString();
                             mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
+
+                            if (mAuthErrorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                bmodel.synchronizationHelper.parseJSONAndInsert(jsonObject, true);
+                                bmodel.userMasterHelper.downloadUserDetails();
+                            }
+
                             break;
                         }
                     }

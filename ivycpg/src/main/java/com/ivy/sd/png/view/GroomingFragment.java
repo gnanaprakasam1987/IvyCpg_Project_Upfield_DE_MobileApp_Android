@@ -160,7 +160,7 @@ public class GroomingFragment extends IvyBaseFragment implements View.OnClickLis
     }
 
     private void showUserDialog() {
-        childList = bmodel.mAttendanceHelper.loadChildUserList();
+        childList = bmodel.mAttendanceHelper.loadChildUserList(getActivity());
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();

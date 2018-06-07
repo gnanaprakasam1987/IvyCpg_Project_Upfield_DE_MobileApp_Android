@@ -167,6 +167,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private boolean isClicked;
     private String screenCode = "MENU_STK_ORD";
     private String PHOTO_PATH = "";
+    private String signatureName;
     private SharedPreferences sharedPreferences;
 
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -572,7 +573,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             startActivity(i);
             BModel.configurationMasterHelper.setSignatureTitle("Signature");
             overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
+          //  finish();
             return true;
         } else if (i1 == R.id.menu_summary_dialog) {
             BModel.configurationMasterHelper.loadOrderSummaryDetailConfig();
@@ -1442,7 +1443,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         startActivity(i);
                                         BModel.configurationMasterHelper.setSignatureTitle("Signature");
                                         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                        finish();
+                                        //finish();
                                     }
                                 })
                         .setNegativeButton(
@@ -1549,6 +1550,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     BModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
                     BModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
                             ConfigurationMasterHelper.outDateFormat));
+                    signatureName =BModel.getOrderHeaderBO().getSignatureName();
 
 
                     // Don't write any code  after this dialog.. because it is just a confirmation dialog
@@ -1661,6 +1663,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             BModel.getOrderHeaderBO().setIsCompanyGiven(0);
             BModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
             BModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(), ConfigurationMasterHelper.outDateFormat));
+            signatureName =BModel.getOrderHeaderBO().getSignatureName();
 
             if (!mOrderedProductList.isEmpty()) {
 
@@ -2881,7 +2884,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
 
-            BModel.mCommonPrintHelper.xmlRead("order", false, orderList, null);
+            BModel.mCommonPrintHelper.xmlRead("order", false, orderList, null,signatureName);
             if (BModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 BModel.writeToFile(String.valueOf(BModel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_ORDER + BModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
@@ -2967,7 +2970,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-            BModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null);
+            BModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null,signatureName);
 
 
             BModel.writeToFile(String.valueOf(BModel.mCommonPrintHelper.getInvoiceData()),

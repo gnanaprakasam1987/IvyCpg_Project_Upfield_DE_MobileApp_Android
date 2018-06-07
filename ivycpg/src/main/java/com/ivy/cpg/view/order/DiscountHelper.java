@@ -485,7 +485,9 @@ public class DiscountHelper {
                 double discountValue = 0;
                 if (storeWiseDiscountBO.getIsPercentage() == 1) {
                     discountValue = totalOrderValue * storeWiseDiscountBO.getDiscount() / 100;
-                } else if (storeWiseDiscountBO.getType() == 0) {
+                } else {
+                    //Rajkumar - Type id is coming for Bill wise discount also..
+                    // So If it is not percentage type discount, then it is considered as amount type discount.
                     discountValue = storeWiseDiscountBO.getDiscount();
                 }
 

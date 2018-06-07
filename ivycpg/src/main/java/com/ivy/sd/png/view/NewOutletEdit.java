@@ -93,7 +93,7 @@ public class NewOutletEdit extends IvyBaseActivityNoActionBar {
         }
         recyclerView = (RecyclerView) findViewById(R.id.rcv_new_retailers);
 
-        if (bmodel.mAttendanceHelper.checkLeaveAttendance())
+        if (bmodel.mAttendanceHelper.checkLeaveAttendance(getApplicationContext()))
             isLeave_today = true;
 
         displaymetrics = new DisplayMetrics();
