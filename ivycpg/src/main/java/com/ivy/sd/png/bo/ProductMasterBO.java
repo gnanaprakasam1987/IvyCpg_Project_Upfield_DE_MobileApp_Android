@@ -1867,7 +1867,7 @@ public class ProductMasterBO {
         isSeparateBill = separateBill;
     }
 
-    String remarks;
+    String remarks = "";
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;

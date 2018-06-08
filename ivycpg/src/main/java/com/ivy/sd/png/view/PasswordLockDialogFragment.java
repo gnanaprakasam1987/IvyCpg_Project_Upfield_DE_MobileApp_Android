@@ -25,10 +25,16 @@ public class PasswordLockDialogFragment extends DialogFragment {
     private TextView mTitleTV;
     private Button mOkBtn, mDismisBtn;
     private ListView mCountLV;
+    private UpdatePasswordDialogInterface passwordDialogInterface;
+
+    public interface UpdatePasswordDialogInterface {
+        void callForgetPassDialog();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        passwordDialogInterface = (UpdatePasswordDialogInterface) getActivity();
         mTitle = getArguments().getString("title");
         mTextViewTitle=getArguments().getString("textviewTitle");
     }
@@ -49,12 +55,13 @@ public class PasswordLockDialogFragment extends DialogFragment {
         mTitleTV.setText(mTextViewTitle);
         mCountLV = (ListView) rootView.findViewById(R.id.lv_colletion_print);
         mCountLV.setVisibility(View.GONE);
-        mOkBtn.setVisibility(View.GONE);
+        mDismisBtn.setVisibility(View.GONE);
 
-        mDismisBtn.setOnClickListener(new View.OnClickListener() {
+        mOkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
+                passwordDialogInterface.callForgetPassDialog();
             }
         });
     }

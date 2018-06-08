@@ -47,7 +47,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.baidu.platform.comapi.map.A;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -1497,7 +1496,7 @@ public class BusinessModel extends Application {
                     retailer.setRetailerCode(c.getString(c.getColumnIndex("RetailerCode")));
                     retailer.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
                     retailer.setBeatID(c.getInt(c.getColumnIndex("beatid")));
-                    retailer.setCreditLimit(c.getFloat(c.getColumnIndex("creditlimit")));
+                    retailer.setCreditLimit(c.getDouble(c.getColumnIndex("creditlimit")));
                     retailer.setTinnumber(c.getString(c.getColumnIndex("tinnumber")));
                     retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
                     retailer.setChannelID(c.getInt(c.getColumnIndex("channelID")));
@@ -3710,6 +3709,13 @@ public class BusinessModel extends Application {
                     CallAnalysisActivity callAnalysisActivity = (CallAnalysisActivity) ctx;
                     BusinessModel.loadActivity(ctx, DataMembers.actPlanning);
                     callAnalysisActivity.finish();
+                } else if (idd == DataMembers.NOTIFY_ORDER_DELETED) {
+                    OrderSummary frm = (OrderSummary) ctx;
+                    Intent returnIntent = new Intent();
+                    frm.setResult(Activity.RESULT_OK, returnIntent);
+                    frm.finish();
+                    BusinessModel.loadActivity(ctx,
+                            DataMembers.actHomeScreenTwo);
                 }
 
             }
@@ -5502,11 +5508,11 @@ public class BusinessModel extends Application {
                     if (i == 0) {
                         String cmd = "logcat -d -v time -f" +
                                 mLogFile.getAbsolutePath();
-                        Runtime.getRuntime().exec(cmd);
+                        Runtime.getRuntime().exec(cmd).waitFor();
                     } else if (i == 1) {
                         String cmd = "logcat -d -f" + mLogFile.getAbsolutePath
                                 ();
-                        Runtime.getRuntime().exec(cmd);
+                        Runtime.getRuntime().exec(cmd).waitFor();
                     } else if (i == 2) {
                         String currentDBPath =
                                 "data/com.ivy.sd.png.asean.view/databases/" + DataMembers.DB_NAME;

@@ -3,10 +3,6 @@ package com.ivy.cpg.view.salesreturn;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.util.SparseArray;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -16,7 +12,6 @@ import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.TaxInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
@@ -24,10 +19,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -409,6 +400,13 @@ public class SalesReturnHelper {
                         db.deleteSQL(DataMembers.tbl_SalesReturnDetails, "uid="
                                 + DatabaseUtils.sqlEscapeString(uid), false);
                         db.deleteSQL(DataMembers.tbl_SalesReturnReplacementDetails, "uid=" + DatabaseUtils.sqlEscapeString(uid), false);
+
+                        if ((bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION
+                                || bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
+                                && bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase(CREDIT_TYPE))
+                            db.deleteSQL(DataMembers.tbl_credit_note, "refno="
+                                    + DatabaseUtils.sqlEscapeString(uid), false);
+
                     }
                 }
             }

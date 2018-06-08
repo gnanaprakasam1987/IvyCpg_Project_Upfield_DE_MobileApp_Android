@@ -77,16 +77,15 @@ public class BackUpSellerFragment extends IvyBaseFragment {
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
-        Bundle extras = getActivity().getIntent().getExtras();
         //Set Screen Title
         try {
-            if (extras == null)
+            if (getArguments().getString("screentitle") == null)
                 setScreenTitle(bmodel.getMenuName("MENU_BACKUP_SELLER"));
             else
-                setScreenTitle(extras.getString("screentitle"));
+                setScreenTitle(getArguments().getString("screentitle"));
         } catch (Exception e) {
 
-            setScreenTitle("BACKUP SELLER");
+            setScreenTitle(getActivity().getResources().getString(R.string.backup_seller));
             Commons.printException(e);
         }
         DrawerLayout mDrawerLayout = view.findViewById(R.id.drawer_layout);
@@ -125,8 +124,7 @@ public class BackUpSellerFragment extends IvyBaseFragment {
                 if (lastCheckedPos > -1) {
                     backupSellerId = bmodel.userMasterHelper.getBackupSellerList().get(lastCheckedPos).getUserid() + "";
                     new UploadBackupSeller().execute();
-                }
-                else
+                } else
                     Toast.makeText(getActivity(), "Please select user", Toast.LENGTH_LONG).show();
             }
         });
@@ -213,36 +211,36 @@ public class BackUpSellerFragment extends IvyBaseFragment {
                 case 0:
                     alertDialog.dismiss();
                     showAlert(getResources().getString(
-                                    R.string.successfully_uploaded));
+                            R.string.successfully_uploaded));
                     break;
                 case 1:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert( getResources().getString(
-                                    R.string.seller_already_assigned), 0);
+                    bmodel.showAlert(getResources().getString(
+                            R.string.seller_already_assigned), 0);
                     break;
                 case 2:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert( getResources().getString(
+                    bmodel.showAlert(getResources().getString(
                             R.string.backup_seller_already_assigned), 0);
                     break;
                 case 3:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert( getResources().getString(
+                    bmodel.showAlert(getResources().getString(
                             R.string.user_already_assigned), 0);
                     break;
                 case DataMembers.NOTIFY_NO_INTERNET:
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert( getResources().getString(
+                    bmodel.showAlert(getResources().getString(
                             R.string.please_connect_to_internet), 0);
                     break;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
                     bmodel.showAlert(getResources().getString(
-                                    R.string.error_e10), 0);
+                            R.string.error_e10), 0);
                     break;
                 default:
                     break;
@@ -365,9 +363,9 @@ public class BackUpSellerFragment extends IvyBaseFragment {
 
                     public void onClick(DialogInterface dialog, int which) {
 
-                            startActivity(new Intent(getActivity(),
-                                    HomeScreenActivity.class));
-                            getActivity().finish();
+                        startActivity(new Intent(getActivity(),
+                                HomeScreenActivity.class));
+                        getActivity().finish();
                     }
 
                 });

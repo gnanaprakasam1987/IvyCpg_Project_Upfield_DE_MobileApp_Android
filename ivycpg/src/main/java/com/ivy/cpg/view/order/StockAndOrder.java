@@ -3094,30 +3094,29 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             // set SO value
             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
                 if (bmodel.configurationMasterHelper.SHOW_SO_SPLIT) {
-                    if (holder.productObj.getSoInventory() < holder.productObj
-                            .getCaseSize()
-                            || holder.productObj.getSoInventory() == 0
+                    int soQty = holder.productObj.getSoInventory()
+                            + (holder.productObj.getSocInventory()
+                            * holder.productObj.getCaseSize());
+                    if ((soQty < holder.productObj
+                            .getCaseSize())
                             || holder.productObj.getCaseSize() == 0) {
                         holder.socs.setText("0");
                         String strInventory = holder.productObj.getSoInventory()
                                 + "";
                         holder.so.setText(strInventory);
-                    } else if (holder.productObj.getSoInventory() == holder.productObj
+                    } else if (soQty == holder.productObj
                             .getCaseSize()) {
-                        String strSocs = holder.productObj
-                                .getSoInventory() / holder.productObj
+                        String strSocs = soQty / holder.productObj
                                 .getCaseSize()
                                 + "";
                         holder.socs.setText(strSocs);
                         holder.so.setText("0");
                     } else {
-                        String strSocs = holder.productObj
-                                .getSoInventory() / holder.productObj
+                        String strSocs = soQty / holder.productObj
                                 .getCaseSize()
                                 + "";
                         holder.socs.setText(strSocs);
-                        String strSo = holder.productObj
-                                .getSoInventory() % holder.productObj
+                        String strSo = soQty % holder.productObj
                                 .getCaseSize()
                                 + "";
                         holder.so.setText(strSo);

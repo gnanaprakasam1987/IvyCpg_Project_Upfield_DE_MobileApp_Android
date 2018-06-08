@@ -40,7 +40,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
@@ -415,9 +414,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             mSelectedFilterMap.put("General", "All");
             mSelectedFilterMap.put("Brand", "All");
             mSelectedFilterMap.put("Category", "All");
-            if (mSelectedFilterMap != null && mSelectedIdByLevelId != null){
-                if (mSelectedIdByLevelId != null)
-                    mSelectedIdByLevelId.clear();
+            if (mSelectedFilterMap != null && mSelectedIdByLevelId != null) {
+                mSelectedIdByLevelId.clear();
             }
 
             try {

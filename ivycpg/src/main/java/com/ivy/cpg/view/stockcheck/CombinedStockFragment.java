@@ -732,7 +732,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                                     mEdt_searchproductName.getWindowToken(), 0);
                             //mEdt_searchproductName.setText("");
 
-                            bmodel.setEditStockCheck(false);
                             if ((holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex)
                                     .getShelfPiece() > 0 || holder.productObj.getPriceChanged() == 1)
