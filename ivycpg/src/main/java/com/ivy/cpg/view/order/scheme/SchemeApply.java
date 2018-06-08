@@ -617,15 +617,17 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                     holder.priceET.setClickable(false);
 
                                 }
-
-                                SchemeProductBO schemeProductBO = holder.schemeBO
-                                        .getFreeProducts().get(0);
-                                if (schemeProductBO != null) {
-                                    if (schemeProductBO.getPriceActual() == schemeProductBO
-                                            .getPriceMaximum()) {
-                                        holder.priceET.setEnabled(false);
-                                        if (QUANTITY == holder.priceET)
-                                            QUANTITY = null;
+                                if (holder.schemeBO.getFreeProducts() != null && !holder.schemeBO
+                                        .getFreeProducts().isEmpty()) {
+                                    SchemeProductBO schemeProductBO = holder.schemeBO
+                                            .getFreeProducts().get(0);
+                                    if (schemeProductBO != null) {
+                                        if (schemeProductBO.getPriceActual() == schemeProductBO
+                                                .getPriceMaximum()) {
+                                            holder.priceET.setEnabled(false);
+                                            if (QUANTITY == holder.priceET)
+                                                QUANTITY = null;
+                                        }
                                     }
                                 }
                                 if (!schemeHelper.IS_SCHEME_EDITABLE) {
@@ -686,15 +688,19 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                     holder.amountET.setClickable(false);
                                 }
 
-                                SchemeProductBO schemeProductBO = holder.schemeBO.getFreeProducts().get(0);
-                                if (schemeProductBO != null) {
-                                    if (schemeProductBO
-                                            .getMaxAmountCalculated() == schemeProductBO
-                                            .getMinAmountCalculated()) {
-                                        holder.amountET.setEnabled(false);
-                                        if (QUANTITY == holder.amountET)
-                                            QUANTITY = null;
+                                if (holder.schemeBO.getFreeProducts() != null && !holder.schemeBO
+                                        .getFreeProducts().isEmpty()) {
 
+                                    SchemeProductBO schemeProductBO = holder.schemeBO.getFreeProducts().get(0);
+                                    if (schemeProductBO != null) {
+                                        if (schemeProductBO
+                                                .getMaxAmountCalculated() == schemeProductBO
+                                                .getMinAmountCalculated()) {
+                                            holder.amountET.setEnabled(false);
+                                            if (QUANTITY == holder.amountET)
+                                                QUANTITY = null;
+
+                                        }
                                     }
                                 }
                                 if (!schemeHelper.IS_SCHEME_EDITABLE) {
@@ -755,13 +761,16 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                     holder.percentET.setClickable(false);
                                 }
 
-                                SchemeProductBO schemeProductBO = holder.schemeBO
-                                        .getFreeProducts().get(0);
-                                if (schemeProductBO.getMaxPrecentCalculated() == schemeProductBO
-                                        .getMinPercentCalculated()) {
-                                    holder.percentET.setEnabled(false);
-                                    if (QUANTITY == holder.percentET) {
-                                        QUANTITY = null;
+                                if (holder.schemeBO.getFreeProducts() != null && !holder.schemeBO
+                                        .getFreeProducts().isEmpty()) {
+                                    SchemeProductBO schemeProductBO = holder.schemeBO
+                                            .getFreeProducts().get(0);
+                                    if (schemeProductBO.getMaxPrecentCalculated() == schemeProductBO
+                                            .getMinPercentCalculated()) {
+                                        holder.percentET.setEnabled(false);
+                                        if (QUANTITY == holder.percentET) {
+                                            QUANTITY = null;
+                                        }
                                     }
                                 }
                                 if (!schemeHelper.IS_SCHEME_EDITABLE) {
@@ -795,7 +804,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
                                 priceEntered = Double.parseDouble(s.toString());
-                                holder.schemeBO.setActualPrice(Double.parseDouble(s.toString().trim()));
                             }
                         }
 
@@ -826,7 +834,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
                                 amountEntered = Double.parseDouble(s.toString());
-                                holder.schemeBO.setMinimumAmount(Double.parseDouble(s.toString().trim()));
                             }
                         }
 
@@ -858,7 +865,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                     && !s.toString().trim().equals(".")) {
                                 percentEntered = Double.parseDouble(s
                                         .toString());
-                                holder.schemeBO.setMinimumPrecent(Double.parseDouble(s.toString().trim()));
                             }
                         }
 
@@ -936,7 +942,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             holder.amountET.setTag(holder.schemeBO);
             holder.percentET.setTag(holder.schemeBO);
 
-            if (holder.schemeBO.getFreeProducts() != null && holder.schemeBO.getFreeProducts().size() > 0) {
+            if (holder.schemeBO.getFreeProducts() != null && !holder.schemeBO.getFreeProducts().isEmpty()) {
                 SchemeProductBO schemeProductBO = holder.schemeBO.getFreeProducts().get(0);
                 holder.quantityRangeTV.setText("Max: "
                         + holder.schemeBO.getMaximumQuantity());

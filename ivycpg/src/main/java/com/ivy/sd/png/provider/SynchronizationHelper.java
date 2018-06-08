@@ -2423,6 +2423,12 @@ SynchronizationHelper {
                         if (key.equals("ErrorCode")) {
                             mAuthErrorCode = jsonObject.get("ErrorCode").toString();
                             mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
+
+                            if (mAuthErrorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                bmodel.synchronizationHelper.parseJSONAndInsert(jsonObject, true);
+                                bmodel.userMasterHelper.downloadUserDetails();
+                            }
+
                             break;
                         }
                     }
@@ -3780,24 +3786,30 @@ SynchronizationHelper {
     }
 
     public boolean validateJointCallUser(int userId, String username, String password) {
-        LoginHelper.getInstance(context).loadPasswordConfiguration(context);
-        ArrayList<UserMasterBO> mjoinCallUserList = bmodel.userMasterHelper.getUserMasterBO()
-                .getJoinCallUserList();
-        UserMasterBO jointCallUser = new UserMasterBO();
-        for (UserMasterBO user : mjoinCallUserList) {
-            if (userId == user.getUserid())
-                jointCallUser = user;
-        }
-
-        boolean isUser = username.equalsIgnoreCase(jointCallUser.getLoginName());
+        boolean isUser;
         boolean isPwd;
-        if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
-            if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
-                isPwd = encryptPassword(password).equalsIgnoreCase(jointCallUser.getPassword());
-            else
-                isPwd = BCrypt.checkpw(password, jointCallUser.getPassword());
-        } else {
-            isPwd = password.equals(jointCallUser.getPassword());
+        try {
+            LoginHelper.getInstance(context).loadPasswordConfiguration(context);
+            ArrayList<UserMasterBO> mjoinCallUserList = bmodel.userMasterHelper.getUserMasterBO()
+                    .getJoinCallUserList();
+            UserMasterBO jointCallUser = new UserMasterBO();
+            for (UserMasterBO user : mjoinCallUserList) {
+                if (userId == user.getUserid())
+                    jointCallUser = user;
+            }
+
+            isUser = username.equalsIgnoreCase(jointCallUser.getLoginName());
+            if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
+                if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
+                    isPwd = encryptPassword(password).equalsIgnoreCase(jointCallUser.getPassword());
+                else
+                    isPwd = BCrypt.checkpw(password, jointCallUser.getPassword());
+            } else {
+                isPwd = password.equals(jointCallUser.getPassword());
+            }
+        } catch (Exception e){
+            Commons.printException(e);
+            return false;
         }
 
         return (isUser && isPwd);
@@ -3939,6 +3951,9 @@ SynchronizationHelper {
                 .setBuffer((float) ((float) bmodel.configurationMasterHelper
                         .downloadSOBuffer() / (float) 100));
         bmodel.labelsMasterHelper.downloadLabelsMaster();
+
+        //check attendance
+        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(context);
 
         //save sales return with Old batchid for the product
         bmodel.productHelper.loadOldBatchIDMap();

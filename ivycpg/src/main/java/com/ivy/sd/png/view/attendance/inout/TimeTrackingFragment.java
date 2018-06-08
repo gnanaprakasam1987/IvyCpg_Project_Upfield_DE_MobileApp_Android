@@ -178,7 +178,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
     public void loadNonFieldTwoDetails() {
 
-        bmodel.mAttendanceHelper.downloadNonFieldTwoDetails();
+        bmodel.mAttendanceHelper.downloadNonFieldTwoDetails(getActivity().getApplicationContext());
         nonFieldTwoBos = bmodel.mAttendanceHelper.getNonFieldTwoBoList();
         mAdapter.notifyDataSetChanged();
     }
@@ -297,7 +297,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 public void onClick(View v) {
                     if(startLocationService(holder.nonFieldTwoBO.getReason())) {
                         holder.nonFieldTwoBO.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                        bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO);
+                        bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO,getActivity());
 
                         loadNonFieldTwoDetails();
                     }
@@ -309,7 +309,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 public void onClick(View v) {
 
                     holder.nonFieldTwoBO.setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                    bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO);
+                    bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO,getActivity());
                     loadNonFieldTwoDetails();
 
                     stopLocationService(holder.nonFieldTwoBO.getReason());
@@ -318,7 +318,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             });
 
             holder.tvReason.setText(bmodel.mAttendanceHelper
-                    .getReasonName(holder.nonFieldTwoBO.getReason()));
+                    .getReasonName(holder.nonFieldTwoBO.getReason(),getActivity()));
 
             return convertView;
         }
@@ -385,9 +385,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
                         if(startLocationService(addNonFieldTwoBo.getReason())) {
 
-                            bmodel.mAttendanceHelper.saveNonFieldWorkTwoDetail(addNonFieldTwoBo);
+                            bmodel.mAttendanceHelper.saveNonFieldWorkTwoDetail(addNonFieldTwoBo,getActivity());
                             if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE) {
-                                HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance();
+                                HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(getActivity());
                             }
 
                             //}
@@ -413,7 +413,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     }
 
     private void showUserDialog() {
-        childList = bmodel.mAttendanceHelper.loadChildUserList();
+        childList = bmodel.mAttendanceHelper.loadChildUserList(getActivity());
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();
@@ -461,7 +461,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     }
 
     private void loadListData() {
-        bmodel.mAttendanceHelper.downloadNonFieldTwoDetails();
+        bmodel.mAttendanceHelper.downloadNonFieldTwoDetails(getActivity());
         nonFieldTwoBos = bmodel.mAttendanceHelper.getNonFieldTwoBoList();
         //data empty or not
         if (nonFieldTwoBos == null || !(nonFieldTwoBos.size() > 0)) {

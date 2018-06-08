@@ -119,15 +119,11 @@
 
 
     <string name="notification_text">Realtime location tracking enabled. </string>
-    <string name="firebase_email" translatable="false">sajen.a@ivymobility.com</string>
-    <string name="firebase_password" translatable="false">9941782090</string>
-    <string name="firebase_path" translatable="false">supervisorivycpg</string>
     <string name="status_time_mismatch">Start Time is Greater than end time</string>
     <string name="status_location_accuracy">Change high location Accuracy</string>
     <string name="status_mock_location">Mock Location is Enabled</string>
     <string name="status_alarm_time_zero">Alarm time should not be zero</string>
     <string name="mandatory_fileds_empty">Mandatory fields empty!</string>
-    <string name="vanload_stock_applied">VanLoad Stock Applied</string>
 
     <string name="enter_account">Enter account no</string>
     <string name="share_percent">Share %</string>
@@ -140,7 +136,6 @@
 
     <string name="enter_valid">Enter valid </string>
     <string name="stock">Stock</string>
-    <string name="invoice_next_print">invoice_next_print</string>
     <string name="Order_Summary_dialog_header">Order_Summary_dialog_header</string>
 
     <string name="collection_mandatory">Please do collection for Pending Invoice !</string>
@@ -148,5 +143,7 @@
     <string name="volume">Volume</string>
     <string name="todate_validation">To Date should be greater than From Date</string>
     <string name="no_config_exist">No Configuration Exist</string>
+    <string name="backup_seller">Backup Seller</string>
+    <string name="error_connecting_printer">Error connecting Printer</string>
 
 </resources>

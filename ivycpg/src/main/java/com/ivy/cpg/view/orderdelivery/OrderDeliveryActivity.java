@@ -252,7 +252,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
                             boolean status = orderDeliveryHelper.updateTableValues(OrderDeliveryActivity.this, orderId,false);
                             if(status){
-
+                                bmodel.saveModuleCompletion(getIntent().getExtras().getString("menuCode"));
                                 Toast.makeText(
                                         OrderDeliveryActivity.this,
                                         getResources().getString(R.string.invoice_generated),
@@ -261,7 +261,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                                 orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size()-1).
                                         setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(OrderDeliveryActivity.this,orderId));
 
-                                bmodel.mCommonPrintHelper.xmlRead(".xml", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null);
+                                bmodel.mCommonPrintHelper.xmlRead("invoice", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null,null);
 
                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);

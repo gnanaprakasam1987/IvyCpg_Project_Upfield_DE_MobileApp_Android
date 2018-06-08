@@ -66,7 +66,8 @@ import java.io.FilenameFilter;
 import java.util.HashMap;
 
 
-public class LoginScreen extends IvyBaseActivityNoActionBar implements ApplicationConfigs, LoginContractor.LoginView {
+public class LoginScreen extends IvyBaseActivityNoActionBar
+        implements ApplicationConfigs, LoginContractor.LoginView, PasswordLockDialogFragment.UpdatePasswordDialogInterface {
 
     private BusinessModel businessModel;
 
@@ -139,8 +140,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
 
             /* Display version information on the login screen. */
         TextView version = (TextView) findViewById(R.id.version);
-        version.setText(getResources().getString(R.string.version)
-                + businessModel.getApplicationVersionName());
+        version.setText(getResources().getString(R.string.version) + businessModel.getApplicationVersionName());
         version.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         LinearLayout ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
@@ -334,8 +334,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
                                         R.string.please_check_username_and_password), false);
                     } else {
                         int count = loginPresenter.getPasswordLockCount();
-                        if (mForgotPasswordTV != null)
-                            mForgotPasswordTV.setVisibility(View.VISIBLE);
+                        if (mForgotPasswordTV != null) {
+                            showForgotPassword();
+                        }
                         if (count + 1 == LoginHelper.getInstance(getApplicationContext()).MAXIMUM_ATTEMPT_COUNT) {
                             dismissAlertDialog();
                             FragmentManager fm = getSupportFragmentManager();
@@ -661,6 +662,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar implements Applicati
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    public void callForgetPassDialog() {
+        if (!editTextUserName.getText().toString().equals("")) {
+            businessModel.userNameTemp = editTextUserName.getText().toString();
+            loginPresenter.callForgetPassword();
+        } else {
+            editTextUserName.setError(getResources().getString(R.string.enter_username));
+        }
     }
 
     public class MyReceiver extends BroadcastReceiver {

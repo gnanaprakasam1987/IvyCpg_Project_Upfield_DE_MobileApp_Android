@@ -451,14 +451,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 }
             }
         }
-        paymentBO = mPaymentBOByMode.get(StandardListMasterConstants.MOBILE_PAYMENT);
-        if (paymentBO != null && paymentBO.getAmount() > 0) {
 
-            if ("".equals(paymentBO.getChequeNumber())) {
-                mErrorMsg = getResources().getString(R.string.please_enter_referenceno) + " in Mobile Payment";
-                return false;
-            }
-        }
         return true;
     }
 
@@ -511,7 +504,11 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
             bmodel.collectionHelper.saveCollection(mSelecteInvoiceList, mPaymentList);
             bmodel.saveModuleCompletion("MENU_COLLECTION");
-            appendString = printDataforCollectionReport();
+            bmodel.saveModuleCompletion("MENU_COLLECTION");
+            if (bmodel.configurationMasterHelper.COMMON_PRINT_INTERMEC)
+                appendString = print2inchDataforCollectionReport();
+            else
+                appendString = printDataforCollectionReport();
             bmodel.mCommonPrintHelper.setInvoiceData(new StringBuilder(appendString));
             if (bmodel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bmodel.writeToFile(appendString,
@@ -932,6 +929,264 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(doPrintFormatingLeft("Comments: ----------------------------------------------", 47));
                 sb.append(LineFeed(2));
                 sb.append(doPrintFormatingLeft("Signature: ---------------------------------------------", 47));
+                sb.append(LineFeed(2));
+
+                return sb.toString();
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return sb.toString();
+    }
+
+
+    public String print2inchDataforCollectionReport() {
+        StringBuilder sb = new StringBuilder();
+        ArrayList<PaymentBO> paymentList = bmodel.collectionHelper.getPaymentData(bmodel.collectionHelper.collectionGroupId);
+        try {
+            if (paymentList.size() > 0) {
+                int center = 0;
+                String tempStr;
+                if (bmodel.configurationMasterHelper.SHOW_PRINT_HEADERS) {
+                    tempStr = "Unipal General Trading Company";
+                    if (tempStr.length() < 37) {
+                        center = (37 - tempStr.length()) / 2;
+                    }
+
+                    sb.append(doPrintAddSpace(0, center));
+                    sb.append(doPrintFormatingRight(tempStr, 37));
+                    sb.append(LineFeed(1));
+
+                    center = 0;
+                    tempStr = "VAT No : 562414227";
+                    if (tempStr.length() < 37) {
+                        center = (37 - tempStr.length()) / 2;
+                    }
+
+                    sb.append(doPrintAddSpace(0, center));
+                    sb.append(doPrintFormatingRight(tempStr, 37));
+                    sb.append(LineFeed(1));
+
+                    center = 0;
+                    tempStr = "Ramallah - Industrial zone, Tel: +972 2 2981060";
+                    if (tempStr.length() < 37) {
+                        center = (37 - tempStr.length()) / 2;
+                    }
+
+                    sb.append(doPrintAddSpace(0, center));
+                    sb.append(doPrintFormatingRight(tempStr, 37));
+                    sb.append(LineFeed(1));
+
+                    center = 0;
+                    tempStr = "Gaza - lndus. Zone - Carny, Tel: +972 7 2830324";
+                    if (tempStr.length() < 37) {
+                        center = (37 - tempStr.length()) / 2;
+                    }
+
+                    sb.append(doPrintAddSpace(0, center));
+                    sb.append(doPrintFormatingRight(tempStr, 37));
+                    sb.append(LineFeed(1));
+                } else {
+                    if (bmodel.userMasterHelper.getUserMasterBO().getDistributorName() != null) {
+                        if (bmodel.userMasterHelper.getUserMasterBO().getDistributorName().length() < 37) {
+                            center = (37 - bmodel.userMasterHelper.getUserMasterBO().getDistributorName().length()) / 2;
+                        }
+
+                        sb.append(doPrintAddSpace(0, center));
+                        sb.append(doPrintFormatingRight(bmodel.userMasterHelper.getUserMasterBO().getDistributorName(), 37));
+                        sb.append(LineFeed(1));
+
+                        center = 0;
+                    }
+                    if (bmodel.userMasterHelper.getUserMasterBO().getDistributorTinNumber() != null) {
+                        if (bmodel.userMasterHelper.getUserMasterBO().getDistributorTinNumber().length() < 37) {
+                            center = (37 - bmodel.userMasterHelper.getUserMasterBO().getDistributorTinNumber().length()) / 2;
+                        }
+
+                        sb.append(doPrintAddSpace(0, center));
+                        sb.append(doPrintFormatingRight(bmodel.userMasterHelper.getUserMasterBO().getDistributorTinNumber(), 37));
+                        sb.append(LineFeed(1));
+
+                        center = 0;
+                    }
+                    if (bmodel.userMasterHelper.getUserMasterBO().getDistributorAddress1() != null) {
+                        if (bmodel.userMasterHelper.getUserMasterBO().getDistributorAddress1().length() < 37) {
+                            center = (37 - bmodel.userMasterHelper.getUserMasterBO().getDistributorAddress1().length()) / 2;
+                        }
+
+                        sb.append(doPrintAddSpace(0, center));
+                        sb.append(doPrintFormatingRight(bmodel.userMasterHelper.getUserMasterBO().getDistributorAddress1(), 37));
+                        sb.append(LineFeed(1));
+
+                        center = 0;
+                    }
+                    if (bmodel.userMasterHelper.getUserMasterBO().getDistributorAddress2() != null) {
+                        if (bmodel.userMasterHelper.getUserMasterBO().getDistributorAddress2().length() < 37) {
+                            center = (37 - bmodel.userMasterHelper.getUserMasterBO().getDistributorAddress2().length()) / 2;
+                        }
+
+                        sb.append(doPrintAddSpace(0, center));
+                        sb.append(doPrintFormatingRight(bmodel.userMasterHelper.getUserMasterBO().getDistributorAddress2(), 37));
+                        sb.append(LineFeed(1));
+                    }
+                }
+
+                for (int i = 0; i < 36; i++) {
+                    sb.append("-");
+                }
+                sb.append(LineFeed(1));
+
+                double total;
+                PaymentBO payHeaderBO = paymentList.get(0);
+                total = 0;
+
+                if (payHeaderBO.getAdvancePaymentId() != null) {
+                    tempStr = "Rcpt Date:" + payHeaderBO.getAdvancePaymentDate();
+                } else {
+                    tempStr = "Rcpt Date:" + payHeaderBO.getCollectionDateTime();
+                }
+                sb.append(doPrintFormatingLeft(tempStr, 30));
+                sb.append(" ");
+                sb.append(LineFeed(1));
+
+                tempStr = "Rcpt NO  :" + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", "");
+                sb.append(doPrintFormatingLeft(tempStr, 30));
+                sb.append(" ");
+                sb.append(LineFeed(1));
+
+                tempStr = "Seller Code";
+                sb.append(doPrintFormatingLeft(tempStr, 12));
+                sb.append(" ");
+                sb.append(LineFeed(1));
+                tempStr = bmodel.userMasterHelper.getUserMasterBO().getUserCode();
+                sb.append(doPrintFormatingLeft(tempStr, 10));
+                sb.append(" ");
+                sb.append(LineFeed(1));
+
+
+                tempStr = "Seller Name";
+                sb.append(doPrintFormatingLeft(tempStr, 12));
+                sb.append(" ");
+                sb.append(LineFeed(1));
+                tempStr = bmodel.userMasterHelper.getUserMasterBO().getUserName();
+                sb.append(doPrintFormatingLeft(tempStr, 23));
+                sb.append(" ");
+                sb.append(LineFeed(1));
+
+                if (payHeaderBO.getRetailerName().length() > 30) {
+                    tempStr = payHeaderBO.getRetailerName().substring(0, 30);
+                } else {
+                    tempStr = payHeaderBO.getRetailerName();
+                }
+
+                sb.append(doPrintFormatingLeft("CustName :" + tempStr, 30));
+                sb.append(" ");
+                sb.append(LineFeed(1));
+
+                tempStr = "CustCode :" + payHeaderBO.getRetailerCode();
+                sb.append(doPrintFormatingLeft(tempStr, 30));
+                sb.append(" ");
+                sb.append(LineFeed(1));
+
+                for (int i = 0; i < 37; i++) {
+                    sb.append("-");
+                }
+                sb.append(LineFeed(1));
+
+                sb.append(doPrintFormatingLeft("Inv No", 10));
+                sb.append(LineFeed(1));
+
+                //sb.append(doPrintAddSpace(0, 3));
+                sb.append(doPrintFormatingLeft("Type", 7));
+                sb.append(doPrintAddSpace(0, 1));
+                sb.append(doPrintFormatingLeft("Date", 10));
+                sb.append(doPrintAddSpace(0, 1));
+                sb.append(doPrintFormatingLeft("Chq Num", 8));
+                sb.append(doPrintFormatingLeft(String.format("%10s", "Total"), 10));
+                sb.append(LineFeed(1));
+
+                for (int i = 0; i < 36; i++) {
+                    sb.append("-");
+                }
+                sb.append(LineFeed(1));
+
+                double totalDiscount = 0;
+                for (PaymentBO payBO : paymentList) {
+
+                    tempStr = payBO.getBillNumber() != null ? payBO.getBillNumber() : getResources().getString(R.string.advance_payment);
+                    sb.append(doPrintFormatingLeft(tempStr, 36));
+                    sb.append(LineFeed(1));
+
+                    if (payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)) {
+                        if (payBO.getReferenceNumber().startsWith("AP")) {
+                            tempStr = getResources().getString(R.string.advance_payment);
+                        } else {
+                            tempStr = getResources().getString(R.string.credit_note);
+                        }
+                    } else {
+                        if (payBO.getCashMode().equals(StandardListMasterConstants.CASH)) {
+                            tempStr = getResources().getString(R.string.cash);
+                        } else if (payBO.getCashMode().equals(StandardListMasterConstants.CHEQUE)) {
+                            tempStr = getResources().getString(R.string.cheque);
+                        } else if (payBO.getCashMode().equals(StandardListMasterConstants.DEMAND_DRAFT)) {
+                            tempStr = "DD";
+                        } else if (payBO.getCashMode().equals(StandardListMasterConstants.RTGS)) {
+                            tempStr = getResources().getString(R.string.rtgs);
+                        } else if (payBO.getCashMode().equals(StandardListMasterConstants.MOBILE_PAYMENT)) {
+                            tempStr = "Mob.Pay";
+                        }
+                    }
+
+                    //sb.append(doPrintAddSpace(0, 4));
+                    sb.append(doPrintFormatingLeft(tempStr, 7));
+                    sb.append(doPrintAddSpace(0, 1));
+                    sb.append(doPrintFormatingLeft(payBO.getChequeDate() + "", 10));
+                    sb.append(doPrintAddSpace(0, 1));
+
+                    if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE) && !payBO.getCashMode().equals(StandardListMasterConstants.ADVANCE_PAYMENT))
+                        tempStr = "" + payBO.getChequeNumber();
+                    else {
+                        if (payBO.getReferenceNumber().contains("AP"))
+                            tempStr = "" + (payBO.getReferenceNumber().replace(" ", ""));
+                        else
+                            tempStr = "" + payBO.getReferenceNumber();
+                    }
+                    sb.append(doPrintFormatingLeft(tempStr, 9));
+                    sb.append(doPrintFormatingLeft(String.format("%10s", bmodel.formatValueBasedOnConfig(payBO.getAmount())), 10));
+                    sb.append(LineFeed(1));
+
+                    if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE))
+                        total += payBO.getAmount();
+                    totalDiscount += payBO.getAppliedDiscountAmount();
+
+                }
+                for (int i = 0; i < 36; i++) {
+                    sb.append("-");
+                }
+                sb.append(LineFeed(1));
+
+                if (totalDiscount > 0) {
+                    sb.append(doPrintFormatingLeft("Discount ", 10));
+                    sb.append(doPrintAddSpace(0, 18));
+                    sb.append(doPrintFormatingRight(bmodel.formatValueBasedOnConfig(totalDiscount), 13));
+                    sb.append(LineFeed(1));
+                }
+                sb.append(doPrintFormatingLeft("Total ", 7));
+                sb.append(doPrintAddSpace(0, 15));
+                sb.append(doPrintFormatingRight(String.format("%14s", bmodel.formatValueBasedOnConfig(total)), 13));
+                sb.append(LineFeed(1));
+
+                for (int i = 0; i < 36; i++) {
+                    sb.append("-");
+                }
+                sb.append(LineFeed(1));
+
+                sb.append(LineFeed(1));
+                sb.append(doPrintFormatingLeft("Comments: ----------------------------------------------", 36));
+                sb.append(LineFeed(2));
+                sb.append(doPrintFormatingLeft("Signature: ---------------------------------------------", 36));
+                sb.append(LineFeed(2));
                 sb.append(LineFeed(2));
 
                 return sb.toString();

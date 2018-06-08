@@ -94,7 +94,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int channelID;
     private int subchannelid;
     private int classid, categoryid;
-    private float creditLimit;
+    private double creditLimit;
     private double monthly_target;
     private double monthly_acheived;
     private double daily_target;
@@ -624,11 +624,11 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.monthly_acheived = monthly_acheived;
     }
 
-    public float getCreditLimit() {
+    public double getCreditLimit() {
         return creditLimit;
     }
 
-    public void setCreditLimit(float creditLimit) {
+    public void setCreditLimit(double creditLimit) {
         this.creditLimit = creditLimit;
     }
 

@@ -124,4 +124,7 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
         if (messagetv != null)
             messagetv.setText(msg);
     }
+
+
+
 }

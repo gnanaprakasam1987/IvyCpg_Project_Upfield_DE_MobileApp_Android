@@ -1377,7 +1377,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 stockCheckPresenter.hideSpecialFilter();
 
             boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-            if(businessModel.configurationMasterHelper.IS_BAR_CODE_STOCK_CHECK) {
+            if (businessModel.configurationMasterHelper.IS_BAR_CODE_STOCK_CHECK) {
                 menu.findItem(R.id.menu_barcode).setVisible(true);
             }
             menu.findItem(R.id.menu_next).setVisible(false);
@@ -2040,26 +2040,30 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         int totalAvailableProduts = 0;
         int totalownedProducts = 0;
-        for (ProductMasterBO bo : stockList) {
+        try {
+            for (ProductMasterBO bo : stockList) {
 
-            for (LocationBO locationBO : bo.getLocations()) {
+                for (LocationBO locationBO : bo.getLocations()) {
 
-                if ((locationBO.getShelfCase() > 0 || locationBO.getShelfOuter() > 0 || locationBO.getShelfPiece() > 0)
-                        || (locationBO.getAvailability() > -1)) {
-                    totalAvailableProduts += 1;
-                    if (bo.getOwn() == 1) {
-                        totalownedProducts += 1;
+                    if ((locationBO.getShelfCase() > 0 || locationBO.getShelfOuter() > 0 || locationBO.getShelfPiece() > 0)) {
+                        if (locationBO.getAvailability() > -1) {
+                            totalAvailableProduts += 1;
+                        }
+                        if (locationBO.getAvailability() == 1 && bo.getOwn() == 1) {
+                            totalownedProducts += 1;
+                        }
                     }
                     break;
                 }
             }
-        }
-
-        tv_total_stockCheckedProducts.setText(totalAvailableProduts + "");
-        tv_total_products.setText("/" + stockList.size());
-        if (stockList.size() > 0) {
-            businessModel.setAvailablilityShare(businessModel.formatPercent(((double) totalownedProducts / stockList.size()) * 100));
-            tv_sharePercent.setText(businessModel.getAvailablilityShare());
+            tv_total_stockCheckedProducts.setText(totalAvailableProduts + "");
+            tv_total_products.setText("/" + stockList.size());
+            if (stockList.size() > 0) {
+                businessModel.setAvailablilityShare(businessModel.formatPercent(((double) totalownedProducts / stockList.size()) * 100));
+                tv_sharePercent.setText(businessModel.getAvailablilityShare());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

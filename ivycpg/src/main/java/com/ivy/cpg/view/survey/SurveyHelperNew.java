@@ -6,6 +6,7 @@ import android.database.DatabaseUtils;
 import android.text.TextUtils;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -243,7 +244,7 @@ public class SurveyHelperNew {
             String channelId = "";
 
             /* Get location id and its parent id */
-                          locIdScheme = "," + bmodel.channelMasterHelper.getLocationHierarchy(context);
+            locIdScheme = "," + bmodel.channelMasterHelper.getLocationHierarchy(context);
 
 
             /* Get channel id and its parent id */
@@ -953,8 +954,11 @@ public class SurveyHelperNew {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
-                    if ((!qus.getSelectedAnswer().isEmpty()
-                            || !qus.getSelectedAnswerIDs().isEmpty()) && !qus.getQuestionType().equals("EMAIL")) {
+                    if (qus.getSelectedAnswer() != null && (!qus.getSelectedAnswer().isEmpty() || !qus.getSelectedAnswer().
+                            contains(context.getResources().
+                                    getString(R.string.plain_select))) && qus.getSelectedAnswerIDs() != null
+                            && (!qus.getSelectedAnswerIDs().isEmpty() ||
+                            !qus.getSelectedAnswerIDs().contains(-1))) {
                         return true;
                     }
                     if (qus.getQuestionType().equals("EMAIL")) {
@@ -1787,26 +1791,25 @@ public class SurveyHelperNew {
                         if (surveyBO.getSurveyID() == c.getInt(0)) {
 
                             //Load Main Question Last transaction data
-                                for (QuestionBO questionBO : surveyBO.getQuestions()) {
-                                    if (questionBO.getQuestionID() == c.getInt(1)) {
+                            for (QuestionBO questionBO : surveyBO.getQuestions()) {
+                                if (questionBO.getQuestionID() == c.getInt(1)) {
 
-                                        questionBO.setSelectedAnswerID(c.getInt(2));
-                                        questionBO.setSelectedAnswer(c.getString(3));
+                                    questionBO.setSelectedAnswerID(c.getInt(2));
+                                    questionBO.setSelectedAnswer(c.getString(3));
 
-                                    }
                                 }
+                            }
 
 
                             //Load sub question Last transaction data
-                                for (QuestionBO subQuestioBo : getDependentQuestions()) {
-                                    if (subQuestioBo.getQuestionID() == c.getInt(1)) {
-                                        subQuestioBo.setIsSubQuestion(1);
-                                        subQuestioBo.setSelectedAnswerID(c.getInt(2));
-                                        subQuestioBo.setSelectedAnswer(c.getString(3));
-                                        surveyBO.getQuestions().add(subQuestioBo);
-                                    }
+                            for (QuestionBO subQuestioBo : getDependentQuestions()) {
+                                if (subQuestioBo.getQuestionID() == c.getInt(1)) {
+                                    subQuestioBo.setIsSubQuestion(1);
+                                    subQuestioBo.setSelectedAnswerID(c.getInt(2));
+                                    subQuestioBo.setSelectedAnswer(c.getString(3));
+                                    surveyBO.getQuestions().add(subQuestioBo);
                                 }
-
+                            }
 
 
                         }
@@ -1829,54 +1832,56 @@ public class SurveyHelperNew {
         db.openDataBase();
 
         String uid = "0";
+        for (SurveyBO bo : getSurvey()) {
 
-        String sql = "SELECT uid FROM NewRetailerSurveyResultHeader WHERE"
-                + " retailerid = " + QT(retailerId);
+            String sql = "SELECT uid FROM NewRetailerSurveyResultHeader WHERE"
+                    + " retailerid = " + QT(retailerId);
 
-        Cursor answerHeaderCursor = db.selectSQL(sql);
-        if (answerHeaderCursor != null) {
-            if (answerHeaderCursor.moveToNext()) {
-                uid = answerHeaderCursor.getString(0);
+            Cursor answerHeaderCursor = db.selectSQL(sql);
+            if (answerHeaderCursor != null) {
+                if (answerHeaderCursor.moveToNext()) {
+                    uid = answerHeaderCursor.getString(0);
+                }
+                answerHeaderCursor.close();
             }
-            answerHeaderCursor.close();
-        }
 
-        if (!uid.equals("0")) {
-            String sql1 = "SELECT qid, answerid, Answer,surveyid,isSubQuest FROM NewRetailerSurveyResultDetail WHERE"
-                    + " uid = " + QT(uid);
-            Cursor c = db.selectSQL(sql1);
-            if (c != null) {
+            if (!uid.equals("0")) {
+                String sql1 = "SELECT qid, answerid, Answer,surveyid,isSubQuest FROM NewRetailerSurveyResultDetail WHERE"
+                        + " uid = " + QT(uid);
+                Cursor c = db.selectSQL(sql1);
+                if (c != null) {
 
-                while (c.moveToNext()) {
-                    if (c.getInt(4) == 0) {
-                        for (SurveyBO surveyBO : getSurvey()) {
-                            if (surveyBO.getSurveyID() == c.getInt(3)) {
+                    while (c.moveToNext()) {
+                        if (c.getInt(4) == 0) {
+                            for (SurveyBO surveyBO : getSurvey()) {
+                                if (surveyBO.getSurveyID() == c.getInt(3)) {
 
-                                for (QuestionBO questionBO : surveyBO.getQuestions()) {
-                                    if (questionBO.getQuestionID() == c.getInt(0)) {
+                                    for (QuestionBO questionBO : surveyBO.getQuestions()) {
+                                        if (questionBO.getQuestionID() == c.getInt(0)) {
 
-                                        questionBO.setSelectedAnswerID(c.getInt(1));
-                                        questionBO.setSelectedAnswer(c.getString(2));
+                                            questionBO.setSelectedAnswerID(c.getInt(1));
+                                            questionBO.setSelectedAnswer(c.getString(2));
 
+                                        }
                                     }
                                 }
-                            }
-
-                        }
-                    } else {
-
-                        for (QuestionBO subqBO : getDependentQuestions()) {
-                            if (subqBO.getQuestionID() == c.getInt(0)) {
-
-                                subqBO.setSelectedAnswerID(c.getInt(1));
-                                subqBO.setSelectedAnswer(c.getString(2));
 
                             }
+                        } else {
+
+                            for (QuestionBO subqBO : getDependentQuestions()) {
+                                if (subqBO.getQuestionID() == c.getInt(0)) {
+
+                                    subqBO.setSelectedAnswerID(c.getInt(1));
+                                    subqBO.setSelectedAnswer(c.getString(2));
+
+                                }
+                            }
                         }
+
                     }
-
+                    c.close();
                 }
-                c.close();
             }
 
         }
@@ -2518,7 +2523,7 @@ public class SurveyHelperNew {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY07'and menu_type="
-                            + bmodel.QT(menucode)+" and  ForSwitchSeller = 0");
+                            + bmodel.QT(menucode) + " and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_SMS_IN_SURVEY = true;
@@ -2528,7 +2533,7 @@ public class SurveyHelperNew {
             }
 
             c = db.selectSQL("select menu_type,RField from HhtModuleMaster where flag=1 and hhtcode='SURVEY06'and menu_type="
-                    + bmodel.QT(menucode)+" and  ForSwitchSeller = 0");
+                    + bmodel.QT(menucode) + " and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_PHOTOCAPTURE_IN_SURVEY = true;
@@ -2538,7 +2543,7 @@ public class SurveyHelperNew {
             }
             // Survey12 to enable multiple photo capture
             c = db.selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY12'and menu_type="
-                    + bmodel.QT(menucode)+" and  ForSwitchSeller = 0");
+                    + bmodel.QT(menucode) + " and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.ENABLE_MULTIPLE_PHOTO = true;
@@ -2548,7 +2553,7 @@ public class SurveyHelperNew {
             }
 
             c = db.selectSQL("select * from HhtModuleMaster where flag=1 and hhtcode='SURVEY13'and menu_type="
-                    + bmodel.QT(menucode)+" and  ForSwitchSeller = 0");
+                    + bmodel.QT(menucode) + " and  ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
                     this.SHOW_DRAGDROP_IN_SURVEY = true;

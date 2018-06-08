@@ -35,7 +35,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
     private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    OrderDeliveryPresenterImpl(Context context,BusinessModel mBModel) {
+    OrderDeliveryPresenterImpl(Context context, BusinessModel mBModel) {
         this.bmodel = mBModel;
         this.context = context;
         orderDeliveryHelper = OrderDeliveryHelper.getInstance(context);
@@ -52,9 +52,9 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
         Vector<ProductMasterBO> productList = orderDeliveryHelper.getOrderedProductMasterBOS();
 
-        if(from.equalsIgnoreCase("Edit")){
+        if (from.equalsIgnoreCase("Edit")) {
             orderDeliveryView.updateProductEditValues(productList);
-        }else{
+        } else {
             orderDeliveryView.updateProductViewValues(productList);
         }
 
@@ -73,17 +73,17 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
         double orderValue = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTotalValue());
         double totalTaxVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount());
         double orderTaxIncludeVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount()) +
-                                    orderValue - (isEdit?0.0:discountVal);
+                orderValue - (isEdit ? 0.0 : discountVal);
 
         orderDeliveryView.updateAmountDetails(String.valueOf(bmodel.formatValueBasedOnConfig(orderValue)),
-                                                isEdit?"0.0":String.valueOf(bmodel.formatValueBasedOnConfig(discountVal)),
-                                                String.valueOf(bmodel.formatValueBasedOnConfig(totalTaxVal)),
-                                                String.valueOf(bmodel.formatValueBasedOnConfig(orderTaxIncludeVal)));
+                isEdit ? "0.0" : String.valueOf(bmodel.formatValueBasedOnConfig(discountVal)),
+                String.valueOf(bmodel.formatValueBasedOnConfig(totalTaxVal)),
+                String.valueOf(bmodel.formatValueBasedOnConfig(orderTaxIncludeVal)));
     }
 
     @Override
     public void saveOrderDeliveryDetail(final boolean isEdit, final String orderId) {
-        if(orderDeliveryHelper.getTotalProductQty() == 0)
+        if (orderDeliveryHelper.getTotalProductQty() == 0)
             Toast.makeText(
                     context,
                     context.getResources().getString(R.string.no_ordered_products_found),
@@ -91,13 +91,13 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
         else if (orderDeliveryHelper.isSIHAvailable(isEdit)) {
 
             final CommonDialog dialog = new CommonDialog(context.getApplicationContext(), context, "", context.getResources().getString(R.string.order_delivery_approve), false,
-                    context.getResources().getString(R.string.ok),context.getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                    context.getResources().getString(R.string.ok), context.getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
-                    new UpdateOrderDeliveryTable(orderId,context,isEdit).execute();
+                    new UpdateOrderDeliveryTable(orderId, context, isEdit).execute();
                 }
 
-            }, new CommonDialog.negativeOnClickListener(){
+            }, new CommonDialog.negativeOnClickListener() {
                 @Override
                 public void onNegativeButtonClick() {
 
@@ -117,20 +117,20 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
     @Override
     public void doPrintActivity(String orderId) {
-        bmodel.mCommonPrintHelper.xmlRead(".xml", false,orderDeliveryHelper.preparePrintData(context,orderId) , null);
+        bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null);
 
         bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                 StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
         orderDeliveryView.updateSaveStatus(true);
     }
 
-    public class UpdateOrderDeliveryTable extends AsyncTask<Void,Void,Boolean> {
+    public class UpdateOrderDeliveryTable extends AsyncTask<Void, Void, Boolean> {
 
         private String orderId;
         private Context context;
         private boolean isEdit;
 
-        private UpdateOrderDeliveryTable(String orderId, Context context,boolean isEdit){
+        private UpdateOrderDeliveryTable(String orderId, Context context, boolean isEdit) {
             this.orderId = orderId;
             this.context = context;
             this.isEdit = isEdit;
@@ -138,7 +138,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            return orderDeliveryHelper.updateTableValues(context, orderId,isEdit);
+            return orderDeliveryHelper.updateTableValues(context, orderId, isEdit);
         }
 
         @Override
@@ -149,17 +149,16 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                         context.getResources().getString(R.string.invoice_generated),
                         Toast.LENGTH_SHORT).show();
 
-                if(!isEdit)
-                    orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size()-1).
-                            setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(context,orderId));
+                if (!isEdit)
+                    orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size() - 1).
+                            setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(context, orderId));
 
-                bmodel.mCommonPrintHelper.xmlRead(".xml", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null);
+                bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null);
 
                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
 
-            }
-            else
+            } else
                 Toast.makeText(
                         context,
                         context.getResources().getString(R.string.not_able_to_generate_invoice),
@@ -172,17 +171,18 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     class Print extends AsyncTask<String, Void, Boolean> {
 
         String orderId;
-        Print(String orderId){
+
+        Print(String orderId) {
             this.orderId = orderId;
         }
 
         protected void onPreExecute() {
-            orderDeliveryView.updatePrintStatus("Connecting...",true);
+            orderDeliveryView.updatePrintStatus("Connecting...", true);
         }
 
         @Override
         protected Boolean doInBackground(String... params) {
-            bmodel.mCommonPrintHelper.xmlRead(".xml", false,orderDeliveryHelper.preparePrintData(context,orderId) , null);
+            bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null);
 
             bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                     StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -203,10 +203,10 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
             if (isPrintSuccess) {
                 msg = context.getResources().getString(
                         R.string.printed_successfully);
-                orderDeliveryView.updatePrintStatus(msg,false);
+                orderDeliveryView.updatePrintStatus(msg, false);
             } else {
                 msg = "Error";
-                orderDeliveryView.updatePrintStatus(msg,false);
+                orderDeliveryView.updatePrintStatus(msg, false);
             }
         }
 
@@ -214,17 +214,17 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
     private void doInterMecPrint(String macAddress) {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        BluetoothDevice mBluetoothDevice ;
-        BluetoothSocket mBluetoothSocket ;
+        BluetoothDevice mBluetoothDevice;
+        BluetoothSocket mBluetoothSocket;
         OutputStream mOutputStream = null;
         try {
             if (macAddress.equals(""))
-                orderDeliveryView.updatePrintStatus("Mac address is empty...",true);
+                orderDeliveryView.updatePrintStatus("Mac address is empty...", true);
 
             mBluetoothDevice = mBluetoothAdapter.getRemoteDevice(macAddress);
             mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID);
             mBluetoothSocket.connect();
-            orderDeliveryView.updatePrintStatus("Printing...",true);
+            orderDeliveryView.updatePrintStatus("Printing...", true);
 
             for (int i = 0; i < mPrintCountInput; i++) {
                 mOutputStream = mBluetoothSocket.getOutputStream();
@@ -238,7 +238,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
             mBluetoothSocket.close();
         } catch (Exception e) {
             Commons.printException(e);
-            orderDeliveryView.updatePrintStatus("Connection Failed",false);
+            orderDeliveryView.updatePrintStatus("Connection Failed", false);
         }
     }
 

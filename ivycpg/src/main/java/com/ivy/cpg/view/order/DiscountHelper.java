@@ -363,8 +363,9 @@ public class DiscountHelper {
             sb.append("select Value,IsPercentage,Typeid,Description,ApplyLevelid,Moduleid,ProductId,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
             sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append("where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
+            sb.append(" distributorid=" + businessModel.getRetailerMasterBO().getDistributorId() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
-            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + ") OR ");
+            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchyForDiscount(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + ") OR ");
             sb.append(" locationid in(" + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + businessModel.getRetailerMasterBO().getAccountid() + " and Accountid!=0 ))");
             sb.append(" and dm.moduleid in(select ListId from StandardListMaster where ListCode='INVOICE') ");
@@ -485,7 +486,9 @@ public class DiscountHelper {
                 double discountValue = 0;
                 if (storeWiseDiscountBO.getIsPercentage() == 1) {
                     discountValue = totalOrderValue * storeWiseDiscountBO.getDiscount() / 100;
-                } else if (storeWiseDiscountBO.getType() == 0) {
+                } else {
+                    //Rajkumar - Type id is coming for Bill wise discount also..
+                    // So If it is not percentage type discount, then it is considered as amount type discount.
                     discountValue = storeWiseDiscountBO.getDiscount();
                 }
 

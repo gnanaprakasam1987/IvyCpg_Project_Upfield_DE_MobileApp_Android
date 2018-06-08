@@ -123,8 +123,67 @@ public class ChannelMasterHelper {
         }
     }
 
-    public String getChannelHierarchy(int channelId, Context mContext) {
+
+    /**
+     * @param channelId
+     * @return mapping channelID
+     */
+    public String getChannelHierarchyForDiscount(int channelId, Context mContext) {
         String sql, sql1 = "", str = "";
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            int mChildLevel = 0;
+            int mContentLevel = 0;
+            db.openDataBase();
+            Cursor c = db.selectSQL("select min(Sequence) as childlevel,(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId where ch.ChId=" + channelId + ") as contentlevel  from ChannelLevel");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    mChildLevel = c.getInt(0);
+                    mContentLevel = c.getInt(1);
+                }
+                c.close();
+            }
+
+            int loopEnd = mContentLevel - mChildLevel + 1;
+
+            for (int i = 2; i <= loopEnd; i++) {
+                sql1 = sql1 + " LM" + i + ".ChId";
+                if (i != loopEnd)
+                    sql1 = sql1 + ",";
+            }
+            sql = "select " + sql1 + "  from ChannelHierarchy LM1";
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN ChannelHierarchy LM" + i + " ON LM" + (i - 1)
+                        + ".ParentId = LM" + i + ".ChId";
+            sql = sql + " where LM1.ChId=" + channelId;
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    for (int i = 0; i < c.getColumnCount(); i++) {
+                        str = str + c.getString(i);
+                        if (c.getColumnCount() > 1 && i != c.getColumnCount())
+                            str = str + ",";
+                    }
+                    if (str.endsWith(","))
+                        str = str.substring(0, str.length() - 1);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        if (str.length() == 0)
+            str = "0";
+        return str;
+    }
+
+
+    public String getChannelHierarchy(int channelId, Context mContext) {
+        String sql, sql1 = "", str = "0,";
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

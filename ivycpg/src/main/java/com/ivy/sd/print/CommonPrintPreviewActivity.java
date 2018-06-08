@@ -110,7 +110,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
     private TextView mPrinterStatusTV;
     private Spinner mPrintCountSpinner;
     private TextView mPreviewTV;
-    private ImageView mDistLogoIV;
+    private ImageView mDistLogoIV, imageView_signature;
     private ArrayAdapter<CharSequence> mSpinnerAdapter;
 
     private BluetoothAdapter mBluetoothAdapter;
@@ -165,6 +165,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         mPrinterStatusTV = (TextView) findViewById(R.id.printer_status);
         mPrintCountSpinner = (Spinner) findViewById(R.id.print_count);
         mDistLogoIV = (ImageView) findViewById(R.id.dist_logo);
+        imageView_signature = findViewById(R.id.imageView_signature);
         mPreviewTV = (TextView) findViewById(R.id.preView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -477,18 +478,32 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 bodyPart.setText(body);
                 //Attachment
                 DataSource source;
-                if (sendMailAndLoadClass.equalsIgnoreCase("PRINT_FILE_ORDER") ||
-                        sendMailAndLoadClass.equalsIgnoreCase("HomeScreenTwoPRINT_FILE_ORDER")) {
-                    source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
-                            StandardListMasterConstants.PRINT_FILE_ORDER + orderHelper.getOrderId().replaceAll("\'", "") + ".txt");
+                if (bmodel.configurationMasterHelper.IS_ATTACH_PDF) {
+                    LayoutInflater inflater = (LayoutInflater) CommonPrintPreviewActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                    RelativeLayout root = (RelativeLayout) inflater.inflate(R.layout.activity_common_print_preview, null); //RelativeLayout is root view of my UI(xml) file.
+                    root.setDrawingCacheEnabled(true);
+                    screen = getBitmapFromView(CommonPrintPreviewActivity.this.getWindow().findViewById(R.id.root_print));
+                    createPdf(StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber);
+                   /* File newFile = new File(Environment.getExternalStorageDirectory().getPath() + "/IvyInvoice/"
+                            , StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".pdf");*/
+                    source = new FileDataSource(Environment.getExternalStorageDirectory().getPath() + "/" + "IvyInvoice" + "/" +
+                            StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".pdf");
                     bodyPart.setDataHandler(new DataHandler(source));
-                    bodyPart.setFileName("OrderDetails" + ".txt");
-                }
-                if (sendMailAndLoadClass.equalsIgnoreCase("PRINT_FILE_INVOICE")) {
-                    source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
-                            StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".txt");
-                    bodyPart.setDataHandler(new DataHandler(source));
-                    bodyPart.setFileName("InvoiceDetails" + ".txt");
+                    bodyPart.setFileName("OrderDetails" + ".pdf");
+                } else {
+                    if (sendMailAndLoadClass.equalsIgnoreCase("PRINT_FILE_ORDER") ||
+                            sendMailAndLoadClass.equalsIgnoreCase("HomeScreenTwoPRINT_FILE_ORDER")) {
+                        source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
+                                StandardListMasterConstants.PRINT_FILE_ORDER + orderHelper.getOrderId().replaceAll("\'", "") + ".txt");
+                        bodyPart.setDataHandler(new DataHandler(source));
+                        bodyPart.setFileName("OrderDetails" + ".txt");
+                    }
+                    if (sendMailAndLoadClass.equalsIgnoreCase("PRINT_FILE_INVOICE")) {
+                        source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
+                                StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".txt");
+                        bodyPart.setDataHandler(new DataHandler(source));
+                        bodyPart.setFileName("InvoiceDetails" + ".txt");
+                    }
                 }
 
 
@@ -665,6 +680,15 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 mDistLogoIV.setImageBitmap(bmp);
             }
 
+            if (bmodel.mCommonPrintHelper.isSignatureEnabled
+                    && bmodel.mCommonPrintHelper.signatureName != null
+                    && !bmodel.mCommonPrintHelper.signatureName.equals("")) {
+                imageView_signature.setVisibility(View.VISIBLE);
+                Bitmap bmp = BitmapFactory.decodeStream(getSignature());
+                imageView_signature.setImageBitmap(bmp);
+            }
+
+
             mPreviewTV.setText(bmodel.mCommonPrintHelper.getInvoiceData().toString().replace("#B#", "").replace("print_type", "").replace("print_no", "").replace("print_title", ""));
 
         } catch (Exception e) {
@@ -695,7 +719,33 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             if (f.isDirectory()) {
                 File files[] = f.listFiles(new FilenameFilter() {
                     public boolean accept(File directory, String fileName) {
-                        return fileName.startsWith("dist_logo");
+                        return fileName.startsWith("client_banner");
+                    }
+                });
+
+                for (File temp : files) {
+                    xmlFile = new FileInputStream(temp);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return xmlFile;
+    }
+
+    private InputStream getSignature() {
+        InputStream xmlFile = null;
+        try {
+
+            String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName;
+
+            File f = new File(path);
+            if (f.isDirectory()) {
+                File files[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
+                        return fileName.startsWith(bmodel.mCommonPrintHelper.signatureName);
                     }
                 });
 
@@ -757,6 +807,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         ZebraPrinter zebraPrinter = null;
         //InputStream inputStream;
         ZebraImageI zebraImageI = null;
+        ZebraImageI zebraSignatureImage = null;
         try {
 
             if (macAddress.equals(""))
@@ -774,6 +825,17 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 }
             }
 
+            if (bmodel.mCommonPrintHelper.isSignatureEnabled) {
+                if (zebraPrinter == null)
+                    zebraPrinter = ZebraPrinterFactory.getInstance(zebraPrinterConnection);
+
+                Bitmap bitmap = BitmapFactory.decodeStream(getSignature());
+                if (bitmap != null) {
+                    Bitmap resizeBitMap = Bitmap.createScaledBitmap(bitmap, widthImage, heightImage, false);
+                    zebraSignatureImage = ZebraImageFactory.getImage(resizeBitMap);
+                }
+            }
+
             if (zebraPrinterConnection.isConnected())
                 updateStatus("Printing...");
 
@@ -786,9 +848,24 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                         if (zebraImageI != null) {
                             zebraPrinter.printImage(zebraImageI, 230, 0, -1, -1, false);
                         }
-                        mImagePrintCount++;
                     }
+
                     zebraPrinterConnection.write(getDataZebra());
+
+                    if (bmodel.mCommonPrintHelper.isSignatureEnabled) {
+                        zebraPrinterConnection.write("! UTILITIES\r\nIN-MILLIMETERS\r\nSETFF 1 0\r\nPRINT\r\n".getBytes());
+                        //arg : image,x,y,width,height
+                        // - default height and width will be taken if it mentioned as "-1"
+                        if (zebraSignatureImage != null) {
+                            zebraPrinter.printImage(zebraSignatureImage, 230, 0, -1, -1, false);
+                        }
+                    }
+
+                    if (bmodel.mCommonPrintHelper.isLogoEnabled || bmodel.mCommonPrintHelper.isSignatureEnabled) {
+                        mImagePrintCount++;
+
+                    }
+
                     mDataPrintCount++;
                     mPrintCount++;
                     mTotalNumbersPrinted++;
@@ -861,16 +938,15 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     tempsb.append("\n\r");
 
                 } else {
-                        tempsb.append(s);
-                        tempsb.append("\n\r");
+                    tempsb.append(s);
+                    tempsb.append("\n\r");
 
                 }
             }
 
 
             byte[] result;
-                result = String.valueOf(tempsb).getBytes();
-
+            result = String.valueOf(tempsb).getBytes();
 
 
             return result;
@@ -882,6 +958,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         return new byte[0];
 
     }
+
     private byte[] getDataZebra() {
 
         try {
@@ -1084,7 +1161,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     R.string.printed_successfully);
         } else {
             updateStatus("Printer error.");
-            msg = "Error";
+            msg = getResources().getString(R.string.error_connecting_printer);
         }
         if (commonDialog != null && commonDialog.isShowing()) {
             commonDialog.dismiss();

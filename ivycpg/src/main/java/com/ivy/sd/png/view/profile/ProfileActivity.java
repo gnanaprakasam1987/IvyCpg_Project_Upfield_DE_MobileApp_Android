@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -105,6 +106,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -115,10 +117,13 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
-import static com.ivy.sd.png.asean.view.R.id.tab_layout;
 
-public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearByRetailerDialog.NearByRetailerInterface, MapWrapperLayout.OnDragListener,
-        CommonReasonDialog.AddNonVisitListener, View.OnClickListener,RetailerInfo {
+
+public class ProfileActivity extends IvyBaseActivityNoActionBar
+        implements NearByRetailerDialog.NearByRetailerInterface,
+        MapWrapperLayout.OnDragListener,
+        CommonReasonDialog.AddNonVisitListener,
+        View.OnClickListener,RetailerInfo {
 
     private static final String MENU_VISIT = "Trade Coverage";
     private static final String MENU_PLANNING = "Day Planning";
@@ -164,7 +169,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     private GoogleMap mMap;
     private RetailerMasterBO retailerObj;
-    private Timer timer;
+
     private LatLng retLatLng, curLatLng;
     private OTPPasswordDialog otpPasswordDialog;
     private android.content.DialogInterface.OnDismissListener otpPasswordDismissListenerNew;
@@ -192,11 +197,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     private Timer mLocTimer;
     private LocationFetchTimer timerTask;
+
     private AlertDialog mLocationAlertDialog;
 
     private DownloadProductsAndPrice downloadProductsAndPrice;
 
     private String DISTRIBUTOR_PROFILE = "";
+
+    Handler handler=null;
+    Runnable runnable=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,8 +230,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        is7InchTablet = this.getResources().getConfiguration()
-                .isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
+        is7InchTablet = this.getResources().getConfiguration().isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
 
         otpPasswordDismissListenerNew = new DialogInterface.OnDismissListener() {
             @Override
@@ -255,7 +263,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
 
         downloadProductsAndPrice = new DownloadProductsAndPrice();
+
         new LoadProfileConfigs().execute();
+
         bmodel.isModuleDone();
         new loadActivityMenu().execute();
 
@@ -268,6 +278,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     mMap = googleMap;
+                    //Disable Map Toolbar:
+                    mMap.getUiSettings().setMapToolbarEnabled(false);
+                    mMap.getUiSettings().setZoomControlsEnabled(false);
                 }
             });
 
@@ -314,7 +327,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         linearLayout = findViewById(R.id.bottom_layout);
         bottomView = findViewById(R.id.reason_view);
-        tabLayout = findViewById(tab_layout);
+        tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.pager);
 
         startVisitBtn = findViewById(R.id.start_visit);
@@ -378,8 +391,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             if ((bmodel.labelsMasterHelper.applyLabels("profile") != null) &&
                     (bmodel.labelsMasterHelper.applyLabels("profile").length() > 0)) {
                 profile_title = bmodel.labelsMasterHelper.applyLabels("profile");
-                tabLayout.addTab(tabLayout.newTab()
-                        .setText(profile_title));
+                tabLayout.addTab(tabLayout.newTab().setText(profile_title));
             } else {
                 profile_title = getResources().getString(R.string.profile);
                 tabLayout.addTab(tabLayout.newTab().setText(profile_title));
@@ -686,11 +698,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
 
         try {
-            int length = bmodel.retailerMasterBO.getRetailerName().indexOf("/");
-            if (length == -1)
-                length = bmodel.retailerMasterBO.getRetailerName().length();
-            title = bmodel.retailerMasterBO.getRetailerName().substring(0,
-                    length);
+            if(bmodel.retailerMasterBO.getRetailerName()!=null ){
+                int length = bmodel.retailerMasterBO.getRetailerName().indexOf("/");
+                if (length == -1)
+                    length = bmodel.retailerMasterBO.getRetailerName().length();
+                title = bmodel.retailerMasterBO.getRetailerName().substring(0,
+                        length);
+            }
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -895,7 +909,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 int padding = (int) (width * 0.10); // offset from edges of the map 12% of screen
 
                 if (firstLevZoom) {
-                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width - 500, height - 500, padding);
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width - 500,
+                            height - 500, padding);
                     mMap.moveCamera(cu);
                     mMap.animateCamera(cu);
 
@@ -1045,6 +1060,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         }
     }
 
+
     // Fetches data from url passed
     private class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -1069,7 +1085,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
     // load ActivityMenu
-    private class loadActivityMenu extends AsyncTask<String, Void, String> {
+    private  class loadActivityMenu extends AsyncTask<String, Void, String> {
 
         private Vector<ConfigureBO> menuDB;
         @Override
@@ -1124,7 +1140,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
         @Override
         protected void onPostExecute(String result) {
-            super.onPostExecute(result);
+            //super.onPostExecute(result);
             Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
             for (ConfigureBO conBo : profileConfig) {
                 if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
@@ -1242,6 +1258,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
             firstLevZoom = false;
     }
 
+    /** TimerTask Memory leaks has been fixed
+    * Removed Part-->  class MyTimerTask extends TimerTask from getMapView Method
+    * Addred Code-->New Handler and Runnable has been added in the @onStart Method
+    * Runnable has to remove when the activity is going  to stop */
+
     private void getMapView() {
 
         Commons.print("activity resume");
@@ -1260,14 +1281,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         } else {
             mapProgressBar.setVisibility(View.GONE);
         }
-
-        if (timer != null) {
-            timer.cancel();
-        }
-
-        timer = new Timer();
-        MyTimerTask myTimerTask = new MyTimerTask();
-        timer.schedule(myTimerTask, 400, 2000);
 
         if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG && isLatLong)
             if (!bmodel.locationUtil.isGPSProviderEnabled()) {
@@ -1350,18 +1363,24 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
     @Override
+    public void updaterProgressMsg(String msg) {
+        super.updaterProgressMsg(msg);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
         if (mLocTimer != null) {
             mLocTimer.cancel();
+            mLocTimer.purge();
         }
-
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
             mLocTimer = new Timer();
             timerTask = new LocationFetchTimer();
-            mLocTimer.schedule(timerTask, 0, 1000);
+            mLocTimer.schedule( timerTask, 0, 1000);
+
         }
 
     }
@@ -1371,6 +1390,35 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
         super.onStart();
         mUserByRetailerID = bmodel.getUserByRetailerID();
 
+        handler = new Handler();
+        runnable = new Runnable() {
+            public void run() {
+                lat = LocationUtil.latitude;
+                lng = LocationUtil.longitude;
+                try {
+                    Commons.print("lat:" + LocationUtil.latitude);
+                    retLatLng = new LatLng(retailerLat, retailerLng);
+                    curLatLng = new LatLng(lat, lng);
+                    if (lat != 0.0 && lng != 0.0)
+                        loadMapView(retLatLng, curLatLng);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                handler.postDelayed(this, 1000);
+            }
+        };
+        handler.postDelayed(runnable, 1000);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(handler!=null){
+            handler.removeCallbacks(runnable);
+            handler=null;
+            runnable=null;
+        }
     }
 
     @Override
@@ -1387,30 +1435,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
 
     }
 
-    private class MyTimerTask extends TimerTask {
 
-        @Override
-        public void run() {
-            lat = LocationUtil.latitude;
-            lng = LocationUtil.longitude;
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Commons.print("lat:" + LocationUtil.latitude);
-                        retLatLng = new LatLng(retailerLat, retailerLng);
-                        curLatLng = new LatLng(lat, lng);
-                        if (lat != 0.0 && lng != 0.0)
-                            loadMapView(retLatLng, curLatLng);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-
-    }
 
     @Override
     public void onBackPressed() {
@@ -1963,8 +1988,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                                     .getSubchannelid());
 
                     if (bmodel.productHelper.isSBDFilterAvaiable())
-                        SBDHelper.getInstance(ProfileActivity.this).loadSBDFocusData();
-
+                        SBDHelper.getInstance(ProfileActivity.this).loadSBDFocusData(getApplicationContext());
 
                     if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                         bmodel.batchAllocationHelper.downloadBatchDetails(bmodel
@@ -2249,6 +2273,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
     }
 
     class LocationFetchTimer extends TimerTask {
+
         private int count = bmodel.configurationMasterHelper.LOCATION_TIMER_PERIOD;
         public boolean isRunning = true;
 
@@ -2261,8 +2286,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar implements NearB
                 public void run() {
                     try {
                         count -= 1;
-                        //
-
                         if (count <= 0) {
 
                             if (mLocTimer != null) {

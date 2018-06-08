@@ -8,7 +8,6 @@ import com.ivy.sd.png.bo.FitScoreBO;
 import com.ivy.sd.png.bo.FitScoreChartBO;
 import com.ivy.sd.png.bo.HHTModuleBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
-import com.ivy.sd.png.bo.WeightageBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -25,10 +24,9 @@ public class FitScoreHelper {
     private Context mContext;
     private BusinessModel bmodel;
     private static FitScoreHelper instance = null;
-    private ArrayList<WeightageBO> weightageList = new ArrayList<>();
+    private ArrayList<ProductTaggingBO> weightageList = new ArrayList<>();
     private ArrayList<FitScoreBO> fitScoreList = new ArrayList<>();
     private ArrayList<HHTModuleBO> hhtModuleList = new ArrayList<>();
-    private ArrayList<ProductTaggingBO> productTaggingList = new ArrayList<>();
 
     private ArrayList<FitScoreChartBO> fitScoreChartList = new ArrayList<>();
 
@@ -44,11 +42,11 @@ public class FitScoreHelper {
         return instance;
     }
 
-    public ArrayList<WeightageBO> getWeightageList() {
+    public ArrayList<ProductTaggingBO> getWeightageList() {
         return weightageList;
     }
 
-    public void setWeightageList(ArrayList<WeightageBO> weightageList) {
+    public void setWeightageList(ArrayList<ProductTaggingBO> weightageList) {
         this.weightageList = weightageList;
     }
 
@@ -74,14 +72,6 @@ public class FitScoreHelper {
 
     public void setHhtModuleList(ArrayList<HHTModuleBO> hhtModuleList) {
         this.hhtModuleList = hhtModuleList;
-    }
-
-    public ArrayList<ProductTaggingBO> getProductTaggingList() {
-        return productTaggingList;
-    }
-
-    public void setProductTaggingList(ArrayList<ProductTaggingBO> productTaggingList) {
-        this.productTaggingList = productTaggingList;
     }
 
     public void getModules() {
@@ -113,7 +103,7 @@ public class FitScoreHelper {
 
     public void getWeightage(String criteriaID, String Module) {
 
-        WeightageBO weightageBO;
+        ProductTaggingBO productTaggingBO;
         weightageList = new ArrayList<>();
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -126,12 +116,12 @@ public class FitScoreHelper {
                             "where A.CriteriaID = " + criteriaID + " and A.Module ='" + Module + "' and CriteriaType = 'RETAILER'"); //MENU_STK_ORD
             if (c != null) {
                 while (c.moveToNext()) {
-                    weightageBO = new WeightageBO();
-                    weightageBO.setHeaderID(c.getInt(0));
-                    weightageBO.setProductID(c.getInt(1));
-                    weightageBO.setFromNorm(c.getInt(2));
-                    weightageBO.setScore(c.getInt(3));
-                    weightageList.add(weightageBO);
+                    productTaggingBO = new ProductTaggingBO();
+                    productTaggingBO.setHeaderID(c.getString(0));
+                    productTaggingBO.setPid(c.getString(1));
+                    productTaggingBO.setFromNorm(c.getInt(2));
+                    productTaggingBO.setWeightage(c.getInt(3));
+                    weightageList.add(productTaggingBO);
                 }
             }
             c.close();
@@ -141,106 +131,8 @@ public class FitScoreHelper {
         }
         setWeightageList(weightageList);
         if (weightageList.size() == 0) {
-            getTaggingDetailsforFitScore(Module);
-        }
-    }
-
-    public void getTaggingDetailsforFitScore(String Module) {
-        try {
-            String mappingId = "0", moduletypeid = "0", locationId = "0";
-            WeightageBO weightageBO;
-            weightageList = new ArrayList<>();
-
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-//            Cursor c1 = db
-//                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid FROM ProductTaggingCriteriaMapping PCM " +
-//                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid WHERE PM.TaggingTypelovID = "
-//                            + " (SELECT ListId FROM StandardListMaster WHERE ListCode = '"
-//                            + Module + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
-//            if (c1 != null) {
-//                if (c1.moveToNext()) {
-//                    if (c1.getString(0).equals("CHANNEL")) {
-//                        mappingId = bmodel.schemeDetailsMasterHelper.getChannelidForScheme(bmodel.getRetailerMasterBO().getSubchannelid()) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
-//                        if (c1.getInt(3) != 0)
-//                            locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
-//                    } else if (c1.getString(0).equals("DISTRIBUTOR"))
-//                        mappingId = bmodel.getRetailerMasterBO().getDistributorId() + "";
-//                    else if (c1.getString(0).equals("LOCATION")) {
-//                        locationId = bmodel.schemeDetailsMasterHelper.getLocationIdsForScheme() + "," + bmodel.getRetailerMasterBO().getLocationId();
-//                    } else if (c1.getString(0).equals("USER"))
-//                        mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
-//                    else if (c1.getString(0).equals("STORE")) {
-//                        mappingId = c1.getString(2);
-//                    }
-//
-//                    moduletypeid = c1.getString(1);
-//                }
-//                c1.close();
-//            }
-
-            StringBuilder productIds = new StringBuilder();
-//            Cursor c2 = db
-//                    .selectSQL("SELECT PM.GroupID, PGM.pid,PGM.FromNorm,PGM.Score FROM ProductTaggingCriteriaMapping PCM " +
-//                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
-//                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
-//                            "WHERE PM.TaggingTypelovID = " + moduletypeid +
-//                            " AND PCM.criteriaid IN(" + mappingId + ") AND locid IN(" + locationId + ") AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
-
-            Cursor c2 = db
-                    .selectSQL("SELECT PM.GroupID, PGM.pid,PGM.FromNorm,PGM.Weightage FROM ProductTaggingGroupMapping PGM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PGM.groupid " +
-                            "inner join StandardListMaster F on F.ListID = PM.TaggingTypelovID " +
-                            "WHERE F.ListCode = '" + Module + "'");
-
-            if (c2 != null) {
-                while (c2.moveToNext()) {
-                    weightageBO = new WeightageBO();
-                    weightageBO.setHeaderID(c2.getInt(0));
-                    weightageBO.setProductID(c2.getInt(1));
-                    weightageBO.setFromNorm(c2.getInt(2));
-                    weightageBO.setScore(c2.getInt(3));
-                    weightageList.add(weightageBO);
-                }
-                c2.close();
-            }
-            db.closeDB();
-            setWeightageList(weightageList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getTaggingDetails(String Module) {
-        try {
-            ProductTaggingBO taggingBO;
-            productTaggingList = new ArrayList<>();
-
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            Cursor c2 = db
-                    .selectSQL("SELECT PM.GroupID, PGM.pid,PGM.ToNorm FROM ProductTaggingGroupMapping PGM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PGM.groupid " +
-                            "inner join StandardListMaster F on F.ListID = PM.TaggingTypelovID " +
-                            "WHERE F.ListCode = '" + Module + "'");
-
-            if (c2 != null) {
-                while (c2.moveToNext()) {
-                    taggingBO = new ProductTaggingBO();
-                    taggingBO.setGroupid(c2.getString(0));
-                    taggingBO.setPid(c2.getString(1));
-                    taggingBO.setToNorm(c2.getString(2));
-                    productTaggingList.add(taggingBO);
-                }
-                c2.close();
-            }
-            db.closeDB();
-            setProductTaggingList(productTaggingList);
-        } catch (Exception e) {
-            e.printStackTrace();
+            bmodel.productHelper.getTaggingDetails(Module);
+            setWeightageList(bmodel.productHelper.getProductTaggingList());
         }
     }
 
@@ -268,10 +160,10 @@ public class FitScoreHelper {
 
     public int checkWeightage(String ProductID, int Qty) {
         try {
-            for (WeightageBO weightage : getWeightageList()) {
+            for (ProductTaggingBO weightage : getWeightageList()) {
                 if (weightage.getFromNorm() > 0)
-                    if (ProductID.equals(String.valueOf(weightage.getProductID())) && Qty >= weightage.getFromNorm()) {
-                        return weightage.getScore();
+                    if (ProductID.equals(String.valueOf(weightage.getPid())) && Qty >= weightage.getFromNorm()) {
+                        return weightage.getWeightage();
                     }
             }
 
@@ -283,9 +175,9 @@ public class FitScoreHelper {
 
     public int checkWeightage(String ProductID) {
         try {
-            for (WeightageBO weightage : getWeightageList()) {
-                if (ProductID.equals(String.valueOf(weightage.getProductID()))) {
-                    return weightage.getScore();
+            for (ProductTaggingBO weightage : getWeightageList()) {
+                if (ProductID.equals(String.valueOf(weightage.getPid()))) {
+                    return weightage.getWeightage();
                 }
             }
 
@@ -312,7 +204,7 @@ public class FitScoreHelper {
                 PID = "PID";
             }
             Cursor c = db
-                    .selectSQL("Select A.PName,D.FromNorm,case when (ifnull(D.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,E.Weightage,B.Score from productMaster A " +
+                    .selectSQL("Select distinct A.PName,D.FromNorm,case when (ifnull(D.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,E.Weightage,B.Score from productMaster A " +
                             Qry +
                             "inner join WeightageHeader C on C.CriteriaID = B.RetailerID " +
                             "inner join WeightageProductDetail D on C.HeaderID = D.HeaderID and D.ProductID = B." + PID + " " +
@@ -367,7 +259,7 @@ public class FitScoreHelper {
 //                            "inner join HHTModuleWeightage G on G.Module = F.ListCode " +
 //                            "WHERE C.CriteriaID = '" + retailerID + "' and G.Module = '" + Module + "'");
             Cursor c = db
-                    .selectSQL("Select A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from productMaster A " +
+                    .selectSQL("Select distinct A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from productMaster A " +
                             Qry +
                             "inner join StandardListMaster F on F.ListID = D.TaggingTypelovID " +
                             "inner join ProductTaggingMaster D ON D.TaggingTypelovID  =F.ListID " +
@@ -412,7 +304,7 @@ public class FitScoreHelper {
                 ListCode = "MERCH_INIT";
             }
             Cursor c = db
-                    .selectSQL("Select A.PosmDesc,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from PosmMaster A " +
+                    .selectSQL("Select distinct A.PosmDesc,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from PosmMaster A " +
                             "inner join AssetDetail B on A.Posmid = B.AssetID " +
                             "inner join AssetHeader C on C.Uid = B.UID " +
                             "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
@@ -452,7 +344,7 @@ public class FitScoreHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("Select A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score " +
+                    .selectSQL("Select distinct A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score " +
                             "from productMaster A inner join PromotionDetail B on A.Pid = B.BrandID " +
                             "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "'" +
                             " AND B.Score>0");
@@ -483,80 +375,22 @@ public class FitScoreHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            Cursor c = db
-                    .selectSQL("Select Ifnull(sum(0+Score),0),(Select Weightage from HhtModuleWeightage where Module ='" + DataMembers.FIT_STOCK + "' ) " +
-                            "from ClosingStockHeader where RetailerID = '" + retailerID + "'");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    FitScoreChartBO fitChart = new FitScoreChartBO();
-                    fitChart.setAchieved(SDUtil.roundIt(c.getDouble(0), 2));
-                    fitChart.setTarget(SDUtil.roundIt(c.getDouble(1), 2));
-                    fitChart.setModule(DataMembers.FIT_STOCK);
-                    fitScoreChartList.add(fitChart);
-                    weightage = weightage + c.getDouble(0);
-
+            for (HHTModuleBO hhtModule : hhtModuleList) {
+                Cursor c = db
+                        .selectSQL("Select Ifnull(A.Score,0),A.Weightage from RetailerScoreDetails A inner join RetailerScoreHeader B " +
+                                "on A.Tid = B.Tid where B.RetailerID = '" + retailerID + "' and A.ModuleCode ='" + hhtModule.getModule() + "'");
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        FitScoreChartBO fitChart = new FitScoreChartBO();
+                        fitChart.setAchieved(SDUtil.roundIt(c.getDouble(0), 2));
+                        fitChart.setTarget(SDUtil.roundIt(c.getDouble(1), 2));
+                        fitChart.setModule(hhtModule.getModule());
+                        fitScoreChartList.add(fitChart);
+                        weightage = weightage + c.getDouble(0);
+                    }
                 }
+                c.close();
             }
-            c.close();
-            c = db
-                    .selectSQL("Select Ifnull(sum(0+Score),0),(Select Weightage from HhtModuleWeightage where Module ='" + DataMembers.FIT_PRICE + "' ) " +
-                            "from PriceCheckHeader where RetailerID = '" + retailerID + "'");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    FitScoreChartBO fitChart = new FitScoreChartBO();
-                    fitChart.setAchieved(SDUtil.roundIt(c.getDouble(0), 2));
-                    fitChart.setTarget(SDUtil.roundIt(c.getDouble(1), 2));
-                    fitChart.setModule(DataMembers.FIT_PRICE);
-                    fitScoreChartList.add(fitChart);
-                    weightage = weightage + c.getDouble(0);
-                }
-            }
-            c.close();
-            c = db
-                    .selectSQL("Select Ifnull(sum(0+Score),0),(Select Weightage from HhtModuleWeightage where Module ='" + DataMembers.FIT_ASSET + "' ) " +
-                            "from AssetHeader inner join StandardListMaster on ListID = TypeLovID " +
-                            "where RetailerID = '" + retailerID + "'  and ListCode ='MERCH'");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    FitScoreChartBO fitChart = new FitScoreChartBO();
-                    fitChart.setAchieved(SDUtil.roundIt(c.getDouble(0), 2));
-                    fitChart.setTarget(SDUtil.roundIt(c.getDouble(1), 2));
-                    fitChart.setModule(DataMembers.FIT_ASSET);
-                    fitScoreChartList.add(fitChart);
-                    weightage = weightage + c.getDouble(0);
-                }
-            }
-            c.close();
-            c = db
-                    .selectSQL("Select Ifnull(sum(0+Score),0),(Select Weightage from HhtModuleWeightage where Module ='" + DataMembers.FIT_POSM + "' ) " +
-                            "from AssetHeader inner join StandardListMaster on ListID = TypeLovID " +
-                            "where RetailerID = '" + retailerID + "'  and ListCode ='MERCH_INIT'");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    FitScoreChartBO fitChart = new FitScoreChartBO();
-                    fitChart.setAchieved(SDUtil.roundIt(c.getDouble(0), 2));
-                    fitChart.setTarget(SDUtil.roundIt(c.getDouble(1), 2));
-                    fitChart.setModule(DataMembers.FIT_POSM);
-                    fitScoreChartList.add(fitChart);
-                    weightage = weightage + c.getDouble(0);
-                }
-            }
-            c.close();
-            c = db
-                    .selectSQL("Select Ifnull(sum(0+Score),0),(Select Weightage from HhtModuleWeightage where Module ='" + DataMembers.FIT_PROMO + "' ) " +
-                            "from PromotionHeader where RetailerID = '" + retailerID + "'");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    FitScoreChartBO fitChart = new FitScoreChartBO();
-                    fitChart.setAchieved(SDUtil.roundIt(c.getDouble(0), 2));
-                    fitChart.setTarget(SDUtil.roundIt(c.getDouble(1), 2));
-                    fitChart.setModule(DataMembers.FIT_PROMO);
-                    fitScoreChartList.add(fitChart);
-                    weightage = weightage + c.getDouble(0);
-                }
-            }
-            c.close();
-            db.closeDB();
 
             FitScoreChartBO fitChart = new FitScoreChartBO();
             fitChart.setAchieved(SDUtil.roundIt(weightage, 2));
@@ -569,112 +403,4 @@ public class FitScoreHelper {
         setFitScoreChartList(fitScoreChartList);
     }
 
-//    public void getFitScore(String Module) {
-//
-//        FitScoreBO weightageBO;
-//        try {
-//            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-//                    DataMembers.DB_PATH);
-//            db.createDataBase();
-//            db.openDataBase();
-//            String Qry = "";
-//            if (Module.equals("MENU_STK_ORD")) {
-//                Qry = "left join ClosingStockDetail D on  D.RetailerID = A.CriteriaID and D.ProductID = B.ProductID ";
-//            } else if (Module.equals("MENU_PRICE")) {
-//                Qry = "left join PriceCheckDetail D on  D.RetailerID = A.CriteriaID and D.PID = B.ProductID ";
-//            }
-//            Cursor c = db
-//                    .selectSQL("Select A.HeaderID,A.CriteriaID,E.PName,B.FromNorm," +
-//                            "case when (ifnull(B.FromNorm,0)<ifnull(D.Score,0)) then 'Y' else 'N' end,C.Weightage,B.Score " +
-//                            "from WeightageHeader A inner join WeightageProductDetail B on A.headerID = B.headerID " +
-//                            "inner join HHTModuleWeightage C on C.Module = A.Module " +
-//                            Qry + " inner join ProductMaster E on E.PID = B.ProductID where A.Module = '" + Module + "'");
-//            if (c != null) {
-//                while (c.moveToNext()) {
-//                    weightageBO = new FitScoreBO();
-//                    weightageBO.setHeader(c.getString(2));
-//                    weightageBO.setTarget(c.getString(3));
-//                    weightageBO.setAchieved(c.getString(4));
-//                    weightageBO.setWeightage(c.getString(5));
-//                    weightageBO.setScore(c.getString(6));
-//                    fitScoreList.add(weightageBO);
-//                }
-//            }
-//            c.close();
-//            db.closeDB();
-//        } catch (Exception e) {
-//            Commons.printException(e);
-//        }
-//        setFitScoreList(fitScoreList);
-//    }
-
-//    public void getFitScoreforAsset(String Module, String Retailer) {
-//        FitScoreBO weightageBO;
-//        for (StandardListBO standardListBO : bmodel.productHelper.getInStoreLocation()) {
-//            ArrayList<AssetTrackingBO> mAssetTrackingList = standardListBO.getAssetTrackingList();
-//            if (mAssetTrackingList != null) {
-//                for (AssetTrackingBO assetBo : mAssetTrackingList) {
-//                    weightageBO = new FitScoreBO();
-//                    weightageBO.setHeader(assetBo.getAssetName());
-//                    weightageBO.setTarget(String.valueOf(assetBo.getTarget()));
-//                    weightageBO.setAchieved(c.getString(4));
-//                    weightageBO.setWeightage(c.getString(5));
-//                    weightageBO.setScore(c.getString(6));
-//                    fitScoreList.add(weightageBO);
-//                }
-//            }
-//        }
-//    }
-//
-//    public boolean isAssetorPosm(String ID, String retailerID) {
-//        boolean isHit = false;
-//        try {
-//            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-//                    DataMembers.DB_PATH);
-//            db.createDataBase();
-//            db.openDataBase();
-//            Cursor c = db
-//                    .selectSQL("Select Score from " + tableName + " where RetailerID ='" + retailerID + "'" +
-//                            " and ProductID = '" + ID + "'"); //MENU_STK_ORD
-//            if (c != null) {
-//                while (c.moveToNext()) {
-//                    isHit = (c.getInt(0) > 0);
-//                }
-//            }
-//            c.close();
-//            db.closeDB();
-//        } catch (Exception e) {
-//            Commons.printException(e);
-//        }
-//        return isHit;
-//    }
-//
-//    public boolean getHit(String ID, String retailerID, String Module) {
-//        boolean isHit = false;
-//        try {
-//            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-//                    DataMembers.DB_PATH);
-//            db.createDataBase();
-//            db.openDataBase();
-//            String tableName = "";
-//            if (Module.equals("MENU_ASSET") || Module.equals("MENU_POSM")) {
-//                tableName = "AssetDetail";
-//            } else if (Module.equals("MENU_PROMO")) {
-//                tableName = "PromotionDetail";
-//            }
-//            Cursor c = db
-//                    .selectSQL("Select Score from " + tableName + " where RetailerID ='" + retailerID + "'" +
-//                            " and ProductID = '" + ID + "'"); //MENU_STK_ORD
-//            if (c != null) {
-//                while (c.moveToNext()) {
-//                    isHit = (c.getInt(0) > 0);
-//                }
-//            }
-//            c.close();
-//            db.closeDB();
-//        } catch (Exception e) {
-//            Commons.printException(e);
-//        }
-//        return isHit;
-//    }
 }

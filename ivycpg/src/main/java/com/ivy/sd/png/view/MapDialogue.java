@@ -219,7 +219,7 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
                 layoutParams.setMargins(0, 0, 30, 30);
 
             }
-            showMyLocation(doubleConversion(lattitude), doubleConversion(longitude));
+            showMyLocation(truncateLocation(lattitude), truncateLocation(longitude));
 
 
             mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -228,7 +228,7 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
                     clickable = true;
                     Location mylLocation = mMap.getMyLocation();
                     if (mylLocation != null) {
-                        LatLng latLng = new LatLng(doubleConversion(mylLocation.getLatitude()), doubleConversion(mylLocation.getLongitude()));
+                        LatLng latLng = new LatLng(truncateLocation(mylLocation.getLatitude()), truncateLocation(mylLocation.getLongitude()));
                         showMeOnMap(latLng);
                         updateLocation(latLng);
                     }
@@ -532,7 +532,7 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
             }
 
 
-            showMyLocation(doubleConversion(lat), doubleConversion(lon));
+            showMyLocation(truncateLocation(lat), truncateLocation(lon));
 
         }
     }
@@ -604,8 +604,12 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
         return super.onOptionsItemSelected(item);
     }
 
-    //To avoid exponential value and trucate decimal digits to 10
-    public static double doubleConversion(Double aDouble) {
+    /**
+     * To avoid exponential value and truncate decimal digits to 10
+     * @param originalLocation Original Location
+     * @return Truncated location
+     */
+    private static double truncateLocation(Double originalLocation) {
 
         Double val = 0.0;
         try {
@@ -614,7 +618,7 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
             decimalFormat.setMinimumFractionDigits(2);
             decimalFormat.setMaximumFractionDigits(10);
 
-            val = Double.valueOf(decimalFormat.format(aDouble));
+            val = Double.valueOf(decimalFormat.format(originalLocation));
         }catch(Exception e){
             Commons.printException(e);
         }

@@ -30,11 +30,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
     private static final String CODE6 = "COV";
     private static final String CODE7 = "PRM";
     private static final String CODE8 = "MSL";
-    private static final String CODE9 = "TRN";
-    private static final String CODE10 = "AUB";
-    private static final String CODE11 = "ASP";
-    private static final String CODE12 = "ABV";
-    private static final String CODE13 = "INV";
+    private static final String CODE9 = "COVD";
+    private static final String CODE10 = "COL";
     private static final String CODE_EFF_VISIT = "EFV";
     private static final String CODE_EFF_SALE = "EFS";
     private static final String CODE_DROP_SIZE_INV = "DSZ_INVOICE";
@@ -92,7 +89,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 mFilterUser += ",";
         }
 
-        dashboardView.loadUserSpinner(mFilterUser,userArray);
+        dashboardView.loadUserSpinner(mFilterUser, userArray);
     }
 
     @Override
@@ -103,12 +100,6 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
         DailyReportBO dailrp = businessModel.getNoOfInvoiceAndValue();
         DailyReportBO dailyrp_order = businessModel.getNoOfOrderAndValue();
 
-        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
-            if (dashBoardBO.getCode().equalsIgnoreCase(CODE9) | dashBoardBO.getCode().equalsIgnoreCase(CODE10) || dashBoardBO.getCode().equalsIgnoreCase(CODE11) ||
-                    dashBoardBO.getCode().equalsIgnoreCase(CODE12)) {
-                dashBoardHelper.getCounterSalesDetail();
-            }
-        }
         for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
             if (dashBoardBO.getCode().equalsIgnoreCase(CODE1)) {
                 dashBoardBO.setKpiAcheived(outlet.getTotValues());
@@ -340,13 +331,16 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 }
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE9)) {
+                int plannedRetailerCount = getRetailerDetailWithDevation("P");
+                int plannedRetailerVisitCount = getRetailerDetailWithDevation("V");
 
-
-                dashBoardBO.setKpiAcheived(Integer.toString(dashBoardHelper.transactionPerDay));
+                dashBoardBO.setKpiAcheived(plannedRetailerVisitCount + "");
+                dashBoardBO.setKpiTarget(plannedRetailerCount + "");
+                int kpiAcheived = plannedRetailerVisitCount;
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (plannedRetailerCount);
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -355,8 +349,9 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 if (kpiTarget == 0) {
                     dashBoardBO.setCalculatedPercentage(0);
                 } else {
-                    dashBoardBO.setCalculatedPercentage((dashBoardHelper.transactionPerDay * 100) / kpiTarget);
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
                 }
+
                 if (dashBoardBO.getCalculatedPercentage() >= 100) {
                     dashBoardBO.setConvTargetPercentage(0);
                     dashBoardBO.setConvAcheivedPercentage(100);
@@ -366,15 +361,20 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                     dashBoardBO.setConvAcheivedPercentage(dashBoardBO
                             .getCalculatedPercentage());
                 }
+
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE10)) {
-
-
-                dashBoardBO.setKpiAcheived(Integer.toString(dashBoardHelper.avgUnitsPerBill));
-                int kpiTarget;
+                ArrayList<Double> collectedList = businessModel.getCollectedValue();
+                double kpiAcheived = 0, kpiTarget = 0;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    double osAmt = collectedList.get(0);
+                    double paidAmt = collectedList.get(1);
+
+                    dashBoardBO.setKpiAcheived(paidAmt + "");
+                    dashBoardBO.setKpiTarget(osAmt + "");
+                    kpiAcheived = paidAmt;
+                    kpiTarget = osAmt;
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -383,64 +383,10 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 if (kpiTarget == 0) {
                     dashBoardBO.setCalculatedPercentage(0);
                 } else {
-                    dashBoardBO.setCalculatedPercentage((dashBoardHelper.avgUnitsPerBill * 100) / kpiTarget);
-                }
-                if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                    dashBoardBO.setConvTargetPercentage(0);
-                    dashBoardBO.setConvAcheivedPercentage(100);
-                } else {
-                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                            .getCalculatedPercentage());
-                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                            .getCalculatedPercentage());
+                    float value = SDUtil.convertToFloat("" + (kpiAcheived * 100) / kpiTarget);
+                    dashBoardBO.setCalculatedPercentage(value);
                 }
 
-            } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE11)) {
-
-
-                dashBoardBO.setKpiAcheived(Integer.toString(dashBoardHelper.avgSellingPrice));
-                int kpiTarget;
-
-                try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                } catch (Exception e) {
-                    kpiTarget = 0;
-                    Commons.printException(e + "");
-                }
-
-                if (kpiTarget == 0) {
-                    dashBoardBO.setCalculatedPercentage(0);
-                } else {
-                    dashBoardBO.setCalculatedPercentage((dashBoardHelper.avgSellingPrice * 100) / kpiTarget);
-                }
-                if (dashBoardBO.getCalculatedPercentage() >= 100) {
-                    dashBoardBO.setConvTargetPercentage(0);
-                    dashBoardBO.setConvAcheivedPercentage(100);
-                } else {
-                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
-                            .getCalculatedPercentage());
-                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
-                            .getCalculatedPercentage());
-                }
-
-            } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE12)) {
-
-
-                dashBoardBO.setKpiAcheived(Integer.toString(dashBoardHelper.avgBillValue));
-                int kpiTarget;
-
-                try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
-                } catch (Exception e) {
-                    kpiTarget = 0;
-                    Commons.printException(e + "");
-                }
-
-                if (kpiTarget == 0) {
-                    dashBoardBO.setCalculatedPercentage(0);
-                } else {
-                    dashBoardBO.setCalculatedPercentage((dashBoardHelper.avgBillValue * 100) / kpiTarget);
-                }
                 if (dashBoardBO.getCalculatedPercentage() >= 100) {
                     dashBoardBO.setConvTargetPercentage(0);
                     dashBoardBO.setConvAcheivedPercentage(100);
@@ -456,7 +402,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 if (totalcalls == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
-                    dashBoardBO.setKpiAcheived(((visitedcalls / totalcalls) * 100) + "");
+                    dashBoardBO.setKpiAcheived((((float)visitedcalls / (float)totalcalls) * 100) + "");
                 }
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_SALE)) {
@@ -464,7 +410,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 if (totalcalls == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
-                    dashBoardBO.setKpiAcheived(((productivecalls / totalcalls) * 100) + "");
+                    dashBoardBO.setKpiAcheived((((float)productivecalls / (float)totalcalls) * 100) + "");
                 }
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_DROP_SIZE_INV)) {
                 if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
@@ -509,6 +455,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
 
         }
     }
+
     private int getRetailerDetail(String flag) {
         int size = businessModel.getRetailerMaster().size();
         int count = 0;
@@ -523,6 +470,30 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
         } else {
             for (int i = 0; i < size; i++) {
                 if (businessModel.getRetailerMaster().get(i).getIsVisited().equals("Y")) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+
+    }
+
+    private int getRetailerDetailWithDevation(String flag) {
+        int size = businessModel.getRetailerMaster().size();
+        int count = 0;
+        /** Add today's retailers. **/
+        if (flag.equals("P")) {
+            for (int i = 0; i < size; i++) {
+                if (businessModel.getRetailerMaster().get(i).getIsToday() == 1) {
+                    count++;
+                }
+
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (businessModel.getRetailerMaster().get(i).getIsVisited().equals("Y") ||
+                        businessModel.getRetailerMaster().get(i).getIsDeviated().equalsIgnoreCase("Y")) {
                     count++;
                 }
             }

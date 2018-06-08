@@ -94,140 +94,75 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
     }
 
     private void prepareScreenData(View view) {
+        try {
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        //Enable or disable date Filter based on Config
-        if (bmodel.configurationMasterHelper.TASK_PLANNED >= 0) {
-            view.findViewById(R.id.date_layout).setVisibility(View.VISIBLE);
-        } else {
-            view.findViewById(R.id.date_layout).setVisibility(View.GONE);
-        }
+            //Enable or disable date Filter based on Config
+            if (bmodel.configurationMasterHelper.TASK_PLANNED >= 0) {
+                view.findViewById(R.id.date_layout).setVisibility(View.VISIBLE);
+            } else {
+                view.findViewById(R.id.date_layout).setVisibility(View.GONE);
+            }
 
-        dateSelectedRetailerId = new HashSet<>();
+            dateSelectedRetailerId = new HashSet<>();
 
-        ArrayAdapter<TaskDataBO> spinnerRetailerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
-        spinnerRetailerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<TaskDataBO> spinnerRetailerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
+            spinnerRetailerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        ArrayAdapter<String> spinnerDateAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
-        spinnerDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<String> spinnerDateAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
+            spinnerDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        myAdapter = new MyAdapter(tasklist);
-        recyclerView.setAdapter(myAdapter);
+            myAdapter = new MyAdapter(tasklist);
+            recyclerView.setAdapter(myAdapter);
 
-        //Header Decoration to set Retailer name as Header for common retailer
-        RecyclerSectionItemDecoration sectionItemDecoration =
-                new RecyclerSectionItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_30dp),
-                        false,
-                        getSectionCallback(tasklist));
-        recyclerView.addItemDecoration(sectionItemDecoration);
+            //Header Decoration to set Retailer name as Header for common retailer
+            RecyclerSectionItemDecoration sectionItemDecoration =
+                    new RecyclerSectionItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_30dp),
+                            false,
+                            getSectionCallback(tasklist));
+            recyclerView.addItemDecoration(sectionItemDecoration);
 
-        //Holds all the Task data based on the config
-        mylist.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReport());
+            //Holds all the Task data based on the config
+            mylist.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReport());
 
-        loadAll();
+            loadAll();
 
-        ArrayList<TaskDataBO> strings = new ArrayList<>();
-        strings.add(new TaskDataBO(0, getActivity().getResources().getString(R.string.all)));
+            ArrayList<TaskDataBO> strings = new ArrayList<>();
+            strings.add(new TaskDataBO(0, getActivity().getResources().getString(R.string.all)));
 
-        //Load the Spinner element with retailer name
-        strings.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReportRetailerList());
+            //Load the Spinner element with retailer name
+            strings.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReportRetailerList());
 
-        spinnerRetailerAdapter.addAll(strings);
-        spinnerReportRetailer.setAdapter(spinnerRetailerAdapter);
-        spinnerReportRetailer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            spinnerRetailerAdapter.addAll(strings);
+            spinnerReportRetailer.setAdapter(spinnerRetailerAdapter);
+            spinnerReportRetailer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(++checkRetailerSpnr > 1) {
-                    TaskDataBO tempBo = (TaskDataBO) parent.getSelectedItem();
+                    if (++checkRetailerSpnr > 1) {
+                        TaskDataBO tempBo = (TaskDataBO) parent.getSelectedItem();
 
-                    retailerSelectedId = tempBo.getRid();
+                        retailerSelectedId = tempBo.getRid();
 
-                    HashSet<Integer> integers = new HashSet<>();
+                        HashSet<Integer> integers = new HashSet<>();
 
                     /*
                       If Date Filter is enabled then it will check for retailer
                       spinner matching date spinner values. if no element matched then no data will be loaded.
                      */
 
-                    if (tempBo.getRid() == 0 && dateSelectedRetailerId.size() == 0)
-                        loadAll();
-                    else if (tempBo.getRid() == 0 && dateSelectedRetailerId.size() > 0)
-                        load(dateSelectedRetailerId);
-                    else if (tempBo.getRid() != 0 && dateSelectedRetailerId.size() == 0) {
-                        integers.add(retailerSelectedId);
-                        load(integers);
-                    } else if (tempBo.getRid() != 0 && dateSelectedRetailerId.size() > 0) {
-                        if (dateSelectedRetailerId.contains(retailerSelectedId))
-                            integers.add(retailerSelectedId);
-                        load(integers);
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        //If Date Spinner Config is found then following block will be executed
-        if (bmodel.configurationMasterHelper.TASK_PLANNED >= 0 ) {
-
-            final Vector<TaskDataBO> dateWiseTask = new Vector<>();
-            //Load the PlannedDate with retailer id
-            dateWiseTask.addAll(TaskReportHelper.getInstance(getContext()).loadRetailerPlannedDate());
-            ArrayList<String> stringVal = new ArrayList<>();
-
-            stringVal.add(0, getActivity().getResources().getString(R.string.all));
-
-            // If Config value is 1 then it will load only todays date
-            // otherwise all the planned date with date higher than the downloadDate(UserMaster) will be loaded with Limit 7
-            if (bmodel.configurationMasterHelper.TASK_PLANNED == 1) {
-                stringVal.add(SDUtil.now(SDUtil.DATE_GLOBAL));
-            } else {
-                stringVal.addAll(bmodel.mRetailerHelper.getMaxDaysInRouteSelection());
-            }
-
-            spinnerDateAdapter.addAll(stringVal);
-            spinnerReportDate.setAdapter(spinnerDateAdapter);
-            spinnerReportDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                    if(++checkDateSpinner > 1) {
-                        dateSelectedRetailerId.clear();
-
-                        String mSeletedSpinnerDate = parent.getSelectedItem().toString();
-
-                        HashSet<Integer> integers = new HashSet<>();
-
-                        if (!mSeletedSpinnerDate.equalsIgnoreCase(getActivity().getResources().getString(R.string.all))) {
-                            for (TaskDataBO temp : dateWiseTask) {
-                                if (mSeletedSpinnerDate.equalsIgnoreCase(temp.getPlannedDate())) {
-                                    dateSelectedRetailerId.add(temp.getRid());
-                                }
-                            }
-                        }
-
-                        /*
-                          If Date Filter is enabled then it will check for retailer
-                          spinner matching date spinner values. if no element matched then no data will be loaded.
-                         */
-
-                        if (dateSelectedRetailerId.size() == 0 && retailerSelectedId == 0) {
+                        if (tempBo.getRid() == 0 && dateSelectedRetailerId.size() == 0)
                             loadAll();
-                        } else if (dateSelectedRetailerId.size() == 0 && retailerSelectedId != 0) {
+                        else if (tempBo.getRid() == 0 && dateSelectedRetailerId.size() > 0)
+                            load(dateSelectedRetailerId);
+                        else if (tempBo.getRid() != 0 && dateSelectedRetailerId.size() == 0) {
                             integers.add(retailerSelectedId);
                             load(integers);
-                        } else if (dateSelectedRetailerId.size() > 0 && retailerSelectedId == 0) {
-                            integers.addAll(dateSelectedRetailerId);
-                            load(integers);
-                        } else if (dateSelectedRetailerId.size() > 0 && retailerSelectedId != 0) {
+                        } else if (tempBo.getRid() != 0 && dateSelectedRetailerId.size() > 0) {
                             if (dateSelectedRetailerId.contains(retailerSelectedId))
                                 integers.add(retailerSelectedId);
                             load(integers);
@@ -240,6 +175,75 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
 
                 }
             });
+
+            //If Date Spinner Config is found then following block will be executed
+            if (bmodel.configurationMasterHelper.TASK_PLANNED >= 0) {
+
+                final Vector<TaskDataBO> dateWiseTask = new Vector<>();
+                //Load the PlannedDate with retailer id
+                dateWiseTask.addAll(TaskReportHelper.getInstance(getContext()).loadRetailerPlannedDate());
+                ArrayList<String> stringVal = new ArrayList<>();
+
+                stringVal.add(0, getActivity().getResources().getString(R.string.all));
+
+                // If Config value is 1 then it will load only todays date
+                // otherwise all the planned date with date higher than the downloadDate(UserMaster) will be loaded with Limit 7
+                if (bmodel.configurationMasterHelper.TASK_PLANNED == 1) {
+                    stringVal.add(SDUtil.now(SDUtil.DATE_GLOBAL));
+                } else {
+                    stringVal.addAll(bmodel.mRetailerHelper.getMaxDaysInRouteSelection());
+                }
+
+                spinnerDateAdapter.addAll(stringVal);
+                spinnerReportDate.setAdapter(spinnerDateAdapter);
+                spinnerReportDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                        if (++checkDateSpinner > 1) {
+                            dateSelectedRetailerId.clear();
+
+                            String mSeletedSpinnerDate = parent.getSelectedItem().toString();
+
+                            HashSet<Integer> integers = new HashSet<>();
+
+                            if (!mSeletedSpinnerDate.equalsIgnoreCase(getActivity().getResources().getString(R.string.all))) {
+                                for (TaskDataBO temp : dateWiseTask) {
+                                    if (mSeletedSpinnerDate.equalsIgnoreCase(temp.getPlannedDate())) {
+                                        dateSelectedRetailerId.add(temp.getRid());
+                                    }
+                                }
+                            }
+
+                        /*
+                          If Date Filter is enabled then it will check for retailer
+                          spinner matching date spinner values. if no element matched then no data will be loaded.
+                         */
+
+                            if (dateSelectedRetailerId.size() == 0 && retailerSelectedId == 0) {
+                                loadAll();
+                            } else if (dateSelectedRetailerId.size() == 0 && retailerSelectedId != 0) {
+                                integers.add(retailerSelectedId);
+                                load(integers);
+                            } else if (dateSelectedRetailerId.size() > 0 && retailerSelectedId == 0) {
+                                integers.addAll(dateSelectedRetailerId);
+                                load(integers);
+                            } else if (dateSelectedRetailerId.size() > 0 && retailerSelectedId != 0) {
+                                if (dateSelectedRetailerId.contains(retailerSelectedId))
+                                    integers.add(retailerSelectedId);
+                                load(integers);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+            }
+        }catch(Exception e){
+            Commons.printException(e);
         }
     }
 

@@ -1867,7 +1867,7 @@ public class ProductMasterBO {
         isSeparateBill = separateBill;
     }
 
-    String remarks;
+    String remarks = "";
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
@@ -1875,5 +1875,15 @@ public class ProductMasterBO {
 
     public String getRemarks() {
         return remarks;
+    }
+
+    private String allocationQty;
+
+    public String getAllocationQty() {
+        return allocationQty;
+    }
+
+    public void setAllocationQty(String allocationQty) {
+        this.allocationQty = allocationQty;
     }
 }

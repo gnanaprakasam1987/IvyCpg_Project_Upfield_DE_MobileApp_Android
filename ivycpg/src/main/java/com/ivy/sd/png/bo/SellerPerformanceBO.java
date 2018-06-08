@@ -10,6 +10,7 @@ public class SellerPerformanceBO {
     int plannedCall, DeviatedCall, actualCall, productiveCall;
     String userName;
     String timeSpent, objective, actual, visitPer, productivePer, lastSync, salesVolume;
+    String fitScore;
 
     public int getUserId() {
         return userId;
@@ -113,5 +114,13 @@ public class SellerPerformanceBO {
 
     public void setSalesVolume(String salesVolume) {
         this.salesVolume = salesVolume;
+    }
+
+    public String getFitScore() {
+        return fitScore;
+    }
+
+    public void setFitScore(String fitScore) {
+        this.fitScore = fitScore;
     }
 }

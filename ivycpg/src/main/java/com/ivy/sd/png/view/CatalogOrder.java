@@ -238,7 +238,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         screenCode = HomeScreenTwo.MENU_CATALOG_ORDER;
         OrderedFlag = HomeScreenTwo.MENU_CATALOG_ORDER;
-        SBDHelper.getInstance(this).calculateSBDDistribution(); //sbd calculation
+        SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext()); //sbd calculation
         sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
 
         Bundle extras = getIntent().getExtras();
@@ -257,7 +257,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 tempRField2 = (extras.getString("tempRField2") == null ? ""
                         : extras.getString("tempRField2"));
             }
-
 
         } else {
             OrderedFlag = (String) (savedInstanceState
@@ -344,7 +343,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         }
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
-            bmodel.fitscoreHelper.getTaggingDetails("MAX_ORD_VAL"); //MAX_ORD_VAL
+            bmodel.productHelper.getTaggingDetails("MAX_ORD_VAL"); //MAX_ORD_VAL
         }
 
         search_txt.addTextChangedListener(new TextWatcher() {
@@ -448,6 +447,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             mylist = new Vector<>();
             for (String productid : productIdList) {
                 ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(productid);
+                if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+                    setTaggingDetails(productBO);
+                }
                 if (productBO != null) {
                     mylist.add(productBO);
                 }
@@ -551,6 +553,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         Vector<ProductMasterBO> productMasterList = bmodel.productHelper
                 .getProductMaster();
+        if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+            setTaggingDetails(productMasterList);
+        }
         if (productMasterList == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists),
@@ -689,6 +694,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             String generaltxt = generalbutton;
 
             Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
+            if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+                setTaggingDetails(items);
+            }
             if (items == null) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -906,6 +914,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         mylist = new Vector<>();
 
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
+        if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+            setTaggingDetails(items);
+        }
         for (LevelBO levelBO : parentIdList) {
             for (ProductMasterBO productBO : items) {
                 if (productBO.getIsSaleable() == 1) {
@@ -935,6 +946,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         int count = 0;
         mylist = new Vector<>();
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
+        if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+            setTaggingDetails(items);
+        }
         if (mAttributeProducts != null) {
             count = 0;
             if (parentidList.size() > 0) {
@@ -1669,6 +1683,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             Vector<ProductMasterBO> items = bmodel.productHelper
                     .getProductMaster();
+            if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+                setTaggingDetails(items);
+            }
             int siz = items.size();
             mylist = new Vector<>();
             for (int i = 0; i < siz; ++i) {
@@ -1787,18 +1804,51 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     private boolean checkTaggingDetails(ProductMasterBO productMasterBO) {
-        ArrayList<ProductTaggingBO> productTaggingList = bmodel.fitscoreHelper.getProductTaggingList();
-        for (ProductTaggingBO productTagging : productTaggingList) {
-            float totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
-                    + (productMasterBO.getOrderedPcsQty())
-                    + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
-            if (productMasterBO.getProductID().equals(productTagging.getPid()) &&
-                    totalQty > 0
-                    && totalQty > Integer.parseInt(productTagging.getToNorm())) {
-                return false;
+        try {
+            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            for (ProductTaggingBO productTagging : productTaggingList) {
+                float totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                        + (productMasterBO.getOrderedPcsQty())
+                        + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
+                if (productMasterBO.getProductID().equals(productTagging.getPid()) &&
+                        totalQty > 0
+                        && totalQty > productTagging.getToNorm()) {
+                    return false;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return true;
+    }
+
+    private void setTaggingDetails(ProductMasterBO productMasterBO) {
+        try {
+            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            for (ProductTaggingBO productTagging : productTaggingList) {
+                if (productMasterBO.getProductID().equals(productTagging.getPid())) {
+                    productMasterBO.setAllocationQty(String.valueOf(productTagging.getToNorm()));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setTaggingDetails(Vector<ProductMasterBO> productList) {
+        try {
+            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            for (ProductTaggingBO productTagging : productTaggingList) {
+                for (ProductMasterBO productMasterBO : productList) {
+                    if (productMasterBO.getProductID().equals(productTagging.getPid())) {
+                        productMasterBO.setAllocationQty(String.valueOf(productTagging.getToNorm()));
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -1968,6 +2018,23 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                 }
             }
+
+            if (holder.allocation != null) {
+                String allocation = "";
+                if (bmodel.labelsMasterHelper
+                        .applyLabels("allocation") != null) {
+                    allocation = bmodel.labelsMasterHelper
+                            .applyLabels("allocation") + ": "
+                            + (holder.productObj.getAllocationQty() != null &&
+                            holder.productObj.getAllocationQty().length() > 0
+                            ? holder.productObj.getAllocationQty() : "0");
+                } else {
+                    allocation = "Allocation : " + (holder.productObj.getAllocationQty() != null &&
+                            holder.productObj.getAllocationQty().length() > 0
+                            ? holder.productObj.getAllocationQty() : "0");
+                }
+                holder.allocation.setText(allocation);
+            }
         }
 
 
@@ -1992,7 +2059,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             private ImageView pdt_image;
             private TextView catalog_order_listview_productname, ppq, ssrp,
-                    mrp, total, sih, wsih, moq;
+                    mrp, total, sih, wsih, moq, allocation;
             private Button list_view_order_btn, list_view_stock_btn, list_view_sales_return_qty;
             private LinearLayout pdt_details_layout;
             private ProductMasterBO productObj;
@@ -2016,6 +2083,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 wsih = (TextView) v.findViewById(R.id.catalog_order_listview_wsih);
                 slant_view = (RelativeLayout) v.findViewById(R.id.slant_view);
                 slant_view_bg = (SlantView) v.findViewById(R.id.slant_view_bg);
+                allocation = (TextView) v.findViewById(R.id.catalog_order_listview_allocation);
 
                 catalog_order_listview_productname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
                 ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2026,7 +2094,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 list_view_stock_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 list_view_sales_return_qty.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 moq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
+                allocation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 /*Drawable mDrawable = getApplicationContext().getResources().getDrawable(R.drawable.ic_action_star_01);
                 mDrawable.setColorFilter(new
@@ -2167,6 +2235,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         startActivity(i);
                     }
                 });
+
+                if (!bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+                    allocation.setVisibility(View.GONE);
+                }
             }
         }
     }

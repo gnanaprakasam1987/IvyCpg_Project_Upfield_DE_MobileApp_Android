@@ -313,9 +313,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
     protected void startLocationUpdates() {
         if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi
-                    .requestLocationUpdates(mGoogleApiClient, mLocationRequest,
-                            this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             Log.d(TAG, " Provider===> " + mProviderName + " Location Latitude ===> " + latitude + " Longitude===> " + longitude);
             if (iLocationUpdater != null)
                 iLocationUpdater.locationUpdate();
@@ -347,7 +345,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
         }
     }
 
-
     /**
      * To avoid exponential value and truncate decimal digits to 10
      * @param originalLocation Original Location
@@ -369,7 +366,5 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
         return val;
     }
-
-
 
 }

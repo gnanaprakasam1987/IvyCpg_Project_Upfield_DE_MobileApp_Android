@@ -847,12 +847,10 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                mVanUnLoadModuleHelper.saveVanUnLoad(vanunloadlist);
-                mVanUnLoadModuleHelper.UpdateSIH(vanunloadlist);
-
-
+                mVanUnLoadModuleHelper.saveVanUnLoad(vanunloadlist,getApplicationContext());
+                mVanUnLoadModuleHelper.UpdateSIH(vanunloadlist,getApplicationContext());
                 // If unloading empty
-                mVanUnLoadModuleHelper.updateEmptyReconilationTable(vanunloadlist);
+                mVanUnLoadModuleHelper.updateEmptyReconilationTable(vanunloadlist,getApplicationContext());
 
             } catch (Exception e) {
                 Commons.printException("" + e);

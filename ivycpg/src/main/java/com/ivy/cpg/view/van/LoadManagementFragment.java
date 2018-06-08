@@ -237,7 +237,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbindDrawables(view.findViewById(R.id.root));
+        if (view != null)
+            unbindDrawables((LinearLayout) view.findViewById(R.id.root));
     }
 
     /**

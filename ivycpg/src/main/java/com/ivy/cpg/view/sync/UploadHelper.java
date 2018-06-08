@@ -14,7 +14,6 @@ import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -46,7 +45,7 @@ import static com.ivy.lib.Utils.QT;
 
 public class UploadHelper {
 
-    private Context context;
+
     private BusinessModel businessModel;
     private static UploadHelper instance;
     private int responseMessage;
@@ -55,7 +54,6 @@ public class UploadHelper {
 
 
     private UploadHelper(Context context) {
-        this.context = context;
         this.businessModel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -66,18 +64,18 @@ public class UploadHelper {
         return instance;
     }
 
-    public boolean isAttendanceCompleted() {
-        DBUtil db ;
+    public boolean isAttendanceCompleted(Context context) {
+        DBUtil db;
         boolean check = true;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
             int counts = 0;
 
             Cursor c = db
-                    .selectSQL("SELECT HHTCode ,(select COUNT(upload) from AttendanceTimeDetails where upload='I') as count FROM " +
+                    .selectSQL("SELECT HHTCode ,(select COUNT(upload) from AttendanceTimeDetails where outtime IS NULL) as count FROM " +
                             "HhtMenuMaster where HHTCode='MENU_IN_OUT' and Flag=1 and hasLink=1");
             if (c != null) {
                 if (c.moveToFirst())
@@ -100,17 +98,15 @@ public class UploadHelper {
     }
 
 
-
     /**
      * upload starts
      */
-    public int uploadUsingHttp(Handler handlerr, final int flag) {
+    public int uploadUsingHttp(Handler handlerr, final int flag, Context context) {
         responseMessage = 0;
         handler = handlerr;
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
@@ -395,7 +391,7 @@ public class UploadHelper {
                         out.flush();
                         out.close();
                         input.close();
-                        updateUploadFlag(DataMembers.uploadColumn);
+                        updateUploadFlag(DataMembers.uploadColumn, context.getApplicationContext());
                         out = null;
                         input = null;
                     }
@@ -504,38 +500,38 @@ public class UploadHelper {
             if (response == 1) {
 
                 if (flag == DataMembers.SYNCUPLOADRETAILERWISE) {
-                    updateUploadFlagRetailerWise();
+                    updateUploadFlagRetailerWise(context.getApplicationContext());
                     getVisitedRetailerIds().delete(0,
                             getVisitedRetailerIds().length());
                     responseMessage = 1;
                 } else if (flag == DataMembers.SYNCSIHUPLOAD) {
-                    updateUploadFlag(DataMembers.uploadSIHTable);
+                    updateUploadFlag(DataMembers.uploadSIHTable, context.getApplicationContext());
 
                     responseMessage = 2;
                 } else if (flag == DataMembers.SYNCLYTYPTUPLOAD) {
-                    updateUploadFlag(DataMembers.uploadLPTable);
+                    updateUploadFlag(DataMembers.uploadLPTable, context.getApplicationContext());
 
                     responseMessage = 2;
                 } else if (flag == DataMembers.SYNCSTKAPPLYUPLOAD) {
-                    updateUploadFlag(DataMembers.uploadStockApplyTable);
+                    updateUploadFlag(DataMembers.uploadStockApplyTable, context.getApplicationContext());
                     responseMessage = 2;
                 } else if (flag == DataMembers.SYNC_REALLOC_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadReallocTable);
+                    updateUploadFlag(DataMembers.uploadReallocTable, context.getApplicationContext());
                     responseMessage = 1;
                 } else if (flag == DataMembers.ATTENDANCE_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadAttendanceColumn);
+                    updateUploadFlag(DataMembers.uploadAttendanceColumn, context.getApplicationContext());
                     responseMessage = 1;
                 } else if (flag == DataMembers.COUNTER_STOCK_APPLY_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadCSStockApplyTable);
+                    updateUploadFlag(DataMembers.uploadCSStockApplyTable, context.getApplicationContext());
                     responseMessage = 2;
                 } else if (flag == DataMembers.COUNTER_SIH_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadCounterSIHTable);
+                    updateUploadFlag(DataMembers.uploadCounterSIHTable, context.getApplicationContext());
                     responseMessage = 2;
                 } else if (flag == DataMembers.CS_REJECTED_VARIANCE_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadCSRejectedVarianceStatus);
+                    updateUploadFlag(DataMembers.uploadCSRejectedVarianceStatus, context.getApplicationContext());
                     responseMessage = 2;
                 } else {
-                    updateUploadFlag(DataMembers.uploadColumn);
+                    updateUploadFlag(DataMembers.uploadColumn, context.getApplicationContext());
                     responseMessage = 1;
                 }
             } else if (response == 0) {
@@ -552,7 +548,7 @@ public class UploadHelper {
             if ((businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
                     && businessModel.orderAndInvoiceHelper.hasTransactionSequence()) {
                 if (responseMessage == 1) {
-                    responseMessage = uploadInvoiceSequenceNo(this.handler);
+                    responseMessage = uploadInvoiceSequenceNo(this.handler, context.getApplicationContext());
                 }
             }
 
@@ -580,12 +576,12 @@ public class UploadHelper {
         this.mVisitedRetailerIds = mVisitedRetailerIds;
     }
 
-    private void updateUploadFlagRetailerWise() {
+    private void updateUploadFlagRetailerWise(Context context) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            String query;
+            String query = "";
             Set<String> keys = DataMembers.uploadColumnWithOutRetailer.keySet();
             for (String tableName : keys) {
                 query = "update " + tableName
@@ -602,11 +598,14 @@ public class UploadHelper {
                             + getVisitedRetailerIds().toString()
                             + ")";
                 } else {
-                    query = "update "
-                            + tableName
-                            + " set upload='Y' where upload='N' and RetailerID in ("
-                            + getVisitedRetailerIds().toString()
-                            + ")";
+                    if (!tableName.equalsIgnoreCase("OrderDetailRequest")
+                            || !tableName.equalsIgnoreCase("SOSDetail_Proj")
+                            || !tableName.equalsIgnoreCase("RetailerPotential"))
+                        query = "update "
+                                + tableName
+                                + " set upload='Y' where upload='N' and RetailerID in ("
+                                + getVisitedRetailerIds().toString()
+                                + ")";
                 }
                 db.updateSQL(query);
             }
@@ -736,9 +735,9 @@ public class UploadHelper {
      *
      * @param updateTableMap
      */
-    private void updateUploadFlag(HashMap<String, String> updateTableMap) {
+    private void updateUploadFlag(HashMap<String, String> updateTableMap, Context context) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Set<String> keys = updateTableMap.keySet();
@@ -756,7 +755,6 @@ public class UploadHelper {
     }
 
 
-
     /**
      * Upload Transaction Sequence Table after Data Upload through seperate
      * method name Returns the response Success/Failure
@@ -764,13 +762,13 @@ public class UploadHelper {
      * @param handler
      * @return
      */
-    private int uploadInvoiceSequenceNo(Handler handler) {
+    private int uploadInvoiceSequenceNo(Handler handler, Context context) {
 
         responseMessage = 0;
         JSONObject jsonObjData;
         this.handler = handler;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -899,11 +897,11 @@ public class UploadHelper {
         return responseMessage;
     }
 
-    public String uploadNewOutlet(Handler handler) {
+    public String uploadNewOutlet(Handler handler, Context context) {
         String rid = "";
         try {
             this.handler = handler;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
@@ -1012,14 +1010,14 @@ public class UploadHelper {
         return rid;
     }
 
-    public String uploadBackupSeller(String backupSellerId,Handler handler) {
+    public String uploadBackupSeller(String backupSellerId, Handler handler) {
         String res = "";
         try {
             this.handler = handler;
             JSONObject jsonobj = new JSONObject();
 
 
-                    JSONObject jObject = new JSONObject();
+            JSONObject jObject = new JSONObject();
             jObject.put("UserId", backupSellerId);
             jObject.put("ReplacementUser", businessModel.userMasterHelper.getUserMasterBO().getUserid());
             jObject.put("Date", Utils.getDate("yyyy/MM/dd"));
@@ -1102,5 +1100,5 @@ public class UploadHelper {
         }
         return res;
     }
-    
+
 }

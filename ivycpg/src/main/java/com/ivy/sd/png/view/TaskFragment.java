@@ -87,7 +87,8 @@ public class TaskFragment extends IvyBaseFragment {
         Bundle extras = getArguments();
         //Set Screen Title
         try {
-            if (getArguments().getString("screentitle") == null)
+            if (getArguments() == null || !getArguments().containsKey("screentitle")
+                    || getArguments().getString("screentitle") == null)
                 setScreenTitle(bmodel.getMenuName("MENU_TASK_NEW"));
             else
                 setScreenTitle(getArguments().getString("screentitle"));
@@ -397,6 +398,7 @@ public class TaskFragment extends IvyBaseFragment {
                     .now(SDUtil.TIME));
             Intent i = new Intent(getActivity(), TaskCreation.class);
             i.putExtra("fromHomeScreen", fromHomeScreen);
+            i.putExtra("IsRetailerwisetask", IsRetailerwisetask);
             startActivity(i);
             getActivity().finish();
             return true;

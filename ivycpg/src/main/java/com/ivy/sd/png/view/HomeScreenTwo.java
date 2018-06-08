@@ -626,8 +626,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mSupplierList = bmodel.downloadSupplierDetails();
                 mSupplierAdapter = new ArrayAdapter<>(this,
                         R.layout.supplier_selection_list_adapter, mSupplierList);
-
-                updateDefaultSupplierSelection();
+                if (mSupplierList != null && mSupplierList.size() > 0)
+                    updateDefaultSupplierSelection();
             }
         }
         /*if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
@@ -949,7 +949,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 menuDB.get(i).setDone(false);
             }
 
-            if (menuDB.get(0).getHasLink() == 0) {
+            if (!menuDB.isEmpty() && menuDB.get(0).getHasLink() == 0) {
                 menuDB.get(0).setDone(true);
             }
             for (int i = 0; i < size; i++) {
@@ -2480,30 +2480,43 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
                 bmodel.collectionHelper.loadPaymentMode();
+                if (bmodel.getInvoiceHeaderBO() != null
+                        && bmodel.getInvoiceHeaderBO().size() > 0) {
+                    //load currency data
+                    if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
+                        bmodel.downloadCurrencyConfig();
+                    }
 
-                //load currency data
-                if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
-                    bmodel.downloadCurrencyConfig();
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            SDUtil.now(SDUtil.DATE_GLOBAL),
+                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
+                    if (menu.getConfigCode().equals(
+                            StandardListMasterConstants.MENU_COLLECTION_VIEW)) {
+                        bmodel.collectionHelper.setCollectionView(true);
+                        bmodel.getRetailerMasterBO().setIsCollectionView("Y");
+                        bmodel.isModuleCompleted("MENU_COLLECTION_VIEW");
+                    }
+
+                    Intent intent = new Intent(HomeScreenTwo.this,
+                            CollectionScreen.class);
+                    bmodel.mSelectedActivityName = menu.getMenuName();
+                    intent.putExtra("screentitle", menu.getMenuName());
+                    intent.putExtra("CurrentActivityCode", menu.getConfigCode());
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(
+                            this,
+                            getResources()
+                                    .getString(
+                                            R.string.no_data_exists),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+                    menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
+                    if (!menuCode.equals(menu.getConfigCode()))
+                        menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
                 }
-
-                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-
-                if (menu.getConfigCode().equals(
-                        StandardListMasterConstants.MENU_COLLECTION_VIEW)) {
-                    bmodel.collectionHelper.setCollectionView(true);
-                    bmodel.getRetailerMasterBO().setIsCollectionView("Y");
-                    bmodel.isModuleCompleted("MENU_COLLECTION_VIEW");
-                }
-
-                Intent intent = new Intent(HomeScreenTwo.this,
-                        CollectionScreen.class);
-                bmodel.mSelectedActivityName = menu.getMenuName();
-                intent.putExtra("screentitle", menu.getMenuName());
-                intent.putExtra("CurrentActivityCode", menu.getConfigCode());
-                startActivity(intent);
-                finish();
             } else {
                 Toast.makeText(
                         this,
@@ -2521,15 +2534,30 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "DOC");
                 bmodel.collectionHelper.loadCollectionReference();
 
-                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                if (bmodel.getInvoiceHeaderBO() != null
+                        && bmodel.getInvoiceHeaderBO().size() > 0) {
 
-                Intent intent = new Intent(HomeScreenTwo.this,
-                        CollectionReference.class);
-                bmodel.mSelectedActivityName = menu.getMenuName();
-                startActivity(intent);
-                finish();
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            SDUtil.now(SDUtil.DATE_GLOBAL),
+                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
+                    Intent intent = new Intent(HomeScreenTwo.this,
+                            CollectionReference.class);
+                    bmodel.mSelectedActivityName = menu.getMenuName();
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(
+                            this,
+                            getResources()
+                                    .getString(
+                                            R.string.no_data_exists),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+                    menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
+                    if (!menuCode.equals(menu.getConfigCode()))
+                        menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
+                }
             } else {
                 Toast.makeText(
                         this,
@@ -3672,6 +3700,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             OrderDeliveryActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     i.putExtra("menuName", menu.getMenuName());
+                    i.putExtra("menuCode", menu.getConfigCode());
                     startActivity(i);
                     finish();
                 } else {

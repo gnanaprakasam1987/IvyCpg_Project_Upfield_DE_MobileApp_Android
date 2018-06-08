@@ -398,7 +398,7 @@ public class UserSettingsActivity extends PreferenceActivity {
         try {
             // clearing app data
             Runtime runtime = Runtime.getRuntime();
-            runtime.exec("pm clear " + getApplicationContext().getPackageName() + " HERE");
+            runtime.exec("pm clear " + getApplicationContext().getPackageName() + " HERE").waitFor();
         } catch (Exception e) {
             Commons.printException("" + e);
         }

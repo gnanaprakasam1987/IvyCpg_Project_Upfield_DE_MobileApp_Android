@@ -67,7 +67,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener, SyncContractor.SyncView {
+public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
+        implements View.OnClickListener, SyncContractor.SyncView {
 
     private BusinessModel bmodel;
     private Spinner spinnerNoOrderReason, spinnerNooCollectionReason, spinnerFeedback;
@@ -331,7 +332,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
             //updating FIT score for current retailer
             bmodel.updateCurrentFITscore(bmodel.getRetailerMasterBO());
 
-            SBDHelper.getInstance(this).calculateSBDDistribution();
+            SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext());
         } catch (Exception e) {
             Commons.printException(e);
 
@@ -615,7 +616,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                         .equalsIgnoreCase("CallA11")) {
 
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    SBDHelper.getInstance(this).calculateSBDDistribution();
+                    SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext());
                     con.setMenuNumber(bmodel.getRetailerMasterBO()
                             .getSbdDistributionAchieve()
                             + "/"
@@ -781,8 +782,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar implements 
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA31")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
                     final double salesReturnValue = SalesReturnHelper.getInstance(this).getSalesReturnValue(getApplicationContext());
-
-                    con.setMenuNumber(bmodel.formatValue(SalesReturnHelper.getInstance(this).getOrderValue(getApplicationContext()) - salesReturnValue));
+                    final double orderValue = SalesReturnHelper.getInstance(this).getOrderValue(getApplicationContext());
+                    if (salesReturnValue > orderValue)
+                        con.setMenuNumber("0");
+                    else
+                        con.setMenuNumber(bmodel.formatValue(orderValue - salesReturnValue));
 
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA33")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());

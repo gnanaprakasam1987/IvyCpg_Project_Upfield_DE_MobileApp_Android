@@ -181,6 +181,9 @@ public class DataMembers {
     private static final String tbl_odameter = "Odameter";
     private static final String tbl_CollectionDocument = "CollectionDocument";
 
+    public static final String tbl_retailerscoreheader = "RetailerScoreHeader";
+    public static final String tbl_retailerscoredetail = "RetailerScoreDetails";
+
     public static final String tbl_closingstockheader = "ClosingStockHeader";
     public static final String tbl_closingstockdetail = "ClosingStockDetail";
     public static final String tbl_SbdMerchandisingDetail = "SbdMerchandisingDetail";
@@ -635,10 +638,16 @@ public class DataMembers {
     public static final String tbl_retailer_kpi_modified_cols = "KPIId,KPITypeLovId,KPIParamLovId,Target";
 
     public static final String tbl_planogram_image_detail = "PlanogramImageDetails";
-    public static final String tbl_planogram_image_detail_cols = "Tid,PId,imageName,mappingid,imagePath";
+    public static final String tbl_planogram_image_detail_cols = "Tid,PId,imageName,mappingid,imagePath,imageId";
 
-    private static final String tbl_JointCallDetail="JointCallDetail";
-    private static final String tbl_JointCallDetail_cols="Uid,UserId,JointCallUserId,TimeIn,TimeOut,DateTime,Remarks";
+    private static final String tbl_JointCallDetail = "JointCallDetail";
+    private static final String tbl_JointCallDetail_cols = "Uid,UserId,JointCallUserId,TimeIn,TimeOut,DateTime,Remarks";
+
+    private static final String tbl_RetailerScoreHeader = "RetailerScoreHeader";
+    private static final String tbl_RetailerScoreHeader_cols = "Tid,RetailerId,Date,Score";
+
+    private static final String tbl_RetailerScoreDetail = "RetailerScoreDetails";
+    private static final String tbl_RetailerScoreDetail_cols = "Tid,ModuleCode,Weightage,Score";
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
@@ -814,9 +823,11 @@ public class DataMembers {
         uploadColumn.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
         uploadColumn.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
         uploadColumn.put(tbl_retailer_kpi_modified, tbl_retailer_kpi_modified_cols);
-        uploadColumn.put(tbl_JointCallDetail,tbl_JointCallDetail_cols);
+        uploadColumn.put(tbl_JointCallDetail, tbl_JointCallDetail_cols);
         uploadColumn.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
 
+        uploadColumn.put(tbl_RetailerScoreHeader, tbl_RetailerScoreHeader_cols);
+        uploadColumn.put(tbl_RetailerScoreDetail, tbl_RetailerScoreDetail_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -1014,7 +1025,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_OrderDeliveryDetail, tbl_OrderDeliveryDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_NonFieldActivity, tbl_NonFieldActivity_cols);
         uploadColumnWithOutRetailer.put(tbl_retailer_kpi_modified, tbl_retailer_kpi_modified_cols);
-        uploadColumnWithOutRetailer.put(tbl_JointCallDetail,tbl_JointCallDetail_cols);
+        uploadColumnWithOutRetailer.put(tbl_JointCallDetail, tbl_JointCallDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
     }
 
@@ -1119,24 +1130,24 @@ public class DataMembers {
 
     }
 
-    public static final HashMap<String,String> statusReportTables=new HashMap<>();
+    public static final HashMap<String, String> statusReportTables = new HashMap<>();
 
     static {
-        statusReportTables.put(tbl_orderHeader,"Order");
-        statusReportTables.put(tbl_OutletTimestamp,"Outlet Visit");
-        statusReportTables.put(tbl_SalesReturnHeader,"Sales Return");
-        statusReportTables.put(tbl_closingStockHeader,"Stock Check");
-        statusReportTables.put(tbl_distributor_closingstock_header,"Primary Stock");
-        statusReportTables.put(tbl_AnswerHeader,"Survey");
-        statusReportTables.put(tbl_PriceHeader,"Price Check");
-        statusReportTables.put(tbl_outletjoincall,"JointCall");
-        statusReportTables.put(tbl_expenseheader,"Expense");
-        statusReportTables.put(tbl_Photocaptureupload,"Photo Capture");
-        statusReportTables.put(tbl_AttendanceTimeDetails,"Attendance");
-        statusReportTables.put(tbl_leavedetail,"Leave");
-        statusReportTables.put(tbl_delivery_header,"Order Fulfillment");
-        statusReportTables.put(tbl_retailerMasterupload,"New Retailer");
-        statusReportTables.put(tbl_AssetHeader,"Asset Tracking");
+        statusReportTables.put(tbl_orderHeader, "Order");
+        statusReportTables.put(tbl_OutletTimestamp, "Outlet Visit");
+        statusReportTables.put(tbl_SalesReturnHeader, "Sales Return");
+        statusReportTables.put(tbl_closingStockHeader, "Stock Check");
+        statusReportTables.put(tbl_distributor_closingstock_header, "Primary Stock");
+        statusReportTables.put(tbl_AnswerHeader, "Survey");
+        statusReportTables.put(tbl_PriceHeader, "Price Check");
+        statusReportTables.put(tbl_outletjoincall, "JointCall");
+        statusReportTables.put(tbl_expenseheader, "Expense");
+        statusReportTables.put(tbl_Photocaptureupload, "Photo Capture");
+        statusReportTables.put(tbl_AttendanceTimeDetails, "Attendance");
+        statusReportTables.put(tbl_leavedetail, "Leave");
+        statusReportTables.put(tbl_delivery_header, "Order Fulfillment");
+        statusReportTables.put(tbl_retailerMasterupload, "New Retailer");
+        statusReportTables.put(tbl_AssetHeader, "Asset Tracking");
 
     }
 

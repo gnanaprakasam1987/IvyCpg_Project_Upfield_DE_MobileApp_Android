@@ -151,7 +151,7 @@ public class LoginHelper {
         String support_no = "";
 
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
+            db = new DBUtil(mContext.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
 
             db.openDataBase();
@@ -178,8 +178,8 @@ public class LoginHelper {
         businessModel.regid = getRegistrationId(mContext);
         Commons.printInformation("REG ID IS : " + businessModel.regid);
         if (businessModel.regid.isEmpty()) {
-            if (checkPlayServices(mContext)) {
-                gcm = GoogleCloudMessaging.getInstance(mContext);
+            if (checkPlayServices(mContext.getApplicationContext())) {
+                gcm = GoogleCloudMessaging.getInstance(mContext.getApplicationContext());
                 registerInBackground(mContext);
             } else {
                 Commons.printInformation("No valid Google Play Services APK found.");

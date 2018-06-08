@@ -1015,31 +1015,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 } else {
                     holder.llSkuPromolayout.setVisibility(View.GONE);
                 }
-
-                holder.mFromDateBTN.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectedposition = position;
-                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
-                        Bundle args = new Bundle();
-                        args.putString("MODULE", "");
-                        newFragment.setArguments(args);
-                        newFragment.show(getChildFragmentManager(), "fromdatePicker");
-                    }
-                });
-
-                holder.mToDateBTN.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectedposition = position;
-                        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
-                        Bundle args = new Bundle();
-                        args.putString("MODULE", "");
-                        newFragment.setArguments(args);
-                        newFragment.show(getChildFragmentManager(), "toPicker");
-                    }
-                });
-
                 row.setTag(holder);
 
             } else {
@@ -1126,6 +1101,30 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             holder.mToDateBTN.setText(holder.mPromotionMasterBO.getToDate() == null ? "" :
                     DateUtil.convertFromServerDateToRequestedFormat(
                             holder.mPromotionMasterBO.getToDate(), ConfigurationMasterHelper.outDateFormat));
+
+            holder.mFromDateBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedposition = position;
+                    DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString("MODULE", "");
+                    newFragment.setArguments(args);
+                    newFragment.show(getChildFragmentManager(), "fromdatePicker");
+                }
+            });
+
+            holder.mToDateBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedposition = position;
+                    DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString("MODULE", "");
+                    newFragment.setArguments(args);
+                    newFragment.show(getChildFragmentManager(), "toPicker");
+                }
+            });
             return row;
         }
     }
@@ -1300,30 +1299,34 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
     @Override
     public void updateDate(Date date, String tag) {
-        String paidDate = DateUtil.convertDateObjectToRequestedFormat(
-                date, "yyyy/MM/dd");
-        if (selectedposition != -1) {
-            if (tag.equals("fromdatePicker")) {
-                promoList.get(selectedposition).setFromDate(paidDate);
-                promoList.get(selectedposition).setToDate("");
-            } else {
-                if (promoList.get(selectedposition).getFromDate() != null && promoList.get(selectedposition).getFromDate().length() > 0) {
-                    Date fromDate = null;
-                    try {
-                        fromDate = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH).parse(promoList.get(selectedposition).getFromDate());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    if (dateValidation(fromDate, date))
-                        promoList.get(selectedposition).setToDate(paidDate);
-                    else
-                        Toast.makeText(getContext(), getResources().getString(R.string.todate_validation), Toast.LENGTH_LONG).show();
+        try {
+            String paidDate = DateUtil.convertDateObjectToRequestedFormat(
+                    date, "yyyy/MM/dd");
+            if (selectedposition != -1) {
+                if (tag.equals("fromdatePicker")) {
+                    promoList.get(selectedposition).setFromDate(paidDate);
+                    promoList.get(selectedposition).setToDate("");
                 } else {
-                    Toast.makeText(getContext(), getResources().getString(R.string.text_select_fromdate), Toast.LENGTH_LONG).show();
+                    if (promoList.get(selectedposition).getFromDate() != null && promoList.get(selectedposition).getFromDate().length() > 0) {
+                        Date fromDate = null;
+                        try {
+                            fromDate = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH).parse(promoList.get(selectedposition).getFromDate());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        if (dateValidation(fromDate, date))
+                            promoList.get(selectedposition).setToDate(paidDate);
+                        else
+                            Toast.makeText(getContext(), getResources().getString(R.string.todate_validation), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), getResources().getString(R.string.text_select_fromdate), Toast.LENGTH_LONG).show();
+                    }
                 }
+                promotionAdapter.notifyDataSetChanged();
+                selectedposition = -1;
             }
-            promotionAdapter.notifyDataSetChanged();
-            selectedposition = -1;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

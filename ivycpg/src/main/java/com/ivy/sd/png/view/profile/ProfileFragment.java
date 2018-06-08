@@ -103,8 +103,7 @@ public class ProfileFragment extends IvyBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_profile, container,
-                false);
+        view = inflater.inflate(R.layout.fragment_profile, container, false);
         if (!_hasLoadedOnce) {
             initializeViews();
         }
@@ -885,7 +884,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE19": {
-                String text = bmodel.formatValue(retailerObj
+                String text = bmodel.getWithoutExponential(retailerObj
                         .getCreditLimit());
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
@@ -1006,8 +1005,12 @@ public class ProfileFragment extends IvyBaseFragment {
             case "PROFILE36": {
                 mSelectedIds = mNearbyRetIds;
                 String text = null;
-                for (RetailerMasterBO bo : mSelectedIds) {
-                    text = DataMembers.CR1 + bo.getRetailerName();
+
+                if (mSelectedIds != null && mSelectedIds.size() > 0) {
+                    for (RetailerMasterBO bo : mSelectedIds) {
+                        text = DataMembers.CR1 + bo.getRetailerName();
+                    }
+
                 }
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
@@ -1261,7 +1264,8 @@ public class ProfileFragment extends IvyBaseFragment {
                 outletBO.setValueText(retailerObj.getDLNoExpDate());
                 finalProfileList.add(outletBO);
                 break;
-            } case "PROFILE78": {
+            }
+            case "PROFILE78": {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(retailerObj.getEmail());
