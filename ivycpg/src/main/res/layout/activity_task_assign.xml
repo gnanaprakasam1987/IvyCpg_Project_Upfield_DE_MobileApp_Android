@@ -50,7 +50,7 @@
         android:layout_toEndOf="@+id/layout1"
         android:layout_below="@+id/spin_absent_user"
 
-        >
+        android:layout_toRightOf="@+id/layout1">
 
 
         <ListView

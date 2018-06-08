@@ -43,14 +43,19 @@
                 android:layout_toStartOf="@+id/refresh_catalog"
                 android:text="@string/download"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/font_micro_small"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_marginRight="@dimen/margin_left_retailer_name"
+                android:layout_toLeftOf="@+id/refresh_catalog" />
 
             <Button
                 android:id="@+id/refresh_catalog"
                 style="?attr/roundedCustomButtonSmall"
                 android:layout_toStartOf="@+id/full_download_catalog"
                 android:layout_centerVertical="true"
-                android:text="Refresh" />
+                android:text="Refresh"
+                android:layout_toLeftOf="@+id/full_download_catalog" />
 
             <Button
                 android:id="@+id/full_download_catalog"
@@ -58,7 +63,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:text="Full Download"
-                android:layout_marginStart="@dimen/dimen_10dp" />
+                android:layout_marginStart="@dimen/dimen_10dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="@dimen/dimen_10dp" />
 
             <TextView
                 android:id="@+id/last_download_time"
@@ -70,7 +77,8 @@
                 android:text="@string/last_image_download_time"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/font_nano_small"
-                android:paddingTop="@dimen/dimen_5dp" />
+                android:paddingTop="@dimen/dimen_5dp"
+                android:layout_marginLeft="@dimen/card_margin" />
         </RelativeLayout>
 
 

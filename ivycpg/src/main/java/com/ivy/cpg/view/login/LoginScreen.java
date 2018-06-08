@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
@@ -64,6 +65,7 @@ import com.ivy.sd.png.view.UserSettingsActivity;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class LoginScreen extends IvyBaseActivityNoActionBar
@@ -93,6 +95,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        /*Configuration configuration = getResources().getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            configuration.setLayoutDirection(new Locale("fa"));
+        }
+        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());*/
+
         setContentView(R.layout.loginscreen);
 
         /* Check the date if expiry is enabled.*/

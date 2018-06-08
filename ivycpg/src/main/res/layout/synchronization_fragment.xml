@@ -294,6 +294,7 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_marginBottom="@dimen/activity_margin1"
                 android:layout_marginEnd="5dp"
+                android:layout_marginRight="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/activity_margin1"
                 android:text="@string/download" />
 
@@ -302,8 +303,9 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_marginBottom="@dimen/activity_margin1"
                 android:layout_marginStart="5dp"
+                android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/activity_margin1"
-                android:text="Sync" />
+                android:text="@string/sync"/>
         </LinearLayout>
 
     </LinearLayout>

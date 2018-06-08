@@ -445,7 +445,8 @@
                         android:layout_alignParentStart="true"
                         android:padding="5dp"
                         android:text="@string/distance_covered"
-                        android:textColor="@color/black_bg1" />
+                        android:textColor="@color/black_bg1"
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/distance_covered"
@@ -454,7 +455,8 @@
                         android:layout_toStartOf="@+id/kms2"
                         android:gravity="start"
                         android:text="@string/zero"
-                        android:textColor="@color/black_bg1"></TextView>
+                        android:textColor="@color/black_bg1"
+                        android:layout_toLeftOf="@+id/kms2"></TextView>
 
                     <TextView
                         android:id="@+id/kms2"
@@ -464,7 +466,8 @@
                         android:layout_alignParentEnd="true"
                         android:padding="5dp"
                         android:text="@string/km"
-                        android:textColor="@color/black_bg1" />
+                        android:textColor="@color/black_bg1"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
             </LinearLayout>

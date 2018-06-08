@@ -52,7 +52,8 @@
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:text="@string/tracking_list"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_marginLeft="@dimen/target_top_margin" />
 
 
                     <TextView

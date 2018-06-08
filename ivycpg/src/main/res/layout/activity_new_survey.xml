@@ -81,7 +81,8 @@
                 android:paddingBottom="@dimen/footer_margin_top"
                 android:paddingStart="@dimen/footer_margin_left"
                 android:paddingTop="@dimen/footer_margin_top"
-                android:visibility="invisible">
+                android:visibility="invisible"
+                android:paddingLeft="@dimen/footer_margin_left">
 
                 <TextView
                     style="?textFieldStyle"
@@ -136,7 +137,8 @@
                 android:paddingBottom="@dimen/footer_margin_top"
                 android:paddingStart="@dimen/footer_margin_left"
                 android:paddingTop="@dimen/footer_margin_top"
-                android:visibility="invisible">
+                android:visibility="invisible"
+                android:paddingLeft="@dimen/footer_margin_left">
 
                 <TextView
                     style="?textFieldStyle"
@@ -190,13 +192,15 @@
                 android:layout_weight="1.5"
                 android:gravity="end|center_vertical"
                 android:orientation="horizontal"
-                android:paddingEnd="10dp">
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp">
 
                 <Button
                     android:id="@+id/save"
                     style="?attr/roundedCustomButtonSmall"
                     android:layout_marginStart="5dp"
-                    android:text="@string/save" />
+                    android:text="@string/save"
+                    android:layout_marginLeft="5dp" />
 
             </LinearLayout>
         </LinearLayout>

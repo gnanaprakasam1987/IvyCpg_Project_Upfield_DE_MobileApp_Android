@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * You have to make a clone of the file DigitalClock.java to use in your application, modify in the following manner:-
@@ -50,6 +51,7 @@ public class CustomDigitalClock extends TextView  {
 
         if (mCalendar == null) {
             mCalendar = Calendar.getInstance();
+            mCalendar.setTimeZone(TimeZone.getTimeZone("GMT"));
         }
 
         mFormatChangeObserver = new FormatChangeObserver();

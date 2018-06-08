@@ -93,7 +93,8 @@
                     android:layout_weight="2"
                     android:paddingStart="10sp"
                     android:text="@string/your_name"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:paddingLeft="10sp" />
 
                 <EditText
                     android:id="@+id/yourName"

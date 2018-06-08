@@ -78,6 +78,7 @@
             android:layout_centerVertical="true"
             android:onClick="onClose"
             android:text="@string/close_call"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 </RelativeLayout>

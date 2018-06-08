@@ -43,7 +43,8 @@
             android:text="@string/text_invoice"
             android:textAllCaps="false"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" />
 
     </RelativeLayout>
 

@@ -35,7 +35,8 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/target_top_margin"
             android:text="@string/next"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <LinearLayout
@@ -75,7 +76,8 @@
                 android:paddingStart="4dp"
                 android:textSize="12dp"
                 android:textStyle="bold"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:paddingLeft="4dp" />
         </LinearLayout>
 
         <!--
@@ -114,7 +116,9 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@+id/textView3"
-                    android:text="@string/product_name" />
+                    android:text="@string/product_name"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/textView3" />
 
                 <TextView
                     android:id="@+id/textView2"
@@ -123,7 +127,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/sc_rate" />
+                    android:text="@string/sc_rate"
+                    android:layout_alignParentRight="true" />
 
                 <TextView
                     android:id="@+id/textView3"
@@ -132,7 +137,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@+id/textView2"
-                    android:text="@string/sc_qty" />
+                    android:text="@string/sc_qty"
+                    android:layout_toLeftOf="@+id/textView2" />
 
             </RelativeLayout>
 

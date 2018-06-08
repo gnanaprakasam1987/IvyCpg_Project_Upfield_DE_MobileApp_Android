@@ -118,7 +118,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:text="@string/save"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:layout_alignParentRight="true" />
             </RelativeLayout>
 
         </RelativeLayout>

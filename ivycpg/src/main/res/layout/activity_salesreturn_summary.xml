@@ -120,7 +120,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
             android:layout_toEndOf="@+id/ll_value"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/ll_value">
 
             <TextView
                 android:id="@+id/lpc_title"
@@ -148,6 +149,7 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/target_top_margin"
             android:text="@string/save"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 </RelativeLayout>
