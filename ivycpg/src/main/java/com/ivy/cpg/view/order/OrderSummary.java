@@ -933,6 +933,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 totalOrderValue = totalOrderValue - itemLevelDiscount;
             }
 
+            //Calculating with hold tax
+            double withHoldDiscount=0;
+            if(BModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+                discountHelper.downloadBillWiseWithHoldDiscount(getApplicationContext());
+                withHoldDiscount = discountHelper.calculateWithHoldDiscount(totalOrderValue);
+            }
+
             // Apply Exclude Item level Tax  in Product
             if (BModel.configurationMasterHelper.SHOW_TAX) {
                 if (BModel.configurationMasterHelper.IS_EXCLUDE_TAX)
@@ -943,6 +950,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
 
+
+            // with hold tax should be removed after tax applied.
+            totalOrderValue-=withHoldDiscount;
+            orderHelper.withHoldDiscount=withHoldDiscount;
 
             listView.setAdapter(new ProductExpandableAdapter());
             for (int i = 0; i < mOrderedProductList.size(); i++) {
@@ -1891,13 +1902,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
                 orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue, getApplicationContext());
 
-                //Calculating with hold tax
-                double withHoldDiscount = 0;
-                if (BModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
-                    discountHelper.downloadBillWiseWithHoldDiscount(getApplicationContext());
-                    withHoldDiscount = discountHelper.calculateWithHoldDiscount(totalOrderValue);
-                }
-
                 //Applying bill wise tax
                 if (BModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                     BModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
@@ -1906,11 +1910,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         totalOrderValue += BModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
                 }
 
-                // with hold tax should be removed after bill level tax is applied.
-                totalOrderValue -= withHoldDiscount;
-
-                orderHelper.withHoldDiscount = withHoldDiscount;
-                BModel.getOrderHeaderBO().setOrderValue(totalOrderValue);
 
                 new MyThread(this, DataMembers.SAVEINVOICE).start();
             } else {
