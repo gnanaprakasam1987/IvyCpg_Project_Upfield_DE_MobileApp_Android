@@ -24,7 +24,6 @@
     <dimen name="list_product_name_width">400dp</dimen>
     <dimen name="list_item_width">150dp</dimen>
     <dimen name="list_item_width_large">160dp</dimen>
-    <dimen name="list_item_width_dashboard_small">180dp</dimen>
     <dimen name="list_item_width_dashboard_medium">250dp</dimen>
 
     <!-- Order Summary Screen -->
@@ -80,20 +79,8 @@
 
 
     <!-- sku wise target -->
-    <dimen name="swt_target_width">180dp</dimen>
-    <dimen name="swt_achieved_width">200dp</dimen>
 
     <dimen name="crown_list_title_height">60dp</dimen>
-
-
-    <dimen name="report_base_sbd">342dp</dimen>
-
-    <dimen name="product_name_twenty_five_character">300dp</dimen>
-    <dimen name="product_name_twenty_character">240dp</dimen>
-
-    <dimen name="sno_width">45dp</dimen>
-    <dimen name="eighteen_characters_width">185dp</dimen>
-    <dimen name="five_character_width">75dp</dimen>
 
 
     <dimen name="dashreportnamewidth">160dp</dimen>

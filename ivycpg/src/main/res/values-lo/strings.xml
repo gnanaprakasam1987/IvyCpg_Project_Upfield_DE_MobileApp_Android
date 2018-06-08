@@ -120,7 +120,6 @@
     <string name="avg_lines">ສະເລຍແຖວ</string>
     <string name="date">ວັນທີ</string>
     <string name="start_visit">ເລີມພົບ</string>
-    <string name="description1">ລາຍລະອຽດ</string>
     <string name="type">ປ​ະ​ເພດ​ສິນ​ຄ້າ</string>
     <string name="stock_report">Stock Report</string>
     <string name="sih">SIH</string>
@@ -164,12 +163,10 @@
     <string name="start_sync">Start Sync</string>
     <string name="with_images">ພ້ອມຮູບພາບ</string>
     <string name="close_the_day">ປິດມື້</string>
-    <string name="merch">Merch</string>
     <string name="reconnect">ເຊື່ອມຕໍ່ໃຫມ່</string>
     <string name="delete">ລົບ</string>
     <string name="balance">ຍອດຄ້າງ</string>
     <string name="sales">ຂາຍ</string>
-    <string name="golden_store">Golden Store</string>
     <string name="enter_deviate_reason_to_plan_this_retailer_for_today">ໃສ່ເຫດຜົນອອກນອກເສັ້່ນທາງຈາກແຜນສຳລັບຮ້ານນີ້ມື້ນີ້</string>
     <string name="retailer_is_already_planned_for_today">ຮ້ານຄ້າຢູ່ໃນແຜນມື້ນີ້ແລ້ວ</string>
     <string name="no_deviate_reason_found_plz_redownload">ບໍ່ພົບເຫດຜົນອອກນອກເສັ້ນທາງ. ກະລຸນນາດາວໂຫລດໃຫມ່</string>
@@ -209,7 +206,6 @@
     <string name="upload_failed_please_try_again">ອັບເດດຜິດພາດ. ກະລຸນນາລອງໃຫມ່</string>
     <string name="images_sucessfully_uploaded">ອັບໂຫລດຮູບສຳເລັດແລ້ວ!</string>
     <string name="images_upload_failed_please_try_again">ອັບໂຫລດຮູບຜິດພາດ. ກະລຸນນາລອງໃຫມ່</string>
-    <string name="mtd_act_ach">ເດືອນຫາປະ​ຈຸ​ບັນ</string>
     <string name="deleting_order">ກຳລັງລືບໃບສັ່ງ</string>
     <string name="order_deleted_sucessfully">ໃບສັ່ງຖຶກລືບສຳເລັດແລ້ວ. ໃບສັ່ງເລກທີ :</string>
     <string name="do_you_want_delete_order">ຕ້ອງການລືບໃບສັ່ງບໍ່?</string>
@@ -354,13 +350,7 @@
     <string name="please_answer_all_mandatory_questions">ກະລຸນນາຕອບຄຳຖາມບັງຄັບທັງຫມົດ</string>
     <string name="activation_key_should_be_sixteen_character">ລະຫັດເປີດນຳໃຊ້ຄວນມີ 16 ຕົວ</string>
     <string name="p_qty">P Qty</string>
-    <string name="AP3M">AP3M</string>
-    <string name="v_target">V.Target</string>
-    <string name="v_actual">V.Actual</string>
     <string name="stock_download_successfully">Stock Downloaded Successfully</string>
-    <string name="target_gp">Tgt. GP</string>
-    <string name="actual_gp">Acl. GP</string>
-    <string name="gs">GS</string>
     <string name="seq_no">Seq No</string>
     <string name="musername">ຊື່ຜູ້ຂາຍ</string>
     <string name="promotion_name">ຊື່ໂປຣໂມຊັ້ນ</string>
@@ -434,7 +424,6 @@
     <string name="enter_otp">Enter OTP</string>
     <string name="or_you_are">, ຫລື ທ່ານແມ່ນ</string>
     <string name="mts_away">Mts away!</string>
-    <string name="factor">ປັດໃຈ</string>
     <string name="target">ເປົ້າຫມາຍ</string>
     <string name="achieved">ສຳເລັດ</string>
     <string name="vanload">ໂຫລດຂື້ນລົດ</string>
@@ -611,8 +600,6 @@
     <string name="rep_sign">Rep. Sign</string>
     <string name="invoice_created_dou_wnt_print">Invoice created Successfully. Do you want to print ?</string>
     <string name="are_you_sure_you_want_to_print"> Do you want to print a copy of your Invoice ?</string>
-    <string name="total_distribution">ລວມການຈຳຫນ່າຍ</string>
-    <string name="mtd_value">ມູນຄ່າເດືອນຫາປະ​ຈຸ​ບັນ </string>
     <string name="choose">ເລືອກ</string>
     <string name="please_select_atleast_one_sku">ກະລຸນນາເລຶອກ 1 SKU</string>
     <string name="btn_create">ສ້າງ</string>
@@ -632,7 +619,6 @@
     <string name="choose_location">ເລຶອກສະຖານທີ</string>
     <string name="visit_plan_updated">ອັບເດດແຜນພົບລູກຄ້າແລ້ວ</string>
     <string name="stock_allocated">ແບ່ງສະຕ໋ອກ</string>
-    <string name="score">ຄະແນນ:</string>
     <string name="questscore">ຄະແນນຄຳຖາມ:</string>
     <string name="surevyscore">ຄະແນນແບບສອບຖາມ:</string>
     <string name="outer_price">O.Price</string>
@@ -658,7 +644,6 @@
     <string name="do_u_want_directly_go_or_redownload">ຕ້ອງການອອກໄປໂດຍກົງ ຫລື ດາວໂຫລດໃຫມ່?</string>
     <string name="open">ເປີດ</string>
     <string name="redownload">ດາວໂຫລດໃຫມ່</string>
-    <string name="task_createdby">ສ້າງ​ຂື້ນ​ໂດຍ </string>
     <string name="selectoptionforphoto">Select An Option To Take Photo</string>
     <string name="take_photos_to_save">Take Photos To Save</string>
     <string name="saved_Failed">saved Failed</string>
@@ -880,7 +865,6 @@
     <string name="market_share">Market Share</string>
     <string name="reset">Reset</string>
     <string name="cheque_bounced">Cheque Bounced</string>
-    <string name="please_enter_referenceno">enter referenceno </string>
     <string name="coupon_amount">Coupon Amount</string>
     <string name="no_of_coupon">No of Coupons </string>
     <string name="please_select_cheque_date">Please select cheque date</string>
@@ -990,7 +974,6 @@
     <string name="price_check">Price Check</string>
     <string name="expiry_check">Expiry Check</string>
     <string name="change_in_price">Change in price</string>
-    <string name="store_status">Store Status</string>
     <string name="store_visited">Store Visited</string>
     <string name="percent_of_tot_target_achieved">% of total target is achieved</string>
     <string name="sale">Sale</string>

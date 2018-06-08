@@ -121,7 +121,6 @@
     <string name="avg_lines">平均行数</string>
     <string name="date">日期</string>
     <string name="start_visit">开始访问</string>
-    <string name="description1">描述</string>
     <string name="type">类型</string>
     <string name="stock_report">库存报告</string>
     <string name="sih">库存现货</string>
@@ -165,12 +164,10 @@
     <string name="start_sync">开始同步</string>
     <string name="with_images">包括图片</string>
     <string name="close_the_day">关闭当天操作</string>
-    <string name="merch">业务员</string>
     <string name="reconnect">重新连接</string>
     <string name="delete">删除</string>
     <string name="balance">结余</string>
     <string name="sales">销售</string>
-    <string name="golden_store">金牌门店</string>
     <string name="enter_deviate_reason_to_plan_this_retailer_for_today">请输入将该零售商调整到今日计划的理由</string>
     <string name="retailer_is_already_planned_for_today">零售商已经在今天的计划中。</string>
     <string name="no_deviate_reason_found_plz_redownload">没有发现偏离原因。请重新下载。</string>
@@ -210,7 +207,6 @@
     <string name="upload_failed_please_try_again">上传失败。请再试一次。</string>
     <string name="images_sucessfully_uploaded">图片上传成功。</string>
     <string name="images_upload_failed_please_try_again">图像上传失败。请再试一次。</string>
-    <string name="mtd_act_ach">当月</string>
     <string name="deleting_order">订单删除中…</string>
     <string name="order_deleted_sucessfully">订单成功删除。订单ID：</string>
     <string name="do_you_want_delete_order">您要删除订单吗？</string>
@@ -351,13 +347,7 @@
     <string name="apply_sih">应用库存现货</string>
     <string name="please_answer_all_mandatory_questions">请回答所有强制性问题</string>
     <string name="activation_key_should_be_sixteen_character">激活键应为十六字符</string>
-    <string name="AP3M">过去三个月平均</string>
-    <string name="v_target">与目标比较</string>
-    <string name="v_actual">与实际比较</string>
     <string name="stock_download_successfully">库存下载成功</string>
-    <string name="target_gp">目标差距</string>
-    <string name="actual_gp">实际差距</string>
-    <string name="gs">GS</string>
     <string name="seq_no">序列号</string>
     <string name="musername">销售员名称</string>
     <string name="promotion_name">促销名称</string>
@@ -431,7 +421,6 @@
     <string name="enter_otp">输入密码</string>
     <string name="or_you_are">，你是</string>
     <string name="mts_away">0</string>
-    <string name="factor">指标</string>
     <string name="target">目标</string>
     <string name="achieved">实现</string>
     <string name="vanload">货车装车</string>
@@ -608,8 +597,6 @@
     <string name="rep_sign">销售代表签字</string>
     <string name="invoice_created_dou_wnt_print">成功创建发票。要打印吗？</string>
     <string name="are_you_sure_you_want_to_print">您想打印发票副本吗？</string>
-    <string name="total_distribution">总经销</string>
-    <string name="mtd_value">当月值</string>
     <string name="choose">选择</string>
     <string name="please_select_atleast_one_sku">请至少选择一个SKU</string>
     <string name="btn_create">创建</string>
@@ -629,7 +616,6 @@
     <string name="choose_location">选择位置</string>
     <string name="visit_plan_updated">访问计划更新</string>
     <string name="stock_allocated">库存分配</string>
-    <string name="score">分数:</string>
     <string name="questscore">问题得分：</string>
     <string name="surevyscore">调查评分：</string>
     <string name="outer_price">订单价格</string>
@@ -655,7 +641,6 @@
     <string name="do_u_want_directly_go_or_redownload">你想直接开始或重新下载？</string>
     <string name="open">正常</string>
     <string name="redownload">重下载</string>
-    <string name="task_createdby">创建人</string>
     <string name="selectoptionforphoto">选择一个选项以拍照</string>
     <string name="take_photos_to_save">拍照保存</string>
     <string name="saved_Failed">保存失败</string>
@@ -880,7 +865,6 @@
     <string name="select_prod">--Select Product--</string>
     <string name="switch_user">Switch User</string>
     <string name="cheque_bounced">Cheque Bounced</string>
-    <string name="please_enter_referenceno">enter referenceno </string>
     <string name="coupon_amount">Coupon Amount</string>
     <string name="no_of_coupon">No of Coupons </string>
     <string name="please_select_cheque_date">Please select cheque date</string>
@@ -990,7 +974,6 @@
     <string name="price_check">Price Check</string>
     <string name="expiry_check">Expiry Check</string>
     <string name="change_in_price">Change in price</string>
-    <string name="store_status">Store Status</string>
     <string name="store_visited">Store Visited</string>
     <string name="percent_of_tot_target_achieved">% of total target is achieved</string>
     <string name="sale">Sale</string>

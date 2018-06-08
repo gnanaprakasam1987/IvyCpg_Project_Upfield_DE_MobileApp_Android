@@ -120,7 +120,6 @@
     <string name="avg_lines">Average Lines</string>
     <string name="date">Start Date</string>
     <string name="start_visit">Start Visit</string>
-    <string name="description1">Description</string>
     <string name="type">Type</string>
     <string name="stock_report">Stock Report</string>
     <string name="sih">SIH</string>
@@ -164,12 +163,10 @@
     <string name="start_sync">Start Sync</string>
     <string name="with_images">With Images</string>
     <string name="close_the_day">Close for the Day</string>
-    <string name="merch">Merch</string>
     <string name="reconnect">Reconnect</string>
     <string name="delete">Delete</string>
     <string name="balance">Balance</string>
     <string name="sales">Sales</string>
-    <string name="golden_store">Golden Store</string>
     <string name="enter_deviate_reason_to_plan_this_retailer_for_today">Enter deviate reason to plan this retailer for today</string>
     <string name="retailer_is_already_planned_for_today"> Retailer is already planned for today.</string>
     <string name="no_deviate_reason_found_plz_redownload"> No Deviate Reason found. please redownload.</string>
@@ -209,7 +206,6 @@
     <string name="upload_failed_please_try_again"> Upload Failed. Please try again.</string>
     <string name="images_sucessfully_uploaded"> Images Successfully Uploaded.</string>
     <string name="images_upload_failed_please_try_again"> Images Upload Failed. Please try Again.</string>
-    <string name="mtd_act_ach">MTD</string>
     <string name="deleting_order">Deleting order…</string>
     <string name="order_deleted_sucessfully">Order deleted successfully. Order ID : </string>
     <string name="do_you_want_delete_order">Do you want to delete order?</string>
@@ -354,13 +350,7 @@
     <string name="apply_sih">Apply SIH</string>
     <string name="please_answer_all_mandatory_questions">Please answer all mandatory questions</string>
     <string name="activation_key_should_be_sixteen_character">Invalid Activation key.</string>
-    <string name="AP3M">AP3M</string>
-    <string name="v_target">V.Target</string>
-    <string name="v_actual">V.Actual</string>
     <string name="stock_download_successfully">Stock Downloaded Successfully</string>
-    <string name="target_gp">Tgt. GP</string>
-    <string name="actual_gp">Acl. GP</string>
-    <string name="gs">GS</string>
     <string name="seq_no">Seq No</string>
     <string name="musername">Seller name: </string>
     <string name="promotion_name"> Promotion Name</string>
@@ -435,7 +425,6 @@
     <string name="enter_otp">Enter OTP</string>
     <string name="or_you_are">,you are</string>
     <string name="mts_away">Mts away!</string>
-    <string name="factor">Factors</string>
     <string name="target">Target</string>
     <string name="achieved">Achieved</string>
     <string name="vanload">VanLoad</string>
@@ -612,8 +601,6 @@
     <string name="rep_sign">Rep. Sign</string>
     <string name="invoice_created_dou_wnt_print">Invoice created Successfully. Do you want to print ?</string>
     <string name="are_you_sure_you_want_to_print"> Do you want to print a copy of your Invoice ?</string>
-    <string name="total_distribution">Total Distribution</string>
-    <string name="mtd_value">MTD Value</string>
     <string name="choose">Choose </string>
     <string name="please_select_atleast_one_sku">Please select atleast one sku</string>
     <string name="btn_create">Create</string>
@@ -633,7 +620,6 @@
     <string name="choose_location">Choose Location</string>
     <string name="visit_plan_updated">Visit Plan Updated</string>
     <string name="stock_allocated">Stock Allocated</string>
-    <string name="score">Score:</string>
     <string name="questscore">Question Score</string>
     <string name="surevyscore">Survey Score</string>
     <string name="outer_price">O.Price</string>
@@ -659,7 +645,6 @@
     <string name="do_u_want_directly_go_or_redownload">Do you want to directly go or redownlod?</string>
     <string name="open">Open</string>
     <string name="redownload">Redownload</string>
-    <string name="task_createdby">Created By</string>
     <string name="selectoptionforphoto">Select an option to take photo.</string>
     <string name="take_photos_to_save">Take photos to save</string>
     <string name="saved_Failed">save Failed</string>
@@ -881,7 +866,6 @@
     <string name="market_share">Market Share</string>
     <string name="reset">Reset</string>
     <string name="cheque_bounced">Cheque Bounced</string>
-    <string name="please_enter_referenceno">enter referenceno </string>
     <string name="coupon_amount">Coupon Amount</string>
     <string name="no_of_coupon">No of Coupons </string>
     <string name="please_select_cheque_date">Please select cheque date</string>
@@ -991,7 +975,6 @@
     <string name="price_check">Price Check</string>
     <string name="expiry_check">Expiry Check</string>
     <string name="change_in_price">Change in price</string>
-    <string name="store_status">Store Status</string>
     <string name="store_visited">Store Visited</string>
     <string name="percent_of_tot_target_achieved"> achieved</string>
     <string name="sale">Sale</string>
