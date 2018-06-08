@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
@@ -22,7 +23,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -183,7 +183,7 @@ public class OrderHelper {
 
             // Deleting existing order
             if (hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())) {
-                uid = deleteOrderTransactions(db, isVanSales, uid,mContext);
+                uid = deleteOrderTransactions(db, isVanSales, uid, mContext);
             }
 
             // It can be used to show in OrderSummary alert
@@ -504,12 +504,12 @@ public class OrderHelper {
                     businessModel.updateTaxForFreeProduct(mOrderedProductList, uid, db);
                 }
 
-                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+                SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
                 if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                         || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     schemeHelper.insertSchemeDetails(uid, db);
                 }
-                schemeHelper.insertAccumulationDetails(mContext,db, uid);
+                schemeHelper.insertAccumulationDetails(mContext, db, uid);
 
 
             } catch (Exception e1) {
@@ -538,7 +538,7 @@ public class OrderHelper {
 
             }
 
-            if(businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+            if (businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
                 DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
             }
 
@@ -593,8 +593,8 @@ public class OrderHelper {
                 updateCreditNoteprintList();
 
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
-                salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER",false);
-               // salesReturnHelper.clearSalesReturnTable(true);
+                salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", false);
+                // salesReturnHelper.clearSalesReturnTable(true);
             }
 
             businessModel.setOrderHeaderNote("");
@@ -605,13 +605,15 @@ public class OrderHelper {
 
         } catch (Exception e) {
             Commons.printException(e);
-            deleteOrderTransactions(db, isVanSales, uid,mContext);
+            deleteOrderTransactions(db, isVanSales, uid, mContext);
             return false;
         }
         return true;
     }
 
-    /** split Order
+    /**
+     * split Order
+     *
      * @param mContext
      * @param productList
      * @return
@@ -984,14 +986,14 @@ public class OrderHelper {
                         businessModel.updateTaxForFreeProduct(mOrderedProductList, uid, db);
                     }
 
-                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+                    SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
                     if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                             || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                         schemeHelper.insertSchemeDetails(uid, db);
                     }
 
 
-                    schemeHelper.insertAccumulationDetails(mContext,db, uid);
+                    schemeHelper.insertAccumulationDetails(mContext, db, uid);
 
 
                 } catch (Exception e1) {
@@ -1020,7 +1022,7 @@ public class OrderHelper {
 
                 }
 
-                if(businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+                if (businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
                     DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
                 }
 
@@ -1078,7 +1080,7 @@ public class OrderHelper {
                     updateCreditNoteprintList();
 
                 if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
-                    salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER",true);
+                    salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", true);
                     salesReturnHelper.clearSalesReturnTable(true);
                 }
 
@@ -1091,7 +1093,7 @@ public class OrderHelper {
 
         } catch (Exception e) {
             Commons.printException(e);
-            deleteOrderTransactions(db, isVanSales, uid,mContext);
+            deleteOrderTransactions(db, isVanSales, uid, mContext);
             return false;
         }
         return true;
@@ -1585,19 +1587,19 @@ public class OrderHelper {
                                         productId, caseQty, pieceQty, outerQty, srp,
                                         orderDetailCursor.getDouble(4),
                                         orderDetailCursor, caseSize, outerSize,
-                                        batchId,skuResonId,remarks);
+                                        batchId, skuResonId, remarks);
                             } else {
                                 setProductDetails(productId, caseQty, pieceQty,
                                         outerQty, srp,
                                         orderDetailCursor.getDouble(4),
-                                        orderDetailCursor, caseSize, outerSize, weight,skuResonId,remarks);
+                                        orderDetailCursor, caseSize, outerSize, weight, skuResonId, remarks);
                             }
                         }
 
                     } else {
                         setProductDetails(productId, caseQty, pieceQty,
                                 outerQty, srp, orderDetailCursor.getDouble(4),
-                                orderDetailCursor, caseSize, outerSize, weight,skuResonId,remarks);
+                                orderDetailCursor, caseSize, outerSize, weight, skuResonId, remarks);
                     }
 
 
@@ -1713,7 +1715,7 @@ public class OrderHelper {
      */
     private void setProductDetails(String productId, int caseQty, int pieceQty,
                                    int outerQty, float srp, double pricePerPiece, Cursor OrderDetails,
-                                   int caseSize, int outerSize, float weight,int skuResonId,String remarks) {
+                                   int caseSize, int outerSize, float weight, int skuResonId, String remarks) {
         ProductMasterBO product;
         int siz = businessModel.productHelper.getProductMaster().size();
         if (siz == 0)
@@ -1798,7 +1800,6 @@ public class OrderHelper {
         } else {
             orderValue = businessModel.getOrderHeaderBO().getOrderValue();
         }
-
 
 
         try {
@@ -1915,7 +1916,7 @@ public class OrderHelper {
             sb.append("," + businessModel.getRetailerMasterBO().getCreditDays());
             sb.append("," + businessModel.QT(printFilePath));
             sb.append("," + businessModel.QT(timeStampId));
-            sb.append("," + businessModel.getRemarkType());
+            sb.append("," + businessModel.QT(businessModel.getRemarkType()));
             sb.append("," + businessModel.QT(businessModel.getRField1()));
             sb.append("," + businessModel.QT(businessModel.getRField2()));
             sb.append("," + businessModel.QT(businessModel.getRField3()));
@@ -1937,8 +1938,8 @@ public class OrderHelper {
                 db.updateSQL("update SchemeFreeProductDetail set Invoiceid="
                         + businessModel.QT(invoiceId) + " where orderID=" + this.getOrderId());
 
-                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
-                schemeHelper.reduceFreeProductsFromSIH( db);
+                SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
+                schemeHelper.reduceFreeProductsFromSIH(db);
             }
 
             /* insert tax details  */
@@ -2470,7 +2471,7 @@ public class OrderHelper {
                 productId = invoiceDetailCursor.getString(0);
                 setProductDetails(productId, caseQty, pieceQty, outerQty, srp,
                         invoiceDetailCursor.getDouble(3), invoiceDetailCursor,
-                        0, 0, weight,0,"");
+                        0, 0, weight, 0, "");
 
             }
             invoiceDetailCursor.close();
@@ -2850,7 +2851,7 @@ public class OrderHelper {
 
             if (!isPartial) {
                 // inserting free products
-                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+                SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
                 for (SchemeBO schemeBO : schemeHelper.getAppliedSchemeList()) {
 
                     if (schemeBO.isQuantityTypeSelected()) {
@@ -2974,12 +2975,12 @@ public class OrderHelper {
      *
      * @param mOrderedProductList ordered product list
      */
-    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList, double totalOrderValue,Context mContext) {
+    public void updateOffInvoiceSchemeInProductOBJ(LinkedList<ProductMasterBO> mOrderedProductList, double totalOrderValue, Context mContext) {
 
         ArrayList<String> mValidSchemes = null;
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
         if (schemeHelper.IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE) {
-            mValidSchemes = getValidAccumulationSchemes(totalOrderValue,mContext);
+            mValidSchemes = getValidAccumulationSchemes(totalOrderValue, mContext);
         }
 
         //
@@ -3001,11 +3002,11 @@ public class OrderHelper {
 
     }
 
-    private ArrayList<String> getValidAccumulationSchemes(double totalOrderValue,Context mContext) {
+    private ArrayList<String> getValidAccumulationSchemes(double totalOrderValue, Context mContext) {
         mValidAccumulationSchemes = new ArrayList<>();
         try {
             HashMap<String, Double> mFOCValueBySchemeId = new HashMap<>();
-            SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+            SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
             for (SchemeBO schemeBO : schemeHelper.getOffInvoiceAppliedSchemeList()) {
                 if (schemeBO.isQuantityTypeSelected()) {
 
@@ -3154,7 +3155,7 @@ public class OrderHelper {
      * @param orderList Orderd list
      * @return stock avilability
      */
-    public boolean isStockAvailableToDeliver(List<ProductMasterBO> orderList,Context mContext) {
+    public boolean isStockAvailableToDeliver(List<ProductMasterBO> orderList, Context mContext) {
         try {
 
             HashMap<String, Integer> mDeliverQtyByProductId = new HashMap<>();
@@ -3176,7 +3177,7 @@ public class OrderHelper {
 
                 }
             }
-            SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+            SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
             if (schemeHelper.IS_SCHEME_ON) {
                 for (SchemeBO schemeBO : schemeHelper.getAppliedSchemeList()) {
                     if (schemeBO.getFreeProducts() != null) {
@@ -3334,6 +3335,14 @@ public class OrderHelper {
                     db.deleteSQL(DataMembers.tbl_SalesReturnDetails, "uid="
                             + DatabaseUtils.sqlEscapeString(uid), false);
                     db.deleteSQL(DataMembers.tbl_SalesReturnReplacementDetails, "uid=" + DatabaseUtils.sqlEscapeString(uid), false);
+
+                    if ((businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION
+                            || businessModel.configurationMasterHelper.TAX_SHOW_INVOICE)
+                            && businessModel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CREDIT"))
+                        db.deleteSQL(DataMembers.tbl_credit_note, "refno="
+                                + DatabaseUtils.sqlEscapeString(uid), false);
+
+
                 }
             }
             c.close();
@@ -3344,7 +3353,7 @@ public class OrderHelper {
 
     }
 
-    private String deleteOrderTransactions(DBUtil db, int isVanSales, String uid,Context mContext) {
+    private String deleteOrderTransactions(DBUtil db, int isVanSales, String uid, Context mContext) {
         StringBuffer sb = new StringBuffer();
         sb.append("select OrderID from OrderHeader where RetailerID=");
         sb.append(businessModel.getRetailerMasterBO().getRetailerID());
@@ -3388,7 +3397,7 @@ public class OrderHelper {
                 }
 
                 // if scheme module enable ,delete the scheme table
-                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(mContext);
+                SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
                 if (schemeHelper.IS_SCHEME_ON) {
                     db.deleteSQL(DataMembers.tbl_scheme_details,
                             "OrderID=" + uid, false);
@@ -3461,8 +3470,7 @@ public class OrderHelper {
                     }
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -3523,7 +3531,7 @@ public class OrderHelper {
             }
         }
 
-        creditNoteAmt = totalValue +totalTaxValue;
+        creditNoteAmt = totalValue + totalTaxValue;
 
         return creditNoteAmt;
 

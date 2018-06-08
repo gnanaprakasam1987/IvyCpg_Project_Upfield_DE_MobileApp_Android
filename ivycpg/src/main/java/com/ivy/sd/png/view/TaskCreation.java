@@ -11,12 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -127,7 +125,9 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                     seller_rb.setTextColor(color);
                     channelwise_rb.setTextColor(secondary_color);
                     retailerwise_rb.setTextColor(secondary_color);
+                    channelSpinner.setSelection(0);
                     channelSpinner.setEnabled(false);
+                    retailerSpinner.setSelection(0);
                     retailerSpinner.setEnabled(false);
                     sellerSpinner.setEnabled(true);
                     bmodel.taskHelper.mode = "seller";
@@ -136,15 +136,19 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                     channelwise_rb.setTextColor(color);
                     retailerwise_rb.setTextColor(secondary_color);
                     channelSpinner.setEnabled(true);
+                    retailerSpinner.setSelection(0);
                     retailerSpinner.setEnabled(false);
+                    sellerSpinner.setSelection(0);
                     sellerSpinner.setEnabled(false);
                     bmodel.taskHelper.mode = "channel";
                 } else if (checkedId == R.id.Retailerwise) {
                     seller_rb.setTextColor(secondary_color);
                     channelwise_rb.setTextColor(secondary_color);
                     retailerwise_rb.setTextColor(color);
+                    channelSpinner.setSelection(0);
                     channelSpinner.setEnabled(false);
                     retailerSpinner.setEnabled(true);
+                    sellerSpinner.setSelection(0);
                     sellerSpinner.setEnabled(false);
                     bmodel.taskHelper.mode = "retailer";
                 }
@@ -154,7 +158,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         //allow only create task only for retailer if not from seller Task
         if (!fromHomeScreen) {
             rb.setVisibility(View.GONE);
-            ((LinearLayout)this.findViewById(R.id.spinner_layouts)).setVisibility(View.GONE);
+            ((LinearLayout) this.findViewById(R.id.spinner_layouts)).setVisibility(View.GONE);
             applicable_tv.setVisibility(View.GONE);
             bmodel.taskHelper.mode = "retailer";
         }
@@ -168,8 +172,9 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
             for (ChannelBO temp : bmodel.channelMasterHelper.getChannelMaster()) {
                 if (temp.getChannelId() == bmodel.getRetailerMaster().get(ii).getChannelID()) {
                     if (((bmodel
-                            .getRetailerMaster().get(ii).getIsToday() == 1)) || bmodel.getRetailerMaster().get(ii).getIsDeviated()
-                            .equals("Y")) {
+                            .getRetailerMaster().get(ii).getIsToday() == 1)) ||
+                            (bmodel.getRetailerMaster().get(ii).getIsDeviated() != null
+                                    && bmodel.getRetailerMaster().get(ii).getIsDeviated().equals("Y"))) {
 
 
                         ChannelBO temp2 = channelhashbo.get(temp.getChannelId() + "");
@@ -194,7 +199,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         channelSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                ((TextView)view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
+                ((TextView) view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
                 ChannelBO chBo = (ChannelBO) parent.getSelectedItem();
                 if (chBo.getChannelName().equalsIgnoreCase(getResources().getString(R.string.all_channel))) {
                     channelId = -1;
@@ -226,7 +231,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
             retailerSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int position, long id) {
-                    ((TextView)view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
+                    ((TextView) view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
                     RetailerMasterBO reBo = (RetailerMasterBO) parent.getSelectedItem();
                     if (reBo.getTretailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
                         retailerid = -2;
@@ -260,7 +265,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         sellerSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                ((TextView)view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
+                ((TextView) view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
                 mSelectedUserId = position;
             }
 
@@ -414,8 +419,8 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                     getResources().getString(R.string.new_task_saved),
                     Toast.LENGTH_SHORT).show();
             if (fromHomeScreen)
-            startActivity(new Intent(TaskCreation.this,
-                    HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
+                startActivity(new Intent(TaskCreation.this,
+                        HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
             else
                 startActivity(new Intent(TaskCreation.this,
                         Task.class).putExtra("IsRetailerwisetask", isRetailerTask));

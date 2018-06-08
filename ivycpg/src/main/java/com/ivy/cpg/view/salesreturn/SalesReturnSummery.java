@@ -470,7 +470,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
         menu.findItem(R.id.menu_next).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.SHOW_SIGNATURE_SCREEN)
+        if (bmodel.configurationMasterHelper.IS_SALES_RETURN_SIGN)
             menu.findItem(R.id.menu_signature).setVisible(true);
         return super.onPrepareOptionsMenu(menu);
     }

@@ -143,5 +143,7 @@
     <string name="volume">Volume</string>
     <string name="todate_validation">To Date should be greater than From Date</string>
     <string name="no_config_exist">No Configuration Exist</string>
+    <string name="backup_seller">Backup Seller</string>
+    <string name="error_connecting_printer">Error connecting Printer</string>
 
 </resources>
