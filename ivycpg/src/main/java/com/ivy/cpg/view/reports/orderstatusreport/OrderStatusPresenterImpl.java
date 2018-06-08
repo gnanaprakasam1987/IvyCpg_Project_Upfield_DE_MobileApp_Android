@@ -32,28 +32,24 @@ public class OrderStatusPresenterImpl implements OrderStatusContractor.OrderStat
     @Override
     public void downloadOrderStatusReportList() {
         try {
-            if (businessModel.configurationMasterHelper.IS_ENABLE_ORDER_STATUS_REPORT) {
-                if (businessModel.configurationMasterHelper.IS_ORDER_STATUS_REPORT) {
-                    businessModel.orderStatusReportHelper.getOrderStatusList();
-                    businessModel.orderStatusReportHelper.getOrderStatusRetailerList();
-                } else {
-                    businessModel.orderStatusReportHelper.getInvoiceStatusList();
-                    businessModel.orderStatusReportHelper.getInvoiceStatusRetailerList();
-                }
-                if (businessModel.orderStatusReportHelper.getOrderStatusReportList() == null ||
-                        businessModel.orderStatusReportHelper.getOrderStatusReportList().size() == 0) {
-                    orderStatusView.setEmptyView(context.getResources().getString(R.string.no_data_exists));
-                    return;
-                }
-                setOrderStatusReportList(businessModel.orderStatusReportHelper.getOrderStatusReportList());
-                setOrderStatusRetailerReportList(businessModel.orderStatusReportHelper.getOrderStatusRetailerReportList());
-
-                orderStatusView.setAdapter();
-                orderStatusView.setSpinnerAdapter();
-            } else {
-                orderStatusView.setEmptyView(context.getResources().getString(R.string.no_config_exist));
+            businessModel.orderStatusReportHelper.getOrderStatusList();
+            businessModel.orderStatusReportHelper.getOrderStatusRetailerList();
+//        if (businessModel.configurationMasterHelper.IS_ENABLE_ORDER_STATUS_REPORT) {
+//            if (!businessModel.configurationMasterHelper.IS_ORDER_STATUS_REPORT) {
+//                businessModel.orderStatusReportHelper.getInvoiceStatusList();
+//                businessModel.orderStatusReportHelper.getInvoiceStatusRetailerList();
+//            }
+//        }
+            if (businessModel.orderStatusReportHelper.getOrderStatusReportList() == null ||
+                    businessModel.orderStatusReportHelper.getOrderStatusReportList().size() == 0) {
+                orderStatusView.setEmptyView(context.getResources().getString(R.string.no_data_exists));
                 return;
             }
+            setOrderStatusReportList(businessModel.orderStatusReportHelper.getOrderStatusReportList());
+            setOrderStatusRetailerReportList(businessModel.orderStatusReportHelper.getOrderStatusRetailerReportList());
+
+            orderStatusView.setAdapter();
+            orderStatusView.setSpinnerAdapter();
         } catch (Exception e) {
             e.printStackTrace();
         }
