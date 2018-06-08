@@ -13,6 +13,7 @@ public class PlanoGramBO {
 	private int audit=2;
 	private String reasonID ="0";
 	private String productName;
+	private int imageId;
 
 	private ArrayList<String> planoGramCameraImgList = new ArrayList<>();
 	
@@ -94,5 +95,13 @@ public class PlanoGramBO {
 
 	public void setPlanoGramCameraImgList(ArrayList<String> planoGramCameraImgList) {
 		this.planoGramCameraImgList = planoGramCameraImgList;
+	}
+
+	public int getImageId() {
+		return imageId;
+	}
+
+	public void setImageId(int imageId) {
+		this.imageId = imageId;
 	}
 }
