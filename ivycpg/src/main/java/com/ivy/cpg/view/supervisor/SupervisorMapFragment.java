@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -68,10 +69,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     private LinearLayout routeLayout,infoWindowLayout;
 
     private int trackingType; //0 - RealTime, 1 - Movement Tracking, 2 - Call analysis
-    private ViewPagerAdapter viewPagerAdapter;
-    private EnhancedWrapContentViewPager viewPager;
     private RecyclerViewPager mRecyclerView;
-//    private LayoutAdapter layoutAdapter;
 
     private MyAdapter myAdapter;
 
@@ -226,14 +224,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             }
         });
 
-        viewPager = view.findViewById(R.id.view_pager);
-
-        viewPager.setClipToPadding(false);
-        viewPager.setPadding(48, 0, 48, 0);
-        viewPager.setPageMargin(1);
-        viewPager.setOffscreenPageLimit(0);
-
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         //Total Seller count under Supervisor
@@ -243,27 +233,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
         //Initialize the firebase instance and update the seller details
         SupervisorActivityHelper.getInstance().subscribeSellersUpdates(getContext(),this);
-
-
-//        absentSeller.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(),SellerListActivity.class);
-//                intent.putExtra("TabPos",1);
-//                intent.putExtra("Screen","Seller");
-//                startActivity(intent);
-//            }
-//        });
-//
-//        marketSeller.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(),SellerListActivity.class);
-//                intent.putExtra("TabPos",2);
-//                intent.putExtra("Screen","Seller");
-//                startActivity(intent);
-//            }
-//        });
 
         view.findViewById(R.id.ttl_seller_layout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,16 +293,18 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         mMap = googleMap;
         mMap.setMaxZoomPreference(24);
         mMap.getUiSettings().setMapToolbarEnabled(false);
+
+        //map style restricting landmarks
+//        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
+
         mMap.setOnMarkerClickListener(this);
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
-        mMap.setOnInfoWindowClickListener(this);
+//        mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng latLng) {
-//                if(infoWindowLayout.getVisibility() == View.VISIBLE)
-//                    infoWindowLayout.setVisibility(View.GONE);
-                viewPager.setVisibility(View.GONE);
+
                 mRecyclerView.setVisibility(View.GONE);
 
                 if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
@@ -366,6 +337,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         String key = dataSnapshot.getKey();
 
         if(dataSnapshot.getValue() != null) {
+
             HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
 
             String userName = value.get("userName")!=null?value.get("userName").toString():"";
@@ -493,25 +465,33 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     public boolean onMarkerClick(Marker marker) {
         Commons.print("on Marker Click called");
 
-        double angle = 130.0;
-        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;
-        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
-        marker.setInfoWindowAnchor((float)x, (float)y);
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
-        marker.showInfoWindow();
-//        showInfoWindow(marker);
-
-        if(mRecyclerView.getVisibility() == View.VISIBLE)
-            mRecyclerView.setVisibility(View.GONE);
-
         if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             bottomSheetBehavior.setHideable(true);
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
 
+        mRecyclerView.setVisibility(View.VISIBLE);
+
+        detailsBos =  new ArrayList<>(userHashmap.values());
+
+        myAdapter.notifyDataSetChanged();
+
+        int pagerPos = 0;
+        int count=0;
+        for(DetailsBo detailsBo : userHashmap.values()){
+            if(detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())){
+                pagerPos = count;
+                break;
+            }
+            count = count+1;
+        }
+
+        mRecyclerView.scrollToPosition(pagerPos);
+
         return true;
     }
+
+
 
     private void showInfoWindow(final Marker marker){
 
@@ -545,12 +525,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-
-        Toast.makeText(getContext(), "Info window clicked", Toast.LENGTH_SHORT).show();
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
-        marker.showInfoWindow();
-//        showInfoWindow(marker);
 
         if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             bottomSheetBehavior.setHideable(true);
@@ -594,44 +568,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             return mymarkerview;
         }
 
-    }
-
-    public class ViewPagerAdapter extends PagerAdapter {
-
-        private Context mContext;
-        private List<DetailsBo> userHashmap = new ArrayList<>();
-
-        public ViewPagerAdapter(Context context, List<DetailsBo> userHashmap) {
-            mContext = context;
-            this.userHashmap = userHashmap;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-        @Override
-        public int getCount() {
-            return userHashmap.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, final int position) {
-            LayoutInflater inflater = LayoutInflater.from(mContext);
-            ViewGroup view = (ViewGroup) inflater.inflate(R.layout.map_seller_info_layout, container, false);
-
-            if(userHashmap!=null && userHashmap.size() > 0)
-                userHashmap.get(position).getMarker().showInfoWindow();
-
-            container.addView(view);
-            return view;
-        }
     }
 
     protected void initViewPager() {
@@ -690,7 +626,15 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
 
-                onMarkerClick(detailsBos.get(newPosition).getMarker());
+                double angle = 130.0;
+                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;
+                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
+                detailsBos.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(detailsBos.get(newPosition).getMarker().getPosition()));
+                detailsBos.get(newPosition).getMarker().showInfoWindow();
+
+//                onMarkerClick(detailsBos.get(newPosition).getMarker());
 
             }
         });

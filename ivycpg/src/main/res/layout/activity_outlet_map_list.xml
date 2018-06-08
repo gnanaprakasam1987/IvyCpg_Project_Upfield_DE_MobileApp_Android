@@ -76,8 +76,7 @@
             app:cardElevation="3dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true"
-            app:contentPadding="0dp"
-            android:layout_above="@+id/user_info_layout">
+            app:contentPadding="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -207,10 +206,20 @@
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
-        <include
-            android:id="@+id/user_info_layout"
-            layout="@layout/outlet_info_window_layout"
-            android:visibility="gone"/>
+
+        <com.ivy.cpg.view.supervisor.helper.RecyclerViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/dimens_10dp"
+            android:clipToPadding="false"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            app:rvp_singlePageFling="true"
+            app:rvp_triggerOffset="0.1"
+            android:layout_below="@+id/cardview"/>
+
 
     </RelativeLayout>
 

@@ -6,6 +6,8 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,6 +77,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     private TextView tvMapInfoUserName,tvSellerName,tvSellerStartTime,tvSellerLastVisit,tvSellerPerformanceBtn,tvTarget,tvCovered;
     private ImageView imgMessage;
     private BusinessModel bmodel;
+    private BottomSheetBehavior bottomSheetBehavior;
+
 
     private LinearLayout infoWindowLayout;
 
@@ -114,6 +118,7 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         }
 
         initViews();
+        setViewValues();
 
         String date = SDUtil.now(8);
         String nodePath;
@@ -171,6 +176,35 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
             }
         });
+
+        bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.user_info_layout));
+    }
+
+    private void setViewValues(){
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        findViewById(R.id.cardview).setVisibility(View.VISIBLE);
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        findViewById(R.id.cardview).setVisibility(View.GONE);
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        findViewById(R.id.cardview).setVisibility(View.GONE);
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
     }
 
     @Override
@@ -179,6 +213,7 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         mMap.setMaxZoomPreference(24);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -287,11 +322,6 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 //        if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
 //            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-        OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
-        outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
-        outletPagerDialogFragment.setCancelable(false);
-        outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
-
         return true;
     }
 
@@ -322,13 +352,15 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     public void onInfoWindowClick(Marker marker) {
 
         OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
+        outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+        outletPagerDialogFragment.setCancelable(false);
         outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_supervisor_screen, menu);
+//        getMenuInflater().inflate(R.menu.menu_supervisor_screen, menu);
         return true;
     }
 
@@ -339,10 +371,10 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         if (i == android.R.id.home) {
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-        }else if(i == R.id.menu_route){
-            drawRoute();
-        }else if(i == R.id.menu_navigate){
-            moveMarkerInPath();
+//        }else if(i == R.id.menu_route){
+//            drawRoute();
+//        }else if(i == R.id.menu_navigate){
+//            moveMarkerInPath();
         }
         return super.onOptionsItemSelected(item);
     }

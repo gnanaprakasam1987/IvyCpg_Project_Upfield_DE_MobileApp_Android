@@ -21,14 +21,6 @@
 
     </com.ivy.maplib.MapWrapperLayout>
 
-    <com.ivy.cpg.view.supervisor.adapter.EnhancedWrapContentViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/dimens_20dp"
-        android:visibility="gone"/>
-
     <com.ivy.cpg.view.supervisor.helper.RecyclerViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"

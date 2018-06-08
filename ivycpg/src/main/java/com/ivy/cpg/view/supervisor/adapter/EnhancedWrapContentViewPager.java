@@ -1,10 +1,11 @@
 package com.ivy.cpg.view.supervisor.adapter;
 
 import android.content.Context;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class EnhancedWrapContentViewPager extends CustomViewPager{
+public class EnhancedWrapContentViewPager extends ViewPager{
 
     public EnhancedWrapContentViewPager (Context context) {
         super(context);

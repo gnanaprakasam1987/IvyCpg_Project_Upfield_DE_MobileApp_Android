@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#b1000000">
+    android:background="#b1000000"
+    android:animateLayoutChanges="true">
 
     <TextView
         android:id="@+id/tv_store_count"
@@ -15,34 +16,56 @@
         android:gravity="center"
         android:text="Total Store 8"
         android:textColor="#FFFFFF"
-        android:textSize="@dimen/dimen_18dp"
+        android:textSize="@dimen/dimen_20dp"
         android:padding="@dimen/dimen_5dp"
-        android:layout_marginTop="@dimen/dimen_120dp"
-        android:layout_marginBottom="@dimen/dimens_50dp"
-        android:layout_above="@+id/dialog_layout"/>
+        android:layout_above="@+id/pager_layout"
+        android:layout_marginBottom="@dimen/dimens_80dp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_store_count"
-        android:layout_above="@+id/close_img"
-        android:layout_marginBottom="@dimen/dimens_120dp">
+        android:layout_centerVertical="true"
+        android:id="@+id/pager_layout">
 
-        <android.support.v4.view.ViewPager
+        <com.ivy.cpg.view.supervisor.helper.RecyclerViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:clipToPadding="false"
+            app:rvp_singlePageFling="true"
+            app:rvp_triggerOffset="0.1"/>
+
+        <com.ivy.cpg.view.supervisor.scrollingpagerindicator.ScrollingPagerIndicator
+            android:id="@+id/scroll_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/viewpager"
+            android:layout_marginTop="50dp"
+            app:spi_dotSelectedColor="@color/GREEN"
+            app:spi_dotColor="@color/colorAccentNBlue"
+            app:spi_visibleDotCount="9"/>
+
+
+        <com.ivy.cpg.view.supervisor.adapter.EnhancedWrapContentViewPager
             android:id="@+id/outlet_view_pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_30dp"/>
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
 
         <me.relex.circleindicator.CircleIndicator
             android:id="@+id/indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_20dp"
-            android:layout_below="@+id/outlet_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_20dp"
             android:layout_centerHorizontal="true"
-            android:gravity="bottom"
+            android:layout_marginTop="@dimen/dimens_60dp"
+            android:layout_below="@+id/outlet_view_pager"
             app:ci_drawable="@drawable/dot_circle_green"
-            app:ci_drawable_unselected="@drawable/dot_circle_blue" />
+            app:ci_gravity="center"
+            android:visibility="gone"
+            app:ci_drawable_unselected="@drawable/dot_circle_white" />
 
     </RelativeLayout>
 
