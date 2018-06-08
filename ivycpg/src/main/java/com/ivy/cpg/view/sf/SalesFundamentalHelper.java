@@ -2144,7 +2144,7 @@ public class SalesFundamentalHelper {
                         bo.setProductLevelId(c.getInt(3));
                         bo.setIsOwn(c.getInt(4));
                         bo.setInTarget(c.getInt(5));
-                        bo.setGroupTarget(c.getInt(9));
+                        bo.setGroupTarget(c.getDouble(9));
                         lstSOSproj.add(bo);
                     }
 

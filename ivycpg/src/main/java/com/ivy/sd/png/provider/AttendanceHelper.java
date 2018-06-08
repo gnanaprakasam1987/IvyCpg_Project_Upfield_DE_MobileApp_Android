@@ -125,7 +125,7 @@ public class AttendanceHelper {
             if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE) {
                 Cursor c = db
                         .selectSQL("SELECT * FROM AttendanceTimeDetails where userid = " + userid + " AND date = " + bmodel.QT(currentDate) +
-                                " AND upload = 'N' or upload ='I'");
+                                " AND upload = 'N' or upload ='Y'");
                 if (c.getCount() == 0) {
                     c.close();
                     db.closeDB();
@@ -200,7 +200,7 @@ public class AttendanceHelper {
      */
     public boolean saveAttendanceDetails(String date, int atdID, int reasonid,
                                          String fromDate, String toDate,
-                                         String atdCode ,Context context) {
+                                         String atdCode, Context context) {
         try {
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -314,7 +314,7 @@ public class AttendanceHelper {
 
     }
 
-    public String getReasonName(String id,Context context) {
+    public String getReasonName(String id, Context context) {
         try {
 
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
@@ -673,7 +673,7 @@ public class AttendanceHelper {
         getNonFieldTwoBoList().add(nonFieldTwoBo);
     }
 
-    public void saveNonFieldWorkTwoDetail(NonFieldTwoBo nonFieldTwoBo,Context context) {
+    public void saveNonFieldWorkTwoDetail(NonFieldTwoBo nonFieldTwoBo, Context context) {
 
         if (nonFieldTwoBo != null && nonFieldTwoBo.getId() != null) {
             DBUtil db = null;
@@ -688,14 +688,13 @@ public class AttendanceHelper {
                 }
 
                 String inTime = nonFieldTwoBo.getInTime() != null ? nonFieldTwoBo.getInTime() : " ";
-                String outTime = nonFieldTwoBo.getOutTime() != null ? nonFieldTwoBo.getOutTime() : " ";
 
                 String columns = "uid,date,intime,outtime,reasonid,userid,latitude,longitude,counterid,upload";
                 String value = bmodel.QT(nonFieldTwoBo.getId()) + ","
                         + bmodel.QT(nonFieldTwoBo.getFromDate()) + ","
                         + bmodel.QT(inTime) + ","
-                        + bmodel.QT(outTime) + "," + nonFieldTwoBo.getReason() + "," + userid + ","
-                        + bmodel.QT(LocationUtil.latitude + "") + "," + bmodel.QT(LocationUtil.longitude + "") + "," + bmodel.getCounterId() + "," + bmodel.QT("I");
+                        + nonFieldTwoBo.getReason() + "," + userid + ","
+                        + bmodel.QT(LocationUtil.latitude + "") + "," + bmodel.QT(LocationUtil.longitude + "") + "," + bmodel.getCounterId() + "," + bmodel.QT("N");
 
                 db.insertSQL("AttendanceTimeDetails", columns, value);
 
@@ -710,7 +709,7 @@ public class AttendanceHelper {
         Commons.print("Attendance Helper," + "Save : " + nonFieldTwoBo);
     }
 
-    public void updateNonFieldWorkTwoDetail(NonFieldTwoBo nonFieldTwoBo,Context context) {
+    public void updateNonFieldWorkTwoDetail(NonFieldTwoBo nonFieldTwoBo, Context context) {
         //getNonFieldTwoBoList().add(nonFieldTwoBo);
         Commons.print("Attendance Helper," + "Update  : " + nonFieldTwoBo);
 
@@ -855,7 +854,7 @@ public class AttendanceHelper {
 
     }
 
-    public LeaveRuleBO checkRule(int lovId, String fromDate,Context context) {
+    public LeaveRuleBO checkRule(int lovId, String fromDate, Context context) {
         LeaveRuleBO leaveRuleBO = new LeaveRuleBO();
         try {
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
@@ -883,7 +882,7 @@ public class AttendanceHelper {
         return leaveRuleBO;
     }
 
-    public boolean isHoliday(String date,Context context) {
+    public boolean isHoliday(String date, Context context) {
         boolean isHoliday = false;
         try {
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
@@ -933,7 +932,7 @@ public class AttendanceHelper {
     }
 
 
-    public void computeLeaves(int lovId, String fromDate, String toDate, int flag, int session,Context context) {
+    public void computeLeaves(int lovId, String fromDate, String toDate, int flag, int session, Context context) {
         leavesBo = new ArrayList<LeaveRuleBO>();
         try {
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
@@ -985,11 +984,11 @@ public class AttendanceHelper {
                     }
                     if (flag == 1) {
                         for (int i = dates.size() - 1; i >= 0; i--) {
-                            if (isHoliday(dates.get(i).toString(),context.getApplicationContext()) || isWeekOff(dates.get(i).toString()))
+                            if (isHoliday(dates.get(i).toString(), context.getApplicationContext()) || isWeekOff(dates.get(i).toString()))
                                 dates.remove(i);
                         }
 
-                        double appliedleaves = getAlreadyAppliedLeaves(leaveRuleBO,context);
+                        double appliedleaves = getAlreadyAppliedLeaves(leaveRuleBO, context);
                         Commons.print("appliedleaves," + "" + appliedleaves);
                         double total_leaves = appliedleaves + dates.size();
                         Commons.print("total_leaves," + "" + total_leaves);
@@ -1001,7 +1000,7 @@ public class AttendanceHelper {
                             leaveRuleBO.setAvailable(false);
                         }
                     } else {
-                        double appliedleaves = getAlreadyAppliedLeaves(leaveRuleBO,context);
+                        double appliedleaves = getAlreadyAppliedLeaves(leaveRuleBO, context);
                         double session_leave = getSessionLeaveById(session);
                         Commons.print("appliedleaves," + "" + appliedleaves);
                         double total_leaves = appliedleaves + session_leave;
@@ -1027,7 +1026,7 @@ public class AttendanceHelper {
         }
     }
 
-    private float getAlreadyAppliedLeaves(LeaveRuleBO ruleBO,Context context) {
+    private float getAlreadyAppliedLeaves(LeaveRuleBO ruleBO, Context context) {
         float leaves = 0;
 
         try {
@@ -1059,7 +1058,7 @@ public class AttendanceHelper {
     /**
      * Save Leave Details
      */
-    public boolean saveLeaveDetails(double totaldays, int lovid,Context context) {
+    public boolean saveLeaveDetails(double totaldays, int lovid, Context context) {
         try {
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1125,7 +1124,7 @@ public class AttendanceHelper {
     }
 
     //cmd for to check leave already applied for given date
-    public boolean getCheckAlreadyApplied(int atdId, String fromDate, String toDate, int sessionId,Context context) {
+    public boolean getCheckAlreadyApplied(int atdId, String fromDate, String toDate, int sessionId, Context context) {
         boolean is_applied = false;
         String sesCode = "";
         int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
@@ -1378,7 +1377,6 @@ public class AttendanceHelper {
         }
         return childUserBOs;
     }
-
 
 
 }

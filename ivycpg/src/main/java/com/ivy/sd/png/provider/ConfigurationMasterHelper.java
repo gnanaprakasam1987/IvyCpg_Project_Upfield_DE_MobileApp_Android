@@ -1261,6 +1261,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_APPLY_DISTRIBUTOR_WISE_PRICE = "FUN53";
     public boolean IS_APPLY_DISTRIBUTOR_WISE_PRICE;
 
+    private static final String CODE_ORDER_PRINT = "ORDB19";
+    public boolean SHOW_PRINT_ORDER;
+
     private static final String CODE_ORD_CALC = "ORDB62";
     public boolean SHOW_ORD_CALC;
 
@@ -2336,6 +2339,7 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_BACKDATE_REPORTING = hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) : false;
         this.IS_USER_CAN_SELECT_BILL_WISE_DISCOUNT = hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) : false;
         this.SHOW_ORD_CALC = hashMapHHTModuleConfig.get(CODE_ORD_CALC) != null ? hashMapHHTModuleConfig.get(CODE_ORD_CALC) : false;
+        this.SHOW_PRINT_ORDER = hashMapHHTModuleConfig.get(CODE_ORDER_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_PRINT) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_LPC_ORDER) == 0)

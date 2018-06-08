@@ -381,7 +381,7 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
                             }
                             break;
                         default:
-                            ((TextView) row.findViewById(R.id.incentivetv))
+                            ((TextView) row.findViewById(R.id.incentive_title))
                                     .setText(getResources().getString(R.string.incentive));
                             break;
                     }

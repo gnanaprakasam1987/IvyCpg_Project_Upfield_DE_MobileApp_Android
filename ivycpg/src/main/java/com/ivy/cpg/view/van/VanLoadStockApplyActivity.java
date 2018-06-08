@@ -261,27 +261,28 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
                     } else {
                         selected_position = -1;
+
                     }
 
                     notifyDataSetChanged();
-                    if (!bmodel.startjourneyclicked
-                            || bmodel.configurationMasterHelper.STOCK_APPROVAL) {
+                    // Following code will not allow user to apply stock if journey started.
+                    // Also If load is already applied, then it will not allow to apply again.
+                    if ((bmodel.startjourneyclicked
+                            && bmodel.configurationMasterHelper.STOCK_APPROVAL) || SIHApplyById.contains(uid)) {
+                        applybtn.setEnabled(false);
+                        applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+                        applybtn.setTextColor(Color.WHITE);
+                        rejectbtn.setEnabled(false);
+                        rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+                        rejectbtn.setTextColor(Color.WHITE);
+                    } else {
+                        applybtn.setEnabled(true);
+                        applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
+                        rejectbtn.setEnabled(true);
+                        rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
 
-                        if (SIHApplyById.contains(uid)) {
-                            applybtn.setEnabled(false);
-                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
-                            applybtn.setTextColor(Color.WHITE);
-                            rejectbtn.setEnabled(false);
-                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
-                            rejectbtn.setTextColor(Color.WHITE);
-                        } else {
-
-                            applybtn.setEnabled(true);
-                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
-                            rejectbtn.setEnabled(true);
-                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
-                        }
                     }
+
 
                 }
             });

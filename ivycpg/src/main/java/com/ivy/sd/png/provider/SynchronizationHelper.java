@@ -3954,6 +3954,9 @@ SynchronizationHelper {
                         .downloadSOBuffer() / (float) 100));
         bmodel.labelsMasterHelper.downloadLabelsMaster();
 
+        //check attendance
+        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(context);
+
         //save sales return with Old batchid for the product
         bmodel.productHelper.loadOldBatchIDMap();
 

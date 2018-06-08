@@ -142,7 +142,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
         mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(this);
         mUploadHelper = UploadHelper.getInstance(this);
-        presenter = new UploadPresenterImpl(getApplicationContext(), bmodel, this, mUploadHelper, mVanUnloadHelper);
+        presenter = new UploadPresenterImpl(this, bmodel, this, mUploadHelper, mVanUnloadHelper);
 
 
         /** set handler for the Timer class */
@@ -782,8 +782,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA31")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
                     final double salesReturnValue = SalesReturnHelper.getInstance(this).getSalesReturnValue(getApplicationContext());
-
-                    con.setMenuNumber(bmodel.formatValue(SalesReturnHelper.getInstance(this).getOrderValue(getApplicationContext()) - salesReturnValue));
+                    final double orderValue = SalesReturnHelper.getInstance(this).getOrderValue(getApplicationContext());
+                    if (salesReturnValue > orderValue)
+                        con.setMenuNumber("0");
+                    else
+                        con.setMenuNumber(bmodel.formatValue(orderValue - salesReturnValue));
 
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA33")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());

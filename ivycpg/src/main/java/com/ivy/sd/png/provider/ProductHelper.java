@@ -461,9 +461,16 @@ public class ProductHelper {
                     int shelfpcs = 0, whpcs = 0;
                     for (int j = 0; j < size; j++) {
                         if (p.getLocations().get(j).getShelfPiece() > 0)
-                            shelfpcs += p.getLocations().get(j).getShelfPiece();
+                            shelfpcs += (p.getLocations().get(j).getShelfOuter() *
+                                    p.getOutersize());
 
-                        whpcs = whpcs + p.getLocations().get(j).getWHPiece();
+                        whpcs += p.getLocations().get(j).getWHPiece();
+
+                        whpcs += (p.getLocations().get(j).getWHCase() * p
+                                .getCaseSize());
+
+                        whpcs += (p.getLocations().get(j).getWHOuter() * p
+                                .getOutersize());
 
                         if (p.getLocations().get(j).getAvailability() > -1)
                             shelfpcs += p.getLocations().get(j).getAvailability();

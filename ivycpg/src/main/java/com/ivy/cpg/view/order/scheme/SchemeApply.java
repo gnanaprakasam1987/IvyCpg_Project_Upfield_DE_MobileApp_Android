@@ -804,7 +804,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
                                 priceEntered = Double.parseDouble(s.toString());
-                                holder.schemeBO.setActualPrice(Double.parseDouble(s.toString().trim()));
                             }
                         }
 
@@ -835,7 +834,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
                                 amountEntered = Double.parseDouble(s.toString());
-                                holder.schemeBO.setMinimumAmount(Double.parseDouble(s.toString().trim()));
                             }
                         }
 
@@ -867,7 +865,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                     && !s.toString().trim().equals(".")) {
                                 percentEntered = Double.parseDouble(s
                                         .toString());
-                                holder.schemeBO.setMinimumPrecent(Double.parseDouble(s.toString().trim()));
                             }
                         }
 

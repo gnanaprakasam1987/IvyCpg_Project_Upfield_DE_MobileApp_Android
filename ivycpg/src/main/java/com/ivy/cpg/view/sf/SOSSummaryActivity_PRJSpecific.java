@@ -84,16 +84,17 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
             LayoutInflater inflater = LayoutInflater.from(this);
 
             View view;
-            int inTargetTotal = 0, total = 0, target;
+            int inTargetTotal = 0, total = 0;
+            double target;
             String groupName;
             for (int i = 0; i < mSFHelper.getLstSOS_PRJSpecific().size(); i++) {
                 SOSBO bo = mSFHelper.getLstSOS_PRJSpecific().get(i);
 
                 if (bo.getInTarget() == 1) {
                     inTargetTotal += bo.getAvailability();
-                } else {
-                    total += bo.getAvailability();
                 }
+                total += bo.getAvailability();
+
                 groupName = bo.getGroupName();
                 target = bo.getGroupTarget();
 
@@ -115,15 +116,14 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
                         tv_gap.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                         tv_groupName.setText(groupName);
-                        tv_target.setText(target + "");
-
-                        float achieved = 0;
+                        tv_target.setText(SDUtil.roundIt(target, 2) + "");
+                        double achieved = 0;
                         if (total > 0)
                             achieved = (inTargetTotal / total) * 100;
 
                         tv_available.setText(SDUtil.roundIt(achieved, 2) + "");
 
-                        float gap = target - achieved;
+                        double gap = target - achieved;
                         if (gap > 0) {
                             tv_gap.setTextColor(Color.RED);
                         } else {

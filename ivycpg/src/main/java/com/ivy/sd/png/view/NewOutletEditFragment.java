@@ -81,8 +81,8 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
         }
 
-        if (bmodel.mAttendanceHelper.checkLeaveAttendance(getActivity()))
-            isLeave_today = true;
+        /*if (bmodel.mAttendanceHelper.checkLeaveAttendance(getActivity()))
+            isLeave_today = true;*/
 
         displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
