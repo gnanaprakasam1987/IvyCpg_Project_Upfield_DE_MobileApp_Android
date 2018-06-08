@@ -1311,7 +1311,7 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_PRINT_SEQUENCE = "PRINT_SEQUENCE";
     public boolean IS_PRINT_SEQUENCE_REQUIRED;
-    public boolean IS_PRINT_SEQUENCE_BRANDWISE;
+    public boolean IS_PRINT_SEQUENCE_LEVELWISE;
 
     private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
     public boolean SHOW_INVOICE_HISTORY; // PRO06
@@ -3688,7 +3688,7 @@ public class ConfigurationMasterHelper {
             SHOW_OUTER_SRP = false;
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
-            IS_PRINT_SEQUENCE_BRANDWISE = false;
+            IS_PRINT_SEQUENCE_LEVELWISE = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4281,7 +4281,7 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
                     IS_PRINT_SEQUENCE_REQUIRED = true;
                     if (c.getInt(0) != 0) {
-                        IS_PRINT_SEQUENCE_BRANDWISE = true;
+                        IS_PRINT_SEQUENCE_LEVELWISE = true;
                         bmodel.setPrintSequenceLevelID(c.getInt(0));
                     }
                 }

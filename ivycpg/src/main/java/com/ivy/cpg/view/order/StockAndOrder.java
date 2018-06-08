@@ -3684,29 +3684,37 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     private boolean checkTaggingDetails(ProductMasterBO productMasterBO) {
-        ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
-        for (ProductTaggingBO productTagging : productTaggingList) {
-            float totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
-                    + (productMasterBO.getOrderedPcsQty())
-                    + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
-            if (productMasterBO.getProductID().equals(productTagging.getPid()) &&
-                    totalQty > 0
-                    && totalQty > productTagging.getToNorm()) {
-                return false;
+        try {
+            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            for (ProductTaggingBO productTagging : productTaggingList) {
+                float totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                        + (productMasterBO.getOrderedPcsQty())
+                        + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
+                if (productMasterBO.getProductID().equals(productTagging.getPid()) &&
+                        totalQty > 0
+                        && totalQty > productTagging.getToNorm()) {
+                    return false;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return true;
     }
 
     private void setTaggingDetails() {
-        ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
-        for (ProductTaggingBO productTagging : productTaggingList) {
-            for (ProductMasterBO productMasterBO : productList) {
-                if (productMasterBO.getProductID().equals(productTagging.getPid())) {
-                    productMasterBO.setAllocationQty(String.valueOf(productTagging.getToNorm()));
-                    break;
+        try {
+            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            for (ProductTaggingBO productTagging : productTaggingList) {
+                for (ProductMasterBO productMasterBO : productList) {
+                    if (productMasterBO.getProductID().equals(productTagging.getPid())) {
+                        productMasterBO.setAllocationQty(String.valueOf(productTagging.getToNorm()));
+                        break;
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

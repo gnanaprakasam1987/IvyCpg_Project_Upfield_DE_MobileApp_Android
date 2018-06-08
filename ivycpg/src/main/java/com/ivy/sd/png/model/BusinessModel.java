@@ -4958,42 +4958,46 @@ public class BusinessModel extends Application {
         String fitscoreDetailColumns = "Tid, ModuleCode,Weightage,Score";
         String fitscoreDetailValues = "";
 
-        Cursor closingStockCursor = db
-                .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + getRetailerMasterBO().getRetailerID() + " and Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        try {
+            Cursor closingStockCursor = db
+                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + getRetailerMasterBO().getRetailerID() + " and Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
 
-        if (closingStockCursor.getCount() > 0) {
-            closingStockCursor.moveToNext();
-            if (closingStockCursor.getString(0) != null) {
-                headerID = QT(closingStockCursor.getString(0));
-                db.deleteSQL("RetailerScoreDetails", "Tid=" + headerID + " and ModuleCode = " + QT(module), false);
+            if (closingStockCursor.getCount() > 0) {
+                closingStockCursor.moveToNext();
+                if (closingStockCursor.getString(0) != null) {
+                    headerID = QT(closingStockCursor.getString(0));
+                    db.deleteSQL("RetailerScoreDetails", "Tid=" + headerID + " and ModuleCode = " + QT(module), false);
+                }
             }
-        }
-        closingStockCursor.close();
+            closingStockCursor.close();
 
-        String tid = (headerID.trim().length() == 0) ? QT(userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID)) : headerID;
-        int moduleWeightage = fitscoreHelper.getModuleWeightage(module);
-        double achieved = (((double) sum / (double) 100) * moduleWeightage);
-        fitscoreDetailValues = (tid) + ", " + QT(module) + ", " + moduleWeightage + ", " + achieved;
-        db.insertSQL(DataMembers.tbl_retailerscoredetail, fitscoreDetailColumns, fitscoreDetailValues);
+            String tid = (headerID.trim().length() == 0) ? QT(userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID)) : headerID;
+            int moduleWeightage = fitscoreHelper.getModuleWeightage(module);
+            double achieved = (((double) sum / (double) 100) * moduleWeightage);
+            fitscoreDetailValues = (tid) + ", " + QT(module) + ", " + moduleWeightage + ", " + achieved;
+            db.insertSQL(DataMembers.tbl_retailerscoredetail, fitscoreDetailColumns, fitscoreDetailValues);
 
-        if (headerID.trim().length() == 0) {
-            String retailerID = getRetailerMasterBO().getRetailerID();
-            String date = QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-            fitscoreHeaderValues = (tid) + ", " + QT(retailerID) + ", " + date + ", " + achieved + ", " + QT("N");
-            db.insertSQL(DataMembers.tbl_retailerscoreheader, fitscoreHeaderColumns, fitscoreHeaderValues);
-        } else {
-            Cursor achievedCursor = db
-                    .selectSQL("select sum(0+ifnull(B.Score,0)) from RetailerScoreHeader A inner join RetailerScoreDetails B on A.Tid = B.Tid where A.RetailerID="
-                            + getRetailerMasterBO().getRetailerID() + " and A.Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            if (headerID.trim().length() == 0) {
+                String retailerID = getRetailerMasterBO().getRetailerID();
+                String date = QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                fitscoreHeaderValues = (tid) + ", " + QT(retailerID) + ", " + date + ", " + achieved + ", " + QT("N");
+                db.insertSQL(DataMembers.tbl_retailerscoreheader, fitscoreHeaderColumns, fitscoreHeaderValues);
+            } else {
+                Cursor achievedCursor = db
+                        .selectSQL("select sum(0+ifnull(B.Score,0)) from RetailerScoreHeader A inner join RetailerScoreDetails B on A.Tid = B.Tid where A.RetailerID="
+                                + getRetailerMasterBO().getRetailerID() + " and A.Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
 
-            if (achievedCursor.getCount() > 0) {
-                achievedCursor.moveToNext();
-                headerScore = achievedCursor.getDouble(0);
+                if (achievedCursor.getCount() > 0) {
+                    achievedCursor.moveToNext();
+                    headerScore = achievedCursor.getDouble(0);
+                }
+                achievedCursor.close();
+                db.updateSQL("Update " + DataMembers.tbl_retailerscoreheader + " set Score = " + headerScore + " where " +
+                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
+                        " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
             }
-            achievedCursor.close();
-            db.updateSQL("Update " + DataMembers.tbl_retailerscoreheader + " set Score = " + headerScore + " where " +
-                    " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
-                    " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
