@@ -4956,7 +4956,7 @@ public class BusinessModel extends Application {
         double headerScore = 0;
         String fitscoreHeaderColumns = "Tid,RetailerID,Date,Score,Upload";
         String fitscoreHeaderValues = "";
-        String fitscoreDetailColumns = "Tid, ModuleCode,Weightage,Score";
+        String fitscoreDetailColumns = "Tid, ModuleCode,Weightage,Score,Upload";
         String fitscoreDetailValues = "";
 
         try {
@@ -4975,7 +4975,7 @@ public class BusinessModel extends Application {
             String tid = (headerID.trim().length() == 0) ? QT(userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID)) : headerID;
             int moduleWeightage = fitscoreHelper.getModuleWeightage(module);
             double achieved = (((double) sum / (double) 100) * moduleWeightage);
-            fitscoreDetailValues = (tid) + ", " + QT(module) + ", " + moduleWeightage + ", " + achieved;
+            fitscoreDetailValues = (tid) + ", " + QT(module) + ", " + moduleWeightage + ", " + achieved + ", " + QT("N");
             db.insertSQL(DataMembers.tbl_retailerscoredetail, fitscoreDetailColumns, fitscoreDetailValues);
 
             if (headerID.trim().length() == 0) {

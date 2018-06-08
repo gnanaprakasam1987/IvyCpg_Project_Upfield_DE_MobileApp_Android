@@ -984,7 +984,9 @@ SynchronizationHelper {
                     "union select count(PlanId) from DatewisePlan where upload='N'" +
                     "union select count(KPIId) from RetailerKPIModifiedDetail where upload='N'" +
                     "union select count(uid) from VanLoad where upload='N'" +
-                    "union select count(Uid) from JointCallDetail where upload='N'";
+                    "union select count(Uid) from JointCallDetail where upload='N'" +
+                    "union select count(Tid) from RetailerScoreHeader where upload='N'" +
+                    "union select count(Tid) from RetailerScoreDetails where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
