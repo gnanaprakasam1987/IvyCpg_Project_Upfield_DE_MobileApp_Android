@@ -949,7 +949,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 menuDB.get(i).setDone(false);
             }
 
-            if (menuDB.get(0).getHasLink() == 0) {
+            if (!menuDB.isEmpty() && menuDB.get(0).getHasLink() == 0) {
                 menuDB.get(0).setDone(true);
             }
             for (int i = 0; i < size; i++) {

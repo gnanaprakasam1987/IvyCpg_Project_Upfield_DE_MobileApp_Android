@@ -4613,7 +4613,8 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.IS_INVOICE) {
-                c = db.selectSQL("select Retailerid, sum(invNetamount) from InvoiceMaster group by retailerid");
+                c = db.selectSQL("select Retailerid, sum(invNetamount) from InvoiceMaster where invoicedate = "
+                        + QT(userMasterHelper.getUserMasterBO().getDownloadDate()) + " group by retailerid");
             } else {
                 c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
             }
@@ -8741,8 +8742,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
 
-            Cursor c = db.selectSQL("select count(distinct retailerid) from retailermaster" +
-                    " where isPlanned='Y' and isdeviated='N'");
+            Cursor c = db.selectSQL("select count(distinct RM.retailerid) from retailermaster RM inner join " +
+                    "RetailerBeatMapping RBM on RM.RetailerId = RBM.Retailerid where RM.isdeviated='N' and RBM.isVisited = 'Y'");
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {
@@ -8771,15 +8772,18 @@ public class BusinessModel extends Application {
                 if (beatMasterHealper.getTodayBeatMasterBO() == null
                         || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
                     c = db.selectSQL("select distinct(i.Retailerid) from InvoiceMaster i" +
-                            " inner join retailermaster r on i.retailerid=r.retailerid where r.isdeviated='N' and isPlanned='Y'");
+                            " inner join retailermaster r on i.retailerid=r.retailerid inner join " +
+                            "RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid where RBM.isdeviated='N' and RBM.isVisited = 'Y'");
                 } else {
                     c = db.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
                             + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
-                            + " where r.isdeviated='N' or RMI.isToday=1 and i.IsPreviousInvoice = 0 and isPlanned='Y'");
+                            + "inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid"
+                            + " where RBM.isdeviated='N' or RMI.isToday=1 and i.IsPreviousInvoice = 0 and RBM.isVisited = 'Y'");
                 }
             } else {
-                c = db.selectSQL("select  distinct(r.Retailerid) from OrderHeader o" +
-                        " inner join retailermaster r on o.retailerid=r.retailerid where o.upload!='X' and r.isdeviated='N' and isPlanned='Y'");
+                c = db.selectSQL("select  distinct(r.Retailerid) from OrderHeader o inner join retailermaster r " +
+                        "on o.retailerid=r.retailerid inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid " +
+                        "where o.upload!='X' and RBM.isdeviated='N' and RBM.isVisited = 'Y'");
             }
             if (c != null) {
                 if (c.getCount() > 0) {

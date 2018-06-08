@@ -2675,6 +2675,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 defaultCalendar.add(Calendar.DAY_OF_YEAR, (BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
                 button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(defaultCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
             }
+            view.updateDate(year,monthOfYear,dayOfMonth);
         }
     };
 

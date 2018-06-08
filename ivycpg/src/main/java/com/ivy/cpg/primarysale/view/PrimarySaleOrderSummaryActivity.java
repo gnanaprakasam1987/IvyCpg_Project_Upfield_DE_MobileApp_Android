@@ -343,7 +343,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                         Toast.LENGTH_SHORT).show();
                 deliveryDate.setText(nextDate);
             }
-
+            view.updateDate(year,monthOfYear,dayOfMonth);
         }
     };
 

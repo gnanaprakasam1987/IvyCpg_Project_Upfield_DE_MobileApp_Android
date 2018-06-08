@@ -162,6 +162,7 @@
                                     android:inputType="text"
                                     android:maxLines="1"
                                     android:text=""
+                                    android:imeOptions="actionDone"
                                     android:textColor="@color/GRAY_TEXT"
                                     android:textSize="@dimen/font_nano_small" />
 

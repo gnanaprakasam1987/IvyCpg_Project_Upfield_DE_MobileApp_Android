@@ -43,7 +43,6 @@
     <dimen name="list_item_width_large">135dp</dimen>
     <dimen name="list_item_width_double">120dp</dimen>
 
-    <dimen name="list_item_width_dashboard_small">125dp</dimen>
     <dimen name="list_item_width_dashboard_medium">220dp</dimen>
 
 
@@ -105,7 +104,6 @@
     <dimen name="homethreelist_view_width">480dp</dimen>
     <dimen name="list_view_width">500dp</dimen>
     <dimen name="list_item_height_reports">50dp</dimen>
-    <dimen name="sih_width_stock_view">200dp</dimen>
 
     <!-- Sales Return Activity -->
     <dimen name="sr_list_view_width">100dp</dimen>
@@ -157,21 +155,9 @@
 
 
     <!-- sku wise target -->asset_qty
-    <dimen name="swt_achieved_width">120dp</dimen>
 
     <dimen name="crown_header_height">30dp</dimen>
     <dimen name="crown_list_title_height">55dp</dimen>
-
-    <dimen name="report_base_sbd">316dp</dimen>
-
-    <dimen name="sno_width">40dp</dimen>
-    <dimen name="product_name_twenty_five_character">280dp</dimen>
-    <dimen name="product_name_twenty_character">220dp</dimen>
-    <dimen name="eighteen_characters_width">170dp</dimen>
-    <dimen name="five_character_width">70dp</dimen>
-
-    <dimen name="list_view_height_volume_report">70dp</dimen>
-
 
 
     <dimen name="dialog_height">600dp</dimen>
@@ -217,7 +203,6 @@
 
 
     <!-- Retailer Kpi -->
-    <dimen name="title_width">150dp</dimen>
     <dimen name="serial_no_qty_width">90dp</dimen>
 
 
@@ -440,14 +425,12 @@
     <dimen name="plano_list_right_margin">12dp</dimen>
     <dimen name="plano_list_top_margin">10dp</dimen>
     <dimen name="plano_rb_padding">7dp</dimen>
-    <dimen name="plano_img_margin_top">29.4dp</dimen>
     <dimen name="plano_img_margin_left">12dp</dimen>
     <dimen name="plano_list_header_left">27dp</dimen>
     <dimen name="plano_list_header_top">10dp</dimen>
     <dimen name="plano_list_header_bottom">13dp</dimen>
     <dimen name="plano_img_left">15dp</dimen>
     <dimen name="plano_img_right">40dp</dimen>
-    <dimen name="plano_rb_left">18dp</dimen>
     <dimen name="plano_rb_gap">18dp</dimen>
     <dimen name="plano_img_margin_right">8dp</dimen>
     <dimen name="plano_save_padding">10dp</dimen>
@@ -614,10 +597,6 @@
     <!-- Call analysis Screen -->
     <dimen name="close_call_btn_width">130dp</dimen>
     <dimen name="call_analysis_footer_min_height">70dp</dimen>
-
-
-    <dimen name="store_status_star_width">40dp</dimen>
-    <dimen name="store_status_star_height">34dp</dimen>
 
 
     <dimen name="sale_header_height">60dp</dimen>

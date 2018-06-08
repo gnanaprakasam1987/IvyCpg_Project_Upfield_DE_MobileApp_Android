@@ -45,6 +45,7 @@ public class DashBoardHelper {
     private ArrayList<IncentiveDashboardBO> incentiveList;
     private ArrayList<String> incentiveType;
     private ArrayList<String> incentiveGroups;
+    ArrayList<Integer> mslProdIDs = null;
 
     public ArrayList<IncentiveDashboardBO> getIncentiveList() {
         return incentiveList;
@@ -3320,17 +3321,20 @@ public class DashBoardHelper {
 
 
     public int getMSLDetail(String flag) {
-        DBUtil db = null;
+        DBUtil db;
         int size = bmodel.getRetailerMaster().size();
         int count = 0;
         String chIDs = "";
-        ArrayList<Integer> mslProdIDs = new ArrayList<>();
+        String rids = "";
         if (flag.equals("P")) {
+            mslProdIDs = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
                     chIDs = chIDs + "," + bmodel.getChannelids();
                 }
             }
+            if (chIDs.startsWith(","))
+                chIDs = chIDs.substring(1, chIDs.length());
             if (chIDs.endsWith(","))
                 chIDs = chIDs.substring(0, chIDs.length() - 1);
 
@@ -3361,23 +3365,30 @@ public class DashBoardHelper {
         } else {
             for (int i = 0; i < size; i++) {
                 if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                    count = count + getMslExecDetail(bmodel.getRetailerMaster().get(i).getRetailerID(), mslProdIDs);
+                    rids = rids + "," + bmodel.getRetailerMaster().get(i).getRetailerID();
                 }
             }
+            if (rids.startsWith(","))
+                rids = rids.substring(1, rids.length());
+            if (rids.endsWith(","))
+                rids = rids.substring(0, rids.length() - 1);
+
+            count = count + getMslExecDetail(rids, mslProdIDs);
         }
         return count;
 
     }
 
     private int getMslExecDetail(String retailerID, ArrayList<Integer> mslProdIDs) {
-        DBUtil db = null;
+        DBUtil db;
         int count = 0;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select count(*) from OrderDetail where retailerid = " + bmodel.QT(retailerID));
+            sb.append("select count(*) from OrderDetail where retailerid in (" + retailerID + ")");
+            if (mslProdIDs != null && !mslProdIDs.isEmpty())
             sb.append("and ProductID in (" + mslProdIDs + ")");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {

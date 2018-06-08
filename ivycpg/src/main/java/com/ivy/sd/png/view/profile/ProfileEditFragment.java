@@ -4190,6 +4190,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         .equalsIgnoreCase("PROFILE06")
                         && profileConfig.get(i).getModule_Order() == 1) {
 
+                    try {
                     if (channel.getSelectedItem().toString().toLowerCase()
                             .contains("select")) {
                         channel.requestFocus();
@@ -4199,10 +4200,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 .show();
                         break;
                     }
-
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE07")
                         && profileConfig.get(i).getModule_Order() == 1) {
+                    try {
                     if (subchannel.getSelectedItem().toString().toLowerCase()
                             .contains("select")) {
                         subchannel.requestFocus();
@@ -4212,11 +4216,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 .show();
                         break;
                     }
-
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE30")
                         && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
 
+                    try {
                     if (editText[i].getText().toString().trim().length() == 0 ||
                             editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
                             ) {
@@ -4229,12 +4236,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                         + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT).show();
                         break;
                     }
-
-
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE12")
                         && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
 
+                    try {
                     if (editText[i].getText().toString().trim().length() == 0 ||
                             editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
                             ) {
@@ -4247,12 +4256,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                         + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT).show();
                         break;
                     }
-
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
 
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE10")
                         && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
 
+                    try {
                     if (editText[i].getText().toString().trim().length() == 0 ||
                             editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
                             ) {
@@ -4265,12 +4277,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                         + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT).show();
                         break;
                     }
-
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
 
                 } else if (configCode.equals("PROFILE58") && profileConfig.get(i).getModule_Order() == 1) {
                     ArrayList<NewOutletAttributeBO> selectedAttributeLevel = new ArrayList<>();
                     boolean isAdded = true;
 
+                    try {
                     // to check all common mandatory attributes selected
                     for (NewOutletAttributeBO attributeBO : bmodel.newOutletAttributeHelper.getAttributeParentList()) {
 
@@ -4321,10 +4336,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         break;
                     }
                     bmodel.setRetailerAttribute(selectedAttributeLevel);
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE78")
                         && profileConfig.get(i).getModule_Order() == 1
                         && editText[i].getText().toString().trim().length() != 0) {
+                    try {
                     if (!isValidEmail(editText[i].getText().toString())) {
                         editText[i].requestFocus();
                         validate = false;
@@ -4342,12 +4361,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 .show();
                         break;
                     }
-
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE79")
                         && profileConfig.get(i).getModule_Order() == 1
                         && editText[i].getText().toString().trim().length() != 0) {
 
+                    try {
                     if (!isMobileNoVerfied) {
                         editText[i].requestFocus();
                         validate = false;
@@ -4356,11 +4378,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 .show();
                         break;
                     }
-
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
                 }else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE81")
                         && profileConfig.get(i).getModule_Order() == 1) {
 
+                    try {
                     if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
                             !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
 
@@ -4382,11 +4407,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                             break;
                         }
                     }
-
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE61")
                         && profileConfig.get(i).getModule_Order() == 1) {
 
+                    try {
                     if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
                             !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex()) ||
                             !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
@@ -4418,7 +4446,37 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         }
 
                     }
+                } catch (Exception e){
+                    Commons.printException(e);
+                }
+                } else if (profileConfig.get(i).getModule_Order() == 1) {
 
+                    try {
+                        if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
+                                !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
+
+                            int length = editText[i].getText().toString().trim().length();
+
+                            if (length > 0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
+                                validate = false;
+                                editText[i].requestFocus();
+                                Toast.makeText(getActivity(),
+                                        profileConfig.get(i).getMenuName() + " Length Must Be " + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                        .show();
+                                break;
+                            } else if (length > 0 && !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
+                                validate = false;
+                                editText[i].requestFocus();
+                                Toast.makeText(getActivity(),
+                                        getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT)
+                                        .show();
+                                break;
+                            }
+                        }
+
+                    } catch (Exception e){
+                        Commons.printException(e);
+                    }
                 }
 
 
