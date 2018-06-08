@@ -58,7 +58,6 @@ public class PromotionHelper {
         if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
-        //businessModel.productHelper.getRetailerlevel(mMenuCode);
         downloadPromotionMaster(mContext);
         loadPromoEntered(mContext);
     }
@@ -234,13 +233,7 @@ public class PromotionHelper {
             sbuffer.append(",");
             sbuffer.append(businessModel.getRetailerMasterBO().getDistributorId());
 
-            if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                headerColumns = headerColumns + ",Weightage,Score";
-                moduleWeightage = businessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_PROMO);
-                sbuffer.append(",");
-                sbuffer.append(moduleWeightage);
-                sbuffer.append(",0");
-            }
+
 
             db.insertSQL("PromotionHeader", headerColumns, sbuffer.toString());
 
@@ -287,11 +280,8 @@ public class PromotionHelper {
                 }
             }
 
-            if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                double achieved = ((sum / (double) 100) * moduleWeightage);
-                db.updateSQL("Update PromotionHeader set Score = " + achieved + " where UID = " + QT(uid) + " and" +
-                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
-                        " and RetailerID = " + QT(businessModel.getRetailerMasterBO().getRetailerID()));
+            if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                businessModel.calculateFitscoreandInsert(db, sum, DataMembers.FIT_PROMO);
             }
 
             db.closeDB();

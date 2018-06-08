@@ -30,6 +30,7 @@ import com.ivy.sd.png.bo.LoyaltyBO;
 import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
@@ -129,7 +130,7 @@ public class ProductHelper {
     private int mSelectedGlobalLevelID = 0;
     private int mSelectedGlobalProductId = 0;
     private int mLoadedGlobalProductId = 0;
-
+    ArrayList<ProductTaggingBO> productTaggingList;
 
     public int getmSelectedGLobalLocationIndex() {
         return mSelectedGLobalLocationIndex;
@@ -167,6 +168,13 @@ public class ProductHelper {
         this.mLoadedGlobalProductId = mLoadedGlobalProductId;
     }
 
+    public ArrayList<ProductTaggingBO> getProductTaggingList() {
+        return productTaggingList;
+    }
+
+    public void setProductTaggingList(ArrayList<ProductTaggingBO> productTaggingList) {
+        this.productTaggingList = productTaggingList;
+    }
 
     private ArrayList<ProductMasterBO> mIndicateOrderList = new ArrayList<ProductMasterBO>();
 
@@ -2671,6 +2679,8 @@ public class ProductHelper {
     public String getTaggingDetails(String taggingType) {
         try {
             String mappingId = "0", moduletypeid = "0", locationId = "0";
+            ProductTaggingBO taggingBO;
+            productTaggingList = new ArrayList<>();
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -2726,7 +2736,7 @@ public class ProductHelper {
 
             StringBuilder productIds = new StringBuilder();
             Cursor c2 = db
-                    .selectSQL("SELECT pid FROM ProductTaggingCriteriaMapping PCM " +
+                    .selectSQL("SELECT pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
                             "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid and PGM.isOwn = 1" +
                             " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
                             "WHERE PM.TaggingTypelovID = " + moduletypeid +
@@ -2737,11 +2747,20 @@ public class ProductHelper {
                     if (!productIds.toString().equals(""))
                         productIds.append(",");
                     productIds.append(c2.getInt(0));
+                    if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED || bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+                        taggingBO = new ProductTaggingBO();
+                        taggingBO.setHeaderID(c2.getString(1));
+                        taggingBO.setPid(c2.getString(0));
+                        taggingBO.setFromNorm(c2.getInt(2));
+                        taggingBO.setToNorm(c2.getInt(3));
+                        taggingBO.setWeightage(c2.getInt(4));
+                        productTaggingList.add(taggingBO);
+                    }
                 }
                 c2.close();
             }
             db.closeDB();
-
+            setProductTaggingList(productTaggingList);
             return productIds.toString();
         } catch (Exception e) {
 //            e.printStackTrace();
