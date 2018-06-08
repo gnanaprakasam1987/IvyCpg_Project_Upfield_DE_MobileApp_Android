@@ -1458,7 +1458,6 @@ public class AssetTrackingHelper {
             String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
             String AssetImageInfoColumns = "uid,AssetID,ImageName,PId,LocId";
             if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                assetHeaderColumns = assetHeaderColumns + ",Weightage,Score";
                 AssetDetailColumns = AssetDetailColumns + ",Score";
             }
             if (SHOW_LOCATION_POSM)
@@ -1763,22 +1762,13 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(mBusinessModel.retailerMasterBO.getDistributorId() + ""));
 
-            if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                if (MENU_ASSET.equals(moduleName)) {
-                    moduleWeightAge = mBusinessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_ASSET);
-                } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
-                    moduleWeightAge = mBusinessModel.fitscoreHelper.getModuleWeightage(DataMembers.FIT_POSM);
-                }
-                assetHeaderValues.append(",");
-                assetHeaderValues.append(moduleWeightAge);
-                double achieved = ((sum / (double) 100) * moduleWeightAge);
-                assetHeaderValues.append(",");
-                assetHeaderValues.append(achieved);
-            }
-
             db.insertSQL(DataMembers.tbl_AssetHeader, assetHeaderColumns,
                     assetHeaderValues.toString());
 
+            if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                String moduleCode = ((MENU_ASSET.equals(moduleName)) ? DataMembers.FIT_ASSET : DataMembers.FIT_POSM);
+                mBusinessModel.calculateFitscoreandInsert(db, sum, moduleCode);
+            }
             db.closeDB();
 
         } catch (Exception e) {

@@ -28,9 +28,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/list_margin"
+                android:layout_marginRight="@dimen/list_margin"
                 android:layout_toStartOf="@+id/ivInfoicon"
+                android:layout_toLeftOf="@+id/ivInfoicon"
                 android:maxLines="1"
                 android:text="@string/product_name" />
 
@@ -40,14 +43,17 @@
                 android:layout_height="@dimen/info_icon"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/ivInfoicon"
+                android:layout_toLeftOf="@+id/ivInfoicon"
                 android:padding="@dimen/list_item_padding"
                 android:src="@drawable/activity_icon_stock_check"
                 android:tint="@color/black_bg1" />
+
             <ImageView
                 android:id="@+id/ivInfoicon"
                 android:layout_width="@dimen/info_icon"
                 android:layout_height="@dimen/info_icon"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/list_item_padding"
                 android:src="@drawable/ic_info_new"
@@ -74,18 +80,57 @@
             android:padding="3dp">
 
             <LinearLayout
+                android:id="@+id/llAllocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/allocationTitle"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:maxLines="1"
+                    android:tag="allocation"
+                    android:text="@string/allocation" />
+
+                <TextView
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
+                    android:maxLines="1"
+                    android:text=":" />
+
+                <TextView
+                    android:id="@+id/stock_and_order_listview_allocation"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/zero" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/llSrp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/srpTitle"
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:maxLines="1"
                     android:tag="srp"
                     android:text="@string/srp" />
@@ -94,8 +139,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -112,10 +157,11 @@
                 android:id="@+id/stock_and_order_listview_ppq"
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="ppq"
+                android:layout_height="22dp"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
+                android:tag="ppq"
                 android:text="@string/ou" />
 
             <TextView
@@ -124,6 +170,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:text="@string/mrp" />
 
@@ -133,6 +180,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="msq"
                 android:text="@string/msq"
@@ -144,6 +192,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="psq"
                 android:text="@string/psq"
@@ -190,6 +239,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/outlet_left_margin"
+                android:layout_marginLeft="@dimen/outlet_left_margin"
                 android:orientation="horizontal">
 
                 <TextView
@@ -205,8 +255,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -224,6 +274,7 @@
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -239,8 +290,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -258,6 +309,7 @@
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -273,8 +325,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -292,6 +344,7 @@
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -307,8 +360,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -326,6 +379,7 @@
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -341,8 +395,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -360,6 +414,7 @@
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -375,8 +430,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -394,6 +449,7 @@
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -409,8 +465,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -428,6 +484,7 @@
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -443,8 +500,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -462,6 +519,7 @@
                 android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -477,8 +535,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -496,6 +554,7 @@
                 android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -511,8 +570,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -530,6 +589,7 @@
                 android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -545,8 +605,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -558,13 +618,14 @@
                     android:maxLines="1"
                     android:text="@string/zero" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layout_stock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal"
-                >
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/text_stock_title"
@@ -579,8 +640,8 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/dimen_1dp"
                     android:maxLines="1"
                     android:text=":" />
 
@@ -612,7 +673,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:layout_toStartOf="@+id/lltotwight"
+                android:layout_toLeftOf="@+id/lltotwight"
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:weightSum="8">
@@ -641,7 +704,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
 
-                    />
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -787,8 +850,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
-                        android:text="@string/zero"
-                        android:maxLength="5" />
+                        android:maxLength="5"
+                        android:text="@string/zero" />
 
                 </LinearLayout>
 
@@ -814,8 +877,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="@string/zero"
-                        android:maxLength="5" />
+                        android:maxLength="5"
+                        android:text="@string/zero" />
 
                 </LinearLayout>
 
@@ -840,8 +903,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
-                        android:text="@string/zero"
-                        android:maxLength="8" />
+                        android:maxLength="8"
+                        android:text="@string/zero" />
 
                 </LinearLayout>
 
@@ -866,9 +929,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="start"
-                        android:text="@string/zero"
                         android:maxLength="8"
-                        android:visibility="gone"/>
+                        android:text="@string/zero"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -881,8 +944,10 @@
                 android:layout_height="match_parent"
                 android:layout_alignBottom="@+id/lleditLaouyt"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/lleditLaouyt"
                 android:layout_marginEnd="@dimen/list_margin"
+                android:layout_marginRight="@dimen/list_margin"
                 android:gravity="top">
 
                 <LinearLayout

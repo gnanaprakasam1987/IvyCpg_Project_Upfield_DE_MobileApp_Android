@@ -886,8 +886,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
 
             if (BModel.configurationMasterHelper.IS_PRINT_SEQUENCE_REQUIRED) {
-                if (BModel.configurationMasterHelper.IS_PRINT_SEQUENCE_BRANDWISE) {
-                    mOrderedProductList = BModel.orderAndInvoiceHelper.sortbyBrand(mOrderedProductList);
+                if (BModel.configurationMasterHelper.IS_PRINT_SEQUENCE_LEVELWISE) {
+                    mOrderedProductList = BModel.orderAndInvoiceHelper.sortbyLevel(mOrderedProductList);
                 } else {
                     mOrderedProductList = BModel.orderAndInvoiceHelper.sort(mOrderedProductList);
                 }

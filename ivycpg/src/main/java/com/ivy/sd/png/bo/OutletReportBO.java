@@ -12,6 +12,7 @@ public class OutletReportBO implements Parcelable {
     int userId, retailerId, isPlanned = 0, isVisited = 0;
     String userName, retailerName, locationName, Address, salesVolume;
     String timeIn, timeOut, duration;
+    String fitScore;
 
     public int getUserId() {
         return userId;
@@ -192,4 +193,11 @@ public class OutletReportBO implements Parcelable {
         return 0;
     }
 
+    public String getFitScore() {
+        return fitScore;
+    }
+
+    public void setFitScore(String fitScore) {
+        this.fitScore = fitScore;
+    }
 }
