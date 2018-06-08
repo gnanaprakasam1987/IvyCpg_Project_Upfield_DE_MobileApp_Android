@@ -1261,6 +1261,7 @@
     <string name="enter_valid_password">Please enter valid password</string>
     <string name="profile">Profile</string>
     <string name="view">View</string>
+    <string name="volume">Volume</string>
 
     <string-array name="task_tab_header">
         <item>All</item>

@@ -1257,7 +1257,7 @@
     <string name="vpd">VPD</string>
     <string name="wouter">WO</string>
     <string name="zero_bpo">Zero BPO (No. of O/L)</string>
-
+    <string name="invoice_duplicated">Invoice should not be duplicated.</string>
 
     <string-array name="task_tab_header">
         <item>All</item>
