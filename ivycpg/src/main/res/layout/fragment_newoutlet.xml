@@ -23,7 +23,7 @@
         android:layout_marginStart="@dimen/dimen_12dp"
         android:layout_marginEnd="@dimen/dimen_12dp"
         android:layout_marginTop="@dimen/dimen_12dp"
-        android:scrollbars="none"></ScrollView>
+        android:scrollbars="none"/>
 
 
     <LinearLayout

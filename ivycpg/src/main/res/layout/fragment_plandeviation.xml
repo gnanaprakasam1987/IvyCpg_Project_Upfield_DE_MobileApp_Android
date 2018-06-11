@@ -17,7 +17,8 @@
         android:text="@string/select_reason"
         android:textColor="?attr/colorAccent"
         android:textSize="@dimen/font_micro_small"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginLeft="@dimen/profile_history_20dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -62,7 +63,8 @@
                 android:layout_marginStart="@dimen/profile_history_20dp"
                 android:onClick="onClick"
                 android:text="@string/save"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_marginLeft="@dimen/profile_history_20dp" />
 
         </LinearLayout>
 

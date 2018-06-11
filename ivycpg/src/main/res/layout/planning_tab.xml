@@ -11,8 +11,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/material_tool_bar"
-            />
+            layout="@layout/material_tool_bar" />
 
         <LinearLayout
             android:layout_width="match_parent"

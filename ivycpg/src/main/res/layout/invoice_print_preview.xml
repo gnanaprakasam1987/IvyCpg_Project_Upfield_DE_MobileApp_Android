@@ -19,7 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/redball" />
+        android:src="@drawable/redball"
+        android:layout_alignParentLeft="true" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -32,7 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/redball" />
+            android:src="@drawable/redball"
+            android:layout_alignParentLeft="true" />
 
         <TextView
             android:id="@+id/status_tv"
@@ -42,7 +44,8 @@
             android:layout_toEndOf="@+id/status_iv"
             android:padding="4dp"
             android:text=""
-            android:textColor="@color/RED" />
+            android:textColor="@color/RED"
+            android:layout_toRightOf="@+id/status_iv" />
 
         <Spinner
             android:id="@+id/printcount"
@@ -50,18 +53,19 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:focusable="true" >
+            android:focusable="true"
+            android:layout_alignParentRight="true">
         </Spinner>
 
         <Button
             android:id="@+id/reconnect_btn"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="@string/reconnect"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_alignParentRight="true" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -70,7 +74,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <ScrollView
@@ -352,7 +357,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:text="@string/vat"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/vat_value_tv"
@@ -361,7 +367,8 @@
                         android:layout_alignParentEnd="true"
                         android:padding="2dp"
                         android:text=""
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -376,7 +383,8 @@
                         android:layout_alignParentStart="true"
                         android:text="@string/discount"
                         android:textColor="@android:color/black"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/discount_value_tv"
@@ -386,7 +394,8 @@
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -401,7 +410,8 @@
                         android:layout_alignParentStart="true"
                         android:text="@string/bill_value"
                         android:textColor="@android:color/black"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/bill_value_tv"
@@ -411,7 +421,8 @@
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <TextView

@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/redball" />
+            android:src="@drawable/redball"
+            android:layout_alignParentLeft="true" />
 
         <TextView
             android:id="@+id/status_tv"
@@ -36,7 +37,8 @@
             android:layout_toEndOf="@+id/status_iv"
             android:padding="4dp"
             android:text=""
-            android:textColor="@color/RED" />
+            android:textColor="@color/RED"
+            android:layout_toRightOf="@+id/status_iv" />
 
         <Spinner
             android:id="@+id/printcount"
@@ -44,7 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:focusable="true"></Spinner>
+            android:focusable="true"
+            android:layout_alignParentRight="true"></Spinner>
     </RelativeLayout>
 
     <EditText

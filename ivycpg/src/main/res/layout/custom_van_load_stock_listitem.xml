@@ -11,15 +11,15 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:paddingStart="@dimen/list_padding_left_n_right"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/list_padding_left_n_right">
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/stock_apply_listview_cb"
             android:layout_width="@dimen/order_stock_list_item_width_small"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="start|center"
-           ></android.support.v7.widget.AppCompatRadioButton>
+            android:gravity="start|center" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +27,8 @@
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/margin_minus20dp"
             android:gravity="start|center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/margin_minus20dp">
 
             <TextView
                 android:id="@+id/vanLoad_no_list"
@@ -93,7 +94,7 @@
             android:src="@drawable/activity_icon_next"
             android:tint="@color/new_grey"
             android:gravity="end|center"
-            />
+            android:layout_marginRight="@dimen/profile_history_10dp" />
     </LinearLayout>
 
 </LinearLayout>

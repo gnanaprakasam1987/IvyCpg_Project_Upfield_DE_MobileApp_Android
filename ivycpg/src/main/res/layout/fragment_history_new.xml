@@ -36,7 +36,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/profile_23dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/profile_23dp">
 
                 <LinearLayout
                     android:id="@+id/avg_layout"
@@ -76,7 +77,8 @@
                     android:layout_height="50px"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/profile_30dp"
-                    android:background="@color/FullBlack" />
+                    android:background="@color/FullBlack"
+                    android:layout_marginLeft="@dimen/profile_30dp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -86,7 +88,8 @@
                     android:layout_marginStart="@dimen/profile_header_img_marginleft"
                     android:layout_marginTop="@dimen/profile_dimention"
                     android:gravity="center|start"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_header_img_marginleft">
 
                     <TextView
                         android:id="@+id/avg_val_txt"

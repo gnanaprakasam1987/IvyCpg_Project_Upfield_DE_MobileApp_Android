@@ -26,7 +26,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/card_margin">
 
                 <TextView
                     android:id="@+id/tv_deliveryDate"
@@ -57,7 +59,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_toEndOf="@+id/layoutDelivery"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/layoutDelivery">
 
                 <TextView
                     android:id="@+id/lpcLabel"
@@ -100,7 +104,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_toEndOf="@+id/ll_lines"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/ll_lines">
 
                 <TextView
                     android:id="@+id/totalValuelbl"
@@ -150,7 +156,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true">
 
                 <Button
                     android:id="@+id/deleteSummary"
@@ -165,7 +172,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/card_margin"
                     android:text="@string/edit"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:layout_marginLeft="@dimen/card_margin" />
 
                 <Button
                     android:id="@+id/saveSummary"
@@ -174,7 +182,8 @@
                     android:layout_marginStart="@dimen/card_margin"
                     android:padding="@dimen/padding_rb"
                     android:text="@string/save"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:layout_marginLeft="@dimen/card_margin" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

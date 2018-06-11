@@ -1,55 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/main_layout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="vertical"
-android:padding="5dp">
-
-<RelativeLayout
-    android:layout_width="wrap_content"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal">
-    <!--android:layout_height="@dimen/competitor_recycler_view_height"-->
-    <TextView
-        android:id="@+id/dialog_sync_retailer_select_retailername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:gravity="start"
-        android:paddingStart="@dimen/dimen_10dp"
-        android:text="Select to start store activities"
-        android:textColor="@color/FullBlack"
-        android:textSize="@dimen/list_item_primary_text_size"
+    android:orientation="vertical"
+    android:padding="5dp">
 
-        />
-
-
-
-
-    <LinearLayout
-        android:id="@+id/icon_ll"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-android:padding="@dimen/dimen_10dp"
-        android:gravity="center">
-        <!--android:layout_width="@dimen/activity_list_height"-->
-        <!--android:layout_height="@dimen/activity_list_height"-->
-        <!--android:background="@drawable/activity_icon_bg_normal"-->
-        <CheckBox
-            android:id="@+id/dialog_sync_retailer_select_chkbox"
+        android:gravity="center_horizontal">
+        <!--android:layout_height="@dimen/competitor_recycler_view_height"-->
+        <TextView
+            android:id="@+id/dialog_sync_retailer_select_retailername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="start"
+            android:paddingLeft="@dimen/dimen_10dp"
+            android:paddingStart="@dimen/dimen_10dp"
+            android:text="Select to start store activities"
+            android:textColor="@color/FullBlack"
+            android:textSize="@dimen/list_item_primary_text_size" />
+
+
+        <LinearLayout
+            android:id="@+id/icon_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-        <!--android:src="@drawable/activity_icon_next"-->
-        <!--android:layout_width="@dimen/activity_list_icon_size"-->
-        <!--android:layout_height="@dimen/activity_list_icon_size"-->
-    </LinearLayout>
-</RelativeLayout>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center"
+            android:padding="@dimen/dimen_10dp">
+            <!--android:layout_width="@dimen/activity_list_height"-->
+            <!--android:layout_height="@dimen/activity_list_height"-->
+            <!--android:background="@drawable/activity_icon_bg_normal"-->
+            <CheckBox
+                android:id="@+id/dialog_sync_retailer_select_chkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <!--android:src="@drawable/activity_icon_next"-->
+            <!--android:layout_width="@dimen/activity_list_icon_size"-->
+            <!--android:layout_height="@dimen/activity_list_icon_size"-->
+        </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
 
 

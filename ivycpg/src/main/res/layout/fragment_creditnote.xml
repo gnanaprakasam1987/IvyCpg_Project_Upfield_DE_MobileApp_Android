@@ -121,7 +121,8 @@
                 android:text="@string/cancel"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/font_micro_small"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginRight="@dimen/dimens_6dp" />
 
             <Button
                 android:id="@+id/applybtn"

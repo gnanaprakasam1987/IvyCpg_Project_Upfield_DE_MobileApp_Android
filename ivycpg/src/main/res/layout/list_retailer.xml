@@ -12,17 +12,14 @@
         android:text="asdkfa"
         android:gravity="center_vertical"
         android:layout_marginStart="10dp"
-        android:textSize="@dimen/dimen_14dp"/>
+        android:textSize="@dimen/dimen_14dp"
+        android:layout_marginLeft="10dp" />
     <CheckBox
         android:id="@+id/cb_retailer_select"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_weight="1"
-
-        android:layout_gravity="center"
-
-
-        />
+        android:layout_gravity="center" />
     
 
 </LinearLayout>

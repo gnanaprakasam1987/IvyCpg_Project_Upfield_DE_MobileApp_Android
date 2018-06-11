@@ -23,7 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/redball" />
+        android:src="@drawable/redball"
+        android:layout_alignParentLeft="true" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -36,7 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/redball" />
+            android:src="@drawable/redball"
+            android:layout_alignParentLeft="true" />
 
         <TextView
             android:id="@+id/status_tv"
@@ -46,7 +48,8 @@
             android:layout_toEndOf="@+id/status_iv"
             android:padding="4dp"
             android:text=""
-            android:textColor="@color/RED" />
+            android:textColor="@color/RED"
+            android:layout_toRightOf="@+id/status_iv" />
 
         <Spinner
             android:id="@+id/printcount"
@@ -54,17 +57,18 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:focusable="true"></Spinner>
+            android:focusable="true"
+            android:layout_alignParentRight="true"/>
 
         <Button
             android:id="@+id/reconnect_btn"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="@string/reconnect"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_alignParentRight="true" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -73,7 +77,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <ScrollView
@@ -346,7 +351,7 @@
                     android:id="@+id/product_container_ll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"></LinearLayout>
+                    android:orientation="vertical"/>
 
                 <ListView
                     android:id="@+id/product_list_lv"
@@ -414,7 +419,8 @@
                         android:layout_alignParentStart="true"
                         android:text="@string/discount"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/discount_value_tv"
@@ -424,7 +430,8 @@
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -449,7 +456,8 @@
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -463,7 +471,8 @@
                         android:layout_alignParentStart="true"
                         android:text="@string/vat"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/vat_value_tv"
@@ -473,7 +482,8 @@
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -498,7 +508,8 @@
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -514,7 +525,8 @@
                         android:layout_alignParentStart="true"
                         android:text="@string/bill_value"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/bill_value_tv"
@@ -524,7 +536,8 @@
                         android:padding="2dp"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <LinearLayout

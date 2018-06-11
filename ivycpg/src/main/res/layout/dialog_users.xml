@@ -18,7 +18,7 @@
     <ListView
         android:id="@+id/lv_readiness_reason"
         android:layout_width="@dimen/digital_screen_name_width"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content"/>
 
     <View
         android:id="@+id/vw"

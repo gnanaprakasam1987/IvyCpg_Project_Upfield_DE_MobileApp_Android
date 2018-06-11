@@ -3,26 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/productnamelayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-         >
+        android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/productname"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@string/no"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            <TextView
+                android:id="@+id/productname"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="@string/no"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_micro_small" />
+
             <TextView
                 android:id="@+id/batchno"
                 android:layout_width="100dp"
@@ -31,16 +32,16 @@
                 android:text="@string/no"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_micro_small"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/loadstk"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:padding="5dp"
             android:text=""
-             android:gravity="center"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small" />
 
@@ -48,8 +49,8 @@
             android:id="@+id/returnQty"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small" />
@@ -78,8 +79,8 @@
             android:id="@+id/replacementQty"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small" />
@@ -91,6 +92,7 @@
             android:gravity="center"
             android:padding="5dp"
             android:paddingEnd="5dp"
+            android:paddingRight="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small" />
@@ -99,8 +101,8 @@
             android:id="@+id/empty"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:padding="5dp"
-             android:gravity="center"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small" />

@@ -43,7 +43,8 @@
             android:singleLine="true"
             android:text="@string/mrp"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/font_micro_small"
+            android:layout_alignParentLeft="true" />
 
         <TextView
             android:id="@+id/stock_and_order_listview_ppq"
@@ -55,7 +56,8 @@
             android:singleLine="true"
             android:text="@string/ou"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/font_micro_small"
+            android:layout_toRightOf="@+id/stock_and_order_listview_mrp" />
 
         <TextView
             android:id="@+id/stock_and_order_listview_msq"
@@ -68,7 +70,8 @@
             android:text="@string/msq"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/stock_and_order_listview_ppq" />
     </RelativeLayout>
 
     <EditText

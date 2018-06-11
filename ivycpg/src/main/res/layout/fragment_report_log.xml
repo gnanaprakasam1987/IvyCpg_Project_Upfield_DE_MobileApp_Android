@@ -38,7 +38,8 @@
                 android:text="@string/text_total_time"
                 android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/font_small"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginLeft="@dimen/dimen_10dp" />
 
             <TextView
                 android:id="@+id/tvTotalHrs"
@@ -50,7 +51,8 @@
                 android:text="00:00"
                 android:textColor="@color/WHITE"
                 android:textSize="@dimen/font_small"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginRight="@dimen/dimen_10dp" />
 
         </LinearLayout>
 

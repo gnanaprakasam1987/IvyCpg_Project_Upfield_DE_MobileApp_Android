@@ -39,7 +39,8 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/ic_tick_enable"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:layout_alignParentRight="true" />
             </RelativeLayout>
             <View
                 android:id="@+id/view_dotted_line"

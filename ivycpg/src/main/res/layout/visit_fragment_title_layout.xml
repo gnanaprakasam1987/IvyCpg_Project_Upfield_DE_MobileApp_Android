@@ -39,8 +39,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/card_child_margin"
-                    android:tag="label_beat"
                     android:gravity="center"
+                    android:tag="label_beat"
                     android:text="@string/beat_loc"
                     android:textColor="?attr/colorAccent"
                     android:textSize="@dimen/text_sz_medium" />
@@ -51,8 +51,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/card_child_margin"
                     android:gravity="center"
-                    android:text="GHKW"
                     android:maxLines="1"
+                    android:text="GHKW"
                     android:textColor="@color/font_inactive"
                     android:textSize="@dimen/highlight_normal" />
             </LinearLayout>
@@ -77,8 +77,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/card_child_margin"
                     android:gravity="center"
-                    android:text="@string/stores_visit"
                     android:tag="label_storevst"
+                    android:text="@string/stores_visit"
                     android:textColor="?attr/colorAccent"
                     android:textSize="@dimen/text_sz_medium" />
 
@@ -113,8 +113,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/card_child_margin"
                     android:gravity="center"
-                    android:text="@string/today_achvd"
                     android:tag="label_todaytgt"
+                    android:text="@string/today_achvd"
                     android:textColor="?attr/colorAccent"
                     android:textSize="@dimen/text_sz_medium" />
 
@@ -124,8 +124,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/card_child_margin"
                     android:gravity="center"
-                    android:text="30,000"
                     android:maxLines="1"
+                    android:text="30,000"
                     android:textColor="@color/font_inactive"
                     android:textSize="@dimen/highlight_normal" />
             </LinearLayout>

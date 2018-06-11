@@ -132,7 +132,8 @@
                         android:text=" pts"
                         android:textColor="#70FFFFFF"
                         android:textSize="@dimen/font_nano_small"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"
+                        android:paddingRight="20dp" />
                 </RelativeLayout>
                 <!--<TextView
                     android:id="@+id/total_score_header"
@@ -152,7 +153,7 @@
                     android:layout_width="2dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:background="#121212"></View>
+                    android:background="#121212"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -181,7 +182,8 @@
                         android:text=" Modules"
                         android:textColor="#70FFFFFF"
                         android:textSize="@dimen/font_nano_small"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"
+                        android:paddingRight="2dp" />
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
@@ -195,7 +197,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginTop="5dp"></android.support.v7.widget.RecyclerView>
+        android:layout_marginTop="5dp"/>
 
     <LinearLayout
         android:id="@+id/qn_card_cotent_layout"
@@ -274,7 +276,8 @@
                             android:text="weight"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/font_nano_small"
-                            android:textStyle="normal" />
+                            android:textStyle="normal"
+                            android:paddingRight="20dp" />
                     </RelativeLayout>
                 </LinearLayout>
 
@@ -282,7 +285,7 @@
                     android:layout_width="1dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:background="@color/GRAY"></View>
+                    android:background="@color/GRAY"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -328,7 +331,8 @@
                             android:text=" pts"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/font_nano_small"
-                            android:textStyle="normal" />
+                            android:textStyle="normal"
+                            android:paddingRight="20dp" />
                     </RelativeLayout>
                 </LinearLayout>
 
@@ -336,7 +340,7 @@
                     android:layout_width="1dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:background="@color/GRAY"></View>
+                    android:background="@color/GRAY"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -382,7 +386,8 @@
                             android:text=" pts"
                             android:textColor="@color/GRAY_TEXT"
                             android:textSize="@dimen/font_nano_small"
-                            android:textStyle="normal" />
+                            android:textStyle="normal"
+                            android:paddingRight="20dp" />
                     </RelativeLayout>
                 </LinearLayout>
 
@@ -392,7 +397,8 @@
                     android:layout_height="@dimen/store_card_image"
                     android:layout_gravity="center"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/icon_star_gold" />
+                    android:src="@drawable/icon_star_gold"
+                    android:layout_marginRight="10dp" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
@@ -477,7 +483,8 @@
                     android:textStyle="bold"
                     android:visibility="gone"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_micro_small"
+                    android:paddingRight="5dp" />
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
@@ -599,7 +606,8 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/relativeLayout"
                 android:layout_toStartOf="@+id/relativeLayout"
-                android:paddingEnd="15dp">
+                android:paddingEnd="15dp"
+                android:paddingRight="15dp">
 
                 <TextView
                     android:id="@+id/textView9"
@@ -641,7 +649,8 @@
                         android:text=" pts"
                         android:textColor="@color/GRAY_TEXT"
                         android:textSize="@dimen/font_nano_small"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"
+                        android:paddingRight="20dp" />
                 </RelativeLayout>
 
 
@@ -652,7 +661,8 @@
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/relativeLayout"
-                android:background="@color/Black"></View>
+                android:background="@color/Black"
+                android:layout_toLeftOf="@+id/relativeLayout"/>
 
             <RelativeLayout
                 android:id="@+id/relativeLayout"
@@ -705,7 +715,8 @@
                         android:text=" pts"
                         android:textColor="@color/GRAY_TEXT"
                         android:textSize="@dimen/font_nano_small"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"
+                        android:paddingRight="20dp" />
                 </RelativeLayout>
 
             </RelativeLayout>

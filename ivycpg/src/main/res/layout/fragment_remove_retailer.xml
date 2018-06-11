@@ -8,8 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/ll_footer"
-        android:layout_marginBottom="@dimen/dimen_100dp"
-      ></ListView>
+        android:layout_marginBottom="@dimen/dimen_100dp" />
     <LinearLayout
         android:id="@+id/ll_footer"
         android:layout_width="match_parent"

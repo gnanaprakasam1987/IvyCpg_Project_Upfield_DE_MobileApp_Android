@@ -87,7 +87,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/card_margin">
 
                 <TextView
                     android:id="@+id/tv_deliveryDate"
@@ -118,7 +120,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_toEndOf="@+id/layoutDelivery"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/layoutDelivery">
 
                 <TextView
                     android:id="@+id/lpcLabel"
@@ -161,7 +165,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_toEndOf="@+id/ll_lines"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/ll_lines">
 
                 <TextView
                     android:id="@+id/totalValuelbl"
@@ -212,7 +218,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_toEndOf="@+id/ll_values"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/ll_values">
 
                 <TextView
                     android:id="@+id/lblbill1"
@@ -254,7 +262,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_toEndOf="@+id/ll_bill1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/ll_bill1">
 
                 <TextView
                     android:id="@+id/lblbill1Line"
@@ -296,7 +306,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_toEndOf="@+id/ll_bill1Line"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/ll_bill1Line">
 
                 <TextView
                     android:id="@+id/lblbill2"
@@ -338,7 +350,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_toEndOf="@+id/ll_bill2"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/ll_bill2">
 
                 <TextView
                     android:id="@+id/lblbill2Line"
@@ -380,7 +394,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_toEndOf="@+id/ll_bill2"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_toRightOf="@+id/ll_bill2">
 
                 <TextView
                     android:id="@+id/title_totalqty"
@@ -422,7 +438,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true">
 
                 <Button
                     android:id="@+id/orderSummarySave"
@@ -431,7 +448,8 @@
                     android:layout_toStartOf="@+id/saveAndGoInvoice"
                     android:tag="ordersave"
                     android:text="@string/text_order"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:layout_toLeftOf="@+id/saveAndGoInvoice" />
 
                 <Button
                     android:id="@+id/saveAndGoInvoice"

@@ -55,7 +55,8 @@
                         android:gravity="center_vertical"
                         android:maxLines="2"
                         android:paddingStart="4dp"
-                        android:text="slab_name"/>
+                        android:text="slab_name"
+                        android:paddingLeft="4dp" />
 
                     <TextView
                         android:id="@+id/tv_buying_qty"
@@ -107,7 +108,9 @@
                         android:layout_marginEnd="@dimen/list_margin"
                         android:layout_toStartOf="@+id/cb_quantity"
                         android:gravity="center"
-                        android:text="@string/qty" />
+                        android:text="@string/qty"
+                        android:layout_marginRight="@dimen/list_margin"
+                        android:layout_toLeftOf="@+id/cb_quantity" />
 
                     <CheckBox
                         android:id="@+id/cb_quantity"
@@ -115,7 +118,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_gravity="top" />
+                        android:layout_gravity="top"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
 
@@ -135,14 +139,17 @@
                         android:layout_marginEnd="@dimen/list_margin"
                         android:layout_toStartOf="@+id/btn_show_free_products"
                         android:text=""
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        android:layout_marginRight="@dimen/list_margin"
+                        android:layout_toLeftOf="@+id/btn_show_free_products" />
 
                     <Button
                         android:id="@+id/btn_show_free_products"
                         style="?attr/roundedCustomButtonSmall"
                         android:layout_alignParentEnd="true"
                         android:text="View"
-                        android:textAllCaps="false" />
+                        android:textAllCaps="false"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
             </RelativeLayout>
 
@@ -170,14 +177,17 @@
                         android:layout_marginEnd="@dimen/list_margin"
                         android:layout_toStartOf="@+id/cb_price"
                         android:gravity="center"
-                        android:text="Price" />
+                        android:text="Price"
+                        android:layout_marginRight="@dimen/list_margin"
+                        android:layout_toLeftOf="@+id/cb_price" />
 
                     <CheckBox
                         android:id="@+id/cb_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:layout_gravity="end" />
+                        android:layout_gravity="end"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
 
@@ -197,7 +207,8 @@
                         android:layout_margin="4dp"
                         android:maxLength="6"
                         android:padding="4dp"
-                        android:textSize="@dimen/total_title_size" />
+                        android:textSize="@dimen/total_title_size"
+                        android:layout_alignParentRight="true" />
 
                     <TextView
                         android:id="@+id/tv_price_range"
@@ -207,7 +218,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@+id/et_selected_price"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/list_margin" />
+                        android:layout_marginEnd="@dimen/list_margin"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/list_margin" />
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -232,7 +245,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:layout_gravity="end" />
+                        android:layout_gravity="end"
+                        android:layout_alignParentRight="true" />
 
                     <TextView
                         android:id="@+id/tv_amounttitle"
@@ -243,7 +257,9 @@
                         android:layout_marginEnd="@dimen/list_margin"
                         android:layout_toStartOf="@id/cb_amount"
                         android:gravity="center"
-                        android:text="Amount" />
+                        android:text="Amount"
+                        android:layout_marginRight="@dimen/list_margin"
+                        android:layout_toLeftOf="@id/cb_amount" />
 
 
                 </RelativeLayout>
@@ -265,7 +281,8 @@
                         android:layout_margin="4dp"
                         android:maxLength="6"
                         android:padding="4dp"
-                        android:textSize="@dimen/total_title_size" />
+                        android:textSize="@dimen/total_title_size"
+                        android:layout_alignParentRight="true" />
 
                     <TextView
                         android:id="@+id/tv_amount_range"
@@ -275,7 +292,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@+id/et_selected_amount"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/list_margin" />
+                        android:layout_marginEnd="@dimen/list_margin"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/list_margin" />
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -300,7 +319,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:layout_gravity="end" />
+                        android:layout_gravity="end"
+                        android:layout_alignParentRight="true" />
 
                     <TextView
                         android:id="@+id/tv_percenttitle"
@@ -311,7 +331,9 @@
                         android:layout_marginEnd="@dimen/list_margin"
                         android:layout_toStartOf="@+id/cb_percent"
                         android:gravity="center"
-                        android:text="Percent" />
+                        android:text="Percent"
+                        android:layout_marginRight="@dimen/list_margin"
+                        android:layout_toLeftOf="@+id/cb_percent" />
 
                 </RelativeLayout>
 
@@ -328,10 +350,11 @@
                         android:layout_width="@dimen/target_plan_editbox_width"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:maxLength="5"
                         android:layout_margin="4dp"
+                        android:maxLength="5"
                         android:padding="4dp"
-                        android:textSize="@dimen/total_title_size" />
+                        android:textSize="@dimen/total_title_size"
+                        android:layout_alignParentRight="true" />
 
                     <TextView
                         android:id="@+id/tv_percent_range"
@@ -341,7 +364,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@+id/et_selected_percent"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/list_margin" />
+                        android:layout_marginEnd="@dimen/list_margin"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/list_margin" />
                 </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>

@@ -13,13 +13,11 @@
         android:layout_height="30dp"
         android:textStyle="normal"/>
         <TextView
-
             android:id="@+id/tv_batch_code"
             android:layout_width="@dimen/meter_value_width_large"
             android:layout_height="@dimen/dimen_20dp"
             android:gravity="center"
-            android:textStyle="normal"
-            />
+            android:textStyle="normal" />
       </LinearLayout>
     <TextView
 

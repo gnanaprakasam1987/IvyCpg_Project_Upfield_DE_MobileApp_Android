@@ -16,8 +16,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/list_margin"
-            android:layout_above="@+id/keypad">
+            android:layout_above="@+id/keypad"
+            android:layout_margin="@dimen/list_margin">
 
             <ListView
                 android:id="@+id/list"
@@ -56,11 +56,13 @@
                     android:layout_width="@dimen/activity_list_icon_size"
                     android:layout_height="@dimen/activity_list_icon_size"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/target_top_margin"
                     android:layout_marginEnd="@dimen/dimen_1dp"
+                    android:layout_marginLeft="@dimen/target_top_margin"
+                    android:layout_marginRight="@dimen/dimen_1dp"
+                    android:layout_marginStart="@dimen/target_top_margin"
                     android:background="@drawable/activity_icon_bg_normal"
-                    android:backgroundTintMode="src_over"
                     android:backgroundTint="@color/colorPrimary"
+                    android:backgroundTintMode="src_over"
                     android:gravity="center">
 
                     <ImageView
@@ -77,6 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/icon_ll"
+                    android:layout_toRightOf="@+id/icon_ll"
                     android:text="@string/add_another_reason"
                     android:textColor="@color/white"
                     android:textSize="@dimen/greyed_text_size" />
@@ -85,6 +88,7 @@
                     android:id="@+id/btn_save"
                     style="?attr/roundedCustomButtonSmall"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_margin="@dimen/target_top_margin"
                     android:gravity="center"
                     android:text="@string/done"

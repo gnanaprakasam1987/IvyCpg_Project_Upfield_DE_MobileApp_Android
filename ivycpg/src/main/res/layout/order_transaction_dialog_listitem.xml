@@ -14,7 +14,7 @@
             android:textColor="@color/Black"
             android:textSize="@dimen/filter_list_secondary_text_size"
             android:layout_toEndOf="@+id/edit_icon"
-            />
+            android:layout_toRightOf="@+id/edit_icon" />
         <ImageView
             android:id="@+id/edit_icon"
             android:layout_width="@dimen/profile_header_img_height"
@@ -23,7 +23,8 @@
             android:layout_marginEnd="@dimen/sub_activity_list_icon_circle"
             android:layout_marginStart="@dimen/sub_activity_list_icon_circle"
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true" />
     </RelativeLayout>
 
     <View

@@ -26,7 +26,8 @@
         android:layout_gravity="end"
         android:gravity="center"
         android:paddingEnd="5dp"
-        android:text="@string/zero" />
+        android:text="@string/zero"
+        android:paddingRight="5dp" />
 
     <TextView
         android:id="@+id/sku_OU"
@@ -38,7 +39,8 @@
         android:gravity="center"
         android:paddingEnd="5dp"
         android:text="@string/zero"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:paddingRight="5dp" />
 
     <TextView
         android:id="@+id/sku_MSQ"
@@ -50,6 +52,7 @@
         android:gravity="center"
         android:paddingEnd="5dp"
         android:text="@string/zero"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:paddingRight="5dp" />
 
 </LinearLayout>

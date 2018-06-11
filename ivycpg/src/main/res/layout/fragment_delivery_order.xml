@@ -36,7 +36,8 @@
                     android:gravity="start"
                     android:maxLines="1"
                     android:textColor="?attr/primarycolor"
-                    android:textSize="@dimen/font_nano_small" />
+                    android:textSize="@dimen/font_nano_small"
+                    android:layout_marginLeft="@dimen/list_margin" />
 
                 <Button
                     android:id="@+id/btn_search"
@@ -205,7 +206,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true">
 
                 <Button
                     android:id="@+id/btn_next"

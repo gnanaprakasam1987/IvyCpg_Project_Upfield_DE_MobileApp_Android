@@ -64,7 +64,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/target_top_margin"
                     android:layout_toEndOf="@+id/ll_value"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_toRightOf="@+id/ll_value">
 
                     <TextView
                         android:id="@+id/lpc_title"
@@ -93,7 +94,8 @@
                     android:layout_margin="@dimen/target_top_margin"
                     android:layout_toEndOf="@+id/ll_lpc"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    android:layout_toRightOf="@+id/ll_lpc">
 
                     <TextView
                         android:id="@+id/unload_total_sihTxt"
@@ -122,7 +124,8 @@
                     android:layout_margin="@dimen/target_top_margin"
                     android:layout_toEndOf="@+id/ll_vanloadsih_lty"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    android:layout_toRightOf="@+id/ll_vanloadsih_lty">
 
                     <TextView
                         android:id="@+id/unload_total_caseTxt"
@@ -151,7 +154,8 @@
                     android:layout_margin="@dimen/target_top_margin"
                     android:layout_toEndOf="@+id/ll_vanloadcase_lty"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    android:layout_toRightOf="@+id/ll_vanloadcase_lty">
 
                     <TextView
                         android:id="@+id/unload_total_outerTxt"
@@ -180,7 +184,8 @@
                     android:layout_margin="@dimen/target_top_margin"
                     android:layout_toEndOf="@+id/ll_vanloadouter_lty"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    android:layout_toRightOf="@+id/ll_vanloadouter_lty">
 
                     <TextView
                         android:id="@+id/unload_total_pieceTxt"
@@ -209,7 +214,8 @@
                     android:layout_centerVertical="true"
                     android:layout_margin="@dimen/target_top_margin"
                     android:text="@string/next"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:layout_alignParentRight="true" />
             </RelativeLayout>
 
 
@@ -254,7 +260,7 @@
                             android:gravity="start"
                             android:maxLines="1"
                             android:textColor="@color/highlighter"
-                            android:textSize="@dimen/font_small"></TextView>
+                            android:textSize="@dimen/font_small"/>
 
                         <Button
                             android:id="@+id/btn_search"
@@ -262,7 +268,8 @@
                             android:layout_height="@dimen/filter_icon"
                             android:layout_alignParentEnd="true"
                             android:layout_gravity="center"
-                            android:background="@drawable/ic_vector_search" />
+                            android:background="@drawable/ic_vector_search"
+                            android:layout_alignParentRight="true" />
                     </LinearLayout>
 
                     <RelativeLayout
@@ -293,7 +300,8 @@
                             android:imeOptions="actionDone"
                             android:maxLines="1"
                             android:textColor="@color/highlighter"
-                            android:textSize="@dimen/search_edt_text_size"></EditText>
+                            android:textSize="@dimen/search_edt_text_size"
+                            android:layout_toRightOf="@+id/btn_filter_popup"/>
 
                         <Button
                             android:id="@+id/btn_clear"
@@ -301,7 +309,8 @@
                             android:layout_height="@dimen/filter_icon"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/ic_vector_action_clear_grey" />
+                            android:background="@drawable/ic_vector_action_clear_grey"
+                            android:layout_alignParentRight="true" />
                     </RelativeLayout>
                 </ViewFlipper>
             </LinearLayout>

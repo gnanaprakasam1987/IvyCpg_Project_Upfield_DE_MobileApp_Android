@@ -22,7 +22,10 @@
             android:layout_marginStart="@dimen/brand_text_margin"
             android:layout_marginEnd="@dimen/profile_history_25dp"
             android:layout_toStartOf="@+id/ivAvailable"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/brand_text_margin"
+            android:layout_marginRight="@dimen/profile_history_25dp"
+            android:layout_toLeftOf="@+id/ivAvailable">
 
             <TextView
                 android:id="@+id/stock_and_order_listview_productname"
@@ -41,7 +44,8 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginStart="2dp"
                 android:maxLines="1"
-                android:text="@string/barcode" />
+                android:text="@string/barcode"
+                android:layout_marginLeft="2dp" />
         </LinearLayout>
 
         <ImageView
@@ -51,7 +55,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_right_arrow"
-            android:tint="@color/GRAY" />
+            android:tint="@color/GRAY"
+            android:layout_alignParentRight="true" />
 
         <ImageView
             android:id="@+id/ivAvailable"
@@ -59,7 +64,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/ivArrow"
-            android:src="@drawable/ic_tick_enable" />
+            android:src="@drawable/ic_tick_enable"
+            android:layout_toLeftOf="@+id/ivArrow" />
 
 
     </RelativeLayout>

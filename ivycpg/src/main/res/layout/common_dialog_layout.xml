@@ -37,7 +37,8 @@
             android:paddingTop="@dimen/profile_header_txt_layout_marginleft"
             android:text="Reason for visit"
             android:textColor="?attr/primarycolor"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_marginLeft="@dimen/profile_history_20dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -62,7 +63,8 @@
                 android:layout_below="@+id/dialog_img"
                 android:layout_marginTop="@dimen/profile_history_10dp"
                 android:orientation="horizontal"
-                android:paddingTop="@dimen/profile_header_txt_layout_marginleft">
+                android:paddingTop="@dimen/profile_header_txt_layout_marginleft"
+                android:layout_alignParentRight="true">
 
                 <Button
                     android:id="@+id/btn_cancel"
@@ -84,7 +86,8 @@
                     android:layout_marginStart="@dimen/profile_history_20dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:text="@string/ok"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_micro_small"
+                    android:layout_marginLeft="@dimen/profile_history_20dp" />
 
             </LinearLayout>
 

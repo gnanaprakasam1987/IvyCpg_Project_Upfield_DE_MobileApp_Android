@@ -28,7 +28,8 @@
         android:layout_height="@dimen/activity_list_height"
         android:gravity="start|center_vertical"
         android:text="NEW ORDER"
-        android:layout_toEndOf="@+id/new_order_icon"/>
+        android:layout_toEndOf="@+id/new_order_icon"
+        android:layout_toRightOf="@+id/new_order_icon" />
         <ImageView
             android:id="@+id/new_order_icon"
             android:layout_width="@dimen/profile_header_img_height"
@@ -38,6 +39,7 @@
             android:layout_marginEnd="@dimen/sub_activity_list_icon_circle"
             android:layout_marginStart="@dimen/sub_activity_list_icon_circle"
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true" />
     </RelativeLayout>
 </LinearLayout>

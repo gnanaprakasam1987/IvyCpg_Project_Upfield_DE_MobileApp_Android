@@ -7,8 +7,7 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar"
-        />
+        layout="@layout/material_tool_bar" />
 
     <fragment
         android:id="@+id/synchronization_fragment"

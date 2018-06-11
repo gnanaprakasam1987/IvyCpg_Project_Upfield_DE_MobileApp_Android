@@ -38,7 +38,8 @@
         android:paddingStart="@dimen/dimen_8dp"
         android:text="sample"
         android:textColorLink="@color/BLUE"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/font_small"
+        android:paddingLeft="@dimen/dimen_8dp" />
 
 
     <Spinner
@@ -56,7 +57,9 @@
         android:layout_marginStart="@dimen/dimen_8dp"
         android:layout_marginEnd="@dimen/dimen_18dp"
         android:background="?textColorPrimary"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/dimen_8dp"
+        android:layout_marginRight="@dimen/dimen_18dp" />
 
     <View
         android:layout_width="match_parent"

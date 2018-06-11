@@ -44,7 +44,8 @@
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text=""
-                android:textSize="@dimen/font_medium" />
+                android:textSize="@dimen/font_medium"
+                android:layout_toLeftOf="@+id/value_txt1" />
 
             <TextView
                 android:id="@+id/value_txt1"
@@ -56,7 +57,9 @@
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text=""
-                android:textSize="@dimen/font_medium" />
+                android:textSize="@dimen/font_medium"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/gall_rec_item_padding" />
 
         </RelativeLayout>
 

@@ -30,7 +30,8 @@
                 android:text="@string/username"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/font_large"
-                android:layout_marginStart="@dimen/dimen_80dp"/>
+                android:layout_marginStart="@dimen/dimen_80dp"
+                android:layout_marginLeft="@dimen/dimen_80dp" />
 
 
         </LinearLayout>

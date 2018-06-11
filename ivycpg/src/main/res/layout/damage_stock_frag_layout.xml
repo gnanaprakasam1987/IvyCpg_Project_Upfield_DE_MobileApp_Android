@@ -72,7 +72,8 @@
                     android:id="@+id/product_txt"
                     android:layout_marginStart="@dimen/skuwise_right_margin"
                     android:textStyle="bold"
-                    android:text="@string/product_name" />
+                    android:text="@string/product_name"
+                    android:layout_marginLeft="@dimen/skuwise_right_margin" />
 
                 <TextView
                     android:id="@+id/caseTitle"
