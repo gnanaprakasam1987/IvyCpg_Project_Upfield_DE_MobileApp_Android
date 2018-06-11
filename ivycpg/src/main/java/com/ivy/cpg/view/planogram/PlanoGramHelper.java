@@ -289,7 +289,7 @@ public class PlanoGramHelper {
 
 
             if ("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)) {
-                query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,STM.listid ,MP.StoreLocId, PM.PName"
+                query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,STM.listid ,MP.StoreLocId, PM.PName,PI.ImgId"
                         + " FROM PlanogramMapping MP"
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
@@ -299,7 +299,7 @@ public class PlanoGramHelper {
                         + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             } else {
-                query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,0,0, PM.PName"
+                query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,0,0, PM.PName,PI.ImgId"
                         + " FROM PlanogramMapping MP ON MP.PId = PM.Pid"
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
@@ -324,6 +324,7 @@ public class PlanoGramHelper {
                     planogram.setImageName(c.getString(3));
                     planogram.setLocationID(c.getInt(4));
                     planogram.setProductName(c.getString(6));
+                    planogram.setImageId(c.getInt(7));
                     getPlanogramMaster().add(planogram);
                 }
                 c.close();
@@ -635,7 +636,7 @@ public class PlanoGramHelper {
                     db.insertSQL("PlanogramDetails", detailColumns, values);
 
                     savePlanogramImage(db,tid,planogram.getPid(),
-                            planogram.getPlanoGramCameraImgList(),planogram.getMappingID(),imagePath);
+                            planogram.getPlanoGramCameraImgList(),planogram.getMappingID(),imagePath,planogram.getImageId());
 
                     isData = true;
                 }
@@ -665,14 +666,14 @@ public class PlanoGramHelper {
     }
 
     private void savePlanogramImage(DBUtil db,String tid,int planogramId,
-                                    ArrayList<String> planogramImageList,int mappingId,String path){
+                                    ArrayList<String> planogramImageList,int mappingId,String path,int imageId){
 
-        String columns = "Tid,PId,imageName,mappingid,imagePath";
+        String columns = "Tid,PId,imageName,mappingid,imagePath,imageId";
 
         for(int i = 0;i<planogramImageList.size();i++){
 
             String values = QT(tid) + "," + planogramId + ","
-                    + QT(planogramImageList.get(i))+ ","+mappingId+ ","+QT(path);
+                    + QT(planogramImageList.get(i))+ ","+mappingId+ ","+QT(path)+","+imageId;
 
             db.insertSQL("PlanogramImageDetails", columns, values);
 

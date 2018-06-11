@@ -511,6 +511,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PLANO_IMG_COUNT = "PLANO_IMG_COUNT";
     public int PLANO_IMG_COUNT;
 
+    private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
+    public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
+
     /**
      * RoadActivity config *
      */
@@ -1258,6 +1261,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_APPLY_DISTRIBUTOR_WISE_PRICE = "FUN53";
     public boolean IS_APPLY_DISTRIBUTOR_WISE_PRICE;
 
+    private static final String CODE_ORDER_PRINT = "ORDB19";
+    public boolean SHOW_PRINT_ORDER;
+
     private static final String CODE_ORD_CALC = "ORDB62";
     public boolean SHOW_ORD_CALC;
 
@@ -1308,7 +1314,7 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_PRINT_SEQUENCE = "PRINT_SEQUENCE";
     public boolean IS_PRINT_SEQUENCE_REQUIRED;
-    public boolean IS_PRINT_SEQUENCE_BRANDWISE;
+    public boolean IS_PRINT_SEQUENCE_LEVELWISE;
 
     private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
     public boolean SHOW_INVOICE_HISTORY; // PRO06
@@ -2333,6 +2339,7 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_BACKDATE_REPORTING = hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_BACKDATE_REPORTING) : false;
         this.IS_USER_CAN_SELECT_BILL_WISE_DISCOUNT = hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_USER_CAN_SELECT_BILL_WISE_DISCOUNT) : false;
         this.SHOW_ORD_CALC = hashMapHHTModuleConfig.get(CODE_ORD_CALC) != null ? hashMapHHTModuleConfig.get(CODE_ORD_CALC) : false;
+        this.SHOW_PRINT_ORDER = hashMapHHTModuleConfig.get(CODE_ORDER_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_PRINT) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_LPC_ORDER) == 0)
@@ -2514,6 +2521,11 @@ public class ConfigurationMasterHelper {
             loadOrderStatusReportConfiguration();
         }
         this.IS_ENABLE_LAST_VISIT_HISTORY = hashMapHHTModuleConfig.get(CODE_ENABLE_LAST_VISIT_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_LAST_VISIT_HISTORY) : false;
+
+        this.IS_ENABLE_USER_FILTER_DASHBOARD = hashMapHHTModuleConfig.get(CODE_ENABLE_USER_FILTER_DASHBOARD) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_USER_FILTER_DASHBOARD) : false;
+        if (IS_ENABLE_USER_FILTER_DASHBOARD) {
+            loadDashboardUserFilter();
+        }
     }
 
     private boolean isInOutModule() {
@@ -2590,6 +2602,27 @@ public class ConfigurationMasterHelper {
                     if (c.getString(0).equals("0")) {
                         IS_ORDER_STATUS_REPORT = true;
                     }
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void loadDashboardUserFilter() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_ENABLE_USER_FILTER_DASHBOARD) + " and Flag=1 and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    bmodel.setDashboardUserFilterString(c.getString(0).replaceAll("^|$", "'").replaceAll(",", "','"));
                 }
                 c.close();
             }
@@ -3659,7 +3692,7 @@ public class ConfigurationMasterHelper {
             SHOW_OUTER_SRP = false;
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
-            IS_PRINT_SEQUENCE_BRANDWISE = false;
+            IS_PRINT_SEQUENCE_LEVELWISE = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4252,7 +4285,7 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
                     IS_PRINT_SEQUENCE_REQUIRED = true;
                     if (c.getInt(0) != 0) {
-                        IS_PRINT_SEQUENCE_BRANDWISE = true;
+                        IS_PRINT_SEQUENCE_LEVELWISE = true;
                         bmodel.setPrintSequenceLevelID(c.getInt(0));
                     }
                 }

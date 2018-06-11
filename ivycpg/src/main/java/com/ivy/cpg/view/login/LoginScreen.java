@@ -69,7 +69,7 @@ import java.util.Locale;
 
 
 public class LoginScreen extends IvyBaseActivityNoActionBar
-        implements ApplicationConfigs, LoginContractor.LoginView {
+        implements ApplicationConfigs, LoginContractor.LoginView, PasswordLockDialogFragment.UpdatePasswordDialogInterface {
 
     private BusinessModel businessModel;
 
@@ -343,8 +343,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                                         R.string.please_check_username_and_password), false);
                     } else {
                         int count = loginPresenter.getPasswordLockCount();
-                        if (mForgotPasswordTV != null)
-                            mForgotPasswordTV.setVisibility(View.VISIBLE);
+                        if (mForgotPasswordTV != null) {
+                            showForgotPassword();
+                        }
                         if (count + 1 == LoginHelper.getInstance(getApplicationContext()).MAXIMUM_ATTEMPT_COUNT) {
                             dismissAlertDialog();
                             FragmentManager fm = getSupportFragmentManager();
@@ -670,6 +671,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    public void callForgetPassDialog() {
+        if (!editTextUserName.getText().toString().equals("")) {
+            businessModel.userNameTemp = editTextUserName.getText().toString();
+            loginPresenter.callForgetPassword();
+        } else {
+            editTextUserName.setError(getResources().getString(R.string.enter_username));
+        }
     }
 
     public class MyReceiver extends BroadcastReceiver {

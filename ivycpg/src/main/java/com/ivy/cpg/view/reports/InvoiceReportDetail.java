@@ -87,7 +87,6 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
     private String mInvoiceId;
     private int mSelectedPrintCount = 0;
 
-    private TextView productName;
     private BusinessModel businessModel;
     private BluetoothAdapter mBluetoothAdapter = null;
     private BtService mChatService = null;
@@ -118,7 +117,6 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         try {
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-            productName = (TextView) findViewById(R.id.productName);
 
             TextView text_totalValue = (TextView) findViewById(R.id.txttotal);
             TextView text_totalLines = (TextView) findViewById(R.id.txttotalqty);
@@ -251,7 +249,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
             ArrayList<SchemeProductBO> schemeProductList;
             if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON) {
-                schemeProductList = businessModel.reportHelper.getSchemeProductDetails(mInvoiceId,true);
+                schemeProductList = businessModel.reportHelper.getSchemeProductDetails(mInvoiceId, true);
             } else {
                 //load accumulation scheme free products
                 schemeProductList = SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downLoadAccumulationSchemeDetailReport(getApplicationContext(), mInvoiceId, true);
@@ -826,7 +824,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 row.setOnClickListener(new OnClickListener() {
 
                     public void onClick(View v) {
-                        productName.setText(holder.productName);
+                        //   productName.setText(holder.productName);
                     }
                 });
 
@@ -953,7 +951,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 holder.tvWeight = (TextView) row.findViewById(R.id.prdweight);
                 row.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
-                        productName.setText(holder.productName);
+                        // productName.setText(holder.productName);
                     }
                 });
 

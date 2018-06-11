@@ -984,7 +984,9 @@ SynchronizationHelper {
                     "union select count(PlanId) from DatewisePlan where upload='N'" +
                     "union select count(KPIId) from RetailerKPIModifiedDetail where upload='N'" +
                     "union select count(uid) from VanLoad where upload='N'" +
-                    "union select count(Uid) from JointCallDetail where upload='N'";
+                    "union select count(Uid) from JointCallDetail where upload='N'" +
+                    "union select count(Tid) from RetailerScoreHeader where upload='N'" +
+                    "union select count(Tid) from RetailerScoreDetails where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -3951,6 +3953,9 @@ SynchronizationHelper {
                 .setBuffer((float) ((float) bmodel.configurationMasterHelper
                         .downloadSOBuffer() / (float) 100));
         bmodel.labelsMasterHelper.downloadLabelsMaster();
+
+        //check attendance
+        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(context);
 
         //save sales return with Old batchid for the product
         bmodel.productHelper.loadOldBatchIDMap();

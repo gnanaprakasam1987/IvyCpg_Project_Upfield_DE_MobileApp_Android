@@ -54,7 +54,7 @@ public class ClosingStockReportFragment extends Fragment {
         }
 
         Spinner spinnerbrand = (Spinner) view.findViewById(R.id.spn_retailer_closing_stk);
-        linearLayout = (LinearLayout)view.findViewById(R.id.orderScreenListRow);
+        linearLayout = (LinearLayout) view.findViewById(R.id.orderScreenListRow);
         lvwplist = (ListView) view.findViewById(R.id.lvwpList);
         lvwplist.setCacheColorHint(0);
 
@@ -80,21 +80,21 @@ public class ClosingStockReportFragment extends Fragment {
         try {
             ((TextView) view.findViewById(R.id.skucode)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.skucode).getTag()) != null)
-                ((TextView)view.findViewById(R.id.skucode))
+                ((TextView) view.findViewById(R.id.skucode))
                         .setText(bmodel.labelsMasterHelper
                                 .applyLabels(view.findViewById(
                                         R.id.skucode).getTag()));
 
             ((TextView) view.findViewById(R.id.skuname)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.skuname).getTag()) != null)
-                ((TextView)view.findViewById(R.id.skuname))
+                ((TextView) view.findViewById(R.id.skuname))
                         .setText(bmodel.labelsMasterHelper
                                 .applyLabels(view.findViewById(
                                         R.id.skuname).getTag()));
 
             ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.piece_qty).getTag()) != null)
-                ((TextView)view.findViewById(R.id.piece_qty))
+                ((TextView) view.findViewById(R.id.piece_qty))
                         .setText(bmodel.labelsMasterHelper
                                 .applyLabels(view.findViewById(
                                         R.id.piece_qty).getTag()));
@@ -102,7 +102,6 @@ public class ClosingStockReportFragment extends Fragment {
         } catch (Exception e) {
             Commons.printException(e + "");
         }
-
 
 
         ArrayAdapter<RetailerMasterBO> retailerAdapter = new ArrayAdapter<>(
@@ -134,7 +133,7 @@ public class ClosingStockReportFragment extends Fragment {
         ArrayList<ProductMasterBO> closingStkList = new ArrayList<>();
         try {
             closingStkList = bmodel.reportHelper.getClosingStkReport(retailerId + "");
-        }catch(Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
 
@@ -171,6 +170,12 @@ public class ClosingStockReportFragment extends Fragment {
                         .inflate(R.layout.row_closing_stk_report, parent, false);
                 holder = new ViewHolder();
 
+                holder.pname = (TextView) row.findViewById(R.id.skuname);
+                holder.pieceQty = (TextView) row.findViewById(R.id.piece_qty);
+                holder.caseQty = (TextView) row.findViewById(R.id.case_qty);
+                holder.outerQty = (TextView) row.findViewById(R.id.outer_qty);
+                holder.prodcode = (TextView) row.findViewById(R.id.skucode);
+
                 if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER
                         && !bmodel.configurationMasterHelper.SHOW_STOCK_SP
                         && !bmodel.configurationMasterHelper.SHOW_STOCK_SC) {
@@ -181,19 +186,15 @@ public class ClosingStockReportFragment extends Fragment {
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
-                    holder.outerQty.findViewById(R.id.outer_qty).setVisibility(View.GONE);
+                    holder.outerQty.setVisibility(View.GONE);
 
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP)
-                    holder.pieceQty.findViewById(R.id.piece_qty).setVisibility(View.GONE);
+                    holder.pieceQty.setVisibility(View.GONE);
 
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC)
-                    holder.caseQty.findViewById(R.id.case_qty).setVisibility(View.GONE);
+                    holder.caseQty.setVisibility(View.GONE);
 
-                holder.pname = (TextView) row.findViewById(R.id.skuname);
-                holder.pieceQty = (TextView) row.findViewById(R.id.piece_qty);
-                holder.caseQty = (TextView) row.findViewById(R.id.case_qty);
-                holder.outerQty = (TextView) row.findViewById(R.id.outer_qty);
-                holder.prodcode = (TextView) row.findViewById(R.id.skucode);
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -201,7 +202,7 @@ public class ClosingStockReportFragment extends Fragment {
 
             holder.ref = position;
             holder.pname.setText(product.getProductName());
-            holder.prodcode.setText(product.getProductCode()+"");
+            holder.prodcode.setText(product.getProductCode() + "");
 
             holder.caseQty.setVisibility(View.GONE);
             holder.outerQty.setVisibility(View.GONE);
@@ -211,14 +212,14 @@ public class ClosingStockReportFragment extends Fragment {
 //            holder.outerQty.setText(product.getCsOuter()+"");
 
             int total = 0;
-            if(product.getCsPiece() > 0)
+            if (product.getCsPiece() > 0)
                 total = product.getCsPiece();
-            if(product.getCsCase() > 0)
-                total = total+(product.getCsCase()*product.getCaseSize());
-            if(product.getCsOuter() > 0)
-                total = total+(product.getCsOuter()*product.getOutersize());
+            if (product.getCsCase() > 0)
+                total = total + (product.getCsCase() * product.getCaseSize());
+            if (product.getCsOuter() > 0)
+                total = total + (product.getCsOuter() * product.getOutersize());
 
-            holder.pieceQty.setText(total+"");
+            holder.pieceQty.setText(total + "");
 
 //            Commons.print(total+"");
 

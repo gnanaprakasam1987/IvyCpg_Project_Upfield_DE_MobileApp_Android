@@ -55,11 +55,14 @@ public class CatalogImageDownloadService extends IntentService {
                     if (Util.isExternalStorageAvailable(mb * 2)) {
 
                         if (file.exists()) {
-                            File target = new File(Environment.getExternalStorageDirectory().getPath() +"/"+ CatalogDownloadConstants.FOLDER_PATH);
+                            File target = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FOLDER_PATH);
                             target.deleteOnExit();
                             target.mkdir();
                             //target.createNewFile();
                             flag = unzip(file, target);
+                            if (flag) {
+                                setNoMediaFlag(target.getAbsolutePath());
+                            }
                         }
                     } else {
                         catalogImageDownloadProvider.storeCatalogDownloadStatusError(CatalogDownloadConstants.NO_SPACE);
@@ -68,7 +71,7 @@ public class CatalogImageDownloadService extends IntentService {
                     Commons.printException(e);
                 }
                 if (flag) {
-                    catalogImageDownloadProvider.storeCatalogDownloadStatus(0,CatalogDownloadConstants.DONE);
+                    catalogImageDownloadProvider.storeCatalogDownloadStatus(0, CatalogDownloadConstants.DONE);
                 }
 
             }
@@ -141,5 +144,17 @@ public class CatalogImageDownloadService extends IntentService {
 
         return true;
 
+    }
+
+    public void setNoMediaFlag(String path) {
+        String NOMEDIA = ".nomedia";
+        try {
+            File nomediaFile = new File(path + "/" + NOMEDIA);
+            if (!nomediaFile.exists()) {
+                nomediaFile.createNewFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

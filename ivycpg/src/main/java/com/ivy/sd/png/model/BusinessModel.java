@@ -47,7 +47,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.baidu.platform.comapi.map.A;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -401,6 +400,7 @@ public class BusinessModel extends Application {
 
     private String availablilityShare;
     private int printSequenceLevelID;
+    private String dashboardUserFilterString;
 
     public BusinessModel() {
 
@@ -724,6 +724,14 @@ public class BusinessModel extends Application {
 
     public void setPrintSequenceLevelID(int printSequenceLevelID) {
         this.printSequenceLevelID = printSequenceLevelID;
+    }
+
+    public String getDashboardUserFilterString() {
+        return dashboardUserFilterString;
+    }
+
+    public void setDashboardUserFilterString(String dashboardUserFilterString) {
+        this.dashboardUserFilterString = dashboardUserFilterString;
     }
 
     private AppComponent appComponent;
@@ -1497,7 +1505,7 @@ public class BusinessModel extends Application {
                     retailer.setRetailerCode(c.getString(c.getColumnIndex("RetailerCode")));
                     retailer.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
                     retailer.setBeatID(c.getInt(c.getColumnIndex("beatid")));
-                    retailer.setCreditLimit(c.getFloat(c.getColumnIndex("creditlimit")));
+                    retailer.setCreditLimit(c.getDouble(c.getColumnIndex("creditlimit")));
                     retailer.setTinnumber(c.getString(c.getColumnIndex("tinnumber")));
                     retailer.setTinExpDate(c.getString(c.getColumnIndex("TinExpDate")));
                     retailer.setChannelID(c.getInt(c.getColumnIndex("channelID")));
@@ -3710,6 +3718,13 @@ public class BusinessModel extends Application {
                     CallAnalysisActivity callAnalysisActivity = (CallAnalysisActivity) ctx;
                     BusinessModel.loadActivity(ctx, DataMembers.actPlanning);
                     callAnalysisActivity.finish();
+                } else if (idd == DataMembers.NOTIFY_ORDER_DELETED) {
+                    OrderSummary frm = (OrderSummary) ctx;
+                    Intent returnIntent = new Intent();
+                    frm.setResult(Activity.RESULT_OK, returnIntent);
+                    frm.finish();
+                    BusinessModel.loadActivity(ctx,
+                            DataMembers.actHomeScreenTwo);
                 }
 
             }
@@ -4914,9 +4929,6 @@ public class BusinessModel extends Application {
             if (isData) {
                 columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID";
 
-                if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                    columns = columns + ",Weightage,Score";
-                }
 
                 if (configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
                     columns = columns + ",AvailabilityShare";
@@ -4927,29 +4939,72 @@ public class BusinessModel extends Application {
                         + QT(getRetailerMasterBO().getRetailerCode()) + ","
                         + QT(getStockCheckRemark()) + "," + getRetailerMasterBO().getDistributorId();
 
-                if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                    moduleWeightage = fitscoreHelper.getModuleWeightage(DataMembers.FIT_STOCK);
-                    values = values + "," + moduleWeightage + ",0";
-                }
-
                 if (configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
                     values = values + "," + QT(getAvailablilityShare());
                 }
 
                 db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
                 setAvailablilityShare("");
-                if (configurationMasterHelper.IS_FITSCORE_NEEDED && sum != 0) {
-                    double achieved = (((double) sum / (double) 100) * moduleWeightage);
-                    db.updateSQL("Update ClosingStockHeader set Score = " + achieved + " where StockID = " + id + " and" +
-                            " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
-                            " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
+
+                if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                    calculateFitscoreandInsert(db, sum, DataMembers.FIT_STOCK);
                 }
             }
-
 
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
+        }
+    }
+
+    public void calculateFitscoreandInsert(DBUtil db, double sum, String module) {
+        String headerID = "";
+        double headerScore = 0;
+        String fitscoreHeaderColumns = "Tid,RetailerID,Date,Score,Upload";
+        String fitscoreHeaderValues = "";
+        String fitscoreDetailColumns = "Tid, ModuleCode,Weightage,Score,Upload";
+        String fitscoreDetailValues = "";
+
+        try {
+            Cursor closingStockCursor = db
+                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + getRetailerMasterBO().getRetailerID() + " and Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+
+            if (closingStockCursor.getCount() > 0) {
+                closingStockCursor.moveToNext();
+                if (closingStockCursor.getString(0) != null) {
+                    headerID = QT(closingStockCursor.getString(0));
+                    db.deleteSQL("RetailerScoreDetails", "Tid=" + headerID + " and ModuleCode = " + QT(module), false);
+                }
+            }
+            closingStockCursor.close();
+
+            String tid = (headerID.trim().length() == 0) ? QT(userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID)) : headerID;
+            int moduleWeightage = fitscoreHelper.getModuleWeightage(module);
+            double achieved = (((double) sum / (double) 100) * moduleWeightage);
+            fitscoreDetailValues = (tid) + ", " + QT(module) + ", " + moduleWeightage + ", " + achieved + ", " + QT("N");
+            db.insertSQL(DataMembers.tbl_retailerscoredetail, fitscoreDetailColumns, fitscoreDetailValues);
+
+            if (headerID.trim().length() == 0) {
+                String retailerID = getRetailerMasterBO().getRetailerID();
+                String date = QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                fitscoreHeaderValues = (tid) + ", " + QT(retailerID) + ", " + date + ", " + achieved + ", " + QT("N");
+                db.insertSQL(DataMembers.tbl_retailerscoreheader, fitscoreHeaderColumns, fitscoreHeaderValues);
+            } else {
+                Cursor achievedCursor = db
+                        .selectSQL("select sum(0+ifnull(B.Score,0)) from RetailerScoreHeader A inner join RetailerScoreDetails B on A.Tid = B.Tid where A.RetailerID="
+                                + getRetailerMasterBO().getRetailerID() + " and A.Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+
+                if (achievedCursor.getCount() > 0) {
+                    achievedCursor.moveToNext();
+                    headerScore = achievedCursor.getDouble(0);
+                }
+                achievedCursor.close();
+                db.updateSQL("Update " + DataMembers.tbl_retailerscoreheader + " set Score = " + headerScore + " where " +
+                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
+                        " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -5502,11 +5557,11 @@ public class BusinessModel extends Application {
                     if (i == 0) {
                         String cmd = "logcat -d -v time -f" +
                                 mLogFile.getAbsolutePath();
-                        Runtime.getRuntime().exec(cmd);
+                        Runtime.getRuntime().exec(cmd).waitFor();
                     } else if (i == 1) {
                         String cmd = "logcat -d -f" + mLogFile.getAbsolutePath
                                 ();
-                        Runtime.getRuntime().exec(cmd);
+                        Runtime.getRuntime().exec(cmd).waitFor();
                     } else if (i == 2) {
                         String currentDBPath =
                                 "data/com.ivy.sd.png.asean.view/databases/" + DataMembers.DB_NAME;

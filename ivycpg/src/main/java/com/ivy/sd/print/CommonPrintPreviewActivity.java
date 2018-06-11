@@ -110,7 +110,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
     private TextView mPrinterStatusTV;
     private Spinner mPrintCountSpinner;
     private TextView mPreviewTV;
-    private ImageView mDistLogoIV,imageView_signature;
+    private ImageView mDistLogoIV, imageView_signature;
     private ArrayAdapter<CharSequence> mSpinnerAdapter;
 
     private BluetoothAdapter mBluetoothAdapter;
@@ -165,7 +165,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         mPrinterStatusTV = (TextView) findViewById(R.id.printer_status);
         mPrintCountSpinner = (Spinner) findViewById(R.id.print_count);
         mDistLogoIV = (ImageView) findViewById(R.id.dist_logo);
-        imageView_signature=findViewById(R.id.imageView_signature);
+        imageView_signature = findViewById(R.id.imageView_signature);
         mPreviewTV = (TextView) findViewById(R.id.preView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -478,7 +478,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 bodyPart.setText(body);
                 //Attachment
                 DataSource source;
-                if(bmodel.configurationMasterHelper.IS_ATTACH_PDF){
+                if (bmodel.configurationMasterHelper.IS_ATTACH_PDF) {
                     LayoutInflater inflater = (LayoutInflater) CommonPrintPreviewActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
                     RelativeLayout root = (RelativeLayout) inflater.inflate(R.layout.activity_common_print_preview, null); //RelativeLayout is root view of my UI(xml) file.
                     root.setDrawingCacheEnabled(true);
@@ -490,8 +490,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                             StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber + ".pdf");
                     bodyPart.setDataHandler(new DataHandler(source));
                     bodyPart.setFileName("OrderDetails" + ".pdf");
-                }
-                else {
+                } else {
                     if (sendMailAndLoadClass.equalsIgnoreCase("PRINT_FILE_ORDER") ||
                             sendMailAndLoadClass.equalsIgnoreCase("HomeScreenTwoPRINT_FILE_ORDER")) {
                         source = new FileDataSource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.IVYDIST_PATH + "/" +
@@ -681,9 +680,9 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 mDistLogoIV.setImageBitmap(bmp);
             }
 
-            if(bmodel.mCommonPrintHelper.isSignatureEnabled
-                    &&bmodel.mCommonPrintHelper.signatureName!=null
-                    &&!bmodel.mCommonPrintHelper.signatureName.equals("")) {
+            if (bmodel.mCommonPrintHelper.isSignatureEnabled
+                    && bmodel.mCommonPrintHelper.signatureName != null
+                    && !bmodel.mCommonPrintHelper.signatureName.equals("")) {
                 imageView_signature.setVisibility(View.VISIBLE);
                 Bitmap bmp = BitmapFactory.decodeStream(getSignature());
                 imageView_signature.setImageBitmap(bmp);
@@ -740,7 +739,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         InputStream xmlFile = null;
         try {
 
-            String path=getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName;
+            String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName;
 
             File f = new File(path);
             if (f.isDirectory()) {
@@ -827,8 +826,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             }
 
             if (bmodel.mCommonPrintHelper.isSignatureEnabled) {
-                if(zebraPrinter==null)
-                zebraPrinter = ZebraPrinterFactory.getInstance(zebraPrinterConnection);
+                if (zebraPrinter == null)
+                    zebraPrinter = ZebraPrinterFactory.getInstance(zebraPrinterConnection);
 
                 Bitmap bitmap = BitmapFactory.decodeStream(getSignature());
                 if (bitmap != null) {
@@ -862,7 +861,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                         }
                     }
 
-                    if (bmodel.mCommonPrintHelper.isLogoEnabled||bmodel.mCommonPrintHelper.isSignatureEnabled) {
+                    if (bmodel.mCommonPrintHelper.isLogoEnabled || bmodel.mCommonPrintHelper.isSignatureEnabled) {
                         mImagePrintCount++;
 
                     }
@@ -939,16 +938,15 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     tempsb.append("\n\r");
 
                 } else {
-                        tempsb.append(s);
-                        tempsb.append("\n\r");
+                    tempsb.append(s);
+                    tempsb.append("\n\r");
 
                 }
             }
 
 
             byte[] result;
-                result = String.valueOf(tempsb).getBytes();
-
+            result = String.valueOf(tempsb).getBytes();
 
 
             return result;
@@ -960,6 +958,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         return new byte[0];
 
     }
+
     private byte[] getDataZebra() {
 
         try {
@@ -1162,7 +1161,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     R.string.printed_successfully);
         } else {
             updateStatus("Printer error.");
-            msg = "Error";
+            msg = getResources().getString(R.string.error_connecting_printer);
         }
         if (commonDialog != null && commonDialog.isShowing()) {
             commonDialog.dismiss();

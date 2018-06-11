@@ -1257,7 +1257,7 @@
     <string name="seller_already_assigned">Seller is assigned to some other backup seller</string>
     <string name="backup_seller_already_assigned">Backup seller is assigned to some other user</string>
     <string name="foc">FoC</string>
-
+    <string name="volume">Volume</string>
     <string-array name="task_tab_header">
         <item>All</item>
         <item>Assigned</item>

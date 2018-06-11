@@ -18,7 +18,7 @@ public class SOSBO {
     private String groupName;
     private int availability;
     private int inTarget;
-    private int groupTarget;
+    private double groupTarget;
 
     public int getParentID() {
         return parentID;
@@ -116,11 +116,11 @@ public class SOSBO {
         this.inTarget = inTarget;
     }
 
-    public int getGroupTarget() {
+    public double getGroupTarget() {
         return groupTarget;
     }
 
-    public void setGroupTarget(int groupTarget) {
+    public void setGroupTarget(double groupTarget) {
         this.groupTarget = groupTarget;
     }
 }
