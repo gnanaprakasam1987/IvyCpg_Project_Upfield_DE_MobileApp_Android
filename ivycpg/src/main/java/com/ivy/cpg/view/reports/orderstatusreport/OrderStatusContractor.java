@@ -18,7 +18,7 @@ public interface OrderStatusContractor {
 
         void setView(OrderStatusView orderStatusView);
 
-        void downloadOrderStatusReportList();
+        void downloadOrderStatusReportList(boolean isOrderScreen);
 
         void filterList(String retailerID);
     }

@@ -30,16 +30,15 @@ public class OrderStatusPresenterImpl implements OrderStatusContractor.OrderStat
     }
 
     @Override
-    public void downloadOrderStatusReportList() {
+    public void downloadOrderStatusReportList(boolean isOrderScreen) {
         try {
-            businessModel.orderStatusReportHelper.getOrderStatusList();
-            businessModel.orderStatusReportHelper.getOrderStatusRetailerList();
-//        if (businessModel.configurationMasterHelper.IS_ENABLE_ORDER_STATUS_REPORT) {
-//            if (!businessModel.configurationMasterHelper.IS_ORDER_STATUS_REPORT) {
-//                businessModel.orderStatusReportHelper.getInvoiceStatusList();
-//                businessModel.orderStatusReportHelper.getInvoiceStatusRetailerList();
-//            }
-//        }
+            if(!isOrderScreen){
+                businessModel.orderStatusReportHelper.getInvoiceStatusList();
+                businessModel.orderStatusReportHelper.getInvoiceStatusRetailerList();
+            } else {
+                businessModel.orderStatusReportHelper.getOrderStatusList();
+                businessModel.orderStatusReportHelper.getOrderStatusRetailerList();
+            }
             if (businessModel.orderStatusReportHelper.getOrderStatusReportList() == null ||
                     businessModel.orderStatusReportHelper.getOrderStatusReportList().size() == 0) {
                 orderStatusView.setEmptyView(context.getResources().getString(R.string.no_data_exists));

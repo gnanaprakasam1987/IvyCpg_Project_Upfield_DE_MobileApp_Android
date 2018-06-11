@@ -38,6 +38,15 @@ public class OrderStatusReportFragment extends IvyBaseFragment implements OrderS
     private LinearLayout retailerLayout;
     ArrayAdapter<OrderStatusRetailerReportBO> spinnerRetailerAdapter;
     Vector<OrderStatusRetailerReportBO> strings = new Vector<>();
+    boolean isOrderScreen = true;
+
+    public static OrderStatusReportFragment newInstance(boolean screenFlag) {
+        OrderStatusReportFragment fragment = new OrderStatusReportFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("isOrder", screenFlag);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +75,12 @@ public class OrderStatusReportFragment extends IvyBaseFragment implements OrderS
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeViews(view);
-        orderStatusPresenter.downloadOrderStatusReportList();
+        try {
+            isOrderScreen = getArguments().getBoolean("isOrder", true);
+            orderStatusPresenter.downloadOrderStatusReportList(isOrderScreen);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -86,7 +100,7 @@ public class OrderStatusReportFragment extends IvyBaseFragment implements OrderS
 
     @Override
     public void setAdapter() {
-        OrderStatusAdapter myAdapter = new OrderStatusAdapter(bmodel, orderStatusPresenter);
+        OrderStatusAdapter myAdapter = new OrderStatusAdapter(bmodel, orderStatusPresenter, isOrderScreen);
         recyclerView.setAdapter(myAdapter);
     }
 

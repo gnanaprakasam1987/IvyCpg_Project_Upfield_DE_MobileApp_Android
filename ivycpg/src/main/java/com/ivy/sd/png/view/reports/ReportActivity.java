@@ -587,7 +587,13 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_ORD_STAT_RPT)) {
 
-            OrderStatusReportFragment orderStatusReportFragment = new OrderStatusReportFragment();
+            OrderStatusReportFragment orderStatusReportFragment = OrderStatusReportFragment.newInstance(true);
+            transaction.replace(R.id.fragment_content, orderStatusReportFragment);
+            commitFragment(transaction, config);
+        } else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_INV_STAT_RPT)) {
+
+            OrderStatusReportFragment orderStatusReportFragment = OrderStatusReportFragment.newInstance(false);
             transaction.replace(R.id.fragment_content, orderStatusReportFragment);
             commitFragment(transaction, config);
         }
