@@ -18,7 +18,9 @@
             android:layout_gravity="end"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="15dp"
-            android:src="@drawable/close_popup" />
+            android:src="@drawable/close_popup"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp" />
 
         <TextView
             android:id="@+id/title"
@@ -32,7 +34,8 @@
             android:text="Please state reason for not visiting following store"
             android:textColor="?attr/primarycolor"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp" />
     </RelativeLayout>
 
     <View

@@ -27,7 +27,8 @@
                 android:layout_marginStart="1dp"
                 android:layout_weight="1"
                 android:tag="day_report_key"
-                android:text="@string/Name" />
+                android:text="@string/Name"
+                android:layout_marginLeft="1dp" />
 
             <TextView
                 android:id="@+id/valuetv"

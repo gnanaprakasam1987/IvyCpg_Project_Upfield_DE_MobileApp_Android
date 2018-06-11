@@ -87,7 +87,8 @@
                 android:inputType="number"
                 style="@style/EditTextGravity"
                 android:paddingStart="5dp"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:paddingLeft="5dp" />
 
             <Button
                 android:id="@+id/otpSubmit"
@@ -97,7 +98,8 @@
                 android:paddingStart="25dp"
                 android:paddingEnd="25dp"
                 android:text="@string/verify"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/font_small"
+                android:layout_marginLeft="35dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -119,7 +121,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="20dp" />
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp" />
         </LinearLayout>
 
         <LinearLayout

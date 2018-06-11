@@ -58,7 +58,8 @@
                     <HorizontalScrollView
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent"
-                        android:paddingEnd="2dp">
+                        android:paddingEnd="2dp"
+                        android:paddingRight="2dp">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -66,7 +67,8 @@
                             android:layout_gravity="start|center"
                             android:layout_marginStart="@dimen/dimens_18dp"
                             android:orientation="horizontal"
-                            android:paddingTop="@dimen/dimens_10dp">
+                            android:paddingTop="@dimen/dimens_10dp"
+                            android:layout_marginLeft="@dimen/dimens_18dp">
 
                             <RadioGroup
                                 android:id="@+id/chequeorcash"
@@ -87,7 +89,7 @@
                                     android:text="@string/cash"
                                     android:textColor="?attr/primarycolor"
                                     android:textSize="@dimen/font_micro_small"
-                                    android:visibility="visible"></RadioButton>
+                                    android:visibility="visible"/>
 
                                 <RadioButton
                                     android:id="@+id/chequeRadioButton"
@@ -99,7 +101,8 @@
                                     android:text="@string/cheque"
                                     android:textColor="?attr/primarycolor"
                                     android:textSize="@dimen/font_micro_small"
-                                    android:visibility="visible"></RadioButton>
+                                    android:visibility="visible"
+                                    android:layout_marginLeft="5dp" />
 
                             </RadioGroup>
 
@@ -114,7 +117,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/dimens_18dp"
-                    android:layout_marginTop="@dimen/dimens_4dp">
+                    android:layout_marginTop="@dimen/dimens_4dp"
+                    android:layout_marginLeft="@dimen/dimens_18dp">
 
                     <EditText
                         android:id="@+id/collectionAmount"
@@ -244,7 +248,8 @@
                                 android:text="@string/bank_name"
                                 android:textColor="@color/Black"
                                 android:textSize="@dimen/text_sz_small"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:layout_marginLeft="5dp" />
 
                             <Spinner
                                 android:id="@+id/bankName"
@@ -270,7 +275,8 @@
                                 android:text="@string/branch_area"
                                 android:textColor="@color/Black"
                                 android:textSize="@dimen/text_sz_small"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:layout_marginLeft="5dp" />
 
                             <Spinner
                                 android:id="@+id/bankArea"
@@ -368,7 +374,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/close"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_marginLeft="1dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -30,6 +30,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
+                android:paddingLeft="@dimen/whats_on_item_padding"
                 android:paddingStart="@dimen/whats_on_item_padding"
                 android:text="Value"
                 android:textColor="@color/Black"
@@ -42,9 +43,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/margin_10px"
             android:layout_marginEnd="@dimen/margin_10px"
-            android:background="@color/GRAY"></View>
+            android:layout_marginStart="@dimen/margin_10px"
+            android:background="@color/GRAY" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -54,6 +55,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:gravity="center_vertical"
@@ -63,6 +65,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/target_top_margin"
                     android:layout_marginStart="@dimen/target_top_margin"
                     android:gravity="center_vertical"
                     android:minHeight="@dimen/dimen_40dp"
@@ -78,7 +81,7 @@
                             android:layout_width="5dp"
                             android:layout_height="5dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/dot_circle_blue"></View>
+                            android:background="@drawable/dot_circle_blue" />
 
                         <TextView
                             android:id="@+id/achived_title"
@@ -86,8 +89,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingBottom="2dp"
-                            android:paddingStart="5dp"
                             android:paddingEnd="5dp"
+                            android:paddingStart="5dp"
                             android:tag="achieved_day"
                             android:text="Achieved"
                             android:textColor="@color/colorPrimary"
@@ -102,12 +105,13 @@
 
                         <View
                             android:layout_width="5dp"
-                            android:layout_height="5dp"></View>
+                            android:layout_height="5dp" />
 
                         <TextView
                             android:id="@+id/acheived_dashboard_tv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
                             android:paddingStart="5dp"
                             android:text="0"
                             android:textColor="@color/GRAY_TEXT"
@@ -120,13 +124,14 @@
                     android:id="@+id/verticalSeparatorTarget"
                     android:layout_width="0.3dp"
                     android:layout_height="@dimen/divder_margin"
-                    android:layout_marginStart="@dimen/target_top_margin"
                     android:layout_marginEnd="@dimen/target_top_margin"
+                    android:layout_marginStart="@dimen/target_top_margin"
                     android:background="@color/GRAY" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
                     android:layout_marginStart="3dp"
                     android:gravity="center_vertical"
                     android:minHeight="@dimen/dimen_40dp"
@@ -142,7 +147,7 @@
                             android:layout_width="5dp"
                             android:layout_height="5dp"
                             android:layout_gravity="center"
-                            android:background="?roundedCustomDashboardButton"></View>
+                            android:background="?roundedCustomDashboardButton" />
 
                         <TextView
                             android:id="@+id/target_title"
@@ -150,8 +155,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingBottom="2dp"
-                            android:paddingStart="5dp"
                             android:paddingEnd="5dp"
+                            android:paddingStart="5dp"
                             android:tag="target_day"
                             android:text="Target"
                             android:textColor="@color/colorAccent"
@@ -172,6 +177,7 @@
                             android:id="@+id/target_dashboard_tv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
                             android:paddingStart="5dp"
                             android:text="0"
                             android:textColor="@color/GRAY_TEXT"
@@ -185,6 +191,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
                 android:minHeight="@dimen/dimen_40dp"
                 android:orientation="horizontal">
@@ -194,6 +201,7 @@
                     android:id="@+id/index_dashboard_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
                     android:paddingStart="5dp"
                     android:text="0%"
                     android:textColor="@color/Black"
@@ -204,7 +212,8 @@
                     android:id="@+id/pieChart"
                     android:layout_width="@dimen/piechart_radius"
                     android:layout_height="@dimen/piechart_radius"
-                    android:layout_marginEnd="@dimen/pie_chart_margin_right" />
+                    android:layout_marginEnd="@dimen/pie_chart_margin_right"
+                    android:layout_marginRight="@dimen/pie_chart_margin_right" />
 
 
             </LinearLayout>

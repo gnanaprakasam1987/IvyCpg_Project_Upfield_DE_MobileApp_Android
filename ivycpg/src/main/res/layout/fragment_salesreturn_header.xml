@@ -88,7 +88,8 @@
                             android:gravity="start"
                             android:maxLines="1"
                             android:textColor="?attr/primarycolor"
-                            android:textSize="@dimen/font_nano_small" />
+                            android:textSize="@dimen/font_nano_small"
+                            android:layout_marginLeft="@dimen/list_margin" />
 
                         <Button
                             android:id="@+id/btn_search"
@@ -263,7 +264,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/target_top_margin"
                     android:layout_toEndOf="@+id/ll_value"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_toRightOf="@+id/ll_value">
 
                     <TextView
                         android:id="@+id/lpc_title"
@@ -293,7 +295,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:text="@string/next"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:layout_alignParentRight="true" />
         </RelativeLayout>
 
     </RelativeLayout>

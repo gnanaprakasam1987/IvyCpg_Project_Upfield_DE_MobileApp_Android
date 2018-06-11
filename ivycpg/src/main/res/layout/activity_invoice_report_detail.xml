@@ -57,7 +57,8 @@
                             android:layout_marginStart="@dimen/store_margin_top"
                             android:text="@string/product_name"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/list_item_primary_text_size" />
+                            android:textSize="@dimen/list_item_primary_text_size"
+                            android:layout_marginLeft="@dimen/store_margin_top" />
                     </RelativeLayout>
 
                     <TextView
@@ -102,7 +103,8 @@
                         android:layout_marginStart="@dimen/dimens_10dp"
                         android:text="@string/value"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/list_item_primary_text_size" />
+                        android:textSize="@dimen/list_item_primary_text_size"
+                        android:layout_marginLeft="@dimen/dimens_10dp" />
 
                     <TextView
                         android:id="@+id/weighttitle"
@@ -185,7 +187,9 @@
             android:layout_marginTop="@dimen/store_margin_top"
             android:layout_toEndOf="@+id/label_totalValue"
             android:background="@android:color/darker_gray"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_toRightOf="@+id/label_totalValue" />
 
         <TextView
             android:id="@+id/TextView52"
@@ -199,7 +203,8 @@
             android:adjustViewBounds="true"
             android:text="@string/tot_qty"
             android:textColor="@color/GREEN"
-            android:textSize="@dimen/text_sz_small" />
+            android:textSize="@dimen/text_sz_small"
+            android:layout_toRightOf="@+id/view0" />
 
         <TextView
             android:id="@+id/txttotalqty"
@@ -213,6 +218,7 @@
             android:adjustViewBounds="true"
             android:text="@string/zero"
             android:textColor="@color/white"
-            android:textSize="@dimen/login_edittext_text_size" />
+            android:textSize="@dimen/login_edittext_text_size"
+            android:layout_toRightOf="@+id/view0" />
     </RelativeLayout>
 </RelativeLayout>

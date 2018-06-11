@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/retailer_margin_right"
+            android:layout_marginRight="@dimen/retailer_margin_right"
             android:layout_weight="54.9"
             android:gravity="center"
             android:orientation="vertical">
@@ -35,6 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/icons_left_margin"
                 android:layout_marginStart="@dimen/icons_left_margin"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -46,6 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/outlet_left_margin"
                     android:layout_marginStart="@dimen/outlet_left_margin"
                     android:text="Outlet name" />
 
@@ -55,30 +58,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textSize="@dimen/font_micro_small"
-                    android:textColor="?attr/accentcolor"
+                    android:layout_marginLeft="@dimen/outlet_left_margin"
                     android:layout_marginStart="@dimen/outlet_left_margin"
-                    android:text="Outlet Location" />
+                    android:text="Outlet Location"
+                    android:textColor="?attr/accentcolor"
+                    android:textSize="@dimen/font_micro_small" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/icons_left_margin"
                 android:layout_marginStart="@dimen/icons_left_margin"
                 android:layout_marginTop="@dimen/icons_top_margin"
                 android:orientation="horizontal">
+
                 <ImageView
                     android:id="@+id/iv_outlet_color"
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
                     android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
                     android:src="@drawable/ic_dashboard_golden_store"
                     android:visibility="visible" />
+
                 <ImageView
                     android:id="@+id/iv_gold_dead"
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
                     android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
                     android:src="@drawable/ic_dashboard_golden_store"
                     android:visibility="visible" />
 
@@ -87,6 +96,7 @@
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
                     android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
                     android:src="@drawable/ic_dashboard_invoice"
                     android:visibility="visible" />
 
@@ -95,6 +105,7 @@
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
                     android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
                     android:src="@drawable/ic_dashboard_indicative"
                     android:visibility="visible" />
 
@@ -103,6 +114,7 @@
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
                     android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
                     android:src="@drawable/ic_dashboard_golden_store"
                     android:visibility="visible" />
 
@@ -111,6 +123,7 @@
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
                     android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
                     android:src="@drawable/ic_action_star_select"
                     android:visibility="visible" />
 
@@ -148,6 +161,7 @@
                 android:layout_height="@dimen/list_vertical_seperator"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/margin_20px"
+                android:layout_marginRight="@dimen/margin_20px"
                 android:background="@color/list_menu_left_center"
                 android:visibility="visible" />
 
@@ -157,6 +171,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/margin_20px"
+                android:layout_marginRight="@dimen/margin_20px"
                 android:layout_weight="4.9"
                 android:orientation="vertical"
                 android:visibility="visible">
@@ -188,6 +203,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_5px"
                         android:layout_marginStart="@dimen/margin_5px"
                         android:text=""
                         android:textSize="@dimen/text_sz_small" />
@@ -200,6 +216,7 @@
                 android:layout_height="@dimen/list_vertical_seperator"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/margin_20px"
+                android:layout_marginRight="@dimen/margin_20px"
                 android:background="@color/list_menu_left_center"
                 android:visibility="visible" />
 
@@ -209,6 +226,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/margin_5px"
+                android:layout_marginRight="@dimen/margin_5px"
                 android:layout_weight="4.9"
                 android:orientation="vertical"
                 android:visibility="visible">
@@ -241,6 +259,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_5px"
                         android:layout_marginStart="@dimen/margin_5px"
                         android:text=""
                         android:textSize="@dimen/text_sz_small" />

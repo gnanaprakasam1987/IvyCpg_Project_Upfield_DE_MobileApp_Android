@@ -10,7 +10,8 @@
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/list_margin"
         android:layout_weight="3"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/list_margin">
 
         <TextView
             android:id="@+id/orderPRODNAME"
@@ -28,7 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/orderPRODNAME"
-            android:gravity="center|start">
+            android:gravity="center|start"
+            android:layout_alignParentLeft="true">
 
             <TextView
                 android:id="@+id/mrp"

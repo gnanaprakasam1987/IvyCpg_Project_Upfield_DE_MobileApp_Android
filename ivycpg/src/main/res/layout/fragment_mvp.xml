@@ -133,7 +133,8 @@
                             android:gravity="center"
                             android:text="13"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/highlight_small" />
+                            android:textSize="@dimen/highlight_small"
+                            android:layout_marginLeft="@dimen/dimen_4dp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -180,7 +181,8 @@
                             android:gravity="center"
                             android:text="34"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/highlight_small" />
+                            android:textSize="@dimen/highlight_small"
+                            android:layout_marginLeft="@dimen/dimen_4dp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -225,7 +227,8 @@
                                 android:layout_margin="@dimen/dimen_10dp"
                                 android:text="Badges"
                                 android:textColor="@color/Black"
-                                android:textSize="18sp" />
+                                android:textSize="18sp"
+                                android:layout_alignParentLeft="true" />
 
                             <TextView
                                 android:id="@+id/badgepoints_count"
@@ -235,7 +238,8 @@
                                 android:layout_gravity="end"
                                 android:layout_margin="@dimen/dimen_10dp"
                                 android:text="15"
-                                android:textSize="18sp" />
+                                android:textSize="18sp"
+                                android:layout_alignParentRight="true" />
 
 
                         </RelativeLayout>
@@ -252,7 +256,8 @@
                             android:layout_below="@+id/ll_line"
                             android:layout_marginTop="@dimen/dimen_10dp"
                             android:layout_toEndOf="@+id/backdrop"
-                            android:minHeight="@dimen/mvpbadge_more_icon_width">
+                            android:minHeight="@dimen/mvpbadge_more_icon_width"
+                            android:layout_toRightOf="@+id/backdrop">
 
                             <LinearLayout
                                 android:id="@+id/ll_badge"
@@ -268,7 +273,8 @@
                             android:layout_height="@dimen/mvpbadge_more_icon_width"
                             android:layout_toEndOf="@+id/scroll_horizontal"
                             android:background="@drawable/ic_more"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            android:layout_toRightOf="@+id/scroll_horizontal" />
                     </LinearLayout>
 
                 </android.support.v7.widget.CardView>
@@ -327,7 +333,8 @@
                                 android:layout_margin="@dimen/dimen_10dp"
                                 android:text="Peer"
                                 android:textColor="@color/Black"
-                                android:textSize="18sp" />
+                                android:textSize="18sp"
+                                android:layout_alignParentLeft="true" />
                         </LinearLayout>
 
                         <View

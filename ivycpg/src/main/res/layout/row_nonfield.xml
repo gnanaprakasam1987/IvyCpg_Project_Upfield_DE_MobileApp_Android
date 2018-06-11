@@ -54,7 +54,8 @@
         android:gravity="center"
         android:minHeight="@dimen/can_ok_btn_h"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/space_between_edt">
+        android:paddingStart="@dimen/space_between_edt"
+        android:paddingLeft="@dimen/space_between_edt">
 
         <CheckBox
             android:id="@+id/chk_delete"
@@ -128,7 +129,8 @@
             android:paddingStart="@dimen/space_between_edt"
             android:text="Accepted"
             android:textColor="#cc262626"
-            android:textSize="@dimen/font_nano_small" />
+            android:textSize="@dimen/font_nano_small"
+            android:paddingLeft="@dimen/space_between_edt" />
 
     </LinearLayout>
 </LinearLayout>

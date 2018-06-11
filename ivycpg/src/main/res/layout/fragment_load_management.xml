@@ -16,9 +16,7 @@
             android:id="@+id/root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-
-            >
+            android:orientation="vertical">
 
             <ListView
                 android:id="@+id/listView1"
@@ -26,9 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:divider="@android:color/transparent"
-                android:scrollbars="none"></ListView>
-
-
+                android:scrollbars="none"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

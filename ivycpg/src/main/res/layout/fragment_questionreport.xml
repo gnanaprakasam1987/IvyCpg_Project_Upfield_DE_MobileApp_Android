@@ -19,7 +19,7 @@
             <LinearLayout
                 android:layout_width="@dimen/ordersplit_heder_name_width"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"></LinearLayout>
+                android:layout_gravity="center_vertical"/>
 
             <LinearLayout
                 android:layout_width="@dimen/meter_value_width_large"
@@ -103,7 +103,7 @@
             android:dividerHeight="1dp"
             android:fitsSystemWindows="true"
             android:scrollbarAlwaysDrawHorizontalTrack="true"
-            android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+            android:scrollbarAlwaysDrawVerticalTrack="true"/>
     </LinearLayout>
 
 </HorizontalScrollView>

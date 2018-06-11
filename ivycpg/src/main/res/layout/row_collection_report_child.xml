@@ -3,15 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dimens_2dp"
     android:paddingBottom="@dimen/dimens_2dp"
+    android:paddingEnd="@dimen/dimens_4dp"
     android:paddingStart="@dimen/dimens_4dp"
-    android:paddingEnd="@dimen/dimens_4dp">
+    android:paddingTop="@dimen/dimens_2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/modeTv"
@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
+            android:paddingLeft="3dp"
             android:paddingStart="3dp"
             android:text="mode"
             android:textColor="?attr/colorAccent"
@@ -31,38 +32,41 @@
             android:layout_weight="1"
             android:gravity="end"
             android:paddingEnd="3dp"
+            android:paddingRight="3dp"
             android:text="03-05-2017"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small"/>
+            android:textSize="@dimen/font_micro_small" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/chqRefTitleTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:paddingLeft="3dp"
                 android:paddingStart="3dp"
                 android:text="Ref No"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small"/>
+                android:textSize="@dimen/text_sz_small" />
 
             <TextView
                 android:id="@+id/chqRefTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:paddingLeft="3dp"
                 android:paddingStart="3dp"
                 android:text="12345"
                 android:textColor="?attr/primarycolor"
@@ -76,37 +80,40 @@
             android:layout_gravity="center"
             android:background="@color/new_grey"
             android:gravity="center"
-            android:padding="@dimen/dimens_4dp"
-            android:orientation="horizontal"/>
+            android:orientation="horizontal"
+            android:padding="@dimen/dimens_4dp" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingStart="@dimen/dimens_10dp"
-            android:layout_gravity="center_vertical">
+            android:paddingLeft="@dimen/dimens_10dp"
+            android:paddingStart="@dimen/dimens_10dp">
 
             <TextView
                 android:id="@+id/amountPaidTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
                 android:text="@string/amount_paid"
                 android:textColor="@color/Black"
-                android:paddingStart="3dp"
-                android:textSize="@dimen/text_sz_small"/>
+                android:textSize="@dimen/text_sz_small" />
 
             <TextView
                 android:id="@+id/paidAmtTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="0000.00"
-                android:textStyle="bold"
+                android:paddingLeft="3dp"
                 android:paddingStart="3dp"
+                android:text="0000.00"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_small"/>
+                android:textSize="@dimen/font_small"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -116,17 +123,18 @@
             android:layout_gravity="center"
             android:background="@color/new_grey"
             android:gravity="center"
-            android:padding="@dimen/dimens_4dp"
             android:orientation="horizontal"
-            android:visibility="gone"/>
+            android:padding="@dimen/dimens_4dp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_collection_disc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/dimens_10dp"
             android:paddingStart="@dimen/dimens_10dp"
             android:visibility="gone">
 
@@ -134,30 +142,32 @@
                 android:id="@+id/discAmtTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/discounted_amt"
                 android:gravity="center_vertical"
-                android:textColor="@color/Black"
+                android:paddingLeft="3dp"
                 android:paddingStart="3dp"
-                android:textSize="@dimen/text_sz_small"/>
+                android:text="@string/discounted_amt"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/text_sz_small" />
 
             <TextView
                 android:id="@+id/disAmtTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="0000.00"
+                android:paddingLeft="3dp"
                 android:paddingStart="3dp"
+                android:text="0000.00"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_small" />
-            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <ImageView
         android:id="@+id/top_line"
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_marginTop="@dimen/dimen_4dp"
         android:layerType="software"
-        android:src="@drawable/dotted_line"
-        android:layout_marginTop="@dimen/dimen_4dp"/>
+        android:src="@drawable/dotted_line" />
 
 </LinearLayout>

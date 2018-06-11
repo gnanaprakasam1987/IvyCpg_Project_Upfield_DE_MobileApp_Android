@@ -87,7 +87,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="@dimen/store_margin_top"
-                            >
+                            android:layout_marginLeft="@dimen/store_margin_top">
 
                             <TextView
                                 android:id="@+id/outna"
@@ -193,7 +193,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/store_margin_top"
             android:layout_marginTop="@dimen/store_margin_top"
-            android:padding="2dp">
+            android:padding="2dp"
+            android:layout_marginLeft="@dimen/store_margin_top">
 
             <TextView
                 android:id="@+id/lbl_total_lines"
@@ -225,7 +226,9 @@
                 android:layout_marginStart="@dimen/margin_height"
                 android:layout_marginTop="@dimen/icons_top_margin"
                 android:layout_toEndOf="@+id/lbl_total_lines"
-                android:background="@android:color/darker_gray" />
+                android:background="@android:color/darker_gray"
+                android:layout_marginLeft="@dimen/margin_height"
+                android:layout_toRightOf="@+id/lbl_total_lines" />
 
             <TextView
                 android:id="@+id/label_totalValue"
@@ -238,7 +241,9 @@
                 android:textSize="@dimen/text_sz_small"
                 android:layout_toEndOf="@+id/view1"
                 android:layout_marginStart="@dimen/store_margin_top"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/view1"
+                android:layout_marginLeft="@dimen/store_margin_top" />
 
             <TextView
                 android:id="@+id/txttotal"
@@ -253,7 +258,9 @@
                 android:textColor="@color/white"
                 android:layout_marginStart="@dimen/store_margin_top"
                 android:textSize="@dimen/login_edittext_text_size"
-                android:layout_toEndOf="@+id/view1"/>
+                android:layout_toEndOf="@+id/view1"
+                android:layout_marginLeft="@dimen/store_margin_top"
+                android:layout_toRightOf="@+id/view1" />
 
 
         </RelativeLayout>

@@ -120,7 +120,8 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
-                android:paddingEnd="10dp" >
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -157,7 +158,8 @@
                             android:tag="@string/cq"
                             android:text="@string/cheque"
                             android:textColor="?attr/primarycolor"
-                            android:visibility="visible" >
+                            android:visibility="visible"
+                            android:layout_marginLeft="5dp">
                         </RadioButton>
                         <RadioButton
                             android:id="@+id/creditNoteRadioButton"
@@ -168,7 +170,8 @@
                             android:tag="@string/credit_note"
                             android:text="@string/credit_note"
                             android:textColor="?attr/primarycolor"
-                            android:visibility="visible" >
+                            android:visibility="visible"
+                            android:layout_marginLeft="5dp">
                         </RadioButton>
                     </RadioGroup>
                 </LinearLayout>
@@ -256,7 +259,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/date"
-                android:textColor="@android:color/black" >
+                android:textColor="@android:color/black"
+                android:layout_marginLeft="1dp">
             </Button>
             <LinearLayout
                 android:id="@+id/linear_capturecheque"
@@ -269,14 +273,14 @@
                     android:id="@+id/capturecheque"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/icon_photo"></ImageView>
+                    android:background="@drawable/icon_photo"/>
             </LinearLayout>
         </LinearLayout>
         <ListView
             android:id="@+id/lv_creditnote"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:visibility="gone"></ListView>
+            android:visibility="gone"/>
 
 
         <LinearLayout
@@ -290,13 +294,13 @@
 
             <Button
                 android:id="@+id/btnsubmit"
-
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/submit" >
+                android:text="@string/submit"
+                android:layout_marginLeft="1dp">
             </Button>
         </LinearLayout>
 

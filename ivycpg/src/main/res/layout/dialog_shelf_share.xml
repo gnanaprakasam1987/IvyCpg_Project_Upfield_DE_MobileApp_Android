@@ -29,21 +29,24 @@
                     android:layout_width="@dimen/dimen_60dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:background="@color/competitor_brand" />
+                    android:background="@color/competitor_brand"
+                    android:layout_marginRight="@dimen/dimen_1dp" />
 
                 <RelativeLayout
                     android:id="@+id/relLytSecond"
                     android:layout_width="@dimen/dimen_60dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:background="@color/competitor_brand" />
+                    android:background="@color/competitor_brand"
+                    android:layout_marginRight="@dimen/dimen_1dp" />
 
                 <RelativeLayout
                     android:id="@+id/relLytThird"
                     android:layout_width="@dimen/dimen_60dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:background="@color/competitor_brand" />
+                    android:background="@color/competitor_brand"
+                    android:layout_marginRight="@dimen/dimen_1dp" />
 
                 <RelativeLayout
                     android:id="@+id/relLytFourth"
@@ -54,7 +57,6 @@
 
             <ImageButton
                 android:id="@+id/btnDialogCancel"
-
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:textSize="@dimen/font_small"
@@ -63,7 +65,8 @@
                 android:background="@drawable/ic_close"
                 android:contentDescription="@string/cancel"
                 android:textStyle="bold"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:layout_alignParentRight="true" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

@@ -28,7 +28,9 @@
             android:paddingStart="4dp"
             android:text="@string/fromdate"
             android:textColor="#FF000000"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="4dp" />
 
         <Button
             android:id="@+id/fromDatetxt"
@@ -37,7 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:text="18-March-2015"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_alignParentRight="true" />
 
         <TextView
             android:id="@+id/textView2"
@@ -51,7 +54,9 @@
             android:paddingStart="4dp"
             android:text="@string/todate"
             android:textColor="#FF000000"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="4dp" />
 
         <Button
             android:id="@+id/todatetext"
@@ -63,7 +68,9 @@
             android:layout_marginTop="@dimen/card_margin"
             android:layout_toStartOf="@+id/textView2"
             android:text="18-March-2015"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/textView2" />
 
 
         <TextView
@@ -79,7 +86,9 @@
             android:paddingStart="4dp"
             android:text="@string/reason"
             android:textColor="#FF000000"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="4dp" />
 
         <Spinner
             android:id="@+id/sp_reason"
@@ -89,7 +98,8 @@
             android:layout_below="@+id/todatetext"
             android:layout_marginTop="@dimen/store_margin_top"
             android:background="@android:color/transparent"
-            android:overlapAnchor="false" />
+            android:overlapAnchor="false"
+            android:layout_alignParentRight="true" />
 
 
         <TextView
@@ -105,7 +115,9 @@
             android:paddingStart="4dp"
             android:text="@string/detail"
             android:textColor="#FF000000"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="4dp" />
 
         <Spinner
             android:id="@+id/sp_special_reason"
@@ -115,7 +127,8 @@
             android:layout_below="@+id/sp_reason"
             android:layout_marginTop="@dimen/store_margin_top"
             android:background="@android:color/transparent"
-            android:overlapAnchor="false" />
+            android:overlapAnchor="false"
+            android:layout_alignParentRight="true" />
 
         <Button
             android:id="@+id/buttonproceed"

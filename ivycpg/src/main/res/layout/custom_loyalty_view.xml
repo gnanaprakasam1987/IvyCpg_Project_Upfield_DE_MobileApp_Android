@@ -44,7 +44,8 @@
                     android:text="desc"
                     android:textColor="?attr/textColorPrimary"
                     android:typeface="normal"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_micro_small"
+                    android:layout_marginLeft="@dimen/dimens_2dp" />
 
                 <TextView
                     android:id="@+id/redeem_points"
@@ -55,7 +56,8 @@
                     android:text="points"
                     android:typeface="normal"
                     android:visibility="visible"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_micro_small"
+                    android:layout_marginLeft="@dimen/dimens_2dp" />
             </LinearLayout>
 
 
@@ -78,7 +80,8 @@
                     android:text="-"
                     android:textColor="@color/WHITE"
                     android:textStyle="bold"
-                    android:typeface="normal" />
+                    android:typeface="normal"
+                    android:layout_marginLeft="@dimen/dimen_2dp" />
 
                 <TextView
                     android:id="@+id/qty_data"
@@ -103,7 +106,8 @@
                     android:text="+"
                     android:textColor="@color/WHITE"
                     android:textStyle="bold"
-                    android:typeface="normal" />
+                    android:typeface="normal"
+                    android:layout_marginLeft="@dimen/dimen_2dp" />
 
             </LinearLayout>
 

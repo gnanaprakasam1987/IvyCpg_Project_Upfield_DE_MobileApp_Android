@@ -27,7 +27,9 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dimen_6dp"
-            android:background="@drawable/ic_close" />
+            android:background="@drawable/ic_close"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen_6dp" />
     </RelativeLayout>
 
     <GridView

@@ -16,7 +16,8 @@
         android:textColor="#175fab"
         android:gravity="center"
         android:minHeight="@dimen/competitor_heder_width"
-        android:id="@+id/textView9" />
+        android:id="@+id/textView9"
+        android:layout_marginLeft="@dimen/profile_history_20dp" />
 
 
     <View
@@ -41,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
-            android:layout_marginBottom="@dimen/profile_floatingbtn_marginright"></android.support.v7.widget.RecyclerView>
+            android:layout_marginBottom="@dimen/profile_floatingbtn_marginright"/>
 
     </RelativeLayout>
 

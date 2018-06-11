@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
                     android:background="@android:color/transparent"
-                    android:overlapAnchor="false"></Spinner>
+                    android:overlapAnchor="false"/>
             </LinearLayout>
 
             <LinearLayout
@@ -66,7 +66,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
-                    android:background="@null"></Spinner>
+                    android:background="@null"/>
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -133,6 +133,6 @@
         android:fitsSystemWindows="true"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:layout_below="@+id/ListHeader"></ListView>
+        android:layout_below="@+id/ListHeader"/>
     </RelativeLayout></android.support.v7.widget.CardView>
 </LinearLayout>

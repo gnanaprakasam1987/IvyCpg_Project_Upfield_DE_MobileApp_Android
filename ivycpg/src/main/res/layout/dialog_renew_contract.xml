@@ -49,7 +49,8 @@
             android:inputType="none"
             android:layout_weight="0.50"
             android:drawableEnd="@drawable/icon_monthly_plan"
-            android:hint="@string/text_select_date" />
+            android:hint="@string/text_select_date"
+            android:drawableRight="@drawable/icon_monthly_plan" />
 
     </LinearLayout>
 
@@ -80,7 +81,8 @@
             android:textSize="@dimen/font_small"
             android:focusable="false"
             android:inputType="none"
-            android:hint="@string/text_select_date" />
+            android:hint="@string/text_select_date"
+            android:drawableRight="@drawable/icon_monthly_plan" />
 
     </LinearLayout>
 

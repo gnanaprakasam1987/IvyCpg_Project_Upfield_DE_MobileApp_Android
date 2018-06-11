@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/retailer_margin_right"
+            android:layout_marginRight="@dimen/retailer_margin_right"
             android:layout_weight="54.9"
             android:gravity="center"
             android:orientation="vertical">
@@ -36,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/icons_left_margin"
                 android:layout_marginStart="@dimen/icons_left_margin"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -47,6 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/outlet_left_margin"
                     android:layout_marginStart="@dimen/outlet_left_margin"
                     android:text="Outlet name" />
 
@@ -56,6 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/outlet_left_margin"
                     android:layout_marginStart="@dimen/outlet_left_margin"
                     android:text="Outlet Location"
                     android:textColor="?attr/accentcolor"
@@ -65,6 +69,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/icons_left_margin"
                 android:layout_marginStart="@dimen/icons_left_margin"
                 android:layout_marginTop="@dimen/icons_top_margin"
                 android:orientation="horizontal">

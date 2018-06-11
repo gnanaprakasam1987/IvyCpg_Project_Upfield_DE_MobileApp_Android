@@ -82,12 +82,12 @@
         <Button
             android:id="@+id/saveButton"
             style="?attr/roundedCustomButtonSmall"
-
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/dimen_10dp"
             android:gravity="center"
             android:text="@string/save"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_marginRight="@dimen/dimen_10dp" />
 
     </LinearLayout>
 
@@ -252,7 +252,8 @@
                                 android:layout_marginStart="@dimen/list_margin"
                                 android:layout_weight="3"
                                 android:gravity="center|start"
-                                android:text="@string/product_name" />
+                                android:text="@string/product_name"
+                                android:layout_marginLeft="@dimen/list_margin" />
 
                             <TextView
                                 android:id="@+id/minmax"

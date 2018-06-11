@@ -42,7 +42,8 @@
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:text="@string/dummy_txt"
-            android:textColor="@android:color/black"></Button>
+            android:textColor="@android:color/black"
+            android:layout_marginRight="5dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -70,7 +71,8 @@
             android:maxLength="250"
             android:singleLine="false"
             android:text=""
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:layout_marginRight="5dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -96,7 +98,8 @@
             android:maxLength="250"
             android:singleLine="false"
             android:text=""
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:layout_marginRight="5dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -110,7 +113,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_horizontal"
             android:layout_margin="5dp"
-            android:text="@string/ok"></Button>
+            android:text="@string/ok"/>
     </LinearLayout>
 
 </LinearLayout>

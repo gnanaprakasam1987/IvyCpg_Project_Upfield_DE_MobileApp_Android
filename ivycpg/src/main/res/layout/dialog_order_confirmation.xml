@@ -66,7 +66,8 @@
             android:textColor="?attr/primarycolor"
             android:textColorHint="?attr/primarycolor"
             android:textSize="@dimen/spinner_normal"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:drawableRight="@drawable/ic_arrow_drop_down" />
     </LinearLayout>
 
     <LinearLayout
@@ -340,7 +341,8 @@
             style="?attr/roundedCustomButtonSmall"
             android:layout_marginStart="15dp"
             android:text="@string/confirm"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false"
+            android:layout_marginLeft="15dp" />
     </LinearLayout>
 
 </LinearLayout>

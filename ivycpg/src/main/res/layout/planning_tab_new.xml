@@ -42,7 +42,9 @@
                 android:textColor="@color/store_label"
                 android:textSize="@dimen/highlight_normal"
                 android:textStyle="bold"
-                android:tag="store_title" />
+                android:tag="store_title"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/store_margin_left" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -52,7 +54,9 @@
                 android:layout_toStartOf="@+id/ll_view"
                 android:text="View"
                 android:textColor="@color/black_bg2"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/margin_10px"
+                android:layout_toLeftOf="@+id/ll_view" />
 
             <LinearLayout
                 android:id="@+id/ll_view"
@@ -123,7 +127,8 @@
         android:visibility="visible"
         app:backgroundTint="?attr/primarycolor"
         app:elevation="@dimen/floating_btn_elevation"
-        app:useCompatPadding="false" />
+        app:useCompatPadding="false"
+        android:layout_alignParentRight="true" />
     <!--app:paddingStart="-20dp"-->
     <!--app:paddingEnd="10dp"-->
     <!--android:padding="10dp"-->

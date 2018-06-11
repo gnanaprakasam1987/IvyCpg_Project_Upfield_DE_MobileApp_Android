@@ -99,7 +99,8 @@
                     android:background="@drawable/bg_imageview_photo"
                     android:clickable="true"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/plano_img_left">
 
                     <ImageView
                         android:id="@+id/capture_image_view"
@@ -129,7 +130,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="@dimen/plano_img_left"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/plano_img_left">
 
                     <android.support.v4.view.ViewPager
                         android:layout_width="match_parent"
@@ -187,7 +189,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/plano_img_margin_left"
-                android:layout_marginEnd="@dimen/plano_img_margin_right">
+                android:layout_marginEnd="@dimen/plano_img_margin_right"
+                android:layout_marginLeft="@dimen/plano_img_margin_left"
+                android:layout_marginRight="@dimen/plano_img_margin_right">
 
                 <TextView
                     android:id="@+id/adherence_text_view"
@@ -214,7 +218,9 @@
                     android:paddingEnd="@dimen/plano_rb_padding"
                     android:text="@string/yes"
                     android:textColor="@color/plano_yes_grey"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_micro_small"
+                    android:layout_marginLeft="@dimen/plano_rb_gap"
+                    android:layout_toRightOf="@id/adherence_text_view" />
 
                 <RadioButton
                     android:id="@+id/no"
@@ -230,7 +236,9 @@
                     android:paddingEnd="@dimen/plano_rb_padding"
                     android:text="@string/no"
                     android:textColor="@color/plano_yes_grey"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_micro_small"
+                    android:layout_marginLeft="@dimen/plano_rb_gap"
+                    android:layout_toRightOf="@id/yes" />
 
                 <Spinner
                     android:id="@+id/sp_reason"
@@ -239,7 +247,8 @@
                     android:layout_toEndOf="@id/no"
                     android:background="@android:color/transparent"
                     android:gravity="start|center"
-                    android:overlapAnchor="false" />
+                    android:overlapAnchor="false"
+                    android:layout_toRightOf="@id/no" />
                 <!--app:paddingEnd="@dimen/plano_save_padding"-->
                 <!--app:paddingStart="@dimen/plano_save_padding"-->
             </RelativeLayout>

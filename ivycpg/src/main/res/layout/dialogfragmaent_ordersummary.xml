@@ -249,7 +249,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
             android:layout_toEndOf="@+id/ll_qty"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/ll_qty">
 
             <TextView
                 android:id="@+id/lpc_title"
@@ -276,7 +277,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
             android:layout_toEndOf="@+id/ll_mrp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/ll_mrp">
 
             <TextView
                 android:id="@+id/title_totalqty"

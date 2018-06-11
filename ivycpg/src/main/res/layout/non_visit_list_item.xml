@@ -5,7 +5,8 @@
     android:gravity="center_vertical"
     android:paddingBottom="2dp"
     android:paddingStart="2dp"
-    android:paddingTop="2dp" >
+    android:paddingTop="2dp"
+    android:paddingLeft="2dp">
 
     <RelativeLayout
         android:id="@+id/linearLayout1"
@@ -19,7 +20,8 @@
             android:layout_height="@dimen/visit_lst_img_width"
             android:layout_alignParentStart="true"
             android:gravity="center"
-            android:src="@drawable/icon_outlet_normal" />
+            android:src="@drawable/icon_outlet_normal"
+            android:layout_alignParentLeft="true" />
 
         <ImageView
             android:id="@+id/outlet"
@@ -27,7 +29,8 @@
             android:layout_height="@dimen/visit_lst_img_width"
             android:layout_alignParentTop="true"
             android:layout_alignEnd="@+id/outlet_iv"
-            android:gravity="center" />
+            android:gravity="center"
+            android:layout_alignRight="@+id/outlet_iv" />
 
         <TextView
             android:id="@+id/outletName_tv"
@@ -38,7 +41,8 @@
             android:singleLine="true"
             android:text="@string/dummy_txt"
             android:textColor="@color/Black"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_toRightOf="@+id/outlet_iv" />
 
         <TextView
             android:id="@+id/visit_frequency"
@@ -50,7 +54,8 @@
             android:singleLine="true"
             android:text="@string/visit_frequency"
             android:textColor="@color/blue_btn_txt"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_toRightOf="@+id/outletName_tv" />
     </RelativeLayout>
 
     <LinearLayout
@@ -60,7 +65,10 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="2dp"
         android:gravity="center|end"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="2dp">
 
         <ImageView
             android:id="@+id/info_iv"

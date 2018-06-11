@@ -58,6 +58,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
+                                android:layout_alignParentLeft="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/combined_availability"
                                 android:textSize="@dimen/font_small"
@@ -166,6 +167,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="end|center|bottom"
                                 android:layout_marginStart="@dimen/right_margin"
+                                android:layout_marginLeft="@dimen/right_margin"
                                 android:layout_marginTop="@dimen/target_top_margin"
                                 android:orientation="vertical">
 
@@ -203,6 +205,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
+                                android:layout_alignParentLeft="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/current_stock"
                                 android:textSize="@dimen/font_small"
@@ -219,7 +222,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:layout_marginRight="@dimen/right_margin">
 
                                     <TextView
                                         android:id="@+id/tv_avail_pctitle"
@@ -274,7 +278,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:layout_marginLeft="@dimen/right_margin">
 
                                     <TextView
                                         android:id="@+id/tv_avail_outitle"
@@ -342,7 +347,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="horizontal">
+                                    android:orientation="horizontal"
+                                    android:layout_marginRight="@dimen/right_margin">
 
                                     <TextView
                                         android:id="@+id/tv_avg_qty_label"
@@ -377,7 +383,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="horizontal">
+                                    android:orientation="horizontal"
+                                    android:layout_marginRight="@dimen/right_margin">
 
                                     <TextView
                                         android:id="@+id/tv_avg_rfield1_label"
@@ -412,7 +419,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="horizontal">
+                                    android:orientation="horizontal"
+                                    android:layout_marginRight="@dimen/right_margin">
 
                                     <TextView
                                         android:id="@+id/tv_avg_rfield2_label"
@@ -447,7 +455,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="horizontal">
+                                    android:orientation="horizontal"
+                                    android:layout_marginRight="@dimen/right_margin">
 
                                     <TextView
                                         android:id="@+id/tv_avg_rfield3_label"
@@ -504,7 +513,8 @@
                                 android:layout_centerVertical="true"
                                 android:text="@string/price_check"
                                 android:textSize="@dimen/font_small"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:layout_alignParentLeft="true" />
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -518,7 +528,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:layout_marginRight="@dimen/right_margin">
 
                                     <TextView
                                         android:id="@+id/tv_price_pcTitle"
@@ -550,7 +561,8 @@
                                     android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:layout_toEndOf="@+id/ll_price_piece"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:layout_toRightOf="@+id/ll_price_piece">
 
                                     <TextView
                                         android:id="@+id/tv_price_csTitle"
@@ -578,7 +590,9 @@
                                     android:layout_marginStart="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:layout_toEndOf="@+id/ll_price_case"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_toRightOf="@+id/ll_price_case">
 
                                     <TextView
                                         android:id="@+id/tv_price_ouTitle"
@@ -606,7 +620,8 @@
                                     android:layout_below="@+id/ll_price_piece"
                                     android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:layout_marginRight="@dimen/right_margin">
 
                                     <TextView
                                         android:id="@+id/tv_priceMrp_pcTitle"
@@ -637,7 +652,8 @@
                                     android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:layout_toEndOf="@+id/ll_price_piece"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:layout_toRightOf="@+id/ll_price_piece">
 
                                     <TextView
                                         android:id="@+id/tv_priceMrp_csTitle"
@@ -666,7 +682,9 @@
                                     android:layout_marginStart="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:layout_toEndOf="@+id/ll_price_case"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_toRightOf="@+id/ll_price_case">
 
                                     <TextView
                                         android:id="@+id/tv_priceMrp_ouTitle"
@@ -693,7 +711,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:layout_centerVertical="true"
-                                    android:orientation="vertical">
+                                    android:orientation="vertical"
+                                    android:layout_alignParentRight="true">
 
                                     <TextView
                                         android:id="@+id/tv_change_price"
@@ -719,7 +738,9 @@
                                             android:button="@drawable/ic_tick_disable"
                                             android:paddingStart="@dimen/plano_rb_padding"
                                             android:text="@string/yes"
-                                            android:textSize="@dimen/text_sz_medium" />
+                                            android:textSize="@dimen/text_sz_medium"
+                                            android:layout_marginRight="@dimen/radio_margin"
+                                            android:paddingLeft="@dimen/plano_rb_padding" />
 
                                         <RadioButton
                                             android:id="@+id/priceno"
@@ -731,7 +752,8 @@
                                             android:paddingStart="@dimen/plano_rb_padding"
                                             android:paddingEnd="@dimen/plano_rb_padding"
                                             android:text="@string/no"
-                                            android:textSize="@dimen/text_sz_medium" />
+                                            android:textSize="@dimen/text_sz_medium"
+                                            android:layout_toRightOf="@id/priceYes" />
 
                                     </RadioGroup>
                                 </LinearLayout>
@@ -764,7 +786,8 @@
                                 android:layout_centerVertical="true"
                                 android:text="@string/expiry_check"
                                 android:textSize="@dimen/font_small"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:layout_alignParentLeft="true" />
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -777,14 +800,16 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentStart="true"
-                                    android:layout_marginTop="@dimen/target_top_margin">
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:layout_alignParentLeft="true">
 
                                     <LinearLayout
                                         android:id="@+id/ll_exp_piece"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="@dimen/right_margin"
-                                        android:orientation="vertical">
+                                        android:orientation="vertical"
+                                        android:layout_marginRight="@dimen/right_margin">
 
                                         <TextView
                                             android:id="@+id/tv_exp_pcTitle"
@@ -811,7 +836,9 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="@dimen/right_margin"
                                         android:layout_toEndOf="@+id/ll_exp_piece"
-                                        android:orientation="vertical">
+                                        android:orientation="vertical"
+                                        android:layout_marginRight="@dimen/right_margin"
+                                        android:layout_toRightOf="@+id/ll_exp_piece">
 
                                         <TextView
                                             android:id="@+id/tv_exp_csTitle"
@@ -838,7 +865,9 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/right_margin"
                                         android:layout_toEndOf="@+id/ll_exp_case"
-                                        android:orientation="vertical">
+                                        android:orientation="vertical"
+                                        android:layout_marginLeft="@dimen/right_margin"
+                                        android:layout_toRightOf="@+id/ll_exp_case">
 
                                         <TextView
                                             android:id="@+id/tv_exp_ouTitle"

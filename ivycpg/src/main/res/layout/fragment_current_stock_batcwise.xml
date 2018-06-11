@@ -57,7 +57,7 @@
                             android:gravity="start"
                             android:singleLine="true"
                             android:textColor="@color/highlighter"
-                            android:textSize="@dimen/font_small"></TextView>
+                            android:textSize="@dimen/font_small"/>
 
                         <Button
                             android:id="@+id/btn_search"
@@ -99,7 +99,7 @@
                                 android:imeOptions="actionDone"
                                 android:singleLine="true"
                                 android:text=""
-                                android:textColor="@color/highlighter"></EditText>
+                                android:textColor="@color/highlighter"/>
 
                             <Button
                                 android:id="@+id/btn_clear"
@@ -189,7 +189,7 @@
                         android:cacheColorHint="@null"
                         android:divider="@android:color/white"
                         android:dividerHeight="1dp"
-                        android:fitsSystemWindows="true"></ListView>
+                        android:fitsSystemWindows="true"/>
 
 
                 </LinearLayout>

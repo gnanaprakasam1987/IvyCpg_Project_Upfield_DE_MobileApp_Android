@@ -39,7 +39,8 @@
                 android:text="@string/call_details"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/factor_title_size"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:paddingLeft="@dimen/whats_on_item_padding" />
 
         </RelativeLayout>
 

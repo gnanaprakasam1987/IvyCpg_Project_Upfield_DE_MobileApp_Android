@@ -40,7 +40,9 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_weight="1"
-                    android:text="@string/product_name" />
+                    android:text="@string/product_name"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="@dimen/list_margin" />
 
                 <ImageView
                     android:id="@+id/ivInfoicon"
@@ -78,7 +80,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
-                    android:text="@string/srp" />
+                    android:text="@string/srp"
+                    android:layout_marginLeft="@dimen/margin_5px" />
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_ppq"
@@ -87,7 +90,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
-                    android:text="@string/ou" />
+                    android:text="@string/ou"
+                    android:layout_marginLeft="@dimen/margin_5px" />
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_mrp"
@@ -96,7 +100,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
-                    android:text="@string/mrp" />
+                    android:text="@string/mrp"
+                    android:layout_marginLeft="@dimen/margin_5px" />
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_msq"
@@ -106,7 +111,8 @@
                     android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
                     android:text="@string/msq"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:layout_marginLeft="@dimen/margin_5px" />
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_psq"
@@ -116,7 +122,8 @@
                     android:layout_marginStart="@dimen/margin_5px"
                     android:maxLines="1"
                     android:text="@string/psq"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:layout_marginLeft="@dimen/margin_5px" />
 
                 <LinearLayout
                     android:id="@+id/llmoq"
@@ -158,7 +165,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/outlet_left_margin"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/outlet_left_margin">
 
                     <TextView
                         android:id="@+id/wsihTitle"
@@ -192,7 +200,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/sihCaseTitle"
@@ -226,7 +235,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/sihOuterTitle"
@@ -260,7 +270,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/sihTitle"
@@ -294,7 +305,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/io_oc_Title"
@@ -328,7 +340,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/co_oc_Title"
@@ -362,7 +375,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/soCaseTitle"
@@ -397,7 +411,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/rep_caseTitle"
@@ -431,7 +446,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/rep_outerTitle"
@@ -465,7 +481,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/rep_pcsTitle"
@@ -500,7 +517,8 @@
                     android:layout_height="0dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
 
                     <TextView
                         android:id="@+id/srpTitle"
@@ -550,7 +568,9 @@
                     android:layout_toStartOf="@+id/lltotwight"
                     android:background="@color/white"
                     android:orientation="horizontal"
-                    android:weightSum="7">
+                    android:weightSum="7"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/lltotwight">
 
                     <LinearLayout
                         android:id="@+id/llAvail"
@@ -710,7 +730,9 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignTop="@+id/lleditLaouyt"
                     android:layout_marginEnd="@dimen/list_margin"
-                    android:gravity="top">
+                    android:gravity="top"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/list_margin">
 
 
                     <LinearLayout
@@ -834,7 +856,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginRight="@dimen/list_margin">
 
                 <TextView
                     android:id="@+id/totalTitle"

@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/WHITE"
-    android:orientation="vertical"
-    tools:context=".RecyclerFragment">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -120,7 +119,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="@string/save"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
 </LinearLayout>

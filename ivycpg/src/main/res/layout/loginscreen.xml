@@ -32,7 +32,9 @@
                     android:layout_width="@dimen/settings_icon_height"
                     android:layout_height="@dimen/settings_icon_height"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
                     android:layout_marginTop="@dimen/dimen_10dp"
                     android:src="@drawable/icon_settings" />
 
@@ -67,6 +69,7 @@
                     android:hint="@string/username"
                     android:lines="1"
                     android:paddingStart="@dimen/dimen_10dp"
+                    android:paddingLeft="@dimen/dimen_10dp"
                     style="@style/EditTextGravity"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/login_edittext_text_size" />
@@ -87,7 +90,9 @@
                         android:lines="1"
                         style="@style/EditTextGravity"
                         android:paddingEnd="@dimen/forgot_text_width"
+                        android:paddingRight="@dimen/forgot_text_width"
                         android:paddingStart="@dimen/dimen_10dp"
+                        android:paddingLeft="@dimen/dimen_10dp"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/login_edittext_text_size" />
 
@@ -98,6 +103,7 @@
                         android:layout_alignBaseline="@+id/EditText022"
                         android:layout_alignBottom="@+id/EditText022"
                         android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_marginBottom="@dimen/dimen_10dp"
                         android:clickable="true"
                         android:gravity="center"

@@ -10,4 +10,5 @@
     android:text="dsdsdsdsdssdsds"
     android:textAlignment="center"
     android:textColor="@color/WHITE"
-    android:textSize="@dimen/font_small" />
+    android:textSize="@dimen/font_small"
+    android:drawableRight="@android:drawable/arrow_down_float" />

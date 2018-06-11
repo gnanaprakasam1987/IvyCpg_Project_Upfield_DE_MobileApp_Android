@@ -81,7 +81,8 @@
                     android:layout_marginEnd="@dimen/card_margin"
 
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/shelfPcsTitle"
@@ -92,7 +93,8 @@
                         android:maxLines="1"
                         android:paddingEnd="5dp"
                         android:tag="sp"
-                        android:text="@string/sp" />
+                        android:text="@string/sp"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         style="?attr/customListItemSecondary"
@@ -100,7 +102,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:text=":" />
+                        android:text=":"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/sp_quantity"
@@ -111,7 +114,9 @@
                         android:layout_marginEnd="@dimen/card_margin"
                         android:maxLines="1"
                         android:paddingEnd="5dp"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:layout_marginRight="@dimen/card_margin"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="1dp"
@@ -128,7 +133,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/shelfCaseTitle"
@@ -139,7 +145,8 @@
                         android:maxLines="1"
                         android:paddingEnd="5dp"
                         android:tag="sc"
-                        android:text="@string/sc" />
+                        android:text="@string/sc"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         style="?attr/customListItemSecondary"
@@ -147,7 +154,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:text=":" />
+                        android:text=":"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/sc_quantity"
@@ -158,7 +166,9 @@
                         android:layout_marginEnd="@dimen/card_margin"
                         android:maxLines="1"
                         android:paddingEnd="5dp"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:layout_marginRight="@dimen/card_margin"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="1dp"
@@ -175,7 +185,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/shelfOuterTitle"
@@ -186,7 +197,8 @@
                         android:maxLines="1"
                         android:paddingEnd="5dp"
                         android:tag="souter"
-                        android:text="@string/souter" />
+                        android:text="@string/souter"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         style="?attr/customListItemSecondary"
@@ -194,7 +206,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:text=":" />
+                        android:text=":"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/sho_quantity"
@@ -205,7 +218,9 @@
                         android:layout_marginEnd="@dimen/card_margin"
                         android:maxLines="1"
                         android:paddingEnd="5dp"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:layout_marginRight="@dimen/card_margin"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="1dp"
@@ -220,8 +235,9 @@
                 <LinearLayout
                     android:id="@+id/llShelfWeight"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:layout_height="wrap_content">
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/weighttitle"
@@ -232,7 +248,8 @@
                         android:maxLines="1"
                         android:paddingEnd="5dp"
                         android:tag="weighttitle"
-                        android:text="@string/weight" />
+                        android:text="@string/weight"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         style="?attr/customListItemSecondary"
@@ -240,7 +257,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:text=":" />
+                        android:text=":"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/tv_weight"
@@ -250,14 +268,17 @@
                         android:layout_gravity="center_vertical"
                         android:maxLines="1"
                         android:paddingEnd="5dp"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:paddingRight="5dp" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/llStkRtEdit"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/card_margin"
-                    android:layout_height="wrap_content">
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/stkRtTitle"
@@ -269,7 +290,8 @@
                         android:tag="sales_return"
                         android:text="@string/sr"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/greyed_text_size"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -277,7 +299,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
                         android:text=":"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/greyed_text_size"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/stock_and_order_listview_sales_return_qty"
@@ -289,15 +312,17 @@
                         android:paddingEnd="5dp"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/value_text_size" />
+                        android:textSize="@dimen/value_text_size"
+                        android:paddingRight="5dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llRepCase"
-                    android:layout_marginEnd="@dimen/card_margin"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/rep_caseTitle"
@@ -309,7 +334,8 @@
                         android:tag="item_sr_case"
                         android:text="@string/rep_case"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/greyed_text_size"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -317,7 +343,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
                         android:text=":"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/greyed_text_size"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/rep_case"
@@ -329,15 +356,17 @@
                         android:paddingEnd="5dp"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/value_text_size" />
+                        android:textSize="@dimen/value_text_size"
+                        android:paddingRight="5dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llRepOu"
-                    android:layout_marginEnd="@dimen/card_margin"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/rep_outerTitle"
@@ -349,7 +378,8 @@
                         android:tag="item_sr_outer"
                         android:text="@string/rep_outer"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/greyed_text_size"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -357,7 +387,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
                         android:text=":"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/greyed_text_size"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/rep_outer"
@@ -369,15 +400,17 @@
                         android:paddingEnd="5dp"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/value_text_size" />
+                        android:textSize="@dimen/value_text_size"
+                        android:paddingRight="5dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llRepPc"
-                    android:layout_marginEnd="@dimen/card_margin"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/rep_pcsTitle"
@@ -389,7 +422,8 @@
                         android:tag="item_sr_piece"
                         android:text="@string/rep_pcs"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/greyed_text_size"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -397,7 +431,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
                         android:text=":"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/greyed_text_size"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/rep_pcs"
@@ -409,7 +444,8 @@
                         android:paddingEnd="5dp"
                         android:text="@string/zero"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/value_text_size" />
+                        android:textSize="@dimen/value_text_size"
+                        android:paddingRight="5dp" />
 
                 </LinearLayout>
 
@@ -424,7 +460,8 @@
                     android:id="@+id/llPiece"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/card_margin">
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/pcsTitle"
@@ -435,7 +472,8 @@
                         android:maxLines="1"
                         android:paddingEnd="5dp"
                         android:tag="item_piece"
-                        android:text="@string/item_piece" />
+                        android:text="@string/item_piece"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         style="?attr/customListItemSecondary"
@@ -443,7 +481,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:text=":" />
+                        android:text=":"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/P_QUANTITY"
@@ -454,7 +493,9 @@
                         android:layout_marginEnd="@dimen/card_margin"
                         android:maxLines="1"
                         android:paddingEnd="5dp"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:layout_marginRight="@dimen/card_margin"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="1dp"
@@ -469,7 +510,8 @@
                     android:id="@+id/llCase"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/card_margin">
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/caseTitle"
@@ -480,7 +522,8 @@
                         android:maxLines="1"
                         android:paddingEnd="5dp"
                         android:tag="item_case"
-                        android:text="@string/item_case" />
+                        android:text="@string/item_case"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         style="?attr/customListItemSecondary"
@@ -488,7 +531,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:text=":" />
+                        android:text=":"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/C_QUANTITY"
@@ -499,7 +543,9 @@
                         android:layout_marginEnd="@dimen/card_margin"
                         android:maxLines="1"
                         android:paddingEnd="5dp"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:layout_marginRight="@dimen/card_margin"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="1dp"
@@ -515,7 +561,8 @@
                     android:id="@+id/llOuter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/card_margin">
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/outercaseTitle"
@@ -526,7 +573,8 @@
                         android:maxLines="1"
                         android:paddingEnd="5dp"
                         android:tag="outer_case"
-                        android:text="@string/item_outer" />
+                        android:text="@string/item_outer"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         style="?attr/customListItemSecondary"
@@ -534,7 +582,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:text=":" />
+                        android:text=":"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/OC_QUANTITY"
@@ -545,7 +594,9 @@
                         android:layout_marginEnd="@dimen/card_margin"
                         android:maxLines="1"
                         android:paddingEnd="5dp"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:layout_marginRight="@dimen/card_margin"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="1dp"
@@ -561,7 +612,8 @@
                     android:id="@+id/llfoc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/card_margin">
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin">
 
                     <TextView
                         android:id="@+id/focTitle"
@@ -572,7 +624,8 @@
                         android:maxLines="1"
                         android:paddingEnd="5dp"
                         android:tag="foc"
-                        android:text="@string/foc" />
+                        android:text="@string/foc"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         style="?attr/customListItemSecondary"
@@ -580,7 +633,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:text=":" />
+                        android:text=":"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/FOC_QUANTITY"
@@ -591,7 +645,9 @@
                         android:layout_marginEnd="@dimen/card_margin"
                         android:maxLines="1"
                         android:paddingEnd="5dp"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:layout_marginRight="@dimen/card_margin"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         android:layout_width="1dp"
@@ -617,7 +673,8 @@
                         android:maxLines="1"
                         android:paddingEnd="5dp"
                         android:tag="srp"
-                        android:text="@string/unit_price" />
+                        android:text="@string/unit_price"
+                        android:paddingRight="5dp" />
 
                     <TextView
                         style="?attr/customListItemSecondary"
@@ -625,7 +682,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:text=":" />
+                        android:text=":"
+                        android:layout_marginRight="@dimen/card_margin" />
 
                     <TextView
                         android:id="@+id/MRP"
@@ -635,7 +693,8 @@
                         android:layout_gravity="center_vertical"
                         android:maxLines="1"
                         android:paddingEnd="5dp"
-                        android:text="@string/zero" />
+                        android:text="@string/zero"
+                        android:paddingRight="5dp" />
 
                 </LinearLayout>
 

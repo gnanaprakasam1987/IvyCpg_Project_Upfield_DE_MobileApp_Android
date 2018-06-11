@@ -60,7 +60,7 @@
             android:layout_marginBottom="@dimen/profile_history_10dp"
             android:layout_marginEnd="@dimen/profile_history_20dp"
             android:layout_gravity="center"
-            />
+            android:layout_marginRight="@dimen/profile_history_20dp" />
 
         <Button
             android:id="@+id/ok_btn"
@@ -70,7 +70,7 @@
             android:layout_marginBottom="@dimen/profile_history_10dp"
             android:layout_marginStart="@dimen/profile_history_20dp"
             android:layout_gravity="center"
-            />
+            android:layout_marginLeft="@dimen/profile_history_20dp" />
 
     </LinearLayout>
 </LinearLayout>

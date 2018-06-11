@@ -46,7 +46,9 @@
                     android:layout_toStartOf="@+id/refresh_catalog"
                     android:text="@string/inv_no"
                     android:textColor="@color/FullBlack"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/font_small"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/refresh_catalog" />
 
                 <ImageView
                     android:id="@+id/ivSign"
@@ -55,7 +57,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="end"
                     android:src="@drawable/ic_action_signature"
-                    android:tint="@color/black_bg3" />
+                    android:tint="@color/black_bg3"
+                    android:layout_alignParentRight="true" />
             </RelativeLayout>
 
             <LinearLayout
@@ -245,7 +248,8 @@
                         android:gravity="center"
                         android:padding="@dimen/padding_rb"
                         android:textOff="@string/off"
-                        android:textOn="@string/on" />
+                        android:textOn="@string/on"
+                        android:layout_marginLeft="@dimen/card_margin" />
                 </LinearLayout>
 
                 <LinearLayout
