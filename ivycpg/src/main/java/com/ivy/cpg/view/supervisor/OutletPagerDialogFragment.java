@@ -235,7 +235,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
         @Override
         public int getItemCount() {
-            return 15;
+            return 3;
         }
     }
 

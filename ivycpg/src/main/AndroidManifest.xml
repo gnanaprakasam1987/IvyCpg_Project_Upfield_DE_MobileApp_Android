@@ -799,12 +799,13 @@
         <activity
             android:name="com.ivy.cpg.view.supervisor.SellerListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.OutletMapListActivity"
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.OutletMapListActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.SellerPerformanceListActivity"></activity>
     </application>
 
 </manifest>

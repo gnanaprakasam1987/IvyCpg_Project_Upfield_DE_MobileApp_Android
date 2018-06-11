@@ -135,6 +135,7 @@
                                 android:textColor="@color/white" />
 
                             <ImageView
+                                android:id="@+id/info_icon"
                                 android:layout_width="@dimen/padding_l"
                                 android:layout_height="@dimen/padding_l"
                                 android:layout_centerVertical="true"

@@ -436,7 +436,10 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-
+            OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
+            outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+            outletPagerDialogFragment.setCancelable(false);
+            outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
 
         }
 

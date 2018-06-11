@@ -1309,4 +1309,14 @@ negative button and neutral button -->
         <item name="spi_looped">false</item>
     </style>
 
+    <style name="Tooltip">
+        <item name="android:text">Pop Up</item>
+        <item name="android:textColor">?android:textColorPrimaryInverse</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">5dp</item>
+        <item name="backgroundColor">@color/colorPrimary</item>
+        <item name="cornerRadius">4dp</item>
+    </style>
+
+
 </resources>

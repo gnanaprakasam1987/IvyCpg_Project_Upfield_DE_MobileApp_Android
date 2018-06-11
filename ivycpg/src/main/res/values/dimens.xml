@@ -823,4 +823,15 @@
     <dimen name="score_card_height">120dp</dimen>
     <dimen name="qn_text_margin_left">5dp</dimen>
     <dimen name="web_view_width">180dp</dimen>
+
+
+    //Tool tip PopUp
+    <dimen name="default_tooltip_margin">0dp</dimen>
+    <dimen name="default_tooltip_padding">5dp</dimen>
+    <dimen name="default_tooltip_arrow_height">10dp</dimen>
+    <dimen name="default_tooltip_arrow_width">10dp</dimen>
+
+    <dimen name="action_button_width">48dp</dimen>
+    <dimen name="action_button_padding">16dp</dimen>
+
 </resources>
