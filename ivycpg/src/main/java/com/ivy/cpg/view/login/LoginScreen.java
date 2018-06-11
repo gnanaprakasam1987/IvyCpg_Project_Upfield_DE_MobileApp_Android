@@ -23,6 +23,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -91,16 +92,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
 
         businessModel = (BusinessModel) getApplicationContext();
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        /*Configuration configuration = getResources().getConfiguration();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            configuration.setLayoutDirection(new Locale("fa"));
-        }
-        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());*/
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         setContentView(R.layout.loginscreen);
 
