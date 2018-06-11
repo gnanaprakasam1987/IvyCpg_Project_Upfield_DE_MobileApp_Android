@@ -23,11 +23,13 @@ public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.
     OrderStatusPresenterImpl orderStatusPresenter;
     Vector<OrderStatusReportBO> items;
     BusinessModel bmodel;
+    Boolean isOrderScreen;
 
-    public OrderStatusAdapter(BusinessModel bmodel, OrderStatusPresenterImpl orderStatusPresenter) {
+    public OrderStatusAdapter(BusinessModel bmodel, OrderStatusPresenterImpl orderStatusPresenter, Boolean isOrderScreen) {
         this.bmodel = bmodel;
         this.orderStatusPresenter = orderStatusPresenter;
         this.items = orderStatusPresenter.getOrderStatusReportList();
+        this.isOrderScreen = isOrderScreen;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -98,8 +100,14 @@ public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.
 
     @Override
     public OrderStatusAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.order_status_report_list_item, parent, false);
+        View itemView;
+        if (isOrderScreen) {
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.order_status_report_list_item, parent, false);
+        } else {
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.invoice_status_report_list_item, parent, false);
+        }
 
         return new MyViewHolder(itemView);
     }

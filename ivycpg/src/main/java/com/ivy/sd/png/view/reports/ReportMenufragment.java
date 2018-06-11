@@ -49,7 +49,7 @@ import java.util.Vector;
 
 /**
  * Created by vikraman.a on 05-05-2017.
- *
+ * <p>
  * 1. Prepare the menu Fragment
  * . get the menu item from database hht table
  * . prepare the adapter for the given menu Items
@@ -269,6 +269,8 @@ public class ReportMenufragment extends IvyBaseFragment {
                 Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
             }
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ORD_STAT_RPT)) {
+            intoreportacti(config);
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_INV_STAT_RPT)) {
             intoreportacti(config);
         } else {
             intoreportacti(config);
