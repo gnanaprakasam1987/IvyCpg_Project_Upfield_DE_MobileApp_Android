@@ -21,7 +21,8 @@
                 android:layout_marginTop="@dimen/divder_margin"
                 android:text="@string/product_name"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/font_micro_small"
+                android:layout_marginLeft="@dimen/dimen_12dp" />
 
             <TextView
                 android:id="@+id/batch_no"
@@ -32,7 +33,8 @@
                 android:layout_marginBottom="@dimen/icons_top_margin"
                 android:layout_marginStart="@dimen/dimen_12dp"
                 android:gravity="center"
-                android:text="" />
+                android:text=""
+                android:layout_marginLeft="@dimen/dimen_12dp" />
 
             <TextView
                 android:id="@+id/prdweight"
@@ -44,7 +46,8 @@
                 android:layout_toEndOf="@+id/batch_no"
                 android:gravity="center"
                 android:tag="sih"
-                android:text="56656" />
+                android:text="56656"
+                android:layout_toRightOf="@+id/batch_no" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -89,7 +92,8 @@
         android:tag="sih_piece"
         android:text="56656"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/font_micro_small"
+        android:layout_marginLeft="@dimen/dimens_10dp" />
     <!-- <TextView
          android:id="@+id/prdweight"
          android:textColor="@android:color/black"

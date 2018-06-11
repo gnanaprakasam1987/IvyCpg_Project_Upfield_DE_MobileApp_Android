@@ -20,13 +20,12 @@
 
             <Button
                 android:id="@+id/btnPersBack"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:text="@string/back"
-                android:visibility="gone"></Button>
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
@@ -164,7 +163,8 @@
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_marginStart="@dimen/store_margin_top">
+                                android:layout_marginStart="@dimen/store_margin_top"
+                                android:layout_marginLeft="@dimen/store_margin_top">
 
                                 <TextView
                                     android:id="@+id/outna"

@@ -10,4 +10,5 @@
     android:layout_gravity="center"
     android:maxLines="1"
     android:textSize="@dimen/kpi_spinner_title_size"
-    android:textColor="@color/WHITE" />
+    android:textColor="@color/WHITE"
+    android:drawableRight="@android:drawable/arrow_down_float" />

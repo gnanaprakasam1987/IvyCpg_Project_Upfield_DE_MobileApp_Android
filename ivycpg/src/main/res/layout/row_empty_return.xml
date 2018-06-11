@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimen_5dp"
         android:layout_alignParentTop="true"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/font_small"
+        android:layout_marginLeft="@dimen/dimen_5dp" />
 
     <EditText
         android:id="@+id/qty"

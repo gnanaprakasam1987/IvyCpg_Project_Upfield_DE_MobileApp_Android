@@ -117,7 +117,8 @@
                 android:textStyle="normal"
                 android:layout_margin="@dimen/dimen_5dp"
                 android:textSize="@dimen/dimens_16dp"
-                android:paddingStart="@dimen/dimen_10dp"/>
+                android:paddingStart="@dimen/dimen_10dp"
+                android:paddingLeft="@dimen/dimen_10dp" />
         <Spinner
             android:id="@+id/spinnerMovementOutletName"
             android:layout_width="fill_parent"

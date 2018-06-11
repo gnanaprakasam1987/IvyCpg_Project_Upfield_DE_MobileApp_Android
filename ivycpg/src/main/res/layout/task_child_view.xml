@@ -34,7 +34,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/list_margin"
                     android:layout_marginTop="@dimen/list_margin"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/font_small"
+                    android:layout_marginLeft="@dimen/list_margin" />
 
                 <TextView
                     android:id="@+id/tv_task_owner"
@@ -43,9 +44,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/list_margin"
                     android:layout_marginStart="@dimen/list_margin"
-                    android:textSize="@dimen/font_micro_small" />
-
-
+                    android:textSize="@dimen/font_micro_small"
+                    android:layout_marginLeft="@dimen/list_margin" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>

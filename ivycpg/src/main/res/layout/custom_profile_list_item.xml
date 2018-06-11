@@ -16,7 +16,8 @@
         android:layout_marginStart="@dimen/dimen_20dp"
         android:layout_marginTop="@dimen/profile_custom_label_txt"
         android:text="Channel"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/font_micro_small"
+        android:layout_marginLeft="@dimen/dimen_20dp" />
 
 
     <TextView
@@ -31,7 +32,8 @@
         android:layout_marginTop="@dimen/profile_margin_top_minus"
         android:gravity="start|bottom"
         android:text="Retailer Shop"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/font_micro_small"
+        android:layout_marginLeft="@dimen/dimen_20dp" />
 
 
     <View
@@ -41,6 +43,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center|end"
-        android:background="@color/profile_devider_color" />
+        android:background="@color/profile_devider_color"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

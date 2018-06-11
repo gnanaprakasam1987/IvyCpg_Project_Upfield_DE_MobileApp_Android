@@ -92,7 +92,7 @@
         android:id="@+id/lv_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_parent"></ListView>
+        android:layout_below="@+id/ll_parent"/>
 
 
 </RelativeLayout>

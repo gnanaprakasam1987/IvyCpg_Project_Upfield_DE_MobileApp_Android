@@ -4,8 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="@dimen/list_item_height_double_line"
     android:gravity="center_vertical"
-    android:orientation="horizontal" >
-
+    android:orientation="horizontal">
 
 
     <RelativeLayout
@@ -30,116 +29,121 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/closePRODNAME"
-            android:orientation="horizontal"
-            >
-        <TextView
-            android:id="@+id/proposalQty"
-            style="?attr/customListItemSecondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_weight="1"
-            android:maxLines="1"
-            android:paddingStart="@dimen/dimens_2dp"
-            android:tag="so"
-            android:text="@string/hvp3m"
-           />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/proposalQty"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dimens_2dp"
+                android:paddingStart="@dimen/dimens_2dp"
+                android:tag="so"
+                android:text="@string/hvp3m" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="1">
-        <TextView
-            android:id="@+id/stock_and_order_listview_sih_case"
-            style="?attr/customListItemSecondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/closePRODNAME"
-            android:layout_toEndOf="@+id/proposalQty"
-            android:paddingStart="@dimen/dimens_2dp"
-            android:maxLines="1"
-            android:tag="sih_case"
-            android:text="@string/sih_case"
-           />
-        <TextView
-            android:id="@+id/stock_and_order_listview_sih_outer"
-            style="?attr/customListItemSecondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/closePRODNAME"
-            android:layout_toEndOf="@+id/stock_and_order_listview_sih_case"
-            android:maxLines="1"
-            android:tag="sih_outer"
-            android:text="@string/sih_outer"
-           />
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/stock_and_order_listview_sih"
-            style="?attr/customListItemSecondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/closePRODNAME"
-            android:layout_toEndOf="@+id/stock_and_order_listview_sih_outer"
-            android:maxLines="1"
-            android:tag="sih_piece"
-            android:text="@string/sih"
-            />
+                <TextView
+                    android:id="@+id/stock_and_order_listview_sih_case"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/closePRODNAME"
+                    android:layout_toEndOf="@+id/proposalQty"
+                    android:layout_toRightOf="@+id/proposalQty"
+                    android:maxLines="1"
+                    android:paddingLeft="@dimen/dimens_2dp"
+                    android:paddingStart="@dimen/dimens_2dp"
+                    android:tag="sih_case"
+                    android:text="@string/sih_case" />
+
+                <TextView
+                    android:id="@+id/stock_and_order_listview_sih_outer"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/closePRODNAME"
+                    android:layout_toEndOf="@+id/stock_and_order_listview_sih_case"
+                    android:layout_toRightOf="@+id/stock_and_order_listview_sih_case"
+                    android:maxLines="1"
+                    android:tag="sih_outer"
+                    android:text="@string/sih_outer" />
+
+                <TextView
+                    android:id="@+id/stock_and_order_listview_sih"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/closePRODNAME"
+                    android:layout_toEndOf="@+id/stock_and_order_listview_sih_outer"
+                    android:layout_toRightOf="@+id/stock_and_order_listview_sih_outer"
+                    android:maxLines="1"
+                    android:tag="sih_piece"
+                    android:text="@string/sih" />
             </LinearLayout>
-        <TextView
-            android:id="@+id/stock_and_order_listview_distinv"
-            style="?attr/customListItemSecondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_below="@+id/closePRODNAME"
-            android:layout_toEndOf="@+id/stock_and_order_listview_sih"
-            android:maxLines="1"
-            android:paddingStart="@dimen/dimens_2dp"
-            android:tag="dist_inv"
-            android:text="@string/dist_inv"
-            />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/stock_and_order_listview_distinv"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/closePRODNAME"
+                android:layout_toEndOf="@+id/stock_and_order_listview_sih"
+                android:layout_toRightOf="@+id/stock_and_order_listview_sih"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dimens_2dp"
+                android:paddingStart="@dimen/dimens_2dp"
+                android:tag="dist_inv"
+                android:text="@string/dist_inv" />
+
+        </LinearLayout>
     </RelativeLayout>
-
 
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/productqtyCases"
         style="@style/EditText_ListItem"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:gravity="center"
         android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
         android:text="@string/zero" />
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/outerproductqtyCases"
         style="@style/EditText_ListItem"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:gravity="center"
         android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
         android:text="@string/zero" />
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/productqtyPieces"
         style="@style/EditText_ListItem"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_weight="1"
         android:layout_width="@dimen/order_stock_list_item_width_xlarge"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
         android:text="@string/zero" />
 
 
     <TextView
         android:id="@+id/unitprice"
-        android:layout_weight="1"
-        android:layout_width="@dimen/list_item_width_medium"
         style="?attr/customListItemPrimary"
+        android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero" />
 

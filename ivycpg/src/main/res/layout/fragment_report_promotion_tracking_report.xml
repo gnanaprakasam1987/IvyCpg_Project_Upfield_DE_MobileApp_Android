@@ -64,7 +64,8 @@
                     android:gravity="start|center"
                     android:padding="3dp"
                     android:text="@string/product_name"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_micro_small"
+                    android:layout_marginLeft="@dimen/skuwise_right_margin" />
 
                 <TextView
                     android:id="@+id/loading_stock_cs_title"
@@ -95,7 +96,7 @@
                 android:dividerHeight="1dp"
                 android:fitsSystemWindows="true"
                 android:scrollbarAlwaysDrawHorizontalTrack="true"
-                android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+                android:scrollbarAlwaysDrawVerticalTrack="true"/>
 
         </LinearLayout>
         <!--</HorizontalScrollView>-->
@@ -108,7 +109,8 @@
             android:layout_alignParentEnd="@dimen/dimens_2dp"
             android:background="@color/footer_bg"
             android:gravity="center|end"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:layout_alignParentRight="@dimen/dimens_2dp">
 
             <Button
                 android:id="@+id/print"
@@ -119,7 +121,8 @@
                 android:layout_marginStart="2dp"
                 android:gravity="center"
                 android:text="@string/print"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_marginLeft="2dp" />
         </LinearLayout>
     </RelativeLayout>
 

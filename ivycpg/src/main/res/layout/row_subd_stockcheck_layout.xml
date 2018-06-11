@@ -181,7 +181,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/lleditLaouyt"
                 android:layout_marginEnd="@dimen/list_margin"
-                android:gravity="top">
+                android:gravity="top"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/list_margin">
 
                 <LinearLayout
                     android:id="@+id/llTotal"

@@ -15,7 +15,9 @@
         android:layout_toStartOf="@+id/selectedfilters"
         android:layout_marginStart="@dimen/list_margin"
         android:gravity="start|center_vertical"
-        android:text="@string/dummy_txt" />
+        android:text="@string/dummy_txt"
+        android:layout_toLeftOf="@+id/selectedfilters"
+        android:layout_marginLeft="@dimen/list_margin" />
 
     <RadioButton
         android:id="@+id/selectedfilters"
@@ -26,6 +28,7 @@
         android:clickable="false"
         android:layout_centerVertical="true"
         android:focusable="false"
-        android:src="@drawable/ic_filter_selected" />
+        android:src="@drawable/ic_filter_selected"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

@@ -36,7 +36,8 @@
                     android:background="@android:color/black"
                     android:orientation="horizontal"
                     android:minHeight="@dimen/list_header_height"
-                    android:paddingStart="@dimen/space_between_edt">
+                    android:paddingStart="@dimen/space_between_edt"
+                    android:paddingLeft="@dimen/space_between_edt">
 
                     <TextView
                         android:id="@+id/txt_Tit_From"
@@ -95,7 +96,8 @@
                         android:layout_weight="1"
                         android:gravity="start|center_vertical"
                         android:paddingStart="@dimen/space_between_edt"
-                        android:text="@string/status" />
+                        android:text="@string/status"
+                        android:paddingLeft="@dimen/space_between_edt" />
                 </LinearLayout>
 
                 <ListView
@@ -150,7 +152,8 @@
                             android:background="@drawable/background_item"
                             android:gravity="center"
                             android:text="@string/multiple"
-                            android:textColor="@color/Black" />
+                            android:textColor="@color/Black"
+                            android:layout_marginLeft="@dimen/dimen_2dp" />
                     </RadioGroup>
                 </LinearLayout>
 
@@ -190,7 +193,8 @@
                                 android:layout_height="40dp"
                                 android:layout_marginStart="5dp"
                                 android:gravity="center"
-                                android:popupBackground="@color/GRAY" />
+                                android:popupBackground="@color/GRAY"
+                                android:layout_marginLeft="5dp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -219,7 +223,8 @@
                                 android:layout_height="40dp"
                                 android:layout_marginStart="5dp"
                                 android:gravity="center"
-                                android:popupBackground="@color/GRAY" />
+                                android:popupBackground="@color/GRAY"
+                                android:layout_marginLeft="5dp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -248,7 +253,8 @@
                                 android:layout_height="40dp"
                                 android:layout_marginStart="5dp"
                                 android:gravity="center"
-                                android:popupBackground="@color/GRAY" />
+                                android:popupBackground="@color/GRAY"
+                                android:layout_marginLeft="5dp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -277,7 +283,8 @@
                                 android:layout_height="40dp"
                                 android:layout_marginStart="5dp"
                                 android:gravity="center"
-                                android:popupBackground="@color/GRAY" />
+                                android:popupBackground="@color/GRAY"
+                                android:layout_marginLeft="5dp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -310,7 +317,8 @@
                                 android:maxLines="3"
                                 android:scrollbars="vertical"
                                 android:text=""
-                                android:textColor="@color/Black" />
+                                android:textColor="@color/Black"
+                                android:layout_marginLeft="5dp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -337,7 +345,8 @@
                                 android:layout_marginStart="5dp"
                                 android:gravity="center"
                                 android:tag="datePicker1"
-                                android:textColor="@android:color/black" />
+                                android:textColor="@android:color/black"
+                                android:layout_marginLeft="5dp" />
 
                             <TextView
                                 android:id="@+id/txt_to_Date"
@@ -390,7 +399,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
-                                    android:padding="5dp"></RadioGroup>
+                                    android:padding="5dp"/>
                             </HorizontalScrollView>
                         </LinearLayout>
 
@@ -420,7 +429,8 @@
                                 android:layout_marginStart="5dp"
                                 android:gravity="start"
                                 android:textColor="@android:color/black"
-                                android:textSize="@dimen/font_small" />
+                                android:textSize="@dimen/font_small"
+                                android:layout_marginLeft="5dp" />
                         </LinearLayout>
                     </LinearLayout>
                 </ScrollView>
@@ -446,7 +456,8 @@
                         android:layout_height="@dimen/add_dialog_header_height"
                         android:layout_marginStart="2dp"
                         android:text="@string/cancel"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        android:layout_marginLeft="2dp" />
                 </LinearLayout>
 
             </RelativeLayout>

@@ -20,7 +20,8 @@
         android:maxLines="1"
         android:padding="3dp"
         android:text=" "
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginLeft="@dimen/skuwise_right_margin" />
 
     <TextView
         android:id="@+id/sih_case"

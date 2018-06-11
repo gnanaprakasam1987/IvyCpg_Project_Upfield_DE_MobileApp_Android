@@ -13,7 +13,7 @@
         android:layout_marginStart="3dp"
         android:singleLine="true"
         android:text="@string/product_name"
-        />
+        android:layout_marginLeft="3dp" />
 
     <EditText
         android:id="@+id/woqty"

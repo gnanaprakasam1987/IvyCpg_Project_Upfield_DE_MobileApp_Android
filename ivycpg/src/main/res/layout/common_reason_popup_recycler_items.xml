@@ -27,5 +27,6 @@
         tools:text="rg tgerg dfgdfgdf g"
         android:hint="@string/remark_hint"
         android:padding="12dp"
-        android:layout_marginStart="12dp" />
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp" />
 </LinearLayout>

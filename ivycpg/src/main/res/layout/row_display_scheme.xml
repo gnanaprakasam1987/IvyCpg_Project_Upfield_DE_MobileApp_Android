@@ -27,7 +27,8 @@
                 android:gravity="start"
                 android:maxLines="1"
                 android:textSize="@dimen/font_small"
-                android:layout_toStartOf="@+id/ivAvailable" />
+                android:layout_toStartOf="@+id/ivAvailable"
+                android:layout_toLeftOf="@+id/ivAvailable" />
 
             <ImageView
                 android:id="@+id/ivAvailable"
@@ -36,7 +37,8 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:src="@drawable/ic_tick_enable"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_alignParentRight="true" />
             <TextView
                 android:id="@+id/text_scheme_desc"
                 style="?attr/customListItemSecondary"
@@ -45,7 +47,8 @@
                 android:gravity="start"
                 android:textSize="@dimen/font_micro_small"
                 android:layout_below="@+id/text_scheme_name"
-                android:layout_toStartOf="@+id/ivAvailable" />
+                android:layout_toStartOf="@+id/ivAvailable"
+                android:layout_toLeftOf="@+id/ivAvailable" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

@@ -28,7 +28,8 @@
                 android:paddingStart="3dp"
                 android:text="@string/invoice_no"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_sz_small"
+                android:paddingLeft="3dp" />
 
             <TextView
                 android:id="@+id/invNoTv"
@@ -38,7 +39,8 @@
                 android:paddingStart="3dp"
                 android:text="12345"
                 android:textColor="?attr/primarycolor"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/font_small"
+                android:paddingLeft="3dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -54,7 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingStart="@dimen/dimens_20dp">
+            android:paddingStart="@dimen/dimens_20dp"
+            android:paddingLeft="@dimen/dimens_20dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -84,7 +87,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingStart="@dimen/dimens_20dp">
+            android:paddingStart="@dimen/dimens_20dp"
+            android:paddingLeft="@dimen/dimens_20dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -126,7 +130,8 @@
                 android:paddingStart="3dp"
                 android:text="@string/quantity"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_sz_small"
+                android:paddingLeft="3dp" />
 
             <TextView
                 android:id="@+id/invQuantityTv"
@@ -136,7 +141,8 @@
                 android:paddingStart="3dp"
                 android:text="12345"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/font_small"
+                android:paddingLeft="3dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -152,7 +158,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingStart="@dimen/dimens_20dp">
+            android:paddingStart="@dimen/dimens_20dp"
+            android:paddingLeft="@dimen/dimens_20dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -183,7 +190,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingStart="@dimen/dimens_20dp">
+            android:paddingStart="@dimen/dimens_20dp"
+            android:paddingLeft="@dimen/dimens_20dp">
 
             <TextView
                 android:layout_width="match_parent"

@@ -12,7 +12,9 @@
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/alertCheckbox"
         android:text="Item Name"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/alertCheckbox" />
 
     <CheckBox
         android:id="@+id/alertCheckbox"
@@ -20,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:clickable="false" />
+        android:clickable="false"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

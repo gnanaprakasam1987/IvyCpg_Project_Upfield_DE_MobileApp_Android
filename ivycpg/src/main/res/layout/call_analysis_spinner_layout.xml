@@ -10,4 +10,5 @@
     android:textSize="@dimen/greyed_text_size"
     android:text="dasjgdjasgdjkasg"
     android:textColor="@color/WHITE"
-    android:background="@drawable/edittext_bottom_border"/>
+    android:background="@drawable/edittext_bottom_border"
+    android:drawableRight="@android:drawable/arrow_down_float" />

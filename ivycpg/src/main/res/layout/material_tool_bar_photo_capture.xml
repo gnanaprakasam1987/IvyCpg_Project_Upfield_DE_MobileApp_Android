@@ -7,8 +7,7 @@
     android:fitsSystemWindows="true"
     android:minHeight="?attr/actionBarSize"
     local:theme="@style/MyToolbarBlue_photo_capture"
-    local:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    >
+    local:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
     <TextView
         android:id="@+id/tv_toolbar_title"
         android:layout_width="wrap_content"
@@ -17,7 +16,6 @@
         android:textColor="@color/toolbar_title"
         android:gravity="start|top"
         android:background="@android:color/transparent"
-        android:text=""
-        />
+        android:text="" />
 
 </android.support.v7.widget.Toolbar>

@@ -20,8 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="10"
-            android:gravity="center_vertical"
-            >
+            android:gravity="center_vertical">
             <TextView
                 android:id="@+id/productname"
                 style="?attr/customListItemPrimary"
@@ -29,16 +28,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="6"
                 android:maxLines="1"
-                android:textColor="@color/black_bg1"
-                />
+                android:textColor="@color/black_bg1" />
 
             <Spinner
                 android:id="@+id/reason"
                 android:layout_width="@dimen/dimen_0dp"
                 android:gravity="center"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
-                />
+                android:layout_weight="4" />
 
         </LinearLayout>
         <View

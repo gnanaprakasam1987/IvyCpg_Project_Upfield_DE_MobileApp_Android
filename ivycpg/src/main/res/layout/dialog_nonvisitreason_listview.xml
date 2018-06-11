@@ -35,7 +35,8 @@
             android:paddingStart="5dp"
             android:textColor="@color/list_item_secondary_text_color"
             android:textSize="@dimen/font_micro_small"
-            tools:text="" />
+            tools:text=""
+            android:paddingLeft="5dp" />
 
 
         <Spinner

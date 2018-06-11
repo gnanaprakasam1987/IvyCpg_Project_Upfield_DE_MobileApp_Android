@@ -13,7 +13,8 @@
         android:orientation="vertical"
         android:paddingBottom="@dimen/dimen_5dp"
         android:paddingStart="@dimen/dimen_5dp"
-        android:paddingTop="@dimen/dimen_5dp">
+        android:paddingTop="@dimen/dimen_5dp"
+        android:paddingLeft="@dimen/dimen_5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,7 +41,8 @@
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/order_id_txt"
@@ -63,7 +65,8 @@
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/order_id_val"
@@ -95,7 +98,8 @@
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/date_txt"
@@ -118,7 +122,8 @@
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/date_val"
@@ -150,7 +155,8 @@
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/due_date_txt"
@@ -172,7 +178,8 @@
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/due_date_val"
@@ -203,7 +210,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/tot_lines_txt"
@@ -223,7 +231,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/tota_lines_val"
@@ -254,7 +263,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/tot_val_txt"
@@ -275,7 +285,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/tot_val"
@@ -306,7 +317,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/tot_vol_txt"
@@ -327,7 +339,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/tot_vol"
@@ -358,7 +371,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/del_status_txt"
@@ -379,7 +393,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/deliveryStatusValue"
@@ -420,7 +435,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/del_date_txt"
@@ -442,7 +458,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/del_date_val"
@@ -473,7 +490,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/invoice_date_txt"
@@ -492,11 +510,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/invoice_date_val"
@@ -527,7 +545,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/invoice_qty_txt"
@@ -549,7 +568,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/invoice_qty_val"
@@ -580,7 +600,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/del_rep_code_txt"
@@ -602,7 +623,8 @@
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/del_rep_code_val"
@@ -738,7 +760,8 @@
             android:layout_marginEnd="@dimen/dimen_2dp"
             android:layout_gravity="center"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginRight="@dimen/dimen_2dp">
 
             <TextView
                 android:id="@+id/inv_view_btn"

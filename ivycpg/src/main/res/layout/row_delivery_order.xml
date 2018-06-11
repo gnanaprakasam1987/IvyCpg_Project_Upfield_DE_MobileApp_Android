@@ -32,7 +32,10 @@
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_toStartOf="@+id/ivInfoicon"
                 android:maxLines="1"
-                android:text="@string/product_name" />
+                android:text="@string/product_name"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="@dimen/list_margin"
+                android:layout_toLeftOf="@+id/ivInfoicon" />
 
         </RelativeLayout>
 

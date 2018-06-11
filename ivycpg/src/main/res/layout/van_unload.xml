@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/van_unload_list_header"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/retake_img_wd_ht"
-    android:id="@+id/van_unload_list_header"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
     <RelativeLayout
         android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_marginLeft="@dimen/skuwise_right_margin"
+        android:layout_marginStart="@dimen/skuwise_right_margin"
         android:layout_weight="1"
-        android:layout_marginStart="@dimen/skuwise_right_margin">
+        android:gravity="center">
 
         <TextView
             android:id="@+id/productName"
@@ -20,14 +21,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|center"
             android:gravity="start|center"
-            android:textStyle="bold"
-           ></TextView>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/stock_and_order_listview_batchno"
             style="?attr/customListItemSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/productName"
             android:layout_gravity="start|center"
@@ -41,41 +42,41 @@
         style="?attr/customListItemPrimary"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textStyle="bold"
-        android:textColor="@color/list_item_secondary_text_color"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:gravity="center"
-        android:text="@string/zero" />
+        android:text="@string/zero"
+        android:textColor="@color/list_item_secondary_text_color"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/productqtyCases"
-        android:layout_weight="1"
         style="@style/EditText_ListItem"
+        android:layout_width="@dimen/list_item_width_medium"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:gravity="center"
         android:padding="@dimen/dimens_2dp"
-        android:layout_width="@dimen/list_item_width_medium"
         android:text="@string/zero" />
 
     <EditText
         android:id="@+id/productqtyouter"
-        android:layout_weight="1"
         style="@style/EditText_ListItem"
-        android:padding="@dimen/dimens_2dp"
-        android:layout_gravity="center"
-        android:gravity="center"
         android:layout_width="@dimen/list_item_width_medium"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="@dimen/dimens_2dp"
         android:text="@string/zero" />
 
     <EditText
         android:id="@+id/productqtyPieces"
-        android:layout_weight="1"
         style="@style/EditText_ListItem"
-        android:padding="@dimen/dimens_2dp"
-        android:layout_gravity="center"
-        android:gravity="center"
         android:layout_width="@dimen/list_item_width_medium"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="@dimen/dimens_2dp"
         android:text="@string/zero" />
 
 </LinearLayout>

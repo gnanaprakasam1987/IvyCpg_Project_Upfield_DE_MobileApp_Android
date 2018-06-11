@@ -16,7 +16,8 @@
         android:textStyle="bold"
         android:layout_weight="1"
         android:layout_marginStart="@dimen/skuwise_right_margin"
-        android:text="@string/product_name" >
+        android:text="@string/product_name"
+        android:layout_marginLeft="@dimen/skuwise_right_margin">
     </TextView>
 
     <TextView

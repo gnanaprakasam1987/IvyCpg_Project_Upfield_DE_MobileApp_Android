@@ -17,7 +17,8 @@
         android:maxLines="1"
         android:padding="3dp"
         android:text="@string/product_name"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/font_small"
+        android:layout_marginLeft="@dimen/list_margin" />
 
     <EditText
         android:id="@+id/stock_and_order_listview_sc_qty"

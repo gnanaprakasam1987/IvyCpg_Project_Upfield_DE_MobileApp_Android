@@ -37,7 +37,8 @@
                     android:text="*"
                     android:textColor="@color/RED"
                     android:textSize="@dimen/text_sz_medium"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:paddingLeft="@dimen/dimen_2dp" />
 
                 <TextView
                     android:id="@+id/questionno"
@@ -48,7 +49,8 @@
                     android:textColor="#ffffff"
                     android:textSize="@dimen/text_sz_medium"
                     android:textStyle="bold"
-                    android:visibility="gone"></TextView>
+                    android:visibility="gone"
+                    android:layout_marginLeft="5dp" />
 
                 <TextView
                     android:id="@+id/questionTV"
@@ -57,7 +59,9 @@
                     android:layout_marginStart="1dp"
                     android:layout_toEndOf="@+id/questionno"
                     android:textColor="@color/DependentBlack"
-                    android:textSize="@dimen/text_sz_medium"></TextView>
+                    android:textSize="@dimen/text_sz_medium"
+                    android:layout_marginLeft="1dp"
+                    android:layout_toRightOf="@+id/questionno" />
 
             </LinearLayout>
 
@@ -75,7 +79,9 @@
                     android:layout_marginEnd="10dp"
                     android:layout_marginTop="3dp"
                     android:orientation="horizontal"
-                    android:padding="2dp">
+                    android:padding="2dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="10dp">
 
                     <RadioGroup
                         android:id="@+id/radiogroup"
@@ -113,7 +119,8 @@
                 android:gravity="center"
                 android:layout_alignParentEnd="true"
                 android:text="0"
-                android:textSize="@dimen/highlight_normal" />
+                android:textSize="@dimen/highlight_normal"
+                android:layout_alignParentRight="true" />
 
             <LinearLayout
                 android:id="@+id/ll_photo"
@@ -122,7 +129,8 @@
                 android:layout_below="@+id/scoreTV"
                 android:gravity="center"
                 android:layout_alignParentEnd="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_alignParentRight="true">
 
                 <TextView
                     android:id="@+id/minphotoTV"
@@ -173,7 +181,8 @@
                                     android:textColor="?attr/colorPrimary"
                                     android:textSize="@dimen/font_nano_small"
                                     android:textStyle="bold"
-                                    android:visibility="gone" />
+                                    android:visibility="gone"
+                                    android:layout_alignRight="@id/imgBtn" />
 
 
                             </RelativeLayout>
@@ -191,7 +200,7 @@
                             <View
                                 android:layout_width="@dimen/dimen_1dp"
                                 android:layout_height="20dp"
-                                android:background="@color/new_grey"></View>
+                                android:background="@color/new_grey"/>
 
                         </LinearLayout>
 
@@ -221,7 +230,8 @@
             android:layout_width="@dimen/dimen_30dp"
             android:layout_height="@dimen/dimen_30dp"
             android:layout_alignParentEnd="true"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:layout_alignParentRight="true">
 
             <com.ivy.sd.png.view.SlantView
                 android:id="@+id/slant_view_bg"
@@ -239,6 +249,6 @@
         android:id="@+id/subqLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical"/>
 
 </LinearLayout>

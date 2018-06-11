@@ -35,7 +35,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/circular_textview_filled"
-                android:paddingEnd="@dimen/dimen_20dp" />
+                android:paddingEnd="@dimen/dimen_20dp"
+                android:paddingRight="@dimen/dimen_20dp" />
 
             <TextView
                 android:id="@+id/rank_count"
@@ -49,7 +50,9 @@
                 android:textColor="#000"
                 android:textSize="@dimen/font_nano_small"
                 android:textStyle="bold"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_alignRight="@id/btn"
+                android:paddingLeft="@dimen/mvprankpaddingright" />
 
         </RelativeLayout>
 

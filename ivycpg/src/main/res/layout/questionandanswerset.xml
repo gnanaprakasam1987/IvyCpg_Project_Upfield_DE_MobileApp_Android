@@ -25,7 +25,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/survey_group_margin_left"
                 android:textSize="@dimen/font_large"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginLeft="@dimen/survey_group_margin_left" />
 
             <TextView
                 android:layout_width="fill_parent"
@@ -52,7 +53,8 @@
                     android:layout_marginBottom="3dp"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/survey_group_margin_height"
-                    android:paddingTop="@dimen/survey_group_margin_height">
+                    android:paddingTop="@dimen/survey_group_margin_height"
+                    android:paddingLeft="@dimen/survey_group_margin_height">
 
                     <TextView
                         android:id="@+id/imp"
@@ -73,7 +75,8 @@
                         android:gravity="center"
                         android:text="1"
                         android:textSize="@dimen/font_small"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_marginLeft="2dp" />
 
 
                     <TextView
@@ -85,7 +88,9 @@
                         android:layout_toEndOf="@+id/questionno"
                         android:padding="@dimen/list_item_padding"
                         android:text="Thats the question Description text?"
-                        android:textSize="@dimen/font_small" />
+                        android:textSize="@dimen/font_small"
+                        android:layout_marginLeft="1dp"
+                        android:layout_toRightOf="@+id/questionno" />
                 </LinearLayout>
 
 
@@ -103,7 +108,9 @@
                     android:layout_marginStart="@dimen/survey_answer_left"
                     android:layout_marginTop="@dimen/list_margin"
                     android:orientation="horizontal"
-                    android:padding="2dp">
+                    android:padding="2dp"
+                    android:layout_marginLeft="@dimen/survey_answer_left"
+                    android:layout_marginRight="10dp">
 
                     <RadioGroup
                         android:id="@+id/radiogroup"
@@ -136,7 +143,8 @@
                     android:layout_alignParentEnd="true"
                     android:gravity="center"
                     android:text="0"
-                    android:textSize="@dimen/highlight_normal" />
+                    android:textSize="@dimen/highlight_normal"
+                    android:layout_alignParentRight="true" />
 
                 <LinearLayout
                     android:id="@+id/ll_photo"
@@ -145,7 +153,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_below="@+id/scoreTV"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_alignParentRight="true">
 
                     <TextView
                         android:id="@+id/minphotoTV"
@@ -197,9 +206,8 @@
                                         android:textColor="?attr/colorPrimary"
                                         android:textSize="@dimen/font_nano_small"
                                         android:textStyle="bold"
-                                        android:visibility="gone" />
-
-
+                                        android:visibility="gone"
+                                        android:layout_alignRight="@id/imgBtn" />
                                 </RelativeLayout>
                             </LinearLayout>
 
@@ -266,7 +274,8 @@
                 android:layout_width="@dimen/dimen_30dp"
                 android:layout_height="@dimen/dimen_30dp"
                 android:layout_alignParentEnd="true"
-                android:visibility="visible">
+                android:visibility="visible"
+                android:layout_alignParentRight="true">
 
                 <com.ivy.sd.png.view.SlantView
                     android:id="@+id/slant_view_bg"
@@ -285,7 +294,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_30dp"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/dimen_30dp" />
 
     </LinearLayout>
 

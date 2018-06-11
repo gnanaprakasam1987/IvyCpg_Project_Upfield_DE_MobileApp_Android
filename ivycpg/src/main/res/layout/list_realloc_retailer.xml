@@ -29,11 +29,10 @@
                     android:id="@+id/tv_present"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/dimen_4dp"
                     android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_marginStart="@dimen/dimen_4dp"
                     android:layout_weight="4"
-                    android:textSize="@dimen/font_small"
-                    />
+                    android:textSize="@dimen/font_small" />
 
                 <TextView
                     android:id="@+id/tv_retailer_count"
@@ -53,7 +52,7 @@
                     android:id="@+id/fl_retailer_count"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-
+                    android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
                     android:visibility="gone">
 
@@ -61,10 +60,7 @@
                         android:id="@+id/fab2"
                         android:layout_width="@dimen/dimen_30dp"
                         android:layout_height="@dimen/dimen_30dp"
-
                         android:layout_gravity="center"
-
-
                         app:backgroundTint="#1E88E5"
                         app:elevation="1dp"
                         app:pressedTranslationZ="6dp" />
@@ -78,9 +74,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_1dp"
                 android:layout_marginBottom="3dp"
-                android:layout_marginStart="@dimen/dimen_4dp"
                 android:layout_marginEnd="@dimen/dimen_4dp"
-
+                android:layout_marginStart="@dimen/dimen_4dp"
                 android:background="@color/GRAY" />
 
             <LinearLayout
@@ -88,9 +83,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginStart="4dp"
-                android:orientation="vertical"></LinearLayout>
-
-
+                android:orientation="vertical"
+                android:layout_marginLeft="4dp"/>
         </LinearLayout>
 
 

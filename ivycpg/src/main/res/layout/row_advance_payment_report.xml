@@ -28,7 +28,8 @@
             android:singleLine="true"
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small"/>
+            android:textSize="@dimen/font_micro_small"
+            android:paddingLeft="3dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -52,7 +53,8 @@
                 android:paddingStart="3dp"
                 android:text="@string/advance_payment"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small"/>
+                android:textSize="@dimen/text_sz_small"
+                android:paddingLeft="3dp" />
 
             <TextView
                 android:id="@+id/cashMode"
@@ -63,7 +65,8 @@
                 android:paddingStart="3dp"
                 android:text=""
                 android:textColor="?attr/primarycolor"
-                android:textSize="@dimen/font_nano_small"/>
+                android:textSize="@dimen/font_nano_small"
+                android:paddingLeft="3dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -80,7 +83,8 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_gravity="center_vertical"
-            android:paddingStart="@dimen/dimens_10dp">
+            android:paddingStart="@dimen/dimens_10dp"
+            android:paddingLeft="@dimen/dimens_10dp">
 
             <TextView
                 android:id="@+id/date"
@@ -89,7 +93,8 @@
                 android:paddingStart="4dp"
                 android:text="@string/date"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small"/>
+                android:textSize="@dimen/text_sz_small"
+                android:paddingLeft="4dp" />
 
             <TextView
                 android:id="@+id/invDateTv"
@@ -99,7 +104,8 @@
                 android:paddingStart="4dp"
                 android:text=""
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_nano_small"/>
+                android:textSize="@dimen/font_nano_small"
+                android:paddingLeft="4dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -116,7 +122,8 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_gravity="center_vertical"
-            android:paddingStart="@dimen/dimens_10dp">
+            android:paddingStart="@dimen/dimens_10dp"
+            android:paddingLeft="@dimen/dimens_10dp">
 
             <TextView
                 android:id="@+id/invoiceAmt"
@@ -134,7 +141,8 @@
                 android:paddingEnd="4dp"
                 android:text="0000"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_small"/>
+                android:textSize="@dimen/font_small"
+                android:paddingRight="4dp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

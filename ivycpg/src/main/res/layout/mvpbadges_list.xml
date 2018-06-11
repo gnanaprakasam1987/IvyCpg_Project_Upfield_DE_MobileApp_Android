@@ -23,7 +23,8 @@
         android:layout_height="@dimen/mvpbadgewidth"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/tv_badge_name"
-        android:paddingStart="@dimen/mvpbadgepadding"></ImageView>
+        android:paddingStart="@dimen/mvpbadgepadding"
+        android:paddingLeft="@dimen/mvpbadgepadding" />
 
     <TextView
         android:id="@+id/badge_count"

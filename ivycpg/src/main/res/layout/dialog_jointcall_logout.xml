@@ -46,14 +46,16 @@
                 android:layout_marginStart="1dp"
                 android:onClick="onClick"
                 android:text="@string/cancel"
-                android:textColor="@color/Black" />
+                android:textColor="@color/Black"
+                android:layout_marginLeft="1dp" />
 
             <Button
                 android:id="@+id/btn_yes"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_marginStart="@dimen/dimen_10dp"
                 android:onClick="onClick"
-                android:text="@string/yes" />
+                android:text="@string/yes"
+                android:layout_marginLeft="@dimen/dimen_10dp" />
         </LinearLayout>
     </LinearLayout>
 

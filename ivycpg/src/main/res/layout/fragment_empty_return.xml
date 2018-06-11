@@ -54,7 +54,8 @@
                                 android:layout_marginStart="@dimen/dimen_5dp"
                                 android:gravity="start"
                                 android:layout_gravity="center"
-                                android:text="@string/product_name" />
+                                android:text="@string/product_name"
+                                android:layout_marginLeft="@dimen/dimen_5dp" />
 
                             <TextView
                                 android:id="@+id/qty"

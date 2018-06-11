@@ -72,7 +72,7 @@
             android:numColumns="3"
             android:padding="5dp"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="5dp"></GridView>
+            android:verticalSpacing="5dp"/>
 
         <TextView
             android:id="@+id/chooseBrandTitle"
@@ -97,7 +97,7 @@
             android:numColumns="3"
             android:padding="5dp"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="5dp"></GridView>
+            android:verticalSpacing="5dp"/>
 
         <android.support.v7.widget.CardView
             android:id="@+id/splFilterCard"

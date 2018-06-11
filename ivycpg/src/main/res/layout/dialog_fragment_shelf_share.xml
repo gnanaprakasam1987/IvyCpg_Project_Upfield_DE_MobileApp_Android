@@ -57,7 +57,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/values_each_margin"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginRight="@dimen/values_each_margin">
 
                         <TextView
                             android:id="@+id/tvNorows"
@@ -87,7 +88,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/values_each_margin"
                         android:layout_toEndOf="@+id/ll1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginRight="@dimen/values_each_margin"
+                        android:layout_toRightOf="@+id/ll1">
 
                         <TextView
                             android:id="@+id/tvNoColumns"
@@ -115,7 +118,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toEndOf="@+id/ll2"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_toRightOf="@+id/ll2">
 
                         <TextView
                             android:id="@+id/tvBlockLength"
@@ -146,7 +150,9 @@
                         android:layout_marginEnd="@dimen/row_top_margin"
                         android:text="@string/btn_create"
                         android:textAllCaps="false"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/row_top_margin" />
                 </RelativeLayout>
 
             </LinearLayout>

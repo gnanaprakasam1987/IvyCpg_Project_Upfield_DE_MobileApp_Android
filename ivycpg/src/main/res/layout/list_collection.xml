@@ -26,7 +26,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimens_14dp"
-                android:layout_weight="6">
+                android:layout_weight="6"
+                android:layout_marginLeft="@dimen/dimens_14dp">
 
                 <TextView
                     android:id="@+id/tv_invoice_no"
@@ -71,7 +72,8 @@
                         android:gravity="start|center_vertical"
                         android:text="asdlfjasdf"
                         android:textColor="#212121"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_toRightOf="@+id/tv_invoice_date" />
 
                 </RelativeLayout>
 

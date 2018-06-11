@@ -23,6 +23,7 @@
         android:visibility="gone"
         android:gravity="center_horizontal|center_vertical|center"
         android:textSize="8sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_alignRight="@id/myButton" />
 
 </RelativeLayout>

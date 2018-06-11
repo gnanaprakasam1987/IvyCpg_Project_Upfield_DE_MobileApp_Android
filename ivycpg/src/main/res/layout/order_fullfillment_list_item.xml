@@ -32,7 +32,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/orderno"
                 android:layout_alignParentStart="true"
-                android:layout_centerInParent="true">
+                android:layout_centerInParent="true"
+                android:layout_alignParentLeft="true">
 
                 <TextView
                     style="?attr/customListItemSecondary"
@@ -67,7 +68,9 @@
                 android:layout_centerInParent="true"
                 android:layout_below="@id/orderno"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:layout_toEndOf="@id/value_group">
+                android:layout_toEndOf="@id/value_group"
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_toRightOf="@id/value_group">
 
                 <TextView
                     style="?attr/customListItemSecondary"
@@ -155,7 +158,8 @@
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
             android:padding="2dp"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:layout_alignParentRight="true" />
 
         <Button
             android:id="@+id/deliverydate"
@@ -170,7 +174,9 @@
             android:gravity="start|center"
             android:inputType="none"
             android:maxLength="12"
-            android:text="@string/delivery_date_label" />
+            android:text="@string/delivery_date_label"
+            android:layout_toLeftOf="@id/spinner"
+            android:layout_marginLeft="@dimen/comp_margin" />
 
     </RelativeLayout>
 </LinearLayout>

@@ -18,7 +18,8 @@
         android:gravity="start|center"
         android:maxLines="1"
         android:text="@string/product_name"
-        android:layout_weight="4"/>
+        android:layout_weight="4"
+        android:layout_marginRight="@dimen/dimen_2dp" />
 
     <TextView
         android:id="@+id/tv_availability"
@@ -32,7 +33,8 @@
         android:text="@string/zero"
         android:layout_weight="3"
         android:gravity="center"
-        />
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="@dimen/dimen_2dp" />
 
     <TextView
         android:id="@+id/tv_reason"
@@ -44,6 +46,8 @@
         android:layout_toEndOf="@+id/stock_and_order_listview_mrp"
         android:maxLines="1"
         android:layout_weight="3"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:layout_marginRight="@dimen/dimen_2dp"
+        android:layout_toRightOf="@+id/stock_and_order_listview_mrp" />
 
 </LinearLayout>

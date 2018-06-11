@@ -4,248 +4,257 @@
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:background="@drawable/list_selector">
+
     <android.support.v7.widget.CardView
         android:id="@+id/cardviewlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         card_view:cardBackgroundColor="@color/WHITE"
         card_view:cardCornerRadius="0dp"
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="true"
         card_view:cardUseCompatPadding="true"
-        card_view:contentPadding="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
-    <RelativeLayout
-        android:id="@+id/widget73"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/footer">
+        card_view:contentPadding="0dp">
 
-    <RelativeLayout
-        android:id="@+id/layout_nameinvoice"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spinner_layout_height"
-        android:layout_gravity="center">
+        <RelativeLayout
+            android:id="@+id/widget73"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/footer">
 
-    <TextView
-        android:id="@+id/PRDNAME"
-        android:textColor="@android:color/black"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="2dp"
-        android:text="@string/product_name"
-        android:textSize="@dimen/font_micro_small"
-        android:layout_marginStart="@dimen/store_margin_top"
-android:layout_marginTop="@dimen/list_margin"
-        android:maxLines="1">
+            <RelativeLayout
+                android:id="@+id/layout_nameinvoice"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spinner_layout_height"
+                android:layout_gravity="center">
 
-    </TextView>
-        <TextView
-            android:id="@+id/invoice_number"
-            android:textColor="@color/BLUE"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxEms="10"
-            android:ellipsize="end"
-            android:text="@string/dist"
-            android:textSize="@dimen/font_micro_small"
-            android:layout_marginStart="@dimen/store_margin_top"
-            android:layout_below="@+id/PRDNAME"/>
-        <TextView
-            android:id="@+id/PRDMRP"
-            android:textColor="@android:color/black"
-            android:layout_width="@dimen/list_item_width_large"
-            android:layout_height="35dp"
-            android:gravity="center"
-            android:padding="2dp"
-            android:text="@string/mrp"
-            android:textSize="@dimen/font_large"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"/>
+                <TextView
+                    android:id="@+id/PRDNAME"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/store_margin_top"
+                    android:layout_marginStart="@dimen/store_margin_top"
+                    android:layout_marginTop="@dimen/list_margin"
+                    android:maxLines="1"
+                    android:padding="2dp"
+                    android:text="@string/product_name"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/font_micro_small">
 
+                </TextView>
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/invoice_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/PRDNAME"
+                    android:layout_marginStart="@dimen/store_margin_top"
+                    android:ellipsize="end"
+                    android:maxEms="10"
+                    android:text="@string/dist"
+                    android:textColor="@color/BLUE"
+                    android:textSize="@dimen/font_micro_small"
+                    android:layout_marginLeft="@dimen/store_margin_top" />
 
-        <View
-            android:id="@+id/invoiceview_doted_line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_2dp"
-            android:layout_marginBottom="@dimen/list_item_inter_margin"
-            android:layout_below="@+id/layout_nameinvoice"
-            android:background="@drawable/line_dotted"/>
-<LinearLayout
-    android:id="@+id/linearLayout_label"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_below="@+id/layout_nameinvoice"
-    android:layout_marginTop="5dp">
-
-    <TextView
-        android:id="@+id/lpctxt"
-        android:layout_width="@dimen/list_item_width"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="2dp"
-        android:text="@string/lines"
-        android:textStyle="bold"
-        android:layout_weight="25"
-        android:textColor="@color/kpi_value_text_color"
-        android:textSize="@dimen/text_sz_small"
-        />
-
-    <TextView
-        android:id="@+id/disttxtview"
-        android:layout_width="@dimen/list_item_width"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="2dp"
-        android:text="@string/pre_post"
-        android:textSize="@dimen/text_sz_small"
-        android:layout_toEndOf="@+id/lpc"
-        android:textStyle="bold"
-        android:textColor="@color/kpi_value_text_color"
-        android:layout_weight="25"/>
+                <TextView
+                    android:id="@+id/PRDMRP"
+                    android:layout_width="@dimen/list_item_width_large"
+                    android:layout_height="35dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/mrp"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/font_large"
+                    android:layout_alignParentRight="true" />
 
 
-    <TextView
-        android:id="@+id/tv_weighttxt"
-        android:textColor="@color/kpi_value_text_color"
-        android:layout_width="@dimen/list_item_width"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="2dp"
-        android:text="@string/weight"
-        android:textStyle="bold"
-        android:layout_weight="25"
-        android:textSize="@dimen/text_sz_small"/>
+            </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_tax_valuetxtview"
-        android:textColor="@color/kpi_value_text_color"
-        android:layout_width="@dimen/list_item_width"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="2dp"
-        android:text="@string/tax_value"
-        android:textSize="@dimen/text_sz_small"
-        android:textStyle="bold"
-        android:layout_weight="25"
-        />
+            <View
+                android:id="@+id/invoiceview_doted_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_2dp"
+                android:layout_below="@+id/layout_nameinvoice"
+                android:layout_marginBottom="@dimen/list_item_inter_margin"
+                android:background="@drawable/line_dotted" />
 
-    <TextView
-        android:id="@+id/tv_priceoff_valuetxt"
-        android:textColor="@color/kpi_value_text_color"
-        android:layout_width="@dimen/list_item_width"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="2dp"
-        android:text="@string/discount"
-        android:textSize="@dimen/text_sz_small"
-        android:textStyle="bold"
-        android:layout_weight="25"/>
-
-
-    <LinearLayout
-        android:id="@+id/ll_cancel"
-        android:layout_width="@dimen/list_item_width"
-        android:layout_height="35dp"
-        android:gravity="center"
-        android:padding="2dp">
-
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:focusable="false"
-            android:background="@drawable/icon_close"
-            />
-
-    </LinearLayout>
-</LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout_values"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@+id/linearLayout_label"
-            android:layout_marginTop="@dimen/report_minus5dp"
-           >
-
-            <TextView
-                android:id="@+id/lpc"
-                android:textColor="@color/FullBlack"
-                android:layout_width="@dimen/list_item_width"
+            <LinearLayout
+                android:id="@+id/linearLayout_label"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/rp"
-                android:maxLines="5"
-                android:textSize="@dimen/font_small"
-                android:layout_below="@+id/lpctxt"
-                android:layout_weight="25"
-                />
+                android:layout_below="@+id/layout_nameinvoice"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/dist_txt"
-                android:textColor="@color/FullBlack"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/pre_post"
-                android:textSize="@dimen/font_small"
-                android:layout_toEndOf="@+id/lpc"
-                android:layout_below="@+id/disttxtview"
-                android:layout_weight="25"/>
-            <TextView
-                android:id="@+id/tv_weight"
-                android:textColor="@color/FullBlack"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/weight"
-                android:maxLines="8"
-                android:textSize="@dimen/font_small"
-                android:layout_toEndOf="@+id/dist_txt"
-                android:layout_below="@+id/tv_weighttxt"
-                android:layout_weight="25"/>
-            <TextView
-                android:id="@+id/tv_tax_value"
-                android:textColor="@color/FullBlack"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/tax_value"
-                android:textSize="@dimen/font_small"
-                android:layout_toEndOf="@+id/tv_weight"
-                android:layout_below="@+id/tv_tax_valuetxtview"
-                android:layout_weight="25"
-                android:maxLines="5"
-                />
+                <TextView
+                    android:id="@+id/lpctxt"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/lines"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_priceoff_value"
-                android:textColor="@color/FullBlack"
-                android:layout_width="@dimen/list_item_width"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/weight"
-                android:textSize="@dimen/font_small"
-                android:layout_toEndOf="@+id/tv_tax_value"
-                android:layout_below="@+id/tv_priceoff_valuetxt"
-                android:layout_weight="25"
-                android:maxLines="5"/>
+                <TextView
+                    android:id="@+id/disttxtview"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/lpc"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/pre_post"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold"
+                    android:layout_toRightOf="@+id/lpc" />
 
-        </LinearLayout>
-</RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_weighttxt"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/weight"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_tax_valuetxtview"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/tax_value"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_priceoff_valuetxt"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/discount"
+                    android:textColor="@color/kpi_value_text_color"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+
+                <LinearLayout
+                    android:id="@+id/ll_cancel"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="35dp"
+                    android:gravity="center"
+                    android:padding="2dp">
+
+                    <Button
+                        android:id="@+id/btn_cancel"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_close"
+                        android:focusable="false" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout_values"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayout_label"
+                android:layout_marginTop="@dimen/report_minus5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lpc"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lpctxt"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:maxLines="5"
+                    android:padding="2dp"
+                    android:text="@string/rp"
+                    android:textColor="@color/FullBlack"
+                    android:textSize="@dimen/font_small" />
+
+                <TextView
+                    android:id="@+id/dist_txt"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/disttxtview"
+                    android:layout_toEndOf="@+id/lpc"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/pre_post"
+                    android:textColor="@color/FullBlack"
+                    android:textSize="@dimen/font_small"
+                    android:layout_toRightOf="@+id/lpc" />
+
+                <TextView
+                    android:id="@+id/tv_weight"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_weighttxt"
+                    android:layout_toEndOf="@+id/dist_txt"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:maxLines="8"
+                    android:padding="2dp"
+                    android:text="@string/weight"
+                    android:textColor="@color/FullBlack"
+                    android:textSize="@dimen/font_small"
+                    android:layout_toRightOf="@+id/dist_txt" />
+
+                <TextView
+                    android:id="@+id/tv_tax_value"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_tax_valuetxtview"
+                    android:layout_toEndOf="@+id/tv_weight"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:maxLines="5"
+                    android:padding="2dp"
+                    android:text="@string/tax_value"
+                    android:textColor="@color/FullBlack"
+                    android:textSize="@dimen/font_small"
+                    android:layout_toRightOf="@+id/tv_weight" />
+
+                <TextView
+                    android:id="@+id/tv_priceoff_value"
+                    android:layout_width="@dimen/list_item_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_priceoff_valuetxt"
+                    android:layout_toEndOf="@+id/tv_tax_value"
+                    android:layout_weight="25"
+                    android:gravity="center"
+                    android:maxLines="5"
+                    android:padding="2dp"
+                    android:text="@string/weight"
+                    android:textColor="@color/FullBlack"
+                    android:textSize="@dimen/font_small"
+                    android:layout_toRightOf="@+id/tv_tax_value" />
+
+            </LinearLayout>
+        </RelativeLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

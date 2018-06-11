@@ -3,8 +3,8 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/list_margin"
     android:layout_marginEnd="@dimen/list_margin"
+    android:layout_marginStart="@dimen/list_margin"
     card_view:cardBackgroundColor="@color/WHITE"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="2dp"
@@ -55,7 +55,8 @@
                 android:id="@+id/llPiece"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/card_margin">
+                android:layout_marginEnd="@dimen/card_margin"
+                android:layout_marginRight="@dimen/card_margin">
 
                 <TextView
                     android:id="@+id/pcsTitle"
@@ -64,6 +65,7 @@
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
+                    android:paddingRight="5dp"
                     android:tag="item_piece"
                     android:text="@string/item_piece"
                     android:textColor="@color/GRAY_TEXT"
@@ -74,6 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin"
                     android:text=":"
                     android:textSize="@dimen/greyed_text_size" />
 
@@ -84,8 +87,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
+                    android:paddingRight="5dp"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
                     android:textSize="@dimen/value_text_size" />
@@ -103,7 +108,8 @@
                 android:id="@+id/llCase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/card_margin">
+                android:layout_marginEnd="@dimen/card_margin"
+                android:layout_marginRight="@dimen/card_margin">
 
                 <TextView
                     android:id="@+id/caseTitle"
@@ -112,6 +118,7 @@
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
+                    android:paddingRight="5dp"
                     android:tag="item_case"
                     android:text="@string/item_case"
                     android:textColor="@color/GRAY_TEXT"
@@ -122,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin"
                     android:text=":"
                     android:textSize="@dimen/greyed_text_size" />
 
@@ -132,8 +140,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
+                    android:paddingRight="5dp"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
                     android:textSize="@dimen/value_text_size" />
@@ -152,7 +162,8 @@
                 android:id="@+id/llOuter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/card_margin">
+                android:layout_marginEnd="@dimen/card_margin"
+                android:layout_marginRight="@dimen/card_margin">
 
                 <TextView
                     android:id="@+id/outercaseTitle"
@@ -161,6 +172,7 @@
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
+                    android:paddingRight="5dp"
                     android:tag="outer_case"
                     android:text="@string/item_outer"
                     android:textColor="@color/GRAY_TEXT"
@@ -171,6 +183,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin"
                     android:text=":"
                     android:textSize="@dimen/greyed_text_size" />
 
@@ -181,8 +194,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin"
                     android:maxLines="1"
                     android:paddingEnd="5dp"
+                    android:paddingRight="5dp"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
                     android:textSize="@dimen/value_text_size" />
