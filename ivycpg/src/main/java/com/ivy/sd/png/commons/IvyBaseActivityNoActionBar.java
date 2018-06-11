@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,13 +44,12 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        SharedPreferences sharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(this);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         try {
@@ -65,15 +66,22 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+
+        /*Local Configuration Change Language and layout direction */
         Configuration config = new Configuration();
         Locale locale = config.locale;
-        if (!Locale.getDefault().equals(
-                sharedPrefs.getString("languagePref", LANGUAGE))) {
+        if (!Locale.getDefault().equals(sharedPrefs.getString("languagePref", LANGUAGE))) {
             locale = new Locale(sharedPrefs.getString("languagePref", LANGUAGE).substring(0, 2));
             Locale.setDefault(locale);
             config.locale = locale;
-            getBaseContext().getResources().updateConfiguration(config,
-                    getBaseContext().getResources().getDisplayMetrics());
+            getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+
+            /*Below code used to change the layout direction */
+            if(locale.getLanguage().equalsIgnoreCase("ar"))
+                layoutDirection(View.LAYOUT_DIRECTION_RTL);
+            else
+                layoutDirection(View.LAYOUT_DIRECTION_LTR);
+
         }
 
         preparePermissionGroupName();
@@ -85,6 +93,17 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             nfcManager.onActivityCreate();
         }
         bmodel.useNetworkProvidedValues();
+    }
+
+    /*This is method is used to change the layout direction
+     params 0  or 1
+     View.LAYOUT_DIRECTION_RTL 1
+     View.LAYOUT_DIRECTION_LTR 0
+     */
+    private void layoutDirection(int view ){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            IvyBaseActivityNoActionBar.this.getWindow().getDecorView().setLayoutDirection(view);
+        }
     }
 
     private void preparePermissionGroupName() {
