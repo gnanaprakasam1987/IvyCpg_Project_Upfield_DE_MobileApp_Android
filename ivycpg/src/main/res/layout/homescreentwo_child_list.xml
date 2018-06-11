@@ -46,7 +46,9 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/activity_margin3"
         android:src="@drawable/activity_icon_next"
-        android:tint="#ffffff" />
+        android:tint="#ffffff"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/activity_margin3" />
 
     <TextView
         android:id="@+id/activityName"
@@ -58,6 +60,8 @@
         android:layout_toStartOf="@id/img_arrow"
         android:layout_toEndOf="@id/activity_icon1"
         android:textColor="#FFFFFF"
-        android:textSize="@dimen/sub_activity_name_text_size" />
+        android:textSize="@dimen/sub_activity_name_text_size"
+        android:layout_toLeftOf="@id/img_arrow"
+        android:layout_toRightOf="@id/activity_icon1" />
 
 </RelativeLayout>

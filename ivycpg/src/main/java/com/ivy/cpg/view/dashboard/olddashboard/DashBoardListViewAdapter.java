@@ -515,10 +515,10 @@ public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardList
             } else {
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                            R.id.balancetv).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.balancetv))
+                            R.id.balance_title).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.balance_title))
                                 .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(view.findViewById(R.id.balancetv)
+                                        .applyLabels(view.findViewById(R.id.balance_title)
                                                 .getTag()));
                 } catch (Exception e) {
                     Commons.printException(e + "");

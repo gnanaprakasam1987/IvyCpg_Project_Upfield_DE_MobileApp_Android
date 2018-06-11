@@ -42,7 +42,8 @@
             android:layout_below="@+id/orderPRODNAME"
             android:padding="2dp"
             android:text="@string/mrp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_alignParentLeft="true" />
 
         <TextView
             android:id="@+id/OU_Type"
@@ -63,7 +64,8 @@
             android:layout_below="@+id/orderPRODNAME"
             android:layout_toEndOf="@+id/OU_Type"
             android:padding="2dp"
-            android:text="@string/ppq" />
+            android:text="@string/ppq"
+            android:layout_toRightOf="@+id/OU_Type" />
 
         <TextView
             android:id="@+id/msq"
@@ -74,7 +76,8 @@
             android:layout_toEndOf="@+id/ppq"
             android:padding="2dp"
             android:text="@string/msq"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/ppq" />
     </RelativeLayout>
 
     <TextView

@@ -126,7 +126,8 @@
                     android:src="@drawable/barcode_scan"
                     android:visibility="visible"
                     app:backgroundTint="@color/floating_bg"
-                    app:borderWidth="0dp" />
+                    app:borderWidth="0dp"
+                    android:layout_alignParentRight="true" />
 
                 <LinearLayout
                     android:id="@+id/ll_keypad"
@@ -159,7 +160,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:text="@string/save"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:layout_alignParentRight="true" />
         </RelativeLayout>
 
     </RelativeLayout>

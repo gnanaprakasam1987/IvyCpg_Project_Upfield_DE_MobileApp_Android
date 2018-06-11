@@ -31,7 +31,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="5dp">
 
                 <TextView
                     android:id="@+id/tv_title_tos_amount"
@@ -66,7 +67,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="5dp">
 
                 <TextView
                     android:id="@+id/tv_title_pending_bills"
@@ -100,7 +102,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="5dp">
 
                 <TextView
                     android:id="@+id/tv_title_due_bill"
@@ -174,7 +177,8 @@
                 android:layout_toEndOf="@id/paybtn"
                 android:text="@string/close"
                 android:textAllCaps="false"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_toRightOf="@id/paybtn" />
 
         </LinearLayout>
     </RelativeLayout>

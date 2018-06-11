@@ -42,7 +42,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
                     android:ellipsize="marquee"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:layout_marginRight="@dimen/dimen_2dp" />
 
                 <TextView
                     android:id="@+id/prdcode_tv"
@@ -51,7 +52,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
                     android:ellipsize="marquee"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:layout_marginRight="@dimen/dimen_2dp" />
 
                 <TextView
                     android:id="@+id/tv_srp"
@@ -93,7 +95,8 @@
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="8"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_2dp" />
 
             <EditText
                 android:id="@+id/ooprice"
@@ -103,7 +106,8 @@
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="8"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_2dp" />
 
             <EditText
                 android:id="@+id/pcprice"
@@ -113,7 +117,8 @@
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="8"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_2dp" />
         </LinearLayout>
 
         <RelativeLayout
@@ -149,14 +154,16 @@
             android:layout_marginTop="@dimen/list_item_inter_margin"
             android:gravity="center"
             android:prompt="@string/reason"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_alignParentLeft="true" />
 
         <LinearLayout
             android:id="@+id/ll_prev_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/view_dotted_line">
+            android:layout_below="@+id/view_dotted_line"
+            android:layout_alignParentRight="true">
 
             <TextView
                 android:id="@+id/prev_price_label"
@@ -179,7 +186,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_8dp">
 
 
                 <TextView
@@ -190,7 +198,8 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/ca" />
+                    android:text="@string/ca"
+                    android:layout_marginRight="@dimen/dimen_4dp" />
 
                 <TextView
                     android:id="@+id/prev_ca"
@@ -208,7 +217,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_8dp">
 
                 <TextView
                     android:id="@+id/prev_oo_label"
@@ -218,7 +228,8 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/ou" />
+                    android:text="@string/ou"
+                    android:layout_marginRight="@dimen/dimen_4dp" />
 
                 <TextView
                     android:id="@+id/prev_oo"
@@ -236,7 +247,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_8dp">
 
                 <TextView
                     android:id="@+id/prev_pc_label"
@@ -246,7 +258,8 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/pc" />
+                    android:text="@string/pc"
+                    android:layout_marginRight="@dimen/dimen_4dp" />
 
                 <TextView
                     android:id="@+id/prev_pc"
@@ -265,7 +278,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/ll_prev_price">
+            android:layout_below="@+id/ll_prev_price"
+            android:layout_alignParentRight="true">
 
             <TextView
                 android:id="@+id/prev_mrp_label"
@@ -288,7 +302,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_8dp">
 
                 <TextView
                     android:id="@+id/prev_mrp_ca_label"
@@ -298,7 +313,8 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/ca" />
+                    android:text="@string/ca"
+                    android:layout_marginRight="@dimen/dimen_4dp" />
 
                 <TextView
                     android:id="@+id/tv_prev_mrp_ca"
@@ -316,7 +332,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_8dp">
 
                 <TextView
                     android:id="@+id/prev_mrp_oo_label"
@@ -326,7 +343,8 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/ou" />
+                    android:text="@string/ou"
+                    android:layout_marginRight="@dimen/dimen_4dp" />
 
                 <TextView
                     android:id="@+id/tv_prev_mrp_oo"
@@ -344,7 +362,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_8dp">
 
                 <TextView
                     android:id="@+id/prev_mrp_pc_label"
@@ -354,7 +373,8 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/pc" />
+                    android:text="@string/pc"
+                    android:layout_marginRight="@dimen/dimen_4dp" />
 
                 <TextView
                     android:id="@+id/tv_prev_mrp_pc"

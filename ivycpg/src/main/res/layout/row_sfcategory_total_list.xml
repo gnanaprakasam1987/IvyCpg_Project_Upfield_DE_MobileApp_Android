@@ -24,7 +24,8 @@
         android:layout_marginEnd="@dimen/right_margin"
         android:layout_marginTop="@dimen/target_top_margin"
         android:layout_weight="0.5"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginRight="@dimen/right_margin">
 
         <TextView
             android:id="@+id/tv_total_title"
@@ -53,7 +54,8 @@
         android:layout_marginEnd="@dimen/right_margin"
         android:layout_marginTop="@dimen/target_top_margin"
         android:layout_weight="0.5"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginRight="@dimen/right_margin">
 
         <TextView
             android:id="@+id/tv_actual_title"

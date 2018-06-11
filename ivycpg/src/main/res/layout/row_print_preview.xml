@@ -40,7 +40,8 @@
             android:paddingStart="@dimen/pp_row_upc_padding"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/font_micro_small"
+            android:paddingLeft="@dimen/pp_row_upc_padding" />
 
         <TextView
             android:id="@+id/qty"
@@ -81,7 +82,8 @@
             android:paddingEnd="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/font_micro_small"
+            android:paddingRight="5dp" />
 
         <TextView
             android:id="@+id/discount"

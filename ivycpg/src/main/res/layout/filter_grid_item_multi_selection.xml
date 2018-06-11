@@ -36,7 +36,9 @@
             android:layout_toEndOf="@+id/filtericons"
             android:layout_weight="1"
             android:src="@drawable/ic_filter_selected"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/filtericons" />
     </RelativeLayout>
 
     <TextView

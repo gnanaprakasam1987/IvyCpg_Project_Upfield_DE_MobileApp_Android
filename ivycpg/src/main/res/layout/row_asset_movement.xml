@@ -5,39 +5,40 @@
     android:layout_height="wrap_content"
     android:background="@drawable/list_selector"
     android:gravity="center_vertical"
-    android:weightSum="9"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/list_padding_left_n_right"
-    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
-    >
+    android:weightSum="9">
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?attr/customListItemPrimary"
-        android:layout_weight="4"
         android:id="@+id/txt_move_assetName"
-        android:padding="@dimen/dimen_4dp"
-        android:text="@string/app_name"
-        android:maxLines="1"/>
-    <TextView
+        style="?attr/customListItemPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="?attr/customListItemPrimary"
         android:layout_weight="4"
-        android:id="@+id/txt_move_serialNumber"
+        android:maxLines="1"
         android:padding="@dimen/dimen_4dp"
-        android:text="@string/app_name"
-        android:maxLines="1"/>
+        android:text="@string/app_name" />
+
+    <TextView
+        android:id="@+id/txt_move_serialNumber"
+        style="?attr/customListItemPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:maxLines="1"
+        android:padding="@dimen/dimen_4dp"
+        android:text="@string/app_name" />
+
     <ImageView
+        android:id="@+id/iv_move_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/iv_move_icon"
         android:padding="@dimen/dimen_4dp"
-        android:src="@drawable/ic_compare_arrows_black_24dp"/>
-
+        android:src="@drawable/ic_compare_arrows_black_24dp" />
 
 
 </LinearLayout>

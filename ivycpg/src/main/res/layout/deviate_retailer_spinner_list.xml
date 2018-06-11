@@ -6,6 +6,6 @@
     android:layout_height="@dimen/drop_down_text_height"
     android:background="?attr/primarycolor"
     android:ellipsize="marquee"
-    android:maxLines="1"
     android:textColor="@color/WHITE"
-    android:textSize="@dimen/font_small" />
+    android:textSize="@dimen/font_small"
+    android:singleLine="true" />

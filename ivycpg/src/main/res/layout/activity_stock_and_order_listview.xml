@@ -43,7 +43,8 @@
             android:layout_below="@+id/stock_and_order_listview_productname"
             android:maxLines="1"
             android:padding="2dp"
-            android:text="@string/srp" />
+            android:text="@string/srp"
+            android:layout_alignParentLeft="true" />
 
         <TextView
             android:id="@+id/stock_and_order_listview_ppq"
@@ -54,7 +55,8 @@
             android:layout_toEndOf="@+id/stock_and_order_listview_ssrp"
             android:maxLines="1"
             android:padding="2dp"
-            android:text="@string/ou" />
+            android:text="@string/ou"
+            android:layout_toRightOf="@+id/stock_and_order_listview_ssrp" />
 
         <TextView
             android:id="@+id/stock_and_order_listview_mrp"
@@ -65,7 +67,8 @@
             android:layout_toEndOf="@+id/stock_and_order_listview_ppq"
             android:maxLines="1"
             android:padding="2dp"
-            android:text="@string/mrp" />
+            android:text="@string/mrp"
+            android:layout_toRightOf="@+id/stock_and_order_listview_ppq" />
 
         <TextView
             android:id="@+id/stock_and_order_listview_msq"
@@ -77,7 +80,8 @@
             android:maxLines="1"
             android:padding="2dp"
             android:text="@string/msq"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/stock_and_order_listview_mrp" />
 
         <TextView
             android:id="@+id/stock_and_order_listview_psq"
@@ -89,7 +93,8 @@
             android:maxLines="1"
             android:padding="2dp"
             android:text="@string/psq"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/stock_and_order_listview_msq" />
     </RelativeLayout>
 
     <TextView

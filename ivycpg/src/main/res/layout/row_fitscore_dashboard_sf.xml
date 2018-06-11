@@ -59,6 +59,7 @@
         android:paddingEnd="5dp"
         android:text=""
         android:visibility="gone"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/font_micro_small"
+        android:paddingRight="5dp" />
 
 </LinearLayout>

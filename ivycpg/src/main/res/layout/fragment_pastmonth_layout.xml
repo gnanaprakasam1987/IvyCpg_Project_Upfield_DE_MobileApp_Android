@@ -32,7 +32,8 @@
             android:gravity="end"
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:layout_marginRight="@dimen/dimen_6dp" />
     </LinearLayout>
 
     <com.github.mikephil.charting.charts.BarChart

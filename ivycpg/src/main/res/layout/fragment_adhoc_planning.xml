@@ -52,7 +52,9 @@
             android:layout_centerInParent="true"
             android:layout_marginBottom="@dimen/card_margin"
             android:layout_marginEnd="@dimen/card_margin"
-            android:src="@drawable/ic_vector_search" />
+            android:src="@drawable/ic_vector_search"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/card_margin" />
 
     </RelativeLayout>
 
@@ -72,7 +74,8 @@
             android:id="@+id/lv_first"
             android:layout_width="@dimen/first_layout_lv_width"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true" />
 
         <Button
             android:id="@+id/btn_add"
@@ -80,7 +83,8 @@
             android:layout_height="@dimen/add_btn_widht"
             android:layout_margin="@dimen/dimen_6dp"
             android:layout_toEndOf="@id/lv_first"
-            android:background="@drawable/plus_new" />
+            android:background="@drawable/plus_new"
+            android:layout_toRightOf="@id/lv_first" />
 
         <Button
             android:id="@+id/btn_refresh1"
@@ -89,7 +93,8 @@
             android:layout_below="@id/btn_add"
             android:layout_margin="@dimen/dimen_6dp"
             android:layout_toEndOf="@id/lv_first"
-            android:background="@drawable/refresh" />
+            android:background="@drawable/refresh"
+            android:layout_toRightOf="@id/lv_first" />
 
 
     </com.ivy.sd.png.view.CardLayout>
@@ -109,7 +114,8 @@
             android:id="@+id/lv_second"
             android:layout_width="@dimen/first_layout_lv_width"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true" />
 
         <Button
             android:id="@+id/btn_delete"
@@ -119,7 +125,7 @@
             android:layout_toEndOf="@id/lv_second"
             android:background="@drawable/minus_new"
 
-            />
+            android:layout_toRightOf="@id/lv_second" />
 
         <Button
             android:id="@+id/btn_refresh2"
@@ -128,7 +134,8 @@
             android:layout_below="@id/btn_delete"
             android:layout_margin="@dimen/dimen_6dp"
             android:layout_toEndOf="@id/lv_second"
-            android:background="@drawable/refresh" />
+            android:background="@drawable/refresh"
+            android:layout_toRightOf="@id/lv_second" />
     </com.ivy.sd.png.view.CardLayout>
 
     <LinearLayout

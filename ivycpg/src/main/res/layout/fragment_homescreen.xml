@@ -15,7 +15,9 @@
         android:layout_marginTop="@dimen/dimen_10dp"
         android:backgroundTintMode="@color/user_name"
         android:src="@drawable/icon_settings"
-        android:tint="@color/user_name" />
+        android:tint="@color/user_name"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dimen_10dp" />
 
     <LinearLayout
         android:id="@+id/ll_header"
@@ -112,14 +114,16 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dimen_10dp"
-        android:paddingStart="@dimen/space_betwn_icon_and_text">
+        android:paddingStart="@dimen/space_betwn_icon_and_text"
+        android:paddingLeft="@dimen/space_betwn_icon_and_text">
 
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
             android:paddingEnd="@dimen/space_betwn_icon_and_text"
-            android:src="@drawable/line_burger" />
+            android:src="@drawable/line_burger"
+            android:paddingRight="@dimen/space_betwn_icon_and_text" />
 
         <LinearLayout
             android:id="@+id/ll_logout"
@@ -144,7 +148,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginStart="@dimen/space_betwn_icon_and_text"
-                android:text="@string/log_out" />
+                android:text="@string/log_out"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginLeft="@dimen/space_betwn_icon_and_text" />
         </LinearLayout>
 
         <LinearLayout
@@ -168,7 +174,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginStart="@dimen/space_betwn_icon_and_text"
-                android:text="@string/about" />
+                android:text="@string/about"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_marginLeft="@dimen/space_betwn_icon_and_text" />
         </LinearLayout>
     </LinearLayout>
 

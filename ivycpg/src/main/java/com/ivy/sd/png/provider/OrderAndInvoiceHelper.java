@@ -6,12 +6,10 @@ import android.database.Cursor;
 import com.ivy.cpg.view.order.DiscountHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.asset.OrderSummarySortBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -94,31 +92,26 @@ public class OrderAndInvoiceHelper {
     }
 
     public LinkedList<ProductMasterBO> sortbyLevel(LinkedList<ProductMasterBO> orderedProductList) {
-        ArrayList<OrderSummarySortBO> sortedList = new ArrayList<>();
         LinkedList<ProductMasterBO> list = new LinkedList<>();
 
         String productIDs = ObjectToCommaSeperated(orderedProductList);
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
-        Cursor orderHeaderCursor = db.selectSQL("SELECT distinct ParentHierarchy FROM ProductMaster WHERE pid IN (" + productIDs + ")");
+        Cursor orderHeaderCursor = db.selectSQL("Select distinct case when (psname is null or length(trim(psname)) =0) then Pname else psname end as ChildName,Pid as Child, ParentHierarchy as Parent from ProductMaster " +
+                "where (Plid in (Select levelid from ProductLevel where levelid not in (Select ParentId from ProductLevel)) and pid in(" + productIDs + ")) " +
+                "order by (Select case when (psname is null or length(trim(psname)) =0) then lower(Pname) else lower(psname) end from ProductMaster where Parent like '%'||pid||'%' and Plid = '" + bmodel.getPrintSequenceLevelID() + "'),lower(ChildName) asc");
         if (orderHeaderCursor != null) {
             while (orderHeaderCursor.moveToNext()) {
-                OrderSummarySortBO sortBO = new OrderSummarySortBO();
-                sortBO.setLevelID(orderHeaderCursor.getString(0).split("/")[getLevelSequence(bmodel.getPrintSequenceLevelID() + "") + 1]);
-                sortBO.setSKUID(orderHeaderCursor.getString(0).split("/")[getMaxLevelSequence()]);
-                sortedList.add(sortBO);
+                for (ProductMasterBO productMaster : orderedProductList) {
+                    if (productMaster.getProductID().equals(orderHeaderCursor.getString(1))) {
+                        list.add(productMaster);
+                        break;
+                    }
+                }
             }
             orderHeaderCursor.close();
         }
         db.closeDB();
-        Collections.sort(sortedList, OrderSummarySortBO.COMPARE_BY_ID);
-        for (OrderSummarySortBO sortedProductsList : sortedList) {
-            for (ProductMasterBO productsList : orderedProductList) {
-                if (sortedProductsList.getSKUID().equals(productsList.getProductID())) {
-                    list.add(productsList);
-                }
-            }
-        }
         return list;
     }
 
@@ -260,49 +253,5 @@ public class OrderAndInvoiceHelper {
         System.out.println(csv);
         //OUTPUT: Milan,London,New York,San Francisco
         return csv;
-    }
-
-    private int getLevelSequence(String levelID) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        ;
-        try {
-            db.openDataBase();
-            String sb = "Select Sequence from ProductLevel where LevelID =" + QT(levelID);
-
-            Cursor c = db.selectSQL(sb);
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        return c.getInt(0);
-                    }
-                }
-                c.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    private int getMaxLevelSequence() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        ;
-        try {
-            db.openDataBase();
-            String sb = "Select Sequence from ProductLevel where LevelID not in (Select ParentID from ProductLevel)";
-
-            Cursor c = db.selectSQL(sb);
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        return c.getInt(0);
-                    }
-                }
-                c.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 }

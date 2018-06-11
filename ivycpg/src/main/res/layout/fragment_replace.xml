@@ -45,7 +45,8 @@
                         android:layout_centerVertical="true"
                         android:text="@string/text_return_qty"
                         android:textSize="@dimen/font_small"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/tvReturnQty"
@@ -56,7 +57,8 @@
                         android:layout_centerVertical="true"
                         android:text="@string/zero"
                         android:textSize="@dimen/font_small"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <View
@@ -81,7 +83,8 @@
                         android:layout_centerVertical="true"
                         android:text="@string/enter_return_qty"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/font_micro_small"
+                        android:layout_alignParentLeft="true" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -94,7 +97,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/right_margin"
                             android:layout_marginTop="@dimen/target_top_margin"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_marginRight="@dimen/right_margin">
 
                             <TextView
                                 android:id="@+id/srpcsTitle"
@@ -149,7 +153,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/right_margin"
                             android:layout_marginTop="@dimen/target_top_margin"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_marginLeft="@dimen/right_margin">
 
                             <TextView
                                 android:id="@+id/sroutercaseTitle"
@@ -208,9 +213,8 @@
                     android:layout_margin="@dimen/target_top_margin"
                     android:gravity="center"
                     android:text="@string/done"
-                    android:textAllCaps="false" />
-
-
+                    android:textAllCaps="false"
+                    android:layout_alignParentRight="true" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>

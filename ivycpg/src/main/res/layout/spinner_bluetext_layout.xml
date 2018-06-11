@@ -9,4 +9,5 @@
     android:maxLines="1"
     android:textColor="?attr/primarycolor"
     android:textSize="@dimen/drop_down_text_font_size"
-    android:ellipsize="end"/>
+    android:ellipsize="end"
+    android:drawableRight="@drawable/ic_arrow_drop_down" />

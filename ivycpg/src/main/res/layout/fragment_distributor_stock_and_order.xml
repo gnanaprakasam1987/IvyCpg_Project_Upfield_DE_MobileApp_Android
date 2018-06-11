@@ -65,7 +65,8 @@
                             android:gravity="start"
                             android:maxLines="1"
                             android:textColor="?attr/primarycolor"
-                            android:textSize="@dimen/font_nano_small" />
+                            android:textSize="@dimen/font_nano_small"
+                            android:layout_marginLeft="@dimen/list_margin" />
 
                         <Button
                             android:id="@+id/btn_search"
@@ -155,7 +156,8 @@
                                 android:layout_weight="4"
                                 android:gravity="start|center_vertical"
                                 android:layout_marginStart="@dimen/list_margin"
-                                android:text="@string/product_name" />
+                                android:text="@string/product_name"
+                                android:layout_marginLeft="@dimen/list_margin" />
 
                             <TextView
                                 android:id="@+id/shelfCaseTitle"

@@ -33,7 +33,9 @@
                 android:layout_centerInParent="true"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:maxLines="2"
-                android:text="@string/product_name" />
+                android:text="@string/product_name"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="@dimen/list_margin" />
 
 
         </RelativeLayout>

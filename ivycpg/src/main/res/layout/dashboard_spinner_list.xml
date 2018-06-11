@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/spinner_dropdown"
     android:ellipsize="marquee"
-    android:maxLines="1"
     android:padding="@dimen/target_top_margin"
     android:textSize="@dimen/spinner_normal"
-    android:textColor="@color/WHITE" />
+    android:textColor="@color/WHITE"
+    android:singleLine="true" />

@@ -39,7 +39,8 @@
         android:text="@string/reason_for_visit"
         android:textColor="?attr/colorAccent"
         android:textSize="@dimen/font_micro_small"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginLeft="@dimen/profile_history_20dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -84,7 +85,8 @@
                 android:layout_marginEnd="@dimen/profile_history_20dp"
                 android:onClick="onClick"
                 android:text="@string/cancel"
-                android:textColor="@color/black_bg1" />
+                android:textColor="@color/black_bg1"
+                android:layout_marginRight="@dimen/profile_history_20dp" />
 
             <Button
                 android:id="@+id/add_reason"
@@ -93,13 +95,15 @@
                 android:layout_marginStart="@dimen/profile_history_20dp"
                 android:onClick="onClick"
                 android:text="@string/add_label"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/profile_history_20dp" />
 
             <Button
                 android:id="@+id/add_reason1"
                 style="@style/ButtonSmallRoundCornerDisable"
                 android:layout_marginStart="@dimen/profile_history_20dp"
-                android:text="@string/add_label" />
+                android:text="@string/add_label"
+                android:layout_marginLeft="@dimen/profile_history_20dp" />
 
         </LinearLayout>
 

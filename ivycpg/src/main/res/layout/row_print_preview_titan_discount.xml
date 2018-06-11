@@ -60,7 +60,6 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_micro_small" />
 
-
     </LinearLayout>
 
 </LinearLayout>

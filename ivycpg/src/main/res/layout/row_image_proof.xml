@@ -18,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/iv_proof"
-        android:background="@drawable/icon_close_" />
+        android:background="@drawable/icon_close_"
+        android:layout_alignRight="@+id/iv_proof" />
 
 </RelativeLayout>

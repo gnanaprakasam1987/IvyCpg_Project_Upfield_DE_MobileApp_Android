@@ -34,7 +34,8 @@
                 android:text="wewewewe"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/font_medium"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginLeft="@dimen/dimen_10dp" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -83,7 +84,8 @@
                 android:layout_weight="0.50"
                 android:text=""
                 android:textColor="#212121"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/font_micro_small"
+                android:layout_marginLeft="@dimen/dimen_6dp" />
             <!--android:layout_height="@dimen/dimens_22dp"-->
             <!--android:layout_height="match_parent"-->
             <!--android:textSize="@dimen/medium_text_Size"-->
@@ -125,7 +127,8 @@
                 android:layout_weight="0.50"
                 android:text=""
                 android:textColor="#212121"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/font_micro_small"
+                android:layout_marginLeft="@dimen/dimen_6dp" />
 
         </LinearLayout>
 
@@ -165,7 +168,8 @@
                 android:layout_weight="0.50"
                 android:text=""
                 android:textColor="#212121"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/font_micro_small"
+                android:layout_marginLeft="@dimen/dimen_6dp" />
 
         </LinearLayout>
 

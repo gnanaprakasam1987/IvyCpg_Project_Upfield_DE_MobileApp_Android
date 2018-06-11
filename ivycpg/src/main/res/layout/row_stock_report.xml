@@ -18,7 +18,8 @@
         android:layout_weight="1"
         android:text="@string/prod_code"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/sr_list_view_margin_left" />
 
     <TextView
         android:id="@+id/orderPRODNAME"
@@ -31,7 +32,8 @@
         android:gravity="start|center"
         android:maxLines="1"
         android:padding="3dp"
-        android:text="@string/product_name" />
+        android:text="@string/product_name"
+        android:layout_marginLeft="@dimen/skuwise_right_margin" />
 
     <TextView
         android:id="@+id/sih_case"

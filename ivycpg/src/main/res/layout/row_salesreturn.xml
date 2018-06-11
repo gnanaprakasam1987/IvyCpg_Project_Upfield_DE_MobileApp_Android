@@ -17,7 +17,8 @@
         android:gravity="start|center"
         android:maxLines="2"
         android:padding="3dp"
-        android:text="@string/product_name"/>
+        android:text="@string/product_name"
+        android:layout_marginLeft="@dimen/target_top_margin" />
 
 
     <TextView

@@ -24,7 +24,7 @@
             android:dividerHeight="1dp"
             android:fitsSystemWindows="true"
             android:scrollbarAlwaysDrawHorizontalTrack="true"
-            android:scrollbarAlwaysDrawVerticalTrack="false"></ListView>
+            android:scrollbarAlwaysDrawVerticalTrack="false"/>
 
     </android.support.v7.widget.CardView>
 </LinearLayout>

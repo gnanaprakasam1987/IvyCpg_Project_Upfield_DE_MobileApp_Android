@@ -34,7 +34,8 @@
                 android:layout_alignParentStart="true"
                 android:maxLines="1"
                 android:text="@string/product_name"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/font_small"
+                android:layout_alignParentLeft="true" />
 
             <TextView
                 android:id="@+id/total"
@@ -47,7 +48,9 @@
                 android:gravity="end|center"
                 android:maxLines="1"
                 android:text="@string/zero"
-                android:textColor="@color/black_bg1" />
+                android:textColor="@color/black_bg1"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/card_margin" />
 
         </RelativeLayout>
 
@@ -78,7 +81,8 @@
                     android:layout_marginEnd="@dimen/dimen_1dp"
                     android:tag="item_piece"
                     android:text="@string/item_piece"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/greyed_text_size"
+                    android:layout_marginRight="@dimen/dimen_1dp" />
 
                 <TextView
                     style="?attr/customListItemSecondary"
@@ -87,7 +91,8 @@
                     android:layout_marginEnd="@dimen/list_margin"
                     android:tag="item_piece"
                     android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/greyed_text_size"
+                    android:layout_marginRight="@dimen/list_margin" />
 
 
                 <TextView
@@ -98,7 +103,8 @@
                     android:paddingStart="@dimen/dimen_2dp"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/footer_lbl_text_size" />
+                    android:textSize="@dimen/footer_lbl_text_size"
+                    android:paddingLeft="@dimen/dimen_2dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -108,7 +114,9 @@
                 android:layout_marginStart="@dimen/list_margin"
                 android:layout_toEndOf="@+id/llPc"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/list_margin"
+                android:layout_toRightOf="@+id/llPc">
 
                 <TextView
                     android:layout_width="@dimen/dimen_1dp"
@@ -124,7 +132,9 @@
                     android:layout_marginEnd="@dimen/dimen_1dp"
                     android:tag="item_case"
                     android:text="@string/item_case"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/greyed_text_size"
+                    android:layout_marginLeft="@dimen/list_margin"
+                    android:layout_marginRight="@dimen/dimen_1dp" />
 
                 <TextView
                     style="?attr/customListItemSecondary"
@@ -133,7 +143,8 @@
                     android:layout_marginEnd="@dimen/list_margin"
                     android:tag="item_piece"
                     android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/greyed_text_size"
+                    android:layout_marginRight="@dimen/list_margin" />
 
                 <TextView
                     android:id="@+id/orderQTYinCase"
@@ -143,7 +154,8 @@
                     android:paddingStart="@dimen/dimen_2dp"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/footer_lbl_text_size" />
+                    android:textSize="@dimen/footer_lbl_text_size"
+                    android:paddingLeft="@dimen/dimen_2dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -153,7 +165,9 @@
                 android:layout_marginStart="@dimen/list_margin"
                 android:layout_toEndOf="@+id/llCase"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/list_margin"
+                android:layout_toRightOf="@+id/llCase">
 
                 <TextView
                     android:layout_width="@dimen/dimen_1dp"
@@ -169,7 +183,9 @@
                     android:layout_marginEnd="@dimen/dimen_1dp"
                     android:tag="item_outer"
                     android:text="@string/item_outer"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/greyed_text_size"
+                    android:layout_marginLeft="@dimen/list_margin"
+                    android:layout_marginRight="@dimen/dimen_1dp" />
 
                 <TextView
                     style="?attr/customListItemSecondary"
@@ -178,7 +194,8 @@
                     android:layout_marginEnd="@dimen/list_margin"
                     android:tag="item_piece"
                     android:text=":"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/greyed_text_size"
+                    android:layout_marginRight="@dimen/list_margin" />
 
                 <TextView
                     android:id="@+id/outerorderQTYinCase"
@@ -188,7 +205,8 @@
                     android:paddingStart="@dimen/dimen_2dp"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/footer_lbl_text_size" />
+                    android:textSize="@dimen/footer_lbl_text_size"
+                    android:paddingLeft="@dimen/dimen_2dp" />
             </LinearLayout>
         </RelativeLayout>
 

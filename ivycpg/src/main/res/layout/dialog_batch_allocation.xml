@@ -96,20 +96,23 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/card_margin"
                     android:layout_marginTop="@dimen/card_margin"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/card_margin">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toStartOf="@+id/llTotal"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_toLeftOf="@+id/llTotal">
 
                         <LinearLayout
                             android:id="@+id/llPc"
                             android:layout_width="@dimen/values_editextWidth"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/target_top_margin"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_marginRight="@dimen/target_top_margin">
 
                             <TextView
                                 android:id="@+id/pcsTitle"
@@ -130,7 +133,8 @@
                                 android:paddingStart="@dimen/dimen_2dp"
                                 android:text="@string/zero"
                                 android:textColor="@color/black_bg1"
-                                android:textSize="@dimen/footer_lbl_text_size" />
+                                android:textSize="@dimen/footer_lbl_text_size"
+                                android:paddingLeft="@dimen/dimen_2dp" />
                         </LinearLayout>
 
                         <TextView
@@ -138,7 +142,8 @@
                             android:layout_width="@dimen/dimen_1dp"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/list_margin"
-                            android:background="@color/GRAY" />
+                            android:background="@color/GRAY"
+                            android:layout_marginRight="@dimen/list_margin" />
 
                         <LinearLayout
                             android:id="@+id/llCase"
@@ -167,7 +172,8 @@
                                 android:paddingStart="@dimen/dimen_2dp"
                                 android:text="@string/zero"
                                 android:textColor="@color/black_bg1"
-                                android:textSize="@dimen/footer_lbl_text_size" />
+                                android:textSize="@dimen/footer_lbl_text_size"
+                                android:paddingLeft="@dimen/dimen_2dp" />
                         </LinearLayout>
 
                         <TextView
@@ -175,14 +181,16 @@
                             android:layout_width="@dimen/dimen_1dp"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/list_margin"
-                            android:background="@color/GRAY" />
+                            android:background="@color/GRAY"
+                            android:layout_marginRight="@dimen/list_margin" />
 
                         <LinearLayout
                             android:id="@+id/llOuter"
                             android:layout_width="@dimen/values_editextWidth"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/target_top_margin"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_marginLeft="@dimen/target_top_margin">
 
                             <TextView
                                 android:id="@+id/outercaseTitle"
@@ -203,7 +211,8 @@
                                 android:paddingStart="@dimen/dimen_2dp"
                                 android:text="@string/zero"
                                 android:textColor="@color/black_bg1"
-                                android:textSize="@dimen/footer_lbl_text_size" />
+                                android:textSize="@dimen/footer_lbl_text_size"
+                                android:paddingLeft="@dimen/dimen_2dp" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -213,7 +222,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/card_margin"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/card_margin">
 
                         <TextView
                             android:id="@+id/totalTitle"
@@ -236,7 +247,8 @@
                             android:paddingStart="@dimen/dimen_2dp"
                             android:text="@string/zero"
                             android:textColor="@color/black_bg1"
-                            android:textSize="@dimen/footer_lbl_text_size" />
+                            android:textSize="@dimen/footer_lbl_text_size"
+                            android:paddingLeft="@dimen/dimen_2dp" />
                     </LinearLayout>
 
 

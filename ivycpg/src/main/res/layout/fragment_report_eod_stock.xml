@@ -353,7 +353,7 @@
                     android:dividerHeight="1dp"
                     android:fitsSystemWindows="true"
                     android:scrollbarAlwaysDrawHorizontalTrack="true"
-                    android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+                    android:scrollbarAlwaysDrawVerticalTrack="true"/>
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -365,7 +365,8 @@
             android:background="@color/footer_bg"
             android:gravity="center|end"
             android:layout_alignParentEnd="@dimen/dimens_2dp"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:layout_alignParentRight="@dimen/dimens_2dp">
 
             <Button
                 style="?attr/roundedCustomButtonNormal"
@@ -376,7 +377,8 @@
                 android:layout_marginStart="2dp"
                 android:gravity="center"
                 android:text="@string/print"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_marginLeft="2dp" />
         </LinearLayout>
     </RelativeLayout>
 

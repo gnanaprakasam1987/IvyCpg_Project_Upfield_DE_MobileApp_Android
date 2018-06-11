@@ -31,7 +31,8 @@
                 android:paddingStart="@dimen/dimens_4dp"
                 android:text="productname"
                 android:textColor="@android:color/black"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:paddingLeft="@dimen/dimens_4dp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/product_details_recycview"
@@ -58,7 +59,8 @@
                     android:paddingStart="@dimen/dimens_4dp"
                     android:text="SKU Mixture product name"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:paddingLeft="@dimen/dimens_4dp" />
 
                 <LinearLayout
                     android:id="@+id/ll_sku_mixture_product_name"
@@ -69,7 +71,8 @@
                     android:gravity="center|start"
                     android:paddingStart="@dimen/dimens_4dp"
                     android:orientation="vertical"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/black"
+                    android:paddingLeft="@dimen/dimens_4dp" />
             </LinearLayout>
 
 

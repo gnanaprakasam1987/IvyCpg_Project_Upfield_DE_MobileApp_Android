@@ -23,8 +23,14 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.InvoiceReportFragment;
-import com.ivy.cpg.view.reports.OrderReportFragment;
 import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
+import com.ivy.cpg.view.reports.beginstockreport.*;
+import com.ivy.cpg.view.reports.beginstockreport.BeginningStockFragment;
+import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
+import com.ivy.cpg.view.reports.currentreport.CurrentReportViewFragment;
+import com.ivy.cpg.view.reports.dayreport.DayReportFragment;
+import com.ivy.cpg.view.reports.eodstockreport.EODStockReportFragmentRe;
+import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -41,8 +47,6 @@ import com.ivy.sd.png.view.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
-import com.ivy.sd.png.view.reports.eodstockreport.EODStockReportFragmentRe;
-import com.ivy.sd.png.view.reports.refactor.DayReportFragment;
 import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
 
 import java.io.File;
@@ -57,10 +61,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface, SellerListFragment.SellerSelectionInterface {
 
     private BusinessModel bmodel;
-
     private String fromMenu;
-
-    private Toolbar toolbar;
 
     @SuppressLint("NewApi")
     @Override
@@ -70,7 +71,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar  toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         try {
@@ -128,8 +129,11 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         setLanguage();
 
         Bundle bun = getIntent().getExtras();
-        if (bun != null) {ConfigureBO config = (ConfigureBO) bun.getSerializable("config");
-        fromMenu = bun.getString("FROM")!=null?bun.getString("FROM"):"";switchFragments(config);}
+        if (bun != null) {
+            ConfigureBO config = (ConfigureBO) bun.getSerializable("config");
+            fromMenu = bun.getString("FROM") != null ? bun.getString("FROM") : "";
+            switchFragments(config);
+        }
 
         if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN)
             bmodel.productHelper.taxHelper = TaxGstHelper.getInstance(this);
@@ -161,11 +165,10 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             if (currentStockBatchViewFragment != null) {
                 currentStockBatchViewFragment.onBackButtonClick();
             } else {
-                if(fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
+                if (fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
                     finish();
                     overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                }
-                else
+                } else
                     onBackButtonClick();
             }
 
@@ -232,6 +235,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                 StandardListMasterConstants.MENU_ORDER_REPORT)) {
 
 
+            // OrderReportFragment orderFragment = new OrderReportFragment();
             OrderReportFragment orderFragment = new OrderReportFragment();
             orderFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, orderFragment);
@@ -292,7 +296,9 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                     .downloadProductFilter("MENU_LOAD_MANAGEMENT");
 
 
-            CurrentStockView stockReportFragment = new CurrentStockView();
+            //CurrentStockView stockReportFragment = new CurrentStockView();
+
+            CurrentReportViewFragment stockReportFragment = new CurrentReportViewFragment();
             stockReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, stockReportFragment);
 
@@ -301,7 +307,9 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_BEGINNING_STOCK_REPORT)) {
 
-            BeginningStockFragment stockreportfragmentnew = new BeginningStockFragment();
+//            BeginningStockFragment stockreportfragmentnew = new BeginningStockFragment();
+            com.ivy.cpg.view.reports.beginstockreport.BeginningStockFragment stockreportfragmentnew
+                    = new BeginningStockFragment();
             stockreportfragmentnew.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, stockreportfragmentnew);
 
@@ -310,7 +318,8 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_COLLECTION_REPORT)) {
 
-            CollectionReportFragment collectionReportFragment = new CollectionReportFragment();
+            //  CollectionReportFragment collectionReportFragment = new CollectionReportFragment();
+            CollectionReportFragmentNew collectionReportFragment = new CollectionReportFragmentNew();
             collectionReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, collectionReportFragment);
 
@@ -339,7 +348,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             bmodel.configurationMasterHelper.loadEODColumnConfiguration();
             bmodel.configurationMasterHelper.loadEODUOMConfiguration();
 
-           // EODStockReportFragment mEODStockReportFragment = new EODStockReportFragment();
+            // EODStockReportFragment mEODStockReportFragment = new EODStockReportFragment();
             EODStockReportFragmentRe mEODStockReportFragment = new EODStockReportFragmentRe();
 
 
@@ -575,10 +584,16 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             transaction.replace(R.id.fragment_content, mRetailerActivityReport);
             bmodel.mSelectedActivityName = config.getMenuName();
             commitFragment(transaction, config);
-        }else if(config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_ORD_STAT_RPT)){
+        } else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_ORD_STAT_RPT)) {
 
-            OrderStatusReportFragment orderStatusReportFragment  = new OrderStatusReportFragment();
+            OrderStatusReportFragment orderStatusReportFragment = OrderStatusReportFragment.newInstance(true);
+            transaction.replace(R.id.fragment_content, orderStatusReportFragment);
+            commitFragment(transaction, config);
+        } else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_INV_STAT_RPT)) {
+
+            OrderStatusReportFragment orderStatusReportFragment = OrderStatusReportFragment.newInstance(false);
             transaction.replace(R.id.fragment_content, orderStatusReportFragment);
             commitFragment(transaction, config);
         }

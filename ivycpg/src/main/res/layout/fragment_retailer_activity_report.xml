@@ -5,21 +5,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-            <ListView
-                android:id="@+id/lvwplist"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:cacheColorHint="@null"
-                android:divider="@android:color/white"
-                android:dividerHeight="1dp"
-                android:drawSelectorOnTop="false"
-                android:fitsSystemWindows="true"
-                android:scrollbarAlwaysDrawHorizontalTrack="true"
-                android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
-
-
-
-
+    <ListView
+        android:id="@+id/lvwplist"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@null"
+        android:divider="@android:color/white"
+        android:dividerHeight="1dp"
+        android:drawSelectorOnTop="false"
+        android:fitsSystemWindows="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"/>
 
 </RelativeLayout>

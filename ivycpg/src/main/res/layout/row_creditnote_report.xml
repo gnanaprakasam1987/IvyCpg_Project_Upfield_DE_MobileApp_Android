@@ -20,7 +20,8 @@
             android:singleLine="true"
             android:text=""
             android:textColor="@android:color/black"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:paddingLeft="3dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -37,7 +38,8 @@
             android:textStyle="italic"
             android:paddingStart="3dp"
             android:text=""
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:paddingLeft="3dp" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -65,7 +67,8 @@
             android:gravity="end"
             android:paddingEnd="7dp"
             android:text=""
-            android:textColor="?attr/primarycolor" />
+            android:textColor="?attr/primarycolor"
+            android:paddingRight="7dp" />
             </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -87,7 +90,8 @@
             android:gravity="end"
             android:paddingEnd="7dp"
             android:text=""
-            android:textColor="?attr/primarycolor" />
+            android:textColor="?attr/primarycolor"
+            android:paddingRight="7dp" />
         </LinearLayout>
 
     </LinearLayout>

@@ -48,7 +48,8 @@
                 android:layout_height="@dimen/ret_card_image"
                 android:layout_marginTop="@dimen/store_margin_top"
                 android:layout_toEndOf="@+id/lbl_total_qty"
-                android:background="@android:color/darker_gray" />
+                android:background="@android:color/darker_gray"
+                android:layout_toRightOf="@+id/lbl_total_qty" />
 
             <TextView
                 android:id="@+id/lab_dist_pre_post"
@@ -63,7 +64,8 @@
                 android:text="@string/order_report_avg_line"
                 android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/list_item_primary_text_size"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_toRightOf="@+id/view00" />
 
             <TextView
                 android:id="@+id/txt_dist_pre_post"
@@ -78,7 +80,8 @@
                 android:text="@string/zero"
                 android:textColor="@color/white"
                 android:textSize="@dimen/footer_lbl_text_size"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_toRightOf="@+id/lbl_total_qty" />
 
             <View
                 android:id="@+id/view0"
@@ -86,7 +89,8 @@
                 android:layout_height="@dimen/ret_card_image"
                 android:layout_marginTop="@dimen/store_margin_top"
                 android:layout_toEndOf="@+id/lab_dist_pre_post"
-                android:background="@android:color/darker_gray" />
+                android:background="@android:color/darker_gray"
+                android:layout_toRightOf="@+id/lab_dist_pre_post" />
 
             <TextView
                 android:id="@+id/label_totalValue"
@@ -100,7 +104,9 @@
                 android:tag="total_value_or_volume"
                 android:text="@string/total_value"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:layout_marginLeft="@dimen/target_top_margin"
+                android:layout_toRightOf="@+id/view0" />
 
             <TextView
                 android:id="@+id/text_total"
@@ -113,7 +119,9 @@
                 android:adjustViewBounds="true"
                 android:text="@string/zero"
                 android:textColor="@color/white"
-                android:textSize="@dimen/footer_lbl_text_size" />
+                android:textSize="@dimen/footer_lbl_text_size"
+                android:layout_marginLeft="@dimen/target_top_margin"
+                android:layout_toRightOf="@+id/view0" />
 
             <View
                 android:id="@+id/view1"
@@ -123,7 +131,9 @@
                 android:layout_marginTop="@dimen/store_margin_top"
                 android:layout_toEndOf="@+id/label_totalValue"
                 android:background="@android:color/darker_gray"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/margin_height"
+                android:layout_toRightOf="@+id/label_totalValue" />
 
             <TextView
                 android:id="@+id/lbl_avg_lines"
@@ -137,7 +147,10 @@
                 android:adjustViewBounds="true"
                 android:text="@string/avg_lines"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                android:textSize="@dimen/list_item_primary_text_size"
+                android:layout_marginLeft="@dimen/store_margin_top"
+                android:layout_marginRight="@dimen/target_top_margin"
+                android:layout_toRightOf="@+id/view1" />
 
             <TextView
                 android:id="@+id/text_averageLines"
@@ -150,7 +163,8 @@
                 android:layout_toEndOf="@+id/view1"
                 android:text="@string/zero"
                 android:textColor="@color/white"
-                android:textSize="@dimen/footer_lbl_text_size" />
+                android:textSize="@dimen/footer_lbl_text_size"
+                android:layout_toRightOf="@+id/view1" />
 
     </RelativeLayout>
 

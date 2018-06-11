@@ -12,5 +12,6 @@
         android:layout_marginStart="@dimen/dimen_20dp"
         android:text=""
         android:textAllCaps="true"
-        android:textColor="@color/Black" />
+        android:textColor="@color/Black"
+        android:layout_marginLeft="@dimen/dimen_20dp" />
 </LinearLayout>

@@ -20,7 +20,7 @@
         android:maxLines="2"
         android:textColor="@color/Black"
         android:textSize="@dimen/list_item_primary_text_size"
-        />
+        android:layout_marginLeft="@dimen/target_top_margin" />
 
     <LinearLayout
         android:id="@+id/ll_rowlayout"

@@ -31,7 +31,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/btn_round_corner_padding"
                 android:orientation="vertical"
-                android:padding="@dimen/dimen_1dp">
+                android:padding="@dimen/dimen_1dp"
+                android:layout_marginLeft="@dimen/btn_round_corner_padding">
 
                 <RelativeLayout
                     android:id="@+id/ll_PRDNAME"
@@ -48,7 +49,7 @@
                         android:maxLines="1"
                         android:text="@string/asset"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small"></TextView>
+                        android:textSize="@dimen/font_micro_small"/>
 
                     <TextView
                         android:id="@+id/txtBrand"
@@ -86,7 +87,8 @@
 
                         android:gravity="center_vertical"
                         android:minHeight="@dimen/dimen_40dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginLeft="@dimen/target_top_margin">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -98,7 +100,7 @@
                                 android:layout_width="5dp"
                                 android:layout_height="5dp"
                                 android:layout_gravity="center"
-                                android:background="@drawable/dot_circle_blue"></View>
+                                android:background="@drawable/dot_circle_blue"/>
 
                             <TextView
                                 android:id="@+id/achived_title"
@@ -122,7 +124,7 @@
 
                             <View
                                 android:layout_width="5dp"
-                                android:layout_height="5dp"></View>
+                                android:layout_height="5dp"/>
 
                             <TextView
                                 android:id="@+id/txtTarget"
@@ -132,7 +134,8 @@
                                 android:text="0"
                                 android:textColor="@color/GRAY_TEXT"
                                 android:textSize="@dimen/value_text_size"
-                                android:textStyle="normal" />
+                                android:textStyle="normal"
+                                android:paddingLeft="5dp" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -150,7 +153,8 @@
                         android:layout_marginStart="3dp"
                         android:gravity="center_vertical"
                         android:minHeight="@dimen/dimen_40dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginLeft="3dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -162,7 +166,7 @@
                                 android:layout_width="5dp"
                                 android:layout_height="5dp"
                                 android:layout_gravity="center"
-                                android:background="@drawable/dot_circle_orange"></View>
+                                android:background="@drawable/dot_circle_orange"/>
 
                             <TextView
                                 android:id="@+id/balance_title"
@@ -196,7 +200,8 @@
                                 android:text="0"
                                 android:textColor="@color/GRAY_TEXT"
                                 android:textSize="@dimen/value_text_size"
-                                android:textStyle="normal" />
+                                android:textStyle="normal"
+                                android:paddingLeft="5dp" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -214,7 +219,8 @@
                         android:layout_marginStart="3dp"
                         android:gravity="center_vertical"
                         android:minHeight="@dimen/dimen_40dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginLeft="3dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -226,7 +232,7 @@
                                 android:layout_width="5dp"
                                 android:layout_height="5dp"
                                 android:layout_gravity="center"
-                                android:background="@drawable/dot_circle_green"></View>
+                                android:background="@drawable/dot_circle_green"/>
 
                             <TextView
                                 android:id="@+id/reason_title"
@@ -260,7 +266,8 @@
                                 android:text="0"
                                 android:textColor="@color/GRAY_TEXT"
                                 android:textSize="@dimen/value_text_size"
-                                android:textStyle="normal" />
+                                android:textStyle="normal"
+                                android:paddingLeft="5dp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

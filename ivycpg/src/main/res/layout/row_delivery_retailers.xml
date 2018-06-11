@@ -18,7 +18,6 @@
         android:layout_centerVertical="true"
         android:textSize="@dimen/font_small"
         android:textColor="@color/FullBlack"
-        android:text="gdgvd fd dfg" />
-
-
+        android:text="gdgvd fd dfg"
+        android:layout_marginLeft="@dimen/profile_history_20dp" />
 </android.support.v7.widget.CardView>

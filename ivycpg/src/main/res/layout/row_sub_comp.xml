@@ -36,7 +36,8 @@
             android:clickable="true"
             android:inputType="none"
             android:maxLength="10"
-            android:text="11-05-2017" />
+            android:text="11-05-2017"
+            android:layout_marginRight="@dimen/comp_margin" />
 
         <Button
             android:id="@+id/btn_todate"
@@ -47,7 +48,8 @@
             android:clickable="true"
             android:inputType="none"
             android:maxLength="10"
-            android:text="11-05-2017" />
+            android:text="11-05-2017"
+            android:layout_marginLeft="@dimen/comp_margin" />
 
 
         <LinearLayout
@@ -95,7 +97,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginEnd="@dimen/right_margin"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_marginRight="@dimen/right_margin">
 
             <EditText
                 android:id="@+id/edt_competitor_feedback"
@@ -158,7 +161,9 @@
                 android:layout_marginEnd="@dimen/dimen_5dp"
                 android:background="@android:color/transparent"
                 android:overlapAnchor="false"
-                android:padding="@dimen/target_top_margin">
+                android:padding="@dimen/target_top_margin"
+                android:layout_marginLeft="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_5dp">
 
             </Spinner>
         </LinearLayout>
