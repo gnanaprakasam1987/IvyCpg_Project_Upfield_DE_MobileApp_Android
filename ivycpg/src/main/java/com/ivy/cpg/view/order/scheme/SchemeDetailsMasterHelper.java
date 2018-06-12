@@ -1294,7 +1294,7 @@ public class SchemeDetailsMasterHelper {
                                 // only ON scheme will be allowed to apply
 
                                 if (isSchemeDone(schemeBO, parentID, slabPosition == 1)) {
-
+                                    schemeBO.setChecked(false);
                                     mAppliedSchemeList.add(schemeBO);
 
                                     //MTS-Allowed to next slab if scheme type is MTS
@@ -1320,6 +1320,7 @@ public class SchemeDetailsMasterHelper {
                         schemeBO.setQuantityTypeSelected(true);
                         schemeBO.setApplyCount(1);
                         schemeBO.setIsFreeCombination(1);
+                        schemeBO.setChecked(false);
                         mAppliedSchemeList.add(schemeBO);
                     }
                 }

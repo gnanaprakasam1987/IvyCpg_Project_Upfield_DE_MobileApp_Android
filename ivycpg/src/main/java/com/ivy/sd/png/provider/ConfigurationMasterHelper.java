@@ -5727,7 +5727,7 @@ public class ConfigurationMasterHelper {
 
         try {
             COMPUTE_DUE_DATE = true;
-            COMPUTE_DUE_DATE = true;
+            COMPUTE_DUE_DAYS = true;
             String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='SR01' and ForSwitchSeller = 0";
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,

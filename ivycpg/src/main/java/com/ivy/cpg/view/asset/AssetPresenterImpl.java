@@ -158,7 +158,8 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         ArrayList<AssetTrackingBO> mAssetTrackingList = standardListBO.getAssetTrackingList();
         ArrayList<AssetTrackingBO> mAllAssetTrackingList = standardListBO.getAllAssetTrackingList();
 
-        if (mAssetTrackingList != null) {
+        if (mAssetTrackingList != null
+                && mAllAssetTrackingList.size() > 0) {
 
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
                 if (ALL.equals(mCapturedBarcode)) {
@@ -184,7 +185,8 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         Bundle bundle = null;
         boolean isUnmapped = false;
         if (mAssetTrackingHelper.SHOW_ASSET_BARCODE) {
-            if (mAllAssetTrackingList != null) {
+            if (mAllAssetTrackingList != null
+                    && mAllAssetTrackingList.size() > 0) {
                 bundle = new Bundle();
                 for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
                     if (mCapturedBarcode.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
@@ -216,39 +218,18 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
         mAssetList.clear();
         ArrayList<AssetTrackingBO> mAssetTrackingList = mBModel.productHelper.getInStoreLocation().get(mSelectedLocationIndex).getAssetTrackingList();
-
-        if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
-            for (LevelBO levelBO : mParentIdList) {
-                for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (levelBO.getProductID() == assetBO.getProductId()) {
-
-                        if (ALL.equals(mCapturedBarcode)) {
-                            if ("".equals(mCapturedNFCTag)) {
-                                if (mAttributeProducts.contains(assetBO.getProductId())) {
-                                    mAssetList.add(assetBO);
-                                }
-                            } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
-                                assetBO.setAvailQty(1);
-                                mAssetList.add(assetBO);
-                            }
-                        } else if (mCapturedBarcode.equals(assetBO.getSerialNo())) {
-                            mAssetList.add(assetBO);
-                        }
-                    }
-                }
-            }
-        } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {// product filter alone selected
-            if (mSelectedIdByLevelId.size() == 0 || mBModel.isMapEmpty(mSelectedIdByLevelId)) {
-                mAssetList.addAll(mAssetTrackingList);
-            } else {
+        if (mAssetTrackingList != null
+                && mAssetTrackingList.size() > 0) {
+            if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
                 for (LevelBO levelBO : mParentIdList) {
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
                         if (levelBO.getProductID() == assetBO.getProductId()) {
 
                             if (ALL.equals(mCapturedBarcode)) {
                                 if ("".equals(mCapturedNFCTag)) {
-                                    mAssetList.add(assetBO);
-
+                                    if (mAttributeProducts.contains(assetBO.getProductId())) {
+                                        mAssetList.add(assetBO);
+                                    }
                                 } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
                                     assetBO.setAvailQty(1);
                                     mAssetList.add(assetBO);
@@ -259,15 +240,55 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                         }
                     }
                 }
-            }
-        } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
-            for (int pid : mAttributeProducts) {
-                for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (pid == assetBO.getProductId()) {
+            } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {// product filter alone selected
+                if (mSelectedIdByLevelId.size() == 0 || mBModel.isMapEmpty(mSelectedIdByLevelId)) {
+                    mAssetList.addAll(mAssetTrackingList);
+                } else {
+                    for (LevelBO levelBO : mParentIdList) {
+                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                            if (levelBO.getProductID() == assetBO.getProductId()) {
 
+                                if (ALL.equals(mCapturedBarcode)) {
+                                    if ("".equals(mCapturedNFCTag)) {
+                                        mAssetList.add(assetBO);
+
+                                    } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
+                                        assetBO.setAvailQty(1);
+                                        mAssetList.add(assetBO);
+                                    }
+                                } else if (mCapturedBarcode.equals(assetBO.getSerialNo())) {
+                                    mAssetList.add(assetBO);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
+                for (int pid : mAttributeProducts) {
+                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                        if (pid == assetBO.getProductId()) {
+
+                            if (ALL.equals(mCapturedBarcode)) {
+                                if ("".equals(mCapturedNFCTag)) {
+                                    mAssetList.add(assetBO);
+                                } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
+                                    assetBO.setAvailQty(1);
+                                    mAssetList.add(assetBO);
+                                }
+                            } else if (mCapturedBarcode.equals(assetBO.getSerialNo())) {
+                                mAssetList.add(assetBO);
+                            }
+                        }
+                    }
+                }
+            } else {
+
+                if (mFilterText.equals("")) {
+                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
                         if (ALL.equals(mCapturedBarcode)) {
                             if ("".equals(mCapturedNFCTag)) {
                                 mAssetList.add(assetBO);
+
                             } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
                                 assetBO.setAvailQty(1);
                                 mAssetList.add(assetBO);
@@ -275,23 +296,6 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                         } else if (mCapturedBarcode.equals(assetBO.getSerialNo())) {
                             mAssetList.add(assetBO);
                         }
-                    }
-                }
-            }
-        } else {
-
-            if (mFilterText.equals("")) {
-                for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (ALL.equals(mCapturedBarcode)) {
-                        if ("".equals(mCapturedNFCTag)) {
-                            mAssetList.add(assetBO);
-
-                        } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
-                            assetBO.setAvailQty(1);
-                            mAssetList.add(assetBO);
-                        }
-                    } else if (mCapturedBarcode.equals(assetBO.getSerialNo())) {
-                        mAssetList.add(assetBO);
                     }
                 }
             }
@@ -323,12 +327,13 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
     }
 
     private void deleteUnUsedImages() {
-        for (AssetTrackingBO temp : mAssetList) {
-            if (temp.getAvailQty() == 0 && !"".equals(temp.getImgName())) {
-                String fileName = temp.getImgName();
-                deleteFiles(fileName);
+        if (mAssetList != null)
+            for (AssetTrackingBO temp : mAssetList) {
+                if (temp.getAvailQty() == 0 && !"".equals(temp.getImgName())) {
+                    String fileName = temp.getImgName();
+                    deleteFiles(fileName);
+                }
             }
-        }
     }
 
 
@@ -376,7 +381,8 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         ArrayList<AssetTrackingBO> mAssetTrackingList;
         for (StandardListBO standardListBO : mBModel.productHelper.getInStoreLocation()) {
             mAssetTrackingList = standardListBO.getAssetTrackingList();
-            if (mAssetTrackingList != null) {
+            if (mAssetTrackingList != null
+                    && mAssetTrackingList.size() > 0) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
                     if (mBModel.configurationMasterHelper.ASSET_PHOTO_VALIDATION) {
                         if (assetBO.getAvailQty() > 0 && (!assetBO.getImageName().equals("") || !assetBO.getImgName().equals("")))
