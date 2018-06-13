@@ -212,7 +212,7 @@ public class TaskHelper {
         Cursor c = db
                 .selectSQL("select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,A.upload,(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
                         + "B.usercreated , B.taskowner , B.date, A.upload,channelid,A.userid  from TaskConfigurationMaster A inner join TaskMaster B on "
-                        + "A.taskid=B.taskid left join TaskExecutionDetails TD on TD.TaskId=A.taskid  and  A.TaskId not in (Select taskid from TaskHistory where RetailerId =" + retailerId + " ) and TD.RetailerId = " + retailerId); //where A.upload!='Y'
+                        + "A.taskid=B.taskid left join TaskExecutionDetails TD on TD.TaskId=A.taskid  and  TD.RetailerId = " + retailerId + " where A.TaskId not in (Select taskid from TaskHistory where RetailerId =" + retailerId + ")"); //where A.upload!='Y'
         taskDataBO = new Vector<>();
         if (c != null) {
             while (c.moveToNext()) {

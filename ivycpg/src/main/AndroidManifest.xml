@@ -799,6 +799,9 @@
         <activity
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

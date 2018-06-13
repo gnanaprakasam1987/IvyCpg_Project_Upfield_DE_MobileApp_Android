@@ -228,7 +228,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                         Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                 jsonObject.put("MobileUTCDateTime",
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-                jsonObject.put(SynchronizationHelper.VERSION_NAME,bmodel.getApplicationVersionName());
+                jsonObject.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
                 Commons.printInformation("Change password upload " + jsonObject.toString());
                 final String appendUrl = DataMembers.CHANGE_PWD;
                 Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject, appendUrl, true);
@@ -300,7 +300,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
             } else if (result == -2) {
                 onCreateDialog(1, getResources().getString(R.string.invalid_password));
             } else if (result == -1) {
-                onCreateDialog(2, errorMsg);
+                onCreateDialog(1, errorMsg);
             }
         }
 
@@ -309,10 +309,11 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
     protected Dialog onCreateDialog(int id, String message) {
         switch (id) {
             case 0:
-                return new AlertDialog.Builder(ChangePasswordActivity.this)
+                AlertDialog.Builder builder = new AlertDialog.Builder(ChangePasswordActivity.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(message)
+                        .setTitle(
+                                message)
                         .setPositiveButton(R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
@@ -327,31 +328,26 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                                             finish();
                                         }
                                     }
-                                }).show();
+                                });
+                bmodel.applyAlertDialogTheme(builder);
+                break;
 
             case 1:
-                return new AlertDialog.Builder(ChangePasswordActivity.this)
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(ChangePasswordActivity.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(message)
+                        .setTitle(
+                                message)
                         .setPositiveButton(R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                    }
-                                }).show();
 
-            case 2:
-                return new AlertDialog.Builder(ChangePasswordActivity.this)
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(message)
-                        .setPositiveButton(R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
                                     }
-                                }).show();
+                                });
+                bmodel.applyAlertDialogTheme(builder2);
+                break;
+
 
         }
         return null;

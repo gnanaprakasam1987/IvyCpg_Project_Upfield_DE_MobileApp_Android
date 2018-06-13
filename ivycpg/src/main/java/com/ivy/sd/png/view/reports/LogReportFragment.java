@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -36,6 +37,7 @@ public class LogReportFragment extends Fragment {
     BusinessModel bmodel;
     private ListView list;
     private TextView tvTotalHrs;
+    private static final String FORMAT = "%02d:%02d";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,11 +72,7 @@ public class LogReportFragment extends Fragment {
             for (LogReportBO logBo : myList) {
                 calculateHrsSpent(logBo.getInTime(), logBo.getOutTime());
             }
-            DecimalFormat df = new DecimalFormat("##");
-
-            /*String minutes = String.format("%02d", (totMinutes % 60));
-            String hours = String.format("%02d", (totMinutes / 60));*/
-            String hrsMin = (int) (totMinutes / 60) + ":" + (int) (totMinutes % 60);
+            String hrsMin = parseTime(totMinutes);
             tvTotalHrs.setText(hrsMin);
         } else {
             Toast.makeText(getActivity(), getString(R.string.alert_activity_log), Toast.LENGTH_LONG).show();
@@ -84,7 +82,7 @@ public class LogReportFragment extends Fragment {
         return view;
     }
 
-    double totMinutes = 0;
+    long totMinutes = 0;
 
     private void calculateHrsSpent(String startTime, String endTime) {
 
@@ -94,15 +92,20 @@ public class LogReportFragment extends Fragment {
             Date date2 = sdf1.parse(endTime);
 
             long durationInMillis = date2.getTime() - date1.getTime();
-            String minutes = String.format("%02d", (durationInMillis / (1000 * 60)) % 60);
-            String hours = String.format("%02d", (durationInMillis / (1000 * 60 * 60)) % 24);
 
-            totMinutes = totMinutes + ((durationInMillis / (1000 * 60)) % 60);
+            totMinutes = totMinutes + durationInMillis;
 
 
         } catch (ParseException e) {
             Commons.printException(e);
         }
+    }
+
+    public static String parseTime(long milliseconds) {
+        return String.format(FORMAT,
+                TimeUnit.MILLISECONDS.toHours(milliseconds),
+                TimeUnit.MILLISECONDS.toMinutes(milliseconds) - TimeUnit.HOURS.toMinutes(
+                        TimeUnit.MILLISECONDS.toHours(milliseconds)));
     }
 
     class ViewHolder {

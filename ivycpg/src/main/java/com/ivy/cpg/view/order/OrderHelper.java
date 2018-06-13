@@ -709,6 +709,7 @@ public class OrderHelper {
                 double entryLevelDistSum = 0;
                 Vector<ProductMasterBO> mOrderedProductList = new Vector<>();
                 double totalWeight = 0;
+                double mOrderValue = 0; // for Order Header
                 for (int i = 0; i < finalProductList.size(); ++i) {
                     product = finalProductList.elementAt(i);
 
@@ -719,7 +720,12 @@ public class OrderHelper {
                         mOrderedProductList.add(product);
                         entryLevelDistSum = entryLevelDistSum + product.getApplyValue();
                         totalWeight += product.getWeight();
-
+                        mOrderValue = mOrderValue + (product.getOrderedCaseQty() * product
+                                .getCsrp())
+                                + (product.getOrderedPcsQty() * product
+                                .getSrp())
+                                + (product.getOrderedOuterQty() * product
+                                .getOsrp());
                         if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
                                 && businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                             if (product.getBatchwiseProductCount() > 0) {
@@ -897,7 +903,7 @@ public class OrderHelper {
                         + ","
                         + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID())
                         + ","
-                        + businessModel.QT(businessModel.formatValueBasedOnConfig(businessModel.getOrderHeaderBO().getOrderValue()))
+                        + businessModel.QT(businessModel.formatValueBasedOnConfig(mOrderValue))
                         + ","
                         + businessModel.getRetailerMasterBO().getBeatID()
                         + ","
