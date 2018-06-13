@@ -2451,7 +2451,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
                                 if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
                                     // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                    if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
+                                    if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
 
                                         if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                             continue;
@@ -2475,7 +2475,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
-                                if (pid == Integer.parseInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
+                                if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                         continue;
                                     mylist.add(productBO);
@@ -2564,21 +2564,21 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
         if (qty == 0) {
             bmodel.productHelper.getmProductidOrderByEntry().remove((String) productBO.getProductID());
-            bmodel.productHelper.getmProductidOrderByEntryMap().remove(Integer.parseInt(productBO.getProductID()));
+            bmodel.productHelper.getmProductidOrderByEntryMap().remove(SDUtil.convertToInt(productBO.getProductID()));
         } else {
             int lastQty = 0;
-            if (bmodel.productHelper.getmProductidOrderByEntryMap().get(Integer.parseInt(productBO.getProductID())) != null)
-                lastQty = bmodel.productHelper.getmProductidOrderByEntryMap().get(Integer.parseInt(productBO.getProductID()));
+            if (bmodel.productHelper.getmProductidOrderByEntryMap().get(SDUtil.convertToInt(productBO.getProductID())) != null)
+                lastQty = bmodel.productHelper.getmProductidOrderByEntryMap().get(SDUtil.convertToInt(productBO.getProductID()));
             if (lastQty == qty) {
                 // Dont do any thing
             } else {
                 if (bmodel.productHelper.getmProductidOrderByEntry().contains(productBO.getProductID())) {
                     bmodel.productHelper.getmProductidOrderByEntry().remove((String) productBO.getProductID());
                     bmodel.productHelper.getmProductidOrderByEntry().add(productBO.getProductID());
-                    bmodel.productHelper.getmProductidOrderByEntryMap().put(Integer.parseInt(productBO.getProductID()), qty);
+                    bmodel.productHelper.getmProductidOrderByEntryMap().put(SDUtil.convertToInt(productBO.getProductID()), qty);
                 } else {
                     bmodel.productHelper.getmProductidOrderByEntry().add(productBO.getProductID());
-                    bmodel.productHelper.getmProductidOrderByEntryMap().put(Integer.parseInt(productBO.getProductID()), qty);
+                    bmodel.productHelper.getmProductidOrderByEntryMap().put(SDUtil.convertToInt(productBO.getProductID()), qty);
                 }
             }
         }

@@ -3110,7 +3110,7 @@ SynchronizationHelper {
 
             if (retailerBeatMap != null && !retailerBeatMap.isEmpty()) {
                 for (int i = 0; i < mRetailerListByLocOrUserWise.size(); i++) {
-                    int retailerId = Integer.parseInt(mRetailerListByLocOrUserWise.get(i).getRetailerID());
+                    int retailerId = SDUtil.convertToInt(mRetailerListByLocOrUserWise.get(i).getRetailerID());
                     mRetailerListByLocOrUserWise.get(i).setBeatID(retailerBeatMap.get(retailerId) != null ? retailerBeatMap.get(retailerId) : 0);
                 }
             }

@@ -334,8 +334,8 @@ public class UserMasterHelper {
             db.executeQ(query);
             db.close();
             if (getUserMasterBO() != null) {
-                getUserMasterBO().setDistributorid(Integer.parseInt(parentId));
-                getUserMasterBO().setBranchId(Integer.parseInt(distid));
+                getUserMasterBO().setDistributorid(SDUtil.convertToInt(parentId));
+                getUserMasterBO().setBranchId(SDUtil.convertToInt(distid));
             }
         } catch (Exception e) {
             Commons.printException("" + e);

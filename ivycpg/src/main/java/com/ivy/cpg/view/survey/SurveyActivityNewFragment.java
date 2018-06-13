@@ -533,7 +533,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     public void onTabSelected(TabLayout.Tab tab) {
         tabPos = tab.getPosition();
 
-        surveyHelperNew.mSelectedSurvey = Integer.parseInt(tab.getTag()
+        surveyHelperNew.mSelectedSurvey = SDUtil.convertToInt(tab.getTag()
                 .toString());
         for (SurveyBO sBO : surveyHelperNew.getSurvey()) {
             if (sBO.getSurveyID() == surveyHelperNew.mSelectedSurvey) {
@@ -1696,8 +1696,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             if (mCurrentQuestionBO.getFromValue() != null && !mCurrentQuestionBO.getFromValue().equals("")
                     && mCurrentQuestionBO.getToValue() != null && !mCurrentQuestionBO.getToValue().equals("")) {
                 if (!et.getText().toString().isEmpty()) {
-                    if (!isInRange(Float.parseFloat(mCurrentQuestionBO.getFromValue()), Float.parseFloat(mCurrentQuestionBO.getToValue()),
-                            Float.parseFloat(et.getText().toString()))) {
+                    if (!isInRange(SDUtil.convertToFloat(mCurrentQuestionBO.getFromValue()), SDUtil.convertToFloat(mCurrentQuestionBO.getToValue()),
+                            SDUtil.convertToFloat(et.getText().toString()))) {
                         et.setTextColor(Color.RED);
                     } else {
                         et.setTextColor(Color.BLACK);
@@ -1717,8 +1717,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     @Override
                     public void afterTextChanged(Editable s) {
                         if (!et.getText().toString().isEmpty()) {
-                            if (!isInRange(Float.parseFloat(mCurrentQuestionBO.getFromValue()), Float.parseFloat(mCurrentQuestionBO.getToValue()),
-                                    Float.parseFloat(et.getText().toString()))) {
+                            if (!isInRange(SDUtil.convertToFloat(mCurrentQuestionBO.getFromValue()), SDUtil.convertToFloat(mCurrentQuestionBO.getToValue()),
+                                    SDUtil.convertToFloat(et.getText().toString()))) {
                                 et.setTextColor(Color.RED);
                             } else {
                                 et.setTextColor(Color.BLACK);
@@ -1821,7 +1821,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     if (mCurrentQuestionBO.getFromValue() != null && !mCurrentQuestionBO.getFromValue().equals("")) {
                         try {
                             String[] splitDates = mCurrentQuestionBO.getFromValue().split("/");
-                            c.set(Integer.parseInt(splitDates[0]), Integer.parseInt(splitDates[1]) - 1, Integer.parseInt(splitDates[2]));
+                            c.set(SDUtil.convertToInt(splitDates[0]), SDUtil.convertToInt(splitDates[1]) - 1, SDUtil.convertToInt(splitDates[2]));
                             //Date date = dateFormat.parse(mCurrentQuestionBO.getFromValue());
                             datePicker1.setMinDate(c.getTimeInMillis());
                             Calendar c1 = Calendar.getInstance();
@@ -1829,7 +1829,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             c1.set(Calendar.HOUR_OF_DAY, 23);
                             c1.set(Calendar.MINUTE, 59);
                             c1.set(Calendar.SECOND, 59);
-                            c1.set(Integer.parseInt(splitDates[0]), Integer.parseInt(splitDates[1]) - 1, Integer.parseInt(splitDates[2]));
+                            c1.set(SDUtil.convertToInt(splitDates[0]), SDUtil.convertToInt(splitDates[1]) - 1, SDUtil.convertToInt(splitDates[2]));
                             //date = dateFormat.parse(mCurrentQuestionBO.getToValue());
                             datePicker1.setMaxDate(c1.getTimeInMillis());
                         } catch (Exception e) {
@@ -2460,7 +2460,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             //noinspection EmptyCatchBlock
             try {
-                int input = Integer.parseInt(dest.subSequence(0, dstart).toString() + source + dest.subSequence(dend, dest.length()));
+                int input = SDUtil.convertToInt(dest.subSequence(0, dstart).toString() + source + dest.subSequence(dend, dest.length()));
                 if (isInRange(min, max, input))
                     return null;
             } catch (NumberFormatException nfe) {
@@ -2476,7 +2476,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     private String checkRange(String input, float minValue, float maxValue) {
 
-        float inputValue = Float.parseFloat(input);
+        float inputValue = SDUtil.convertToFloat(input);
         if (inputValue <= minValue || inputValue >= maxValue) {
             return "";
         }

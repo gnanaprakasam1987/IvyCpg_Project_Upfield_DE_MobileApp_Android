@@ -551,7 +551,7 @@ public class CheckModeFragment extends IvyBaseFragment
                 int count = 0;
                 for (BankMasterBO bankBO : mBankDetailList) {
                     count = count + 1;
-                    if (bankBO.getBankId() == Integer.parseInt(mPaymentBO.getBankID())) {
+                    if (bankBO.getBankId() == SDUtil.convertToInt(mPaymentBO.getBankID())) {
                         break;
                     }
                 }

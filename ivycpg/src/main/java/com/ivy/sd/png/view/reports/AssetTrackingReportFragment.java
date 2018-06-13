@@ -15,6 +15,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.asset.AssetTrackingBrandBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingReportBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class AssetTrackingReportFragment extends Fragment {
                 R.string.select)));
         for (int i = 0; i < bmodel.reportHelper.getAssetRetailerList().size(); i++) {
             brandAdapter
-                    .add(new RetailerMasterBO(Integer.parseInt(bmodel.reportHelper.getAssetRetailerList().get(i).getRetailerID()),
+                    .add(new RetailerMasterBO(SDUtil.convertToInt(bmodel.reportHelper.getAssetRetailerList().get(i).getRetailerID()),
                             bmodel.reportHelper.getAssetRetailerList().get(i).getRetailerName()));
         }
         brandAdapter

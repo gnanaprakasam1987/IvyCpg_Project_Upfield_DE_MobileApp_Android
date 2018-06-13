@@ -17,6 +17,7 @@ import com.ivy.sd.png.bo.PromotionTrackingReportBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SalesFundamentalGapReportBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class PromotionTrackingReport extends Fragment {
                 R.string.select)));
         for (int i = 0; i < retailerMasterList.size(); i++) {
             brandAdapter
-                    .add(new RetailerMasterBO(Integer.parseInt(retailerMasterList.get(i).getRetailerID()),
+                    .add(new RetailerMasterBO(SDUtil.convertToInt(retailerMasterList.get(i).getRetailerID()),
                             retailerMasterList.get(i).getRetailerName()));
         }
         brandAdapter

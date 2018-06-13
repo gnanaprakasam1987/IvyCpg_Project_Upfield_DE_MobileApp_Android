@@ -1183,11 +1183,11 @@ public class PrintHelper {
                         StringBuffer convertBuffer = new StringBuffer();
                         NumberToWord numberToWord = new NumberToWord();
                         for (int i = 0; i < splits.length; i++) {
-                            long splitvalue = Long.parseLong(splits[i]);
+                            long splitvalue = SDUtil.convertToLong(splits[i]);
                             if (i == 1 && splitvalue > 0) {
                                 convertBuffer.append(" and ");
                             }
-                            convertBuffer.append(numberToWord.convertNumberToWords(Long.parseLong(splits[i])));
+                            convertBuffer.append(numberToWord.convertNumberToWords(SDUtil.convertToLong(splits[i])));
                             if (i == 0) {
                                 convertBuffer.append(" Rupees ");
                             } else if (i == 1) {
@@ -1549,7 +1549,7 @@ public class PrintHelper {
 
                     sb.append("T 7 0 470 " + (x) + " ");
 
-                    sb.append(bmodel.formatValueBasedOnConfig((total - Double.parseDouble(bmodel.formatValue(discount)))) + "\r\n");
+                    sb.append(bmodel.formatValueBasedOnConfig((total - SDUtil.convertToDouble(bmodel.formatValue(discount)))) + "\r\n");
                     x = x + 70;
                     hght = x;
                 }
@@ -2821,7 +2821,7 @@ public class PrintHelper {
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
 
                     int integerValue = (int) value;
-                    int fractionValue = Integer.parseInt(fractionalStr);
+                    int fractionValue = SDUtil.convertToInt(fractionalStr);
 
                     formattedValue = (integerValue + bmodel.getCurrencyActualValue(fractionValue) + "");
 

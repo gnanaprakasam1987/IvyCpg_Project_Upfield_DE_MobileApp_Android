@@ -32,6 +32,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.MVPBadgeBO;
 import com.ivy.sd.png.bo.MvpBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -209,7 +210,7 @@ public class MVPFragment extends IvyBaseFragment {
 
                 String strBadgename = mvpbadge.getBadgeName() + "";
                 ((TextView) view.findViewById(R.id.tv_badge_name)).setText(strBadgename);
-                totalBadgeCount = (totalBadgeCount + Integer.parseInt(mvpbadge.getBadgeCount()));
+                totalBadgeCount = (totalBadgeCount + SDUtil.convertToInt(mvpbadge.getBadgeCount()));
                 badgeView.addView(view);
             }
             String strBadgeCount = Integer.toString(totalBadgeCount);

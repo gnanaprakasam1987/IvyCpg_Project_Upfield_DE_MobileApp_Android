@@ -11,6 +11,7 @@ import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -65,7 +66,7 @@ public class TotalAchivedFragment extends Fragment {
                 total_ach += skuWiseTargetBO.getAchieved();
         } else {
             for (DashBoardBO dash : DashBoardHelper.getInstance(getActivity()).getDashListViewList()) {
-                total_ach += Double.parseDouble(dash.getKpiIncentive());
+                total_ach += SDUtil.convertToDouble(dash.getKpiIncentive());
             }
         }
 

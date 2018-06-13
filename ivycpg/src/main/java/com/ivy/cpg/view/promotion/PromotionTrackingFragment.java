@@ -610,7 +610,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                                 .getPromotionList();
                         for (int i = 0; i < items.size(); i++) {
                             PromotionBO promoBO = items.get(i);
-                            if (promoBO.getPromoId() == Integer.parseInt(promotionId)) {
+                            if (promoBO.getPromoId() == SDUtil.convertToInt(promotionId)) {
                                 promoBO.setImageName("");
                             }
                         }

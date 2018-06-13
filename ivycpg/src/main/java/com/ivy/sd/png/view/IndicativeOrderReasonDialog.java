@@ -25,6 +25,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SpinnerBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -101,7 +102,7 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
         mReasonList.add(0, new SpinnerBO(0, "Select"));
         ArrayList<ReasonMaster> reasons = bmodel.reasonHelper.downloadIndicativeReasons();
         for (ReasonMaster bo : reasons)
-            mReasonList.add(new SpinnerBO(Integer.parseInt(bo.getReasonID()), bo.getReasonDesc()));
+            mReasonList.add(new SpinnerBO(SDUtil.convertToInt(bo.getReasonID()), bo.getReasonDesc()));
 
         mReasonAdapter = new ArrayAdapter<SpinnerBO>(mContext,
                 android.R.layout.simple_spinner_item, mReasonList);

@@ -25,6 +25,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -227,7 +228,7 @@ public class FilterFragment<E> extends Fragment implements OnClickListener,
 
 
         try {
-            updateBrandFilter(Integer.parseInt(mselectedFilterMap
+            updateBrandFilter(SDUtil.convertToInt(mselectedFilterMap
                     .get(CATEGORY)));
         } catch (Exception e) {
             Commons.printException("" + e);

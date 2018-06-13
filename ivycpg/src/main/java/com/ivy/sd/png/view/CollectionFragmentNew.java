@@ -524,7 +524,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
             holder.tvDueDate.setText(holder.invoiceHeaderBO.getDueDate());
 
-            double osamount = holder.invoiceHeaderBO.getBalance() + Double.parseDouble(bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
+            double osamount = holder.invoiceHeaderBO.getBalance() + SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
             if (osamount <= 0)
                 holder.tvOSAmt.setText("0");
             else

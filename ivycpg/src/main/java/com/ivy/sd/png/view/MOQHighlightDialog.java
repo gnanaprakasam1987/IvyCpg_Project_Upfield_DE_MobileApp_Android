@@ -281,21 +281,21 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
         if (qty == 0) {
             bmodel.productHelper.getmProductidOrderByEntry().remove((String) productBO.getProductID());
-            bmodel.productHelper.getmProductidOrderByEntryMap().remove(Integer.parseInt(productBO.getProductID()));
+            bmodel.productHelper.getmProductidOrderByEntryMap().remove(SDUtil.convertToInt(productBO.getProductID()));
         } else {
             int lastQty = 0;
-            if (bmodel.productHelper.getmProductidOrderByEntryMap().get(Integer.parseInt(productBO.getProductID())) != null)
-                lastQty = bmodel.productHelper.getmProductidOrderByEntryMap().get(Integer.parseInt(productBO.getProductID()));
+            if (bmodel.productHelper.getmProductidOrderByEntryMap().get(SDUtil.convertToInt(productBO.getProductID())) != null)
+                lastQty = bmodel.productHelper.getmProductidOrderByEntryMap().get(SDUtil.convertToInt(productBO.getProductID()));
             if (lastQty == qty) {
                 // Dont do any thing
             } else {
                 if (bmodel.productHelper.getmProductidOrderByEntry().contains(productBO.getProductID())) {
                     bmodel.productHelper.getmProductidOrderByEntry().remove((String) productBO.getProductID());
                     bmodel.productHelper.getmProductidOrderByEntry().add(productBO.getProductID());
-                    bmodel.productHelper.getmProductidOrderByEntryMap().put(Integer.parseInt(productBO.getProductID()), qty);
+                    bmodel.productHelper.getmProductidOrderByEntryMap().put(SDUtil.convertToInt(productBO.getProductID()), qty);
                 } else {
                     bmodel.productHelper.getmProductidOrderByEntry().add(productBO.getProductID());
-                    bmodel.productHelper.getmProductidOrderByEntryMap().put(Integer.parseInt(productBO.getProductID()), qty);
+                    bmodel.productHelper.getmProductidOrderByEntryMap().put(SDUtil.convertToInt(productBO.getProductID()), qty);
                 }
             }
         }

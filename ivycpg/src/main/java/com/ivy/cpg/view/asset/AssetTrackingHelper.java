@@ -1124,7 +1124,7 @@ public class AssetTrackingHelper {
 
         for (int i = 0; i < size; i++) {
             StandardListBO standardListBO = locationList.get(i);
-            if (Integer.parseInt(standardListBO.getListID()) == listID) {
+            if (SDUtil.convertToInt(standardListBO.getListID()) == listID) {
                 return i;
             }
         }

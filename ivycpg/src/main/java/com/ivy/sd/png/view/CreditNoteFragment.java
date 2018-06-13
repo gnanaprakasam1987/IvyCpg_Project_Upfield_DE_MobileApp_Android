@@ -193,7 +193,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                             mPaymentBO.setAmount(tempCreditNoteValue);
                             currentCollectionValue = tempCreditNoteValue;
 
-                            tempCreditNoteValue = Double.parseDouble(SDUtil.format(tempCreditNoteValue,
+                            tempCreditNoteValue = SDUtil.convertToDouble(SDUtil.format(tempCreditNoteValue,
                                     bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                                     0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
@@ -390,7 +390,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                 }
             }
         }
-        mTotalCreditNoteValue = Double.parseDouble(SDUtil.format(mTotalCreditNoteValue,
+        mTotalCreditNoteValue = SDUtil.convertToDouble(SDUtil.format(mTotalCreditNoteValue,
                 bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                 0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 

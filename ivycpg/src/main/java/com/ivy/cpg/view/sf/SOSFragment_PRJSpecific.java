@@ -192,7 +192,7 @@ public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnC
             if (view != null) {
                 EditText edt = (EditText) view;
                 if (!edt.getText().toString().equals(""))
-                    bo.setAvailability(Integer.parseInt(edt.getText().toString()));
+                    bo.setAvailability(SDUtil.convertToInt(edt.getText().toString()));
                 else
                     bo.setAvailability(0);
             }

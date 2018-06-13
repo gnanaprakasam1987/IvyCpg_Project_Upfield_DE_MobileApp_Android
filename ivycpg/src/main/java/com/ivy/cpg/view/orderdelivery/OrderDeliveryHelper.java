@@ -574,7 +574,7 @@ public class OrderDeliveryHelper {
                     if (discountPercentage > 0) {
 
                         double remainingAmount = (SDUtil.convertToDouble(getOrderDeliveryTotalValue()) * discountPercentage) / 100;
-                        remainingAmount = Double.parseDouble(businessModel.formatValueBasedOnConfig(remainingAmount));
+                        remainingAmount = SDUtil.convertToDouble(businessModel.formatValueBasedOnConfig(remainingAmount));
 
                         discountedAmount = SDUtil.convertToDouble(getOrderDeliveryTotalValue()) - remainingAmount;
                     } else {

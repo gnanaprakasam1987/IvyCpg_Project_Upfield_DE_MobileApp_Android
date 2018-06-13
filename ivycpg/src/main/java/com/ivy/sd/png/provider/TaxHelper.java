@@ -716,7 +716,7 @@ public class TaxHelper implements TaxInterface {
      * @param totalOrderValue
      */
     public double applyBillWiseTax(double totalOrderValue) {
-        double totalExclusiveOrderAmount = Double.parseDouble(SDUtil.format(totalOrderValue,
+        double totalExclusiveOrderAmount = SDUtil.convertToDouble(SDUtil.format(totalOrderValue,
                 mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                 0, mBusinessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
         double totalTaxValue = 0.0;

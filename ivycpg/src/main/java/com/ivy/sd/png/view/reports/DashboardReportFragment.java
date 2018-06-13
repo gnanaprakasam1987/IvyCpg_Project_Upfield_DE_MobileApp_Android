@@ -175,7 +175,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 								R.style.TextViewBold);
 						tvTemp1.setPadding(0, 0, 0, 0);
 						tvTemp1.setBackgroundColor(getResources().getColor(R.color.competitor_brand));
-						tvTemp1.setText(SDUtil.format(Double.parseDouble(value.get(0)), 0, 0) + "");
+						tvTemp1.setText(SDUtil.format(SDUtil.convertToDouble(value.get(0)), 0, 0) + "");
 						tvTemp1.setGravity(Gravity.CENTER);
 
 
@@ -185,7 +185,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 								R.style.TextViewBold);
 						tvTemp2.setBackgroundColor(getResources().getColor(R.color.GRAY));
 						tvTemp2.setPadding(0, 0, 0, 0);
-						tvTemp2.setText(SDUtil.format(Double.parseDouble(value.get(1)), 0, 0) + "");
+						tvTemp2.setText(SDUtil.format(SDUtil.convertToDouble(value.get(1)), 0, 0) + "");
 						tvTemp2.setGravity(Gravity.CENTER);
 
 						tvTemp3 = new TextView(getActivity());
@@ -193,7 +193,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 						tvTemp3.setTextAppearance(getActivity(),
 								R.style.TextViewBold);
 						tvTemp3.setPadding(0, 0, 0, 0);
-						tvTemp3.setText(SDUtil.format(Double.parseDouble(value.get(2)), 0, 0) + "");
+						tvTemp3.setText(SDUtil.format(SDUtil.convertToDouble(value.get(2)), 0, 0) + "");
 						tvTemp3.setGravity(Gravity.CENTER);
 
 						KPIlinearlayout.addView(tvTemp1);
@@ -287,7 +287,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 					tvTemp1.setPadding(0, 0, 0, 0);
 					tvTemp1.setBackgroundColor(getResources().getColor(R.color.competitor_brand));
 					//tvTemp1.setText(obj.getKpiTarget() + "");
-					tvTemp1.setText(SDUtil.format(Double.parseDouble(obj.getKpiTarget()), 0, 0) + "");
+					tvTemp1.setText(SDUtil.format(SDUtil.convertToDouble(obj.getKpiTarget()), 0, 0) + "");
 					tvTemp1.setGravity(Gravity.CENTER);
 
 
@@ -298,7 +298,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 					tvTemp2.setBackgroundColor(getResources().getColor(R.color.GRAY));
 					tvTemp2.setPadding(0, 0, 0, 0);
 					//tvTemp2.setText(obj.getKpiAcheived() + "");
-					tvTemp2.setText(SDUtil.format(Double.parseDouble(obj.getKpiAcheived()), 0, 0) + "");
+					tvTemp2.setText(SDUtil.format(SDUtil.convertToDouble(obj.getKpiAcheived()), 0, 0) + "");
 					tvTemp2.setGravity(Gravity.CENTER);
 
 					tvTemp3 = new TextView(getActivity());
@@ -307,7 +307,7 @@ public class DashboardReportFragment extends IvyBaseFragment {
 							R.style.TextViewBold);
 					tvTemp3.setPadding(0, 0, 0, 0);
 					//tvTemp3.setText(SDUtil.roundIt(obj.getCalculatedPercentage(), 2) + "");
-					tvTemp3.setText(SDUtil.format(Double.parseDouble(SDUtil.roundIt(obj.getCalculatedPercentage(), 2)), 0, 0) + "");
+					tvTemp3.setText(SDUtil.format(SDUtil.convertToDouble(SDUtil.roundIt(obj.getCalculatedPercentage(), 2)), 0, 0) + "");
 					tvTemp3.setGravity(Gravity.CENTER);
 
 					KPIFooterlinearlayout.addView(tvTemp1);

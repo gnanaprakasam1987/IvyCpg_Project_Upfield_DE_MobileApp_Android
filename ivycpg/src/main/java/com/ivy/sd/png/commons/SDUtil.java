@@ -241,9 +241,9 @@ public class SDUtil {
         //DataMembers.backDate="05/16/2017";
         if (!DataMembers.backDate.isEmpty()) {
             int year, day, month;
-            month = Integer.parseInt(DataMembers.backDate.substring(0, 2));
-            day = Integer.parseInt(DataMembers.backDate.substring(3, 5));
-            year = Integer.parseInt(DataMembers.backDate.substring(6, 10));
+            month = SDUtil.convertToInt(DataMembers.backDate.substring(0, 2));
+            day = SDUtil.convertToInt(DataMembers.backDate.substring(3, 5));
+            year = SDUtil.convertToInt(DataMembers.backDate.substring(6, 10));
             cal.set(year, month - 1, day);
         }
 

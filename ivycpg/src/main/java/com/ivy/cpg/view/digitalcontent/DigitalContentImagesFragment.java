@@ -128,7 +128,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                 String current_month = today.split("/")[1];
                 String mCurrentYear = today.split("/")[0];
                 String current_month_year = mCurrentYear + "/" + current_month + "/";
-                String previous_month_year = mCurrentYear + "/" + (Integer.parseInt(current_month) - 1) + "/";
+                String previous_month_year = mCurrentYear + "/" + (SDUtil.convertToInt(current_month) - 1) + "/";
 
 
                 ArrayList<String> mGroupList = new ArrayList<>();

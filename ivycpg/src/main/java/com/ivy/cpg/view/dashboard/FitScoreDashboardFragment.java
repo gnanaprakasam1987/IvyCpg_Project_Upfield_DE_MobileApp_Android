@@ -403,8 +403,8 @@ public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandD
         double total = 0, weightage = 0;
         for (FitScoreBO fitScore : fitScoreList) {
             if (fitScore.getScore() != null) {
-                total = total + Double.parseDouble(fitScore.getScore());
-                weightage = Double.parseDouble(fitScore.getWeightage());
+                total = total + SDUtil.convertToDouble(fitScore.getScore());
+                weightage = SDUtil.convertToDouble(fitScore.getWeightage());
             }
         }
 
@@ -443,7 +443,7 @@ public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandD
             holder.txtAchieved.setText(skuList.get(position).getAchieved());
             holder.txtWeightage.setText(skuList.get(position).getWeightage());
             if (skuList.get(position).getScore() != null) {
-                holder.txtScore.setText(SDUtil.roundIt(Double.parseDouble(skuList.get(position).getScore()), 2));
+                holder.txtScore.setText(SDUtil.roundIt(SDUtil.convertToDouble(skuList.get(position).getScore()), 2));
             }
         }
 

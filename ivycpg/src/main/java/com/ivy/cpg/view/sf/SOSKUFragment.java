@@ -899,7 +899,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                                 .getSOSKUList();
                         for (int i = 0; i < items.size(); i++) {
                             SOSKUBO sosku = items.get(i);
-                            if (sosku.getProductID() == Integer.parseInt(mProductId)) {
+                            if (sosku.getProductID() == SDUtil.convertToInt(mProductId)) {
                                 sosku.setImageName("");
                                 sosku.setImgName("");
                             }
@@ -1019,8 +1019,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                             for (int i = 0; i < mCategoryForDialog.size(); i++) {
 
                                 SOSKUBO soskuBO = mCategoryForDialog.get(i);
-                                soskuBO.setParentTotal(Integer
-                                        .parseInt(mParentTotal.getText()
+                                soskuBO.setParentTotal(SDUtil.convertToInt(mParentTotal.getText()
                                                 .toString()));
 
                                 if (soskuBO.getParentTotal() > 0) {

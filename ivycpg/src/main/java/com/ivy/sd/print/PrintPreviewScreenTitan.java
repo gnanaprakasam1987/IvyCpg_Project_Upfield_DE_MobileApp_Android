@@ -688,11 +688,11 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 StringBuffer convertBuffer = new StringBuffer();
                 NumberToWord numberToWord = new NumberToWord();
                 for (int i = 0; i < splits.length; i++) {
-                    long splitvalue = Long.parseLong(splits[i]);
+                    long splitvalue = SDUtil.convertToLong(splits[i]);
                     if (i == 1 && splitvalue > 0) {
                         convertBuffer.append(" and ");
                     }
-                    convertBuffer.append(numberToWord.convertNumberToWords(Long.parseLong(splits[i].toString())));
+                    convertBuffer.append(numberToWord.convertNumberToWords(SDUtil.convertToLong(splits[i].toString())));
                     if (i == 0) {
                         convertBuffer.append(" Rupees ");
                     } else if (i == 1) {
@@ -1311,11 +1311,11 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                         StringBuffer convertBuffer = new StringBuffer();
                         NumberToWord numberToWord = new NumberToWord();
                         for (int i = 0; i < splits.length; i++) {
-                            long splitvalue = Long.parseLong(splits[i]);
+                            long splitvalue = SDUtil.convertToLong(splits[i]);
                             if (i == 1 && splitvalue > 0) {
                                 convertBuffer.append(" and ");
                             }
-                            convertBuffer.append(numberToWord.convertNumberToWords(Long.parseLong(splits[i].toString())));
+                            convertBuffer.append(numberToWord.convertNumberToWords(SDUtil.convertToLong(splits[i].toString())));
                             if (i == 0) {
                                 convertBuffer.append(" Rupees ");
                             } else if (i == 1) {

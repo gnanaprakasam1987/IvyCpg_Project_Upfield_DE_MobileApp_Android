@@ -217,7 +217,7 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                         int quantityEntered = 0;
                         String qty = s.toString();
                             if (!s.toString().trim().equals("")) {
-                                quantityEntered = Integer.parseInt(s.toString());
+                                quantityEntered = SDUtil.convertToInt(s.toString());
                             }
 
                         if (quantityEntered > holder.schemeProductBO

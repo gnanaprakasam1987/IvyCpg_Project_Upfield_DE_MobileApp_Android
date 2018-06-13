@@ -654,7 +654,7 @@ public class ProfileFragment extends IvyBaseFragment {
             if (unWantedMenus.contains(configCode))
                 continue;
 
-            for (int j = (mPrevMenuNumber + 1); j < Integer.parseInt(menuNo); j++) {
+            for (int j = (mPrevMenuNumber + 1); j < SDUtil.convertToInt(menuNo); j++) {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(" ");
                 outletBO.setValueText(" ");
@@ -664,7 +664,7 @@ public class ProfileFragment extends IvyBaseFragment {
             if (profileConfig.get(i).isFlag() == 1) {
                 loadProfileList(i);
             }
-            mPrevMenuNumber = Integer.parseInt(menuNo);
+            mPrevMenuNumber = SDUtil.convertToInt(menuNo);
         }
 
     }

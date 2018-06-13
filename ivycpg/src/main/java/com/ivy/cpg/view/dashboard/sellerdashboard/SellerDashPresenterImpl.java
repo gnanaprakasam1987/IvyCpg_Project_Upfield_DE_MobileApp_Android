@@ -108,7 +108,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -134,7 +134,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -161,7 +161,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -188,7 +188,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -215,7 +215,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");

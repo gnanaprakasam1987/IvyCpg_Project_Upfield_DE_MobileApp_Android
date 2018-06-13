@@ -2806,7 +2806,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
                         if (!qty.equals("")) {
-                            if (Integer.parseInt(qty) > bmodel.configurationMasterHelper.MAX_CREDIT_DAYS) {
+                            if (SDUtil.convertToInt(qty) > bmodel.configurationMasterHelper.MAX_CREDIT_DAYS) {
                                 //Delete the last entered number and reset the qty
                                 editText[mNumber].setText(qty.length() > 1 ? qty.substring(0,
                                         qty.length() - 1) : "0");
@@ -2948,12 +2948,12 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 if (len != null && !len.isEmpty()) {
                     if (len.contains(",")) {
                         try {
-                            fil = new InputFilter.LengthFilter(Integer.parseInt(len.split(",")[1]));
+                            fil = new InputFilter.LengthFilter(SDUtil.convertToInt(len.split(",")[1]));
                         } catch (Exception ex) {
                             Commons.printException("regex length split", ex);
                         }
                     } else {
-                        fil = new InputFilter.LengthFilter(Integer.parseInt(len));
+                        fil = new InputFilter.LengthFilter(SDUtil.convertToInt(len));
                     }
                 }
             }
@@ -3183,13 +3183,13 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         int default_value = 0;
         if (code.equals("CONTACTPERSON1")) {
             for (int i = 0; i < mcontactTitleList.size(); i++) {
-                if (mcontactTitleList.get(i).getListId() == Integer.parseInt(outlet.getContact1titlelovid())) {
+                if (mcontactTitleList.get(i).getListId() == SDUtil.convertToInt(outlet.getContact1titlelovid())) {
                     return i;
                 }
             }
         } else if (code.equals("CONTACTPERSON2")) {
             for (int i = 0; i < mcontactTitleList.size(); i++) {
-                if (mcontactTitleList.get(i).getListId() == Integer.parseInt(outlet.getContact2titlelovid())) {
+                if (mcontactTitleList.get(i).getListId() == SDUtil.convertToInt(outlet.getContact2titlelovid())) {
                     return i;
                 }
             }
@@ -3247,7 +3247,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             }
         } else if (code.equals("PAYMENTTYPE")) {
             for (int i = 0; i < mretailertypeMasterList.size(); i++) {
-                if (mretailertypeMasterList.get(i).getListId() == Integer.parseInt(outlet.getPayment())) {
+                if (mretailertypeMasterList.get(i).getListId() == SDUtil.convertToInt(outlet.getPayment())) {
                     return i;
                 }
             }

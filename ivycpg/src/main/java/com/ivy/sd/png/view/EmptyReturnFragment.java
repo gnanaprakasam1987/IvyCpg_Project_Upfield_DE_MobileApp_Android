@@ -264,7 +264,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
-                        holder.mSKUBO.setRetPieceQty(Integer.parseInt(qty));
+                        holder.mSKUBO.setRetPieceQty(SDUtil.convertToInt(qty));
                     }
 
                     @Override

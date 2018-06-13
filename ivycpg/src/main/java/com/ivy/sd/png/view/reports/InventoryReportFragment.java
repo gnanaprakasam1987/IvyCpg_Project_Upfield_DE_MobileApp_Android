@@ -18,6 +18,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InventoryBO_Proj;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
@@ -70,7 +71,7 @@ public class InventoryReportFragment extends Fragment {
 
         for(RetailerMasterBO bo:bmodel.getRetailerMaster()){
             if(bo.getIsToday()==1) {
-                spinnerAdapter.add(new RetailerMasterBO(Integer.parseInt(bo.getRetailerID()), bo.getRetailerName()));
+                spinnerAdapter.add(new RetailerMasterBO(SDUtil.convertToInt(bo.getRetailerID()), bo.getRetailerName()));
             }
         }
         spnRetailers.setAdapter(spinnerAdapter);

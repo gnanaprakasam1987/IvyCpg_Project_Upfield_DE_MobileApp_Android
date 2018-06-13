@@ -23,6 +23,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ParentLevelBo;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -230,7 +231,7 @@ public class FilterFagmentMultiSelection<E> extends Fragment implements
 		brandOrSplGridView.setAdapter(mSchedule);
 
 		try {
-			updateBrandFilter(Integer.parseInt(mselectedFilterMap
+			updateBrandFilter(SDUtil.convertToInt(mselectedFilterMap
 					.get("Category")));
 		} catch (Exception e) {
 			System.out.println(e + "");
